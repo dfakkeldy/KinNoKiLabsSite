@@ -7,7 +7,8 @@
 /* OpenDyslexic Fallback/WebFont */
 @font-face {
   font-family: 'OpenDyslexic';
-  src: url('/OpenDyslexic-Regular.otf') format('opentype');
+  src: url('https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Regular.woff') format('woff'),
+       url('OpenDyslexic-Regular.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
 }
@@ -59,8 +60,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-body.font-opendyslexic {
-  --font-primary: "OpenDyslexic", -apple-system, BlinkMacSystemFont, sans-serif;
+body.font-opendyslexic,
+body.font-opendyslexic * {
+  font-family: "OpenDyslexic", -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
 
 /* ── Sticky Navigation ────────────────────────── */
