@@ -192,6 +192,7 @@ private func siteHeader<Site: Website>(context: PublishingContext<Site>) -> Node
                 .class("nav-links"),
                 navLink("/", "Home"),
                 navLink("/posts", "Posts"),
+                navLink("/apps", "Apps"),
                 navLink("/about", "About"),
                 .li(
                     .button(
