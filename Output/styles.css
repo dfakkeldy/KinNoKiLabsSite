@@ -1,6 +1,16 @@
 /* ═══════════════════════════════════════════════════════
-   KinNoKi Labs — Site Styles
+   KinNoKi Labs — Apple HIG Redesign
    ═══════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap');
+
+/* OpenDyslexic Fallback/WebFont */
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('https://cdn.jsdelivr.net/npm/opendyslexic@2.0.0/fonts/Regular/OpenDyslexic-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
 
 /* ── Reset & Base ─────────────────────────────── */
 
@@ -13,28 +23,25 @@
 }
 
 :root {
-  --color-bg: #fafaf9;
+  --color-bg: #F5F5F7; /* Apple HIG Light Background */
   --color-surface: #ffffff;
-  --color-text: #1c1917;
-  --color-text-muted: #78716c;
-  --color-accent: #2563eb;
-  --color-border: #e7e5e4;
-  --color-nav-bg: rgba(255, 255, 255, 0.82);
-  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
-  --max-width: 720px;
-  --radius: 8px;
+  --color-text: #1d1d1f;
+  --color-text-muted: #86868b;
+  --color-border: rgba(0, 0, 0, 0.1);
+  --color-nav-bg: rgba(245, 245, 247, 0.72);
+  --font-primary: "Lexend", -apple-system, BlinkMacSystemFont, sans-serif;
+  --max-width: 800px;
+  --radius-bento: 24px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-bg: #0c0a09;
-    --color-surface: #1c1917;
-    --color-text: #fafaf9;
-    --color-text-muted: #a8a29e;
-    --color-accent: #60a5fa;
-    --color-border: #292524;
-    --color-nav-bg: rgba(12, 10, 9, 0.82);
+    --color-bg: #000000; /* Apple HIG Dark Background */
+    --color-surface: #1c1c1e;
+    --color-text: #f5f5f7;
+    --color-text-muted: #86868b;
+    --color-border: rgba(255, 255, 255, 0.1);
+    --color-nav-bg: rgba(0, 0, 0, 0.72);
   }
 }
 
@@ -44,12 +51,16 @@ html {
 }
 
 body {
-  font-family: var(--font-sans);
+  font-family: var(--font-primary);
   background: var(--color-bg);
   color: var(--color-text);
-  line-height: 1.7;
+  line-height: 1.6; /* HIG Spacing */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body.font-opendyslexic {
+  --font-primary: "OpenDyslexic", -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* ── Sticky Navigation ────────────────────────── */
@@ -59,8 +70,8 @@ body {
   top: 0;
   z-index: 100;
   background: var(--color-nav-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -74,122 +85,133 @@ body {
 }
 
 .nav-brand {
-  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
   font-size: 1.1rem;
   color: var(--color-text);
   text-decoration: none;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
-.nav-brand:hover {
-  color: var(--color-accent);
+.nav-brand img {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
 }
 
 .nav-links {
   display: flex;
   gap: 1.75rem;
   list-style: none;
+  align-items: center;
 }
 
 .nav-links a {
   color: var(--color-text-muted);
   text-decoration: none;
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   font-weight: 500;
   transition: color 0.15s ease;
 }
 
 .nav-links a:hover {
-  color: var(--color-accent);
+  color: var(--color-text);
 }
 
-/* ── Main Content ─────────────────────────────── */
+.font-toggle {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  font-family: inherit;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.font-toggle:hover {
+  background: var(--color-border);
+}
+
+/* ── Bento Box Layout ─────────────────────────── */
 
 .site-main {
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 3rem 1.5rem 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.bento-box {
+  background: var(--color-surface);
+  border-radius: var(--radius-bento);
+  padding: 2rem;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+/* ── Metallic CTA Button ──────────────────────── */
+
+.btn-metallic {
+  display: inline-block;
+  background: linear-gradient(135deg, #e6e6e6 0%, #ffffff 50%, #d4d4d4 100%);
+  color: #1d1d1f;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1), inset 0 1px 1px rgba(255,255,255,0.8);
+  border: 1px solid rgba(0,0,0,0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin-top: 1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-metallic {
+    background: linear-gradient(135deg, #a68b5c 0%, #f1d596 50%, #997843 100%); /* Gold shine in dark mode */
+    color: #000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+}
+
+.btn-metallic:hover {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  text-decoration: none;
 }
 
 /* ── Typography ────────────────────────────────── */
 
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 650;
-  line-height: 1.25;
+  font-weight: 600;
+  line-height: 1.2;
   letter-spacing: -0.02em;
+  color: var(--color-text);
 }
 
-h1 { font-size: 2.2rem; margin-bottom: 1rem; }
-h2 { font-size: 1.6rem; margin-top: 2.5rem; margin-bottom: 0.75rem; }
-h3 { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.5rem; }
+h1 { font-size: 2.4rem; margin-bottom: 1rem; }
+h2 { font-size: 1.6rem; margin-bottom: 0.75rem; }
 
 p {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 a {
-  color: var(--color-accent);
-  text-decoration: none;
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--color-border);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
 }
 
 a:hover {
-  text-decoration: underline;
-}
-
-strong {
-  font-weight: 650;
-}
-
-hr {
-  border: none;
-  border-top: 1px solid var(--color-border);
-  margin: 2.5rem 0;
-}
-
-blockquote {
-  border-left: 3px solid var(--color-accent);
-  padding-left: 1.25rem;
-  margin: 1.5rem 0;
-  color: var(--color-text-muted);
-  font-style: italic;
-}
-
-ul, ol {
-  margin: 0 0 1.25rem 1.5rem;
-}
-
-li {
-  margin-bottom: 0.35rem;
-}
-
-code {
-  font-family: var(--font-mono);
-  font-size: 0.88em;
-  background: var(--color-surface);
-  padding: 0.15em 0.4em;
-  border-radius: 4px;
-  border: 1px solid var(--color-border);
-}
-
-pre {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: 1rem 1.25rem;
-  overflow-x: auto;
-  margin-bottom: 1.5rem;
-}
-
-pre code {
-  background: none;
-  border: none;
-  padding: 0;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-  border-radius: var(--radius);
+  text-decoration-color: var(--color-text);
 }
 
 /* ── Post List ─────────────────────────────────── */
@@ -197,52 +219,32 @@ img {
 .post-list {
   list-style: none;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 .post-item {
-  padding: 1.25rem 0;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.post-item:first-child {
-  padding-top: 0;
-}
-
-.post-item a {
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-.post-item a:hover {
-  color: var(--color-accent);
+  display: block;
   text-decoration: none;
+}
+
+.post-item h2 {
+  font-size: 1.2rem;
+  margin-bottom: 0.25rem;
 }
 
 .post-date {
   font-size: 0.85rem;
   color: var(--color-text-muted);
   display: block;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
 }
 
 .post-description {
   color: var(--color-text-muted);
-  font-size: 0.92rem;
-  margin-top: 0.25rem;
-}
-
-/* ── Tags ──────────────────────────────────────── */
-
-.tag {
-  display: inline-block;
-  background: var(--color-surface);
-  color: var(--color-text-muted);
-  border: 1px solid var(--color-border);
-  border-radius: 9999px;
-  padding: 0.15em 0.75em;
-  font-size: 0.8rem;
-  margin-right: 0.4rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 /* ── Footer ────────────────────────────────────── */
@@ -252,18 +254,10 @@ img {
   padding: 2rem 1.5rem;
   color: var(--color-text-muted);
   font-size: 0.85rem;
-  border-top: 1px solid var(--color-border);
 }
 
 /* ── Responsive ────────────────────────────────── */
-
 @media (max-width: 600px) {
-  html { font-size: 15px; }
-
-  .site-nav {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  h1 { font-size: 1.75rem; }
+  html { font-size: 16px; }
+  .bento-box { padding: 1.5rem; }
 }

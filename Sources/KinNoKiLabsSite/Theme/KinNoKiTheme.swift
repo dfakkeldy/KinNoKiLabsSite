@@ -184,23 +184,33 @@ private func siteHeader<Site: Website>(context: PublishingContext<Site>) -> Node
         .class("site-header"),
         .element(named: "nav", nodes: [
             .class("site-nav"),
-            .a(.class("nav-brand"), .href("/"), .text(context.site.name)),
+            .a(.class("nav-brand"), .href("/"), 
+               .img(.src("/logo.png"), .alt(context.site.name)),
+               .text(context.site.name)
+            ),
             .element(named: "ul", nodes: [
                 .class("nav-links"),
                 navLink("/", "Home"),
                 navLink("/posts", "Posts"),
-                navLink("/about", "About")
+                navLink("/about", "About"),
+                .li(
+                    .button(
+                        .class("font-toggle"),
+                        .attribute(named: "onclick", value: "document.body.classList.toggle('font-opendyslexic')"),
+                        .text("OpenDyslexic")
+                    )
+                )
             ])
         ])
     )
 }
 
 private func siteMain(_ nodes: Node<HTML.BodyContext>...) -> Node<HTML.BodyContext> {
-    .main(.class("site-main"), .group(nodes))
+    .main(.class("site-main"), .div(.class("bento-box"), .group(nodes)))
 }
 
 private func siteMain(_ nodes: [Node<HTML.BodyContext>]) -> Node<HTML.BodyContext> {
-    .main(.class("site-main"), .group(nodes))
+    .main(.class("site-main"), .div(.class("bento-box"), .group(nodes)))
 }
 
 private func siteFooter<Site: Website>(context: PublishingContext<Site>) -> Node<HTML.BodyContext> {
