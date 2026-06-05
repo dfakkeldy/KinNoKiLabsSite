@@ -14,12 +14,12 @@ struct KinNoKiLabsSite: Website {
     }
 
     // Update these properties to configure your website:
-    var url = URL(string: "https://your-website-url.com")!
-    var name = "KinNoKiLabsSite"
-    var description = "A description of KinNoKiLabsSite"
+    var url = URL(string: "https://kinnokilabs.com")!
+    var name = "KinNoKi Labs"
+    var description = "We build native applications for Apple platforms with an emphasis on clarity, performance, and craftsmanship."
     var language: Language { .english }
     var imagePath: Path? { nil }
 }
 
-// This will generate your website using the built-in Foundation theme:
-try KinNoKiLabsSite().publish(withTheme: .foundation)
+// Generate using our custom theme with sticky navigation and modern CSS:
+try KinNoKiLabsSite().publish(withTheme: .kinNoKi)
