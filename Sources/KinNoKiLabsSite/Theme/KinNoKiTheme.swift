@@ -221,6 +221,12 @@ private func siteFooter<Site: Website>(context: PublishingContext<Site>) -> Node
             .text("© \(currentYear) \(context.site.name). Generated with "),
             .a(.href("https://github.com/johnsundell/publish"), .text("Publish")),
             .text(".")
+        ),
+        .p(
+            .style("margin-top: 0.5rem;"),
+            .a(.href("/privacy"), .text("Privacy Policy")),
+            .text(" | "),
+            .a(.href("/support"), .text("Support"))
         )
     )
 }

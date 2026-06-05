@@ -5,3 +5,6 @@
 Users can easily control overlay transparency with a slider to compare historical cartography with present-day geography, and view custom vector layers for Points of Interest like waterfalls.
 
 Available on iOS.
+
+---
+[View Source Code on GitHub](https://github.com/dfakkeldy/ns-marks-the-spot) | [Get Help & Support](/nsmarksthespot-help)

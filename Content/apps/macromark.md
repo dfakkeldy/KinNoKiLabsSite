@@ -9,3 +9,6 @@
 - **PKM Friendly:** Saves directly to iCloud Documents, accessible to Obsidian, Logseq, and more.
 
 Available on iOS and watchOS.
+
+---
+[View Source Code on GitHub](https://github.com/dfakkeldy/MacroMark) | [Get Help & Support](/macromark-help)

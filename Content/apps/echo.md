@@ -12,3 +12,6 @@ Echo bridges the gap between reading and listening: a synced EPUB sits alongside
 - **Apple Watch Remote:** Complete control from your wrist.
 
 Available on iOS, macOS, and watchOS.
+
+---
+[View Source Code on GitHub](https://github.com/dfakkeldy/Echo) | [Get Help & Support](/echo-help)
