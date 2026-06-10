@@ -9,17 +9,18 @@ We are building a static site using the Swift [Publish](https://github.com/johns
 ## Build & Run
 
 ```bash
-# Build the project
+# Generate + commit + push (Cloudflare Pages serves the committed Output/)
+make publish
+
+# Generate Output/ only, no commit/push
+make generate          # equivalent: publish generate
+
+# Generate and serve locally at http://localhost:8000
+make preview           # equivalent: publish run
+
+# Build the Swift package / clean artifacts
 swift build
-
-# Generate the static site (outputs to /Output)
-publish run
-
-# Build and run in release mode
-swift build -c release && publish run
-
-# Clean build artifacts
-swift package clean
+make clean             # equivalent: swift package clean
 ```
 
 > [!IMPORTANT]
