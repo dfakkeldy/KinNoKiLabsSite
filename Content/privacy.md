@@ -5,7 +5,7 @@
 At KinNoKi Labs, privacy is a core principle. We build apps that respect your data and your device. 
 
 ## Data Collection
-Our applications (including Echo, MacroMark, NS Marks The Spot, Odysseus, and Visual Timer) do not collect, transmit, or sell any of your personal data to us or any third parties. We do not use third-party analytics trackers or advertising frameworks.
+Our applications (including Echo, MacroMark, NS Marks The Spot, and Visual Timer) do not collect, transmit, or sell any of your personal data to us or any third parties. We do not use third-party analytics trackers or advertising frameworks.
 
 ## iCloud Sync
 Some of our apps utilize Apple’s iCloud to sync your data across your personal devices. This data is stored securely in your private iCloud account. We do not have access to this data, nor can we view or manage it. All iCloud synchronization is handled exclusively by Apple's services according to their privacy policies.
