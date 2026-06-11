@@ -166,7 +166,7 @@ Echo speaks the same language — it uses the same SM-2 scheduling algorithm Ank
 - Check coverage before a re-listen — re-listen to the gaps, not the whole book.
 - Use the due forecast to right-size your card-making: fifty new cards today is two hundred reviews next month.
 - Find your golden hours in the time-of-day chart and schedule the dense book there.
-- Streaks bend, they don't break. A missed day is data, not a verdict — see [The Focus Field Guide](/echo-focus) for why that matters double for ADHD brains.
+- Streaks bend, they don't break. A missed day is data, not a verdict — [The Focus Field Guide](/echo-focus) has a whole section on all-or-nothing thinking and why this matters double for ADHD brains.
 
 ## 12. Second-Brain Export — make it yours forever 🚧
 
