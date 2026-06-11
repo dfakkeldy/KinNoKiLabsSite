@@ -93,13 +93,24 @@ Pick whichever matches your life. Each plan is 10–20 minutes of intentional te
 3. If you use VoiceOver: a pass over the player and reader — every control labeled and operable?
 4. Enable Reduce Motion: anything still animating that shouldn't?
 
+### Plan G — The 1.0 Preview *(as builds gain the new features)* 🚧
+
+The road to 1.0 lands feature-by-feature in beta builds — each build's *What to Test* notes will say which of these are live. When yours has them:
+
+1. **Insights:** after a few days of normal listening, open Insights. Do the totals, streak, and per-chapter coverage match your memory of the week? Anything obviously wrong is a great report.
+2. **Card Inbox:** mark three passages from the transport bar (and one from the watch) without pausing; later, convert one, dismiss one, leave one. Did anything interrupt playback?
+3. **Brain Dump:** dictate a note from the watch mid-chapter; confirm it lands on the right book and playback never hiccuped. Promote it to a flashcard.
+4. **Anki import:** bring a real .apkg deck. Counts right? Scheduling sensible (mature cards not reset)? Cloze cards reported in the summary?
+5. **Context Memory:** opt in, bookmark something on a walk, check the place chip. Then try airplane mode — bookmarks must still save instantly. Then press **Delete Location History** and verify everything's gone.
+6. **Study sync:** with two devices on the same iCloud, create a card on one and review it on the other.
+
 ## 4. Known limitations (current beta)
 
 Honest list — these are known, so you don't need to report them (though opinions on them are welcome):
 
 - **First auto-align is heavy.** Model download (~40 MB) + Neural Engine work; phones run warm on long books. Plug in.
 - **CarPlay is minimal** — browse + transport only, richer templates on the roadmap.
-- **iCloud sync covers alignment anchors only** so far; bookmarks/flashcards/position sync across devices is roadmap work.
+- **iCloud sync covers alignment anchors only** so far; bookmarks/flashcards/position sync ships with 1.0 (see Plan G).
 - **Edition drift is real.** Auto-align gets you close; some books need two or three manual anchors. That's expected, not a bug — but tell us about books that need *lots*.
 - **Watch review sessions** can briefly show stale state if the phone app was killed mid-review; relaunching the phone app reconverges.
 
