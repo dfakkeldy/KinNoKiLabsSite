@@ -428,7 +428,7 @@ Optional — the iOS app's built-in alignment needs none of this.
 - Your books, bookmarks, photos, voice memos, notes, flashcards, and listening history stay on your devices (and your personal iCloud, where you enable sync).
 - Speech recognition for alignment runs **entirely on-device**. Audio never leaves your hardware.
 - Location (Context Memory, 🚧) is **opt-in, approximate, and deletable** — and session location history never leaves the device. See the [privacy policy](/privacy).
-- The app is **open source (MIT)**: [github.com/dfakkeldy/Echo](https://github.com/dfakkeldy/Echo).
+- The app is **open source (GPL-3.0)**: [github.com/dfakkeldy/Echo](https://github.com/dfakkeldy/Echo).
 
 ## 26. Troubleshooting & FAQ
 

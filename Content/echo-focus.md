@@ -126,6 +126,7 @@ Every strategy above fails sometimes. That's not the strategies failing — it's
 - **Systems over willpower, always.** When something slips, the question is never "why am I like this?" — it's "what cue, structure, or friction can absorb this next time?"
 - **Shame is expensive and buys nothing.** Self-compassion measurably *improves* follow-through after setbacks (Sirois & Pychyl, 2013).
 - **Your brain also came with the good stuff.** The same wiring that forgets the milk hyperfocuses into mastery, makes sideways connections, and builds an audiobook study app in eight weeks of evenings. The goal of all this scaffolding isn't to become neurotypical — it's to spend less on logistics and more on what your mind is actually for.
+- **You don't have to study at all.** Some days the win is just finishing the book — no flashcards, no notes, no system. Echo is a great player on its own, and using it that way isn't "wasting" it. The pressure to optimize every listen is all-or-nothing thinking in a different costume.
 
 ## When to get more support
 

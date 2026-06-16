@@ -8,6 +8,8 @@ You don't need to read this front to back. Jump to whatever feature you're curio
 
 > **The short version:** Passive listening feels like learning, but most of it evaporates within days. Echo is built around the handful of techniques that cognitive science has shown actually move information into long-term memory: retrieval practice, spacing, context cues, cognitive offloading, and multi-sensory encoding. Use even two or three of them and you will remember dramatically more of what you listen to.
 
+> **Not here to study?** That's completely fine. Echo is a full-featured audiobook player first — CarPlay, a designable Apple Watch remote, a sleep timer, focus soundscapes, pitch-corrected speed, and your own DRM-free files, all on-device. Everything below is optional. Use as much or as little of it as you like.
+
 ## 1. Photo & Place Bookmarks — borrow your brain's sense of place
 
 **What it does:** When you create a bookmark, you can attach a photo — snap something around you or pick one from your photo library. Later, as playback passes that bookmark, Echo switches the player artwork to your photo. Your bookmarks become a visual journal of the book, and each photo becomes a doorway back to what you were hearing.

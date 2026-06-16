@@ -8,6 +8,10 @@ It's all open source. You can audit every claim below: [github.com/dfakkeldy/Ech
 
 The next chapter is underway: Echo now has a defined 1.0 — a trustworthy study player on iPhone, Watch, and Mac, with honest study analytics and a complete flashcard workflow. The program, in landing order: a **listening capture layer** (so your stats accumulate from the very next beta build), **CI and the Echo identity cleanup**, the **Insights screen** (real listening time, streaks, chapter coverage, retention curves), opt-in **Context Memory** (place-tagged bookmarks and sessions), the full **Anki workflow** (decks, tags, a card editor, the mark-later Card Inbox, real .apkg import), **Brain Dump notes** with watch dictation, **Markdown second-brain export**, and **iCloud study sync**. About fourteen weeks of evenings and weekends, planned the same way everything else here was built: in public. [Join the beta](/echo-beta) and watch it land build by build.
 
+## June 14 · *A realization: it's a player first*
+
+Writing the 1.0 marketing made something obvious that the feature list had been hiding: most of Echo is useful even if you never make a single flashcard. The sleep timer, CarPlay, the Apple Watch remote, soundscapes, pitch-corrected speed, chapter and bookmark looping, your own DRM-free library — that's a complete, private audiobook player on its own. The study system is the *reason* Echo exists, but it shouldn't be the toll booth you have to pass to enjoy the thing. So the sites now say it plainly: *just here to listen? Echo's got you.* Same app, wider door.
+
 ## Week 1 — April 19 · *The two-hour app* (10 commits)
 
 It started with a problem, not a plan. No audiobook app on the internet would loop a single chapter, survive thirty interruptions a shift, and play at 1.25× without chipmunk-voicing the narrator. One Sunday of vibe-coding later: a working player that loaded a folder from iCloud, looped chapters, and played speed-corrected audio. By the end of the day it had background-persistence so it would still be ready to play after a long pause — the first brick of what became Smart Rewind.
