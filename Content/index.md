@@ -1,6 +1,12 @@
 # Building Tools That Make Sense
 
-**KinNoKi Labs** is an independent software studio focused on creating great tools through deep understanding. We build native applications for Apple platforms with an emphasis on clarity, performance, and craftsmanship.
+**KinNoKi Labs** is an independent software studio building focused Apple-platform apps and practical software systems for messy real-world work.
+
+## Services
+
+I help small businesses turn repeated operational work into reviewable tools, checklists, knowledge systems, and automation. That can mean workflow audits, single-workflow automation builds, reliable company knowledge bases, or rescue work for Apple-platform apps and release pipelines.
+
+[See Services](/services)
 
 ## Our Apps
 
