@@ -1,16 +1,16 @@
 # Support & Help for Turn Timer
 
-Thank you for using Turn Timer.
+Thanks for testing Turn Timer — it's in TestFlight beta right now.
 
 ## Frequently Asked Questions
 
-*This section is currently being updated. Check back soon for detailed guides and FAQs.*
+I haven't written this FAQ yet. If you're stuck on something, email me — details below — and I'll answer directly. The questions people actually ask are what will end up here.
 
-## Contact Us
+## Contact
 
-If you need immediate assistance, encounter a bug, or have a feature request, please don't hesitate to reach out.
+If you hit a bug or want something the app doesn't do, email me or open an issue:
 
 - **Email Support:** [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com)
 - **Issue Tracker:** [GitHub Issues](https://github.com/dfakkeldy/VisualTimer/issues)
 
-We try to respond to all inquiries within 24-48 hours.
+I try to respond within a day or two.
