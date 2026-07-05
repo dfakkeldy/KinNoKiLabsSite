@@ -10,7 +10,13 @@ Routey is the offline-first iPhone companion built for rural mail carriers. Impo
 
 Rural carriers handle more parcels than ever, with handhelds designed for city sidewalks — not gravel roads, dead zones, and hundred-parcel mornings.
 
-Routey is built from the truck, not the boardroom: local search, parcel capture, and daily delivery context designed around the way a rural route actually moves.
+## Built from the truck, not the boardroom
+
+> I deliver a rural route every day — gravel roads, dead zones, and more parcels every year. Like most carriers, I ended up keeping a **paper notebook** because the issued tools couldn't keep up with the realities of the job.
+>
+> Routey is what I built instead. Every feature has to survive the truck: offline-first because rural routes lose signal, OCR scanning because nobody should hand-type a morning of labels, and a tight iPhone workflow before the watch or dashboard get their turn. If it doesn't save time in the truck, it doesn't ship.
+
+— Dan, rural mail carrier and creator of Routey
 
 ## Built for how carriers actually work
 
@@ -19,7 +25,7 @@ Routey is built from the truck, not the boardroom: local search, parcel capture,
 - **watchOS Companion:** Planned wrist surfaces for the next stop and quick delivery actions after the phone workflow is stable.
 - **CarPlay Navigation:** Planned in-car route context after the phone workflow proves itself.
 - **Flexible Route Views:** Switch between the master route and today's run so odd days do not break the system.
-- **Proof of Delivery:** Record delivery context when it matters.
+- **Proof of Delivery:** Domain support exists for delivery outcomes, optional location/photo references, follow-ups, and history; the V1.0 app still needs the visible delivery logging UI before this is ready for review.
 - **Delivery Intelligence:** Turn repeated field work into route knowledge over time.
 - **Predictive Search:** Find stops quickly from local route data.
 

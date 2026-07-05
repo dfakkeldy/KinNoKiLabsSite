@@ -17,6 +17,17 @@ MacroMark is built around the moment when opening a phone would be enough fricti
 
 MacroMark writes to plain-text daily notes so capture lands where PKM users already work. The product is built for Markdown workflows, review by date, and notes that remain useful outside the app.
 
+## Say the shape of the note
+
+Verbal macros turn natural speech into structure. Use the built-in Markdown triggers or create your own phrases for the way you actually capture.
+
+- **Heading Two:** `##`
+- **Task:** `- [ ]`
+- **New Journal Entry:** `## {date} at {time}`
+- **Dropoff:** `{location} -`
+- **Block ID:** `^id-{uuid}`
+- **Not:** `{backspace}`
+
 ## Native where reliability matters
 
 - **watchOS capture:** Capture starts from the wrist, where the thought appears.
