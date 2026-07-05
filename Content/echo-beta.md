@@ -2,7 +2,7 @@
 
 Welcome — and thank you. Echo is built by one person around a full-time mail route, which means every tester genuinely moves the project. This page covers how the beta works, how to send feedback that actually helps, and a set of structured test plans if you want to hunt bugs on purpose.
 
-The short version: **use Echo like you really listen** — commute, chores, workouts, bedtime — and tell us the moment something feels wrong.
+The short version: **use Echo like you really listen** — commute, chores, workouts, bedtime — and tell me the moment something feels wrong.
 
 ## 1. Joining the beta
 
@@ -16,7 +16,7 @@ Don't have an invite yet? Request access via [GitHub Issues](https://github.com/
 
 **Updates:** TestFlight notifies you when a new build lands. Each build's **What to Test** notes tell you where to aim. Beta builds expire after 90 days; updating resets the clock.
 
-**Your data:** beta builds share data with release builds going forward — but it's a beta, so keep your source audiobook files backed up (you should anyway; Echo never modifies them).
+**Your data:** it carries forward into future builds, including the eventual release — but it's a beta, so keep your source audiobook files backed up (you should anyway; Echo never modifies them).
 
 ## 2. Sending feedback that helps
 
@@ -30,7 +30,7 @@ If Echo crashes, TestFlight will offer to send the crash report with a comment b
 
 ### Trackable bugs & feature ideas
 
-For anything you want tracked (or to check whether it's known): [github.com/dfakkeldy/Echo/issues](https://github.com/dfakkeldy/Echo/issues). The developer reads every one.
+For anything you want tracked (or to check whether it's known): [github.com/dfakkeldy/Echo/issues](https://github.com/dfakkeldy/Echo/issues). I read every one.
 
 ### Reporting alignment problems (special instructions)
 
@@ -95,7 +95,7 @@ Pick whichever matches your life. Each plan is 10–20 minutes of intentional te
 
 ### Plan G — The 1.0 Preview *(as builds gain the new features)* 🚧
 
-The road to 1.0 lands feature-by-feature in beta builds — each build's *What to Test* notes will say which of these are live. When yours has them:
+The road to 1.0 lands feature-by-feature in beta builds — each build's *What to Test* notes will say which of these are included. When yours has them:
 
 1. **Insights:** after a few days of normal listening, open Insights. Do the totals, streak, and per-chapter coverage match your memory of the week? Anything obviously wrong is a great report.
 2. **Card Inbox:** mark three passages from the transport bar (and one from the watch) without pausing; later, convert one, dismiss one, leave one. Did anything interrupt playback?
@@ -111,14 +111,14 @@ Honest list — these are known, so you don't need to report them (though opinio
 - **First auto-align is heavy.** Model download (~40 MB) + Neural Engine work; phones run warm on long books. Plug in.
 - **CarPlay is minimal** — browse + transport only, richer templates on the roadmap.
 - **iCloud sync covers alignment anchors only** so far; bookmarks/flashcards/position sync ships with 1.0 (see Plan G).
-- **Edition drift is real.** Auto-align gets you close; some books need two or three manual anchors. That's expected, not a bug — but tell us about books that need *lots*.
+- **Edition drift is real.** Auto-align gets you close; some books need two or three manual anchors. That's expected, not a bug — but tell me about books that need *lots*.
 - **Watch review sessions** can briefly show stale state if the phone app was killed mid-review; relaunching the phone app reconverges.
 
 ## 5. Privacy during the beta
 
 Echo's promise is unchanged in beta: **no analytics, no tracking, no servers, alignment fully on-device.**
 
-One thing TestFlight itself adds: Apple's beta system shares **crash reports** and **the feedback you choose to send** with the developer, along with device/OS/build info. That's TestFlight's standard mechanism (it's how your reports reach us), not telemetry inside Echo. The full policy is on our [privacy page](/privacy).
+One thing TestFlight itself adds: Apple's beta system shares **crash reports** and **the feedback you choose to send** with the developer, along with device/OS/build info. That's TestFlight's standard mechanism (it's how your reports reach me), not telemetry inside Echo. The full policy is on the [privacy page](/privacy).
 
 *Thank you for testing. Every report makes the player better for the next interrupted listener.* — Dan
 

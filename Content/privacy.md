@@ -2,13 +2,13 @@
 
 **Effective Date:** June 10, 2026
 
-At KinNoKi Labs, privacy is a core principle. We build apps that respect your data and your device. 
+KinNoKi Labs doesn't collect your data. This page spells out exactly what our apps do and don't do with it.
 
 ## Data Collection
-Our applications (including Echo, MacroMark, NS Marks The Spot, Turn Timer, and Routey) do not collect, transmit, or sell any of your personal data to us or any third parties. We do not use third-party analytics trackers or advertising frameworks.
+Our applications (including Echo, MacroMark, NS Marks The Spot, Turn Timer, and Routey) do not collect or sell your personal data, and never send it to us — we have no servers. The only data that ever leaves your device goes to Apple's own services (iCloud sync, and Echo's geocoding lookup), both described below. We do not use third-party analytics trackers or advertising frameworks.
 
 ## iCloud Sync
-Some of our apps utilize Apple’s iCloud to sync your data across your personal devices. This data is stored securely in your private iCloud account. We do not have access to this data, nor can we view or manage it. All iCloud synchronization is handled exclusively by Apple's services according to their privacy policies.
+Some of our apps use Apple’s iCloud to sync your data across your personal devices. This data is stored securely in your private iCloud account. We do not have access to this data, nor can we view or manage it. All iCloud synchronization is handled exclusively by Apple's services according to their privacy policies.
 
 ## Location (Echo's Context Memory)
 Echo includes an **opt-in** feature called Context Memory that can tag your listening sessions, bookmarks, and chapter starts with an approximate place name. It is governed by strict rules:

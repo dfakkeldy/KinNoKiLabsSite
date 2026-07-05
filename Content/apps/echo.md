@@ -1,14 +1,16 @@
 # Echo: Audiobook Study Player
 
+<div class="app-hero" style="--app-accent:#d4af37;"><img src="/images/apps/echo.png" width="72" height="72" alt="Echo app icon — an infinity symbol in silver and gold"></div>
+
 **For Every Mind — Turn listening into learning.**
 
 Echo is the audiobook player that helps you *remember* what you heard — word-perfect read-along, one-tap flashcards, and a study system built on the real science of memory.
 
 ## Built on a mail route
 
-Echo's creator delivers mail — in and out of the car thirty times a shift, an aux cable, an Apple Watch, and an AuDHD brain that learns from non-fiction audiobooks in stolen, interrupted minutes. No app on the internet would loop a single chapter until it stuck, stay ready to play on a watch after a long pause, or remember *why* a bookmark was made three driveways ago.
+I deliver mail — in and out of the car thirty times a shift, an aux cable, an Apple Watch, and an AuDHD brain that learns from non-fiction audiobooks in stolen, interrupted minutes. No app on the internet would loop a single chapter until it stuck, stay ready to play on a watch after a long pause, or remember *why* a bookmark was made three driveways ago.
 
-So he built it: **956 commits in nine weeks**, nights and weekends around a full delivery route, with no formal programming background — an app for iPhone, Apple Watch, Mac, and CarPlay that treats audiobooks the way students treat textbooks.
+So I built it: **956 commits in nine weeks**, nights and weekends around a full delivery route, with no formal programming background — an app for iPhone, Apple Watch, Mac, and CarPlay that treats audiobooks the way students treat textbooks.
 
 ## Just here to listen?
 
@@ -32,7 +34,7 @@ A growing crowd of apps will sync your audiobook to your ebook, on your device. 
 
 ## What Echo does
 
-> Echo is in open development toward 1.0. Anything marked 🚧 **Coming in 1.0** is being built right now; 🔭 **Roadmap** means planned after 1.0. Everything else ships in the current beta.
+> Echo is in open development toward 1.0. Anything marked 🚧 **Coming in 1.0** is being built right now; 🔭 **Roadmap** means planned after 1.0. Everything else is in the current TestFlight beta.
 
 - **Smart Rewind:** Hit play and Echo has already rewound — a little after a short pause, more after hours. Interruptions stop costing you context.
 - **Chapter Looping:** Repeat one chapter until you own it — the feature Echo was born for. Or loop the exact passage between two bookmarks.
@@ -52,16 +54,16 @@ A growing crowd of apps will sync your audiobook to your ebook, on your device. 
 - **A Watch Remote You Design:** Up to 25 buttons across 5 pages, Digital Crown scrubbing or volume, plus a Pomodoro focus timer on your wrist.
 - **Built for CarPlay:** A full Now Playing screen plus a browseable Library, Chapters, and Bookmarks — with in-dash buttons to bookmark, record a memo, or mark a passage on the road.
 - **Focus Soundscapes & Visualizer:** Layer generative white/brown noise, binaural beats, and nature sounds under your narration — and watch four GPU-powered audio visualizers respond as you listen.
-- **Pristine Speed Control:** Pitch-corrected speed — narrators sound human at 1.25×. Every book remembers its own speed.
+- **Pitch-Corrected Speed:** Narrators sound human at 1.25×. Every book remembers its own speed.
 - **Dyslexia-Friendly by Design:** Lexend and OpenDyslexic fonts built in, Dynamic Type, VoiceOver labels.
 - **On-Device AI Narration** 🚧 **Coming in 1.0:** Generate natural narration for text-only EPUBs entirely on your device — no cloud, no API calls — so books that were never recorded can still be heard.
 - **Chapter Study Mode** 🔭 **Roadmap:** Treat chapters like flashcards — listen, grade yourself, and your due chapters become today's listening queue.
 
-## One library, four screens, zero friction
+## One library, four screens
 
 - **Radically private:** No accounts, no analytics, no tracking, no servers.
 - **Open source:** Echo is open source under the GPL-3.0 license.
-- **Your files, unlocked:** Echo is built around DRM-free files you own and can see.
+- **No locked files:** Echo is built around DRM-free files you own and can see.
 - **For Every Mind:** Designed for interrupted, neurodivergent attention first — and useful for everyone whose listening gets interrupted.
 
 ## Learn more

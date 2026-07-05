@@ -31,7 +31,7 @@ That kind of business memory can make money in practical ways:
 - better delegation and onboarding because staff can see the company's preferred way to estimate, document, report, and close out work;
 - better follow-through after winning work because schedules, reporting obligations, safety paperwork, and closeout requirements stay connected.
 
-## Examples Of Workflows
+## Examples of Workflows
 
 - Estimate, quote, and bid-room support.
 - Lost-bid learning where winning amounts, bid tabs, or debrief data are legitimately available.
@@ -42,8 +42,8 @@ That kind of business memory can make money in practical ways:
 
 ## How Engagements Start
 
-Most work starts with a paid diagnostic. We pick one workflow, map the current reality, identify the first useful improvement, and decide whether a build is worth doing.
+Most work starts with a paid diagnostic. You and I pick one workflow, map the current reality, identify the first useful improvement, and decide whether a build is worth doing.
 
-If there is a clear return, the next step is a scoped first build. I favor fixed package language where possible, async-friendly collaboration, and human review for important business decisions.
+If there is a clear return, the next step is a scoped first build. I favor fixed pricing where possible, working in a way that doesn't need everyone free at the same time, and human review for important business decisions.
 
 Want to talk through a workflow? Email [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com).

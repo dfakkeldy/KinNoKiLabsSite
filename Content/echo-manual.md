@@ -122,7 +122,7 @@ Up to +9 dB of clean gain (configurable), independent of system volume.
 
 ## 5. Smart Rewind
 
-Every time you press play after a pause, Echo rewinds first — proportionally to how long you were gone: seconds away → a few seconds back; minutes → more; hours or days → the most. All three tiers are configurable (Settings → Smart Rewind). This is Echo's signature feature: it makes interruption free. You never scrub backward hunting for the last sentence you remember.
+Every time you press play after a pause, Echo rewinds first — proportionally to how long you were gone: seconds away → a few seconds back; minutes → more; hours or days → the most. All three tiers are configurable (Settings → Smart Rewind). This is Echo's signature feature. You never scrub backward hunting for the last sentence you remember.
 
 ## 6. Loop Modes
 
@@ -276,7 +276,7 @@ Tap **Auto-Align Chapters** and Echo's on-device speech recognition (WhisperKit 
 - **Tier 2 — Drift detection:** spot-checks inside chapters for passages drifting out of sync.
 - **Tier 3 — Drift repair:** bisects flagged regions and inserts word-level correction anchors via token-based dynamic time warping.
 
-Between anchors, Echo interpolates positions weighted by paragraph word counts. When alignment completes, Echo celebrates your **% aligned** (🚧 **Coming in 1.0**).
+Between anchors, Echo interpolates positions weighted by paragraph word counts. When alignment completes, Echo shows your **% aligned** (🚧 **Coming in 1.0**).
 
 **Continuous Alignment** (optional, in Settings) keeps refining in the background while you listen.
 

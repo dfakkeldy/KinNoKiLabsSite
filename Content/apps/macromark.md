@@ -1,8 +1,12 @@
 # MacroMark
 
+<div class="app-hero" style="--app-accent:#2f8cff;"><img src="/images/apps/macromark.png" width="72" height="72" alt="MacroMark app icon"></div>
+
 **Apple Watch to Markdown.**
 
 MacroMark is voice capture for people whose notes live in Markdown. Tap your Watch complication, speak, lower your wrist, and let MacroMark append the thought to today's note.
+
+> MacroMark is in active development toward V1.0. It is not on the App Store yet.
 
 ## A note before the thought cools
 
@@ -44,7 +48,7 @@ Verbal macros turn natural speech into structure. Use the built-in Markdown trig
 - **Setup proof:** First-run setup should show exactly where notes go.
 - **Daily-note shape:** The output should be clean enough to live in a real vault.
 - **Transcription integrity:** The text should preserve what was said without surprise formatting.
-- **Launch readiness:** Privacy, support, metadata, and release proof matter as much as features.
+- **Launch readiness:** Privacy answers, a support page, and proof it's ready matter as much as features.
 
 ## Privacy stays plain
 

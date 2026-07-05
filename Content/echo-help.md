@@ -51,11 +51,11 @@ Your audio stays where you put it (Echo reads in place). Echo's own data lives i
 **What's coming after 1.0?**
 Chapter Study Mode, on-device AI card drafting, focus soundscapes, gentle hyperfocus reminders, a Context Memory map view, FSRS scheduling, .apkg export, richer CarPlay, and full Mac reader parity. The [roadmap](https://github.com/dfakkeldy/Echo/blob/main/ROADMAP.md) is public.
 
-## Contact Us
+## Contact
 
-If you need assistance, encounter a bug, or have a feature request, please don't hesitate to reach out.
+Stuck, found a bug, or want a feature? Email or open an issue.
 
 - **Email Support:** [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com)
 - **Issue Tracker:** [GitHub Issues](https://github.com/dfakkeldy/Echo/issues)
 
-We try to respond to all inquiries within 24-48 hours.
+I try to answer within 24–48 hours.

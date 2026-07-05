@@ -81,8 +81,9 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
                 .class("page-item"),
                 siteHeader(context: context),
                 siteMain(
-                    .h1(.text(item.title)),
-                    .p(.class("post-date"), .text(formattedDate(item.date))),
+                    // The Markdown body keeps its own leading `# heading`, so the theme
+                    // must not inject a second <h1>. Dates only make sense for posts.
+                    .if(item.sectionID == .posts, .p(.class("post-date"), .text(formattedDate(item.date)))),
                     .unwrap(item.tags.nonEmpty) { tags in
                         .p(.forEach(tags) { tag in
                             .span(.class("tag"), .text(tag.string))

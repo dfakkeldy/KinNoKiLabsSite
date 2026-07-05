@@ -4,7 +4,7 @@ Echo went from "I wonder if I could make an iOS app" to a four-platform audioboo
 
 It's all open source. You can audit every claim below: [github.com/dfakkeldy/Echo](https://github.com/dfakkeldy/Echo).
 
-## Now — June 2026 · *The road to 1.0* (in progress)
+## The road to 1.0
 
 The next chapter is underway: Echo now has a defined 1.0 — a trustworthy study player on iPhone, Watch, and Mac, with honest study analytics and a complete flashcard workflow. The program, in landing order: a **listening capture layer** (so your stats accumulate from the very next beta build), **CI and the Echo identity cleanup**, the **Insights screen** (real listening time, streaks, chapter coverage, retention curves), opt-in **Context Memory** (place-tagged bookmarks and sessions), the full **Anki workflow** (decks, tags, a card editor, the mark-later Card Inbox, real .apkg import), **Brain Dump notes** with watch dictation, **Markdown second-brain export**, and **iCloud study sync**. About fourteen weeks of evenings and weekends, planned the same way everything else here was built: in public. [Join the beta](/echo-beta) and watch it land build by build.
 
@@ -14,7 +14,7 @@ Writing the 1.0 marketing made something obvious that the feature list had been 
 
 ## Week 1 — April 19 · *The two-hour app* (10 commits)
 
-It started with a problem, not a plan. No audiobook app on the internet would loop a single chapter, survive thirty interruptions a shift, and play at 1.25× without chipmunk-voicing the narrator. One Sunday of vibe-coding later: a working player that loaded a folder from iCloud, looped chapters, and played speed-corrected audio. By the end of the day it had background-persistence so it would still be ready to play after a long pause — the first brick of what became Smart Rewind.
+It started with a problem, not a plan. No audiobook app I could find would loop a single chapter, survive thirty interruptions a shift, and play at 1.25× without chipmunk-voicing the narrator. One Sunday of vibe-coding later: a working player that loaded a folder from iCloud, looped chapters, and played speed-corrected audio. By the end of the day it had background-persistence so it would still be ready to play after a long pause — the first brick of what became Smart Rewind.
 
 Then the repo went quiet for ten days. (Day job. Also: using the thing every day on the route, finding out what was missing.)
 
@@ -26,11 +26,11 @@ The project got a name (BookLoop — it wouldn't survive), and got serious: a pl
 
 The week of the signature features. **Smart Rewind** grew its three tiers — seconds, minutes, hours — so every interruption length got a proportional rewind. **Voice memo bookmarks** landed, including the detail that still surprises people: memos *play back inline* when the narration reaches them. Then bookmarks reached the watch, learned to **loop between bookmarks**, and got volume normalization.
 
-Also this week: an Appearance menu with **OpenDyslexic and Lexend** fonts (the accessibility thread starts here, not as an afterthought), a sleep timer, the MIT relicense — and the first macOS app. Honesty corner: this is also the week of commits literally titled *"broke some stuff"*, *"broken"*, and *"stuck on computing dependencies"* ×2, as three Xcode targets were forcibly consolidated into one project. It got fixed. The git history keeps the scars.
+Also this week: an Appearance menu with **OpenDyslexic and Lexend** fonts (the accessibility thread starts here, not as an afterthought), a sleep timer, the relicense to MIT (Echo has since moved to GPL-3.0) — and the first macOS app. Honesty corner: this is also the week of commits literally titled *"broke some stuff"*, *"broken"*, and *"stuck on computing dependencies"* ×2, as three Xcode targets were forcibly consolidated into one project. It got fixed. The git history keeps the scars.
 
 ## Week 4 — May 11 – 17 · *The study player thesis* (92 commits)
 
-The week Echo decided what it was. **Whisper transcription** arrived via a Mac generator and Python/Swift CLIs — audiobooks became *text* you could search and sync-scroll on the phone. **Picture bookmarks** landed, with the player artwork dynamically switching to your photo as playback passes it (the context-dependent-memory feature, before we knew to call it that). Siri-dictated bookmarks, Markdown export, and deep links rounded out capture.
+The week Echo decided what it was. **Whisper transcription** arrived via a Mac generator and Python/Swift CLIs — audiobooks became *text* you could search and sync-scroll on the phone. **Picture bookmarks** landed, with the player artwork dynamically switching to your photo as playback passes it (the context-dependent-memory feature, before it had that name). Siri-dictated bookmarks, Markdown export, and deep links rounded out capture.
 
 Under the hood, the foundation work began in earnest: the AVPlayer backend was replaced with **AVAudioEngine** (volume boost, pitch-true speed), the 2,900-line PlayerModel "god class" started its decomposition into focused services, settings were centralized, fastlane + App Store metadata appeared, and the app got **Dutch localization**, in-app **help files**, and a full accessibility pass (labels, Dynamic Type). Five planning docs for an Anki-style SRS were committed — next week they'd become real.
 
@@ -58,9 +58,9 @@ Fewer commits, bigger ones. **TokenDTW** replaced the earlier silence-mapping ap
 
 The reader grew up too: **PDF companion documents** shipped — page-level alignment, a manual-alignment sheet with a spring-loaded **scrubber joystick**, and page-screenshot bookmarks. The Now Playing screen was redesigned around full-bleed artwork, and accent colors started deriving from the cover art itself.
 
-## Week 8 — June 8 – 14 (in progress) · *Polish with a safety net* (22 commits so far)
+## Week 8 — June 8 – 14 · *Polish with a safety net*
 
-Current work, straight from the log: a **watch connectivity overhaul** (durable application-context sync; stale transport commands can no longer replay and phantom-pause you), pause-on-headphone-disconnect, a **Pomodoro timer** on the watch with a persistent alarm, a fullscreen cover-art viewer, and a configurable date overlay.
+Straight from the log: a **watch connectivity overhaul** (durable application-context sync; stale transport commands can no longer replay and phantom-pause you), pause-on-headphone-disconnect, a **Pomodoro timer** on the watch with a persistent alarm, a fullscreen cover-art viewer, and a configurable date overlay.
 
 The engineering flourish of the week: the **accent contrast safety pipeline**. Artwork-derived theme colors now pass WCAG/CIELAB legibility gates, with a three-stage rescue ladder (nudge the hue → re-pick a safe hue → fall back to brand tint) so no album cover can ever make the UI unreadable. Plus the unglamorous good stuff: a zip-slip path-traversal fix in EPUB extraction, and documentation refreshed across the board.
 
@@ -70,7 +70,7 @@ Eight working weeks. Four platforms (iOS, watchOS, macOS, widgets — plus CarPl
 
 The point of publishing this log isn't bragging rights. It's the same as open-sourcing the code: you should be able to see exactly what you're trusting with your books and your attention — and maybe, if you've been wondering whether you could build *your* app, this page is the nudge.
 
-*The devlog updates roughly weekly, generated from the real commit history.*
+*The devlog is generated from the real commit history.*
 
 ---
 [Echo](/apps/echo) | [User Manual](/echo-manual) | [Join the Beta](/echo-beta) | [Source on GitHub](https://github.com/dfakkeldy/Echo)

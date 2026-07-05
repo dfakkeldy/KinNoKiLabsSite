@@ -1,6 +1,6 @@
 # Support
 
-We're here to help. Select the app you need assistance with below.
+Stuck on something? Pick the app you need help with below.
 
 ## App Support
 
@@ -8,8 +8,8 @@ We're here to help. Select the app you need assistance with below.
 - **[MacroMark](/macromark-help)**
 - **[NS Marks The Spot](/nsmarksthespot-help)**
 - **[Turn Timer](/visualtimer-help)**
-- **[Routey](/apps/routey)**
+- **[Routey](/apps/routey)** — no help page yet; for Routey questions, use the email below.
 
 ## General Inquiries
 
-For general inquiries, business opportunities, or feedback, please email us at [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com).
+For general inquiries, business opportunities, or feedback, email me at [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com).

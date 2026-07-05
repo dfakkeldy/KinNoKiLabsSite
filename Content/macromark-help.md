@@ -4,13 +4,13 @@ Thank you for using MacroMark.
 
 ## Frequently Asked Questions
 
-*This section is currently being updated. Check back soon for detailed guides and FAQs.*
+I haven't written the FAQ yet. If something isn't clear, email me and I'll answer directly.
 
-## Contact Us
+## Contact
 
-If you need immediate assistance, encounter a bug, or have a feature request, please don't hesitate to reach out.
+If you hit a bug, have a question, or want a feature, email me or open a GitHub issue:
 
 - **Email Support:** [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com)
 - **Issue Tracker:** [GitHub Issues](https://github.com/dfakkeldy/MacroMark/issues)
 
-We try to respond to all inquiries within 24-48 hours.
+I try to respond to everything within 24-48 hours.

@@ -1,8 +1,8 @@
 # The Focus Field Guide — ADHD & AuDHD Strategies
 
-Echo was built by an AuDHD mail carrier who needed his own tools to exist. This page is the rest of the toolbox: practical, research-backed strategies for the executive-function stuff — getting started, time blindness, staying organized, motivation, all-or-nothing thinking, hyperfocus, distractibility. Most tips work with or without Echo; where Echo genuinely helps, there's a note. Take what works, skip what doesn't.
+Echo was built by an AuDHD mail carrier who needed tools that didn't exist yet. This page is the rest of the toolbox: practical, research-backed strategies for the executive-function stuff — getting started, time blindness, staying organized, motivation, all-or-nothing thinking, hyperfocus, distractibility. Most tips work with or without Echo; where Echo genuinely helps, there's a note. Take what works, skip what doesn't.
 
-> **This is a field guide, not medical advice.** ADHD and autism are real, diagnosable conditions — strategies like these *complement* professional care (therapy, coaching, medication where appropriate); they don't replace it. Echo features marked 🚧 **Coming in 1.0** are in active development; 🔭 **Roadmap** means planned after 1.0.
+> **This is a field guide, not medical advice.** ADHD and autism are real, diagnosable conditions — strategies like these *complement* professional care (therapy, coaching, medication where appropriate); they don't replace it. Echo itself is in beta on TestFlight. Features marked 🚧 **Coming in 1.0** are in active development; 🔭 **Roadmap** means planned after 1.0.
 
 > **The premise of this whole page:** ADHD is not a knowledge problem — you usually know exactly what you should be doing. It's a *performance* problem: a gap between knowing and doing, driven by how the brain handles activation, time, working memory, and reward (Barkley, 2012). So none of these strategies are "try harder." All of them are **move the work out of your head and into the world** — externalize time, externalize memory, externalize the starting gun. That's also the design thesis behind Echo.
 
@@ -92,7 +92,7 @@ ADHD motivation runs on interest, novelty, challenge, and urgency far more than 
 
 One honest boundary: if extreme self-judgment is persistent, distressing, or reaching well beyond study habits, that's squarely therapy territory (see "When to get more support" below) — cognitive-behavioral therapy was practically built for this pattern, and it works.
 
-## 7. Hyperfocus — the double-edged superpower
+## 7. Hyperfocus — the double-edged gift
 
 The same brain that can't start a tax form can disappear into a fascination for six unbroken hours. Hyperfocus is real and increasingly studied (Ashinoff & Abu-Akel, 2021; Hupfeld et al., 2019) — intense, pleasurable absorption with reduced awareness of time, body, and surroundings. Used deliberately it's a gift; unmanaged, it eats meals, sleep, and appointments.
 

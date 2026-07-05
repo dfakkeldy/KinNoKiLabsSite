@@ -1,12 +1,12 @@
 # Getting the Most Out of Echo
 
-Echo isn't just an audiobook player with extra buttons. Every feature exists because of something specific we know about how human memory works. This guide walks through each one: what it does, the science behind why it helps, and how to actually use it.
+Echo isn't just an audiobook player with extra buttons. Every feature exists because of something specific about how human memory works. This guide walks through each one: what it does, the science behind why it helps, and how to actually use it.
 
 You don't need to read this front to back. Jump to whatever feature you're curious about — each section stands on its own.
 
 > **Status tags:** 🚧 **Coming in 1.0** = in active development right now. 🔭 **Roadmap** = planned after 1.0. Everything unmarked ships in the current beta. Looking for ADHD/AuDHD-specific strategies? See [The Focus Field Guide](/echo-focus).
 
-> **The short version:** Passive listening feels like learning, but most of it evaporates within days. Echo is built around the handful of techniques that cognitive science has shown actually move information into long-term memory: retrieval practice, spacing, context cues, cognitive offloading, and multi-sensory encoding. Use even two or three of them and you will remember dramatically more of what you listen to.
+> **The short version:** Passive listening feels like learning, but most of it evaporates within days. Echo is built around the handful of techniques that cognitive science has shown actually move information into long-term memory: retrieval practice, spacing, context cues, cognitive offloading, and multi-sensory encoding. Use even two or three of them and you'll likely remember a lot more of what you listen to.
 
 > **Not here to study?** That's completely fine. Echo is a full-featured audiobook player first — CarPlay, a designable Apple Watch remote, a sleep timer, focus soundscapes, pitch-corrected speed, and your own DRM-free files, all on-device. Everything below is optional. Use as much or as little of it as you like.
 
@@ -18,7 +18,7 @@ You don't need to read this front to back. Jump to whatever feature you're curio
 
 This is one of the most replicated effects in memory research. In the classic 1975 study by Godden and Baddeley, scuba divers memorized word lists either on land or underwater. Divers who learned underwater recalled significantly more *underwater*; divers who learned on dry land recalled more on dry land. A large meta-analysis (Smith & Vela, 2001) confirmed the effect across dozens of studies — and crucially, found that *mentally reinstating* a context (like looking at a photo of it) recovers much of the benefit of physically being there.
 
-**Context Memory: places, captured automatically.** 🚧 **Coming in 1.0** — Photo bookmarks ask you to do the capturing. Context Memory does it for you: opt in, and Echo quietly notes an approximate place — "Maple Ridge, Halifax" — on your bookmarks, listening sessions, and chapter starts. Bookmark cards grow a small place chip; your per-book insights can tell you *"you started Chapter 3 on Oak Street."* The same retrieval-cue machinery as photos, with zero effort. Off by default, neighborhood-level accuracy only, never blocks the action you were taking, and one button erases all location history. Your session history never leaves the device.
+**Context Memory: places, captured automatically.** 🚧 **Coming in 1.0** — Photo bookmarks ask you to do the capturing. Context Memory does it for you: opt in, and Echo quietly notes an approximate place — "Maple Ridge, Halifax" — on your bookmarks, listening sessions, and chapter starts. Bookmark cards grow a small place chip; your per-book insights can tell you *"you started Chapter 3 on Oak Street."* The same retrieval-cue machinery as photos, with no extra work on your part. Off by default, neighborhood-level accuracy only, never blocks the action you were taking, and one button erases all location history. Your session history never leaves the device.
 
 **How to use it:**
 
@@ -35,7 +35,7 @@ This is one of the most replicated effects in memory research. In the classic 19
 
 **Never heard of Anki? Start here.** Anki is beloved flashcard software used by medical students, language learners, and memory nerds worldwide. Its superpower is the *schedule*: instead of cramming, it shows you each card at the moment you're about to forget it — first after a day, then a few days, then weeks, then months. Each successful recall flattens your forgetting curve a little more, until the fact is effectively permanent.
 
-Echo speaks the same language — it uses the same SM-2 scheduling algorithm Anki was built on, imports Anki-style JSON decks today, and with 1.0 imports real **.apkg deck files** directly (🚧 **Coming in 1.0**) — your years of Anki history, scheduling included, carried over. Organize everything into **decks with tags**, edit any card, review one deck at a time (🚧 **Coming in 1.0**). And if you ever leave, your cards export right back out — no lock-in (see Second-Brain Export below).
+Echo speaks the same language — it uses the same SM-2 scheduling algorithm Anki was built on, imports Anki-style JSON decks today, and with 1.0 imports real **.apkg deck files** directly (🚧 **Coming in 1.0**) — your years of Anki history, scheduling included, carried over. With 1.0 you'll also organize everything into **decks with tags**, edit any card, and review one deck at a time (🚧 **Coming in 1.0**). And if you ever leave, your cards export right back out — no lock-in (see Second-Brain Export below).
 
 **The science: the Forgetting Curve and the Spacing Effect.** In the 1880s, Hermann Ebbinghaus measured how quickly memorized material decays: steeply at first, then slowly. He also found the fix: each well-timed review resets the curve and makes it shallower. A century-plus of follow-up research (including Cepeda et al.'s 2006 meta-analysis) keeps confirming it: **spacing reviews out beats massing them together, for essentially everyone, for essentially everything.**
 
@@ -237,7 +237,6 @@ None of these steps is hard; the entire system is designed to run inside a life 
 - Zimmerman (2002). Becoming a self-regulated learner: An overview. *Theory Into Practice.*
 - Hattie & Timperley (2007). The power of feedback. *Review of Educational Research.*
 - Locke & Latham (2002). Building a practically useful theory of goal setting and task motivation. *American Psychologist.*
-- Lally et al. (2010). How are habits formed: Modelling habit formation in the real world. *European Journal of Social Psychology.*
 
 *Echo is not a medical device and makes no clinical claims — it's a media player built with care around how memory actually works.*
 

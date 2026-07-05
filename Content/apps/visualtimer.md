@@ -1,8 +1,10 @@
 # Turn Timer
 
+<div class="app-hero" style="--app-accent:#74c0fc;"></div>
+
 **Make time visible for turns, routines, and reusable sequences.**
 
-Turn Timer is an Apple-native visual sequence timer being prepared for App Store release. It keeps the one-tap visual countdown from the original app and adds reusable sequence structure for game nights, routines, classrooms, kitchens, meetings, and other real-world countdowns.
+Turn Timer is an Apple-native visual sequence timer — TestFlight builds are running and it's being prepared for App Store release. It keeps the one-tap visual countdown from the first version and adds reusable sequence structure for game nights, routines, classrooms, kitchens, meetings, and other real-world countdowns.
 
 ## Build Log
 
@@ -30,7 +32,7 @@ Track metadata, privacy, screenshots, TestFlight, CloudKit, and submission block
 
 ## Support
 
-Get help with Turn Timer setup, Pro restore, templates, imports, exports, and app data.
+Get help with Turn Timer setup, templates, imports, exports, and app data.
 
 [Open support](https://dfakkeldy.github.io/VisualTimer/support.html)
 
@@ -40,7 +42,7 @@ Read how Turn Timer stores timer data locally and handles optional Apple service
 
 [Read privacy policy](https://dfakkeldy.github.io/VisualTimer/privacy.html)
 
-Turn Timer is being rebranded from Visual Timer. This KinNoKi page keeps the existing `/apps/visualtimer` URL for compatibility while using the current public product name.
+Turn Timer is the new name for Visual Timer — same app, clearer name.
 
 ---
 [Project Site](https://dfakkeldy.github.io/VisualTimer/) | [View Source Code on GitHub](https://github.com/dfakkeldy/VisualTimer) | [Get Help & Support](/visualtimer-help)
