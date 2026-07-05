@@ -6,10 +6,11 @@
 
 Take a look at what we've been working on:
 
-- **[Echo](/apps/echo)**: An audiobook player designed for serious study, featuring spaced repetition and ePub syncing.
-- **[MacroMark](/apps/macromark)**: A zero-friction, voice-to-text capture tool for Apple Watch, built for personal knowledge management.
-- **[NS Marks The Spot](/apps/nsmarksthespot)**: An iOS map app overlaying georeferenced historical maps of Nova Scotia.
-- **[Visual Timer](/apps/visualtimer)**: A clean, intuitive countdown timer built for Apple Watch and iOS.
+- **[Echo](/apps/echo)**: An audiobook study player that turns listening into learning.
+- **[MacroMark](/apps/macromark)**: Apple Watch voice capture for people whose notes live in Markdown.
+- **[NS Marks The Spot](/apps/nsmarksthespot)**: Historical Nova Scotia maps, lined up with the map in your hand.
+- **[Turn Timer](/apps/visualtimer)**: Visual rounds for real-world countdowns, turns, routines, and reusable sequences.
+- **[Routey](/apps/routey)**: Offline-first route support for rural delivery workflows.
 
 ---
 [About Us](/about) | [Privacy Policy](/privacy)

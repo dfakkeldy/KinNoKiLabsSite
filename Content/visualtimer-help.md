@@ -1,6 +1,6 @@
-# Support & Help for Visual Timer
+# Support & Help for Turn Timer
 
-Thank you for using Visual Timer.
+Thank you for using Turn Timer.
 
 ## Frequently Asked Questions
 
