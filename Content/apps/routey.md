@@ -1,5 +1,7 @@
 # Routey
 
+<div class="app-hero" style="--app-accent:#ef4444;"></div>
+
 **Your route. Your rules.**
 
 Routey is the offline-first iPhone companion built for rural mail carriers. Import a route, search it locally, snap parcel labels with OCR, and keep moving even where there's no cell signal.
@@ -25,8 +27,8 @@ Rural carriers handle more parcels than ever, with handhelds designed for city s
 - **watchOS Companion:** Planned wrist surfaces for the next stop and quick delivery actions after the phone workflow is stable.
 - **CarPlay Navigation:** Planned in-car route context after the phone workflow proves itself.
 - **Flexible Route Views:** Switch between the master route and today's run so odd days do not break the system.
-- **Proof of Delivery:** Domain support exists for delivery outcomes, optional location/photo references, follow-ups, and history; the V1.0 app still needs the visible delivery logging UI before this is ready for review.
-- **Delivery Intelligence:** Turn repeated field work into route knowledge over time.
+- **Proof of Delivery:** The groundwork is in — delivery outcomes, optional location/photo references, follow-ups, and history — but the app still needs the visible delivery-logging screen before this is ready for review.
+- **Delivery Intelligence:** Repeated field work builds into route knowledge over time.
 - **Predictive Search:** Find stops quickly from local route data.
 
 ## Three steps every morning
@@ -37,9 +39,9 @@ Rural carriers handle more parcels than ever, with handhelds designed for city s
 
 ## V1.0 still has gates
 
-- **iPhone nightly:** The current path is iPhone-first.
-- **V1.0 release gates:** Route import, local search, parcel capture, and daily-run flow need to be stable before public launch claims get stronger.
-- **Apple ecosystem surfaces:** watchOS and CarPlay are planned surfaces, not pass-1 public promises.
+- **One platform for now:** The current path is iPhone-first.
+- **V1.0 release gates:** Route import, local search, parcel capture, and the daily-run flow need to be stable before V1.0 goes out for review.
+- **watchOS and CarPlay:** Planned, but not part of V1.0. They wait until the phone workflow is stable.
 
 Routey is in active development with internal TestFlight builds running. Star the project to follow along while V1.0 moves toward review.
 

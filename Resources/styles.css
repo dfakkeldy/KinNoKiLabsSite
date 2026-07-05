@@ -249,6 +249,35 @@ a:hover {
   line-height: 1.5;
 }
 
+/* ── Per-App Accents (umbrella app pages) ─────── */
+
+.app-hero {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.25rem 0 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 3px solid var(--app-accent, var(--color-border));
+}
+
+.app-hero:empty {
+  padding-bottom: 0;
+}
+
+.app-hero img {
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
+  display: block;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  .app-hero {
+    border-bottom-color: color-mix(in srgb, var(--app-accent, var(--color-border)) 72%, #f5f5f7);
+  }
+}
+
 /* ── Footer ────────────────────────────────────── */
 
 .site-footer {
