@@ -373,8 +373,8 @@ Expected: command exits `0`.
 Run:
 
 ```bash
-rg -n "practical software systems|See Services|Reliable company knowledge bases|Routey|Turn Timer" Content/index.md Output/index.html
-rg -n "messy real-world work" Sources/KinNoKiLabsSite/main.swift Output/feed.rss Output/sitemap.xml
+rg -n "practical software systems|See Services|reliable company knowledge bases|Routey|Turn Timer" Content/index.md Output/index.html
+rg -n "messy real-world work" Sources/KinNoKiLabsSite/main.swift Output/feed.rss
 ! rg -n "AllSteel|Dan Cooper|DC" Content/index.md Output/index.html
 ```
 
