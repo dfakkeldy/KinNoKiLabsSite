@@ -5,6 +5,7 @@ image: /images/apps/nsmarksthespot.svg
 accent: #12343b
 tagline: Historical maps, live in your pocket.
 platforms: iPhone
+status: TestFlight — v1.0 candidate
 ---
 
 NS Marks The Spot lets you slide Nova Scotia's Fletcher maps over today's landscape and see old roads, lakes, and landmarks line up under your thumb.
