@@ -242,7 +242,7 @@ private func platformBadges(_ item: Item<KinNoKiLabsSite>) -> Node<HTML.BodyCont
 private func appCard(_ item: Item<KinNoKiLabsSite>) -> Node<HTML.BodyContext> {
     .element(named: "a", nodes: [
         .class("app-card"),
-        .attribute(named: "href", value: item.path.string),
+        .attribute(named: "href", value: item.path.absoluteString),
         accentStyle(item),
         appIcon(item),
         .div(
@@ -256,7 +256,7 @@ private func appCard(_ item: Item<KinNoKiLabsSite>) -> Node<HTML.BodyContext> {
 private func featuredAppCard(_ item: Item<KinNoKiLabsSite>) -> Node<HTML.BodyContext> {
     .element(named: "a", nodes: [
         .class("app-card app-card-featured"),
-        .attribute(named: "href", value: item.path.string),
+        .attribute(named: "href", value: item.path.absoluteString),
         accentStyle(item),
         appIcon(item),
         .div(
