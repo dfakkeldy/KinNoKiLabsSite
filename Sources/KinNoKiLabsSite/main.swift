@@ -17,6 +17,7 @@ struct KinNoKiLabsSite: Website {
         var platforms: String?  // comma-separated, e.g. "iPhone, Apple Watch, Mac"
         var featured: Bool?     // homepage flagship slot
         var iconAlt: String?    // only when the generic "<title> app icon" alt isn't enough
+        var status: String?     // rendered as a .status-chip on the app's item page (e.g. "TestFlight beta — open")
     }
 
     // Update these properties to configure your website:

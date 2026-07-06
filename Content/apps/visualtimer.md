@@ -1,9 +1,11 @@
 ---
 title: Turn Timer
 description: Visual rounds for real-world countdowns, turns, routines, and reusable sequences.
+image: /images/apps/turntimer.png
 accent: #74c0fc
 tagline: Make time visible for turns, routines, and reusable sequences.
 platforms: iPhone
+status: TestFlight
 ---
 
 Turn Timer is an Apple-native visual sequence timer — TestFlight builds are running and it's being prepared for App Store release. It keeps the one-tap visual countdown from the first version and adds reusable sequence structure for game nights, routines, classrooms, kitchens, meetings, and other real-world countdowns.
