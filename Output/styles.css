@@ -1,19 +1,20 @@
 /* ═══════════════════════════════════════════════════════
-   KinNoKi Labs — Apple HIG Redesign
+   KinNoKi Labs — design system ("refined Apple + gold")
+   Spec: docs/superpowers/specs/2026-07-05-site-redesign-design.md
    ═══════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@500;600&display=swap');
 
-/* OpenDyslexic Fallback/WebFont */
 @font-face {
   font-family: 'OpenDyslexic';
   src: url('https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Regular.woff') format('woff'),
        url('OpenDyslexic-Regular.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
+  font-display: swap;
 }
 
-/* ── Reset & Base ─────────────────────────────── */
+/* ── Reset ─────────────────────────────────────── */
 
 *,
 *::before,
@@ -23,28 +24,51 @@
   padding: 0;
 }
 
+/* ── Tokens ────────────────────────────────────── */
+
 :root {
-  --color-bg: #F5F5F7; /* Apple HIG Light Background */
+  --color-bg: #f5f5f7;
   --color-surface: #ffffff;
   --color-text: #1d1d1f;
-  --color-text-muted: #86868b;
+  --color-text-muted: #6e6e73;
   --color-border: rgba(0, 0, 0, 0.1);
   --color-nav-bg: rgba(245, 245, 247, 0.72);
-  --font-primary: "Lexend", -apple-system, BlinkMacSystemFont, sans-serif;
-  --max-width: 800px;
-  --radius-bento: 24px;
+
+  --gold: #c9a959;      /* decorative: borders, glows — never body text */
+  --gold-text: #806b35; /* AA-compliant gold for text on bg and surfaces (≥4.5:1 on #f5f5f7) */
+  --gold-cta-a: #c9a959;
+  --gold-cta-b: #eed9a0;
+  --gold-cta-c: #b08d4a;
+  --gold-cta-text: #2e2508;
+
+  --font-display: 'Lexend', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+
+  --max-width: 1080px;
+  --article-width: 760px;
+  --radius-card: 16px;
+  --radius-band: 20px;
+  --radius-pill: 999px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-bg: #000000; /* Apple HIG Dark Background */
+    --color-bg: #000000;
     --color-surface: #1c1c1e;
     --color-text: #f5f5f7;
     --color-text-muted: #86868b;
     --color-border: rgba(255, 255, 255, 0.1);
     --color-nav-bg: rgba(0, 0, 0, 0.72);
+
+    --gold-text: #d9bc72;
+    --gold-cta-a: #a68b5c;
+    --gold-cta-b: #f1d596;
+    --gold-cta-c: #997843;
+    --gold-cta-text: #000000;
   }
 }
+
+/* ── Base ──────────────────────────────────────── */
 
 html {
   font-size: 17px;
@@ -52,10 +76,10 @@ html {
 }
 
 body {
-  font-family: var(--font-primary);
+  font-family: var(--font-body);
   background: var(--color-bg);
   color: var(--color-text);
-  line-height: 1.6; /* HIG Spacing */
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -65,7 +89,46 @@ body.font-opendyslexic * {
   font-family: "OpenDyslexic", -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
 
-/* ── Sticky Navigation ────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+h1 { font-size: 2.25rem; margin-bottom: 1rem; }
+h2 { font-size: 1.5rem; margin: 2rem 0 0.75rem; }
+h3 { font-size: 1.15rem; margin: 1.5rem 0 0.5rem; }
+
+p { margin-bottom: 1rem; }
+
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+a:hover { text-decoration-color: var(--color-text); }
+
+:focus-visible {
+  outline: 2px solid var(--gold-text);
+  outline-offset: 2px;
+}
+
+.eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gold-text);
+  margin-bottom: 0.5rem;
+}
+
+/* ── Sticky navigation ─────────────────────────── */
 
 .site-header {
   position: sticky;
@@ -90,6 +153,7 @@ body.font-opendyslexic * {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  font-family: var(--font-display);
   font-weight: 600;
   font-size: 1.1rem;
   color: var(--color-text);
@@ -115,180 +179,401 @@ body.font-opendyslexic * {
   text-decoration: none;
   font-size: 0.95rem;
   font-weight: 500;
-  transition: color 0.15s ease;
 }
 
-.nav-links a:hover {
-  color: var(--color-text);
-}
+.nav-links a:hover { color: var(--color-text); }
 
 .font-toggle {
   background: none;
   border: 1px solid var(--color-border);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   padding: 0.4rem 0.8rem;
   font-size: 0.8rem;
   font-family: inherit;
   color: var(--color-text);
   cursor: pointer;
-  transition: background 0.2s;
 }
 
-.font-toggle:hover {
-  background: var(--color-border);
-}
+.font-toggle:hover { background: var(--color-border); }
 
-/* ── Bento Box Layout ─────────────────────────── */
+/* ── Page container ────────────────────────────── */
 
 .site-main {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 3rem 1.5rem 5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  padding: 2.5rem 1.5rem 5rem;
 }
 
-.bento-box {
-  background: var(--color-surface);
-  border-radius: var(--radius-bento);
-  padding: 2rem;
-  border: 1px solid var(--color-border);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
-}
+/* ── Gold CTA ──────────────────────────────────── */
 
-/* ── Metallic CTA Button ──────────────────────── */
-
-.btn-metallic {
+.btn-gold {
   display: inline-block;
-  background: linear-gradient(135deg, #e6e6e6 0%, #ffffff 50%, #d4d4d4 100%);
-  color: #1d1d1f;
-  padding: 0.75rem 1.5rem;
-  border-radius: 999px;
+  background: linear-gradient(135deg, var(--gold-cta-a), var(--gold-cta-b), var(--gold-cta-c));
+  color: var(--gold-cta-text);
+  font-family: var(--font-display);
   font-weight: 600;
+  padding: 0.7rem 1.5rem;
+  border-radius: var(--radius-pill);
   text-decoration: none;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1), inset 0 1px 1px rgba(255,255,255,0.8);
-  border: 1px solid rgba(0,0,0,0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  margin-top: 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
-@media (prefers-color-scheme: dark) {
-  .btn-metallic {
-    background: linear-gradient(135deg, #a68b5c 0%, #f1d596 50%, #997843 100%); /* Gold shine in dark mode */
-    color: #000;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.3);
-    border: 1px solid rgba(255,255,255,0.1);
-  }
-}
-
-.btn-metallic:hover {
-  transform: translateY(-1px) scale(1.02);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+.btn-gold:hover {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
   text-decoration: none;
 }
 
-/* ── Typography ────────────────────────────────── */
+/* ── Homepage hero ─────────────────────────────── */
 
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-  color: var(--color-text);
+.hero {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 3rem;
+  align-items: center;
+  padding: 3.5rem 0 3rem;
 }
 
-h1 { font-size: 2.4rem; margin-bottom: 1rem; }
-h2 { font-size: 1.6rem; margin-bottom: 0.75rem; }
-
-p {
+.hero-copy h1 {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  line-height: 1.08;
   margin-bottom: 1rem;
 }
 
-a {
-  color: inherit;
-  text-decoration: underline;
-  text-decoration-color: var(--color-border);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 4px;
+.hero-sub {
+  font-size: 1.25rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  margin-bottom: 1.75rem;
 }
 
-a:hover {
-  text-decoration-color: var(--color-text);
+/* ── App cards ─────────────────────────────────── */
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0 2.5rem;
 }
 
-/* ── Post List ─────────────────────────────────── */
+.app-card {
+  display: block;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 1.5rem;
+  text-decoration: none;
+  color: var(--color-text);
+}
 
-.post-list {
+.app-card:hover {
+  border-color: var(--gold);
+  box-shadow: 0 6px 24px rgba(176, 141, 74, 0.16);
+  text-decoration: none;
+}
+
+.app-card h3 {
+  margin: 0.75rem 0 0.25rem;
+  font-size: 1.05rem;
+}
+
+.app-card-desc {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.app-card-featured {
+  border: 1.5px solid var(--gold);
+  box-shadow: 0 8px 30px rgba(176, 141, 74, 0.18);
+  padding: 2rem;
+}
+
+.app-card-featured h3 { font-size: 1.25rem; }
+
+.app-card-tagline {
+  color: var(--gold-text);
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin: 0 0 0.5rem;
+}
+
+.app-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: block;
+  object-fit: contain;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+
+.app-card-featured .app-icon,
+.app-hero-band .app-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
+}
+
+.app-monogram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.5rem;
+  background: color-mix(in srgb, var(--app-accent, var(--gold)) 15%, var(--color-surface));
+  color: color-mix(in srgb, var(--app-accent, var(--gold)) 70%, var(--color-text));
+  border: 1px solid color-mix(in srgb, var(--app-accent, var(--gold)) 30%, transparent);
+  box-shadow: none;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.badge {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--gold-text);
+  border: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
+  border-radius: var(--radius-pill);
+  padding: 0.1rem 0.6rem;
+}
+
+/* ── Services band ─────────────────────────────── */
+
+.services-band {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  background: color-mix(in srgb, var(--gold) 10%, var(--color-surface));
+  border: 1px solid color-mix(in srgb, var(--gold) 30%, transparent);
+  border-radius: var(--radius-band);
+  padding: 2rem 2.5rem;
+  margin-top: 1rem;
+}
+
+.services-band h2 { margin: 0 0 0.5rem; }
+
+.services-band p {
+  color: var(--color-text-muted);
+  max-width: 55ch;
+  margin: 0;
+}
+
+.services-band .btn-gold { flex-shrink: 0; }
+
+/* ── App detail pages ──────────────────────────── */
+
+.breadcrumb {
+  font-size: 0.9rem;
+  margin-bottom: 1.25rem;
+}
+
+.breadcrumb a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+.breadcrumb a:hover { color: var(--color-text); }
+
+.app-hero-band {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--app-accent, var(--gold)) 13%, transparent),
+    color-mix(in srgb, var(--app-accent, var(--gold)) 3%, transparent)
+  );
+  border: 1px solid color-mix(in srgb, var(--app-accent, var(--gold)) 25%, transparent);
+  border-radius: var(--radius-band);
+  padding: 2rem 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.app-hero-band h1 { margin-bottom: 0.25rem; }
+
+.app-tagline {
+  color: var(--color-text-muted);
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+/* ── Article column (prose pages, posts, app bodies) ── */
+
+.article {
+  max-width: var(--article-width);
+  margin: 0 auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 2.5rem;
+}
+
+.article ul,
+.article ol {
+  margin: 0 0 1rem 1.4rem;
+}
+
+.article li { margin-bottom: 0.4rem; }
+
+.article blockquote {
+  border-left: 3px solid var(--gold);
+  padding: 0.25rem 0 0.25rem 1rem;
+  color: var(--color-text-muted);
+  margin: 0 0 1rem;
+}
+
+.article blockquote p:last-child { margin-bottom: 0; }
+
+.article code {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 0.88em;
+  background: var(--color-bg);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+}
+
+.article img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.article hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 2rem 0;
+}
+
+/* ── Post rows ─────────────────────────────────── */
+
+.post-rows {
   list-style: none;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 0.75rem;
 }
 
-.post-item {
-  display: block;
+.post-row {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 1.25rem 1.5rem;
+}
+
+.post-row:hover { border-color: var(--gold); }
+
+.post-row .eyebrow { margin-bottom: 0.25rem; }
+
+.post-row h2 {
+  font-size: 1.15rem;
+  margin: 0 0 0.25rem;
+}
+
+.post-row h2 a { text-decoration: none; }
+.post-row h2 a:hover { text-decoration: underline; }
+
+.post-desc {
+  font-size: 0.92rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* ── Tags ──────────────────────────────────────── */
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.tag-chip {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--gold-text);
+  border: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
+  border-radius: var(--radius-pill);
+  padding: 0.15rem 0.7rem;
   text-decoration: none;
 }
 
-.post-item h2 {
-  font-size: 1.2rem;
-  margin-bottom: 0.25rem;
-}
-
-.post-date {
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-.post-description {
-  color: var(--color-text-muted);
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-
-/* ── Per-App Accents (umbrella app pages) ─────── */
-
-.app-hero {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin: 0.25rem 0 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 3px solid var(--app-accent, var(--color-border));
-}
-
-.app-hero:empty {
-  padding-bottom: 0;
-}
-
-.app-hero img {
-  width: 72px;
-  height: 72px;
-  border-radius: 16px;
-  display: block;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
-}
-
-@media (prefers-color-scheme: dark) {
-  .app-hero {
-    border-bottom-color: color-mix(in srgb, var(--app-accent, var(--color-border)) 72%, #f5f5f7);
-  }
+.tag-chip:hover {
+  background: color-mix(in srgb, var(--gold) 12%, transparent);
+  text-decoration: none;
 }
 
 /* ── Footer ────────────────────────────────────── */
 
 .site-footer {
   text-align: center;
-  padding: 2rem 1.5rem;
+  padding: 2rem 1.5rem 3rem;
   color: var(--color-text-muted);
   font-size: 0.85rem;
 }
 
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.footer-links a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+.footer-links a:hover { color: var(--color-text); }
+
+/* ── Motion (opt-in only) ──────────────────────── */
+
+@media (prefers-reduced-motion: no-preference) {
+  .nav-links a,
+  .font-toggle { transition: color 0.15s ease, background 0.2s ease; }
+
+  .btn-gold { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .btn-gold:hover { transform: translateY(-1px); }
+
+  .app-card,
+  .post-row { transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; }
+  .app-card:hover { transform: translateY(-2px); }
+}
+
 /* ── Responsive ────────────────────────────────── */
+
+@media (max-width: 800px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 2.5rem 0 2rem;
+  }
+
+  .services-band {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.5rem;
+  }
+}
+
 @media (max-width: 600px) {
   html { font-size: 16px; }
-  .bento-box { padding: 1.5rem; }
+
+  .site-nav {
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    padding: 0.7rem 1rem;
+  }
+
+  .nav-links { gap: 1rem; flex-wrap: wrap; }
+
+  .article { padding: 1.5rem; }
+  .app-hero-band { padding: 1.5rem; flex-direction: column; align-items: flex-start; }
 }

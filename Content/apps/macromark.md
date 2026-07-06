@@ -1,8 +1,11 @@
-# MacroMark
-
-<div class="app-hero" style="--app-accent:#2f8cff;"><img src="/images/apps/macromark.png" width="72" height="72" alt="MacroMark app icon"></div>
-
-**Apple Watch to Markdown.**
+---
+title: MacroMark
+description: Apple Watch voice capture for people whose notes live in Markdown.
+image: /images/apps/macromark.png
+accent: #2f8cff
+tagline: Apple Watch to Markdown.
+platforms: Apple Watch, iPhone
+---
 
 MacroMark is voice capture for people whose notes live in Markdown. Tap your Watch complication, speak, lower your wrist, and let MacroMark append the thought to today's note.
 

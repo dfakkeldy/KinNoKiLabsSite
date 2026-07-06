@@ -41,3 +41,8 @@ make clean             # equivalent: swift package clean
 - **Item metadata** can be added via frontmatter in content files (YAML between `---` delimiters) and parsed into `ItemMetadata`.
 - **Themes** wrap the site in HTML structure. Custom themes are created by conforming to `Theme` with an `HTMLFactory` (see `Theme/KinNoKiTheme.swift`). Note: `resourcePaths` on `Theme` is only for resources bundled inside a theme package — project-level assets in `Resources/` are copied automatically by Publish.
 - **Publishing steps** are customizable via `publish(using:)` instead of the default `.publish()` call (e.g., to add plugins, custom deployment, or pipeline steps).
+
+### App item frontmatter contract
+
+- App items (`Content/apps/*.md`) drive all app UI via frontmatter: standard `title:`, `description:`, `image:` (icon path, also used for og:image) plus custom `ItemMetadata` fields `accent` (hex), `tagline`, `platforms` (comma-separated), `featured` (homepage flagship slot), `iconAlt`. Values are UNQUOTED — Ink splits metadata on the first colon. Apps without `image:` render a monogram tile fallback.
+- The homepage is fully theme-driven: `index.md`'s `# heading` feeds `index.title` and its `description:` frontmatter feeds the hero subtitle; `index.body` is NOT rendered — prose added to `index.md` will not appear. The services band pulls the `description:` frontmatter from `services.md`.
