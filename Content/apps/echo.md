@@ -1,3 +1,14 @@
+---
+title: Echo: Audiobook Study Player
+description: An audiobook player built for studying, not just listening.
+image: /images/apps/echo.png
+accent: #d4af37
+tagline: For Every Mind — Turn listening into learning.
+platforms: iPhone, Apple Watch, Mac, CarPlay
+featured: true
+iconAlt: Echo app icon — an infinity symbol in silver and gold
+---
+
 # Echo: Audiobook Study Player
 
 <div class="app-hero" style="--app-accent:#d4af37;"><img src="/images/apps/echo.png" width="72" height="72" alt="Echo app icon — an infinity symbol in silver and gold"></div>

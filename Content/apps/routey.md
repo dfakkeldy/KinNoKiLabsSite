@@ -1,3 +1,11 @@
+---
+title: Routey
+description: Offline-first route support for rural delivery workflows.
+accent: #ef4444
+tagline: Your route. Your rules.
+platforms: iPhone
+---
+
 # Routey
 
 <div class="app-hero" style="--app-accent:#ef4444;"></div>

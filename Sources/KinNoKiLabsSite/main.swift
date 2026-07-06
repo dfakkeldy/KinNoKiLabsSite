@@ -11,7 +11,12 @@ struct KinNoKiLabsSite: Website {
     }
 
     struct ItemMetadata: WebsiteItemMetadata {
-        // Add any site-specific metadata that you want to use here.
+        // App-page fields (posts omit all of these).
+        var accent: String?     // hex color, e.g. "#d4af37"
+        var tagline: String?
+        var platforms: String?  // comma-separated, e.g. "iPhone, Apple Watch, Mac"
+        var featured: Bool?     // homepage flagship slot
+        var iconAlt: String?    // only when the generic "<title> app icon" alt isn't enough
     }
 
     // Update these properties to configure your website:
