@@ -6,12 +6,6 @@ tagline: Your route. Your rules.
 platforms: iPhone
 ---
 
-# Routey
-
-<div class="app-hero" style="--app-accent:#ef4444;"></div>
-
-**Your route. Your rules.**
-
 Routey is the offline-first iPhone companion built for rural mail carriers. Import a route, search it locally, snap parcel labels with OCR, and keep moving even where there's no cell signal.
 
 > Internal TestFlight is active and V1.0 is in progress. The V1.0 cut focuses on the phone workflow first; watchOS and CarPlay stay planned until the phone workflow is stable, reviewed, and useful in the truck.

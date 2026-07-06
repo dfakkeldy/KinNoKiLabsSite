@@ -62,21 +62,10 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
             .body(
                 .class("page-section"),
                 siteHeader(context: context),
-                siteMain(
-                    .h1(.text(section.title)),
-                    .element(named: "ul", nodes: [
-                        .class("post-list"),
-                        .forEach(section.items) { item in
-                            .element(named: "li", nodes: [
-                                .class("post-item"),
-                                .span(.class("post-date"), .text(formattedDate(item.date))),
-                                .a(.href(item.path), .text(item.title)),
-                                .unwrap(item.description) { desc in
-                                    .p(.class("post-description"), .text(desc))
-                                }
-                            ])
-                        }
-                    ])
+                .main(
+                    .class("site-main"),
+                    .p(.class("eyebrow"), .text(section.title)),
+                    sectionBody(for: section, context: context)
                 ),
                 siteFooter(context: context)
             )
@@ -90,16 +79,9 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
             .body(
                 .class("page-item"),
                 siteHeader(context: context),
-                siteMain(
-                    // The Markdown body keeps its own leading `# heading`, so the theme
-                    // must not inject a second <h1>. Dates only make sense for posts.
-                    .if(item.sectionID == .posts, .p(.class("post-date"), .text(formattedDate(item.date)))),
-                    .unwrap(item.tags.nonEmpty) { tags in
-                        .p(.forEach(tags) { tag in
-                            .span(.class("tag"), .text(tag.string))
-                        })
-                    },
-                    item.body.node
+                .main(
+                    .class("site-main"),
+                    .if(item.sectionID == .apps, appItemBody(for: item), else: postItemBody(for: item, context: context))
                 ),
                 siteFooter(context: context)
             )
@@ -209,6 +191,73 @@ private func siteHead<L: Location>(
         .meta(.attribute(named: "property", value: "og:url"), .attribute(named: "content", value: url.absoluteString)),
         .meta(.attribute(named: "property", value: "og:image"), .attribute(named: "content", value: imageURL.absoluteString)),
         .meta(.name("twitter:card"), .content("summary"))
+    )
+}
+
+// MARK: - Section & Item Bodies
+
+private func sectionBody(
+    for section: Section<KinNoKiLabsSite>,
+    context: PublishingContext<KinNoKiLabsSite>
+) -> Node<HTML.BodyContext> {
+    switch section.id {
+    case .apps:
+        let apps = section.items.sorted { $0.title.lowercased() < $1.title.lowercased() }
+        return .div(.class("card-grid"), .forEach(apps) { appCard($0) })
+    case .posts:
+        // Restyled to .post-rows in Task 8; legacy markup keeps posts rendering until then.
+        return .element(named: "ul", nodes: [
+            .class("post-list"),
+            .forEach(section.items) { item in
+                .element(named: "li", nodes: [
+                    .class("post-item"),
+                    .span(.class("post-date"), .text(formattedDate(item.date))),
+                    .a(.href(item.path), .text(item.title)),
+                    .unwrap(item.description.isEmpty ? nil : item.description) {
+                        .p(.class("post-description"), .text($0))
+                    }
+                ])
+            }
+        ])
+    }
+}
+
+private func appItemBody(for item: Item<KinNoKiLabsSite>) -> Node<HTML.BodyContext> {
+    .group(
+        .div(
+            .class("breadcrumb"),
+            .element(named: "a", nodes: [
+                .attribute(named: "href", value: "/apps"),
+                .text("← All apps")
+            ])
+        ),
+        .section(
+            .class("app-hero-band"),
+            accentStyle(item),
+            appIcon(item),
+            .div(
+                .h1(.text(item.title)),
+                .unwrap(item.metadata.tagline) { .p(.class("app-tagline"), .text($0)) },
+                platformBadges(item)
+            )
+        ),
+        .article(.class("article"), item.body.node)
+    )
+}
+
+private func postItemBody(
+    for item: Item<KinNoKiLabsSite>,
+    context: PublishingContext<KinNoKiLabsSite>
+) -> Node<HTML.BodyContext> {
+    .article(
+        .class("article"),
+        .p(.class("eyebrow"), .text(formattedDate(item.date))),
+        .unwrap(item.tags.nonEmpty) { tags in
+            .div(.class("tag-row"), .forEach(tags) { tag in
+                .a(.class("tag-chip"), .href(context.site.path(for: tag)), .text(tag.string))
+            })
+        },
+        item.body.node
     )
 }
 

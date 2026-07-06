@@ -7,12 +7,6 @@ tagline: Historical maps, live in your pocket.
 platforms: iPhone
 ---
 
-# NS Marks The Spot
-
-<div class="app-hero" style="--app-accent:#12343b;"><img src="/images/apps/nsmarksthespot.svg" width="72" height="72" alt="NS Marks The Spot app icon"></div>
-
-**Historical maps, live in your pocket.**
-
 NS Marks The Spot lets you slide Nova Scotia's Fletcher maps over today's landscape and see old roads, lakes, and landmarks line up under your thumb.
 
 ## Where it stands

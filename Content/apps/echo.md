@@ -9,12 +9,6 @@ featured: true
 iconAlt: Echo app icon — an infinity symbol in silver and gold
 ---
 
-# Echo: Audiobook Study Player
-
-<div class="app-hero" style="--app-accent:#d4af37;"><img src="/images/apps/echo.png" width="72" height="72" alt="Echo app icon — an infinity symbol in silver and gold"></div>
-
-**For Every Mind — Turn listening into learning.**
-
 Echo is the audiobook player that helps you *remember* what you heard — word-perfect read-along, one-tap flashcards, and a study system built on the real science of memory.
 
 ## Built on a mail route
