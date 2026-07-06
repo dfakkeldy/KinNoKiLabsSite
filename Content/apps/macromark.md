@@ -1,6 +1,6 @@
 # MacroMark
 
-<div class="app-hero" style="--app-accent:#2f8cff;"><img src="/images/apps/macromark.png" width="72" height="72" alt="MacroMark app icon"></div>
+<div class="app-hero" style="--app-accent:#2f8cff;"><img src="/images/apps/macromark.png" width="72" height="72" alt="MacroMark app icon — the letters M and M flanking a downward arrow on a dark navy tile"></div>
 
 **Apple Watch to Markdown.**
 
