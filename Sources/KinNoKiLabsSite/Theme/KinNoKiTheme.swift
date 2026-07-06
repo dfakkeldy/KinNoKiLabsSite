@@ -231,16 +231,15 @@ private func siteMain(_ nodes: [Node<HTML.BodyContext>]) -> Node<HTML.BodyContex
 private func siteFooter<Site: Website>(context: PublishingContext<Site>) -> Node<HTML.BodyContext> {
     .footer(
         .class("site-footer"),
+        .div(
+            .class("footer-links"),
+            .a(.href("/privacy"), .text("Privacy Policy")),
+            .a(.href("/support"), .text("Support"))
+        ),
         .p(
             .text("© \(currentYear) \(context.site.name). Generated with "),
             .a(.href("https://github.com/johnsundell/publish"), .text("Publish")),
             .text(".")
-        ),
-        .p(
-            .style("margin-top: 0.5rem;"),
-            .a(.href("/privacy"), .text("Privacy Policy")),
-            .text(" | "),
-            .a(.href("/support"), .text("Support"))
         )
     )
 }
