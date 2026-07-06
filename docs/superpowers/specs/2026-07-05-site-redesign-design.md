@@ -69,18 +69,20 @@ One shared head builder used by every page factory method:
 
 ## Theme architecture (Swift)
 
-- **`ItemMetadata`** gains optional fields: `icon: String?`, `accent: String?`, `tagline: String?`, `platforms: String?` (comma-separated, split by theme), `featured: Bool?`. Only app items use them; posts omit them.
+- **`ItemMetadata`** gains optional fields: `accent: String?`, `tagline: String?`, `platforms: String?` (comma-separated, split by theme), `featured: Bool?`, `iconAlt: String?` (preserves Echo's bespoke alt text). Icons use Publish's **standard `image:` frontmatter** (→ `item.imagePath`), which also feeds `og:image` with no extra code. Only app items use these; posts omit them.
 - **App frontmatter example (echo.md):** existing sentences moved, not rewritten:
   ```yaml
   ---
+  title: Echo: Audiobook Study Player
   description: An audiobook player built for studying, not just listening.
-  icon: /images/apps/echo.png
-  accent: "#d4af37"
+  image: /images/apps/echo.png
+  accent: #d4af37
   tagline: For Every Mind — Turn listening into learning.
   platforms: iPhone, Apple Watch, Mac, CarPlay
   featured: true
   ---
   ```
+  (Values stay unquoted — Ink splits metadata on the first colon, so quotes would become part of the string.)
 - **`KinNoKiHTMLFactory`** is reorganized into small node-builder functions (head, hero, appCard, servicesBand, articleColumn, breadcrumb, footer) shared across the six factory methods.
 - **Fallbacks (error handling):**
   - Missing `icon` (Turn Timer, Routey today): render a monogram tile — first letter of the app name on an accent-tinted rounded square. No broken `<img>` ever.
