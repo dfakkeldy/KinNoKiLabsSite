@@ -22,12 +22,8 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
 
     func makeIndexHTML(for index: Index, context: PublishingContext<Site>) throws -> HTML {
         HTML(
-            .head(
-                .meta(.charset(.utf8)),
-                .meta(.name("viewport"), .content("width=device-width, initial-scale=1")),
-                .title(context.site.name),
-                .stylesheet("/styles.css")
-            ),
+            .lang(context.site.language),
+            siteHead(for: index, context: context),
             .body(
                 .class("page-home"),
                 siteHeader(context: context),
@@ -39,12 +35,8 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
 
     func makeSectionHTML(for section: Section<Site>, context: PublishingContext<Site>) throws -> HTML {
         HTML(
-            .head(
-                .meta(.charset(.utf8)),
-                .meta(.name("viewport"), .content("width=device-width, initial-scale=1")),
-                .title("\(section.title) — \(context.site.name)"),
-                .stylesheet("/styles.css")
-            ),
+            .lang(context.site.language),
+            siteHead(for: section, context: context),
             .body(
                 .class("page-section"),
                 siteHeader(context: context),
@@ -71,12 +63,8 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
 
     func makeItemHTML(for item: Item<Site>, context: PublishingContext<Site>) throws -> HTML {
         HTML(
-            .head(
-                .meta(.charset(.utf8)),
-                .meta(.name("viewport"), .content("width=device-width, initial-scale=1")),
-                .title("\(item.title) — \(context.site.name)"),
-                .stylesheet("/styles.css")
-            ),
+            .lang(context.site.language),
+            siteHead(for: item, context: context),
             .body(
                 .class("page-item"),
                 siteHeader(context: context),
@@ -98,12 +86,8 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
 
     func makePageHTML(for page: Page, context: PublishingContext<Site>) throws -> HTML {
         HTML(
-            .head(
-                .meta(.charset(.utf8)),
-                .meta(.name("viewport"), .content("width=device-width, initial-scale=1")),
-                .title("\(page.title) — \(context.site.name)"),
-                .stylesheet("/styles.css")
-            ),
+            .lang(context.site.language),
+            siteHead(for: page, context: context),
             .body(
                 .class("page-page"),
                 siteHeader(context: context),
@@ -115,12 +99,8 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
 
     func makeTagListHTML(for page: TagListPage, context: PublishingContext<Site>) throws -> HTML? {
         HTML(
-            .head(
-                .meta(.charset(.utf8)),
-                .meta(.name("viewport"), .content("width=device-width, initial-scale=1")),
-                .title("Tags — \(context.site.name)"),
-                .stylesheet("/styles.css")
-            ),
+            .lang(context.site.language),
+            siteHead(for: page, context: context, titleOverride: "Tags"),
             .body(
                 .class("page-tags"),
                 siteHeader(context: context),
@@ -151,12 +131,8 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
             order: .descending
         )
         return HTML(
-            .head(
-                .meta(.charset(.utf8)),
-                .meta(.name("viewport"), .content("width=device-width, initial-scale=1")),
-                .title("\(page.tag.string) — \(context.site.name)"),
-                .stylesheet("/styles.css")
-            ),
+            .lang(context.site.language),
+            siteHead(for: page, context: context, titleOverride: page.tag.string),
             .body(
                 .class("page-tag-detail"),
                 siteHeader(context: context),
@@ -176,6 +152,42 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
             )
         )
     }
+}
+
+// MARK: - Shared <head>
+
+private func siteHead<L: Location>(
+    for location: L,
+    context: PublishingContext<KinNoKiLabsSite>,
+    titleOverride: String? = nil
+) -> Node<HTML.DocumentContext> {
+    let site = context.site
+    let isIndex = location.path.string.isEmpty
+    let baseTitle = titleOverride ?? location.title
+    let pageTitle = isIndex ? site.name : "\(baseTitle) — \(site.name)"
+    let description = location.description.isEmpty ? site.description : location.description
+    let url = site.url(for: location.path)
+    let imageURL = site.url(for: location.imagePath ?? Path("/logo.png"))
+
+    return .head(
+        .meta(.charset(.utf8)),
+        .meta(.name("viewport"), .content("width=device-width, initial-scale=1")),
+        // Plain `<title>` element — Plot's `.title(_:)` head-component helper also
+        // injects `twitter:title`/`og:title` metas, which would duplicate the
+        // explicit `og:title` meta below.
+        .element(named: "title", text: pageTitle),
+        .meta(.name("description"), .content(description)),
+        .link(.attribute(named: "rel", value: "canonical"), .attribute(named: "href", value: url.absoluteString)),
+        .link(.attribute(named: "rel", value: "icon"), .attribute(named: "href", value: "/logo.png")),
+        .stylesheet("/styles.css"),
+        .meta(.attribute(named: "property", value: "og:site_name"), .attribute(named: "content", value: site.name)),
+        .meta(.attribute(named: "property", value: "og:title"), .attribute(named: "content", value: pageTitle)),
+        .meta(.attribute(named: "property", value: "og:description"), .attribute(named: "content", value: description)),
+        .meta(.attribute(named: "property", value: "og:type"), .attribute(named: "content", value: "website")),
+        .meta(.attribute(named: "property", value: "og:url"), .attribute(named: "content", value: url.absoluteString)),
+        .meta(.attribute(named: "property", value: "og:image"), .attribute(named: "content", value: imageURL.absoluteString)),
+        .meta(.name("twitter:card"), .content("summary"))
+    )
 }
 
 // MARK: - Shared Layout Components
