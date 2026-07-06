@@ -21,13 +21,35 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
     typealias Site = KinNoKiLabsSite
 
     func makeIndexHTML(for index: Index, context: PublishingContext<Site>) throws -> HTML {
-        HTML(
+        let apps = context.sections[.apps].items
+            .sorted { $0.title.lowercased() < $1.title.lowercased() }
+        let featured = apps.first { $0.metadata.featured == true }
+        let others = apps.filter { $0.path != featured?.path }
+
+        return HTML(
             .lang(context.site.language),
             siteHead(for: index, context: context),
             .body(
                 .class("page-home"),
                 siteHeader(context: context),
-                siteMain(index.body.node),
+                .main(
+                    .class("site-main"),
+                    .section(
+                        .class("hero"),
+                        .div(
+                            .class("hero-copy"),
+                            .h1(.text(index.title)),
+                            .unwrap(index.description.isEmpty ? nil : index.description) {
+                                .p(.class("hero-sub"), .text($0))
+                            },
+                            .a(.class("btn-gold"), .href("/services"), .text("See Services"))
+                        ),
+                        .unwrap(featured) { featuredAppCard($0) }
+                    ),
+                    .p(.class("eyebrow"), .text("Apps")),
+                    .div(.class("card-grid"), .forEach(others) { appCard($0) }),
+                    servicesBand(context: context)
+                ),
                 siteFooter(context: context)
             )
         )
@@ -187,6 +209,74 @@ private func siteHead<L: Location>(
         .meta(.attribute(named: "property", value: "og:url"), .attribute(named: "content", value: url.absoluteString)),
         .meta(.attribute(named: "property", value: "og:image"), .attribute(named: "content", value: imageURL.absoluteString)),
         .meta(.name("twitter:card"), .content("summary"))
+    )
+}
+
+// MARK: - App Components
+
+private func accentStyle(_ item: Item<KinNoKiLabsSite>) -> Node<HTML.BodyContext> {
+    .unwrap(item.metadata.accent) { .style("--app-accent: \($0);") }
+}
+
+private func appIcon(_ item: Item<KinNoKiLabsSite>) -> Node<HTML.BodyContext> {
+    if let imagePath = item.imagePath {
+        return .img(
+            .class("app-icon"),
+            .src(imagePath.absoluteString),
+            .alt(item.metadata.iconAlt ?? "\(item.title) app icon")
+        )
+    }
+    return .span(
+        .class("app-icon app-monogram"),
+        .attribute(named: "aria-hidden", value: "true"),
+        .text(String(item.title.prefix(1)))
+    )
+}
+
+private func platformBadges(_ item: Item<KinNoKiLabsSite>) -> Node<HTML.BodyContext> {
+    guard let platforms = item.metadata.platforms else { return .empty }
+    let names = platforms.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+    return .div(.class("badges"), .forEach(names) { .span(.class("badge"), .text($0)) })
+}
+
+private func appCard(_ item: Item<KinNoKiLabsSite>) -> Node<HTML.BodyContext> {
+    .element(named: "a", nodes: [
+        .class("app-card"),
+        .attribute(named: "href", value: item.path.string),
+        accentStyle(item),
+        appIcon(item),
+        .div(
+            .class("app-card-body"),
+            .h3(.text(item.title)),
+            .p(.class("app-card-desc"), .text(item.description))
+        )
+    ])
+}
+
+private func featuredAppCard(_ item: Item<KinNoKiLabsSite>) -> Node<HTML.BodyContext> {
+    .element(named: "a", nodes: [
+        .class("app-card app-card-featured"),
+        .attribute(named: "href", value: item.path.string),
+        accentStyle(item),
+        appIcon(item),
+        .div(
+            .class("app-card-body"),
+            .h3(.text(item.title)),
+            .unwrap(item.metadata.tagline) { .p(.class("app-card-tagline"), .text($0)) },
+            .p(.class("app-card-desc"), .text(item.description)),
+            platformBadges(item)
+        )
+    ])
+}
+
+private func servicesBand(context: PublishingContext<KinNoKiLabsSite>) -> Node<HTML.BodyContext> {
+    .section(
+        .class("services-band"),
+        .div(
+            .h2(.text("Services")),
+            .unwrap(context.pages["services"]) { .p(.text($0.description)) }
+        ),
+        .a(.class("btn-gold"), .href("/services"), .text("See Services"))
     )
 }
 

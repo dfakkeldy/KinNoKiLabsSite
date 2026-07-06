@@ -1,3 +1,6 @@
+---
+description: KinNoKi Labs helps small businesses turn repeated operational work into practical software, checklists, knowledge systems, and automation.
+---
 # Services
 
 KinNoKi Labs helps small businesses turn repeated operational work into practical software, checklists, knowledge systems, and automation. The work starts with the real workflow: the quotes, job folders, forms, emails, spreadsheets, supplier notes, and decisions that already keep the business moving.
