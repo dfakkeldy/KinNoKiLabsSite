@@ -95,7 +95,7 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
             .body(
                 .class("page-page"),
                 siteHeader(context: context),
-                siteMain(page.body.node),
+                .main(.class("site-main"), .article(.class("article"), page.body.node)),
                 siteFooter(context: context)
             )
         )
@@ -108,20 +108,12 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
             .body(
                 .class("page-tags"),
                 siteHeader(context: context),
-                siteMain(
-                    .h1(.text("Tags")),
-                    .element(named: "ul", nodes: [
-                        .class("post-list"),
-                        .forEach(page.tags.sorted()) { tag in
-                            .element(named: "li", nodes: [
-                                .class("post-item"),
-                                .a(
-                                    .href(context.site.path(for: tag)),
-                                    .text(tag.string)
-                                )
-                            ])
-                        }
-                    ])
+                .main(
+                    .class("site-main"),
+                    .p(.class("eyebrow"), .text("Tags")),
+                    .div(.class("tag-row"), .forEach(page.tags.sorted()) { tag in
+                        .a(.class("tag-chip"), .href(context.site.path(for: tag)), .text(tag.string))
+                    })
                 ),
                 siteFooter(context: context)
             )
@@ -140,14 +132,15 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
             .body(
                 .class("page-tag-detail"),
                 siteHeader(context: context),
-                siteMain(
-                    .h1(.text("Tagged: \(page.tag.string)")),
+                .main(
+                    .class("site-main"),
+                    .p(.class("eyebrow"), .text("Tagged: \(page.tag.string)")),
                     .element(named: "ul", nodes: [
-                        .class("post-list"),
+                        .class("post-rows"),
                         .forEach(taggedItems) { item in
                             .element(named: "li", nodes: [
-                                .class("post-item"),
-                                .a(.href(item.path), .text(item.title))
+                                .class("post-row"),
+                                .h2(.a(.href(item.path), .text(item.title)))
                             ])
                         }
                     ])
@@ -205,16 +198,15 @@ private func sectionBody(
         let apps = section.items.sorted { $0.title.lowercased() < $1.title.lowercased() }
         return .div(.class("card-grid"), .forEach(apps) { appCard($0) })
     case .posts:
-        // Restyled to .post-rows in Task 8; legacy markup keeps posts rendering until then.
         return .element(named: "ul", nodes: [
-            .class("post-list"),
+            .class("post-rows"),
             .forEach(section.items) { item in
                 .element(named: "li", nodes: [
-                    .class("post-item"),
-                    .span(.class("post-date"), .text(formattedDate(item.date))),
-                    .a(.href(item.path), .text(item.title)),
+                    .class("post-row"),
+                    .p(.class("eyebrow"), .text(formattedDate(item.date))),
+                    .h2(.a(.href(item.path), .text(item.title))),
                     .unwrap(item.description.isEmpty ? nil : item.description) {
-                        .p(.class("post-description"), .text($0))
+                        .p(.class("post-desc"), .text($0))
                     }
                 ])
             }
@@ -357,14 +349,6 @@ private func siteHeader<Site: Website>(context: PublishingContext<Site>) -> Node
             ])
         ])
     )
-}
-
-private func siteMain(_ nodes: Node<HTML.BodyContext>...) -> Node<HTML.BodyContext> {
-    .main(.class("site-main"), .div(.class("bento-box"), .group(nodes)))
-}
-
-private func siteMain(_ nodes: [Node<HTML.BodyContext>]) -> Node<HTML.BodyContext> {
-    .main(.class("site-main"), .div(.class("bento-box"), .group(nodes)))
 }
 
 private func siteFooter<Site: Website>(context: PublishingContext<Site>) -> Node<HTML.BodyContext> {
