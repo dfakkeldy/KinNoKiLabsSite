@@ -64,7 +64,7 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
                 siteHeader(context: context),
                 .main(
                     .class("site-main"),
-                    .p(.class("eyebrow"), .text(section.title)),
+                    .h1(.class("eyebrow"), .text(section.title)),
                     sectionBody(for: section, context: context)
                 ),
                 siteFooter(context: context)
@@ -110,7 +110,7 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
                 siteHeader(context: context),
                 .main(
                     .class("site-main"),
-                    .p(.class("eyebrow"), .text("Tags")),
+                    .h1(.class("eyebrow"), .text("Tags")),
                     .div(.class("tag-row"), .forEach(page.tags.sorted()) { tag in
                         .a(.class("tag-chip"), .href(context.site.path(for: tag)), .text(tag.string))
                     })
@@ -134,7 +134,7 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
                 siteHeader(context: context),
                 .main(
                     .class("site-main"),
-                    .p(.class("eyebrow"), .text("Tagged: \(page.tag.string)")),
+                    .h1(.class("eyebrow"), .text("Tagged: \(page.tag.string)")),
                     .element(named: "ul", nodes: [
                         .class("post-rows"),
                         .forEach(taggedItems) { item in
@@ -218,10 +218,7 @@ private func appItemBody(for item: Item<KinNoKiLabsSite>) -> Node<HTML.BodyConte
     .group(
         .div(
             .class("breadcrumb"),
-            .element(named: "a", nodes: [
-                .attribute(named: "href", value: "/apps"),
-                .text("← All apps")
-            ])
+            .a(.href("/apps"), .text("← All apps"))
         ),
         .section(
             .class("app-hero-band"),

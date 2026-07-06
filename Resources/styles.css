@@ -35,7 +35,7 @@
   --color-nav-bg: rgba(245, 245, 247, 0.72);
 
   --gold: #c9a959;      /* decorative: borders, glows — never body text */
-  --gold-text: #8a7439; /* AA-compliant gold for text on light surfaces */
+  --gold-text: #806b35; /* AA-compliant gold for text on bg and surfaces (≥4.5:1 on #f5f5f7) */
   --gold-cta-a: #c9a959;
   --gold-cta-b: #eed9a0;
   --gold-cta-c: #b08d4a;

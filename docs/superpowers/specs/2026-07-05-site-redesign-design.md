@@ -25,7 +25,7 @@ Rewrite `Resources/styles.css` as a token-based design system.
 - Background: `#F5F5F7` / `#000000`; surface: `#ffffff` / `#1c1c1e`
 - Text: `#1d1d1f` / `#f5f5f7`; muted: `#6e6e73` / `#86868b`
 - Border: `rgba(0,0,0,0.1)` / `rgba(255,255,255,0.1)`; nav blur backgrounds as today
-- Gold ramp: decorative gold `#c9a959`; CTA gradient light `#c9a959 → #eed9a0 → #b08d4a` (dark text), dark mode keeps the existing `#a68b5c → #f1d596 → #997843`; **gold used as text on light backgrounds must be the darkened `#8a7439`–`#a3863f` range to meet WCAG 4.5:1** — bright gold is decorative only
+- Gold ramp: decorative gold `#c9a959`; CTA gradient light `#c9a959 → #eed9a0 → #b08d4a` (dark text), dark mode keeps the existing `#a68b5c → #f1d596 → #997843`; **gold used as text in light mode must be `#806b35`, which meets WCAG 4.5:1 on the `#f5f5f7` page background (the previously listed range only passed on pure white)** — bright gold is decorative only
 - The gold CTA replaces the silver "metallic" button in light mode, making gold the brand thread in both modes
 
 **Typography:**
