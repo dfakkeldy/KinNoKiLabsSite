@@ -88,6 +88,7 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
         let active: String
         switch page.path.string {
         case "services": main = servicesMain(); active = "/services"
+        case "learn":    main = learnMain();    active = ""
         case "about":    main = aboutMain();    active = "/about"
         case "support":  main = supportMain();  active = ""
         default:         main = proseMain(page); active = ""
@@ -327,6 +328,7 @@ private func siteFooter() -> Node<HTML.BodyContext> {
                     .class("footer-links"),
                     .a(.href("/apps"), .text("Apps")),
                     .a(.href("/services"), .text("Services")),
+                    .a(.href("/learn"), .text("Learn")),
                     .a(.href("/posts"), .text("Posts")),
                     .a(.href("/about"), .text("About")),
                     .a(.href("/privacy"), .text("Privacy")),
@@ -528,6 +530,7 @@ private func homeMain() -> Node<HTML.BodyContext> {
             <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;">
               <a class="btn btn-gold btn-md" href="/apps/echo">Meet Echo</a>
               <a class="link-quiet" href="/echo-beta">Join the TestFlight beta</a>
+              <a class="link-quiet" href="/learn">Sample learning audiobooks</a>
             </div>
           </div>
           <div style="position:relative;background:#0a0a0c;min-height:400px;overflow:hidden;">
@@ -815,6 +818,118 @@ private func supportMain() -> Node<HTML.BodyContext> {
     """)
 }
 
+private func learnMain() -> Node<HTML.BodyContext> {
+    .raw("""
+    <main class="site-main learn-main">
+      <section class="learn-hero">
+        <div class="learn-hero-copy">
+          <p class="eyebrow">Learning audiobooks</p>
+          <h1>Learn something by listening.</h1>
+          <p class="learn-hero-sub">I make focused, AI-assisted learning audiobooks and test them in Echo, my audiobook study app.</p>
+          <div class="learn-ctas">
+            <a class="btn btn-gold" href="mailto:learn@kinnokilabs.com">Send a topic</a>
+            <a class="btn btn-gray" href="/echo-beta">Try Echo</a>
+          </div>
+        </div>
+        <aside class="learn-intake-card" aria-label="Topic request summary">
+          <p class="learn-card-label">Flyer offer</p>
+          <p>Send a topic you genuinely want to learn. If it is a good fit, I will make a short custom audiobook and invite you to test it in Echo.</p>
+          <a class="row-link" href="mailto:learn@kinnokilabs.com">learn@kinnokilabs.com</a>
+        </aside>
+      </section>
+
+      <section class="reveal learn-section">
+        <div class="learn-section-heading">
+          <p class="eyebrow">Sample books</p>
+          <h2>Examples from the public library.</h2>
+          <p>These are examples, not a polished commercial catalog. The public repo holds the EPUB files, readable Markdown, covers, and notes about how each book was made.</p>
+        </div>
+
+        <div class="learn-book-grid">
+          <article class="learn-book-card">
+            <div>
+              <p class="learn-book-runtime">17 chapters · about 5.4 hours</p>
+              <h3>Echo, From the Inside</h3>
+              <p>A gentle tour of how a real iOS app is put together, taught through Echo's public source.</p>
+            </div>
+            <div class="learn-book-links">
+              <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/echo-from-the-inside" target="_blank" rel="noopener">Book folder</a>
+              <a href="https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/echo-from-the-inside/echo-from-the-inside.epub">EPUB</a>
+              <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/echo-from-the-inside/echo-from-the-inside.md" target="_blank" rel="noopener">Read</a>
+            </div>
+          </article>
+
+          <article class="learn-book-card">
+            <div>
+              <p class="learn-book-runtime">18 chapters · about 5.0 hours</p>
+              <h3>Why It Feels Right</h3>
+              <p>A plain-language guide to Apple design vocabulary and why some interfaces quietly feel better than others.</p>
+            </div>
+            <div class="learn-book-links">
+              <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/why-it-feels-right" target="_blank" rel="noopener">Book folder</a>
+              <a href="https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/why-it-feels-right/why-it-feels-right.epub">EPUB</a>
+              <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/why-it-feels-right/why-it-feels-right.md" target="_blank" rel="noopener">Read</a>
+            </div>
+          </article>
+
+          <article class="learn-book-card">
+            <div>
+              <p class="learn-book-runtime">8 chapters · about 3.0 hours</p>
+              <h3>Findable</h3>
+              <p>An honest beginner guide to getting a small app discovered without pretending marketing is magic.</p>
+            </div>
+            <div class="learn-book-links">
+              <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/findable" target="_blank" rel="noopener">Book folder</a>
+              <a href="https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/findable/findable.epub">EPUB</a>
+              <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/findable/findable.md" target="_blank" rel="noopener">Read</a>
+            </div>
+          </article>
+
+          <article class="learn-book-card">
+            <div>
+              <p class="learn-book-runtime">13 chapters · about 4.0 hours</p>
+              <h3>The Long Route</h3>
+              <p>A sourced, personal case study about choosing the indie road in midlife, argued from evidence instead of pep talk.</p>
+            </div>
+            <div class="learn-book-links">
+              <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/the-long-route" target="_blank" rel="noopener">Book folder</a>
+              <a href="https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/the-long-route/the-long-route.epub">EPUB</a>
+              <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/the-long-route/the-long-route.md" target="_blank" rel="noopener">Read</a>
+            </div>
+          </article>
+        </div>
+
+        <p class="learn-library-link"><a class="row-link" href="https://github.com/dfakkeldy/explainer-audiobooks" target="_blank" rel="noopener">Browse the public Explainer Audiobooks library</a></p>
+      </section>
+
+      <section class="reveal learn-section learn-request-grid">
+        <div>
+          <p class="eyebrow">Request a topic</p>
+          <h2>Tell me what you want to learn.</h2>
+          <p>Send me a topic, with as much detail as you want. If it's a good fit, I'll make a short custom audiobook and give you early access to Echo so you can test it.</p>
+          <a class="btn btn-gold" href="mailto:learn@kinnokilabs.com">learn@kinnokilabs.com</a>
+        </div>
+        <div class="learn-request-list">
+          <p>I can only make a limited number while testing.</p>
+          <p>Useful feedback gets first pick for the next custom book.</p>
+          <p>Please don't send private workplace, customer, medical, legal, or financial details.</p>
+        </div>
+      </section>
+
+      <section class="reveal learn-section learn-notes">
+        <div class="learn-note">
+          <p class="learn-card-label">Optional library sharing</p>
+          <p>With your permission, public-safe books may be added to the learning audiobook library so other people can use them too. That is optional; a private request can stay private.</p>
+        </div>
+        <div class="learn-note">
+          <p class="learn-card-label">Honesty note</p>
+          <p>The books are AI-assisted, researched, and spot-checked, but they are not expert-reviewed professional advice. Treat them as a friendly starting point and check primary sources for anything important.</p>
+        </div>
+      </section>
+    </main>
+    """)
+}
+
 private func echoDetailMain() -> Node<HTML.BodyContext> {
     .raw("""
     <main class="site-main">
@@ -920,6 +1035,7 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
             <p style="font-size:15.5px;color:rgba(245,245,247,0.6);margin:0 0 24px;">TestFlight builds for iPhone, Apple Watch, Mac, and CarPlay — guides, test plans, and a devlog included.</p>
             <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px 24px;margin-bottom:28px;font-size:13.5px;">
               <a class="echo-cta-link" href="/echo-learn">Learning guide</a>
+              <a class="echo-cta-link" href="/learn">Sample learning audiobooks</a>
               <a class="echo-cta-link" href="/echo-focus">Focus Field Guide</a>
               <a class="echo-cta-link" href="/echo-manual">User manual</a>
               <a class="echo-cta-link" href="/echo-devlog">Devlog</a>
@@ -932,4 +1048,3 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
     </main>
     """)
 }
-
