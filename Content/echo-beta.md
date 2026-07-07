@@ -10,7 +10,7 @@ The short version: **use Echo like you really listen** — commute, chores, work
 2. Open your Echo invite link on the device — it opens in TestFlight.
 3. Tap **Accept**, then **Install**. Echo appears on your home screen like any app, with a small orange dot in TestFlight marking it as a beta.
 
-Don't have an invite yet? Request access via [GitHub Issues](https://github.com/dfakkeldy/Echo/issues) or email [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com) — include the device you'd test on.
+Don't have an invite yet? Request access via [GitHub Issues](https://github.com/dfakkeldy/Echo/issues) or email [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com) — include the device you'd test on. If you are here from the learning-audiobook flyer, you can also [send a topic request](/learn).
 
 **Requirements:** a recent iPhone (the on-device alignment uses the Neural Engine, so newer hardware aligns faster). Apple Watch and Mac are optional but very welcome test surfaces — the watch app installs automatically from the iPhone's Watch app.
 
