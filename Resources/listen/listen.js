@@ -266,8 +266,8 @@
       els.scrubber.value = String(t);
       els.scrubber.setAttribute('aria-valuetext', fmtSpoken(t) + ' of ' + fmtSpoken(d));
       els.scrubber.style.setProperty('--played', d > 0 ? (t / d) * 100 + '%' : '0%');
+      els.timeNow.textContent = fmtTime(t); // while scrubbing, the input handler owns this label
     }
-    els.timeNow.textContent = fmtTime(t);
     els.timeTotal.textContent = fmtTime(d);
   }
 
