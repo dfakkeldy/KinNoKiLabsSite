@@ -38,6 +38,11 @@
   var captionSpans = [];
   var scrubbing = false;
   var lastSavedAt = 0;
+  // Read once at boot and gate saves until the resume seek has been
+  // applied: Chrome can fire a timeupdate at currentTime 0 before
+  // loadedmetadata, which would otherwise overwrite the stored position.
+  var pendingResumeT = null;
+  var canSave = false;
 
   /* ── Small utilities ────────────────────────────────── */
   function fmtTime(s) {
@@ -266,8 +271,13 @@
     els.timeTotal.textContent = fmtTime(d);
   }
 
+  function showAudioError() {
+    els.playPause.disabled = true;
+    setStatus('The audio stream couldn’t load. It streams from the public library on GitHub — reload to retry, or grab the EPUB below.', true);
+  }
+
   function savePosition(force) {
-    if (!book) return;
+    if (!book || !canSave) return;
     var now = Date.now();
     if (!force && now - lastSavedAt < 5000) return;
     lastSavedAt = now;
@@ -312,23 +322,20 @@
       store('kinnoki-listen-' + book.slug, JSON.stringify({ t: 0 }));
       setStatus('That’s the whole book. It re-plays from the top whenever you like.');
     });
-    audio.addEventListener('error', function () {
-      els.playPause.disabled = true;
-      setStatus('The audio stream couldn’t load. It streams from the public library on GitHub — reload to retry, or grab the EPUB below.', true);
-    });
+    audio.addEventListener('error', showAudioError);
     audio.addEventListener('loadedmetadata', function () {
       els.scrubber.max = String(duration());
       els.scrubber.disabled = false;
       els.playPause.disabled = false;
       updateScrubber();
-      var saved = null;
-      try { saved = JSON.parse(read('kinnoki-listen-' + book.slug) || 'null'); } catch (e) {}
-      if (saved && saved.t > 10 && saved.t < duration() - 10) {
-        seekTo(saved.t);
-        setStatus('Resumed from ' + fmtTime(saved.t) + '.');
+      if (pendingResumeT !== null && pendingResumeT > 10 && pendingResumeT < duration() - 10) {
+        seekTo(pendingResumeT);
+        setStatus('Resumed from ' + fmtTime(pendingResumeT) + '.');
       } else {
         setStatus('Streams free from the public library — audio may take a moment to start.');
       }
+      pendingResumeT = null;
+      canSave = true;
     });
 
     document.addEventListener('keydown', function (e) {
@@ -426,6 +433,10 @@
         renderLibrary(catalog);
         return;
       }
+      try {
+        var saved = JSON.parse(read('kinnoki-listen-' + book.slug) || 'null');
+        if (saved && typeof saved.t === 'number') pendingResumeT = saved.t;
+      } catch (e) {}
       renderBook();
       renderChapters();
       renderLibrary(catalog);
@@ -433,7 +444,16 @@
       applySpeed(parseFloat(read('kinnoki-listen-rate')) || 1);
       updateChapter(0);
       showQuiet('Press play to start listening.');
-      audio.src = book.audio.url;
+      // <source type=…> instead of audio.src: GitHub serves the m4b as
+      // application/octet-stream, so give the browser the real MIME type.
+      var source = document.createElement('source');
+      source.src = book.audio.url;
+      source.type = book.audio.mimeType || 'audio/mp4';
+      // Failures of a <source> child fire on the source element, not the
+      // media element itself.
+      source.addEventListener('error', showAudioError);
+      audio.appendChild(source);
+      audio.load();
       loadReadAlong();
       setStatus('');
     })
