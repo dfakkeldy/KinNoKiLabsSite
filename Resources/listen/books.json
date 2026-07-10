@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated": "2026-07-10T01:35:10Z",
+  "generated": "2026-07-10T02:11:04Z",
   "source": {
     "repo": "dfakkeldy/explainer-audiobooks",
     "commit": "13eb4f4e6b3010e047faaa3744a75de6d96f224d"
@@ -97,7 +97,9 @@
           "end": 7416.917000
         }
       ],
-      "text": null,
+      "text": {
+        "blocks": "books/the-living-knowledge-base/blocks.json"
+      },
       "alignment": {
         "sidecar": "books/the-living-knowledge-base/alignment.json",
         "hasWordTimings": false

@@ -119,6 +119,12 @@ while IFS='|' read -r slug title subtitle written_by; do
     else
       [ -n "$ECHO_CLI" ] || { echo "error: ECHO_CLI is not set (or pass --no-blocks). See Tools/build-listen-catalog.sh header." >&2; exit 1; }
       $ECHO_CLI export-blocks --epub "$book_dir/$slug.epub" --out "$asset_dir/blocks.json"
+      # echo-cli emits imagePath as an absolute path into its transient
+      # per-run asset cache (leaks $HOME + a fresh UUID every rebuild);
+      # only the asset name is meaningful downstream, so keep just that.
+      jq '(.blocks[] | select(.kind == "image") | .imagePath) |= (split("/") | last)' \
+        "$asset_dir/blocks.json" > "$TMP_DIR/$slug.blocks.json"
+      mv "$TMP_DIR/$slug.blocks.json" "$asset_dir/blocks.json"
       anchors_total="$(jq 'length' "$asset_dir/alignment.json")"
       anchors_resolved="$(jq --slurpfile blocks "$asset_dir/blocks.json" \
         '[.[] | select(.blockId as $id | $blocks[0].blocks | any(.id == $id))] | length' \
