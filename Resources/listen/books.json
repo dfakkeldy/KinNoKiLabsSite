@@ -1,0 +1,247 @@
+{
+  "version": 1,
+  "generated": "2026-07-10T01:35:10Z",
+  "source": {
+    "repo": "dfakkeldy/explainer-audiobooks",
+    "commit": "13eb4f4e6b3010e047faaa3744a75de6d96f224d"
+  },
+  "books": [
+    {
+      "slug": "the-living-knowledge-base",
+      "title": "The Living Knowledge Base",
+      "subtitle": "LLM Wikis, Research Notebooks, and Company Memory",
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "GPT-5 Codex",
+      "cover": "books/the-living-knowledge-base/cover.jpg",
+      "coverAlt": "Cover of The Living Knowledge Base",
+      "durationSeconds": 7416.917333,
+      "audio": {
+        "status": "available",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/13eb4f4e6b3010e047faaa3744a75de6d96f224d/books/the-living-knowledge-base/the-living-knowledge-base.m4b",
+        "mimeType": "audio/mp4"
+      },
+      "chapters": [
+        {
+          "title": "ch. 1: When Notes Start Working Back",
+          "start": 0.000000,
+          "end": 498.520000
+        },
+        {
+          "title": "ch. 2: The Pattern Karpathy Named",
+          "start": 498.520000,
+          "end": 947.755000
+        },
+        {
+          "title": "ch. 3: Raw Sources, Wiki, Schema",
+          "start": 947.755000,
+          "end": 1375.670000
+        },
+        {
+          "title": "ch. 4: Why Markdown Still Wins",
+          "start": 1375.670000,
+          "end": 1806.460000
+        },
+        {
+          "title": "ch. 5: RAG, Wiki, Search, and Memory",
+          "start": 1806.460000,
+          "end": 2240.750000
+        },
+        {
+          "title": "ch. 6: What Embedded Really Means",
+          "start": 2240.750000,
+          "end": 2788.375000
+        },
+        {
+          "title": "ch. 7: Where Open Notebook Fits",
+          "start": 2788.375000,
+          "end": 3312.470000
+        },
+        {
+          "title": "ch. 8: The Local Markdown Search Layer",
+          "start": 3312.470000,
+          "end": 3816.175000
+        },
+        {
+          "title": "ch. 9: A Small Company Example",
+          "start": 3816.175000,
+          "end": 4332.050000
+        },
+        {
+          "title": "ch. 10: The Job Binder",
+          "start": 4332.050000,
+          "end": 4830.700000
+        },
+        {
+          "title": "ch. 11: Security and Trust",
+          "start": 4830.700000,
+          "end": 5347.465000
+        },
+        {
+          "title": "ch. 12: Controversies and Failure Modes",
+          "start": 5347.465000,
+          "end": 5859.380000
+        },
+        {
+          "title": "ch. 13: Gaps to Check Before You Trust It",
+          "start": 5859.380000,
+          "end": 6324.175000
+        },
+        {
+          "title": "ch. 14: The First Pilot",
+          "start": 6324.175000,
+          "end": 6792.470000
+        },
+        {
+          "title": "ch. 15: What To Learn Next",
+          "start": 6792.470000,
+          "end": 7416.917000
+        }
+      ],
+      "text": null,
+      "alignment": {
+        "sidecar": "books/the-living-knowledge-base/alignment.json",
+        "hasWordTimings": false
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/the-living-knowledge-base",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/the-living-knowledge-base/the-living-knowledge-base.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/the-living-knowledge-base/the-living-knowledge-base.md"
+      }
+    },
+    {
+      "slug": "echo-from-the-inside",
+      "title": "Echo, From the Inside",
+      "subtitle": null,
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "Opus 4.8",
+      "audio": {
+        "status": "none"
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/echo-from-the-inside",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/echo-from-the-inside/echo-from-the-inside.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/echo-from-the-inside/echo-from-the-inside.md"
+      }
+    },
+    {
+      "slug": "why-it-feels-right",
+      "title": "Why It Feels Right",
+      "subtitle": null,
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "Fable 5",
+      "audio": {
+        "status": "none"
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/why-it-feels-right",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/why-it-feels-right/why-it-feels-right.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/why-it-feels-right/why-it-feels-right.md"
+      }
+    },
+    {
+      "slug": "you-are-the-architect",
+      "title": "You Are the Architect",
+      "subtitle": null,
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "Fable 5",
+      "audio": {
+        "status": "none"
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/you-are-the-architect",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/you-are-the-architect/you-are-the-architect.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/you-are-the-architect/you-are-the-architect.md"
+      }
+    },
+    {
+      "slug": "the-bug-is-a-clue",
+      "title": "The Bug Is a Clue",
+      "subtitle": null,
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "Opus 4.8",
+      "audio": {
+        "status": "none"
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/the-bug-is-a-clue",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/the-bug-is-a-clue/the-bug-is-a-clue.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/the-bug-is-a-clue/the-bug-is-a-clue.md"
+      }
+    },
+    {
+      "slug": "tests-first",
+      "title": "Tests First",
+      "subtitle": null,
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "Opus 4.8",
+      "audio": {
+        "status": "none"
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/tests-first",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/tests-first/tests-first.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/tests-first/tests-first.md"
+      }
+    },
+    {
+      "slug": "git-happens",
+      "title": "Git Happens",
+      "subtitle": null,
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "Opus 4.8",
+      "audio": {
+        "status": "none"
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/git-happens",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/git-happens/git-happens.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/git-happens/git-happens.md"
+      }
+    },
+    {
+      "slug": "findable",
+      "title": "Findable",
+      "subtitle": null,
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "Opus 4.8",
+      "audio": {
+        "status": "none"
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/findable",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/findable/findable.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/findable/findable.md"
+      }
+    },
+    {
+      "slug": "the-voice-in-the-machine",
+      "title": "The Voice in the Machine",
+      "subtitle": null,
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "Opus 4.8",
+      "audio": {
+        "status": "none"
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/the-voice-in-the-machine",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/the-voice-in-the-machine/the-voice-in-the-machine.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/the-voice-in-the-machine/the-voice-in-the-machine.md"
+      }
+    },
+    {
+      "slug": "the-long-route",
+      "title": "The Long Route",
+      "subtitle": null,
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "Fable 5 + Opus 4.8",
+      "audio": {
+        "status": "none"
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/the-long-route",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/the-long-route/the-long-route.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/the-long-route/the-long-route.md"
+      }
+    }
+  ]
+}
