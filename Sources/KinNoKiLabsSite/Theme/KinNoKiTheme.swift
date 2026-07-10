@@ -828,6 +828,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
           <p class="learn-hero-sub">I make focused, AI-assisted learning audiobooks and test them in Echo, my audiobook study app.</p>
           <div class="learn-ctas">
             <a class="btn btn-gold" href="mailto:learn@kinnokilabs.com">Send a topic</a>
+            <a class="btn btn-gray" href="/listen/">Listen in your browser</a>
             <a class="btn btn-gray" href="/echo-beta">Try Echo</a>
           </div>
         </div>
@@ -836,6 +837,16 @@ private func learnMain() -> Node<HTML.BodyContext> {
           <p>Send a topic you genuinely want to learn. If it is a good fit, I will make a short custom audiobook and invite you to test it in Echo.</p>
           <a class="row-link" href="mailto:learn@kinnokilabs.com">learn@kinnokilabs.com</a>
         </aside>
+      </section>
+
+      <section class="reveal learn-section">
+        <div class="contact-band">
+          <div style="max-width:46rem;">
+            <p class="learn-card-label">Echo Listening Room</p>
+            <p style="color:var(--text-muted);font-size:1rem;line-height:1.65;margin:0;">Stream <em>The Living Knowledge Base</em> right here, with the same read-along captions Echo uses. No install, no signup.</p>
+          </div>
+          <a class="btn btn-gold" href="/listen/">Open the Listening Room</a>
+        </div>
       </section>
 
       <section class="reveal learn-section">
