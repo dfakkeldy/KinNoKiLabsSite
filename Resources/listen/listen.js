@@ -171,7 +171,7 @@
     span.className = 'quiet';
     span.textContent = text;
     els.captionWords.appendChild(span);
-    els.captionText.textContent = '';
+    els.captionText.textContent = text; // keep the SR node in step with the visual state
   }
 
   function rebuildCaption(cue) {
@@ -434,6 +434,7 @@
       updateChapter(0);
       showQuiet('Press play to start listening.');
       audio.src = book.audio.url;
+      loadReadAlong();
       setStatus('');
     })
     .catch(function (err) {
