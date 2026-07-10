@@ -99,7 +99,7 @@
 
   function renderLibrary(catalog) {
     catalog.books.forEach(function (b) {
-      if (b.slug === book.slug) return;
+      if (book && b.slug === book.slug) return;
       var li = document.createElement('li');
       var title = document.createElement('span');
       title.className = 'room-lib-title';
@@ -429,7 +429,10 @@
       var available = catalog.books.filter(function (b) { return b.audio.status === 'available'; });
       book = available.find(function (b) { return b.slug === wanted; }) || available[0];
       if (!book) {
-        setStatus('No streamable book is in the catalog right now — the library links below still work.', true);
+        // Nothing streamable: hide the player shell, keep the library +
+        // Echo CTA so the page still earns its visit.
+        document.querySelector('.room').hidden = true;
+        setStatus('No book is streaming right now — the library below has the EPUBs, free.', false);
         renderLibrary(catalog);
         return;
       }

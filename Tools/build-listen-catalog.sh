@@ -56,8 +56,10 @@ RAW_BASE="https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/$SHA"
 GH_BASE="https://github.com/dfakkeldy/explainer-audiobooks"
 
 # Tier-1 public allow-list: slug|title|subtitle|writtenBy
+# (The Long Route and The Living Knowledge Base were reclassified private
+# on 2026-07-09 — explainer-audiobooks PR #11 — and must NOT return here
+# without an explicit decision.)
 ALLOW_LIST="$(cat <<'EOF'
-the-living-knowledge-base|The Living Knowledge Base|LLM Wikis, Research Notebooks, and Company Memory|GPT-5 Codex
 echo-from-the-inside|Echo, From the Inside||Opus 4.8
 why-it-feels-right|Why It Feels Right||Fable 5
 you-are-the-architect|You Are the Architect||Fable 5
@@ -66,12 +68,12 @@ tests-first|Tests First||Opus 4.8
 git-happens|Git Happens||Opus 4.8
 findable|Findable||Opus 4.8
 the-voice-in-the-machine|The Voice in the Machine||Opus 4.8
-the-long-route|The Long Route||Fable 5 + Opus 4.8
 EOF
 )"
 
 # Books that MUST have audio on disk (build fails otherwise).
-AUDIO_EXPECTED="the-living-knowledge-base"
+# Empty until a public book gets narration.
+AUDIO_EXPECTED=""
 
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TMP_DIR"' EXIT

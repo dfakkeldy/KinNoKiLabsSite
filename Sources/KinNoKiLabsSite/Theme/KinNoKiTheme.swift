@@ -843,7 +843,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
         <div class="contact-band">
           <div style="max-width:46rem;">
             <p class="learn-card-label">Echo Listening Room</p>
-            <p style="color:var(--text-muted);font-size:1rem;line-height:1.65;margin:0;">Stream <em>The Living Knowledge Base</em> right here, with the same read-along captions Echo uses. No install, no signup.</p>
+            <p style="color:var(--text-muted);font-size:1rem;line-height:1.65;margin:0;">Stream a sample learning audiobook right here, with the same read-along captions Echo uses. No install, no signup.</p>
           </div>
           <a class="btn btn-gold" href="/listen/">Open the Listening Room</a>
         </div>
@@ -893,19 +893,6 @@ private func learnMain() -> Node<HTML.BodyContext> {
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/findable" target="_blank" rel="noopener">Book folder</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/findable/findable.epub">EPUB</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/findable/findable.md" target="_blank" rel="noopener">Read</a>
-            </div>
-          </article>
-
-          <article class="learn-book-card">
-            <div>
-              <p class="learn-book-runtime">13 chapters · about 4.0 hours</p>
-              <h3>The Long Route</h3>
-              <p>A sourced, personal case study about choosing the indie road in midlife, argued from evidence instead of pep talk.</p>
-            </div>
-            <div class="learn-book-links">
-              <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/the-long-route" target="_blank" rel="noopener">Book folder</a>
-              <a href="https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/the-long-route/the-long-route.epub">EPUB</a>
-              <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/the-long-route/the-long-route.md" target="_blank" rel="noopener">Read</a>
             </div>
           </article>
         </div>

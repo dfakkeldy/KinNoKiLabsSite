@@ -1,115 +1,11 @@
 {
   "version": 1,
-  "generated": "2026-07-10T02:11:04Z",
+  "generated": "2026-07-10T02:37:52Z",
   "source": {
     "repo": "dfakkeldy/explainer-audiobooks",
-    "commit": "13eb4f4e6b3010e047faaa3744a75de6d96f224d"
+    "commit": "c62647e76a6f638a572aefcd3d403aaedf3f7b01"
   },
   "books": [
-    {
-      "slug": "the-living-knowledge-base",
-      "title": "The Living Knowledge Base",
-      "subtitle": "LLM Wikis, Research Notebooks, and Company Memory",
-      "curator": "Dan Fakkeldy",
-      "writtenBy": "GPT-5 Codex",
-      "cover": "books/the-living-knowledge-base/cover.jpg",
-      "coverAlt": "Cover of The Living Knowledge Base",
-      "durationSeconds": 7416.917333,
-      "audio": {
-        "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/13eb4f4e6b3010e047faaa3744a75de6d96f224d/books/the-living-knowledge-base/the-living-knowledge-base.m4b",
-        "mimeType": "audio/mp4"
-      },
-      "chapters": [
-        {
-          "title": "ch. 1: When Notes Start Working Back",
-          "start": 0.000000,
-          "end": 498.520000
-        },
-        {
-          "title": "ch. 2: The Pattern Karpathy Named",
-          "start": 498.520000,
-          "end": 947.755000
-        },
-        {
-          "title": "ch. 3: Raw Sources, Wiki, Schema",
-          "start": 947.755000,
-          "end": 1375.670000
-        },
-        {
-          "title": "ch. 4: Why Markdown Still Wins",
-          "start": 1375.670000,
-          "end": 1806.460000
-        },
-        {
-          "title": "ch. 5: RAG, Wiki, Search, and Memory",
-          "start": 1806.460000,
-          "end": 2240.750000
-        },
-        {
-          "title": "ch. 6: What Embedded Really Means",
-          "start": 2240.750000,
-          "end": 2788.375000
-        },
-        {
-          "title": "ch. 7: Where Open Notebook Fits",
-          "start": 2788.375000,
-          "end": 3312.470000
-        },
-        {
-          "title": "ch. 8: The Local Markdown Search Layer",
-          "start": 3312.470000,
-          "end": 3816.175000
-        },
-        {
-          "title": "ch. 9: A Small Company Example",
-          "start": 3816.175000,
-          "end": 4332.050000
-        },
-        {
-          "title": "ch. 10: The Job Binder",
-          "start": 4332.050000,
-          "end": 4830.700000
-        },
-        {
-          "title": "ch. 11: Security and Trust",
-          "start": 4830.700000,
-          "end": 5347.465000
-        },
-        {
-          "title": "ch. 12: Controversies and Failure Modes",
-          "start": 5347.465000,
-          "end": 5859.380000
-        },
-        {
-          "title": "ch. 13: Gaps to Check Before You Trust It",
-          "start": 5859.380000,
-          "end": 6324.175000
-        },
-        {
-          "title": "ch. 14: The First Pilot",
-          "start": 6324.175000,
-          "end": 6792.470000
-        },
-        {
-          "title": "ch. 15: What To Learn Next",
-          "start": 6792.470000,
-          "end": 7416.917000
-        }
-      ],
-      "text": {
-        "blocks": "books/the-living-knowledge-base/blocks.json"
-      },
-      "alignment": {
-        "sidecar": "books/the-living-knowledge-base/alignment.json",
-        "hasWordTimings": false
-      },
-      "links": {
-        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/the-living-knowledge-base",
-        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/the-living-knowledge-base/the-living-knowledge-base.epub",
-        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/the-living-knowledge-base/the-living-knowledge-base.md"
-      }
-    },
     {
       "slug": "echo-from-the-inside",
       "title": "Echo, From the Inside",
@@ -228,21 +124,6 @@
         "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/the-voice-in-the-machine",
         "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/the-voice-in-the-machine/the-voice-in-the-machine.epub",
         "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/the-voice-in-the-machine/the-voice-in-the-machine.md"
-      }
-    },
-    {
-      "slug": "the-long-route",
-      "title": "The Long Route",
-      "subtitle": null,
-      "curator": "Dan Fakkeldy",
-      "writtenBy": "Fable 5 + Opus 4.8",
-      "audio": {
-        "status": "none"
-      },
-      "links": {
-        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/the-long-route",
-        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/the-long-route/the-long-route.epub",
-        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/the-long-route/the-long-route.md"
       }
     }
   ]
