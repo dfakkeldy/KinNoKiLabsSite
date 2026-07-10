@@ -1,13 +1,16 @@
 # KinNoKi Labs site — build & deploy
 #
-#   make publish   Generate the site into Output/, commit, and push.
-#                  Cloudflare Pages serves the committed Output/ folder,
-#                  so the push IS the deployment.
-#   make preview   Generate and serve locally at http://localhost:8000
-#   make generate  Generate Output/ only (no commit, no push)
-#   make clean     Remove Swift build artifacts
+#   make publish         Generate the site into Output/, commit, and push.
+#                        Cloudflare Pages serves the committed Output/ folder,
+#                        so the push IS the deployment.
+#   make preview         Generate and serve locally at http://localhost:8000
+#   make generate        Generate Output/ only (no commit, no push)
+#   make clean           Remove Swift build artifacts
+#   make test-listen     Run the Listening Room pure-logic tests (node, dev-only)
+#   make listen-catalog  Regenerate Resources/listen/books.json + per-book
+#                        assets from local checkouts (Tools/build-listen-catalog.sh)
 
-.PHONY: publish preview generate clean
+.PHONY: publish preview generate clean test-listen listen-catalog
 
 generate:
 	publish generate
@@ -23,3 +26,9 @@ preview:
 
 clean:
 	swift package clean
+
+test-listen:
+	node --test Tests/listen/*.test.mjs
+
+listen-catalog:
+	Tools/build-listen-catalog.sh

@@ -1,0 +1,130 @@
+{
+  "version": 1,
+  "generated": "2026-07-10T02:37:52Z",
+  "source": {
+    "repo": "dfakkeldy/explainer-audiobooks",
+    "commit": "c62647e76a6f638a572aefcd3d403aaedf3f7b01"
+  },
+  "books": [
+    {
+      "slug": "echo-from-the-inside",
+      "title": "Echo, From the Inside",
+      "subtitle": null,
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "Opus 4.8",
+      "audio": {
+        "status": "none"
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/echo-from-the-inside",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/echo-from-the-inside/echo-from-the-inside.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/echo-from-the-inside/echo-from-the-inside.md"
+      }
+    },
+    {
+      "slug": "why-it-feels-right",
+      "title": "Why It Feels Right",
+      "subtitle": null,
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "Fable 5",
+      "audio": {
+        "status": "none"
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/why-it-feels-right",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/why-it-feels-right/why-it-feels-right.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/why-it-feels-right/why-it-feels-right.md"
+      }
+    },
+    {
+      "slug": "you-are-the-architect",
+      "title": "You Are the Architect",
+      "subtitle": null,
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "Fable 5",
+      "audio": {
+        "status": "none"
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/you-are-the-architect",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/you-are-the-architect/you-are-the-architect.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/you-are-the-architect/you-are-the-architect.md"
+      }
+    },
+    {
+      "slug": "the-bug-is-a-clue",
+      "title": "The Bug Is a Clue",
+      "subtitle": null,
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "Opus 4.8",
+      "audio": {
+        "status": "none"
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/the-bug-is-a-clue",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/the-bug-is-a-clue/the-bug-is-a-clue.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/the-bug-is-a-clue/the-bug-is-a-clue.md"
+      }
+    },
+    {
+      "slug": "tests-first",
+      "title": "Tests First",
+      "subtitle": null,
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "Opus 4.8",
+      "audio": {
+        "status": "none"
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/tests-first",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/tests-first/tests-first.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/tests-first/tests-first.md"
+      }
+    },
+    {
+      "slug": "git-happens",
+      "title": "Git Happens",
+      "subtitle": null,
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "Opus 4.8",
+      "audio": {
+        "status": "none"
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/git-happens",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/git-happens/git-happens.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/git-happens/git-happens.md"
+      }
+    },
+    {
+      "slug": "findable",
+      "title": "Findable",
+      "subtitle": null,
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "Opus 4.8",
+      "audio": {
+        "status": "none"
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/findable",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/findable/findable.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/findable/findable.md"
+      }
+    },
+    {
+      "slug": "the-voice-in-the-machine",
+      "title": "The Voice in the Machine",
+      "subtitle": null,
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "Opus 4.8",
+      "audio": {
+        "status": "none"
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/the-voice-in-the-machine",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/the-voice-in-the-machine/the-voice-in-the-machine.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/the-voice-in-the-machine/the-voice-in-the-machine.md"
+      }
+    }
+  ]
+}
