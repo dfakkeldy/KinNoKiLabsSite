@@ -106,11 +106,12 @@
       title.textContent = b.title;
       var links = document.createElement('span');
       links.className = 'room-lib-links';
-      [['EPUB', b.links.epub], ['Read', b.links.read]].forEach(function (pair) {
+      core.libraryActions(b).forEach(function (action) {
         var a = document.createElement('a');
-        a.href = pair[1];
-        a.textContent = pair[0];
-        if (pair[0] === 'Read') { a.target = '_blank'; a.rel = 'noopener'; }
+        a.href = action.href;
+        a.textContent = action.label;
+        if (action.className) a.className = action.className;
+        if (action.external) { a.target = '_blank'; a.rel = 'noopener'; }
         links.appendChild(a);
       });
       li.appendChild(title);
