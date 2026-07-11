@@ -173,7 +173,11 @@
   text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent);
   text-underline-offset: 3px;
 }
-.room-formats a:hover { color: var(--gold-text); }
+.room-formats a:hover {
+  color: var(--text);
+  text-decoration-color: var(--gold-text);
+  text-decoration-thickness: 2px;
+}
 
 .room-empty {
   position: relative;

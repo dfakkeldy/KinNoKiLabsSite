@@ -322,6 +322,11 @@ test('the template keeps the empty state outside the player and selected formats
 
 test('fallback links and the primary empty state use the high-contrast theme text token', () => {
   assert.match(cssDeclarations('.room-formats a'), /color:\s*var\(--text\);/);
+  const hover = cssDeclarations('.room-formats a:hover');
+  assert.match(hover, /^\s*color:\s*var\(--text\);\s*$/m);
+  assert.doesNotMatch(hover, /^\s*color:\s*var\(--gold-text\);\s*$/m);
+  assert.match(hover, /text-decoration-color:\s*var\(--gold-text\);/);
+  assert.match(hover, /text-decoration-thickness:\s*2px;/);
   assert.match(cssDeclarations('.room-empty'), /color:\s*var\(--text\);/);
   assert.match(cssDeclarations('.room-empty'), /font-size:\s*17px;/);
 });
