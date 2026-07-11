@@ -108,6 +108,7 @@ async function bootPlayer(savedRate) {
   const main = new FakeNode();
   const room = new FakeNode();
   const storage = new Map();
+  const storageWrites = [];
   const debugLogs = [];
   if (savedRate !== undefined) storage.set('kinnoki-listen-rate', savedRate);
 
@@ -197,7 +198,11 @@ async function bootPlayer(savedRate) {
     fetch: async () => ({ ok: true, json: async () => catalog }),
     localStorage: {
       getItem: (key) => storage.get(key) ?? null,
-      setItem: (key, value) => storage.set(key, String(value)),
+      setItem: (key, value) => {
+        const storedValue = String(value);
+        storage.set(key, storedValue);
+        storageWrites.push({ key, value: storedValue });
+      },
     },
     location: { href: 'https://kinnokilabs.com/listen/', search: '?book=test-book' },
     navigator: {},
@@ -212,6 +217,7 @@ async function bootPlayer(savedRate) {
     debugLogs,
     speedButton: elements.get('speed'),
     storage,
+    storageWrites,
   };
 }
 
@@ -233,10 +239,12 @@ test('saved playback rate survives metadata loading and the next click wraps fro
     ariaLabel: 'Playback speed, currently 1.5×',
     storedRate: '1.5',
   });
+  assert.deepEqual(player.storageWrites, []);
 
   player.audio.playbackRate = 1;
   player.audio.dispatch('loadedmetadata');
   assert.equal(player.audio.playbackRate, 1.5);
+  assert.deepEqual(player.storageWrites, []);
 
   player.speedButton.click();
   assert.deepEqual(speedState(player), {
@@ -245,6 +253,9 @@ test('saved playback rate survives metadata loading and the next click wraps fro
     ariaLabel: 'Playback speed, currently 1×',
     storedRate: '1',
   });
+  assert.deepEqual(player.storageWrites, [
+    { key: 'kinnoki-listen-rate', value: '1' },
+  ]);
   assert.deepEqual(player.debugLogs, []);
 });
 
@@ -252,10 +263,19 @@ test('fresh playback starts at 1x and keeps the existing speed cycle', async () 
   const player = await bootPlayer();
 
   assert.equal(player.audio.playbackRate, 1);
+  assert.deepEqual(player.storageWrites, [
+    { key: 'kinnoki-listen-rate', value: '1' },
+  ]);
   for (const expectedRate of [1.25, 1.5, 1]) {
+    const previousWriteCount = player.storageWrites.length;
     player.speedButton.click();
     assert.equal(player.audio.playbackRate, expectedRate);
     assert.equal(player.storage.get('kinnoki-listen-rate'), String(expectedRate));
+    assert.equal(player.storageWrites.length, previousWriteCount + 1);
+    assert.deepEqual(player.storageWrites.at(-1), {
+      key: 'kinnoki-listen-rate',
+      value: String(expectedRate),
+    });
   }
 });
 
@@ -268,4 +288,25 @@ test('unsupported persisted playback rates normalize to 1x', async () => {
     ariaLabel: 'Playback speed, currently 1×',
     storedRate: '1',
   });
+  assert.deepEqual(player.storageWrites, [
+    { key: 'kinnoki-listen-rate', value: '1' },
+  ]);
+});
+
+test('malformed numeric-prefix playback rates normalize to 1x once', async () => {
+  const player = await bootPlayer('1.5junk');
+
+  assert.deepEqual(speedState(player), {
+    actualRate: 1,
+    buttonText: '1×',
+    ariaLabel: 'Playback speed, currently 1×',
+    storedRate: '1',
+  });
+  assert.deepEqual(player.storageWrites, [
+    { key: 'kinnoki-listen-rate', value: '1' },
+  ]);
+
+  player.audio.dispatch('loadedmetadata');
+  assert.equal(player.audio.playbackRate, 1);
+  assert.equal(player.storageWrites.length, 1);
 });

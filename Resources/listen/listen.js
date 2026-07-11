@@ -29,6 +29,7 @@
   audio.preload = 'metadata';
 
   var SPEEDS = [1, 1.25, 1.5];
+  var SPEED_KEY = 'kinnoki-listen-rate';
   var book = null;
   var rows = [];
   var blocks = [];
@@ -249,19 +250,22 @@
   }
   function seekBy(delta) { seekTo(audio.currentTime + delta); }
 
-  function applySpeed(rate) {
+  function applySpeed(rate, persist) {
     audio.playbackRate = rate;
     els.speed.textContent = (rate === 1 ? '1' : String(rate)) + '×';
     els.speed.setAttribute('aria-label', 'Playback speed, currently ' + rate + '×');
-    store('kinnoki-listen-rate', String(rate));
+    if (persist) store(SPEED_KEY, String(rate));
   }
   function preferredSpeed() {
-    var rate = parseFloat(read('kinnoki-listen-rate'));
-    return SPEEDS.indexOf(rate) === -1 ? SPEEDS[0] : rate;
+    var raw = read(SPEED_KEY);
+    var rate = Number(raw);
+    if (SPEEDS.indexOf(rate) !== -1 && raw === String(rate)) return rate;
+    store(SPEED_KEY, String(SPEEDS[0]));
+    return SPEEDS[0];
   }
   function cycleSpeed() {
     var i = SPEEDS.indexOf(audio.playbackRate);
-    applySpeed(SPEEDS[(i + 1) % SPEEDS.length]);
+    applySpeed(SPEEDS[(i + 1) % SPEEDS.length], true);
   }
 
   function updateScrubber() {
@@ -331,7 +335,7 @@
     audio.addEventListener('loadedmetadata', function () {
       // Loading a source can reset the media element to 1×. Restore the
       // preference here so the effective rate stays in step with the UI.
-      applySpeed(preferredSpeed());
+      applySpeed(preferredSpeed(), false);
       els.scrubber.max = String(duration());
       els.scrubber.disabled = false;
       els.playPause.disabled = false;
@@ -452,7 +456,7 @@
       renderChapters();
       renderLibrary(catalog);
       wireControls();
-      applySpeed(preferredSpeed());
+      applySpeed(preferredSpeed(), false);
       updateChapter(0);
       showQuiet('Press play to start listening.');
       // <source type=…> instead of audio.src: GitHub serves the m4b as
