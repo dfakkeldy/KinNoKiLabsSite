@@ -29,9 +29,10 @@ the `/learn` page.
 - *Chicken Predators* and *Rodents in the Walls* already have public book
   folders in `dfakkeldy/explainer-audiobooks`, but those folders do not contain
   their M4Bs or alignment sidecars.
-- *The New Deal* currently exists only as a completed local custom-learning
-  package. Its public-safe manifest previously withheld publication pending
-  Dan's approval; that approval is now recorded above.
+- *The New Deal* exists as a completed local custom-learning package, and
+  Explainer Audiobooks PR #15 published its approved, byte-identical Markdown,
+  EPUB, selected cover, and README under `books/the-new-deal/`. Its M4B and
+  alignment sidecar were not included in that PR.
 
 ## Chosen approach
 
@@ -45,15 +46,26 @@ roughly 104 MB of audio inside every website deployment. Moving audio to
 GitHub Releases or object storage remains a later scaling option because the
 catalog already abstracts audio URLs.
 
+### Live-base reconciliation
+
+While the audio-package work was being staged, Explainer Audiobooks PR #15
+merged the approved *The New Deal* text package under the canonical public slug
+`the-new-deal`. Dan approved consolidating on that live path instead of creating
+the originally planned duplicate `cupw-collective-agreement` public folder. The
+local custom-learning build keeps its historical source slug; only public
+package, catalog, site, and production references use `the-new-deal`.
+
 ## Public package boundary
 
 The Explainer Audiobooks change will:
 
 1. Add the final M4B and alignment sidecar to the existing public folders for
    *Chicken Predators* and the corrected v2 edition of *Rodents in the Walls*.
-2. Create `books/cupw-collective-agreement/` for *The New Deal* using its final
-   Markdown, EPUB, selected bright cover, M4B, alignment sidecar, and an updated
-   public README.
+2. Reuse `books/the-new-deal/` for *The New Deal*. Preserve the Markdown, EPUB,
+   selected bright cover, and README published by PR #15 after byte comparison
+   with the approved local source; add the renamed approved audio and sidecar as
+   `the-new-deal.m4b` and `the-new-deal.alignment.json`, then update the README's
+   public-file and verification details.
 3. Update the collection README/index metadata so all three packages are
    discoverable and honestly describe their narration and review status.
 

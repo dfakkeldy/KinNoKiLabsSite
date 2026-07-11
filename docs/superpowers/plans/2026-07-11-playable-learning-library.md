@@ -10,7 +10,7 @@
 
 ## Global Constraints
 
-- Approved public titles are exactly `chicken-predators`, `rodents-in-the-walls`, and `cupw-collective-agreement`.
+- Approved public titles are exactly `chicken-predators`, `rodents-in-the-walls`, and `the-new-deal`.
 - *The Long Route* and *The Living Knowledge Base* remain private and must not reappear in source, catalog, generated output, or links.
 - Use the corrected `rodents-in-the-walls-v2` package, not the older public edition or the first local render.
 - Publish final Markdown, EPUB, selected cover, M4B, alignment sidecar, and public README only; never publish research folders, chapter workspaces, narration scratch, alternate covers, QA scratch, or private delivery metadata.
@@ -23,6 +23,16 @@
 - Create normal ready-for-review PRs against `main` in both public repositories; do not push directly to `main`.
 - Treat production as not fixed until both PRs are merged and the live player is verified.
 
+### Live-base reconciliation
+
+While Task 1 was being staged, Explainer Audiobooks PR #15 merged the approved,
+byte-identical *The New Deal* manuscript, EPUB, selected cover, and README under
+the canonical public slug `the-new-deal`. Dan approved consolidating on that
+live path rather than creating the originally planned duplicate
+`cupw-collective-agreement` public folder. The local custom-learning build keeps
+its historical `cupw-collective-agreement` source name; every public package,
+catalog, site, knowledge-base, and production reference uses `the-new-deal`.
+
 ## File map
 
 ### Explainer Audiobooks repository
@@ -30,7 +40,7 @@
 - Modify `README.md` — add all three books, actual narrated runtimes, and audio-package wording.
 - Modify `books/chicken-predators/README.md`; add its final `.m4b` and `.alignment.json`.
 - Replace the public `books/rodents-in-the-walls/` text package with the corrected v2 files; add its final `.m4b` and `.alignment.json`.
-- Create `books/cupw-collective-agreement/` with the approved public files.
+- Preserve the existing PR #15 files in `books/the-new-deal/` after byte comparison; modify its README and add `the-new-deal.m4b` plus `the-new-deal.alignment.json`.
 
 ### KinNoKi site repository
 
@@ -55,7 +65,9 @@
 - Add: `/Users/dfakkeldy/.codex/worktrees/explainer-playable-library/books/chicken-predators/{chicken-predators.m4b,chicken-predators.alignment.json}`
 - Replace: `/Users/dfakkeldy/.codex/worktrees/explainer-playable-library/books/rodents-in-the-walls/{README.md,rodents-in-the-walls.md,rodents-in-the-walls.epub,cover.png}`
 - Add: `/Users/dfakkeldy/.codex/worktrees/explainer-playable-library/books/rodents-in-the-walls/{rodents-in-the-walls.m4b,rodents-in-the-walls.alignment.json}`
-- Create: `/Users/dfakkeldy/.codex/worktrees/explainer-playable-library/books/cupw-collective-agreement/{README.md,cupw-collective-agreement.md,cupw-collective-agreement.epub,cover.png,cupw-collective-agreement.m4b,cupw-collective-agreement.alignment.json}`
+- Preserve after byte comparison: `/Users/dfakkeldy/.codex/worktrees/explainer-playable-library/books/the-new-deal/{the-new-deal.md,the-new-deal.epub,cover.png}`
+- Modify: `/Users/dfakkeldy/.codex/worktrees/explainer-playable-library/books/the-new-deal/README.md`
+- Add: `/Users/dfakkeldy/.codex/worktrees/explainer-playable-library/books/the-new-deal/{the-new-deal.m4b,the-new-deal.alignment.json}`
 
 **Interfaces:**
 - Consumes: final local packages under `/Users/dfakkeldy/Developer/explainer-audiobooks/.build/custom-learning-audiobooks/`.
@@ -101,13 +113,15 @@ for path in \
   "$BOOKS_WT/books/chicken-predators/chicken-predators.alignment.json" \
   "$BOOKS_WT/books/rodents-in-the-walls/rodents-in-the-walls.m4b" \
   "$BOOKS_WT/books/rodents-in-the-walls/rodents-in-the-walls.alignment.json" \
-  "$BOOKS_WT/books/cupw-collective-agreement/cupw-collective-agreement.m4b"; do
+  "$BOOKS_WT/books/the-new-deal/the-new-deal.m4b" \
+  "$BOOKS_WT/books/the-new-deal/the-new-deal.alignment.json"; do
   if [ ! -f "$path" ]; then echo "MISSING $path"; missing=1; fi
 done
 exit "$missing"
 ```
 
-Expected: exit 1 and at least the five listed files report `MISSING`.
+Expected: exit 1 and all six listed audio/sidecar files report `MISSING` on the
+PR #15 base.
 
 - [ ] **Step 4: Copy only the approved canonical artifacts**
 
@@ -125,12 +139,20 @@ cp "$SOURCE/rodents-in-the-walls-v2/dist/rodents-in-the-walls.m4b" "$BOOKS_WT/bo
 cp "$SOURCE/rodents-in-the-walls-v2/dist/rodents-in-the-walls.alignment.json" "$BOOKS_WT/books/rodents-in-the-walls/"
 cp "$SOURCE/rodents-in-the-walls-v2/dist/README.md" "$BOOKS_WT/books/rodents-in-the-walls/README.md"
 
-mkdir -p "$BOOKS_WT/books/cupw-collective-agreement"
-cp "$SOURCE/cupw-collective-agreement/dist/cupw-collective-agreement.md" "$BOOKS_WT/books/cupw-collective-agreement/"
-cp "$SOURCE/cupw-collective-agreement/dist/cupw-collective-agreement.epub" "$BOOKS_WT/books/cupw-collective-agreement/"
-cp "$SOURCE/cupw-collective-agreement/dist/cover-1.png" "$BOOKS_WT/books/cupw-collective-agreement/cover.png"
-cp "$SOURCE/cupw-collective-agreement/dist/cupw-collective-agreement.m4b" "$BOOKS_WT/books/cupw-collective-agreement/"
-cp "$SOURCE/cupw-collective-agreement/dist/cupw-collective-agreement.alignment.json" "$BOOKS_WT/books/cupw-collective-agreement/"
+# PR #15 already published the approved text package at books/the-new-deal.
+# Prove those public files are the approved bytes before adding audio.
+cmp -s "$SOURCE/cupw-collective-agreement/dist/cupw-collective-agreement.md" \
+  "$BOOKS_WT/books/the-new-deal/the-new-deal.md"
+cmp -s "$SOURCE/cupw-collective-agreement/dist/cupw-collective-agreement.epub" \
+  "$BOOKS_WT/books/the-new-deal/the-new-deal.epub"
+cmp -s "$SOURCE/cupw-collective-agreement/dist/cover-1.png" \
+  "$BOOKS_WT/books/the-new-deal/cover.png"
+
+# Keep the local source-build names, but explicitly rename public destinations.
+cp "$SOURCE/cupw-collective-agreement/dist/cupw-collective-agreement.m4b" \
+  "$BOOKS_WT/books/the-new-deal/the-new-deal.m4b"
+cp "$SOURCE/cupw-collective-agreement/dist/cupw-collective-agreement.alignment.json" \
+  "$BOOKS_WT/books/the-new-deal/the-new-deal.alignment.json"
 ```
 
 - [ ] **Step 5: Correct the Chicken Predators public README**
@@ -187,60 +209,45 @@ Use `apply_patch` after copying the v2 README:
 *** End Patch
 ```
 
-- [ ] **Step 7: Add the public README for The New Deal**
+- [ ] **Step 7: Update the existing PR #15 public README for The New Deal**
 
-Create `books/cupw-collective-agreement/README.md` with `apply_patch` using this complete content:
+Retain the existing title, manifest, chapter list, cover disclosure, and safety
+language in `books/the-new-deal/README.md`. Use `apply_patch` only for the new
+public audio facts:
 
-```markdown
-# The New Deal
-
-## Canada Post, CUPW, and What It Means for Rural Mail
-
-A public-safe educational audiobook about the 2026 Canada Post/CUPW collective
-agreements, the restructuring context around them, and the possible effects on
-rural and suburban mail carriers, relief employees, and small post offices.
-
-## Package
-
-| File | Purpose |
-|---|---|
-| `cupw-collective-agreement.md` | Canonical readable manuscript |
-| `cupw-collective-agreement.epub` | EPUB 3 edition with embedded cover and navigation |
-| `cover.png` | Selected original cover |
-| `cupw-collective-agreement.m4b` | Chaptered native Echo/Kokoro audiobook |
-| `cupw-collective-agreement.alignment.json` | Echo read-along sidecar |
-
-## Edition details
-
-- Word count: 16,471
-- Chapters: 9
-- Audio duration: 1:55:42.336
-- Narrator: Echo `am_michael`
-- Frontier author model: GLM-5.2
-- Research confidence: deep; Canada Post, CUPW, government, independent journalism, and critical analysis were compared
-- Publication permission: approved by Dan Fakkeldy on 2026-07-11
-
-## Scope and safety
-
-This is an educational overview of public labour documents and public
-restructuring proposals. It presents multiple perspectives and is not workplace,
-union, legal, financial, or career advice. Agreements and implementation details
-can change; consult the signed agreement, current employer and union material,
-and qualified advice for decisions that affect real employment rights.
-
-## Verification
-
-- EPUB ZIP integrity and navigation: passed.
-- M4B: AAC, 9 named chapters, 6,942.336 seconds.
-- Alignment JSON: 151 monotonic anchors.
-- Echo sidecar verification: `SIDECAR_OK`, 151 anchors, 9 chapters.
-- Cover: original bespoke artwork with no third-party imagery.
-
-## Honest disclosure
-
-Written with AI assistance and grounded in cited public sources, then
-spot-checked rather than expert-reviewed line by line. Treat it as a friendly
-starting point and verify important claims against primary sources.
+```diff
+*** Begin Patch
+*** Update File: books/the-new-deal/README.md
+@@
+-- **Runtime:** ~1.8 hours at 1.0x, ~1.5 hours at 1.25x
++- **Runtime:** 1:55:42 at 1.0x (6,942.336 seconds), about 1.5 hours at 1.25x
+@@
+ - `the-new-deal.epub` — EPUB 3 with nav + NCX
+ - `the-new-deal.md` — combined Markdown
+ - `cover.png` — selected initial release cover
++- `the-new-deal.m4b` — chaptered native Echo/Kokoro audiobook
++- `the-new-deal.alignment.json` — Echo read-along sidecar
+ - `README.md` — this manifest
+@@
+-The complete Echo listening package, including native M4B audio and alignment
+-sidecar, remains in the iCloud Books delivery folder. The public repository
+-follows the collection convention of publishing EPUB, combined Markdown, and
+-the selected cover.
++The public repository package includes the EPUB, combined Markdown, selected
++cover, chaptered native M4B audio, alignment sidecar, and this README. Private
++research, production scratch, and optional narration-QA artifacts remain out of
++the public package.
+@@
+ ### Passed after delivery
+-- ✅ M4B duration: 6,942.336 seconds (1:55:42)
+-- ✅ Alignment JSON parses successfully
++- ✅ M4B: AAC, 9 named chapters, 6,942.336 seconds (1:55:42)
++- ✅ Alignment JSON: 151 monotonic anchors
++- ✅ Echo sidecar verification: `SIDECAR_OK`, 151 anchors, 9 chapters
+@@
+-- Optional Echo QA (`echo-cli qa`) — will attempt after render completes
++- Optional Echo QA (`echo-cli qa`) — not included in the public package
+*** End Patch
 ```
 
 - [ ] **Step 8: Update the public collection index**
@@ -257,7 +264,7 @@ Use `apply_patch` in `README.md`:
  | [The Voice in the Machine](books/the-voice-in-the-machine/) | How on‑device AI narration works (Kokoro on ONNX Runtime) | 11 chapters · ~3.6 h | Opus 4.8 |
 +| [Chicken Predators](books/chicken-predators/) | Identify and prevent poultry predation in Cape Breton | 16 chapters · ~3.1 h | GLM-5.2 |
 +| [Rodents in the Walls](books/rodents-in-the-walls/) | Identify, exclude, and clean up after house-invading rodents | 9 chapters · ~2.0 h | GPT-5.6 Sol |
-+| [The New Deal](books/cupw-collective-agreement/) | Canada Post, CUPW, and the rural-mail implications of the 2026 agreements | 9 chapters · ~1.9 h | GLM-5.2 |
++| [The New Deal](books/the-new-deal/) | Canada Post, CUPW, and the rural-mail implications of the 2026 agreements | 9 chapters · ~1.9 h | GLM-5.2 |
 @@
 -Each folder holds the **`.epub`** (for any audiobook/reader app, including on‑device text‑to‑speech), a combined **`.md`** (readable right here on GitHub), and the cover.
 +Each folder holds the **`.epub`**, a combined **`.md`** readable on GitHub, and the cover. Narrated public packages also include a chaptered **`.m4b`** and Echo **`.alignment.json`** read-along sidecar.
@@ -270,7 +277,7 @@ Use `apply_patch` in `README.md`:
 BOOKS_WT=/Users/dfakkeldy/.codex/worktrees/explainer-playable-library
 ECHO_CLI=/Users/dfakkeldy/.codex/worktrees/echo-listen-cli/.build/cli/Build/Products/Release/echo-cli
 
-for slug in chicken-predators rodents-in-the-walls cupw-collective-agreement; do
+for slug in chicken-predators rodents-in-the-walls the-new-deal; do
   dir="$BOOKS_WT/books/$slug"
   unzip -t "$dir/$slug.epub" >/dev/null
   jq empty "$dir/$slug.alignment.json"
@@ -291,7 +298,7 @@ Expected: `SIDECAR_OK` with 231/16, 245/9, and 151/9 anchors/chapters.
 
 ```bash
 BOOKS_WT=/Users/dfakkeldy/.codex/worktrees/explainer-playable-library
-git -C "$BOOKS_WT" add README.md books/chicken-predators books/rodents-in-the-walls books/cupw-collective-agreement
+git -C "$BOOKS_WT" add README.md books/chicken-predators books/rodents-in-the-walls books/the-new-deal
 git -C "$BOOKS_WT" commit -m "feat: publish three playable learning audiobooks"
 git -C "$BOOKS_WT" push -u origin codex/publish-playable-books
 gh pr create --repo dfakkeldy/explainer-audiobooks \
@@ -312,7 +319,7 @@ Expected: a ready PR to `main`; record its URL as `BOOKS_PR_URL`. Do not merge i
 - Create: `Tests/listen/catalog.test.mjs`
 - Modify: `Tools/build-listen-catalog.sh:58-76`
 - Regenerate: `Resources/listen/books.json`
-- Create: `Resources/listen/books/{chicken-predators,rodents-in-the-walls,cupw-collective-agreement}/{blocks.json,alignment.json,cover.jpg}`
+- Create: `Resources/listen/books/{chicken-predators,rodents-in-the-walls,the-new-deal}/{blocks.json,alignment.json,cover.jpg}`
 
 **Interfaces:**
 - Consumes: pushed commit from Task 1 and Echo CLI `export-blocks`.
@@ -329,7 +336,7 @@ import { readFileSync } from 'node:fs';
 
 const listenRoot = new URL('../../Resources/listen/', import.meta.url);
 const catalog = JSON.parse(readFileSync(new URL('books.json', listenRoot), 'utf8'));
-const expectedPlayable = ['chicken-predators', 'rodents-in-the-walls', 'cupw-collective-agreement'];
+const expectedPlayable = ['chicken-predators', 'rodents-in-the-walls', 'the-new-deal'];
 
 test('catalog publishes exactly the three approved playable books with complete read-along assets', () => {
   const playable = catalog.books.filter((book) => book.audio.status === 'available');
@@ -378,7 +385,7 @@ Use `apply_patch`:
  the-voice-in-the-machine|The Voice in the Machine||Opus 4.8
 +chicken-predators|Chicken Predators||GLM-5.2
 +rodents-in-the-walls|Rodents in the Walls|Squirrels and Other Houseguests in Western Cape Breton|GPT-5.6 Sol
-+cupw-collective-agreement|The New Deal|Canada Post, CUPW, and What It Means for Rural Mail|GLM-5.2
++the-new-deal|The New Deal|Canada Post, CUPW, and What It Means for Rural Mail|GLM-5.2
  EOF
  )"
 @@
@@ -386,7 +393,7 @@ Use `apply_patch`:
 -AUDIO_EXPECTED=""
 +AUDIO_EXPECTED="chicken-predators
 +rodents-in-the-walls
-+cupw-collective-agreement"
++the-new-deal"
 @@
    [ -d "$book_dir" ] || { echo "error: allow-listed book missing from repo: $slug" >&2; exit 1; }
 +  [ -f "$book_dir/$slug.epub" ] || { echo "error: allow-listed EPUB missing: $slug" >&2; exit 1; }
@@ -556,8 +563,8 @@ test('learn page lists each approved new public book exactly once', () => {
   assert.equal(count('<h3>Chicken Predators</h3>'), 1);
   assert.equal(count('<h3>Rodents in the Walls</h3>'), 1);
   assert.equal(count('<h3>The New Deal</h3>'), 1);
-  assert.match(html, /books\/cupw-collective-agreement\/cupw-collective-agreement\.epub/);
-  assert.match(html, /books\/cupw-collective-agreement\/cupw-collective-agreement\.md/);
+  assert.match(html, /books\/the-new-deal\/the-new-deal\.epub/);
+  assert.match(html, /books\/the-new-deal\/the-new-deal\.md/);
 });
 
 test('private books remain absent from learn', () => {
@@ -586,9 +593,9 @@ Replace the old Rodents and Chicken card blocks, then append this card after the
     <p>A plain-language guide to the 2026 Canada Post and CUPW agreements, their restructuring context, and what the changes could mean for rural mail.</p>
   </div>
   <div class="learn-book-links">
-    <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/cupw-collective-agreement" target="_blank" rel="noopener">Book folder</a>
-    <a href="https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/cupw-collective-agreement/cupw-collective-agreement.epub">EPUB</a>
-    <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/cupw-collective-agreement/cupw-collective-agreement.md" target="_blank" rel="noopener">Read</a>
+    <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/the-new-deal" target="_blank" rel="noopener">Book folder</a>
+    <a href="https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/the-new-deal/the-new-deal.epub">EPUB</a>
+    <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/the-new-deal/the-new-deal.md" target="_blank" rel="noopener">Read</a>
   </div>
 </article>
 ```
@@ -667,7 +674,7 @@ Use the Browser skill on:
 ```text
 http://localhost:8000/listen/?book=chicken-predators
 http://localhost:8000/listen/?book=rodents-in-the-walls
-http://localhost:8000/listen/?book=cupw-collective-agreement
+http://localhost:8000/listen/?book=the-new-deal
 ```
 
 For each selection verify: visible player; correct title/cover/chapter count/duration; enabled play after metadata; advancing then pausing elapsed time; scrub and ±30 seconds; chapter seek; 1×/1.25×/1.5× speed; non-empty captions; **Listen** links to the other two narrated books; correct EPUB and **Read** targets. Expected: no empty-state message or console error.
@@ -796,7 +803,7 @@ Re-checked: 2026-07-11.
 Dan explicitly approved public publication of *The New Deal — Canada Post,
 CUPW, and What It Means for Rural Mail*. The approved playable set is
 `chicken-predators`, corrected-v2 `rodents-in-the-walls`, and
-`cupw-collective-agreement`. *The Long Route* and *The Living Knowledge Base*
+`the-new-deal`. *The Long Route* and *The Living Knowledge Base*
 remain private and absent.
 
 # Current Verified State
@@ -898,7 +905,7 @@ Expected: both states are `MERGED`. If either is open, report production as pend
 
 ```bash
 curl --fail --silent --show-error --location https://kinnokilabs.com/listen/books.json -o /tmp/kinnoki-live-books.json
-jq -e '[.books[] | select(.audio.status == "available") | .slug] == ["chicken-predators", "rodents-in-the-walls", "cupw-collective-agreement"]' /tmp/kinnoki-live-books.json
+jq -e '[.books[] | select(.audio.status == "available") | .slug] == ["chicken-predators", "rodents-in-the-walls", "the-new-deal"]' /tmp/kinnoki-live-books.json
 jq -e '.source.commit | test("^[0-9a-f]{40}$")' /tmp/kinnoki-live-books.json
 ```
 
@@ -909,7 +916,7 @@ Use the Browser skill on:
 ```text
 https://kinnokilabs.com/listen/?book=chicken-predators
 https://kinnokilabs.com/listen/?book=rodents-in-the-walls
-https://kinnokilabs.com/listen/?book=cupw-collective-agreement
+https://kinnokilabs.com/listen/?book=the-new-deal
 ```
 
 For each: confirm the title, play until elapsed time advances, pause, seek, select a chapter, observe a non-empty caption, and follow one **Listen** action to another title. Verify `/learn/` contains the three approved cards and neither private title.
