@@ -167,7 +167,7 @@
 .room-formats { display: flex; flex-wrap: wrap; gap: 10px; margin: -4px 0 0; }
 .room-formats[hidden], .room-empty[hidden] { display: none; }
 .room-formats a {
-  color: var(--text-muted);
+  color: var(--text);
   font-size: 12.5px;
   text-decoration: underline;
   text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent);
@@ -182,7 +182,8 @@
   border: 1px solid var(--separator);
   border-radius: var(--radius-card);
   background: var(--surface);
-  color: var(--text-muted);
+  color: var(--text);
+  font-size: 17px;
   line-height: 1.6;
   overflow-wrap: anywhere;
 }

@@ -9,6 +9,7 @@ const core = require('../../Resources/listen/listen-core.js');
 const listenRoot = new URL('../../Resources/listen/', import.meta.url);
 const playerSource = readFileSync(new URL('listen.js', listenRoot), 'utf8');
 const playerTemplate = readFileSync(new URL('index.html', listenRoot), 'utf8');
+const playerStyles = readFileSync(new URL('listen.css', listenRoot), 'utf8');
 const publishedCatalog = JSON.parse(readFileSync(new URL('books.json', listenRoot), 'utf8'));
 const emptyMessage = 'No book is streaming right now — the library below has the EPUBs, free.';
 const audioErrorMessage = 'The audio stream couldn’t load. It streams from the public library on GitHub — reload to retry, or grab the EPUB below.';
@@ -125,7 +126,7 @@ async function settle() {
   await new Promise((resolve) => setImmediate(resolve));
 }
 
-async function bootPlayer({ catalog = cloneCatalog(), catalogFailure = false } = {}) {
+async function bootPlayer({ catalog = cloneCatalog(), catalogFailure = false, mediaSession = false } = {}) {
   const ids = [
     'cover', 'bookTitle', 'bookSubtitle', 'bookByline', 'chapterCount', 'chapterList',
     'chapterNow', 'captionPanel', 'captionWords', 'captionText', 'status', 'emptyState',
@@ -140,10 +141,12 @@ async function bootPlayer({ catalog = cloneCatalog(), catalogFailure = false } =
 
   const main = new FakeNode('main');
   const room = new FakeNode('section');
+  const cta = new FakeNode('section');
   main.appendChild(room);
   room.appendChild(elements.get('status'));
   room.appendChild(elements.get('selectedFormats'));
   main.appendChild(elements.get('emptyState'));
+  main.appendChild(cta);
   main.appendChild(elements.get('library'));
   main.appendChild(elements.get('honesty'));
 
@@ -155,6 +158,7 @@ async function bootPlayer({ catalog = cloneCatalog(), catalogFailure = false } =
       this.duration = 11140;
       this.paused = true;
       this.playbackRate = 1;
+      this.playCalls = 0;
       this.listeners = new Map();
       this.children = [];
     }
@@ -177,6 +181,7 @@ async function bootPlayer({ catalog = cloneCatalog(), catalogFailure = false } =
     load() {}
 
     play() {
+      this.playCalls += 1;
       this.paused = false;
       this.dispatch('play');
       return Promise.resolve();
@@ -188,6 +193,7 @@ async function bootPlayer({ catalog = cloneCatalog(), catalogFailure = false } =
     }
   }
 
+  const documentListeners = new Map();
   const document = {
     title: '',
     getElementById: (id) => elements.get(id),
@@ -198,9 +204,23 @@ async function bootPlayer({ catalog = cloneCatalog(), catalogFailure = false } =
       node.textContent = text;
       return node;
     },
-    addEventListener() {},
+    addEventListener(type, listener) {
+      const listeners = documentListeners.get(type) || [];
+      listeners.push(listener);
+      documentListeners.set(type, listeners);
+    },
   };
   const debugLogs = [];
+  const mediaSessionHandlers = new Map();
+  const navigator = mediaSession ? {
+    mediaSession: {
+      playbackState: 'none',
+      setActionHandler(action, handler) {
+        mediaSessionHandlers.set(action, handler);
+      },
+      setPositionState() {},
+    },
+  } : {};
 
   runInNewContext(playerSource, {
     Audio: FakeAudio,
@@ -220,13 +240,51 @@ async function bootPlayer({ catalog = cloneCatalog(), catalogFailure = false } =
     },
     localStorage: { getItem: () => null, setItem() {} },
     location: { href: 'https://kinnokilabs.com/listen/', search: '?book=chicken-predators' },
-    navigator: {},
+    MediaMetadata: class MediaMetadata {
+      constructor(value) {
+        Object.assign(this, value);
+      }
+    },
+    navigator,
     requestAnimationFrame: (callback) => callback(),
     window: { EchoListenCore: core, addEventListener() {} },
   }, { filename: 'Resources/listen/listen.js' });
 
   await settle();
-  return { audio, debugLogs, elements, main, room };
+  return {
+    audio,
+    cta,
+    debugLogs,
+    elements,
+    main,
+    mediaSessionHandlers,
+    room,
+    dispatchKeydown(overrides = {}) {
+      const event = {
+        key: ' ',
+        defaultPrevented: false,
+        altKey: false,
+        ctrlKey: false,
+        metaKey: false,
+        shiftKey: false,
+        target: new FakeNode('body'),
+        preventDefault() {
+          this.defaultPrevented = true;
+        },
+        ...overrides,
+      };
+      for (const listener of documentListeners.get('keydown') || []) listener(event);
+      return event;
+    },
+  };
+}
+
+function cssDeclarations(selector) {
+  const start = playerStyles.indexOf(selector + ' {');
+  assert.ok(start >= 0, `${selector} CSS rule exists`);
+  const declarationsStart = playerStyles.indexOf('{', start) + 1;
+  const end = playerStyles.indexOf('}', declarationsStart);
+  return playerStyles.slice(declarationsStart, end);
 }
 
 function selectedFallbacks(player) {
@@ -252,12 +310,20 @@ test('the template keeps the empty state outside the player and selected formats
   const roomEnd = playerTemplate.indexOf('</section>', roomStart);
   const selectedFormats = playerTemplate.indexOf('id="selectedFormats"');
   const emptyState = playerTemplate.indexOf('id="emptyState"');
+  const cta = playerTemplate.indexOf('class="room-cta', roomEnd);
 
   assert.ok(roomStart >= 0 && roomEnd > roomStart);
   assert.ok(selectedFormats > roomStart && selectedFormats < roomEnd);
   assert.ok(emptyState > roomEnd);
+  assert.ok(cta > roomEnd);
   assert.match(playerTemplate, /id="selectedFormats"[^>]+aria-label="Other formats for this book"[^>]+hidden/);
   assert.match(playerTemplate, /id="emptyState"[^>]+role="status"[^>]+aria-live="polite"[^>]+hidden/);
+});
+
+test('fallback links and the primary empty state use the high-contrast theme text token', () => {
+  assert.match(cssDeclarations('.room-formats a'), /color:\s*var\(--text\);/);
+  assert.match(cssDeclarations('.room-empty'), /color:\s*var\(--text\);/);
+  assert.match(cssDeclarations('.room-empty'), /font-size:\s*17px;/);
 });
 
 test('an all-text catalog hides the player but shows one honest streaming status and all formats', async () => {
@@ -271,6 +337,7 @@ test('an all-text catalog hides the player but shows one honest streaming status
   assert.equal(isVisible(emptyState), true);
   assert.equal(emptyState.textContent, emptyMessage);
   assert.equal(isVisible(player.elements.get('status')), false);
+  assert.equal(isVisible(player.cta), true);
   assert.equal(library.children.length, 11);
   assert.equal(libraryLinks.filter((link) => link.textContent === 'Listen').length, 0);
 });
@@ -287,8 +354,8 @@ test('the selected playable book stays off the secondary list but keeps its EPUB
   assertChickenFallbacks(player);
 });
 
-test('an audio source error disables play without removing the selected book fallbacks', async () => {
-  const player = await bootPlayer();
+test('an audio source error blocks keyboard and MediaSession play without removing fallbacks', async () => {
+  const player = await bootPlayer({ mediaSession: true });
   const source = player.audio.children[0];
   assert.ok(source, 'selected playable book creates an audio source');
 
@@ -298,6 +365,28 @@ test('an audio source error disables play without removing the selected book fal
   assert.equal(player.elements.get('status').textContent, audioErrorMessage);
   assert.ok(player.elements.get('status').classList.values.has('error'));
   assertChickenFallbacks(player);
+
+  const keyEvent = player.dispatchKeydown();
+  assert.equal(keyEvent.defaultPrevented, true);
+  assert.equal(player.audio.playCalls, 0);
+  assert.equal(player.elements.get('status').textContent, audioErrorMessage);
+  assert.equal(player.elements.get('playPause').disabled, true);
+
+  player.mediaSessionHandlers.get('play')();
+  assert.equal(player.audio.playCalls, 0);
+  assert.equal(player.elements.get('status').textContent, audioErrorMessage);
+  assert.equal(player.elements.get('playPause').disabled, true);
+});
+
+test('an enabled normal player keeps Space-bar playback', async () => {
+  const player = await bootPlayer();
+  player.audio.dispatch('loadedmetadata');
+
+  assert.equal(player.elements.get('playPause').disabled, false);
+  const keyEvent = player.dispatchKeydown();
+  assert.equal(keyEvent.defaultPrevented, true);
+  assert.equal(player.audio.playCalls, 1);
+  assert.equal(player.audio.paused, false);
 });
 
 test('a catalog failure keeps its explicit visible retry status and no empty-state duplicate', async () => {

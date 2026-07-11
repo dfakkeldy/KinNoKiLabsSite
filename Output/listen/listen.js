@@ -254,6 +254,7 @@
   }
 
   function play() {
+    if (els.playPause.disabled) return;
     var p = audio.play();
     if (p && p.catch) {
       p.catch(function () {
@@ -261,7 +262,10 @@
       });
     }
   }
-  function toggle() { if (audio.paused) play(); else audio.pause(); }
+  function toggle() {
+    if (els.playPause.disabled) return;
+    if (audio.paused) play(); else audio.pause();
+  }
 
   function seekTo(t) {
     audio.currentTime = Math.min(Math.max(0, t), duration() || t);
