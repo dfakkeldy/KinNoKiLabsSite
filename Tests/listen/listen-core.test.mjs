@@ -168,8 +168,8 @@ test('subtitle skips heading/image active blocks in favor of cue reference text'
 
 test('library actions expose Listen first only for playable books', () => {
   const links = { epub: 'book.epub', read: 'book.md' };
-  assert.deepEqual(core.libraryActions({ slug: 'playable', audio: { status: 'available' }, links }), [
-    { label: 'Listen', href: '?book=playable', external: false, className: 'room-lib-listen' },
+  assert.deepEqual(core.libraryActions({ slug: 'playable & more', audio: { status: 'available' }, links }), [
+    { label: 'Listen', href: '?book=playable%20%26%20more', external: false, className: 'room-lib-listen' },
     { label: 'EPUB', href: 'book.epub', external: false, className: '' },
     { label: 'Read', href: 'book.md', external: true, className: '' },
   ]);
