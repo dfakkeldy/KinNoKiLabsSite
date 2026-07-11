@@ -41,6 +41,8 @@ done
 
 SITE_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT_DIR="$SITE_ROOT/Resources/listen"
+FINAL_BOOKS="$OUT_DIR/books"
+FINAL_CATALOG="$OUT_DIR/books.json"
 SHA="$(git -C "$BOOKS_REPO" rev-parse HEAD)"
 
 # The audio URL is pinned to $SHA, so that commit must be public and the
@@ -80,8 +82,216 @@ AUDIO_EXPECTED="chicken-predators
 rodents-in-the-walls
 the-new-deal"
 
-TMP_DIR="$(mktemp -d)"
-trap 'rm -rf "$TMP_DIR"' EXIT
+EXPECTED_BOOK_COUNT=11
+BUILD_ROOT="$(mktemp -d "$OUT_DIR/.listen-catalog-build.XXXXXX")"
+WORK_ROOT="$BUILD_ROOT/work"
+STAGE_ROOT="$BUILD_ROOT/stage"
+STAGED_BOOKS="$STAGE_ROOT/books"
+STAGED_CATALOG="$STAGE_ROOT/books.json"
+BACKUP_ROOT="$BUILD_ROOT/backup"
+BACKUP_BOOKS="$BACKUP_ROOT/books"
+BACKUP_CATALOG="$BACKUP_ROOT/books.json"
+PENDING_ROOT="$BUILD_ROOT/pending"
+PENDING_BOOKS="$PENDING_ROOT/books"
+PENDING_CATALOG="$PENDING_ROOT/books.json"
+PUBLISHING=0
+PUBLISHED=0
+HAD_FINAL_BOOKS=0
+HAD_FINAL_CATALOG=0
+INSTALLED_BOOKS=0
+INSTALLED_CATALOG=0
+
+mkdir -p "$WORK_ROOT" "$STAGED_BOOKS" "$BACKUP_ROOT" "$PENDING_ROOT"
+
+rollback_publish() {
+  local failed=0
+
+  # Move the new complete paths out of the public locations before restoring
+  # their predecessors. All paths live under OUT_DIR, so every move is a
+  # same-filesystem rename rather than a partial copy.
+  if [ "$INSTALLED_CATALOG" -eq 1 ] && [ -e "$FINAL_CATALOG" ]; then
+    mv -- "$FINAL_CATALOG" "$PENDING_CATALOG" || failed=1
+  fi
+  if [ "$INSTALLED_BOOKS" -eq 1 ] && [ -e "$FINAL_BOOKS" ]; then
+    mv -- "$FINAL_BOOKS" "$PENDING_BOOKS" || failed=1
+  fi
+
+  if [ "$HAD_FINAL_BOOKS" -eq 1 ]; then
+    if [ -e "$BACKUP_BOOKS" ]; then
+      mv -- "$BACKUP_BOOKS" "$FINAL_BOOKS" || failed=1
+    elif [ ! -e "$FINAL_BOOKS" ]; then
+      echo "error: rollback backup is missing: $BACKUP_BOOKS" >&2
+      failed=1
+    fi
+  fi
+  if [ "$HAD_FINAL_CATALOG" -eq 1 ]; then
+    if [ -e "$BACKUP_CATALOG" ]; then
+      mv -- "$BACKUP_CATALOG" "$FINAL_CATALOG" || failed=1
+    elif [ ! -e "$FINAL_CATALOG" ]; then
+      echo "error: rollback backup is missing: $BACKUP_CATALOG" >&2
+      failed=1
+    fi
+  fi
+
+  return "$failed"
+}
+
+cleanup() {
+  local status=$?
+  local rollback_status=0
+
+  trap - EXIT INT TERM
+  set +e
+  if [ "$PUBLISHING" -eq 1 ] && [ "$PUBLISHED" -eq 0 ]; then
+    echo "warning: catalog publish failed; restoring the previous bundle" >&2
+    rollback_publish
+    rollback_status=$?
+    if [ "$rollback_status" -ne 0 ]; then
+      status=1
+      echo "error: automatic rollback failed; recovery bundle preserved at $BUILD_ROOT" >&2
+    fi
+  fi
+
+  if [ "$rollback_status" -eq 0 ]; then
+    rm -rf "$BUILD_ROOT"
+  fi
+  exit "$status"
+}
+
+json_contains_absolute_path() {
+  jq -e '.. | strings | select(startswith("/") or test("^[A-Za-z]:[\\\\/]"))' "$1" >/dev/null
+}
+
+validate_staged_bundle() {
+  local book_count source_sha current_source_sha expected_catalog_slugs actual_catalog_slugs
+  local playable_slugs expected_asset_dirs actual_asset_dirs
+  local slug asset_dir asset_entries anchors_total anchors_resolved
+  local cover_path blocks_path sidecar_path json_file
+  local expected_asset_entries="alignment.json
+blocks.json
+cover.jpg"
+
+  jq -e . "$STAGED_CATALOG" >/dev/null || { echo "error: staged catalog is not valid JSON" >&2; return 1; }
+  book_count="$(jq '.books | length' "$STAGED_CATALOG")"
+  [ "$book_count" = "$EXPECTED_BOOK_COUNT" ] || {
+    echo "error: staged catalog has $book_count books; expected $EXPECTED_BOOK_COUNT" >&2
+    return 1
+  }
+
+  expected_catalog_slugs="$(while IFS='|' read -r expected_slug _; do
+    [ -n "$expected_slug" ] && printf '%s\n' "$expected_slug"
+  done <<<"$ALLOW_LIST")"
+  actual_catalog_slugs="$(jq -r '.books[].slug' "$STAGED_CATALOG")"
+  [ "$actual_catalog_slugs" = "$expected_catalog_slugs" ] || {
+    echo "error: staged catalog slugs/order do not match ALLOW_LIST" >&2
+    return 1
+  }
+
+  source_sha="$(jq -r '.source.commit' "$STAGED_CATALOG")"
+  current_source_sha="$(git -C "$BOOKS_REPO" rev-parse HEAD)"
+  [ "$source_sha" = "$SHA" ] && [ "$source_sha" = "$current_source_sha" ] || {
+    echo "error: staged catalog source $source_sha does not match current books HEAD $current_source_sha" >&2
+    return 1
+  }
+
+  playable_slugs="$(jq -r '.books[] | select(.audio.status == "available") | .slug' "$STAGED_CATALOG")"
+  [ "$playable_slugs" = "$AUDIO_EXPECTED" ] || {
+    echo "error: staged playable order does not match AUDIO_EXPECTED" >&2
+    return 1
+  }
+
+  expected_asset_dirs="$(printf '%s\n' "$AUDIO_EXPECTED" | LC_ALL=C sort)"
+  actual_asset_dirs="$(find "$STAGED_BOOKS" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | LC_ALL=C sort)"
+  [ "$actual_asset_dirs" = "$expected_asset_dirs" ] || {
+    echo "error: staged asset directories do not match AUDIO_EXPECTED" >&2
+    return 1
+  }
+  if find "$STAGED_BOOKS" -mindepth 1 -maxdepth 1 ! -type d -print -quit | grep -q .; then
+    echo "error: staged books root contains a non-directory entry" >&2
+    return 1
+  fi
+
+  if json_contains_absolute_path "$STAGED_CATALOG"; then
+    echo "error: staged catalog contains an absolute filesystem path" >&2
+    return 1
+  fi
+
+  while IFS= read -r slug; do
+    [ -n "$slug" ] || continue
+    asset_dir="$STAGED_BOOKS/$slug"
+    asset_entries="$(find "$asset_dir" -mindepth 1 -maxdepth 1 -exec basename {} \; | LC_ALL=C sort)"
+    [ "$asset_entries" = "$expected_asset_entries" ] || {
+      echo "error: staged assets for $slug are incomplete or contain extras" >&2
+      return 1
+    }
+
+    cover_path="$(jq -r --arg slug "$slug" '.books[] | select(.slug == $slug) | .cover' "$STAGED_CATALOG")"
+    blocks_path="$(jq -r --arg slug "$slug" '.books[] | select(.slug == $slug) | .text.blocks' "$STAGED_CATALOG")"
+    sidecar_path="$(jq -r --arg slug "$slug" '.books[] | select(.slug == $slug) | .alignment.sidecar' "$STAGED_CATALOG")"
+    [ "$cover_path" = "books/$slug/cover.jpg" ] || { echo "error: invalid staged cover path for $slug" >&2; return 1; }
+    [ "$blocks_path" = "books/$slug/blocks.json" ] || { echo "error: invalid staged blocks path for $slug" >&2; return 1; }
+    [ "$sidecar_path" = "books/$slug/alignment.json" ] || { echo "error: invalid staged sidecar path for $slug" >&2; return 1; }
+
+    jq -e '.blocks | type == "array" and length > 0' "$asset_dir/blocks.json" >/dev/null || {
+      echo "error: staged blocks are invalid or empty for $slug" >&2
+      return 1
+    }
+    jq -e 'type == "array" and length > 0' "$asset_dir/alignment.json" >/dev/null || {
+      echo "error: staged alignment is invalid or empty for $slug" >&2
+      return 1
+    }
+
+    anchors_total="$(jq 'length' "$asset_dir/alignment.json")"
+    anchors_resolved="$(jq --slurpfile blocks "$asset_dir/blocks.json" \
+      '[.[] | select(.blockId as $id | $blocks[0].blocks | any(.id == $id))] | length' \
+      "$asset_dir/alignment.json")"
+    [ "$anchors_resolved" = "$anchors_total" ] || {
+      echo "error: staged $slug has unresolved sidecar anchors" >&2
+      return 1
+    }
+
+    for json_file in "$asset_dir/blocks.json" "$asset_dir/alignment.json"; do
+      if json_contains_absolute_path "$json_file"; then
+        echo "error: staged asset contains an absolute filesystem path: $json_file" >&2
+        return 1
+      fi
+    done
+  done <<<"$AUDIO_EXPECTED"
+}
+
+publish_staged_bundle() {
+  if [ -e "$FINAL_BOOKS" ] && [ ! -d "$FINAL_BOOKS" ]; then
+    echo "error: final books path is not a directory: $FINAL_BOOKS" >&2
+    return 1
+  fi
+  if [ -e "$FINAL_CATALOG" ] && [ ! -f "$FINAL_CATALOG" ]; then
+    echo "error: final catalog path is not a file: $FINAL_CATALOG" >&2
+    return 1
+  fi
+
+  mv -- "$STAGED_BOOKS" "$PENDING_BOOKS"
+  mv -- "$STAGED_CATALOG" "$PENDING_CATALOG"
+  PUBLISHING=1
+
+  if [ -e "$FINAL_BOOKS" ]; then
+    HAD_FINAL_BOOKS=1
+    mv -- "$FINAL_BOOKS" "$BACKUP_BOOKS"
+  fi
+  if [ -e "$FINAL_CATALOG" ]; then
+    HAD_FINAL_CATALOG=1
+    mv -- "$FINAL_CATALOG" "$BACKUP_CATALOG"
+  fi
+
+  INSTALLED_BOOKS=1
+  mv -- "$PENDING_BOOKS" "$FINAL_BOOKS"
+  INSTALLED_CATALOG=1
+  mv -- "$PENDING_CATALOG" "$FINAL_CATALOG"
+  PUBLISHED=1
+}
+
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
 BOOK_JSONS=()
 while IFS='|' read -r slug title subtitle written_by; do
@@ -103,10 +313,10 @@ while IFS='|' read -r slug title subtitle written_by; do
     [ -f "$m4b" ] || { echo "error: approved playable book missing M4B: $slug" >&2; exit 1; }
     [ -f "$sidecar" ] || { echo "error: approved playable book missing alignment sidecar: $slug" >&2; exit 1; }
     echo "· $slug — audio available, building assets"
-    asset_dir="$OUT_DIR/books/$slug"
+    asset_dir="$STAGED_BOOKS/$slug"
     mkdir -p "$asset_dir"
 
-    probe="$TMP_DIR/$slug.probe.json"
+    probe="$WORK_ROOT/$slug.probe.json"
     ffprobe -v quiet -print_format json -show_chapters -show_format "$m4b" > "$probe"
     duration="$(jq -r '.format.duration | tonumber' "$probe")"
     chapters="$(jq '[.chapters[] | {
@@ -133,8 +343,8 @@ while IFS='|' read -r slug title subtitle written_by; do
       # per-run asset cache (leaks $HOME + a fresh UUID every rebuild);
       # only the asset name is meaningful downstream, so keep just that.
       jq '(.blocks[] | select(.kind == "image") | .imagePath) |= (split("/") | last)' \
-        "$asset_dir/blocks.json" > "$TMP_DIR/$slug.blocks.json"
-      mv "$TMP_DIR/$slug.blocks.json" "$asset_dir/blocks.json"
+        "$asset_dir/blocks.json" > "$WORK_ROOT/$slug.blocks.json"
+      mv "$WORK_ROOT/$slug.blocks.json" "$asset_dir/blocks.json"
       anchors_total="$(jq 'length' "$asset_dir/alignment.json")"
       anchors_resolved="$(jq --slurpfile blocks "$asset_dir/blocks.json" \
         '[.[] | select(.blockId as $id | $blocks[0].blocks | any(.id == $id))] | length' \
@@ -166,7 +376,7 @@ while IFS='|' read -r slug title subtitle written_by; do
         text: $text,
         alignment: { sidecar: $sidecarPath, hasWordTimings: $hasWords },
         links: $links
-      }' > "$TMP_DIR/$slug.book.json"
+      }' > "$WORK_ROOT/$slug.book.json"
   else
     if [ -f "$m4b" ] || [ -f "$sidecar" ]; then
       echo "error: unexpected playable media for non-audio-approved book: $slug" >&2
@@ -183,9 +393,9 @@ while IFS='|' read -r slug title subtitle written_by; do
         curator: $curator, writtenBy: $writtenBy,
         audio: { status: "none" },
         links: $links
-      }' > "$TMP_DIR/$slug.book.json"
+      }' > "$WORK_ROOT/$slug.book.json"
   fi
-  BOOK_JSONS+=("$TMP_DIR/$slug.book.json")
+  BOOK_JSONS+=("$WORK_ROOT/$slug.book.json")
 done <<<"$ALLOW_LIST"
 
 jq -s \
@@ -196,6 +406,9 @@ jq -s \
     generated: $generated,
     source: { repo: "dfakkeldy/explainer-audiobooks", commit: $commit },
     books: .
-  }' "${BOOK_JSONS[@]}" > "$OUT_DIR/books.json"
+  }' "${BOOK_JSONS[@]}" > "$STAGED_CATALOG"
 
-echo "WROTE $OUT_DIR/books.json ($(jq '.books | length' "$OUT_DIR/books.json") books, source $SHA)"
+validate_staged_bundle
+publish_staged_bundle
+
+echo "WROTE $FINAL_CATALOG ($(jq '.books | length' "$FINAL_CATALOG") books, source $SHA)"
