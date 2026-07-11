@@ -102,7 +102,7 @@ async function bootPlayer(savedRate) {
     'cover', 'bookTitle', 'bookSubtitle', 'bookByline', 'chapterCount', 'chapterList',
     'chapterNow', 'captionPanel', 'captionWords', 'captionText', 'status', 'playPause',
     'iconPlay', 'iconPause', 'back30', 'fwd30', 'speed', 'scrubber', 'timeNow',
-    'timeTotal', 'library', 'honesty',
+    'timeTotal', 'selectedFormats', 'emptyState', 'library', 'honesty',
   ];
   const elements = new Map(ids.map((id) => [id, new FakeNode()]));
   const main = new FakeNode();

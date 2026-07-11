@@ -21,9 +21,11 @@
     captionText: $('captionText'), status: $('status'), playPause: $('playPause'),
     iconPlay: $('iconPlay'), iconPause: $('iconPause'), back30: $('back30'), fwd30: $('fwd30'),
     speed: $('speed'), scrubber: $('scrubber'), timeNow: $('timeNow'), timeTotal: $('timeTotal'),
+    selectedFormats: $('selectedFormats'), emptyState: $('emptyState'),
     library: $('library'), honesty: $('honesty'),
   };
   var main = document.querySelector('.room-main');
+  var room = document.querySelector('.room');
 
   var audio = new Audio();
   audio.preload = 'metadata';
@@ -66,6 +68,10 @@
     els.status.textContent = text || '';
     els.status.classList.toggle('error', !!isError);
   }
+  function setEmptyState(text) {
+    els.emptyState.textContent = text || '';
+    els.emptyState.hidden = !text;
+  }
   function store(key, value) {
     try { localStorage.setItem(key, value); } catch (e) {}
   }
@@ -98,6 +104,25 @@
     els.honesty.appendChild(document.createTextNode('.'));
   }
 
+  function actionLink(action) {
+    var a = document.createElement('a');
+    a.href = action.href;
+    a.textContent = action.label;
+    if (action.className) a.className = action.className;
+    if (action.external) { a.target = '_blank'; a.rel = 'noopener'; }
+    return a;
+  }
+
+  function renderSelectedFormats() {
+    var actions = core.libraryActions(book).filter(function (action) {
+      return action.label !== 'Listen';
+    });
+    actions.forEach(function (action) {
+      els.selectedFormats.appendChild(actionLink(action));
+    });
+    els.selectedFormats.hidden = actions.length === 0;
+  }
+
   function renderLibrary(catalog) {
     catalog.books.forEach(function (b) {
       if (book && b.slug === book.slug) return;
@@ -108,12 +133,7 @@
       var links = document.createElement('span');
       links.className = 'room-lib-links';
       core.libraryActions(b).forEach(function (action) {
-        var a = document.createElement('a');
-        a.href = action.href;
-        a.textContent = action.label;
-        if (action.className) a.className = action.className;
-        if (action.external) { a.target = '_blank'; a.rel = 'noopener'; }
-        links.appendChild(a);
+        links.appendChild(actionLink(action));
       });
       li.appendChild(title);
       li.appendChild(links);
@@ -443,16 +463,20 @@
       if (!book) {
         // Nothing streamable: hide the player shell, keep the library +
         // Echo CTA so the page still earns its visit.
-        document.querySelector('.room').hidden = true;
-        setStatus('No book is streaming right now — the library below has the EPUBs, free.', false);
+        room.hidden = true;
+        setStatus('', false);
+        setEmptyState('No book is streaming right now — the library below has the EPUBs, free.');
         renderLibrary(catalog);
         return;
       }
+      room.hidden = false;
+      setEmptyState('');
       try {
         var saved = JSON.parse(read('kinnoki-listen-' + book.slug) || 'null');
         if (saved && typeof saved.t === 'number') pendingResumeT = saved.t;
       } catch (e) {}
       renderBook();
+      renderSelectedFormats();
       renderChapters();
       renderLibrary(catalog);
       wireControls();
@@ -474,6 +498,8 @@
     })
     .catch(function (err) {
       console.debug('[listen] catalog failed:', err);
+      room.hidden = false;
+      setEmptyState('');
       setStatus('The book catalog couldn’t load. Reload to retry.', true);
     });
 })();

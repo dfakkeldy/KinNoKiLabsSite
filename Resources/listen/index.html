@@ -81,6 +81,8 @@
 
         <p id="status" class="room-status" role="status" aria-live="polite">Loading the book&hellip;</p>
 
+        <nav id="selectedFormats" class="room-formats" aria-label="Other formats for this book" hidden></nav>
+
         <div class="room-transport" aria-label="Playback controls">
           <div class="room-buttons">
             <button id="back30" class="room-skip" type="button" aria-label="Back 30 seconds">
@@ -108,6 +110,8 @@
         </div>
       </div>
     </section>
+
+    <p id="emptyState" class="room-empty" role="status" aria-live="polite" hidden></p>
 
     <section class="room-cta bento-tint reveal" aria-label="About Echo">
       <div>
