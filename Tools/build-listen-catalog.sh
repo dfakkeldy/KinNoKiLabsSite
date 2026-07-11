@@ -17,10 +17,10 @@
 #   --no-blocks   skip echo-cli export-blocks (dev mode: captions will
 #                 NOT render — the sidecar has ids+timestamps, no text)
 #
-# The allow-list below is the ONLY publishing gate: tier-1 public books,
-# hand-maintained. audio.status comes from what exists on disk — a book
-# listed in AUDIO_EXPECTED that is missing its m4b or sidecar fails the
-# build loudly rather than shipping a broken entry.
+# Publication uses two independent, hand-maintained gates. ALLOW_LIST controls
+# which public text packages appear at all. AUDIO_EXPECTED is the exact subset
+# approved for playable audio. Approved audio must be complete, while playable
+# media found for any other public book fails rather than publishing by accident.
 
 set -euo pipefail
 
@@ -55,7 +55,7 @@ fi
 RAW_BASE="https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/$SHA"
 GH_BASE="https://github.com/dfakkeldy/explainer-audiobooks"
 
-# Tier-1 public allow-list: slug|title|subtitle|writtenBy
+# Public text/package allow-list: slug|title|subtitle|writtenBy
 # (The Long Route and The Living Knowledge Base were reclassified private
 # on 2026-07-09 — explainer-audiobooks PR #11 — and must NOT return here
 # without an explicit decision.)
@@ -74,7 +74,8 @@ the-new-deal|The New Deal|Canada Post, CUPW, and What It Means for Rural Mail|GL
 EOF
 )"
 
-# Books that MUST have audio on disk (build fails otherwise).
+# Exact playable-audio publication allow-list. Each listed slug must have both
+# an M4B and alignment sidecar; either file on any other public slug is rejected.
 AUDIO_EXPECTED="chicken-predators
 rodents-in-the-walls
 the-new-deal"
@@ -98,8 +99,9 @@ while IFS='|' read -r slug title subtitle written_by; do
     --arg read "$GH_BASE/blob/main/books/$slug/$slug.md" \
     '{folder: $folder, epub: $epub, read: $read}')"
 
-  if [ -f "$m4b" ]; then
-    [ -f "$sidecar" ] || { echo "error: $slug has audio but no alignment sidecar" >&2; exit 1; }
+  if grep -Fxq "$slug" <<<"$AUDIO_EXPECTED"; then
+    [ -f "$m4b" ] || { echo "error: approved playable book missing M4B: $slug" >&2; exit 1; }
+    [ -f "$sidecar" ] || { echo "error: approved playable book missing alignment sidecar: $slug" >&2; exit 1; }
     echo "· $slug — audio available, building assets"
     asset_dir="$OUT_DIR/books/$slug"
     mkdir -p "$asset_dir"
@@ -166,10 +168,11 @@ while IFS='|' read -r slug title subtitle written_by; do
         links: $links
       }' > "$TMP_DIR/$slug.book.json"
   else
-    echo "· $slug — no audio on disk, links-only entry"
-    if grep -qw "$slug" <<<"$AUDIO_EXPECTED"; then
-      echo "error: $slug is expected to have audio but $m4b is missing" >&2; exit 1
+    if [ -f "$m4b" ] || [ -f "$sidecar" ]; then
+      echo "error: unexpected playable media for non-audio-approved book: $slug" >&2
+      exit 1
     fi
+    echo "· $slug — no approved audio, links-only entry"
     jq -n \
       --arg slug "$slug" --arg title "$title" --arg subtitle "$subtitle" \
       --arg writtenBy "$written_by" --arg curator "Dan Fakkeldy" \
