@@ -188,6 +188,21 @@
      the active block. Cover-only books have no image blocks, so
      imageCue is null and captions still run — the renderer owns the
      cover, exactly as Echo's stage does. */
+  function libraryActions(book) {
+    const actions = [];
+    if (book.audio && book.audio.status === 'available') {
+      actions.push({
+        label: 'Listen',
+        href: '?book=' + encodeURIComponent(book.slug),
+        external: false,
+        className: 'room-lib-listen',
+      });
+    }
+    actions.push({ label: 'EPUB', href: book.links.epub, external: false, className: '' });
+    actions.push({ label: 'Read', href: book.links.read, external: true, className: '' });
+    return actions;
+  }
+
   function resolveSnapshot(input) {
     const blocks = input.blocks.slice().sort(function (a, b) {
       if (a.sequenceIndex !== b.sequenceIndex) return a.sequenceIndex - b.sequenceIndex;
@@ -256,6 +271,7 @@
     buildTimeline: buildTimeline,
     activeRowIndex: activeRowIndex,
     wordProgress: wordProgress,
+    libraryActions: libraryActions,
     resolveSnapshot: resolveSnapshot,
   };
 });

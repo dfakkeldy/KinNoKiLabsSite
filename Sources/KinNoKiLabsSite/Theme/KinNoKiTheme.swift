@@ -252,6 +252,7 @@ private func fontToggle(_ label: String) -> Node<HTML.BodyContext> {
         .attribute(named: "type", value: "button"),
         .attribute(named: "title", value: "OpenDyslexic font"),
         .attribute(named: "aria-label", value: "Toggle OpenDyslexic font"),
+        .attribute(named: "aria-pressed", value: "false"),
         .text(label)
     )
 }
@@ -295,6 +296,7 @@ private func mobileMenu(active: String) -> Node<HTML.BodyContext> {
                 .class("font-toggle"),
                 .attribute(named: "type", value: "button"),
                 .attribute(named: "aria-label", value: "Toggle OpenDyslexic font"),
+                .attribute(named: "aria-pressed", value: "false"),
                 .style("margin-top:24px;height:44px;padding:0 18px;align-self:flex-start;gap:8px;"),
                 .text("Aa · OpenDyslexic")
             )
@@ -344,6 +346,7 @@ private func siteFooter() -> Node<HTML.BodyContext> {
                     .class("font-toggle"),
                     .attribute(named: "type", value: "button"),
                     .attribute(named: "aria-label", value: "Toggle OpenDyslexic font"),
+                    .attribute(named: "aria-pressed", value: "false"),
                     .style("height:34px;padding:0 14px;gap:7px;"),
                     .text("Aa · OpenDyslexic")
                 )
@@ -897,9 +900,9 @@ private func learnMain() -> Node<HTML.BodyContext> {
           </article>
           <article class="learn-book-card">
             <div>
-              <p class="learn-book-runtime">9 chapters · about 2.2 hours</p>
+              <p class="learn-book-runtime">9 chapters · about 2.0 hours</p>
               <h3>Rodents in the Walls</h3>
-              <p>A practical, public-health-grounded guide to identifying, removing, and preventing mice and rats in a house.</p>
+              <p>A Western Cape Breton guide to identifying, excluding, repairing after, and safely cleaning up around squirrels and other rodents.</p>
             </div>
             <div class="learn-book-links">
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/rodents-in-the-walls" target="_blank" rel="noopener">Book folder</a>
@@ -910,7 +913,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
 
           <article class="learn-book-card">
             <div>
-              <p class="learn-book-runtime">16 chapters · about 3.4 hours</p>
+              <p class="learn-book-runtime">16 chapters · about 3.1 hours</p>
               <h3>Chicken Predators</h3>
               <p>A Cape Breton field guide to identifying what is taking your chickens, protecting the flock, and understanding the legal boundaries around wildlife.</p>
             </div>
@@ -918,6 +921,19 @@ private func learnMain() -> Node<HTML.BodyContext> {
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/chicken-predators" target="_blank" rel="noopener">Book folder</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/chicken-predators/chicken-predators.epub">EPUB</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/chicken-predators/chicken-predators.md" target="_blank" rel="noopener">Read</a>
+            </div>
+          </article>
+
+          <article class="learn-book-card">
+            <div>
+              <p class="learn-book-runtime">9 chapters · about 1.9 hours</p>
+              <h3>The New Deal</h3>
+              <p>A plain-language guide to the 2026 Canada Post and CUPW agreements, their restructuring context, and what the changes could mean for rural mail.</p>
+            </div>
+            <div class="learn-book-links">
+              <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/the-new-deal" target="_blank" rel="noopener">Book folder</a>
+              <a href="https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/the-new-deal/the-new-deal.epub">EPUB</a>
+              <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/the-new-deal/the-new-deal.md" target="_blank" rel="noopener">Read</a>
             </div>
           </article>
         </div>

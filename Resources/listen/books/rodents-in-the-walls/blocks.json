@@ -1,0 +1,1993 @@
+{
+  "blocks": [
+    {
+      "chapterIndex": null,
+      "id": "s0-b0",
+      "imagePath": "cover.png",
+      "kind": "image",
+      "sequenceIndex": 0,
+      "text": "",
+      "wordCount": 1
+    },
+    {
+      "chapterIndex": null,
+      "id": "s1-b0",
+      "kind": "heading",
+      "sequenceIndex": 1,
+      "text": "Rodents in the Walls",
+      "wordCount": 4
+    },
+    {
+      "chapterIndex": null,
+      "id": "s1-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 2,
+      "text": "by Dan Fakkeldy",
+      "wordCount": 3
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b0",
+      "kind": "heading",
+      "sequenceIndex": 3,
+      "text": "Chapter 1 - Something Is Living in the Wall",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 4,
+      "text": "There is a sound in your house that is not a normal house sound. You know this because you have lived here long enough to know what the house sounds like when it is empty. The furnace clicking on, the fridge compressor cycling, the wind through a window that is not quite sealed in its frame — those are the sounds of a building doing what a building does. The sound you are hearing is something else. It is alive. It is moving inside the structure, and it is made of teeth and claws and a body that has found a way in and decided to stay.",
+      "wordCount": 107
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b2",
+      "kind": "paragraph",
+      "sequenceIndex": 5,
+      "text": "What is it? That depends on the evidence, but Western Cape Breton changes the shortlist. In a region where houses sit close to spruce, fir, and mixed forest, squirrels deserve serious attention from the beginning. The red squirrel is a small, loud, rust-coloured rodent that readily uses attics, garages, camps, and other sheltered cavities. The northern flying squirrel is less visible because it moves at night. Either can use a building, and neither should be dismissed before you have watched the entry points and gathered more than one clue.",
+      "wordCount": 89
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b3",
+      "kind": "paragraph",
+      "sequenceIndex": 6,
+      "text": "The red squirrel makes the boldest impression and is a leading candidate when activity happens by day. The Nova Scotia Department of Natural Resources describes it as a bold, agile rodent with a brownish-red coat, cream or grey underparts, and a bushy tail. It is active during the day year-round, except during winter storms or cold spells. A red squirrel may sit on a branch and scold you, raid a feeder, or repeatedly cross the same section of roof. Given access, it may use an attic, wall cavity, garage, camp, or bird house for shelter, food storage, or a nest.",
+      "wordCount": 100
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b4",
+      "kind": "paragraph",
+      "sequenceIndex": 7,
+      "text": "The northern flying squirrel, meanwhile, is easy to overlook. It is smaller, with a buff-grey coat and large dark eyes. It is nocturnal, and a loose fold of fur-covered skin from front legs to back legs lets it glide between trees. Northern flying squirrels occur throughout Nova Scotia and use mature mixed forest and tree cavities. The provincial nuisance guidance also recognizes that flying squirrels can enter buildings. They are legally distinct from red squirrels: trapping or killing one requires a permit from the Department of Natural Resources, a difference we will return to before discussing removal.",
+      "wordCount": 97
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b5",
+      "kind": "paragraph",
+      "sequenceIndex": 8,
+      "text": "Then there are other possibilities. House mice and native deer mice enter buildings, and rats may occur around settled areas, food sources, or waterfront infrastructure. A chipmunk can use a foundation or crawlspace opening. Timing helps sort the list: daylight activity is consistent with a red squirrel, while night activity is consistent with a flying squirrel, mouse, or rat. But timing is not a verdict. A sound may travel from another part of the structure, an animal may be disturbed outside its usual schedule, and more than one species can be present. The useful question is not, “What is active at this hour?” It is, “What combination of timing, route, sound, damage, droppings, tracks, and sightings points to the same animal?”",
+      "wordCount": 121
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b6",
+      "kind": "paragraph",
+      "sequenceIndex": 9,
+      "text": "The sounds themselves are the first clue, and you can learn to read them. Scratching and scurrying that moves quickly along a path — not random, but following a route — suggests an animal that has established a runway, which it uses repeatedly. A scratching that stays in one place and sounds more rhythmic, more purposeful, is gnawing. Rodents gnaw continuously because their front incisors never stop growing, and the gnawing is what keeps the teeth worn down to a usable length. The difference is that a mouse gnaws to get through food packaging or to enlarge a gap by a millimetre or two, while a squirrel can chew through wood, plastic, aluminum soffit, and even electrical wiring. A squirrel's gnawing is louder, more insistent, and more destructive. It is the sound of an animal that is not just passing through but actively remodeling.",
+      "wordCount": 144
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b7",
+      "kind": "paragraph",
+      "sequenceIndex": 10,
+      "text": "You might also hear the scratch of claws on the roof or wall before the animal enters, because squirrels often climb the exterior before using an opening. Vocalizations can add to the record, but a chirp, chatter, or bark heard through a building is not a dependable species label. Houses alter sound, and several animals may share a sheltered space. Record the pattern and look for the route rather than naming an unseen animal from one noise.",
+      "wordCount": 77
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b8",
+      "kind": "paragraph",
+      "sequenceIndex": 11,
+      "text": "Framing and connected cavities can carry or distort sound. Movement inside one wall may seem louder in a room above or beside it, while a roof or flashing noise may seem internal. The loudest room therefore may not contain the animal.",
+      "wordCount": 41
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b9",
+      "kind": "paragraph",
+      "sequenceIndex": 12,
+      "text": "Use changes in direction and location as clues, then test them against exterior sightings, cameras, fresh damage, droppings, tracks, and nesting material. Physical evidence along a repeatable route is more reliable than acoustic triangulation through an unfamiliar wall.",
+      "wordCount": 38
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b10",
+      "kind": "paragraph",
+      "sequenceIndex": 13,
+      "text": "Imagine three versions of the same report: “Something is scratching in the wall.” In the first, the sound starts after sunrise, races from the gable end toward the chimney, and stops when a red squirrel appears on the roof. Fresh wood fibres lie below a chewed soffit corner. Time, route, sighting, and damage agree; the red-squirrel case is strong.",
+      "wordCount": 59
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b11",
+      "kind": "paragraph",
+      "sequenceIndex": 14,
+      "text": "In the second, the sound starts well after dark. A camera aimed safely at the roof records a small animal gliding in from a nearby tree and disappearing behind a vent. No daylight visitor uses that route. That evidence points toward a northern flying squirrel, and its protected status changes the next call.",
+      "wordCount": 53
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b12",
+      "kind": "paragraph",
+      "sequenceIndex": 15,
+      "text": "In the third, the sound is heard at night near the kitchen wall, while tiny droppings appear under the sink and food packaging shows fine tooth marks. No roof entry is found. The evidence now points toward a mouse even though the property is surrounded by squirrel habitat. The setting creates candidates; the evidence ranks them.",
+      "wordCount": 56
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b13",
+      "kind": "paragraph",
+      "sequenceIndex": 16,
+      "text": "These examples also show why loudness is unreliable. A red squirrel crossing loose attic insulation can sound like a much larger animal. A mouse gnawing where a pipe touches framing can make the whole wall vibrate. A bird moving on metal flashing may sound internal. Do not estimate body weight from the drama of the noise. Follow movement and connect it to physical signs.",
+      "wordCount": 64
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b14",
+      "kind": "paragraph",
+      "sequenceIndex": 17,
+      "text": "For several days, keep a listening note. Record the date, weather, time, room, height, direction of travel, duration, and whether anyone saw movement outdoors. Mark silence too. Activity that disappears only during heavy wind or a cold spell may fit red-squirrel behaviour; a pattern confined to darkness keeps the nocturnal candidates higher. The note does not need to become a science project. Its purpose is to stop memory from smoothing several different sounds into one story.",
+      "wordCount": 76
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b15",
+      "kind": "paragraph",
+      "sequenceIndex": 18,
+      "text": "If more than one household member hears it, compare observations before sharing conclusions. Ask where the sound began and ended rather than, “Did that sound like a squirrel?” The second question invites agreement; the first preserves evidence. One person may hear movement above the bathroom while another sees an animal at the north eave. Together those observations can reveal a route that neither would find alone.",
+      "wordCount": 66
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b16",
+      "kind": "paragraph",
+      "sequenceIndex": 19,
+      "text": "But before we get to solutions, there is an important frame to set. This is Cape Breton. Your house sits in wildlife habitat, and a squirrel in the structure is not a moral judgment on the homeowner. It means an animal found a route to shelter. The practical response is to identify that route, determine whether the space holds one animal or a nursery, remove or exclude the occupants lawfully, and make the repair stronger than the defect that failed.",
+      "wordCount": 80
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b17",
+      "kind": "paragraph",
+      "sequenceIndex": 20,
+      "text": "That does not mean you have to share it. It means you need to understand the animal, understand how it got in, understand what you can legally and humanely do about it, and understand how to prevent it from happening again. That is what this book is for. In the next chapter, we will get to know the animals themselves more closely — the red squirrel, the northern flying squirrel, and the occasional mouse or rat — because the right response depends on knowing which one you are dealing with. The sound in your wall is the start of the conversation, not the end of it.",
+      "wordCount": 106
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b0",
+      "kind": "heading",
+      "sequenceIndex": 21,
+      "text": "Chapter 2 - The Animals You Are Dealing With",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 22,
+      "text": "If you live in Western Cape Breton and something is living in your walls, two squirrels deserve priority among several plausible animals: the American red squirrel and the northern flying squirrel. Mice, rats, chipmunks, birds, bats, and raccoons remain alternatives because each can change the legal, humane, or practical response. Telling them apart is the first useful skill.",
+      "wordCount": 58
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b2",
+      "kind": "paragraph",
+      "sequenceIndex": 23,
+      "text": "Let us start with the leading daytime candidate. The American red squirrel — Tamiasciurus hudsonicus — is at home in Nova Scotia's softwood and mixed forests. It is smaller than the eastern grey squirrel familiar from many city parks, with reddish-brown upper fur, a pale underside, and a bushy tail. The Nova Scotia Department of Natural Resources calls it bold and agile. Anyone who has been scolded by one on a Cape Breton trail knows the performance: the animal faces you, flicks its tail, and chatters until it decides the boundary has been defended.",
+      "wordCount": 94
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b3",
+      "kind": "paragraph",
+      "sequenceIndex": 24,
+      "text": "Red squirrels are active during the day, year-round. They do not hibernate. In winter they den up during the worst storms and the deepest cold, but they may be active on a mild winter afternoon. They eat softwood cone seeds — spruce, fir, pine, tamarack — and the piles of cone scales called middens beneath their favourite feeding spots are a classic sign of a healthy local population. They also eat hardwood nuts if available, buds, flowers, mushrooms, insects, birds' eggs, and even the occasional mouse. They raid bird feeders with enthusiasm. And they take up residence in attics, garages, camps, and bird houses, where they build nests of shredded bark, grass, and insulation to raise their young.",
+      "wordCount": 118
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b4",
+      "kind": "paragraph",
+      "sequenceIndex": 25,
+      "text": "Nova Scotia's nuisance guidance describes two red-squirrel breeding periods, in March and July, with young born in April and August. Litters range from three to seven. That calendar does not prove that a particular sound is a nursery, but it raises the stakes. During those windows, nesting material, repeated trips by an adult, or high-pitched sounds from one fixed location are reasons to stop before sealing. A mother excluded from dependent young may chew a new route back in, while young trapped inside can die in the structure.",
+      "wordCount": 88
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b5",
+      "kind": "paragraph",
+      "sequenceIndex": 26,
+      "text": "The second squirrel is the northern flying squirrel — Glaucomys sabrinus. It is nocturnal, so night activity keeps it on the list; it does not make every night sound a flying squirrel. It is smaller than the red squirrel, with a buff-grey body, pale underside, and large dark eyes. The skin fold along each side, the patagium, lets it glide between trees, while the flattened tail helps steer. Northern flying squirrels occur throughout Nova Scotia and favour mature mixed forest. They nest in tree cavities and may share winter dens. A building cavity can serve similar shelter, so the species remains plausible even when no squirrel is seen outside by day.",
+      "wordCount": 111
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b6",
+      "kind": "paragraph",
+      "sequenceIndex": 27,
+      "text": "Here is a critical distinction that affects what you can do. Red squirrels are listed as harvestable wildlife, while trapping or killing a northern flying squirrel requires a Department of Natural Resources permit. Neither category is a do-it-yourself permission slip. Season, method, licence, land status, local discharge rules, transport, release, and species identification can all matter. Chapter 7 explains the current season and permit framework; before any capture or lethal action, confirm the proposed method with DNR or a licensed nuisance-wildlife operator.",
+      "wordCount": 82
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b7",
+      "kind": "paragraph",
+      "sequenceIndex": 28,
+      "text": "Now, the mice. A house mouse or deer mouse is far smaller than either squirrel and can use tiny structural gaps. Mouse activity tends to leave small droppings and fine gnawing around food or nesting material, but signs overlap enough that photographs or professional identification can be useful. The distinction matters less during cleanup: Public Health Agency of Canada guidance treats rodent droppings, urine, saliva, and nesting material as potentially harmful. Do not sweep or vacuum them dry. Chapter 8 gives the Canadian wet-cleaning procedure.",
+      "wordCount": 85
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b8",
+      "kind": "paragraph",
+      "sequenceIndex": 29,
+      "text": "Rats also belong on the broad list, especially around dense settlement, waterfront infrastructure, livestock feed, garbage, or other concentrated food. Their heavier tracks, rub marks, burrows, and droppings can distinguish them from mice, but no single sign should carry the whole diagnosis. Cone scales near a feeding perch, a squirrel seen using the roof, gnawing at a soffit, and activity consistent with that route make a much stronger squirrel case than daylight noise alone.",
+      "wordCount": 74
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b9",
+      "kind": "paragraph",
+      "sequenceIndex": 30,
+      "text": "How do you know which one you have? Build an evidence bundle. Watch the roofline from a safe position at different times without blocking the opening. Look for an animal repeatedly using a branch, wire, wall, or roof edge. Note fresh gnawing at fascia, soffit, vent screens, or trim. Photograph droppings and tracks without handling them. Listen for vocalizations, but do not assume every chirp or scratch identifies a species. The strongest identification comes when several clues converge on the same animal and the same opening.",
+      "wordCount": 86
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b10",
+      "kind": "paragraph",
+      "sequenceIndex": 31,
+      "text": "Time of day now takes its proper place. Red squirrels are normally active by day. Northern flying squirrels are active at night, as are mice and rats. Afternoon movement therefore raises the red squirrel on the list; it does not prove the case. Night movement keeps several species in play. Timing narrows the search, while route observation, physical signs, and a sighting or image close it.",
+      "wordCount": 66
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b11",
+      "kind": "paragraph",
+      "sequenceIndex": 32,
+      "text": "One more species deserves a mention because it sometimes surprises property owners in Cape Breton. The eastern chipmunk is a small, striped ground squirrel that can enter basements and crawl spaces through foundation-level defects. Chipmunks are active mainly by day, but timing and location still need to be combined with sightings, tracks, droppings, and the actual route. A chipmunk near the basement keeps the foundation inspection important; a sighting on the roof would broaden the search.",
+      "wordCount": 76
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b12",
+      "kind": "paragraph",
+      "sequenceIndex": 33,
+      "text": "Not every animal in an attic or wall is a rodent. Birds can enter damaged vents or soffits and produce scratching, wing beats, calls, and repeated daytime trips while feeding young. A woodpecker on siding can create rhythmic impact that travels through framing. Bats may use roofline gaps and emerge around dusk; they bring different legal, health, and seasonal-exclusion concerns and should not be treated as flying squirrels. A raccoon is much heavier, can tear roofing and soffits, and may sound like deliberate footsteps rather than quick scurrying. An animal too large, a visible bat, or a bird nest changes the plan and belongs with the appropriate wildlife guidance.",
+      "wordCount": 109
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b13",
+      "kind": "paragraph",
+      "sequenceIndex": 34,
+      "text": "Location within the building helps rank these alternatives. Fast movement concentrated at the roofline, soffit, or upper attic fits a climbing or gliding animal. Fine activity around cupboards, pipe penetrations, and basement food storage fits mice. Heavy movement across an attic floor, torn shingles, or a visibly enlarged roof opening may indicate a raccoon. Repeated fluttering at a vent suggests a bird. These are tendencies, not verdicts, but they keep the inspection aimed at the right part of the building.",
+      "wordCount": 80
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b14",
+      "kind": "paragraph",
+      "sequenceIndex": 35,
+      "text": "Damage texture adds another clue. Squirrel gnawing often appears at an exterior edge where the animal can brace itself: a vent frame, fascia corner, soffit return, or wooden trim around an opening. Mouse gnawing is often finer and appears around food, packaging, or small interior penetrations. Rats may leave rub marks along established ground-level routes. Birds carry stems, grass, feathers, or other nest material without the paired incisor marks of a rodent. Photograph scale beside a ruler without touching contaminated material.",
+      "wordCount": 81
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b15",
+      "kind": "paragraph",
+      "sequenceIndex": 36,
+      "text": "Droppings are supporting evidence, not something to handle or crush for identification. Size, shape, concentration, and location can help an experienced person, but old and dry samples change appearance and different species overlap. The safer practice is to photograph them in place, keep people and pets away, and use the wet-cleaning procedure once the occupancy question is resolved. If identification affects legality—as it does with flying squirrels—ask DNR or a licensed operator to interpret the full evidence rather than betting on a dropping chart.",
+      "wordCount": 84
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b16",
+      "kind": "paragraph",
+      "sequenceIndex": 37,
+      "text": "Tracks can sometimes be captured without baiting or disturbing the animal. Snow on a roof or deck may show an approach after a storm. Dust already present on a safe attic surface may preserve prints. A camera often provides clearer evidence than deliberately spreading tracking powder, which can become airborne or contaminate the space. A flying squirrel's arrival may be recorded as a glide followed by a landing on vertical siding or a tree-facing roof edge; a red squirrel is more likely to be seen running a branch, line, wall, or roof route in daylight.",
+      "wordCount": 95
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b17",
+      "kind": "paragraph",
+      "sequenceIndex": 38,
+      "text": "Then consider absence. Not seeing a red squirrel during one observation period does not remove it from the list. Not hearing activity during a Cape Breton storm may reflect the animal remaining still inside. Not finding droppings in the living space says little about an animal confined to an attic. Negative evidence becomes useful only when the observation was capable of finding the thing: a camera covering the actual opening across several normal activity cycles is meaningful; one glance at the wrong eave is not.",
+      "wordCount": 85
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b18",
+      "kind": "paragraph",
+      "sequenceIndex": 39,
+      "text": "A practical identification statement should include its confidence: “Likely red squirrel because it was seen entering this soffit by day and fresh gnawing matches the route.” Or, “Possible flying squirrel because activity is nocturnal and the camera shows a small gliding animal; species confirmation needed before exclusion.” Or, “Unknown rodent; signs occur at both foundation and attic, so there may be more than one entry.” Confidence language keeps the plan flexible as new evidence arrives.",
+      "wordCount": 75
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b19",
+      "kind": "paragraph",
+      "sequenceIndex": 40,
+      "text": "For the rest of this book, squirrels take the main role because both red and northern flying squirrels are locally plausible and because squirrel biology changes exclusion, legality, and repair. Mice and rats remain where they change diagnosis, cleanup, or control. The goal is not to crown a species before the inspection. It is to give squirrels the weight they deserve, then let evidence decide.",
+      "wordCount": 65
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b0",
+      "kind": "heading",
+      "sequenceIndex": 41,
+      "text": "Chapter 3 - How They Get In",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 42,
+      "text": "Squirrel inspection requires a different mindset from a mouse-only gap check. Look for openings large enough for a small squirrel, but do not depend on a universal coin or ball comparison. Body size varies, an opening may be irregular, and squirrels use existing defects and enlarge them by gnawing. The vulnerable defect matters as much as its present measurement.",
+      "wordCount": 59
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b2",
+      "kind": "paragraph",
+      "sequenceIndex": 43,
+      "text": "Rodents gnaw, and squirrels can turn a weak building detail into an entrance. The Nova Scotia Department of Natural Resources says squirrels use existing openings and enlarge small ones by gnawing. Wood trim, damaged soffit, light vent screening, and weathered edges are more vulnerable than sound metal guards or properly repaired substrate. The useful inspection question is not how quickly a squirrel could finish the job. It is whether the material already gives teeth an edge to work on.",
+      "wordCount": 79
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b3",
+      "kind": "paragraph",
+      "sequenceIndex": 44,
+      "text": "This means that inspecting your house for entry points is not just about looking for holes that are already large enough. It is about looking for any defect that a squirrel could turn into a larger opening. A lifted shingle. A loose soffit panel. A crack where the chimney flashing meets the roof. A gap where the utility line enters the house. A hole in the foundation that a chipmunk could wriggle through. All of these are potential squirrel entry points, even if they do not look like one yet.",
+      "wordCount": 90
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b4",
+      "kind": "paragraph",
+      "sequenceIndex": 45,
+      "text": "Potential entry points fall into a few useful inspection categories. None should replace a complete ground-to-roof perimeter check.",
+      "wordCount": 18
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b5",
+      "kind": "paragraph",
+      "sequenceIndex": 46,
+      "text": "Begin with roof-level access because squirrels climb and because eaves, soffits, fascia, and gable vents contain many transitions worth inspecting. Overhanging branches can provide an approach. A loose soffit panel or unsupported corner may give a squirrel an edge it can enlarge by gnawing, creating a route into the attic.",
+      "wordCount": 50
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b6",
+      "kind": "paragraph",
+      "sequenceIndex": 47,
+      "text": "Gable-end vents are another inspection point. Many have louvres or screens to preserve attic ventilation. Damaged or light screening may not resist gnawing; once it fails, the vent can become a direct opening into the attic.",
+      "wordCount": 36
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b7",
+      "kind": "paragraph",
+      "sequenceIndex": 48,
+      "text": "Chimney flashing and plumbing stacks are the third roofline entry. The flashing is the metal strip that seals the gap between the chimney and the roof. It can corrode over time, or the sealant around it can crack, creating a gap at the point where the chimney passes through the roof. Plumbing stacks — the vertical pipes that vent your drains through the roof — have a rubber boot around them that can dry out and crack. Both gaps are small, but a squirrel can enlarge them.",
+      "wordCount": 87
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b8",
+      "kind": "paragraph",
+      "sequenceIndex": 49,
+      "text": "Roof-to-wall junctions, especially at dormer corners and where an addition meets the original structure, are the fourth category. These junctions are sealed with caulking or flashing, and the seal fails over time. A squirrel finds a gap at the junction, chews it wider, and has a route into the wall cavity from above.",
+      "wordCount": 53
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b9",
+      "kind": "paragraph",
+      "sequenceIndex": 50,
+      "text": "Now inspect the rest of the house from the ground up. Foundation gaps, crawlspace vents without secure guards, basement window wells, and utility penetrations can lead into crawlspaces or connected cavities. Do not dismiss a lower route simply because the sound seems to come from above.",
+      "wordCount": 46
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b10",
+      "kind": "paragraph",
+      "sequenceIndex": 51,
+      "text": "Tree branches, vines, and utility lines deserve separate attention because they are routes rather than openings. A branch touching or overhanging the roof gives a squirrel an easy approach, and the provincial guidance recommends trimming branches to discourage access. It does not promise that one universal clearance distance will stop an agile squirrel. The objective is practical separation where tree health, ownership, utility safety, and wind exposure allow it. Never cut near a power line yourself; use the utility or a qualified arborist. Vines, trellises, stacked materials, and attached fences can provide other approaches to the roofline or siding.",
+      "wordCount": 99
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b11",
+      "kind": "paragraph",
+      "sequenceIndex": 52,
+      "text": "The inspection threshold has therefore changed. Record every opening that might already admit the animal and every soft, loose, rotten, or poorly screened detail that could be enlarged. The Nova Scotia Department of Natural Resources says the most effective prevention is keeping the structure in good repair and closing openings with heavy wire mesh. Tight soffits, intact flashing, secure vent guards, sound trim, and repaired foundation openings reduce the opportunity. They do not make a house magically wildlife-proof; they remove the defects that make entry easy.",
+      "wordCount": 86
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b12",
+      "kind": "paragraph",
+      "sequenceIndex": 53,
+      "text": "Western Cape Breton houses add a few patterns worth recognizing. A century-old house may have several siding layers, a stone or block foundation, additions built at different heights, and eaves altered when roofing or insulation changed. A rural camp may have long periods without occupants, giving an animal time to establish a den before anyone hears it. A newer house may have vinyl soffit that looks continuous from the ground but has one poorly supported return at a corner. Age alone does not predict entry; transitions and repairs do.",
+      "wordCount": 89
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b13",
+      "kind": "paragraph",
+      "sequenceIndex": 54,
+      "text": "Walk the perimeter in a fixed direction so no wall is forgotten. Start at one corner and photograph each elevation wide enough to show context, then take close views of defects. Note downspouts, heat-pump lines, hose bibs, electrical and telecom entries, decks, porch roofs, bay windows, additions, and attached sheds. At every roof change, ask where water flows and where two materials meet. Those junctions are where small failures become access.",
+      "wordCount": 71
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b14",
+      "kind": "paragraph",
+      "sequenceIndex": 55,
+      "text": "Look below as well as above. Fresh wood chips, insulation fragments, or screen pieces on the ground may reveal work happening out of sight. Dark rubs, repeated claw marks, or chewed paint at one corner can mark the approach. Cone scales and cached food near a structure support squirrel activity in the area but do not prove entry; connect them to the building route before drawing that conclusion.",
+      "wordCount": 68
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b15",
+      "kind": "paragraph",
+      "sequenceIndex": 56,
+      "text": "Inside an accessible attic, daylight may reveal a hole, but use care. Turn off or shield your light briefly only from a safe platform, never while balancing on joists. Look for concentrated daylight rather than assuming every glow through a vent is a defect. Follow compressed insulation, droppings, chewed wood, stored food, and nest material toward the exterior. Do not crawl to the far eave where there is no safe floor, and do not step between framing members onto ceiling drywall.",
+      "wordCount": 81
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b16",
+      "kind": "paragraph",
+      "sequenceIndex": 57,
+      "text": "Smoke pencils, incense, and other airflow tricks are sometimes suggested for finding gaps. Around an attic they can introduce fire or respiratory risk and may show air leakage unrelated to animal access. A professional blower-door test can map air leakage for energy work, but it is not a substitute for wildlife-route observation. Use the simplest safe evidence first: sightings, cameras, fresh damage, and aligned interior and exterior signs.",
+      "wordCount": 68
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b17",
+      "kind": "paragraph",
+      "sequenceIndex": 58,
+      "text": "Do not repair as you discover. Mark defects as active, possibly active, or apparently unused. The classification can change after monitoring. An active hole has observed traffic or fresh signs that continue. A possibly active hole connects to interior evidence but lacks a sighting. An apparently unused defect has no fresh evidence and sits away from the route. This map is what allows secondary repairs without trapping the occupants behind the first patch.",
+      "wordCount": 73
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b18",
+      "kind": "paragraph",
+      "sequenceIndex": 59,
+      "text": "Finish the inspection by asking what you could not see. A steep roof, snow-covered eave, chimney backside, high dormer, attached porch ceiling, or inaccessible crawlspace leaves blind spots. Write those down rather than treating them as clear. A roofer, wildlife operator, or camera on an extension pole may inspect them safely. Unseen is not the same as intact.",
+      "wordCount": 58
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b19",
+      "kind": "paragraph",
+      "sequenceIndex": 60,
+      "text": "Use a repeatable sequence: inspect every exterior elevation from foundation to roofline, then compare those defects with safe interior observations. Droppings or disturbed insulation near a soffit defect may connect the entry to the activity, but occupancy must still be assessed before closure. Only then proceed to the sealing chapter.",
+      "wordCount": 50
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b0",
+      "kind": "heading",
+      "sequenceIndex": 61,
+      "text": "Chapter 4 - Visitor, Den, or Nursery?",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 62,
+      "text": "Finding the opening tells you how an animal enters. It does not tell you what the space means to that animal. A squirrel may be making a brief inspection, using the building as a food cache, sleeping there between foraging trips, sheltering from a Cape Breton storm, sharing a winter den, or raising young. Those situations can sound similar from the room below. They require different patience above it.",
+      "wordCount": 69
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b2",
+      "kind": "paragraph",
+      "sequenceIndex": 63,
+      "text": "This is the point where a quick repair can turn a manageable wildlife problem into a dead animal, an orphaned litter, or a frantic mother chewing through a second part of the house. Before anything is sealed, you need to answer a more precise question: who is inside, and who depends on whom?",
+      "wordCount": 53
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b3",
+      "kind": "paragraph",
+      "sequenceIndex": 64,
+      "text": "Start with the pattern of movement. A visitor may approach once, explore, and leave. A resident uses a route. The sound begins in a similar place, follows a similar path, and ends in a similar pocket of the structure. Outdoors, the same animal may appear at the same roof edge again and again. Fresh chewing accumulates around one opening. Indoors, nesting material, food remains, droppings, or compressed paths through insulation show that the space has become more than a shortcut.",
+      "wordCount": 80
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b4",
+      "kind": "paragraph",
+      "sequenceIndex": 65,
+      "text": "A red squirrel food cache can look almost comic. Cone pieces, seeds, nuts, mushrooms, or other stored material may appear in a dry attic corner or wall pocket. The squirrel is bringing the outdoor pantry indoors. That behaviour does not necessarily mean young are present, but it does mean the building has become part of the animal's territory. Removing one day’s visitor without changing the route or the attraction will not solve that.",
+      "wordCount": 73
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b5",
+      "kind": "paragraph",
+      "sequenceIndex": 66,
+      "text": "A den has a different feel. Nesting material is concentrated rather than scattered. The animal returns to one protected cavity after feeding. During bad weather, activity outside may pause while movement inside continues. A northern flying squirrel can complicate the picture because several individuals may share a winter den. Hearing more movement than one small animal seems capable of making does not automatically mean a litter. It may mean several adults using the same sheltered space.",
+      "wordCount": 76
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b6",
+      "kind": "paragraph",
+      "sequenceIndex": 67,
+      "text": "A nursery raises the stakes. Nova Scotia guidance describes red-squirrel young being born in April and August, following breeding periods in March and July. Northern flying squirrels breed in March or April and give birth in April or May. These are not exclusion calendars carved in stone. Weather varies, individuals do not read fact sheets, and a heated building can alter the comfort of a nest site. The dates are warning windows, not permission outside them.",
+      "wordCount": 76
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b7",
+      "kind": "paragraph",
+      "sequenceIndex": 68,
+      "text": "The behavioural clues matter more. An adult repeatedly entering with nesting material or food is one. A fixed pocket of high, faint sounds is another. An animal that leaves and returns along the same route many times in a day may be provisioning young. If you can safely observe the entry from the ground, write down the time, direction, and whether the squirrel is carrying anything. A phone photograph or short video can help a licensed operator or DNR staff identify the species without relying on memory.",
+      "wordCount": 87
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b8",
+      "kind": "paragraph",
+      "sequenceIndex": 69,
+      "text": "Do not open a wall simply to settle your curiosity. Cutting into a cavity can injure an animal, release contamination into the room, damage wiring or plumbing, and leave you face to face with a frightened squirrel. Do not reach into a nest. Even a small red squirrel can bite deeply, and wildlife should not be handled barehanded. If the suspected nest is inside an attic that can be entered safely, inspection still requires restraint: good light, gloves, respiratory protection when contamination is present, and no disturbing of the nest just to count occupants.",
+      "wordCount": 94
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b9",
+      "kind": "paragraph",
+      "sequenceIndex": 70,
+      "text": "Thermal cameras and small inspection cameras can sometimes help, but they have limits. A warm patch in insulation might be an animal, a heating duct, a pipe, or sun-warmed roofing. A camera inserted through an existing access may show nesting material but miss animals tucked behind it. Technology adds evidence; it does not replace species knowledge or a safe physical inspection.",
+      "wordCount": 61
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b10",
+      "kind": "paragraph",
+      "sequenceIndex": 71,
+      "text": "The same is true of sound recordings. Red squirrels are known for chatter and scolding calls, while flying squirrels may make quieter chirps. But houses distort sound. A bird on the roof can seem to be inside the wall. A mouse in a ceiling can seem larger when the joists carry each scratch. Use recordings to preserve the pattern and location, not to diagnose a species from one mysterious noise clip.",
+      "wordCount": 71
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b11",
+      "kind": "paragraph",
+      "sequenceIndex": 72,
+      "text": "Now consider the season and weather in Western Cape Breton. A hard wind can lift a weak soffit or loosen flashing, creating a new route. Cold rain, wet snow, and freeze-thaw cycles make a dry cavity attractive. A sudden appearance after a storm may indicate emergency shelter. Repeated use over mild weather, combined with stored food or nesting material, points more strongly to an established den. Spring and late summer deserve extra caution because of red-squirrel young; spring also overlaps with northern flying-squirrel young.",
+      "wordCount": 84
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b12",
+      "kind": "paragraph",
+      "sequenceIndex": 73,
+      "text": "The distinction between temporary shelter and a nursery changes the next move. If you are confident that a single animal is using an opening and no dependent young are present, exclusion may be possible once all alternate routes are found. If young may be present, a simple one-way exit can separate the mother from them. She may then claw and chew at every nearby weak point to get back, while the young remain trapped. That is worse for the animals and worse for the house.",
+      "wordCount": 85
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b13",
+      "kind": "paragraph",
+      "sequenceIndex": 74,
+      "text": "The humane solution in a nursery case is family-aware removal. In practice, that often means hiring a licensed nuisance-wildlife operator who can confirm the species, locate the nest, keep mother and young together, and choose a method appropriate to their stage of development and the building. It may mean delaying final exclusion until the young are mobile enough to leave with the mother, while temporarily protecting vulnerable areas and monitoring the opening. It may mean a controlled reunion after the nest is moved to a suitable exterior shelter. The correct choice depends on access, species, age of the young, weather, and provincial requirements. This book cannot inspect those conditions from a page, so it should not pretend one technique fits them all.",
+      "wordCount": 122
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b14",
+      "kind": "paragraph",
+      "sequenceIndex": 75,
+      "text": "Do not try to age hidden young from a calendar alone. Newborns, furred but dependent young, and mobile juveniles require different handling, and the sounds may be too faint or distorted to distinguish them. A quiet nest is not necessarily an empty nest. A mother may remain motionless when people enter the attic, or young may be tucked behind insulation beyond view. Professional inspection earns its value by combining season, nest condition, adult behaviour, access, and direct observation.",
+      "wordCount": 78
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b15",
+      "kind": "paragraph",
+      "sequenceIndex": 76,
+      "text": "Delay is not always harmless either. Chewed wiring, water entry, or a severely damaged soffit may make weeks of waiting unsafe. In that case, family-aware removal and immediate structural work may need to be coordinated rather than postponed. An electrician may isolate a damaged circuit while the operator manages the nest. A roofer may create safe access or a temporary weather barrier that does not trap the animals. Humane treatment and urgent building safety are not opposing goals when the work is planned together.",
+      "wordCount": 84
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b16",
+      "kind": "paragraph",
+      "sequenceIndex": 77,
+      "text": "If the nest is moved, the new location and enclosure must suit the species and protect the family from weather and predators while allowing the mother to retrieve or continue caring for young. This is not a cardboard box left on a deck. Because the design and placement are case-specific, follow the operator's or wildlife rehabilitation specialist's method rather than improvising from a video. Do not feed or attempt to raise wildlife unless directed by an authorized wildlife rehabilitation specialist.",
+      "wordCount": 80
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b17",
+      "kind": "paragraph",
+      "sequenceIndex": 78,
+      "text": "What if a juvenile appears alone in the living space? Isolate pets and people, give the animal a clear exterior exit if that can be done safely, and avoid handling. Its presence may indicate that the nest connects to the room through an interior gap. Even if the juvenile leaves, inspect for siblings and repair the interior route only after the family and exterior entry are accounted for. One visible animal can be evidence of a larger hidden group.",
+      "wordCount": 79
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b18",
+      "kind": "paragraph",
+      "sequenceIndex": 79,
+      "text": "Flying squirrels add a legal reason to pause. Because trapping or killing them requires a permit in Nova Scotia, uncertain identification is not a minor inconvenience. If nocturnal activity, multiple animals, large dark eyes caught on a camera, or a gliding approach suggest a flying squirrel, contact DNR or a licensed operator before installing any exclusion device. Its legal and humane status depends on how it operates and what happens to the animal and any young. Have the plan confirmed before testing it on the building.",
+      "wordCount": 86
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b19",
+      "kind": "paragraph",
+      "sequenceIndex": 80,
+      "text": "What if the animal seems to be trapped already? A squirrel that has fallen down a wall void may scratch continuously in one location without travelling. It may become quiet from exhaustion, then resume when it hears movement. Do not assume silence means it escaped. Look for a route at the top of the cavity and for access through a basement or utility opening, but avoid cutting blindly. If an animal cannot climb out, a wildlife operator, contractor, or in some cases an animal-control contact may need to open the cavity safely, avoiding electrical and plumbing runs, then repair it after removal.",
+      "wordCount": 102
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b20",
+      "kind": "paragraph",
+      "sequenceIndex": 81,
+      "text": "Odour changes the situation. A strong, localized smell with flies and no recent movement may indicate a dead animal. That becomes a removal and sanitation problem rather than an exclusion problem. The carcass should not be handled barehanded, and contaminated insulation may need to be removed. Chapter 8 covers cleanup; the immediate point is that you still need to find and repair the entry. A carcass removed without exclusion leaves the building available to the next squirrel.",
+      "wordCount": 77
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b21",
+      "kind": "paragraph",
+      "sequenceIndex": 82,
+      "text": "Consider a late-March case. A homeowner hears movement in a west-facing soffit most mornings. One red squirrel is seen leaving, then returning with strips of bark. The easy story is that the adult leaves every day, so the hole can be closed during its absence. The better reading is that nest construction during a provincial breeding window makes dependent young possible soon, if they are not present already. The right next step is nest-aware inspection or professional help, not a stopwatch and a patch.",
+      "wordCount": 84
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b22",
+      "kind": "paragraph",
+      "sequenceIndex": 83,
+      "text": "Now consider a January case. Movement occurs only after dark, and a camera records two small animals arriving separately at the same gable vent. There are no young calls and no nesting trips, but the number of occupants is already greater than one. Northern flying squirrels may share winter dens, and the species may be protected. A one-animal assumption would fail both biologically and legally. The evidence calls for species confirmation and a plan that accounts for every occupant.",
+      "wordCount": 79
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b23",
+      "kind": "paragraph",
+      "sequenceIndex": 84,
+      "text": "A third case happens in August. A red squirrel is seen on the roof, but the interior sound travels between two walls and no primary opening has been confirmed. Closing the most obvious loose soffit could trap animals behind a different route or merely redirect the mother. Here the calendar adds caution, but the missing route is the decisive problem. More observation is productive work.",
+      "wordCount": 65
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b24",
+      "kind": "paragraph",
+      "sequenceIndex": 85,
+      "text": "By now the observe-first method should feel less like delay and more like control. You are not waiting helplessly. You are building a short record: when activity occurs, where it begins, where it travels, what enters or leaves, whether food or nesting material is carried, whether more than one animal is involved, and whether the season raises the possibility of young. That record protects you from the most common mistake in wildlife exclusion: acting on the first clue and discovering the rest after the hole is closed.",
+      "wordCount": 87
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b25",
+      "kind": "paragraph",
+      "sequenceIndex": 86,
+      "text": "At the end of this stage, place the situation in one of three categories. First, a single animal or visitor with a known route and no evidence of young. Second, an established den or cache where the number and species are not fully confirmed. Third, a possible nursery, trapped animal, protected species, or inaccessible contaminated space. The first may be suitable for careful exclusion and repair. The second calls for more monitoring or professional identification. The third is an escalation case.",
+      "wordCount": 81
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b26",
+      "kind": "paragraph",
+      "sequenceIndex": 87,
+      "text": "The next chapter turns that classification into a sequence of action. The aim is not to win a battle with a squirrel. It is to let or help every occupant leave, prevent return through the known route, and avoid creating a second emergency inside the wall.",
+      "wordCount": 46
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b0",
+      "kind": "heading",
+      "sequenceIndex": 88,
+      "text": "Chapter 5 - Eviction Without Making It Worse",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 89,
+      "text": "A squirrel problem is solved in the wrong order surprisingly often. The hole is discovered, someone reaches for foam, mesh, or a scrap of wood, and the opening disappears. For a few hours the house feels quiet. Then the chewing begins somewhere else.",
+      "wordCount": 43
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b2",
+      "kind": "paragraph",
+      "sequenceIndex": 90,
+      "text": "The mistake is not the desire to close the hole. Closing the hole is essential. The mistake is closing it before you know which animals are on which side.",
+      "wordCount": 29
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b3",
+      "kind": "paragraph",
+      "sequenceIndex": 91,
+      "text": "A sound exclusion follows a sequence. Identify the likely species. Find all plausible openings. Determine whether dependent young may be present. Close secondary routes that are not in active use. Keep the primary active route available while the occupants leave, or use a properly selected exclusion device when it is lawful and safe. Confirm that the structure is empty. Then complete the final durable repair. Each step removes uncertainty before the next step makes the situation harder to reverse.",
+      "wordCount": 79
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b4",
+      "kind": "paragraph",
+      "sequenceIndex": 92,
+      "text": "Begin outside, not in the room where the noise seems loudest. Wall cavities distort location. The actual entrance may be at the soffit above, at a gable vent several metres away, or where an addition meets the original roof. Walk the perimeter in daylight from the ground. Use binoculars or a camera zoom rather than climbing onto a wet, icy, or steep roof. Mark each defect on a simple sketch: north soffit corner, gable vent, chimney flashing, utility penetration, foundation vent. Photograph fresh chewing and loose materials.",
+      "wordCount": 87
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b5",
+      "kind": "paragraph",
+      "sequenceIndex": 93,
+      "text": "Then watch. Red squirrels make daytime observation easier because they are normally active while you can see the roofline. Choose a place far enough away that your presence does not change the animal's behaviour. Watch during more than one period if possible. A single quiet half-hour proves little. You are looking for a repeatable approach and a specific opening.",
+      "wordCount": 59
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b6",
+      "kind": "paragraph",
+      "sequenceIndex": 94,
+      "text": "Northern flying squirrels require night observation, which changes the safety calculation. Do not climb or stand near a roof edge in darkness. A motion-activated camera aimed from a safe location may provide better evidence. Ensure that the camera does not block or alter the opening. A flying squirrel may arrive by gliding from a tree rather than running a visible branch route, so the final approach can be easy to miss.",
+      "wordCount": 71
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b7",
+      "kind": "paragraph",
+      "sequenceIndex": 95,
+      "text": "Once you identify the active opening, inspect the rest of the building for secondary routes. A squirrel excluded from the familiar door will test nearby defects. If three unused gaps remain open beside the main one, the animal may simply move sideways. Secondary openings can often be repaired first, provided you have good evidence they are not occupied and will not trap another animal. This funnels activity to the known route and makes confirmation possible.",
+      "wordCount": 75
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b8",
+      "kind": "paragraph",
+      "sequenceIndex": 96,
+      "text": "Do not confuse repair with improvised obstruction. A rag, a piece of insulation, expanding foam, or a loose board may tell you whether an opening is being disturbed, but none is a final squirrel-resistant repair. Foam alone is especially poor against gnawing. It can fill air space and support another material, but a determined squirrel can attack exposed foam. Chapter 6 covers durable assemblies. At this stage, the point is route management.",
+      "wordCount": 72
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b9",
+      "kind": "paragraph",
+      "sequenceIndex": 97,
+      "text": "A one-way exclusion device is designed to let an animal leave without re-entering. The idea is simple; the conditions are not. The device must match the species and opening, avoid sharp edges or entanglement, remain securely attached, and lead to a safe landing. It must not be installed when dependent young remain inside or operate as a trap. Where a flying squirrel may be involved, stop and have DNR or a licensed nuisance-wildlife operator confirm the species and proposed plan before any device is installed.",
+      "wordCount": 85
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b10",
+      "kind": "paragraph",
+      "sequenceIndex": 98,
+      "text": "This is why buying the first “squirrel door” online is not a complete plan. Product names do not establish provincial legality, humane use, or fitness for your building. A device suited to a large grey squirrel elsewhere may not work predictably for a red squirrel or northern flying squirrel in Cape Breton. A spring-loaded flap may injure a smaller animal. A mesh tube can fail if it collapses against the roof. A device mounted over rotten fascia can pull away and leave a larger hole.",
+      "wordCount": 85
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b11",
+      "kind": "paragraph",
+      "sequenceIndex": 99,
+      "text": "A licensed nuisance-wildlife operator brings more than a trap or door. The operator should identify the animal, inspect for young, explain the exclusion sequence, protect the roof opening while keeping ventilation and drainage working, and specify the final repair. Ask whether the work includes every entry point or only the visible one. Ask how the operator confirms the building is empty. Ask what happens if a mother or young are found. Ask whether repairs are guaranteed against re-entry at the treated location. Nova Scotia licenses people who conduct nuisance-wildlife work for compensation; using that framework is particularly valuable when species status is uncertain.",
+      "wordCount": 103
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b12",
+      "kind": "paragraph",
+      "sequenceIndex": 100,
+      "text": "If you choose to handle a straightforward exclusion yourself, define “straightforward” narrowly. You have a confirmed red squirrel, a clearly observed primary opening, no signs or seasonal reason to suspect young, safe ground-level access to the repair area, and no electrical, chimney, steep-roof, or structural hazard. If any of those conditions fails, the job has moved beyond a simple do-it-yourself task.",
+      "wordCount": 61
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b13",
+      "kind": "paragraph",
+      "sequenceIndex": 101,
+      "text": "Assume, for example, that you see one red squirrel leave a low garage soffit each morning and return in the afternoon. You find no nest sounds, no second animal, and no spring or late-summer nursery signs. Several loose vent-screen edges nearby show no fresh wear. A reasonable sequence is to repair the unused defects, continue monitoring the active opening, and arrange a lawful exclusion at the active route. After the animal leaves and cannot re-enter, monitor the structure for renewed sound and the exterior for persistent attempts before closing the final opening with a durable repair.",
+      "wordCount": 96
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b14",
+      "kind": "paragraph",
+      "sequenceIndex": 102,
+      "text": "Now change one fact: the squirrel returns carrying nesting material. The job is no longer straightforward. Change another: the sound includes faint calls from a fixed pocket. Stop. Change another: the animal is seen only at night, glides to the roof, or appears to have the large eyes and flattened body of a flying squirrel. Stop and confirm the species and permit implications. Good wildlife work is not about pushing through uncertainty. It is about recognizing the point where uncertainty changes the humane or legal outcome.",
+      "wordCount": 86
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b15",
+      "kind": "paragraph",
+      "sequenceIndex": 103,
+      "text": "What does confirmation of vacancy look like? It is more than one quiet night. The period should cover the animal's normal activity cycle and the weather conditions that affect it. Red squirrels may remain inside during a storm or cold spell. Flying squirrels may not emerge until well after dark. Fresh tracking material placed safely near, not inside, a route can show movement, but avoid powders or substances that may harm the animal or spread through the building. A camera can show that no animal has used the opening over repeated cycles. Interior sound should stop, and there should be no new chewing at the repair.",
+      "wordCount": 106
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b16",
+      "kind": "paragraph",
+      "sequenceIndex": 104,
+      "text": "Confirmation also includes checking for animals that failed to leave. Listen at the former den location. Watch for flies or odour. Inspect accessible attic areas without disturbing insulation unnecessarily. If a one-way device has been used and exterior attempts continue intensely, consider whether young remain inside or the animal has another reason to return. Do not interpret frantic chewing as proof that the squirrel is merely stubborn. It may be a parent.",
+      "wordCount": 72
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b17",
+      "kind": "paragraph",
+      "sequenceIndex": 105,
+      "text": "The final repair should happen promptly once vacancy is reasonably confirmed. Leaving a one-way device in place for weeks can expose the assembly to Cape Breton wind and rain, invite chewing around its edges, and leave the building dependent on a temporary installation. Remove the device, repair the substrate, install the appropriate guard or flashing, and restore ventilation and water shedding. Photograph the finished work so later inspection has a baseline.",
+      "wordCount": 71
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b18",
+      "kind": "paragraph",
+      "sequenceIndex": 106,
+      "text": "There are also things exclusion should never become. Do not smoke animals out; fire and carbon monoxide hazards make that reckless. Do not flood a cavity. Do not use mothballs, ammonia, ultrasonic devices, strobe lights, or strong scents as if discomfort alone were a permanent solution. A repellent may shift an animal temporarily, but it does not identify every occupant or repair the route. Some chemical uses may also be illegal outside their label. Do not release a pet into an attic to chase wildlife. The result can be injuries, contamination, and an animal driven deeper into the structure.",
+      "wordCount": 99
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b19",
+      "kind": "paragraph",
+      "sequenceIndex": 107,
+      "text": "Do not seal during an active fire, electrical, or chimney hazard. If chewing is near visible wiring, if breakers trip, lights flicker, or you smell hot insulation or burning plastic, turn the situation over to the appropriate emergency service or electrician. Wildlife removal and electrical safety may need to happen together. A squirrel problem is inconvenient; a hidden arc fault is dangerous.",
+      "wordCount": 62
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b20",
+      "kind": "paragraph",
+      "sequenceIndex": 108,
+      "text": "What about opening an interior window and letting the squirrel out through the room? That can work only in the unusual case where a squirrel is visibly loose in a finished room and you can safely isolate the room, remove people and pets, close interior doors, and provide one clear exterior exit. Do not corner it. Give it distance and quiet. This is not a method for an animal inside a wall or attic; creating an interior opening can bring the problem into the living space.",
+      "wordCount": 86
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b21",
+      "kind": "paragraph",
+      "sequenceIndex": 109,
+      "text": "The Western Cape Breton setting adds practical limits. Roofs may be steep, damp, mossy, icy, or exposed to sudden wind. Many homes and camps have additions built at different times, with hidden junctions that are difficult to inspect from outside. Utility lines may run close to tree approaches. In these conditions, the safest exclusion plan may divide the work: a wildlife operator handles occupants and monitoring, while a roofer, carpenter, electrician, or arborist handles the building repair and access hazard. One person does not need to improvise every trade.",
+      "wordCount": 89
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b22",
+      "kind": "paragraph",
+      "sequenceIndex": 110,
+      "text": "Keep a short work log. Record sightings, weather, sounds, camera evidence, temporary repairs, exclusion dates, and final materials. That log is useful if activity returns. It tells you whether a repair failed, a new route opened, or a different animal arrived. It also prevents a household from undoing the plan accidentally—one person removing a temporary guard or feeding birds directly beside the monitored route because they did not know why it was there.",
+      "wordCount": 73
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b23",
+      "kind": "paragraph",
+      "sequenceIndex": 111,
+      "text": "Before committing to the exclusion, run a final decision check. Can you name the species with evidence? Can you point to the primary opening and explain why it is active? Have you mapped the secondary defects? Have you considered the breeding window and looked for provisioning behaviour or young? Can the work be reached without a roof, electrical, chimney, confined-space, or fall hazard? Do you know how vacancy will be confirmed? If any answer is no, the next action is more evidence or qualified help, not faster installation.",
+      "wordCount": 88
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b24",
+      "kind": "paragraph",
+      "sequenceIndex": 112,
+      "text": "During the work, create stop conditions. Stop if a second animal appears after you believed there was one. Stop if high-pitched sounds continue behind the wall. Stop if the device moves, collapses, or traps the animal. Stop if new chewing appears at another edge. Stop if the animal looks like a flying squirrel or another protected species. A plan without stop conditions encourages people to reinterpret warning signs as inconvenience.",
+      "wordCount": 70
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b25",
+      "kind": "paragraph",
+      "sequenceIndex": 113,
+      "text": "Also plan for failure before it happens. If activity continues inside, how will the temporary work be reversed without damaging the building? If the squirrel attacks a nearby corner, is that area reachable? If weather changes, can the device remain safe? If a professional is needed, do your photographs and work log show what was altered? Reversibility matters because exclusion begins with uncertainty, even after careful observation.",
+      "wordCount": 67
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b26",
+      "kind": "paragraph",
+      "sequenceIndex": 114,
+      "text": "Finally, separate vacancy confirmation from relief. The first quiet evening feels like success, but it may coincide with weather, a resting period, or an animal using another part of the structure. Require the evidence you chose in advance: repeated normal activity cycles with no interior movement, no use of the monitored opening, no fresh signs, and no evidence of trapped young. A defined finish line is more reliable than the moment everyone becomes tired of watching.",
+      "wordCount": 76
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b27",
+      "kind": "paragraph",
+      "sequenceIndex": 115,
+      "text": "The emotional impulse in a wildlife problem is to make the animal disappear. The practical objective is different: account for the animals, control their route, and leave the building intact. An exclusion that meets those objectives may take longer than plugging a hole, but it avoids the chewing, odour, orphaned young, and repeated damage that the shortcut creates.",
+      "wordCount": 58
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b28",
+      "kind": "paragraph",
+      "sequenceIndex": 116,
+      "text": "Once the structure is empty, the job shifts from wildlife behaviour to construction. The next chapter is about making the repair for squirrel teeth, Cape Breton weather, and the original function of the roof or wall—not merely covering the evidence of entry.",
+      "wordCount": 42
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b0",
+      "kind": "heading",
+      "sequenceIndex": 117,
+      "text": "Chapter 6 - Repairing for Squirrels, Not Just Mice",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 118,
+      "text": "Once the occupants are out, the building has to become the barrier. This is where squirrel work separates from a mouse-only plan. A mouse can exploit a tiny finished gap. A squirrel can exploit a weak material, a loose edge, or a rotten substrate and turn it into a larger opening. The repair must resist teeth, shed Cape Breton weather, preserve the building's ventilation, and stay attached when wind works against it.",
+      "wordCount": 72
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b2",
+      "kind": "paragraph",
+      "sequenceIndex": 119,
+      "text": "That is why “fill the hole” is too vague. A good repair restores the complete assembly. If a squirrel entered through a soffit, the job is not merely to cover the visible opening. It is to determine why the soffit moved or failed, repair the framing or channel that holds it, replace damaged panels, guard any required vent area, and seal the edges in a way that does not trap water. If the substrate remains rotten or loose, a metal patch screwed to it is only as strong as the material beneath the screws.",
+      "wordCount": 94
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b3",
+      "kind": "paragraph",
+      "sequenceIndex": 120,
+      "text": "Start with the supported principle. Nova Scotia's squirrel guidance recommends heavy wire mesh for openings. A chew-resistant metal guard still has to preserve whatever the opening was built to do, including drainage, ventilation, combustion safety, or service access. Light insect screen and exposed foam are not substitutes for repairing the failed building material.",
+      "wordCount": 53
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b4",
+      "kind": "paragraph",
+      "sequenceIndex": 121,
+      "text": "The exact guard, flashing, fastener, and edge treatment depend on the assembly and exposure. A roofer, carpenter, chimney professional, electrician, or other appropriate trade should specify details that affect water flow, corrosion, fire clearance, hidden services, or fall safety. The wildlife goal does not override the building's original safety functions.",
+      "wordCount": 50
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b5",
+      "kind": "paragraph",
+      "sequenceIndex": 122,
+      "text": "Expanding foam and caulk still have roles, but they are supporting materials. Caulk can seal air and water at a properly sized joint. Foam can fill an inaccessible void behind a durable facing. Neither should be left as the exposed chewing surface in a squirrel entry. A smooth bead of sealant over a sound joint is different from a fist-sized lump of foam standing in for missing wood.",
+      "wordCount": 68
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b6",
+      "kind": "paragraph",
+      "sequenceIndex": 123,
+      "text": "Consider a vent. Boarding it over may stop a squirrel while creating a moisture, combustion, or exhaust problem. The repair must preserve its intended airflow and weather function while protecting the whole vulnerable route with chew-resistant material attached to sound substrate.",
+      "wordCount": 41
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b7",
+      "kind": "paragraph",
+      "sequenceIndex": 124,
+      "text": "At a soffit or roof edge, determine why the visible material moved or failed. Replace unsound substrate and restore the assembly rather than stuffing the opening. If the detail also handles ventilation or water, preserve that function and have the relevant trade resolve any uncertainty.",
+      "wordCount": 45
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b8",
+      "kind": "paragraph",
+      "sequenceIndex": 125,
+      "text": "Fascia boards deserve close inspection because the visible hole may be a symptom of rot. Water from a failed gutter, ice damage, or roof-edge leak can soften the board. Squirrels do not have to defeat sound lumber if decay has already done the work. Probe suspect wood only from a safe working position and without damaging intact finishes. Staining, softness, peeling paint, and separated joints point to a water problem that needs correction before the squirrel guard goes on.",
+      "wordCount": 79
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b9",
+      "kind": "paragraph",
+      "sequenceIndex": 126,
+      "text": "Roof-to-wall junctions and dormer corners handle concentrated water. A wildlife patch can hide a leak while moisture continues into the wall. These details belong to a roofer or experienced exterior carpenter when the correct assembly is not obvious.",
+      "wordCount": 38
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b10",
+      "kind": "paragraph",
+      "sequenceIndex": 127,
+      "text": "Chimneys combine fall risk, fire clearance, masonry, and weather protection. Do not improvise a guard around a flue or required air space. Have a chimney professional or roofer identify and repair the failed component.",
+      "wordCount": 34
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b11",
+      "kind": "paragraph",
+      "sequenceIndex": 128,
+      "text": "Roof penetrations and exhaust vents require working weather seals, airflow, clearances, and service access. A mesh-and-sealant patch may conceal rather than repair the failure. Use the appropriate trade where the assembly is uncertain.",
+      "wordCount": 33
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b12",
+      "kind": "paragraph",
+      "sequenceIndex": 129,
+      "text": "At the foundation, identify every utility and opening before repair. Do not drive fasteners toward hidden conductors or pipes, and do not seal a combustion-air opening, drainage path, or required vent because it resembles an animal route.",
+      "wordCount": 37
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b13",
+      "kind": "paragraph",
+      "sequenceIndex": 130,
+      "text": "Older Cape Breton houses and camps may have irregular stone foundations, balloon framing, additions with undocumented cavities, and generations of repairs. The route visible outside may connect to a much larger internal network. In balloon framing, an open stud bay can run from basement to attic, which helps sound and animals travel. Fire blocking, insulation, and safe access become construction questions beyond the wildlife opening itself. A contractor familiar with older buildings can often identify the route faster than repeated patches.",
+      "wordCount": 81
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b14",
+      "kind": "paragraph",
+      "sequenceIndex": 131,
+      "text": "Repair timing matters. Exterior sealants need suitable temperature and dry surfaces. Metal edges move with temperature. Wet wood should not be sealed behind an impermeable patch before the source of water is fixed. In winter, a temporary weatherproof guard may be necessary until a permanent repair can cure or until safe roof access returns. Temporary does not mean careless: it still must resist wind, avoid trapping animals, and preserve drainage.",
+      "wordCount": 70
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b15",
+      "kind": "paragraph",
+      "sequenceIndex": 132,
+      "text": "Cape Breton wind, snow, and ice make secure attachment important, but the exact fastener and support pattern are building decisions. The repair must attach to sound material without damaging hidden services or weather layers. Ask the responsible trade to specify it rather than copying a generic hardware list.",
+      "wordCount": 48
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b16",
+      "kind": "paragraph",
+      "sequenceIndex": 133,
+      "text": "Remove temporary exclusion devices after vacancy is confirmed and complete the permanent repair. Repeated wetting, ice, or movement at the same edge may signal a broader building problem that should be assessed rather than covered.",
+      "wordCount": 35
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b17",
+      "kind": "paragraph",
+      "sequenceIndex": 134,
+      "text": "Branches are part of prevention, but tree work is not simply “cut everything back.” The Nova Scotia guidance recommends trimming branches to discourage squirrel access. On a wooded Cape Breton property, total separation may be unrealistic, and squirrels can climb walls or use utility lines anyway. Prioritize branches that touch the roof, scrape siding, drop debris into valleys or gutters, or give direct access to a known weak detail. Preserve healthy trees where possible. Use a qualified arborist for large limbs and the utility for anything near power lines.",
+      "wordCount": 89
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b18",
+      "kind": "paragraph",
+      "sequenceIndex": 135,
+      "text": "Feeders also interact with the repair. A bird feeder close to the house concentrates squirrels at the exact structure you are trying to protect. Moving it does not make the building secure, and squirrel-resistant feeder designs are not truly squirrel-proof, but distance and placement can reduce repeated testing of the roofline. Clean spilled seed, secure bulk feed, and avoid storing it in a lightly built porch or garage container that squirrels can chew.",
+      "wordCount": 73
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b19",
+      "kind": "paragraph",
+      "sequenceIndex": 136,
+      "text": "Before approving a contractor's repair, ask what failed, what sound material will support the repair, and how drainage, ventilation, fire safety, and service access will be preserved. The answer should connect the failed component to the repaired one.",
+      "wordCount": 38
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b20",
+      "kind": "paragraph",
+      "sequenceIndex": 137,
+      "text": "Do not copy a generic material list without considering the species, opening, span, and building function. The supported objective is a chew-resistant barrier that remains secure and does not create a new hazard.",
+      "wordCount": 33
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b21",
+      "kind": "paragraph",
+      "sequenceIndex": 138,
+      "text": "Loose edges invite renewed entry and weather damage. Have guards attached as part of a designed repair to sound material rather than adding holes wherever a screw happens to fit.",
+      "wordCount": 30
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b22",
+      "kind": "paragraph",
+      "sequenceIndex": 139,
+      "text": "Exterior appearance is not frivolous. An ugly temporary patch tends to remain temporary until it fails. A finished repair that matches siding, trim, and vent layout is more likely to be inspected, maintained, and left intact. Paint and coatings must suit the metal and wood, dry under current weather, and not glue a vent or drainage gap closed. The final photograph should look like a restored building detail, not a trap attached to a wound.",
+      "wordCount": 75
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b23",
+      "kind": "paragraph",
+      "sequenceIndex": 140,
+      "text": "After repair, inspect from both sides where safe. Outside, confirm that edges lie flat, fasteners are secure, water flows over rather than behind the work, and required vents remain open. Inside, check for daylight at unintended gaps, displaced insulation, moisture staining, and new debris. Do not compress insulation against a hot fixture or block ventilation baffles while investigating.",
+      "wordCount": 58
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b24",
+      "kind": "paragraph",
+      "sequenceIndex": 141,
+      "text": "Document the repair with close and wide photographs. The close view records material and fasteners. The wide view records location. Six months later, if chewing appears at another corner, you can tell whether the original repair failed or the squirrel found a new defect. That distinction matters: a failed assembly needs redesign, while a new entry calls for a broader inspection.",
+      "wordCount": 61
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b25",
+      "kind": "paragraph",
+      "sequenceIndex": 142,
+      "text": "Monitor the repaired area through several activity cycles and at least one change in weather. Look for tooth marks at edges, pulled mesh, displaced sealant, and renewed traffic along the approach route. Listen, but remember that a squirrel running across a sound roof is not the same as one inside it. Exterior activity may continue after exclusion because the building remains part of the animal's familiar territory. The goal is not to make squirrels disappear from the property. It is to keep the building envelope intact.",
+      "wordCount": 86
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b26",
+      "kind": "paragraph",
+      "sequenceIndex": 143,
+      "text": "There is a temptation to overbuild every vent and cover every opening with coarse metal. Resist it. Houses need air, drainage, combustion safety, and service access. Wildlife exclusion succeeds when it works with those systems. A guard that prevents squirrels while causing mould, a chimney problem, or a dryer fire is not a successful guard.",
+      "wordCount": 55
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b27",
+      "kind": "paragraph",
+      "sequenceIndex": 144,
+      "text": "Three repair examples make the pattern concrete. First, a torn plastic screen behind an intact gable louver: remove the failed screen, inspect the frame, attach an appropriately sized metal guard to sound material across the full opening, preserve airflow, and close edge gaps. The guard does the animal work; the louver still does the weather and ventilation work.",
+      "wordCount": 58
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b28",
+      "kind": "paragraph",
+      "sequenceIndex": 145,
+      "text": "Second, a loose vinyl soffit corner beneath sound roofing: find why the panel left its channel, repair or add the missing support, replace damaged material, and protect the vulnerable return with metal where needed. Stuffing mesh above the panel leaves the visible assembly loose and gives wind another chance to open it.",
+      "wordCount": 52
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b29",
+      "kind": "paragraph",
+      "sequenceIndex": 146,
+      "text": "Third, a chewed fascia edge below a leaking gutter joint: correct drainage, remove rotten wood, install sound replacement material, restore roof-edge flashing, and then add a chew-resistant detail if the location remains vulnerable. A metal cover over wet rot conceals the cause and gives fasteners nothing durable to hold.",
+      "wordCount": 49
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b30",
+      "kind": "paragraph",
+      "sequenceIndex": 147,
+      "text": "These examples show why photographs alone may not yield a shopping list. The same visible hole can represent failed screening, failed support, or failed water management. Diagnose the building failure before selecting the metal. When requesting quotes, ask the contractor to describe substrate repair, water management, ventilation, wildlife guard, fasteners, and finish as separate parts. That makes a cosmetic patch easier to recognize.",
+      "wordCount": 63
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b31",
+      "kind": "paragraph",
+      "sequenceIndex": 148,
+      "text": "The durable pattern is straightforward even when the details require a trade: repair the failed substrate, preserve the building function, cover vulnerable openings with squirrel-resistant metal, secure the assembly to sound material, and inspect it after weather. That is the structural half of the solution.",
+      "wordCount": 45
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b32",
+      "kind": "paragraph",
+      "sequenceIndex": 149,
+      "text": "The next chapter handles the more complicated human half: what Nova Scotia law allows, when a permit is involved, why trapping and relocation are not interchangeable with exclusion, and why poison is the wrong substitute for a repaired house.",
+      "wordCount": 39
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b0",
+      "kind": "heading",
+      "sequenceIndex": 150,
+      "text": "Chapter 7 - Trapping, Law, and Poison",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 151,
+      "text": "The moment a squirrel becomes a nuisance, people often jump from identification to a tool: trap, bait, pellet gun, poison. That jump skips the questions that determine whether the tool is lawful, humane, and likely to solve anything. In Nova Scotia, those questions begin with species.",
+      "wordCount": 46
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b2",
+      "kind": "paragraph",
+      "sequenceIndex": 152,
+      "text": "Red squirrels and northern flying squirrels do not occupy the same legal category. Red squirrels are listed as other harvestable wildlife, but hunting and fur trapping have separate rules. The consolidated General Wildlife Regulations give red-squirrel hunting a nominal season from November first through February twenty-eighth. For the season running from twenty twenty-six into twenty twenty-seven, the annual summary ends hunting on February twenty-seventh. The fur-trapping table runs from November first through March thirty-first. The regulations also contain a property-damage hunting exception for an owner, occupier, or agent. None of those dates or exceptions is stand-alone permission for a particular trap, firearm discharge, transport, release, or action on every property. If damage prompts capture or lethal action, confirm the current species, method, licence, permit, and site requirements with DNR before acting.",
+      "wordCount": 131
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b3",
+      "kind": "paragraph",
+      "sequenceIndex": 153,
+      "text": "Northern flying squirrels are different. The same provincial guidance states that they cannot be trapped or killed without a Department of Natural Resources permit. This distinction alone is enough to make uncertain identification an action-stopper. If the animal appears only at night, if a camera shows a gliding approach or the broad-eyed profile of a flying squirrel, or if you simply cannot tell, do not set a device and hope to identify the occupant afterward. Confirm first.",
+      "wordCount": 77
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b4",
+      "kind": "paragraph",
+      "sequenceIndex": 154,
+      "text": "Nova Scotia's permit directory explains that a nuisance-wildlife permit is for killing or capturing wildlife causing damage to property or crops when a permit is required. It also says live trapping of “other harvestable” wildlife is permitted without that particular permit, while live trapping or killing species outside that category requires a permit issued to the property owner or occupant. A licensed nuisance-wildlife operator may act as the owner's agent.",
+      "wordCount": 70
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b5",
+      "kind": "paragraph",
+      "sequenceIndex": 155,
+      "text": "That is useful orientation, not a complete legal opinion. The method, season, equipment, land status, municipal rules, firearm discharge, trapper licensing, transport, release site, animal welfare, and protected-species status can all affect what is allowed. Regulations change. If you intend to capture, transport, relocate, or kill an animal, confirm the current requirements with the Nova Scotia Department of Natural Resources before acting. The permit page says applications can be requested through local or area offices and describes the permit as free, with same-day issuance when requirements are met. Use the current provincial contact information, not a phone number printed in an old book.",
+      "wordCount": 103
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b6",
+      "kind": "paragraph",
+      "sequenceIndex": 156,
+      "text": "Why not make trapping the default anyway? Because capture does not repair the house. Remove one red squirrel from an attic with an open soffit and another animal can use the same route. If the resident had young, the trap may remove the mother and leave the litter. If the animal is relocated, it may face unfamiliar territory, weather, predators, and competition. If the device catches a flying squirrel instead, the legal problem appears after the animal is already confined.",
+      "wordCount": 80
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b7",
+      "kind": "paragraph",
+      "sequenceIndex": 157,
+      "text": "A trap is therefore not an alternative to exclusion. At most, it is one component of a species-specific plan that still accounts for young, closes routes, and repairs the building. In many cases, letting a confirmed animal leave through its normal route and preventing re-entry is less disruptive than capturing it.",
+      "wordCount": 51
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b8",
+      "kind": "paragraph",
+      "sequenceIndex": 158,
+      "text": "Live trapping also carries responsibilities the hardware aisle does not show. A confined squirrel can overheat, become hypothermic, injure its face or limbs, or be attacked by a predator. A trap must not be left unchecked. It must be protected from weather and pets without obstructing ventilation. Handling and release expose the person to bites and scratches. The destination and transport may be regulated. None of those risks disappears because the trap is labelled “humane.” Humane describes the full process, not the shape of the cage.",
+      "wordCount": 86
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b9",
+      "kind": "paragraph",
+      "sequenceIndex": 159,
+      "text": "Lethal traps raise another set of issues. A device designed for a mouse or rat may not kill a squirrel quickly and can cause prolonged injury. A device placed at an entry can catch the wrong species. Children, cats, small dogs, birds, and other wildlife can reach poorly placed traps. A carcass inside a wall can create odour and insects. This book will not specify a trap model or placement recipe for squirrels because those details belong after lawful species identification and site inspection, not before.",
+      "wordCount": 86
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b10",
+      "kind": "paragraph",
+      "sequenceIndex": 160,
+      "text": "Shooting around a house is not a casual extension of nuisance control. Even where taking a red squirrel may be legal, firearm and pellet-gun discharge rules, neighbours, roads, buildings, ricochet, and the background behind the target matter. A squirrel on a roof or utility line creates obvious risks to people and property. Do not turn a hole in a soffit into a projectile hazard.",
+      "wordCount": 64
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b11",
+      "kind": "paragraph",
+      "sequenceIndex": 161,
+      "text": "Now to poison. The answer for squirrels is no. Nova Scotia's current hunting and fur-harvesting summary says an animal may not be poisoned under the Wildlife Act except rats. Federal pesticide law also requires registered products to be used only as their labels direct, so a product labelled for rats or mice is not permission to use it on squirrels. Poison also conflicts with the central task: you need the animal to leave the structure, not die somewhere inaccessible inside it.",
+      "wordCount": 81
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b12",
+      "kind": "paragraph",
+      "sequenceIndex": 162,
+      "text": "The practical consequences are predictable. A poisoned squirrel may retreat into insulation or a wall cavity, where the carcass decomposes. A predator or scavenger may eat a contaminated animal. Health Canada has documented secondary exposure of predatory and scavenging birds to rodenticides through poisoned prey. Western Cape Breton supports owls, hawks, foxes, and other animals that consume small mammals. Pets can encounter bait or a poisoned carcass. Poison transfers the problem from a visible route in the building to an uncertain chain of exposure.",
+      "wordCount": 84
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b13",
+      "kind": "paragraph",
+      "sequenceIndex": 163,
+      "text": "It also does not distinguish the animals sharing the space. A bait intended for a mouse may be reached by another species. A squirrel may carry bait away from the station or cache it. Children or domestic animals may encounter displaced material. Even products with tamper-resistant stations are not squirrel-exclusion devices, and their existence does not make off-label use acceptable.",
+      "wordCount": 60
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b14",
+      "kind": "paragraph",
+      "sequenceIndex": 164,
+      "text": "For a mouse or rat problem confirmed separately from the squirrel issue, registered rodenticides may be one option under Canadian labels and local conditions. But the hierarchy remains: remove food and water, seal entry, use appropriate mechanical control where safe, and use pesticides only for a label-listed pest exactly as directed. If bait is considered around children, pets, livestock, or wildlife, professional pest-control advice is the safer route. That narrow possibility for mice or rats should never be blurred into a recommendation for squirrels.",
+      "wordCount": 84
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b15",
+      "kind": "paragraph",
+      "sequenceIndex": 165,
+      "text": "Repellents deserve similar scepticism. Mothballs are pesticides labelled for moth control in enclosed storage conditions, not universal wildlife vapour. Scattering them in an attic can expose occupants to fumes and does not repair a soffit. Ammonia, hot pepper, predator urine, ultrasonic emitters, radios, and flashing lights may change behaviour temporarily or may do nothing. A mother with young may tolerate severe disturbance rather than abandon them. An animal displaced from one attic corner may move deeper into the wall.",
+      "wordCount": 79
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b16",
+      "kind": "paragraph",
+      "sequenceIndex": 166,
+      "text": "The provincial nuisance guidance does discuss discouragement: remove food for a period, manage feeders, trim access branches, and keep the building in repair. These measures change the conditions that attracted or admitted the animal. They are more defensible than trying to create an unpleasant smell while leaving the entrance open.",
+      "wordCount": 50
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b17",
+      "kind": "paragraph",
+      "sequenceIndex": 167,
+      "text": "What does a good professional conversation sound like? Begin with evidence, not a demand for a trap. Explain when the sound occurs, what animal has been seen, where the opening is, whether nesting material is present, and what season it is. Ask the operator to identify the species and show you the signs. Ask whether dependent young are possible. Ask what provincial licence applies. Ask whether the plan is exclusion, capture, or both. Ask where a captured animal goes and how often devices are checked. Ask who makes the final building repair.",
+      "wordCount": 92
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b18",
+      "kind": "paragraph",
+      "sequenceIndex": 168,
+      "text": "Beware of a plan that starts and ends with poison or with sealing every visible hole immediately. Beware of confident species identification based only on one sound described over the phone. Beware of relocation promised as automatically humane without discussion of young, transport, release rules, or habitat. A careful operator should be able to explain the sequence and its contingencies.",
+      "wordCount": 60
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b19",
+      "kind": "paragraph",
+      "sequenceIndex": 169,
+      "text": "There are situations where DNR should be the first call rather than the second. A suspected flying squirrel is one. An injured or entangled animal is another. An operator proposes a method you are unsure is lawful. Young are visible and the nest cannot be reached safely. More than one protected species may be using the structure. The permit system exists precisely because wildlife damage can create exceptions and site-specific decisions that a general book cannot settle.",
+      "wordCount": 77
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b20",
+      "kind": "paragraph",
+      "sequenceIndex": 170,
+      "text": "Relocation deserves special attention because it sounds gentler than it may be. Moving an animal away from the capture site can separate a mother from young, place the squirrel in unfamiliar territory, and shift the conflict without repairing the building. Release rules and acceptable distances may be regulated or shaped by permit conditions. Do not assume that because live capture may be available for a harvestable species, transport to any convenient patch of woods is automatically lawful or humane. Ask DNR or the licensed operator what happens after capture.",
+      "wordCount": 89
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b21",
+      "kind": "paragraph",
+      "sequenceIndex": 171,
+      "text": "The current-law check can be brief and specific. Identify the species or explain the uncertainty. State that it is inside a building and causing damage. Give the municipality or area, because local discharge and property conditions can matter. Describe whether young may be present. Ask whether the proposed action—exclusion device, live capture, transport, release, or lethal control—requires a permit or licence and what conditions apply. Record the office, date, and answer. That is more useful than asking only, “Can I get rid of a squirrel?”",
+      "wordCount": 85
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b22",
+      "kind": "paragraph",
+      "sequenceIndex": 172,
+      "text": "If hiring an operator, verify the nuisance-wildlife licence and insurance rather than relying on advertising language. A pest-control licence for insects or rats is not necessarily the same qualification as wildlife work. Ask who is responsible for checking devices, emergency response, building damage, dependent young, and final repair. The lowest removal quote can become the highest total cost if it omits exclusion and carpentry.",
+      "wordCount": 64
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b23",
+      "kind": "paragraph",
+      "sequenceIndex": 173,
+      "text": "This legal caution is not meant to make the homeowner powerless. Most of the permanent solution remains under your control: stop feeding access at the building, document the route, repair secondary gaps, hire qualified help where needed, clean safely, and inspect after storms. Those actions work regardless of whether the individual squirrel is trapped, excluded, or leaves on its own.",
+      "wordCount": 60
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b24",
+      "kind": "paragraph",
+      "sequenceIndex": 174,
+      "text": "It also respects the role squirrels play outside the wall. The Nova Scotia guidance notes that squirrels disperse seeds and feed many mammals and birds, especially birds of prey. The goal is not to remove squirrels from Western Cape Breton. It is to draw a durable boundary around the human shelter without creating avoidable harm beyond it.",
+      "wordCount": 57
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b25",
+      "kind": "paragraph",
+      "sequenceIndex": 175,
+      "text": "Four cases show how the legal decision changes. A confirmed red squirrel leaves an accessible garage opening, no young are present, and exclusion can happen without capture: structural exclusion and repair may be the simplest path. A confirmed red squirrel is already in a lawful live trap: current transport, release, checking, and animal-welfare requirements must be confirmed, and the building still needs repair. A likely flying squirrel uses a gable vent: contact DNR or a licensed operator before any capture or harmful device. An unknown animal moves in an inaccessible wall with possible young: identification and nest assessment come before choosing a control method.",
+      "wordCount": 104
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b26",
+      "kind": "paragraph",
+      "sequenceIndex": 176,
+      "text": "Notice that “property damage” does not answer every question in those cases. It may create a legal basis for nuisance action, but it does not identify the species, prove young are absent, authorize any product, make a firearm safe, or convert relocation into a good outcome. Treat it as one fact within the regulatory decision, not a universal exemption.",
+      "wordCount": 59
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b27",
+      "kind": "paragraph",
+      "sequenceIndex": 177,
+      "text": "Also distinguish a wildlife operator from a wildlife rehabilitation specialist. The operator manages conflict, exclusion, and capture under the relevant licence. A rehabilitation specialist cares for injured or orphaned wildlife under a different authorization and may advise on young. An electrician, roofer, or pest professional has still another role. Asking the right professional prevents a well-meaning person from working outside their authority or expertise.",
+      "wordCount": 64
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b28",
+      "kind": "paragraph",
+      "sequenceIndex": 178,
+      "text": "If an animal is injured during attempted control, stop the attempt and contact the appropriate wildlife authority or an authorized wildlife rehabilitation specialist. Do not release a visibly injured squirrel merely to remove responsibility from the property, and do not attempt home veterinary care. Record the device, time, species evidence, and injury so the responder can advise accurately.",
+      "wordCount": 58
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b29",
+      "kind": "paragraph",
+      "sequenceIndex": 179,
+      "text": "The rule for this chapter can be stated without a legal maze. Identify before capture. Check for young before exclusion. Confirm current Nova Scotia requirements before trapping, moving, or killing. Use licensed help when the species or site is uncertain. Do not use poison as a squirrel solution. Repair the building no matter what removal method is chosen.",
+      "wordCount": 58
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b30",
+      "kind": "paragraph",
+      "sequenceIndex": 180,
+      "text": "With the occupants gone and the law respected, one task remains inside: assess damage and clean without turning droppings, nesting material, dust, or a carcass into an exposure. That is where Canadian public-health guidance takes over.",
+      "wordCount": 36
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b0",
+      "kind": "heading",
+      "sequenceIndex": 181,
+      "text": "Chapter 8 - Damage and Safe Cleanup",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 182,
+      "text": "A quiet wall is not automatically a finished job. After exclusion and repair, the space may still hold chewed wiring, compressed or contaminated insulation, nesting material, stored food, droppings, urine, parasites, moisture damage, or a carcass. Cleanup begins with a decision: is this a small accessible area you can clean using public-health guidance, or a contaminated, electrically hazardous, confined, or structurally difficult space that belongs to professionals?",
+      "wordCount": 67
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b2",
+      "kind": "paragraph",
+      "sequenceIndex": 183,
+      "text": "Do not start by vacuuming. Do not sweep. Those are the normal instincts and the wrong ones for dry rodent contamination. Public Health Agency of Canada guidance warns that sweeping or vacuuming droppings can release particles into the air. The safe method wets contamination first, gives disinfectant time to work, then removes the material while it remains damp.",
+      "wordCount": 58
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b3",
+      "kind": "paragraph",
+      "sequenceIndex": 184,
+      "text": "The disease discussion needs precision. Squirrels can carry parasites and diseases, but the Nova Scotia nuisance guidance says these rarely affect people or pets. Hantavirus guidance is most closely associated with infected mice and their droppings, urine, saliva, and nesting material. You may not know which rodent left all the contamination in an attic that has been open for years. The sensible rule is not to declare every squirrel dropping a hantavirus event. It is to treat unidentified rodent contamination carefully and follow Canadian wet-cleaning guidance.",
+      "wordCount": 86
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b4",
+      "kind": "paragraph",
+      "sequenceIndex": 185,
+      "text": "Begin by assessing the space without stirring it up. Is the contamination confined to a few droppings on a washable surface, or spread through dusty insulation? Is there evidence of a nest, a carcass, mould, fleas, damaged wiring, or water intrusion? Can you stand and turn safely, or would you be crawling among nails and wires? Is the attic hot, poorly ventilated, or hard to exit? A small mess on an accessible garage shelf is different from a heavily contaminated attic or closed wall cavity.",
+      "wordCount": 85
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b5",
+      "kind": "paragraph",
+      "sequenceIndex": 186,
+      "text": "For an area that is safe to enter, the Public Health Agency of Canada says to wear rubber or plastic gloves. In a confined space, its current guidance says to wear an N95-level respirator with NIOSH approval or a Class CA-N95 respirator with Canadian Standards approval. Respirators must fit to work. Facial hair, damaged straps, and an incorrect size can break the seal. People with health conditions that make respirator use difficult should seek medical or professional guidance rather than forcing the job.",
+      "wordCount": 83
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b6",
+      "kind": "paragraph",
+      "sequenceIndex": 187,
+      "text": "Ventilate when the space allows it without blowing contaminated dust into occupied rooms. Open exterior doors or windows where practical and leave the area before cleaning. Do not use a household fan to blast dry attic dust toward the living space. Isolate the work area from children and pets. If the only access is through a bedroom closet or ceiling hatch, cover the route with cleanable sheeting and plan how waste will leave without brushing walls and furniture.",
+      "wordCount": 78
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b7",
+      "kind": "paragraph",
+      "sequenceIndex": 188,
+      "text": "Stage the full job before disturbing anything. Bring enough paper towels, bags, disinfectant, gloves, and clean water to finish the bounded area without walking through the house for supplies. Set a clean zone outside the contaminated space for unused equipment and a dirty zone for sealed waste. Decide which door or hatch remains the exit. If a ladder is involved, keep the landing clear and have another adult nearby rather than carrying open waste down alone.",
+      "wordCount": 76
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b8",
+      "kind": "paragraph",
+      "sequenceIndex": 189,
+      "text": "Protect surfaces along the waste route with disposable or washable material that will not create a trip hazard. Close interior doors and cover return-air openings near the work area if a heating professional confirms that can be done safely without operating the system improperly. Turn off fans that would move contamination through the house. Do not run a shop vacuum, leaf blower, or compressed air to “clear” the attic before starting.",
+      "wordCount": 71
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b9",
+      "kind": "paragraph",
+      "sequenceIndex": 190,
+      "text": "Prepare the disinfectant before disturbing anything. PHAC advises a Health Canada-approved surface disinfectant or a mixture of one part bleach to nine parts water. Never mix bleach with ammonia, acids, vinegar, or other cleaners; dangerous gases can form. Follow the product label for surface compatibility and ventilation. Bleach can damage fabric, metals, finishes, and insulation, so an approved disinfectant may be more suitable for some materials.",
+      "wordCount": 66
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b10",
+      "kind": "paragraph",
+      "sequenceIndex": 191,
+      "text": "Mix only what the task requires in a labelled container and keep it away from children and pets. Fresh bleach solution is more dependable than an old mixture stored without a date, but always follow current public-health and product directions. Test delicate finishes in an inconspicuous place when possible. Disinfection should not create a second hazard by corroding electrical parts, soaking drywall, or dripping through a ceiling.",
+      "wordCount": 67
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b11",
+      "kind": "paragraph",
+      "sequenceIndex": 192,
+      "text": "Spray the droppings, urine-contaminated material, nest, and surrounding area until wet. Let the area soak for ten minutes. That waiting period is part of the Canadian procedure. Then wipe up the wet material with paper towels or a wet mop. Do not switch to a dry broom when the obvious pieces are gone. Keep the material damp through removal.",
+      "wordCount": 59
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b12",
+      "kind": "paragraph",
+      "sequenceIndex": 193,
+      "text": "Place contaminated disposable items in double plastic bags, seal them, and dispose of them according to local bylaws. PHAC includes gloves, masks, cleaning materials, dead rodents, and nesting material among examples of contaminated items. If a wet mop is used, clean it with disinfectant and hot soapy water. Before removing reusable gloves, wash their exterior in disinfectant and hot soapy water. After removing gloves, wash hands thoroughly with soap and water. If soap and water are not immediately available, use hand sanitizer containing at least sixty percent alcohol, then wash when you can.",
+      "wordCount": 93
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b13",
+      "kind": "paragraph",
+      "sequenceIndex": 194,
+      "text": "A disposable respirator contaminated during cleanup should not become a souvenir hanging in the garage. Remove protective equipment without touching contaminated outer surfaces, bag disposable items, and clean reusable equipment according to its instructions. Change clothing if dust or waste contacted it, and launder separately as appropriate. Avoid carrying the contamination through the house on footwear; disposable covers or dedicated washable boots can help in a larger job.",
+      "wordCount": 68
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b14",
+      "kind": "paragraph",
+      "sequenceIndex": 195,
+      "text": "Insulation complicates cleanup. A few dampened droppings sitting on top of an otherwise clean batt may be removable without discarding the whole attic. A nest soaked with urine, a carcass, or extensive contamination within loose-fill insulation is different. Trying to disinfect deep porous material can spread moisture without reaching every contaminated surface. Ask a qualified restoration contractor to assess extensive or embedded contamination and explain the method rather than adapting household vacuuming to the job.",
+      "wordCount": 75
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b15",
+      "kind": "paragraph",
+      "sequenceIndex": 196,
+      "text": "Do not tear open a finished wall simply to disinfect a cavity that has no odour, carcass, or accessible contamination. Demolition can spread dust and create more risk than leaving an inaccessible, dry, unoccupied space closed. On the other hand, persistent odour, flies, staining, or a known trapped carcass may justify targeted opening by someone who can locate wiring and plumbing and contain the debris. The decision balances access, exposure, and building damage.",
+      "wordCount": 73
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b16",
+      "kind": "paragraph",
+      "sequenceIndex": 197,
+      "text": "A dead squirrel or other rodent should be sprayed with disinfectant along with the surrounding area, allowed the required contact time, then handled with gloves and double-bagged according to local disposal rules. Do not pick it up by the tail with a bare hand. Inspect for fleas or other parasites and keep pets away. If the carcass is in a chimney, duct, electrical space, or inaccessible wall, the relevant trade or wildlife professional may need to retrieve it safely.",
+      "wordCount": 79
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b17",
+      "kind": "paragraph",
+      "sequenceIndex": 198,
+      "text": "Electrical damage can be more urgent than contamination. Squirrels gnaw, and the provincial guidance specifically identifies electrical wiring as a possible target. Look for damaged cable jackets, exposed conductors, scorch marks, tripped breakers, flickering circuits, or a hot-plastic smell. Do not touch suspect wiring, even with gloves. Turn off the affected circuit if that can be done safely at the panel and call a licensed electrician. Hidden damage may exist beyond the visible chew marks, especially where the animal used a repeated wall route.",
+      "wordCount": 84
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b18",
+      "kind": "paragraph",
+      "sequenceIndex": 199,
+      "text": "Insulation damage affects energy and moisture performance. Squirrels can tunnel through, compress, shred, and move insulation to build a nest. Replacing a patch is not just a cleanliness task; vapour control, ventilation baffles, clearances around lights and chimneys, and the correct depth all matter. An insulation contractor or energy adviser can restore the assembly without blocking airflow or burying heat-producing equipment.",
+      "wordCount": 61
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b19",
+      "kind": "paragraph",
+      "sequenceIndex": 200,
+      "text": "Roof and soffit damage also deserves a post-removal inspection from a qualified position. Water stains near the entry may show that the same defect admitted rain. Wet sheathing, rot, and mould cannot be solved by disinfecting droppings. Correct the leak, allow safe drying, and replace unsound material. A wildlife opening and a water problem often share the same failed edge.",
+      "wordCount": 60
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b20",
+      "kind": "paragraph",
+      "sequenceIndex": 201,
+      "text": "Stored food creates a less dangerous but persistent mess. Red squirrels may leave cones, seeds, nuts, mushrooms, or other cache material in a dry cavity. Remove it using the same wet-control precautions if contaminated by droppings or urine. Then examine why food is available near the house. Bird seed, livestock feed, pet food, grain, compost, and garbage all influence local traffic. The aim is not to erase every natural food source in a forested property, but to avoid concentrating food against the building envelope.",
+      "wordCount": 84
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b21",
+      "kind": "paragraph",
+      "sequenceIndex": 202,
+      "text": "Parasites require observation rather than panic. Fleas or ticks may leave a vacated nest and seek another host. Mange mites and other parasites can affect squirrels. If biting insects appear in living areas after exclusion, identify the pest before spraying broadly. A licensed pest professional can determine whether treatment is needed and choose a registered product. Off-label fogging of an attic can expose occupants and wildlife without addressing the species involved.",
+      "wordCount": 71
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b22",
+      "kind": "paragraph",
+      "sequenceIndex": 203,
+      "text": "Mould deserves the same restraint. Not every dark mark is mould, and not every small patch requires demolition. Moisture source, area, material, and occupant health determine the response. Large growth, sewage, extensive wet insulation, or contamination affecting the heating system belongs to trained remediation. Never mix mould cleaners with the bleach solution used for rodent waste.",
+      "wordCount": 56
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b23",
+      "kind": "paragraph",
+      "sequenceIndex": 204,
+      "text": "Compare two cleanup scenes. In the first, five droppings and a few cone scales sit on a sealed garage shelf beneath a repaired entry. The area is accessible, there is no dust cloud or porous nest, and no wiring is involved. The PHAC sequence—gloves, wet disinfectant, ten minutes of contact time, wiping, double-bagging, and handwashing—makes this a bounded job. If the work area is confined, PHAC also calls for an N95-level respirator with NIOSH approval or a Class CA-N95 respirator with Canadian Standards approval.",
+      "wordCount": 84
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b24",
+      "kind": "paragraph",
+      "sequenceIndex": 205,
+      "text": "In the second, years of droppings and urine are mixed through loose-fill attic insulation. A nest sits beside chewed cable, the walking surface is incomplete, and access is through a ceiling hatch over a bedroom. Trying to save money with a household vacuum combines fall, electrical, respiratory, contamination, and containment risks. That is a professional remediation and electrical assessment, followed by restoration of insulation and the building envelope.",
+      "wordCount": 68
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b25",
+      "kind": "paragraph",
+      "sequenceIndex": 206,
+      "text": "A middle case requires judgment. Perhaps a nest occupies one accessible corner of fibreglass batt insulation, with no visible electrical damage. Photograph it without disturbance and ask a restoration professional to assess what material must come out and how the work should be controlled. “Remove everything” and “spray everything” are both poor substitutes for assessing the affected material.",
+      "wordCount": 58
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b26",
+      "kind": "paragraph",
+      "sequenceIndex": 207,
+      "text": "When should you step away from do-it-yourself cleanup? The list is practical: heavy or widespread contamination; a confined attic or crawlspace; no safe footing; extensive loose-fill insulation; strong odour without a located source; a carcass in an inaccessible cavity; damaged wiring; chimney involvement; significant mould; contaminated ductwork; biting parasites spreading into rooms; or any respiratory, immune, or health concern that raises the consequence of exposure. A restoration contractor, electrician, roofer, pest professional, or wildlife operator may each own a different part of the job.",
+      "wordCount": 84
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b27",
+      "kind": "paragraph",
+      "sequenceIndex": 208,
+      "text": "After the waste is sealed, follow the disinfectant label and any contractor instructions for tools, footwear, reusable equipment, and surfaces along the work route. Avoid carrying wet waste or used cleaning material back through clean rooms. Keep people and pets away until wet surfaces are dry and label ventilation requirements have been met.",
+      "wordCount": 53
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b28",
+      "kind": "paragraph",
+      "sequenceIndex": 209,
+      "text": "Record what was removed. If insulation, vapour barrier, vent baffle, or finish material came out with the nest, note the location and arrange restoration. Cleanup that leaves a cold spot, open air pathway, or blocked ventilation can create condensation and mould later. Restoration is part of the job, not decoration after it.",
+      "wordCount": 52
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b29",
+      "kind": "paragraph",
+      "sequenceIndex": 210,
+      "text": "After cleaning, do not declare success until the area stays clean. Photograph the cleaned surfaces and repair. Check again after several days and after the next change in weather. Fresh droppings, disturbed insulation, new chewing, or renewed odour means the occupancy or entry problem remains. Old stains do not prove current activity; new material against a documented baseline does.",
+      "wordCount": 59
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b30",
+      "kind": "paragraph",
+      "sequenceIndex": 211,
+      "text": "Use smell carefully. Disinfectant can mask odour for a day, while wet insulation can create its own smell. A persistent or increasing odour, flies gathering at one point, or staining that returns suggests material remains behind a surface. Do not keep adding fragrance. Reassess the cavity and containment with professional help if the source cannot be reached safely.",
+      "wordCount": 58
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b31",
+      "kind": "paragraph",
+      "sequenceIndex": 212,
+      "text": "Watch the household as well as the attic. If anyone becomes unwell after rodent exposure or cleanup, especially with significant exposure to droppings, urine, saliva, or nesting material, contact a health professional and mention the rodent exposure. A book cannot diagnose symptoms or estimate an individual's risk. The useful action is to give the clinician accurate timing and exposure information.",
+      "wordCount": 60
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b32",
+      "kind": "paragraph",
+      "sequenceIndex": 213,
+      "text": "The cleanup sequence can be remembered as a short chain: assess, protect, wet, wait, wipe, bag, wash, inspect. It replaces the quick sweep that instinct suggests. It also keeps cleanup in its proper place. Disinfectant does not exclude squirrels. New insulation does not repair a soffit. A clean attic with an open route will become contaminated again.",
+      "wordCount": 57
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b33",
+      "kind": "paragraph",
+      "sequenceIndex": 214,
+      "text": "The final chapter brings the system together for Western Cape Breton: seasonal inspection, storm damage, feeders and stored food, route monitoring, and a response plan you can use the next time a scratch comes through the wall.",
+      "wordCount": 37
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b0",
+      "kind": "heading",
+      "sequenceIndex": 215,
+      "text": "Chapter 9 - Keeping the House Out of the Habitat",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 216,
+      "text": "Western Cape Breton will continue to have squirrels. That is not a failure of prevention. Red squirrels belong in the softwood and mixed forest. Northern flying squirrels belong in mature woods and tree cavities. The goal is not an empty property. It is a house whose roof, walls, vents, food storage, and maintenance do not offer an easier den than the habitat outside.",
+      "wordCount": 63
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b2",
+      "kind": "paragraph",
+      "sequenceIndex": 217,
+      "text": "Prevention begins with the repair you already made, but it becomes durable through inspection. Buildings move. Sealants age. Wood gets wet. Wind lifts edges. Snow and ice load the roof. Trees grow toward the eaves. A secure house this autumn can develop a loose soffit after a January storm. The prevention system must notice changes before squirrel teeth do.",
+      "wordCount": 59
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b3",
+      "kind": "paragraph",
+      "sequenceIndex": 218,
+      "text": "Use the seasons as reminders. In late winter, inspect from the ground for storm damage, loose soffit panels, shifted vent guards, missing shingles, damaged flashing, and tree limbs newly resting on the roof. This also precedes or overlaps the first red-squirrel breeding period and the spring flying-squirrel breeding period described by Nova Scotia guidance. Repairing an unoccupied defect before it becomes a nest is simpler than excluding a family later.",
+      "wordCount": 70
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b4",
+      "kind": "paragraph",
+      "sequenceIndex": 219,
+      "text": "In spring, clean gutters and look for water staining at fascia and roof junctions. Freeze-thaw damage may not show until meltwater finds the gap. Check that vent guards remain secure and that birds have not built nests against them. Observe rather than disturb any active nest. If wildlife already occupies the space, return to the identification and nursery steps instead of converting a maintenance inspection into an emergency sealing job.",
+      "wordCount": 70
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b5",
+      "kind": "paragraph",
+      "sequenceIndex": 220,
+      "text": "In midsummer, inspect the approaches. Branches may have grown or sagged toward the roof. Vines may have reached a soffit. Feeders may have migrated closer to the house for convenience. July is also a red-squirrel breeding period in the provincial guidance, with young born in August, so new activity deserves nursery caution. This is a good time to arrange arborist or exterior work before autumn storms, not a good time to close an active hole without checking it.",
+      "wordCount": 78
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b6",
+      "kind": "paragraph",
+      "sequenceIndex": 221,
+      "text": "In autumn, prepare for shelter-seeking weather. Check doors, garage corners, crawlspace vents, attic access, roof edges, and stored feed. Confirm that exterior repairs remain tight and that no temporary exclusion device was forgotten. Move seed, grain, and pet food into containers that resist gnawing and have secure lids. Clean spilled feed. Review the attic or garage baseline photographs so old staining is not mistaken for new activity.",
+      "wordCount": 67
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b7",
+      "kind": "paragraph",
+      "sequenceIndex": 222,
+      "text": "After any major wind, ice, or rain event, conduct a short damage check. You do not need a full inspection every time clouds pass. Focus on known vulnerable areas: the former entry, the windward roof edge, addition junctions, chimney flashing, gable vents, and branches that can strike the building. Use binoculars or a camera from the ground. A five-minute check can find a displaced panel before an animal starts enlarging the opening.",
+      "wordCount": 72
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b8",
+      "kind": "paragraph",
+      "sequenceIndex": 223,
+      "text": "Bird feeding requires a balanced approach. Nova Scotia's nuisance guidance notes that squirrels visiting feeders are behaving normally. Removing food temporarily can discourage them, but resident animals may return. Squirrel-resistant feeder design, baffles, and placement can reduce access without pretending to eliminate it. The important house-protection question is whether the feeder concentrates squirrels beside an entry route.",
+      "wordCount": 57
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b9",
+      "kind": "paragraph",
+      "sequenceIndex": 224,
+      "text": "Place feeders away from walls, low roofs, porch railings, stacked firewood, and branches that lead to the building. Clean spilled seed before it becomes a permanent feeding station for squirrels, mice, rats, and birds. Store seed in a robust container in a secure space. A thin plastic tote in an open garage is an invitation to gnaw. If feeder traffic repeatedly brings squirrels to a repaired roof corner, pause feeding and change the placement rather than testing the repair every day.",
+      "wordCount": 81
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b10",
+      "kind": "paragraph",
+      "sequenceIndex": 225,
+      "text": "Firewood and stored materials deserve similar attention. Keep piles organized and separated from siding where practical, both to allow inspection and to avoid concealed routes. Do not stack lumber, bins, or equipment beneath a vulnerable soffit. Clear dense debris from foundation vents and utility penetrations so new chewing or droppings are visible. Prevention works partly by making evidence easy to see.",
+      "wordCount": 61
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b11",
+      "kind": "paragraph",
+      "sequenceIndex": 226,
+      "text": "Garbage, compost, livestock feed, and pet food broaden the wildlife problem beyond squirrels. Use secure lids, clean spills, and avoid leaving bowls outside overnight. Compost practices should match local rules and avoid exposed meat or concentrated food scraps that attract rats and other animals. On a rural property, feed storage may be a larger attractant than anything inside the house. A sealed attic cannot compensate for grain scattered against the foundation.",
+      "wordCount": 71
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b12",
+      "kind": "paragraph",
+      "sequenceIndex": 227,
+      "text": "Tree management should reduce direct approaches without treating the forest as the enemy. Trim branches that touch or scrape the roof and those that lead directly to a known weak point, when ownership, tree health, and safety permit. Do not rely on a magic distance; agile squirrels can jump and climb, and northern flying squirrels can glide. The purpose of trimming is to make access less direct and to protect the building from abrasion and storm damage. Qualified arborists should handle large limbs, and the utility should handle vegetation near power lines.",
+      "wordCount": 92
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b13",
+      "kind": "paragraph",
+      "sequenceIndex": 228,
+      "text": "Inspect utility penetrations without altering the service. Cable, electrical, heat-pump, water, and fuel-line entries can leave gaps, but each has different sealing and clearance requirements. If you do not know what a pipe or cable does, do not cover it with foam and mesh. Ask the appropriate trade. A preventable wildlife gap is not worth creating a fire, drainage, or service problem.",
+      "wordCount": 62
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b14",
+      "kind": "paragraph",
+      "sequenceIndex": 229,
+      "text": "Inside, keep attic and crawlspace access usable. A hatch buried under boxes or a crawlspace blocked by storage makes inspection difficult, so activity continues longer before discovery. Maintain a safe path where the structure permits it. Do not use attic insulation as a walking surface; ceiling drywall between joists may not support a person. If regular access is unsafe, arrange periodic professional inspection rather than improvising a path.",
+      "wordCount": 68
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b15",
+      "kind": "paragraph",
+      "sequenceIndex": 230,
+      "text": "Sound remains part of monitoring, but it does not control the diagnosis. Do not wait for night, and do not classify the animal from the clock. When a new sound appears, record the time because timing helps. Then add location, duration, movement, weather, exterior sightings, fresh chewing, droppings, tracks, and the season. A daylight sound may elevate red squirrel. A night sound may elevate northern flying squirrel, mouse, or rat. Neither observation ends the investigation.",
+      "wordCount": 75
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b16",
+      "kind": "paragraph",
+      "sequenceIndex": 231,
+      "text": "A motion camera can be useful at a recurring approach, but place it safely and respect neighbouring privacy. Aim at your own roofline or entry, not a neighbour's windows or public road. Check enough footage to capture the animal's cycle, not only the clip that confirms your first guess. Save a clear image if professional identification or a DNR conversation becomes necessary.",
+      "wordCount": 62
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b17",
+      "kind": "paragraph",
+      "sequenceIndex": 232,
+      "text": "Keep the maintenance record simple enough that you will use it. One page or note can list the former entry, repair date and materials, seasonal inspection dates, photographs, tree work, feeder changes, and any later activity. Add a roof sketch with vulnerable points. The record turns future noise from a mystery into a comparison: this soffit was intact in October; this edge lifted after the storm; this animal began using it two days later.",
+      "wordCount": 74
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b18",
+      "kind": "paragraph",
+      "sequenceIndex": 233,
+      "text": "Household coordination matters too. Everyone should know not to block an active wildlife opening without checking for occupants. Children should know not to touch droppings or a trapped animal. Pet owners should keep cats and dogs away from a loose squirrel, trap, carcass, or cleanup area. If one person manages feeders and another manages the roof, both need to understand how those systems connect.",
+      "wordCount": 64
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b19",
+      "kind": "paragraph",
+      "sequenceIndex": 234,
+      "text": "Imagine using the seasonal system through one full year. In February, a storm lifts a corner panel on the north soffit. The late-winter ground check catches it before obvious animal activity begins. Binoculars show no fresh chewing or traffic, and a roofer restores the support and panel while checking nearby flashing. That preventive repair happens before the spring nursery window.",
+      "wordCount": 60
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b20",
+      "kind": "paragraph",
+      "sequenceIndex": 235,
+      "text": "In May, a red squirrel begins visiting a feeder near the porch roof. Nothing is wrong with seeing the squirrel. The response is to move the feeder approach away from the roof, clean spilled seed, and check the repaired soffit rather than trying to remove the animal from the yard. Habitat remains habitat; the building boundary stays the focus.",
+      "wordCount": 59
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b21",
+      "kind": "paragraph",
+      "sequenceIndex": 236,
+      "text": "In August, scratching appears in an addition wall during the afternoon. The household records it instead of sealing. A camera shows a red squirrel carrying material to a different soffit junction, and the provincial breeding calendar raises concern for young. A licensed operator confirms a nest, manages the family, and coordinates final repair with a carpenter. The response is slower than a foam can and far less destructive.",
+      "wordCount": 68
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b22",
+      "kind": "paragraph",
+      "sequenceIndex": 237,
+      "text": "In November, a night sound appears near the same room. A clock-only assumption would label it “the squirrel again” or dismiss squirrels because of darkness. The evidence-based method keeps a flying squirrel, mouse, and rat in play. Exterior night footage shows nothing at the roof, while small droppings appear beside a basement feed bin. The problem is a mouse route at the foundation, not failure of the attic repair. Evidence prevents the wrong part of the house from being opened.",
+      "wordCount": 80
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b23",
+      "kind": "paragraph",
+      "sequenceIndex": 238,
+      "text": "This year-long example shows that prevention does not produce one permanent diagnosis. It produces a reliable process. Different animals can arrive in different seasons, and the same room can amplify activity from different routes. The record, inspections, and confidence language allow each event to begin fresh without forgetting what the building has already taught you.",
+      "wordCount": 55
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b24",
+      "kind": "paragraph",
+      "sequenceIndex": 239,
+      "text": "Create a short response plan before the next incident. Step one: do not sweep, vacuum, poison, or immediately seal. Step two: record time and location. Step three: observe exterior routes from a safe place, during both relevant daylight and night periods if the species is uncertain. Step four: photograph signs without handling them. Step five: consider the season and dependent young. Step six: identify all openings. Step seven: contact DNR or a licensed nuisance-wildlife operator when flying squirrels, young, legal uncertainty, inaccessible spaces, or safety hazards are involved. Step eight: exclude or remove lawfully, confirm vacancy, repair durably, clean wet, and monitor.",
+      "wordCount": 102
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b25",
+      "kind": "paragraph",
+      "sequenceIndex": 240,
+      "text": "That plan handles most uncertainty without pretending every case is simple. It also shows when the problem has crossed into another trade. Flickering power, damaged wiring, burning odour, or tripped breakers means electrician. Water staining, rotten fascia, failed flashing, or a steep exposed roof means roofer or carpenter. Heavy contamination, unsafe attic access, or extensive porous waste means restoration professional. Large limbs or power-line vegetation means arborist or utility. Wildlife identification, young, protected species, or capture means DNR or licensed nuisance-wildlife operator.",
+      "wordCount": 82
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b26",
+      "kind": "paragraph",
+      "sequenceIndex": 241,
+      "text": "What should you expect after a successful repair? You may still see red squirrels in the yard and hear them on the roof. A squirrel may inspect the former entry and chew briefly at an edge. Exterior presence is not interior failure. Compare the sound, signs, and camera evidence. If the repair remains intact and there is no movement inside, the boundary is working. If fresh chewing concentrates at the edge, strengthen or redesign the detail before it becomes a new opening.",
+      "wordCount": 82
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b27",
+      "kind": "paragraph",
+      "sequenceIndex": 242,
+      "text": "You may also discover that more than one animal was involved. A squirrel exclusion can uncover a separate mouse problem, especially where a large exterior opening led into wall cavities with smaller interior gaps. Do not reuse squirrel methods blindly. Mouse control requires fine-gap sealing and appropriate trapping; cleanup precautions remain. The building can have layers of access, and fixing the largest one does not erase the smaller ones.",
+      "wordCount": 69
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b28",
+      "kind": "paragraph",
+      "sequenceIndex": 243,
+      "text": "Prevention is not a single product. It is a relationship among habitat, animal behaviour, building maintenance, and human habits. Heavy mesh helps only if attached to sound material. Branch trimming helps only if the soffit is repaired. Feed management helps only if other concentrated food is secured. Cleanup helps only if the animals cannot return. Each measure supports the others.",
+      "wordCount": 60
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b29",
+      "kind": "paragraph",
+      "sequenceIndex": 244,
+      "text": "The Western Cape Breton setting makes that relationship visible. Forest stands close to houses. Weather tests every edge. Wildlife moves through yards, camps, barns, and shore communities. The sensible response is not to demand a sterile perimeter. It is to build a clear, maintained boundary: habitat outside, human shelter inside.",
+      "wordCount": 50
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b30",
+      "kind": "paragraph",
+      "sequenceIndex": 245,
+      "text": "Return to the sound that began the book. It may happen at noon. It may happen after dark. It may be a red squirrel, a northern flying squirrel, a mouse, a rat, or something else entirely. This time, the clock does not dismiss the squirrel. It contributes one clue.",
+      "wordCount": 49
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b31",
+      "kind": "paragraph",
+      "sequenceIndex": 246,
+      "text": "You listen for the route. You watch the exterior. You look for gnawing, tracks, droppings, nesting material, and repeated movement. You ask whether young could be inside. You respect the legal difference between red and flying squirrels. You let exclusion come before cosmetic repair, durable construction before foam, and Canadian wet cleanup before broom or vacuum. Then you inspect again after the next Cape Breton storm.",
+      "wordCount": 66
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b32",
+      "kind": "paragraph",
+      "sequenceIndex": 247,
+      "text": "That is how the problem changes from an unseen animal in a wall to a sequence you can manage. Identify. Account for the occupants. Exclude lawfully. Repair for teeth and weather. Clean safely. Keep watching the boundary. The squirrels remain part of the landscape, and the house becomes a poor place for them to live.",
+      "wordCount": 55
+    }
+  ],
+  "source": {
+    "epub": "rodents-in-the-walls.epub"
+  },
+  "version": 1
+}

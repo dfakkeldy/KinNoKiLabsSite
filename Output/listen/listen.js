@@ -21,14 +21,17 @@
     captionText: $('captionText'), status: $('status'), playPause: $('playPause'),
     iconPlay: $('iconPlay'), iconPause: $('iconPause'), back30: $('back30'), fwd30: $('fwd30'),
     speed: $('speed'), scrubber: $('scrubber'), timeNow: $('timeNow'), timeTotal: $('timeTotal'),
+    selectedFormats: $('selectedFormats'), emptyState: $('emptyState'),
     library: $('library'), honesty: $('honesty'),
   };
   var main = document.querySelector('.room-main');
+  var room = document.querySelector('.room');
 
   var audio = new Audio();
   audio.preload = 'metadata';
 
   var SPEEDS = [1, 1.25, 1.5];
+  var SPEED_KEY = 'kinnoki-listen-rate';
   var book = null;
   var rows = [];
   var blocks = [];
@@ -65,6 +68,10 @@
     els.status.textContent = text || '';
     els.status.classList.toggle('error', !!isError);
   }
+  function setEmptyState(text) {
+    els.emptyState.textContent = text || '';
+    els.emptyState.hidden = !text;
+  }
   function store(key, value) {
     try { localStorage.setItem(key, value); } catch (e) {}
   }
@@ -97,6 +104,25 @@
     els.honesty.appendChild(document.createTextNode('.'));
   }
 
+  function actionLink(action) {
+    var a = document.createElement('a');
+    a.href = action.href;
+    a.textContent = action.label;
+    if (action.className) a.className = action.className;
+    if (action.external) { a.target = '_blank'; a.rel = 'noopener'; }
+    return a;
+  }
+
+  function renderSelectedFormats() {
+    var actions = core.libraryActions(book).filter(function (action) {
+      return action.label !== 'Listen';
+    });
+    actions.forEach(function (action) {
+      els.selectedFormats.appendChild(actionLink(action));
+    });
+    els.selectedFormats.hidden = actions.length === 0;
+  }
+
   function renderLibrary(catalog) {
     catalog.books.forEach(function (b) {
       if (book && b.slug === book.slug) return;
@@ -106,12 +132,8 @@
       title.textContent = b.title;
       var links = document.createElement('span');
       links.className = 'room-lib-links';
-      [['EPUB', b.links.epub], ['Read', b.links.read]].forEach(function (pair) {
-        var a = document.createElement('a');
-        a.href = pair[1];
-        a.textContent = pair[0];
-        if (pair[0] === 'Read') { a.target = '_blank'; a.rel = 'noopener'; }
-        links.appendChild(a);
+      core.libraryActions(b).forEach(function (action) {
+        links.appendChild(actionLink(action));
       });
       li.appendChild(title);
       li.appendChild(links);
@@ -232,6 +254,7 @@
   }
 
   function play() {
+    if (els.playPause.disabled) return;
     var p = audio.play();
     if (p && p.catch) {
       p.catch(function () {
@@ -239,7 +262,10 @@
       });
     }
   }
-  function toggle() { if (audio.paused) play(); else audio.pause(); }
+  function toggle() {
+    if (els.playPause.disabled) return;
+    if (audio.paused) play(); else audio.pause();
+  }
 
   function seekTo(t) {
     audio.currentTime = Math.min(Math.max(0, t), duration() || t);
@@ -248,15 +274,22 @@
   }
   function seekBy(delta) { seekTo(audio.currentTime + delta); }
 
-  function applySpeed(rate) {
+  function applySpeed(rate, persist) {
     audio.playbackRate = rate;
     els.speed.textContent = (rate === 1 ? '1' : String(rate)) + '×';
     els.speed.setAttribute('aria-label', 'Playback speed, currently ' + rate + '×');
-    store('kinnoki-listen-rate', String(rate));
+    if (persist) store(SPEED_KEY, String(rate));
+  }
+  function preferredSpeed() {
+    var raw = read(SPEED_KEY);
+    var rate = Number(raw);
+    if (SPEEDS.indexOf(rate) !== -1 && raw === String(rate)) return rate;
+    store(SPEED_KEY, String(SPEEDS[0]));
+    return SPEEDS[0];
   }
   function cycleSpeed() {
     var i = SPEEDS.indexOf(audio.playbackRate);
-    applySpeed(SPEEDS[(i + 1) % SPEEDS.length]);
+    applySpeed(SPEEDS[(i + 1) % SPEEDS.length], true);
   }
 
   function updateScrubber() {
@@ -324,6 +357,9 @@
     });
     audio.addEventListener('error', showAudioError);
     audio.addEventListener('loadedmetadata', function () {
+      // Loading a source can reset the media element to 1×. Restore the
+      // preference here so the effective rate stays in step with the UI.
+      applySpeed(preferredSpeed(), false);
       els.scrubber.max = String(duration());
       els.scrubber.disabled = false;
       els.playPause.disabled = false;
@@ -431,20 +467,24 @@
       if (!book) {
         // Nothing streamable: hide the player shell, keep the library +
         // Echo CTA so the page still earns its visit.
-        document.querySelector('.room').hidden = true;
-        setStatus('No book is streaming right now — the library below has the EPUBs, free.', false);
+        room.hidden = true;
+        setStatus('', false);
+        setEmptyState('No book is streaming right now — the library below has the EPUBs, free.');
         renderLibrary(catalog);
         return;
       }
+      room.hidden = false;
+      setEmptyState('');
       try {
         var saved = JSON.parse(read('kinnoki-listen-' + book.slug) || 'null');
         if (saved && typeof saved.t === 'number') pendingResumeT = saved.t;
       } catch (e) {}
       renderBook();
+      renderSelectedFormats();
       renderChapters();
       renderLibrary(catalog);
       wireControls();
-      applySpeed(parseFloat(read('kinnoki-listen-rate')) || 1);
+      applySpeed(preferredSpeed(), false);
       updateChapter(0);
       showQuiet('Press play to start listening.');
       // <source type=…> instead of audio.src: GitHub serves the m4b as
@@ -462,6 +502,8 @@
     })
     .catch(function (err) {
       console.debug('[listen] catalog failed:', err);
+      room.hidden = false;
+      setEmptyState('');
       setStatus('The book catalog couldn’t load. Reload to retry.', true);
     });
 })();

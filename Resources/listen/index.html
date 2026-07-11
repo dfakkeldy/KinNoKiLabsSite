@@ -35,7 +35,7 @@
     </a>
     <nav class="room-bar-nav" aria-label="Site">
       <a class="room-back" href="/learn">&larr; Learn</a>
-      <button class="font-toggle" type="button" aria-label="Toggle OpenDyslexic font">Aa</button>
+      <button class="font-toggle" type="button" aria-label="Toggle OpenDyslexic font" aria-pressed="false">Aa</button>
       <button class="theme-toggle" type="button" aria-label="Toggle light or dark theme">
         <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
         <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
@@ -81,6 +81,8 @@
 
         <p id="status" class="room-status" role="status" aria-live="polite">Loading the book&hellip;</p>
 
+        <nav id="selectedFormats" class="room-formats" aria-label="Other formats for this book" hidden></nav>
+
         <div class="room-transport" aria-label="Playback controls">
           <div class="room-buttons">
             <button id="back30" class="room-skip" type="button" aria-label="Back 30 seconds">
@@ -109,6 +111,8 @@
       </div>
     </section>
 
+    <p id="emptyState" class="room-empty" role="status" aria-live="polite" hidden></p>
+
     <section class="room-cta bento-tint reveal" aria-label="About Echo">
       <div>
         <h2>Like listening this way?</h2>
@@ -119,7 +123,7 @@
 
     <section class="room-library reveal" aria-label="More books in the library">
       <h2 class="room-library-title">Also in the library</h2>
-      <p class="room-library-sub">The rest of the public collection ships as EPUB and readable Markdown.</p>
+      <p class="room-library-sub">Choose another narrated book, or open any title as an EPUB or readable Markdown.</p>
       <ul id="library"></ul>
     </section>
 
