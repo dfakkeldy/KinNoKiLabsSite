@@ -27,7 +27,10 @@ const expectedAnchorCounts = new Map([
 
 function assertNoAbsolutePaths(value, location = 'JSON') {
   if (typeof value === 'string') {
-    assert.ok(!value.startsWith('/') && !/^[A-Za-z]:[\\/]/.test(value), `${location}: ${value}`);
+    assert.ok(
+      !value.startsWith('/') && !value.startsWith('file://') && !/^[A-Za-z]:[\\/]/.test(value),
+      `${location}: ${value}`,
+    );
   } else if (Array.isArray(value)) {
     value.forEach((item, index) => assertNoAbsolutePaths(item, `${location}[${index}]`));
   } else if (value && typeof value === 'object') {
@@ -87,6 +90,13 @@ test('published catalog and generated JSON assets contain no absolute filesystem
   }
 });
 
+test('absolute path guard rejects file URLs', () => {
+  assert.throws(
+    () => assertNoAbsolutePaths({ path: 'file:///private/tmp/listen.json' }),
+    /file:\/\/\/private\/tmp\/listen\.json/,
+  );
+});
+
 test('private books remain absent', () => {
   const slugs = catalog.books.map((book) => book.slug);
   assert.ok(!slugs.includes('the-long-route'));
@@ -100,19 +110,15 @@ test('builder requires exact playable approval and rejects unapproved media', ()
   assert.match(builderSource, /unexpected playable media for non-audio-approved book: \$slug/);
 });
 
-test('builder stages a complete bundle and publishes it through a rollback transaction', () => {
+test('builder validates full and no-blocks staged contracts independently', () => {
   assert.doesNotMatch(builderSource, /asset_dir="\$OUT_DIR\/books\/\$slug"/);
   assert.match(builderSource, /asset_dir="\$STAGED_BOOKS\/\$slug"/);
   assert.match(builderSource, /validate_staged_bundle/);
   assert.match(builderSource, /current_source_sha="\$\(git -C "\$BOOKS_REPO" rev-parse HEAD\)"/);
   assert.match(builderSource, /actual_catalog_slugs/);
-  assert.match(builderSource, /publish_staged_bundle/);
-  assert.match(builderSource, /rollback_publish/);
-  assert.match(builderSource, /trap cleanup EXIT/);
-  assert.match(builderSource, /HAD_FINAL_BOOKS=1\n\s+mv -- "\$FINAL_BOOKS" "\$BACKUP_BOOKS"/);
-  assert.match(builderSource, /HAD_FINAL_CATALOG=1\n\s+mv -- "\$FINAL_CATALOG" "\$BACKUP_CATALOG"/);
-  assert.match(builderSource, /INSTALLED_BOOKS=1\n\s+mv -- "\$PENDING_BOOKS" "\$FINAL_BOOKS"/);
-  assert.match(builderSource, /INSTALLED_CATALOG=1\n\s+mv -- "\$PENDING_CATALOG" "\$FINAL_CATALOG"/);
-  assert.match(builderSource, /mv -- "\$PENDING_BOOKS" "\$FINAL_BOOKS"/);
-  assert.match(builderSource, /mv -- "\$PENDING_CATALOG" "\$FINAL_CATALOG"/);
+  assert.match(builderSource, /expected_asset_entries="alignment\.json\ncover\.jpg"/);
+  assert.match(builderSource, /staged no-blocks catalog text must be null/);
+  assert.match(builderSource, /all\(range\(1; \$timestamps \| length\)/);
+  assert.match(builderSource, /startswith\("file:\/\/"\)/);
+  assert.match(builderSource, /listen_catalog_transaction_init "\$OUT_DIR"/);
 });
