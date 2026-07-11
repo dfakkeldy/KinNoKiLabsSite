@@ -22,6 +22,13 @@ function customProperty(css, selector, name) {
   return match[1];
 }
 
+function customPropertyValue(css, selector, name) {
+  const body = ruleBody(css, selector);
+  const match = body.match(new RegExp(`${escaped(name)}\\s*:\\s*([^;]+);`));
+  assert.ok(match, `${selector} must declare ${name}`);
+  return match[1].trim();
+}
+
 function relativeLuminance(hex) {
   const channels = hex.match(/[0-9a-f]{2}/gi).map((value) => parseInt(value, 16) / 255);
   const linear = channels.map((value) => (
@@ -147,6 +154,36 @@ test('player controls use accessible boundaries and track colors', () => {
   assert.match(ruleBody(listenCss, '.room-scrub input[type="range"]::-moz-range-track'), /background:\s*var\(--room-track\)/);
   assert.match(ruleBody(listenCss, '.room-scrub input[type="range"]::-moz-range-progress'), /background:\s*var\(--room-text-accent\)/);
   assert.match(ruleBody(listenCss, '.room-scrub input[type="range"]::-moz-range-thumb'), /background:\s*var\(--room-text-accent\)/);
+});
+
+for (const theme of [
+  { name: 'dark', selector: ':root' },
+  { name: 'light', selector: '[data-theme="light"]' },
+]) {
+  test(`${theme.name} player CTA text meets AA at every real gold gradient stop`, () => {
+    const actionText = customProperty(listenCss, theme.selector, '--room-action-text');
+    const gradient = customPropertyValue(siteCss, ':root', '--grad-gold');
+    const stops = gradient.match(/#[0-9a-fA-F]{6}/g) ?? [];
+    assert.ok(stops.length > 0, 'the real --grad-gold declaration must contain explicit hex stops');
+
+    for (const stop of stops) {
+      const ratio = contrastRatio(actionText, stop);
+      assert.ok(
+        ratio >= 4.5,
+        `${theme.name} CTA ${actionText} is ${ratio.toFixed(2)}:1 on gradient stop ${stop}; expected >= 4.5:1`,
+      );
+    }
+  });
+}
+
+test('player CTA keeps its accessible action text in normal and hover states', () => {
+  for (const selector of ['.room-cta .btn-gold', '.room-cta .btn-gold:hover']) {
+    assert.match(
+      ruleBody(listenCss, selector),
+      /(?:^|;)\s*color:\s*var\(--room-action-text\)/,
+      `${selector} must use --room-action-text`,
+    );
+  }
 });
 
 test('selected-book recovery links remain primary text in every state', () => {

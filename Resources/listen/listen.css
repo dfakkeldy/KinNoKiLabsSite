@@ -12,6 +12,7 @@
   --room-text-tertiary: #a9a9af;
   --room-text-accent: #d9bd7a;
   --room-text-error: #ff9b8f;
+  --room-action-text: #000000;
   --room-control-border: #737378;
   --room-track: #8a8a90;
 }
@@ -21,6 +22,7 @@
   --room-text-tertiary: #626267;
   --room-text-accent: #73591f;
   --room-text-error: #9b332b;
+  --room-action-text: #000000;
   --room-control-border: #8a8a90;
   --room-track: #737378;
 }
@@ -346,6 +348,8 @@ body.font-opendyslexic .room-bar .font-toggle {
 }
 .room-cta h2 { font-size: 20px; letter-spacing: -0.015em; margin: 0 0 6px; }
 .room-cta p { color: var(--room-text-secondary); font-size: 14.5px; line-height: 1.6; margin: 0; max-width: 46rem; }
+.room-cta .btn-gold { color: var(--room-action-text); }
+.room-cta .btn-gold:hover { color: var(--room-action-text); }
 
 .room-library { margin-top: clamp(36px, 6vw, 56px); }
 .room-library-title { font-size: 17px; letter-spacing: -0.01em; margin: 0 0 4px; }
