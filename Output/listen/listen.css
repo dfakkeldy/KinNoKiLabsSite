@@ -303,6 +303,11 @@
 .room-library li .room-lib-title { color: var(--text); font-weight: 500; min-width: 0; }
 .room-library li .room-lib-links { display: flex; gap: 10px; flex: none; }
 .room-library li a { color: var(--text-muted); font-size: 12.5px; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent); text-underline-offset: 3px; }
+.room-library li a.room-lib-listen {
+  color: var(--gold-text);
+  font-weight: 650;
+  text-decoration-thickness: 1.5px;
+}
 .room-library li a:hover { color: var(--gold-text); }
 
 .room-honesty { margin: clamp(28px, 5vw, 40px) 0 0; color: var(--text-quaternary); font-size: 12.5px; line-height: 1.6; max-width: 52rem; }

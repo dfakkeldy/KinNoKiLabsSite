@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "generated": "2026-07-10T02:37:52Z",
+  "generated": "2026-07-11T15:31:43Z",
   "source": {
     "repo": "dfakkeldy/explainer-audiobooks",
-    "commit": "c62647e76a6f638a572aefcd3d403aaedf3f7b01"
+    "commit": "af322bb652b4e999a3b773986d0ad726f054be97"
   },
   "books": [
     {
@@ -124,6 +124,263 @@
         "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/the-voice-in-the-machine",
         "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/the-voice-in-the-machine/the-voice-in-the-machine.epub",
         "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/the-voice-in-the-machine/the-voice-in-the-machine.md"
+      }
+    },
+    {
+      "slug": "chicken-predators",
+      "title": "Chicken Predators",
+      "subtitle": null,
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "GLM-5.2",
+      "cover": "books/chicken-predators/cover.jpg",
+      "coverAlt": "Cover of Chicken Predators",
+      "durationSeconds": 11140.181333,
+      "audio": {
+        "status": "available",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/af322bb652b4e999a3b773986d0ad726f054be97/books/chicken-predators/chicken-predators.m4b",
+        "mimeType": "audio/mp4"
+      },
+      "chapters": [
+        {
+          "title": "ch. 1: The Morning You Find Feathers",
+          "start": 0.000000,
+          "end": 449.085000
+        },
+        {
+          "title": "ch. 2: Who Is Actually Out There",
+          "start": 449.085000,
+          "end": 1194.505000
+        },
+        {
+          "title": "ch. 3: Reading The Crime Scene",
+          "start": 1194.505000,
+          "end": 1971.590000
+        },
+        {
+          "title": "ch. 4: The Small Nocturnal Killers",
+          "start": 1971.590000,
+          "end": 2706.960000
+        },
+        {
+          "title": "ch. 5: The Diggers And The Crushers",
+          "start": 2706.960000,
+          "end": 3482.730000
+        },
+        {
+          "title": "ch. 6: From Above",
+          "start": 3482.730000,
+          "end": 4072.510000
+        },
+        {
+          "title": "ch. 7: The Opportunists",
+          "start": 4072.510000,
+          "end": 4529.025000
+        },
+        {
+          "title": "ch. 8: The Coop Is Your First And Best Defence",
+          "start": 4529.025000,
+          "end": 5310.815000
+        },
+        {
+          "title": "ch. 9: Doors, Latches, And The Dusk Discipline",
+          "start": 5310.815000,
+          "end": 6041.235000
+        },
+        {
+          "title": "ch. 10: The Free-Range Question",
+          "start": 6041.235000,
+          "end": 6753.985000
+        },
+        {
+          "title": "ch. 11: Electric Fencing In Practice",
+          "start": 6753.985000,
+          "end": 7592.450000
+        },
+        {
+          "title": "ch. 12: When Prevention Fails: The Trapping Decision",
+          "start": 7592.450000,
+          "end": 8410.390000
+        },
+        {
+          "title": "ch. 13: Live-Cage Trapping",
+          "start": 8410.390000,
+          "end": 9082.245000
+        },
+        {
+          "title": "ch. 14: Bodygrip And Killing Traps",
+          "start": 9082.245000,
+          "end": 9752.615000
+        },
+        {
+          "title": "ch. 15: Handling The Caught Animal",
+          "start": 9752.615000,
+          "end": 10534.600000
+        },
+        {
+          "title": "ch. 16: Living Alongside Them",
+          "start": 10534.600000,
+          "end": 11140.181000
+        }
+      ],
+      "text": {
+        "blocks": "books/chicken-predators/blocks.json"
+      },
+      "alignment": {
+        "sidecar": "books/chicken-predators/alignment.json",
+        "hasWordTimings": false
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/chicken-predators",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/chicken-predators/chicken-predators.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/chicken-predators/chicken-predators.md"
+      }
+    },
+    {
+      "slug": "rodents-in-the-walls",
+      "title": "Rodents in the Walls",
+      "subtitle": "Squirrels and Other Houseguests in Western Cape Breton",
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "GPT-5.6 Sol",
+      "cover": "books/rodents-in-the-walls/cover.jpg",
+      "coverAlt": "Cover of Rodents in the Walls",
+      "durationSeconds": 7377.962667,
+      "audio": {
+        "status": "available",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/af322bb652b4e999a3b773986d0ad726f054be97/books/rodents-in-the-walls/rodents-in-the-walls.m4b",
+        "mimeType": "audio/mp4"
+      },
+      "chapters": [
+        {
+          "title": "ch. 1: Something Is Living in the Wall",
+          "start": 0.000000,
+          "end": 544.580000
+        },
+        {
+          "title": "ch. 2: The Animals You Are Dealing With",
+          "start": 544.580000,
+          "end": 1247.095000
+        },
+        {
+          "title": "ch. 3: How They Get In",
+          "start": 1247.095000,
+          "end": 1790.010000
+        },
+        {
+          "title": "ch. 4: Visitor, Den, or Nursery?",
+          "start": 1790.010000,
+          "end": 2649.735000
+        },
+        {
+          "title": "ch. 5: Eviction Without Making It Worse",
+          "start": 2649.735000,
+          "end": 3554.445000
+        },
+        {
+          "title": "ch. 6: Repairing for Squirrels, Not Just Mice",
+          "start": 3554.445000,
+          "end": 4352.850000
+        },
+        {
+          "title": "ch. 7: Trapping, Law, and Poison",
+          "start": 4352.850000,
+          "end": 5352.495000
+        },
+        {
+          "title": "ch. 8: Damage and Safe Cleanup",
+          "start": 5352.495000,
+          "end": 6410.130000
+        },
+        {
+          "title": "ch. 9: Keeping the House Out of the Habitat",
+          "start": 6410.130000,
+          "end": 7377.962000
+        }
+      ],
+      "text": {
+        "blocks": "books/rodents-in-the-walls/blocks.json"
+      },
+      "alignment": {
+        "sidecar": "books/rodents-in-the-walls/alignment.json",
+        "hasWordTimings": false
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/rodents-in-the-walls",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/rodents-in-the-walls/rodents-in-the-walls.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/rodents-in-the-walls/rodents-in-the-walls.md"
+      }
+    },
+    {
+      "slug": "the-new-deal",
+      "title": "The New Deal",
+      "subtitle": "Canada Post, CUPW, and What It Means for Rural Mail",
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "GLM-5.2",
+      "cover": "books/the-new-deal/cover.jpg",
+      "coverAlt": "Cover of The New Deal",
+      "durationSeconds": 6942.336000,
+      "audio": {
+        "status": "available",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/af322bb652b4e999a3b773986d0ad726f054be97/books/the-new-deal/the-new-deal.m4b",
+        "mimeType": "audio/mp4"
+      },
+      "chapters": [
+        {
+          "title": "ch. 1: The Post Office on Main Street",
+          "start": 0.000000,
+          "end": 728.550000
+        },
+        {
+          "title": "ch. 2: How We Got Here",
+          "start": 728.550000,
+          "end": 1506.050000
+        },
+        {
+          "title": "ch. 3: The Headlines",
+          "start": 1506.050000,
+          "end": 2138.555000
+        },
+        {
+          "title": "ch. 4: The RSMC Revolution",
+          "start": 2138.555000,
+          "end": 3032.745000
+        },
+        {
+          "title": "ch. 5: Who Covers the Route?",
+          "start": 3032.745000,
+          "end": 3842.755000
+        },
+        {
+          "title": "ch. 6: Coverage of Absences",
+          "start": 3842.755000,
+          "end": 4632.380000
+        },
+        {
+          "title": "ch. 7: Weekend Parcels and the Amazon Question",
+          "start": 4632.380000,
+          "end": 5359.875000
+        },
+        {
+          "title": "ch. 8: The Money Problem",
+          "start": 5359.875000,
+          "end": 6161.365000
+        },
+        {
+          "title": "ch. 9: What It Means in Port Hood",
+          "start": 6161.365000,
+          "end": 6942.336000
+        }
+      ],
+      "text": {
+        "blocks": "books/the-new-deal/blocks.json"
+      },
+      "alignment": {
+        "sidecar": "books/the-new-deal/alignment.json",
+        "hasWordTimings": false
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/the-new-deal",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/the-new-deal/the-new-deal.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/the-new-deal/the-new-deal.md"
       }
     }
   ]
