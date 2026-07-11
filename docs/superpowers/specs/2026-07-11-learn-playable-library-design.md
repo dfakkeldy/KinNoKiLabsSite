@@ -30,8 +30,9 @@ the `/learn` page.
   folders in `dfakkeldy/explainer-audiobooks`, but those folders do not contain
   their M4Bs or alignment sidecars.
 - *The New Deal* exists as a completed local custom-learning package, and
-  Explainer Audiobooks PR #15 published its approved, byte-identical Markdown,
-  EPUB, selected cover, and README under `books/the-new-deal/`. Its M4B and
+  Explainer Audiobooks PR #15 published its approved Markdown, EPUB, selected
+  cover, and README under `books/the-new-deal/`. The Markdown, EPUB, and cover
+  payloads are byte-identical to the approved local source; its M4B and
   alignment sidecar were not included in that PR.
 
 ## Chosen approach
@@ -61,9 +62,9 @@ The Explainer Audiobooks change will:
 
 1. Add the final M4B and alignment sidecar to the existing public folders for
    *Chicken Predators* and the corrected v2 edition of *Rodents in the Walls*.
-2. Reuse `books/the-new-deal/` for *The New Deal*. Preserve the Markdown, EPUB,
-   selected bright cover, and README published by PR #15 after byte comparison
-   with the approved local source; add the renamed approved audio and sidecar as
+2. Reuse `books/the-new-deal/` for *The New Deal*. Preserve PR #15's README and
+   byte-compare only its Markdown, EPUB, and selected bright cover payloads with
+   the approved local source; add the renamed approved audio and sidecar as
    `the-new-deal.m4b` and `the-new-deal.alignment.json`, then update the README's
    public-file and verification details.
 3. Update the collection README/index metadata so all three packages are

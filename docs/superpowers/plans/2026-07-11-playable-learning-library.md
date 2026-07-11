@@ -25,9 +25,10 @@
 
 ### Live-base reconciliation
 
-While Task 1 was being staged, Explainer Audiobooks PR #15 merged the approved,
-byte-identical *The New Deal* manuscript, EPUB, selected cover, and README under
-the canonical public slug `the-new-deal`. Dan approved consolidating on that
+While Task 1 was being staged, Explainer Audiobooks PR #15 merged the approved
+*The New Deal* manuscript, EPUB, selected cover, and README under the canonical
+public slug `the-new-deal`. The manuscript, EPUB, and cover payloads are
+byte-identical to the approved local source. Dan approved consolidating on that
 live path rather than creating the originally planned duplicate
 `cupw-collective-agreement` public folder. The local custom-learning build keeps
 its historical `cupw-collective-agreement` source name; every public package,
@@ -37,10 +38,10 @@ catalog, site, knowledge-base, and production reference uses `the-new-deal`.
 
 ### Explainer Audiobooks repository
 
-- Modify `README.md` — add all three books, actual narrated runtimes, and audio-package wording.
+- Modify `README.md` — add Chicken and Rodents, update the existing New Deal row, record actual narrated runtimes, and add audio-package wording.
 - Modify `books/chicken-predators/README.md`; add its final `.m4b` and `.alignment.json`.
 - Replace the public `books/rodents-in-the-walls/` text package with the corrected v2 files; add its final `.m4b` and `.alignment.json`.
-- Preserve the existing PR #15 files in `books/the-new-deal/` after byte comparison; modify its README and add `the-new-deal.m4b` plus `the-new-deal.alignment.json`.
+- Preserve the existing PR #15 Markdown, EPUB, and cover in `books/the-new-deal/` after byte comparison; modify its existing README and add `the-new-deal.m4b` plus `the-new-deal.alignment.json`.
 
 ### KinNoKi site repository
 
@@ -78,6 +79,8 @@ catalog, site, knowledge-base, and production reference uses `the-new-deal`.
 Invoke `superpowers:using-git-worktrees`, then run:
 
 ```bash
+set -euo pipefail
+
 git -C /Users/dfakkeldy/Developer/explainer-audiobooks fetch origin
 git -C /Users/dfakkeldy/Developer/explainer-audiobooks worktree add \
   -b codex/publish-playable-books \
@@ -95,6 +98,8 @@ Expected: both worktrees are clean; the original dirty checkouts are unchanged.
 - [ ] **Step 2: Build the clean Echo CLI**
 
 ```bash
+set -euo pipefail
+
 "$HOME/.claude/bin/xcode-build-gate.sh" --wait && \
   make -C /Users/dfakkeldy/.codex/worktrees/echo-listen-cli echo-cli
 /Users/dfakkeldy/.codex/worktrees/echo-listen-cli/.build/cli/Build/Products/Release/echo-cli export-blocks --help
@@ -106,6 +111,8 @@ Expected: `BUILD SUCCEEDED`; both subcommands print their option help.
 - [ ] **Step 3: Capture the red package state**
 
 ```bash
+set -euo pipefail
+
 BOOKS_WT=/Users/dfakkeldy/.codex/worktrees/explainer-playable-library
 missing=0
 for path in \
@@ -126,8 +133,19 @@ PR #15 base.
 - [ ] **Step 4: Copy only the approved canonical artifacts**
 
 ```bash
+set -euo pipefail
+
 SOURCE=/Users/dfakkeldy/Developer/explainer-audiobooks/.build/custom-learning-audiobooks
 BOOKS_WT=/Users/dfakkeldy/.codex/worktrees/explainer-playable-library
+
+# PR #15 already published the approved text package at books/the-new-deal.
+# Prove all three immutable payloads are approved before copying any artifact.
+cmp -s "$SOURCE/cupw-collective-agreement/dist/cupw-collective-agreement.md" \
+  "$BOOKS_WT/books/the-new-deal/the-new-deal.md"
+cmp -s "$SOURCE/cupw-collective-agreement/dist/cupw-collective-agreement.epub" \
+  "$BOOKS_WT/books/the-new-deal/the-new-deal.epub"
+cmp -s "$SOURCE/cupw-collective-agreement/dist/cover-1.png" \
+  "$BOOKS_WT/books/the-new-deal/cover.png"
 
 cp "$SOURCE/chicken-predators/dist/chicken-predators.m4b" "$BOOKS_WT/books/chicken-predators/"
 cp "$SOURCE/chicken-predators/dist/chicken-predators.alignment.json" "$BOOKS_WT/books/chicken-predators/"
@@ -138,15 +156,6 @@ cp "$SOURCE/rodents-in-the-walls-v2/dist/cover.png" "$BOOKS_WT/books/rodents-in-
 cp "$SOURCE/rodents-in-the-walls-v2/dist/rodents-in-the-walls.m4b" "$BOOKS_WT/books/rodents-in-the-walls/"
 cp "$SOURCE/rodents-in-the-walls-v2/dist/rodents-in-the-walls.alignment.json" "$BOOKS_WT/books/rodents-in-the-walls/"
 cp "$SOURCE/rodents-in-the-walls-v2/dist/README.md" "$BOOKS_WT/books/rodents-in-the-walls/README.md"
-
-# PR #15 already published the approved text package at books/the-new-deal.
-# Prove those public files are the approved bytes before adding audio.
-cmp -s "$SOURCE/cupw-collective-agreement/dist/cupw-collective-agreement.md" \
-  "$BOOKS_WT/books/the-new-deal/the-new-deal.md"
-cmp -s "$SOURCE/cupw-collective-agreement/dist/cupw-collective-agreement.epub" \
-  "$BOOKS_WT/books/the-new-deal/the-new-deal.epub"
-cmp -s "$SOURCE/cupw-collective-agreement/dist/cover-1.png" \
-  "$BOOKS_WT/books/the-new-deal/cover.png"
 
 # Keep the local source-build names, but explicitly rename public destinations.
 cp "$SOURCE/cupw-collective-agreement/dist/cupw-collective-agreement.m4b" \
@@ -252,7 +261,18 @@ public audio facts:
 
 - [ ] **Step 8: Update the public collection index**
 
-Use `apply_patch` in `README.md`:
+First capture the PR #15 baseline invariant:
+
+```bash
+set -euo pipefail
+
+BOOKS_WT=/Users/dfakkeldy/.codex/worktrees/explainer-playable-library
+test "$(rg -c '^\| \[The New Deal\]\(books/the-new-deal/\) \|' "$BOOKS_WT/README.md")" -eq 1
+```
+
+Expected: exactly one existing New Deal row. Then use `apply_patch` in
+`README.md`; add only the two missing rows and replace the existing New Deal
+row rather than inserting a duplicate:
 
 ```diff
 *** Begin Patch
@@ -262,6 +282,7 @@ Use `apply_patch` in `README.md`:
 +- **If you want to learn** — there are more than 42 hours of beginner guides below, free, mostly grounded in real code and public technical sources. Every book has an EPUB, and selected books also include a chaptered M4B with Echo read-along data.
 @@
  | [The Voice in the Machine](books/the-voice-in-the-machine/) | How on‑device AI narration works (Kokoro on ONNX Runtime) | 11 chapters · ~3.6 h | Opus 4.8 |
+-| [The New Deal](books/the-new-deal/) | Canada Post, CUPW, and the future of rural mail | 9 chapters · ~1.8 h | GLM-5.2 |
 +| [Chicken Predators](books/chicken-predators/) | Identify and prevent poultry predation in Cape Breton | 16 chapters · ~3.1 h | GLM-5.2 |
 +| [Rodents in the Walls](books/rodents-in-the-walls/) | Identify, exclude, and clean up after house-invading rodents | 9 chapters · ~2.0 h | GPT-5.6 Sol |
 +| [The New Deal](books/the-new-deal/) | Canada Post, CUPW, and the rural-mail implications of the 2026 agreements | 9 chapters · ~1.9 h | GLM-5.2 |
@@ -271,9 +292,24 @@ Use `apply_patch` in `README.md`:
 *** End Patch
 ```
 
+Run the duplicate-row regression guard:
+
+```bash
+set -euo pipefail
+
+BOOKS_WT=/Users/dfakkeldy/.codex/worktrees/explainer-playable-library
+test "$(rg -c '^\| \[The New Deal\]\(books/the-new-deal/\) \|' "$BOOKS_WT/README.md")" -eq 1
+rg -F '| [The New Deal](books/the-new-deal/) | Canada Post, CUPW, and the rural-mail implications of the 2026 agreements | 9 chapters · ~1.9 h | GLM-5.2 |' "$BOOKS_WT/README.md"
+```
+
+Expected: one matching row. The superseded insertion-only patch would produce
+two rows and fail this guard; the replacement patch remains at one.
+
 - [ ] **Step 9: Run the complete package acceptance gate**
 
 ```bash
+set -euo pipefail
+
 BOOKS_WT=/Users/dfakkeldy/.codex/worktrees/explainer-playable-library
 ECHO_CLI=/Users/dfakkeldy/.codex/worktrees/echo-listen-cli/.build/cli/Build/Products/Release/echo-cli
 
@@ -297,6 +333,8 @@ Expected: `SIDECAR_OK` with 231/16, 245/9, and 151/9 anchors/chapters.
 - [ ] **Step 10: Commit, push, and open the book PR**
 
 ```bash
+set -euo pipefail
+
 BOOKS_WT=/Users/dfakkeldy/.codex/worktrees/explainer-playable-library
 git -C "$BOOKS_WT" add README.md books/chicken-predators books/rodents-in-the-walls books/the-new-deal
 git -C "$BOOKS_WT" commit -m "feat: publish three playable learning audiobooks"
@@ -404,6 +442,8 @@ Use `apply_patch`:
 - [ ] **Step 4: Generate the real catalog from the pushed book commit**
 
 ```bash
+set -euo pipefail
+
 BOOKS_WT=/Users/dfakkeldy/.codex/worktrees/explainer-playable-library
 ECHO_CLI=/Users/dfakkeldy/.codex/worktrees/echo-listen-cli/.build/cli/Build/Products/Release/echo-cli
 BOOKS_REPO="$BOOKS_WT" ECHO_CLI="$ECHO_CLI" make listen-catalog
@@ -414,6 +454,9 @@ Expected: 231/231, 245/245, and 151/151 anchors resolved; 11 books written.
 - [ ] **Step 5: Run the catalog and existing core tests**
 
 ```bash
+set -euo pipefail
+
+BOOKS_WT=/Users/dfakkeldy/.codex/worktrees/explainer-playable-library
 node --test Tests/listen/catalog.test.mjs Tests/listen/listen-core.test.mjs
 test "$(jq -r .source.commit Resources/listen/books.json)" = "$(git -C "$BOOKS_WT" rev-parse HEAD)"
 ```
@@ -423,6 +466,8 @@ Expected: all tests pass and the catalog commit matches the pushed book commit.
 - [ ] **Step 6: Commit the catalog contract and generated assets**
 
 ```bash
+set -euo pipefail
+
 git diff --check
 git add Tests/listen/catalog.test.mjs Tools/build-listen-catalog.sh Resources/listen/books.json Resources/listen/books
 git commit -m "feat(listen): publish three playable books"
@@ -529,6 +574,8 @@ Add after the existing library link rule in `listen.css`:
 - [ ] **Step 6: Run tests and commit**
 
 ```bash
+set -euo pipefail
+
 node --test Tests/listen/listen-core.test.mjs Tests/listen/catalog.test.mjs
 git diff --check
 git add Resources/listen/listen-core.js Resources/listen/listen.js Resources/listen/listen.css Resources/listen/index.html Tests/listen/listen-core.test.mjs
@@ -605,6 +652,8 @@ Set the existing Rodents runtime to `9 chapters · about 2.0 hours` and descript
 - [ ] **Step 4: Regenerate and run the test**
 
 ```bash
+set -euo pipefail
+
 make generate
 node --test Tests/site/learn-library.test.mjs
 ```
@@ -614,6 +663,8 @@ Expected: both tests pass; one card per approved title and neither private title
 - [ ] **Step 5: Build and commit source plus generated output**
 
 ```bash
+set -euo pipefail
+
 "$HOME/.claude/bin/xcode-build-gate.sh" --wait && swift build
 git diff --check
 git add Sources/KinNoKiLabsSite/Theme/KinNoKiTheme.swift Tests/site/learn-library.test.mjs Output
@@ -634,6 +685,8 @@ git commit -m "feat(learn): add The New Deal to the library"
 - [ ] **Step 1: Run the complete deterministic suite**
 
 ```bash
+set -euo pipefail
+
 node --test Tests/listen/*.test.mjs Tests/site/*.test.mjs
 "$HOME/.claude/bin/xcode-build-gate.sh" --wait && swift build
 make generate
@@ -644,17 +697,24 @@ git status --short --branch
 - [ ] **Step 2: Verify every pinned audio URL supports byte ranges**
 
 ```bash
+set -euo pipefail
+
 tmpdir="$(mktemp -d)"
+trap 'status=$?; rm -rf "$tmpdir" || true; exit "$status"' EXIT
+urls="$tmpdir/audio-urls.txt"
+
+jq -er '.books[] | select(.audio.status == "available") | .audio.url' \
+  Resources/listen/books.json > "$urls"
+test "$(wc -l < "$urls" | tr -d ' ')" -eq 3
+
 index=0
-jq -r '.books[] | select(.audio.status == "available") | .audio.url' Resources/listen/books.json |
 while IFS= read -r url; do
   index=$((index + 1))
   curl --fail --silent --show-error -H 'Range: bytes=0-1023' \
     -D "$tmpdir/headers-$index" -o "$tmpdir/audio-$index.bin" "$url"
   rg -i '^HTTP/(1\.1|2) 206|^content-range: bytes 0-1023/' "$tmpdir/headers-$index"
   test "$(wc -c < "$tmpdir/audio-$index.bin" | tr -d ' ')" -eq 1024
-done
-rm -rf "$tmpdir"
+done < "$urls"
 ```
 
 Expected: three ranged responses and three 1,024-byte payloads.
@@ -697,6 +757,8 @@ Invoke `superpowers:requesting-code-review` with the approved spec, this plan, b
 - [ ] **Step 7: Remove only the clean build-only Echo worktree**
 
 ```bash
+set -euo pipefail
+
 git -C /Users/dfakkeldy/Developer/Echo worktree remove /Users/dfakkeldy/.codex/worktrees/echo-listen-cli
 git -C /Users/dfakkeldy/Developer/Echo worktree prune
 ```
@@ -766,6 +828,8 @@ Merge the Explainer Audiobooks PR first, then the KinNoKi site PR. Production pl
 - [ ] **Step 1: Create a clean KB worktree and capture live PR state**
 
 ```bash
+set -euo pipefail
+
 git -C /Users/dfakkeldy/Developer/knowledge-base fetch origin
 git -C /Users/dfakkeldy/Developer/knowledge-base worktree add \
   -b codex/kinnoki-playable-library \
@@ -774,12 +838,15 @@ BOOKS_PR_URL="$(gh pr view codex/publish-playable-books --repo dfakkeldy/explain
 BOOKS_PR_STATE="$(gh pr view codex/publish-playable-books --repo dfakkeldy/explainer-audiobooks --json state -q .state)"
 SITE_PR_URL="$(gh pr view codex/learn-playable-library --repo dfakkeldy/KinNoKiLabsSite --json url -q .url)"
 SITE_PR_STATE="$(gh pr view codex/learn-playable-library --repo dfakkeldy/KinNoKiLabsSite --json state -q .state)"
-printf '%s\n%s\n%s\n%s\n' "$BOOKS_PR_URL" "$BOOKS_PR_STATE" "$SITE_PR_URL" "$SITE_PR_STATE"
+SITE_WT=/Users/dfakkeldy/.codex/worktrees/kinnoki-playable-library
+SITE_HEAD_SHA="$(git -C "$SITE_WT" rev-parse HEAD)"
+SITE_DESIGN_URL="https://github.com/dfakkeldy/KinNoKiLabsSite/blob/$SITE_HEAD_SHA/docs/superpowers/specs/2026-07-11-learn-playable-library-design.md"
+printf '%s\n%s\n%s\n%s\n%s\n' "$BOOKS_PR_URL" "$BOOKS_PR_STATE" "$SITE_PR_URL" "$SITE_PR_STATE" "$SITE_DESIGN_URL"
 ```
 
 - [ ] **Step 2: Write the narrow pending-production receipt**
 
-Use `apply_patch`, substituting the exact values printed in Step 1 for the four
+Use `apply_patch`, substituting the exact values printed in Step 1 for the five
 uppercase runtime names in this complete status-page body:
 
 ```markdown
@@ -830,7 +897,7 @@ MacroMark remains Most Important Now.
 
 1. [Explainer Audiobooks package PR](BOOKS_PR_URL)
 2. [KinNoKi Labs site PR](SITE_PR_URL)
-3. `/Users/dfakkeldy/Developer/KinNoKiLabsSite/docs/superpowers/specs/2026-07-11-learn-playable-library-design.md`
+3. [Approved playable-library design](SITE_DESIGN_URL)
 4. Dan Fakkeldy conversation with Codex, 2026-07-11, approving publication of *The New Deal*.
 ```
 
