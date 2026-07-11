@@ -255,6 +255,10 @@
     els.speed.setAttribute('aria-label', 'Playback speed, currently ' + rate + '×');
     store('kinnoki-listen-rate', String(rate));
   }
+  function preferredSpeed() {
+    var rate = parseFloat(read('kinnoki-listen-rate'));
+    return SPEEDS.indexOf(rate) === -1 ? SPEEDS[0] : rate;
+  }
   function cycleSpeed() {
     var i = SPEEDS.indexOf(audio.playbackRate);
     applySpeed(SPEEDS[(i + 1) % SPEEDS.length]);
@@ -325,6 +329,9 @@
     });
     audio.addEventListener('error', showAudioError);
     audio.addEventListener('loadedmetadata', function () {
+      // Loading a source can reset the media element to 1×. Restore the
+      // preference here so the effective rate stays in step with the UI.
+      applySpeed(preferredSpeed());
       els.scrubber.max = String(duration());
       els.scrubber.disabled = false;
       els.playPause.disabled = false;
@@ -445,7 +452,7 @@
       renderChapters();
       renderLibrary(catalog);
       wireControls();
-      applySpeed(parseFloat(read('kinnoki-listen-rate')) || 1);
+      applySpeed(preferredSpeed());
       updateChapter(0);
       showQuiet('Press play to start listening.');
       // <source type=…> instead of audio.src: GitHub serves the m4b as
