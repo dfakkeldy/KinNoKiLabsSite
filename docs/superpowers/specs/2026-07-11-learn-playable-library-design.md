@@ -1,7 +1,7 @@
 # Playable Learning Library — design
 
-**Date:** 2026-07-11  
-**Status:** approved by Dan  
+**Date:** 2026-07-11
+**Status:** approved by Dan
 **Site branch:** `codex/learn-playable-library`
 
 ## Goal

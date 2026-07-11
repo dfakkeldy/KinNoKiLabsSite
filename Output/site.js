@@ -42,6 +42,9 @@
   function applyFont(on) {
     document.body.classList.toggle('font-opendyslexic', on);
     try { localStorage.setItem('kinnoki-dyslexic', on ? 'true' : 'false'); } catch (e) {}
+    document.querySelectorAll('.font-toggle').forEach(function (btn) {
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
   }
   try { applyFont(localStorage.getItem('kinnoki-dyslexic') === 'true'); } catch (e) {}
   document.querySelectorAll('.font-toggle').forEach(function (btn) {

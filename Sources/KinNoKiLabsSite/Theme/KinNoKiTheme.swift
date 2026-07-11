@@ -252,6 +252,7 @@ private func fontToggle(_ label: String) -> Node<HTML.BodyContext> {
         .attribute(named: "type", value: "button"),
         .attribute(named: "title", value: "OpenDyslexic font"),
         .attribute(named: "aria-label", value: "Toggle OpenDyslexic font"),
+        .attribute(named: "aria-pressed", value: "false"),
         .text(label)
     )
 }
@@ -295,6 +296,7 @@ private func mobileMenu(active: String) -> Node<HTML.BodyContext> {
                 .class("font-toggle"),
                 .attribute(named: "type", value: "button"),
                 .attribute(named: "aria-label", value: "Toggle OpenDyslexic font"),
+                .attribute(named: "aria-pressed", value: "false"),
                 .style("margin-top:24px;height:44px;padding:0 18px;align-self:flex-start;gap:8px;"),
                 .text("Aa · OpenDyslexic")
             )
@@ -344,6 +346,7 @@ private func siteFooter() -> Node<HTML.BodyContext> {
                     .class("font-toggle"),
                     .attribute(named: "type", value: "button"),
                     .attribute(named: "aria-label", value: "Toggle OpenDyslexic font"),
+                    .attribute(named: "aria-pressed", value: "false"),
                     .style("height:34px;padding:0 14px;gap:7px;"),
                     .text("Aa · OpenDyslexic")
                 )
