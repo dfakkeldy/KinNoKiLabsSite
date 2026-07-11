@@ -68,12 +68,16 @@ tests-first|Tests First||Opus 4.8
 git-happens|Git Happens||Opus 4.8
 findable|Findable||Opus 4.8
 the-voice-in-the-machine|The Voice in the Machine||Opus 4.8
+chicken-predators|Chicken Predators||GLM-5.2
+rodents-in-the-walls|Rodents in the Walls|Squirrels and Other Houseguests in Western Cape Breton|GPT-5.6 Sol
+the-new-deal|The New Deal|Canada Post, CUPW, and What It Means for Rural Mail|GLM-5.2
 EOF
 )"
 
 # Books that MUST have audio on disk (build fails otherwise).
-# Empty until a public book gets narration.
-AUDIO_EXPECTED=""
+AUDIO_EXPECTED="chicken-predators
+rodents-in-the-walls
+the-new-deal"
 
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TMP_DIR"' EXIT
@@ -83,6 +87,8 @@ while IFS='|' read -r slug title subtitle written_by; do
   [ -n "$slug" ] || continue
   book_dir="$BOOKS_REPO/books/$slug"
   [ -d "$book_dir" ] || { echo "error: allow-listed book missing from repo: $slug" >&2; exit 1; }
+  [ -f "$book_dir/$slug.epub" ] || { echo "error: allow-listed EPUB missing: $slug" >&2; exit 1; }
+  [ -f "$book_dir/$slug.md" ] || { echo "error: allow-listed Markdown missing: $slug" >&2; exit 1; }
 
   m4b="$book_dir/$slug.m4b"
   sidecar="$book_dir/$slug.alignment.json"
