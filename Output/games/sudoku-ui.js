@@ -34,18 +34,19 @@ export function validateSudokuRun(payload, difficulty) {
   if (solved.length !== 1 || solved[0].some((value, index) => value !== definition.solution[index])) return false;
   const play = payload.play;
   if (play == null) return true;
-  const validSnapshot = (snapshot) => snapshot && Array.isArray(snapshot.values)
-    && snapshot.values.length === 81 && snapshot.values.every((value) => validDigit(value))
-    && Array.isArray(snapshot.notes) && snapshot.notes.length === 81
-    && snapshot.notes.every((notes) => Array.isArray(notes)
-      && new Set(notes).size === notes.length && notes.every((value) => validDigit(value, false)));
+  const validBoardState = (values, notes) => Array.isArray(values) && values.length === 81
+    && values.every((value) => validDigit(value))
+    && Array.isArray(notes) && notes.length === 81
+    && notes.every((cellNotes, index) => Array.isArray(cellNotes)
+      && new Set(cellNotes).size === cellNotes.length
+      && cellNotes.every((value) => validDigit(value, false))
+      && (values[index] === 0 || cellNotes.length === 0)
+      && (definition.puzzle[index] === 0 || values[index] === definition.puzzle[index]));
+  const validSnapshot = (snapshot) => snapshot
+    && validBoardState(snapshot.values, snapshot.notes);
   const isComplete = Array.isArray(play.values) && play.values.length === 81
     && play.values.every((value, index) => value === definition.solution[index]);
-  return Array.isArray(play.values) && play.values.length === 81 && play.values.every((value) => validDigit(value))
-    && definition.puzzle.every((value, index) => !value || play.values[index] === value)
-    && Array.isArray(play.notes) && play.notes.length === 81
-    && play.notes.every((notes) => Array.isArray(notes) && new Set(notes).size === notes.length
-      && notes.every((value) => validDigit(value, false)))
+  return validBoardState(play.values, play.notes)
     && Number.isInteger(play.selected) && play.selected >= 0 && play.selected < 81
     && Array.isArray(play.errors) && play.errors.every((index) => Number.isInteger(index) && index >= 0 && index < 81)
     && Array.isArray(play.history) && play.history.every(validSnapshot)

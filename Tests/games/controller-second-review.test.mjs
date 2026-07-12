@@ -85,6 +85,32 @@ test('all persisted-run validators reject forged completion and semantic corrupt
   assert.equal(wordModule.validateWordSearchRun({ definition: badWordSearch }, 'easy'), false);
 });
 
+test('Sudoku rejects hostile undo snapshots and accepted undo history preserves every given', async () => {
+  const module = await import('../../Resources/games/sudoku-ui.js');
+  const definition = generateSudoku({ difficulty: 'easy', seed: 20260712 });
+  const given = definition.puzzle.findIndex(Boolean);
+  const editable = definition.puzzle.findIndex((value) => value === 0);
+  const play = module.createSudokuState(definition);
+  play.selected = editable;
+  play.values[editable] = definition.solution[editable];
+
+  const changedGiven = { values: [...play.values], notes: play.notes.map((notes) => [...notes]) };
+  changedGiven.values[given] = 0;
+  assert.equal(module.validateSudokuRun({ definition, play: { ...play, history: [changedGiven] } }, 'easy'), false);
+
+  const notedGiven = { values: [...play.values], notes: play.notes.map((notes) => [...notes]) };
+  notedGiven.notes[given] = [2];
+  assert.equal(module.validateSudokuRun({ definition, play: { ...play, history: [notedGiven] } }, 'easy'), false);
+  assert.equal(module.validateSudokuRun({ definition, play: { ...play, notes: notedGiven.notes } }, 'easy'), false);
+
+  const accepted = { values: [...definition.puzzle], notes: Array.from({ length: 81 }, () => []) };
+  const resumable = { ...play, history: [accepted] };
+  assert.equal(module.validateSudokuRun({ definition, play: resumable }, 'easy'), true);
+  const undone = module.reduceSudoku({ ...resumable, definition }, { type: 'undo' });
+  assert.equal(undone.values[given], definition.puzzle[given]);
+  assert.deepEqual(undone.notes[given], []);
+});
+
 test('Word Search exposes an accessible 44px pan rail that scrolls without selecting letters', async () => {
   const fixture = createDOMFixture({ search: '?difficulty=hard&continue=1' }); const restore = installDOM(fixture);
   try {
