@@ -142,13 +142,19 @@ export function findSelection(puzzle, start, end) {
   )) ?? null;
 }
 
-export function validateWordSearch(puzzle) {
+export function validateWordSearch(puzzle, catalog = bundledThemes) {
   const errors = [];
   const rules = RULES[puzzle?.difficulty];
   if (!rules) errors.push('Invalid difficulty');
   if (!Number.isInteger(puzzle?.seed) || puzzle.seed < 0) errors.push('Invalid seed');
   if (!rules || puzzle?.size !== rules.size) errors.push('Invalid grid size');
-  if (typeof puzzle?.theme !== 'string' || puzzle.theme.length === 0) errors.push('Invalid theme');
+  const hasThemeName = typeof puzzle?.theme === 'string' && puzzle.theme.length > 0;
+  if (!hasThemeName) errors.push('Invalid theme');
+  const namedTheme = hasThemeName && Array.isArray(catalog)
+    ? catalog.find((theme) => theme?.name === puzzle.theme)
+    : null;
+  if (hasThemeName && !namedTheme) errors.push(`Unknown theme: ${puzzle.theme}`);
+  const themeWords = namedTheme ? new Set(normalizedWords(namedTheme, Infinity)) : null;
 
   const size = rules?.size ?? 0;
   const validGrid = Array.isArray(puzzle?.grid)
@@ -173,6 +179,7 @@ export function validateWordSearch(puzzle) {
       errors.push(`Invalid word at placement ${index}`);
       continue;
     }
+    if (themeWords && !themeWords.has(word)) errors.push(`Word not in theme: ${word}`);
     if (seen.has(word)) errors.push(`Duplicate word: ${word}`);
     seen.add(word);
 

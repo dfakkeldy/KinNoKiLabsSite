@@ -23,6 +23,20 @@ const directionOf = (placement) => {
   return `${rowDelta}:${columnDelta}`;
 };
 
+function coordinatedFakePuzzle() {
+  const words = ['ZZZ', 'YYY', 'XXX', 'WWW', 'VVV', 'UUU', 'QQQ', 'JJJ'];
+  const grid = Array.from({ length: 10 }, () => Array(10).fill('A'));
+  const placements = words.map((word, row) => {
+    for (let column = 0; column < word.length; column += 1) grid[row][column] = word[column];
+    return {
+      word,
+      start: { row, column: 0 },
+      end: { row, column: word.length - 1 },
+    };
+  });
+  return { seed: 1, difficulty: 'easy', size: 10, theme: 'Kitchen', grid, placements };
+}
+
 test('themes are public, normalized, and balanced across topic groups', () => {
   assert.ok(themes.length >= 12);
   const tagCounts = { general: 0, canada: 0, 'cape-breton': 0 };
@@ -99,6 +113,37 @@ test('validator reports malformed puzzles instead of throwing', () => {
   assert.doesNotThrow(() => { result = validateWordSearch(puzzle); });
   assert.equal(result.valid, false);
   assert.ok(result.errors.length > 0);
+});
+
+test('validator rejects an unknown named theme', () => {
+  const puzzle = generateWordSearch({ difficulty: 'easy', seed: 18, themes });
+  puzzle.theme = 'Invented Theme';
+  const result = validateWordSearch(puzzle);
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.includes('Unknown theme: Invented Theme'));
+});
+
+test('validator rejects a placement word outside the named theme', () => {
+  const puzzle = generateWordSearch({ difficulty: 'easy', seed: 18, themes });
+  const replacement = 'Z'.repeat(puzzle.placements[0].word.length);
+  puzzle.placements[0].word = replacement;
+  const result = validateWordSearch(puzzle);
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.includes(`Word not in theme: ${replacement}`));
+});
+
+test('validator rejects coordinated grid and placement corruption', () => {
+  const result = validateWordSearch(coordinatedFakePuzzle());
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.includes('Word not in theme: ZZZ'));
+});
+
+test('validator rejects the wrong placement count', () => {
+  const puzzle = generateWordSearch({ difficulty: 'easy', seed: 18, themes });
+  puzzle.placements.pop();
+  const result = validateWordSearch(puzzle);
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.includes('Invalid placement count'));
 });
 
 test('90 seeded word searches meet exact rules and validate', { timeout: 20000 }, () => {
