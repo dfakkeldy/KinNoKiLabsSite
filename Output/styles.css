@@ -634,6 +634,63 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
 .game-error h1 { margin-bottom: 8px; font-size: clamp(1.8rem, 5vw, 2.7rem); }
 .game-error p { color: var(--game-text-secondary); }
 
+.game-toolbar h1 { margin: 0 auto 0 0; font-size: clamp(1.7rem, 4vw, 2.5rem); }
+.game-toolbar label { display: inline-flex; align-items: center; gap: 8px; color: var(--game-text-secondary); font-size: 0.85rem; }
+.game-toolbar select, .game-toolbar button, .game-controls button, .sudoku-number-pad button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px 12px;
+  color: var(--game-text-primary);
+  background: var(--surface-2);
+  border: 1px solid var(--separator);
+  border-radius: 9px;
+}
+.game-toolbar time { min-width: 4ch; color: var(--game-text-accent); font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.games-app details { max-width: 52rem; margin: 0 auto 20px; color: var(--game-text-secondary); }
+.games-app details summary { min-height: 44px; cursor: pointer; color: var(--game-text-primary); font-weight: 600; }
+.games-app details p { margin-top: 8px; }
+
+.sudoku-board { display: grid; grid-template-columns: repeat(9, 1fr); aspect-ratio: 1; }
+.sudoku-cell {
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  color: var(--game-text-primary);
+  background: var(--surface);
+  border: 0 solid var(--separator);
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+  border-radius: 0;
+  font-family: var(--font-mono);
+  font-size: clamp(0.78rem, 4vw, 1.55rem);
+}
+.sudoku-cell:nth-child(3n):not(:nth-child(9n)) { border-right: 2px solid var(--game-text-tertiary); }
+.sudoku-cell:nth-child(n+19):nth-child(-n+27), .sudoku-cell:nth-child(n+46):nth-child(-n+54) { border-bottom: 2px solid var(--game-text-tertiary); }
+.sudoku-cell.is-related { background: color-mix(in srgb, var(--gold-500) 8%, var(--surface)); }
+.sudoku-cell.is-selected { position: relative; z-index: 1; outline: 3px solid var(--gold-500); outline-offset: -3px; }
+.sudoku-cell.is-given { font-weight: 800; }
+.sudoku-cell.is-error { color: #ef8d87; background: color-mix(in srgb, #9e3733 24%, var(--surface)); }
+.sudoku-number-pad { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+
+.crossword-layout, .word-search-layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(15rem, 0.75fr); gap: clamp(20px, 4vw, 42px); align-items: start; }
+.crossword-board { display: grid; grid-template-columns: repeat(var(--crossword-size), 1fr); grid-template-rows: repeat(var(--crossword-size), 1fr); aspect-ratio: 1; background: var(--fill-2); }
+.crossword-cell { min-width: 0; width: 100%; min-height: 0; height: 100%; padding: 0; text-align: center; color: var(--game-text-primary); background: var(--surface); border: 1px solid var(--separator); border-radius: 0; font-family: var(--font-mono); font-size: clamp(0.7rem, 3vw, 1.35rem); font-weight: 700; text-transform: uppercase; }
+.crossword-cell.is-selected { outline: 3px solid var(--gold-500); outline-offset: -3px; }
+.crossword-cell.is-error { color: #ef8d87; background: color-mix(in srgb, #9e3733 24%, var(--surface)); }
+.crossword-clues { display: grid; gap: 24px; }
+.crossword-clues h2 { margin-bottom: 8px; font-size: 1.1rem; }
+.crossword-clues ol { display: grid; gap: 5px; padding-left: 1.5rem; }
+.crossword-clues button { min-height: 44px; padding: 6px 8px; color: var(--game-text-secondary); background: transparent; border: 0; text-align: left; }
+.crossword-clues button:hover, .crossword-clues button:focus-visible { color: var(--game-text-accent); }
+
+.word-search-board { display: grid; grid-template-columns: repeat(var(--word-search-size), 1fr); aspect-ratio: 1; touch-action: pan-y; user-select: none; }
+.word-search-cell { min-width: 0; min-height: 0; padding: 0; color: var(--game-text-primary); background: var(--surface); border: 0; border-radius: 0; font-family: var(--font-mono); font-size: clamp(0.65rem, 3vw, 1.2rem); font-weight: 700; }
+.word-search-cell.is-preview { background: color-mix(in srgb, var(--gold-500) 22%, var(--surface)); }
+.word-search-cell.is-found { color: var(--surface); background: var(--game-text-accent); }
+.word-search-list { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 12px; list-style: none; }
+.word-search-list li { color: var(--game-text-primary); font-family: var(--font-mono); font-size: 0.85rem; }
+.word-search-list li.is-found { color: var(--game-text-tertiary); text-decoration: line-through; }
+
 @media (max-width: 759px) {
   .games-main { padding-top: 40px; }
   .games-hero { text-align: left; }
@@ -645,6 +702,9 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
   .games-reset { width: 100%; }
   .game-dialog-actions { flex-direction: column-reverse; }
   .game-dialog-actions .btn { width: 100%; }
+  .game-toolbar h1 { width: 100%; order: -1; }
+  .crossword-layout, .word-search-layout { grid-template-columns: 1fr; }
+  .crossword-layout .game-board, .word-search-layout .game-board { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {

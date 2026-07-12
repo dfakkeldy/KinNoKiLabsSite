@@ -14,7 +14,7 @@ const controllers = {
   'word-search': () => import('./word-search-ui.js').then(({ renderWordSearch }) => renderWordSearch(root, store)),
 };
 
-controllers[page]?.().then(() => {
+Promise.resolve(controllers[page]?.()).then(() => {
   if (!storageResult.ok) showStorageFailureNotice(root);
 }).catch(() => {
   root.innerHTML = '<section class="game-error" role="alert"><h1>Puzzle paused</h1><p>This game could not start. Reload the page to try a fresh puzzle.</p></section>';

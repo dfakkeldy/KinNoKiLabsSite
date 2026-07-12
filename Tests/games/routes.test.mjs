@@ -2,6 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 
+for (const controller of ['sudoku-ui.js', 'crossword-ui.js', 'word-search-ui.js']) {
+  test(`${controller} is shipped with generated game resources`, () => {
+    assert.equal(existsSync(new URL(`../../Output/games/${controller}`, import.meta.url)), true);
+  });
+}
+
 for (const [route, page] of [
   ['games', 'hub'],
   ['games/sudoku', 'sudoku'],
