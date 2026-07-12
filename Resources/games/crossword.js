@@ -248,21 +248,41 @@ const FALLBACK_LAYOUTS = {
 
 const fallbackCache = new Map();
 
+function clonePuzzle(puzzle) {
+  return {
+    ...puzzle,
+    cells: puzzle.cells.map((row) => row.map((cell) => (cell ? { ...cell } : null))),
+    answers: puzzle.answers.map((answer) => ({ ...answer })),
+  };
+}
+
+function freezePuzzle(puzzle) {
+  for (const row of puzzle.cells) {
+    for (const cell of row) if (cell) Object.freeze(cell);
+    Object.freeze(row);
+  }
+  for (const answer of puzzle.answers) Object.freeze(answer);
+  Object.freeze(puzzle.cells);
+  Object.freeze(puzzle.answers);
+  return Object.freeze(puzzle);
+}
+
 function bundledFallback(difficulty) {
-  if (fallbackCache.has(difficulty)) return fallbackCache.get(difficulty);
-  const byAnswer = new Map(bundledEntries.map((entry) => [entry.answer, entry]));
-  const placed = FALLBACK_LAYOUTS[difficulty].map(([answer, row, column, direction]) => ({
-    entry: byAnswer.get(answer), row, column, direction,
-  }));
-  let grid = emptyGrid(LIMITS[difficulty].size);
-  for (const placement of placed) grid = placeAnswer(grid, placement.entry, placement);
-  const puzzle = numberedPuzzle({
-    difficulty, seed: 0, grid, placed, usedFallback: true,
-  });
-  const validation = validateCrossword(puzzle);
-  if (!validation.valid) throw new Error(`Bundled ${difficulty} crossword is invalid`);
-  fallbackCache.set(difficulty, puzzle);
-  return puzzle;
+  if (!fallbackCache.has(difficulty)) {
+    const byAnswer = new Map(bundledEntries.map((entry) => [entry.answer, entry]));
+    const placed = FALLBACK_LAYOUTS[difficulty].map(([answer, row, column, direction]) => ({
+      entry: byAnswer.get(answer), row, column, direction,
+    }));
+    let grid = emptyGrid(LIMITS[difficulty].size);
+    for (const placement of placed) grid = placeAnswer(grid, placement.entry, placement);
+    const puzzle = numberedPuzzle({
+      difficulty, seed: 0, grid, placed, usedFallback: true,
+    });
+    const validation = validateCrossword(puzzle);
+    if (!validation.valid) throw new Error(`Bundled ${difficulty} crossword is invalid`);
+    fallbackCache.set(difficulty, freezePuzzle(puzzle));
+  }
+  return clonePuzzle(fallbackCache.get(difficulty));
 }
 
 export function generateCrossword({ difficulty, seed, entries = bundledEntries }) {
@@ -293,9 +313,11 @@ export function validateCrossword(puzzle) {
   const answerKeys = new Set();
   const numbersByStart = new Map();
   const crossings = Array.from({ length: puzzle.answers.length }, () => new Set());
+  const geometrySafe = new Set();
 
   puzzle.answers.forEach((answer, answerIndex) => {
-    if (!Number.isInteger(answer.number) || answer.number < 1
+    if (!answer || typeof answer !== 'object'
+        || !Number.isInteger(answer.number) || answer.number < 1
         || !directions[answer.direction]
         || !/^[A-Z]{3,12}$/.test(answer.answer ?? '')
         || typeof answer.clue !== 'string' || answer.clue.length < 1
@@ -305,11 +327,6 @@ export function validateCrossword(puzzle) {
     }
     if (answerKeys.has(answer.answer)) errors.push(`Duplicate answer ${answer.answer}`);
     answerKeys.add(answer.answer);
-    const startKey = `${answer.row}:${answer.column}`;
-    if (numbersByStart.has(startKey) && numbersByStart.get(startKey) !== answer.number) {
-      errors.push(`Answers at ${startKey} do not share a number`);
-    }
-    numbersByStart.set(startKey, answer.number);
 
     const [dr, dc] = directions[answer.direction];
     const endRow = answer.row + dr * (answer.answer.length - 1);
@@ -318,6 +335,13 @@ export function validateCrossword(puzzle) {
       errors.push(`Answer ${answer.answer} is out of bounds`);
       return;
     }
+    geometrySafe.add(answerIndex);
+
+    const startKey = `${answer.row}:${answer.column}`;
+    if (numbersByStart.has(startKey) && numbersByStart.get(startKey) !== answer.number) {
+      errors.push(`Answers at ${startKey} do not share a number`);
+    }
+    numbersByStart.set(startKey, answer.number);
 
     for (let index = 0; index < answer.answer.length; index += 1) {
       const row = answer.row + dr * index;
@@ -352,9 +376,9 @@ export function validateCrossword(puzzle) {
     if (numbersByStart.get(key) !== index + 1) errors.push(`Invalid clue number at ${key}`);
   });
 
-  puzzle.answers.forEach((answer) => {
-    const [dr, dc] = directions[answer.direction] ?? [];
-    if (dr === undefined) return;
+  puzzle.answers.forEach((answer, answerIndex) => {
+    if (!geometrySafe.has(answerIndex)) return;
+    const [dr, dc] = directions[answer.direction];
     const endRow = answer.row + dr * (answer.answer.length - 1);
     const endColumn = answer.column + dc * (answer.answer.length - 1);
     for (const [row, column] of [

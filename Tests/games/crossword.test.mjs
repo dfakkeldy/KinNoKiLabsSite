@@ -3,6 +3,31 @@ import assert from 'node:assert/strict';
 import entries from '../../Resources/games/crossword-content.js';
 import { generateCrossword, validateCrossword } from '../../Resources/games/crossword.js';
 
+function puzzleFromAnswers(size, answers) {
+  const cells = Array.from({ length: size }, () => Array(size).fill(null));
+  for (const answer of answers) {
+    const [dr, dc] = answer.direction === 'across' ? [0, 1] : [1, 0];
+    for (let index = 0; index < answer.answer.length; index += 1) {
+      const row = answer.row + dr * index;
+      const column = answer.column + dc * index;
+      const cell = cells[row][column] ?? {
+        solution: answer.answer[index], number: null, across: null, down: null,
+      };
+      cell[answer.direction] = answer.number;
+      if (index === 0) cell.number = answer.number;
+      cells[row][column] = cell;
+    }
+  }
+  return { seed: 0, difficulty: 'easy', size, cells, answers, usedFallback: false };
+}
+
+function assertInvalidWithoutThrowing(puzzle) {
+  let result;
+  assert.doesNotThrow(() => { result = validateCrossword(puzzle); });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.length > 0);
+}
+
 test('curated clues have normalized unique answers and public-safe metadata', () => {
   assert.ok(entries.length >= 120);
   assert.equal(new Set(entries.map((entry) => entry.answer)).size, entries.length);
@@ -35,7 +60,7 @@ for (const difficulty of ['easy', 'medium', 'hard']) {
     const puzzle = generateCrossword({ difficulty, seed: 99, entries });
     assert.deepEqual(puzzle, generateCrossword({ difficulty, seed: 99, entries }));
     assert.deepEqual(validateCrossword(puzzle), { valid: true, errors: [] });
-    assert.ok(puzzle.answers.length >= { easy: 6, medium: 9, hard: 12 }[difficulty]);
+    assert.equal(puzzle.answers.length, { easy: 7, medium: 10, hard: 13 }[difficulty]);
   });
 }
 
@@ -45,13 +70,98 @@ test('impossible content returns the bundled known-valid puzzle', () => {
   assert.equal(validateCrossword(puzzle).valid, true);
 });
 
-test('60 seeded crosswords meet their targets and validate', { timeout: 20000 }, () => {
-  const minimumAnswers = { easy: 6, medium: 9, hard: 12 };
+test('bundled fallback calls return mutation-isolated puzzles', () => {
+  const first = generateCrossword({ difficulty: 'easy', seed: 1, entries: [] });
+  first.answers[0].clue = 'Mutated clue';
+  first.cells[first.answers[0].row][first.answers[0].column].solution = 'X';
+
+  const second = generateCrossword({ difficulty: 'easy', seed: 2, entries: [] });
+  assert.notStrictEqual(second, first);
+  assert.notEqual(second.answers[0].clue, 'Mutated clue');
+  assert.deepEqual(validateCrossword(second), { valid: true, errors: [] });
+});
+
+test('missing answer metadata returns invalid without throwing', () => {
+  const puzzle = generateCrossword({ difficulty: 'easy', seed: 99, entries });
+  puzzle.answers[0] = undefined;
+  assertInvalidWithoutThrowing(puzzle);
+});
+
+test('out-of-bounds answer row returns invalid without throwing', () => {
+  const puzzle = generateCrossword({ difficulty: 'easy', seed: 99, entries });
+  puzzle.answers[0].row = puzzle.size;
+  assertInvalidWithoutThrowing(puzzle);
+});
+
+test('out-of-bounds answer column returns invalid without throwing', () => {
+  const puzzle = generateCrossword({ difficulty: 'easy', seed: 99, entries });
+  puzzle.answers[0].column = puzzle.size;
+  assertInvalidWithoutThrowing(puzzle);
+});
+
+test('malformed answer direction returns invalid without throwing', () => {
+  const puzzle = generateCrossword({ difficulty: 'easy', seed: 99, entries });
+  puzzle.answers[0].direction = 'diagonal';
+  assertInvalidWithoutThrowing(puzzle);
+});
+
+test('validator rejects duplicate answers', () => {
+  const puzzle = generateCrossword({ difficulty: 'easy', seed: 99, entries });
+  puzzle.answers[1].answer = puzzle.answers[0].answer;
+  const result = validateCrossword(puzzle);
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.startsWith('Duplicate answer')));
+});
+
+test('validator rejects disconnected crossing groups', () => {
+  const answers = [
+    { number: 1, direction: 'across', answer: 'CAT', clue: 'A common pet animal', row: 0, column: 0 },
+    { number: 1, direction: 'down', answer: 'CAR', clue: 'A common road vehicle', row: 0, column: 0 },
+    { number: 2, direction: 'across', answer: 'DOG', clue: 'Another common pet', row: 4, column: 4 },
+    { number: 2, direction: 'down', answer: 'DOT', clue: 'A very small mark', row: 4, column: 4 },
+  ];
+  const result = validateCrossword(puzzleFromAnswers(7, answers));
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.includes('Answers must form one connected group'));
+});
+
+test('validator rejects answers that never cross', () => {
+  const answers = [
+    { number: 1, direction: 'across', answer: 'CAT', clue: 'A common pet animal', row: 0, column: 0 },
+    { number: 2, direction: 'across', answer: 'DOG', clue: 'Another common pet', row: 2, column: 0 },
+  ];
+  const result = validateCrossword(puzzleFromAnswers(5, answers));
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.includes('Every answer must cross another answer'));
+});
+
+test('validator rejects invalid clue numbering', () => {
+  const puzzle = generateCrossword({ difficulty: 'easy', seed: 99, entries });
+  puzzle.answers[0].number = 99;
+  const result = validateCrossword(puzzle);
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.startsWith('Invalid clue number')));
+});
+
+test('validator rejects unkeyed cells', () => {
+  const puzzle = generateCrossword({ difficulty: 'easy', seed: 99, entries });
+  const row = puzzle.cells.findIndex((cells) => cells.some((cell) => cell === null));
+  const column = puzzle.cells[row].findIndex((cell) => cell === null);
+  puzzle.cells[row][column] = {
+    solution: 'X', number: null, across: null, down: null,
+  };
+  const result = validateCrossword(puzzle);
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.includes(`Unkeyed cell at ${row}:${column}`));
+});
+
+test('60 seeded crosswords meet their exact targets and validate', { timeout: 20000 }, () => {
+  const targetAnswers = { easy: 7, medium: 10, hard: 13 };
   for (const difficulty of ['easy', 'medium', 'hard']) {
     for (let seed = 1; seed <= 20; seed += 1) {
       const puzzle = generateCrossword({ difficulty, seed, entries });
       assert.deepEqual(validateCrossword(puzzle), { valid: true, errors: [] });
-      assert.ok(puzzle.answers.length >= minimumAnswers[difficulty]);
+      assert.equal(puzzle.answers.length, targetAnswers[difficulty]);
     }
   }
 });
