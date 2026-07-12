@@ -63,12 +63,18 @@ export class FixtureElement {
     this.hidden = false;
     this.disabled = false;
     this.value = '';
+    this.scrollLeft = 0;
+    this.clientWidth = 320;
+    this.scrollWidth = 704;
     this.capturedPointers = new Set();
     this._textContent = '';
   }
   set id(value) { this.setAttribute('id', value); }
   get id() { return this.getAttribute('id') ?? ''; }
-  set textContent(value) { this._textContent = String(value ?? ''); this.children = []; }
+  set textContent(value) {
+    if (this.contains(this.ownerDocument.activeElement)) this.ownerDocument.activeElement = null;
+    this._textContent = String(value ?? ''); this.children = [];
+  }
   get textContent() { return this._textContent + this.children.map((child) => child.textContent).join(''); }
   set innerHTML(value) { if (value !== '') throw new Error('Fixture only supports clearing innerHTML'); this.textContent = ''; }
   get innerHTML() { return this.textContent; }
@@ -80,7 +86,10 @@ export class FixtureElement {
     }
   }
   appendChild(child) { this.append(child); return child; }
-  replaceChildren(...children) { this.textContent = ''; this.append(...children); }
+  replaceChildren(...children) {
+    if (this.contains(this.ownerDocument.activeElement)) this.ownerDocument.activeElement = null;
+    this._textContent = ''; this.children = []; this.append(...children);
+  }
   setAttribute(name, value) {
     this.attributes.set(name, String(value));
     if (name === 'class') this.className = String(value);
@@ -105,6 +114,16 @@ export class FixtureElement {
   setPointerCapture(pointerId) { this.capturedPointers.add(pointerId); }
   releasePointerCapture(pointerId) { this.capturedPointers.delete(pointerId); }
   hasPointerCapture(pointerId) { return this.capturedPointers.has(pointerId); }
+  contains(node) {
+    if (!node) return false;
+    if (node === this) return true;
+    return this.children.some((child) => child.contains(node));
+  }
+  scrollBy(options) {
+    const left = typeof options === 'number' ? options : options?.left ?? 0;
+    this.scrollLeft = Math.max(0, Math.min(this.scrollWidth - this.clientWidth, this.scrollLeft + left));
+    this.dispatchEvent(new FixtureEvent('scroll', { bubbles: false }));
+  }
   querySelectorAll(selector) {
     const found = [];
     const visit = (node) => {

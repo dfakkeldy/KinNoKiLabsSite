@@ -1,4 +1,4 @@
-import { generateSudoku } from './sudoku.js';
+import { generateSudoku, isValidSudokuBoard, solveSudoku } from './sudoku.js';
 import { visibleElapsedMs } from './core.js';
 import { completionPanel, createSession, element, formatElapsed, renderReplacementKept, sharedShell } from './controller-common.js';
 
@@ -28,7 +28,10 @@ export function validateSudokuRun(payload, difficulty) {
       || !definition.puzzle.every((value) => validDigit(value))
       || !Array.isArray(definition.solution) || definition.solution.length !== 81
       || !definition.solution.every((value) => validDigit(value, false))
+      || !isValidSudokuBoard(definition.solution)
       || definition.puzzle.some((value, index) => value && value !== definition.solution[index])) return false;
+  const solved = solveSudoku(definition.puzzle, 2).solutions;
+  if (solved.length !== 1 || solved[0].some((value, index) => value !== definition.solution[index])) return false;
   const play = payload.play;
   if (play == null) return true;
   const validSnapshot = (snapshot) => snapshot && Array.isArray(snapshot.values)
@@ -36,6 +39,8 @@ export function validateSudokuRun(payload, difficulty) {
     && Array.isArray(snapshot.notes) && snapshot.notes.length === 81
     && snapshot.notes.every((notes) => Array.isArray(notes)
       && new Set(notes).size === notes.length && notes.every((value) => validDigit(value, false)));
+  const isComplete = Array.isArray(play.values) && play.values.length === 81
+    && play.values.every((value, index) => value === definition.solution[index]);
   return Array.isArray(play.values) && play.values.length === 81 && play.values.every((value) => validDigit(value))
     && definition.puzzle.every((value, index) => !value || play.values[index] === value)
     && Array.isArray(play.notes) && play.notes.length === 81
@@ -44,7 +49,7 @@ export function validateSudokuRun(payload, difficulty) {
     && Number.isInteger(play.selected) && play.selected >= 0 && play.selected < 81
     && Array.isArray(play.errors) && play.errors.every((index) => Number.isInteger(index) && index >= 0 && index < 81)
     && Array.isArray(play.history) && play.history.every(validSnapshot)
-    && typeof play.pencil === 'boolean' && typeof play.completed === 'boolean'
+    && typeof play.pencil === 'boolean' && play.completed === isComplete
     && typeof play.assisted === 'boolean';
 }
 
@@ -193,14 +198,14 @@ export async function renderSudoku(root, store) {
   const keydown = (event) => {
     const key = event.key;
     const row = Math.floor(state.selected / 9), column = state.selected % 9;
-    if (/^[1-9]$/.test(key)) dispatch({ type: 'digit', value: Number(key) });
+    if (/^[1-9]$/.test(key)) dispatch({ type: 'digit', value: Number(key) }, true);
     else if (key === 'ArrowUp') dispatch({ type: 'move', row: row - 1, column }, true);
     else if (key === 'ArrowDown') dispatch({ type: 'move', row: row + 1, column }, true);
     else if (key === 'ArrowLeft') dispatch({ type: 'move', row, column: column - 1 }, true);
     else if (key === 'ArrowRight') dispatch({ type: 'move', row, column: column + 1 }, true);
-    else if (key === 'Backspace' || key === 'Delete') dispatch({ type: 'erase' });
-    else if (key.toLowerCase() === 'p') dispatch({ type: 'toggle-pencil' });
-    else if (key.toLowerCase() === 'u') dispatch({ type: 'undo' }); else return;
+    else if (key === 'Backspace' || key === 'Delete') dispatch({ type: 'erase' }, true);
+    else if (key.toLowerCase() === 'p') dispatch({ type: 'toggle-pencil' }, true);
+    else if (key.toLowerCase() === 'u') dispatch({ type: 'undo' }, true); else return;
     event.preventDefault();
   };
   numberPad.querySelectorAll('[data-number]').forEach((button) => button.addEventListener('click', () => dispatch({ type: 'digit', value: Number(button.dataset.number) })));

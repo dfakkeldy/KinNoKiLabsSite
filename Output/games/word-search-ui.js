@@ -1,4 +1,4 @@
-import { findSelection, generateWordSearch } from './word-search.js';
+import { findSelection, generateWordSearch, validateWordSearch } from './word-search.js';
 import { visibleElapsedMs } from './core.js';
 import { completionPanel, createSession, element, formatElapsed, renderReplacementKept, sharedShell } from './controller-common.js';
 
@@ -29,7 +29,8 @@ export function validateWordSearchRun(payload, difficulty) {
       || !Array.isArray(definition.grid) || definition.grid.length !== definition.size
       || definition.grid.some((row) => !Array.isArray(row) || row.length !== definition.size
         || row.some((letter) => !/^[A-Z]$/.test(letter)))
-      || !Array.isArray(definition.placements) || definition.placements.length < 1) return false;
+      || !Array.isArray(definition.placements) || definition.placements.length < 1
+      || !validateWordSearch(definition).valid) return false;
   const words = new Set();
   for (const placement of definition.placements) {
     if (!placement || !/^[A-Z]{2,}$/.test(placement.word ?? '') || words.has(placement.word)
@@ -47,12 +48,13 @@ export function validateWordSearchRun(payload, difficulty) {
   }
   const play = payload.play;
   if (play == null) return true;
+  const isComplete = Array.isArray(play.found) && play.found.length === definition.placements.length;
   return Array.isArray(play.found) && play.found.every((word) => words.has(word))
     && new Set(play.found).size === play.found.length
     && validCoordinate(play.focus, definition.size) && play.focus !== null
     && validCoordinate(play.start ?? null, definition.size)
     && validCoordinate(play.preview ?? null, definition.size)
-    && typeof play.completed === 'boolean' && typeof play.assisted === 'boolean';
+    && play.completed === isComplete && typeof play.assisted === 'boolean';
 }
 
 export function reduceWordSearch(state, action) {
@@ -111,18 +113,41 @@ export async function renderWordSearch(root, store) {
   let state = persisted(session.run.puzzle.definition, session.run.puzzle.play, session.run.assisted);
   const shell = sharedShell({ title: 'Word Search', difficulty: session.difficulty });
   const instructions = element('details', { 'data-instructions': '' }, element('summary', { text: 'How to play' }),
-    element('p', { text: 'Drag from the first letter to the last. With a keyboard, use arrows and press Space or Enter at both endpoints.' }));
+    element('p', { text: 'Drag or activate the first and last letters. Use the horizontal board navigation rail to reach offscreen columns without changing your selection.' }));
   const layout = element('div', { class: 'word-search-layout' });
-  const board = element('div', { class: 'game-board word-search-board', role: 'grid', 'aria-label': `${state.definition.theme} word search` });
+  const board = element('div', { id: 'word-search-grid', class: 'game-board word-search-board', role: 'grid', 'aria-label': `${state.definition.theme} word search` });
   board.setAttribute('style', `--word-search-size:${state.definition.size}`);
   const words = element('ul', { class: 'word-search-list', 'aria-label': 'Words to find' });
   const hint = element('button', { type: 'button', 'data-hint': '', text: 'Hint' });
   const check = element('button', { type: 'button', 'data-check': '', text: 'Check' });
   const controls = element('div', { class: 'game-controls' }, hint, check);
   const boardScroll = element('div', { class: 'game-board-scroll' }, board);
-  layout.append(boardScroll, element('section', {}, element('h2', { text: state.definition.theme }), words));
+  const panLeft = element('button', { type: 'button', 'data-pan-left': '', 'aria-label': 'Pan board left', text: '← Left' });
+  const panRight = element('button', { type: 'button', 'data-pan-right': '', 'aria-label': 'Pan board right', text: 'Right →' });
+  const panRange = element('input', {
+    type: 'range', min: '0', max: '100', value: '0', 'aria-label': 'Horizontal board position',
+    'aria-controls': 'word-search-grid',
+  });
+  const panRail = element('div', { class: 'word-search-pan', role: 'group', 'aria-label': 'Horizontal board navigation' }, panLeft, panRange, panRight);
+  const boardColumn = element('div', { class: 'word-search-board-column' }, boardScroll, panRail);
+  layout.append(boardColumn, element('section', {}, element('h2', { text: state.definition.theme }), words));
   root.replaceChildren(shell.toolbar, shell.notice, instructions, layout, controls, shell.live);
-  let drag = null, completed = false;
+  let drag = null, completed = false, suppressClickUntil = 0;
+
+  const maximumScroll = () => Math.max(0, boardScroll.scrollWidth - boardScroll.clientWidth);
+  const syncPan = () => {
+    const maximum = maximumScroll();
+    panRange.value = maximum ? String(Math.round((boardScroll.scrollLeft / maximum) * 100)) : '0';
+    panLeft.disabled = boardScroll.scrollLeft <= 0;
+    panRight.disabled = boardScroll.scrollLeft >= maximum;
+  };
+  panLeft.addEventListener('click', () => boardScroll.scrollBy({ left: -Math.max(44, boardScroll.clientWidth * 0.75), behavior: 'smooth' }));
+  panRight.addEventListener('click', () => boardScroll.scrollBy({ left: Math.max(44, boardScroll.clientWidth * 0.75), behavior: 'smooth' }));
+  panRange.addEventListener('input', () => {
+    boardScroll.scrollLeft = maximumScroll() * (Number(panRange.value) / 100);
+    syncPan();
+  });
+  boardScroll.addEventListener('scroll', syncPan);
 
   const coordinateForTarget = (target) => {
     let node = target;
@@ -136,6 +161,7 @@ export async function renderWordSearch(root, store) {
     document.removeEventListener('pointermove', pointerMove);
     document.removeEventListener('pointerup', pointerEnd);
     document.removeEventListener('pointercancel', pointerCancel);
+    document.removeEventListener('lostpointercapture', pointerCancel);
   };
   const clearDrag = (cancelled = false) => {
     if (!drag) return;
@@ -157,6 +183,7 @@ export async function renderWordSearch(root, store) {
     if (!drag || event.pointerId !== drag.pointerId) return;
     const { start, last } = drag;
     const end = hitCoordinate(event) ?? last;
+    suppressClickUntil = Date.now() + 500;
     clearDrag();
     if (end) dispatch({ type: 'select-endpoints', start, end });
   };
@@ -170,6 +197,7 @@ export async function renderWordSearch(root, store) {
     document.addEventListener('pointermove', pointerMove);
     document.addEventListener('pointerup', pointerEnd);
     document.addEventListener('pointercancel', pointerCancel);
+    document.addEventListener('lostpointercapture', pointerCancel);
     state = { ...state, start: coordinate, preview: coordinate };
     session.updatePlay(state); draw();
     event.preventDefault();
@@ -193,7 +221,11 @@ export async function renderWordSearch(root, store) {
       });
       button.addEventListener('focus', () => { state = { ...state, focus: coordinate }; });
       button.addEventListener('pointerdown', (event) => pointerStart(event, coordinate));
-      button.addEventListener('lostpointercapture', pointerCancel);
+      button.addEventListener('click', () => {
+        if (Date.now() <= suppressClickUntil) { suppressClickUntil = 0; return; }
+        state = { ...state, focus: coordinate };
+        dispatch({ type: 'select' }, true);
+      });
       button.addEventListener('keydown', keydown);
       rowNode.append(element('div', {
         role: 'gridcell', class: 'word-search-gridcell', 'aria-rowindex': rowIndex + 1,
@@ -234,5 +266,6 @@ export async function renderWordSearch(root, store) {
   shell.toolbar.querySelector('[data-new-game]').addEventListener('click', () => { if (!state.found.length || window.confirm('Replace this puzzle?')) void session.playAnother(); });
   shell.select.addEventListener('change', () => { globalThis.location.href = `/games/word-search?difficulty=${shell.select.value}`; });
   draw();
+  syncPan();
   session.repeat(() => { if (!completed) shell.timer.textContent = formatElapsed(visibleElapsedMs(session.run, Date.now())); }, 1000);
 }

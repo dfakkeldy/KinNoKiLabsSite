@@ -692,6 +692,10 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
 .crossword-clues button:hover, .crossword-clues button:focus-visible { color: var(--game-text-accent); }
 
 .word-search-board { display: grid; grid-template-columns: repeat(var(--word-search-size), 1fr); min-width: calc(var(--word-search-size) * 44px); aspect-ratio: 1; touch-action: pan-y; user-select: none; }
+.word-search-board-column { min-width: 0; }
+.word-search-pan { display: grid; grid-template-columns: auto minmax(7rem, 1fr) auto; gap: 10px; align-items: center; margin-top: 10px; }
+.word-search-pan button { min-width: 44px; min-height: 44px; padding: 8px 12px; color: var(--game-text-primary); background: var(--surface-2); border: 1px solid var(--separator); border-radius: 9px; }
+.word-search-pan input[type="range"] { width: 100%; min-height: 44px; accent-color: var(--gold-500); touch-action: pan-x; }
 .word-search-row { display: contents; }
 .word-search-gridcell { display: flex; min-width: 44px; min-height: 44px; }
 .word-search-cell { width: 100%; min-width: 44px; min-height: 44px; padding: 0; color: var(--game-text-primary); background: var(--surface); border: 0; border-radius: 0; font-family: var(--font-mono); font-size: clamp(0.65rem, 3vw, 1.2rem); font-weight: 700; }

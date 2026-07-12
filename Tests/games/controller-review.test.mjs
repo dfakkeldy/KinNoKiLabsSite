@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createDOMFixture, FixtureEvent, installDOM } from './dom-fixture.mjs';
+import { generateSudoku } from '../../Resources/games/sudoku.js';
+import { generateWordSearch } from '../../Resources/games/word-search.js';
 
 const emptyStats = () => ({ totalCompleted: 0, currentStreak: 0, lastCompletedDate: null, games: {} });
 const storeWith = (game, definition, play = undefined, difficulty = 'easy') => ({
@@ -10,10 +12,9 @@ const storeWith = (game, definition, play = undefined, difficulty = 'easy') => (
   previousSeeds: {}, stats: emptyStats(),
 });
 
-const sudoku = {
-  seed: 1, difficulty: 'easy', puzzle: [1, ...Array(80).fill(0)],
-  solution: Array.from({ length: 81 }, (_, index) => (index % 9) + 1),
-};
+const sudoku = generateSudoku({ difficulty: 'easy', seed: 20260712 });
+const sudokuGiven = sudoku.puzzle.findIndex(Boolean);
+const sudokuEditable = sudoku.puzzle.findIndex((value) => value === 0);
 const crossword = {
   seed: 2, difficulty: 'easy', size: 3,
   cells: [
@@ -26,14 +27,7 @@ const crossword = {
     { number: 1, direction: 'down', answer: 'CAR', clue: 'A vehicle', row: 0, column: 0 },
   ],
 };
-const wordSearch = {
-  seed: 3, difficulty: 'easy', size: 3, theme: 'Pets',
-  grid: [['C', 'A', 'T'], ['X', 'X', 'X'], ['D', 'O', 'G']],
-  placements: [
-    { word: 'CAT', start: { row: 0, column: 0 }, end: { row: 0, column: 2 } },
-    { word: 'DOG', start: { row: 2, column: 0 }, end: { row: 2, column: 2 } },
-  ],
-};
+const wordSearch = generateWordSearch({ difficulty: 'easy', seed: 77 });
 
 async function mounted(modulePath, renderName, game, definition, play) {
   const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' });
@@ -66,19 +60,21 @@ test('all game grids retain native control semantics inside row and gridcell rol
 test('Sudoku hint moves from a given or solved cell to an editable unsolved cell', async () => {
   const { createSudokuState, reduceSudoku } = await import('../../Resources/games/sudoku-ui.js');
   let state = createSudokuState(sudoku);
+  state = { ...state, selected: sudokuGiven };
   state = reduceSudoku(state, { type: 'reveal' });
-  assert.equal(state.selected, 1);
-  assert.equal(state.values[1], sudoku.solution[1]);
+  const firstTarget = state.selected;
+  assert.equal(sudoku.puzzle[firstTarget], 0);
+  assert.equal(state.values[firstTarget], sudoku.solution[firstTarget]);
   state = reduceSudoku(state, { type: 'reveal' });
-  assert.equal(state.selected, 2);
-  assert.equal(state.values[2], sudoku.solution[2]);
+  assert.notEqual(state.selected, firstTarget);
+  assert.equal(state.values[state.selected], sudoku.solution[state.selected]);
 });
 
 test('Sudoku accessible name includes pencil notes', async () => {
   const play = (await import('../../Resources/games/sudoku-ui.js')).createSudokuState(sudoku);
-  play.selected = 1; play.notes[1] = [2, 7];
+  play.selected = sudokuEditable; play.notes[sudokuEditable] = [2, 7];
   const { fixture, restore } = await mounted('../../Resources/games/sudoku-ui.js', 'renderSudoku', 'sudoku', sudoku, play);
-  try { assert.match(fixture.root.querySelector('[data-cell="1"]').getAttribute('aria-label'), /pencil notes 2, 7/i); }
+  try { assert.match(fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`).getAttribute('aria-label'), /pencil notes 2, 7/i); }
   finally { restore(); }
 });
 
@@ -124,7 +120,7 @@ test('declining a different-difficulty replacement keeps the saved run without r
   const fixture = createDOMFixture({ search: '?difficulty=medium', confirm: false }); const restore = installDOM(fixture);
   try {
     const module = await import('../../Resources/games/sudoku-ui.js');
-    const play = module.createSudokuState(sudoku); play.values[1] = 2;
+    const play = module.createSudokuState(sudoku); play.values[sudokuEditable] = 2;
     const store = storeWith('sudoku', sudoku, play, 'easy');
     fixture.localStorage.setItem('kinnoki-games:v1', JSON.stringify(store));
     await module.renderSudoku(fixture.root, store);
@@ -136,13 +132,15 @@ test('declining a different-difficulty replacement keeps the saved run without r
 
 test('controller lifecycle removes intervals and document listeners on completion and rerender', async () => {
   const play = (await import('../../Resources/games/word-search-ui.js')).createWordSearchState(wordSearch);
-  play.found = ['DOG'];
+  const target = wordSearch.placements[0];
+  play.focus = target.start;
+  play.found = wordSearch.placements.slice(1).map(({ word }) => word);
   const { fixture, restore } = await mounted('../../Resources/games/word-search-ui.js', 'renderWordSearch', 'word-search', wordSearch, play);
   try {
     assert.equal(fixture.activeIntervalCount(), 1);
     assert.equal(fixture.document.listenerCount('visibilitychange'), 1);
-    fixture.root.querySelector('[data-cell="0:0"]').dispatchEvent(new FixtureEvent('keydown', { key: 'Enter' }));
-    const end = fixture.root.querySelector('[data-cell="0:2"]'); end.focus(); end.dispatchEvent(new FixtureEvent('keydown', { key: 'Enter' }));
+    fixture.root.querySelector(`[data-cell="${target.start.row}:${target.start.column}"]`).dispatchEvent(new FixtureEvent('keydown', { key: 'Enter' }));
+    const end = fixture.root.querySelector(`[data-cell="${target.end.row}:${target.end.column}"]`); end.focus(); end.dispatchEvent(new FixtureEvent('keydown', { key: 'Enter' }));
     assert.equal(fixture.activeIntervalCount(), 0);
     assert.equal(fixture.document.listenerCount('visibilitychange'), 0);
     fixture.root.querySelector('[data-play-another]').click(); await Promise.resolve();
@@ -164,16 +162,17 @@ test('calling a controller renderer again disposes the previous interval and vis
 test('Word Search document drag uses pointer IDs and hit testing, then clears on outside end', async () => {
   const { fixture, restore } = await mounted('../../Resources/games/word-search-ui.js', 'renderWordSearch', 'word-search', wordSearch);
   try {
-    const start = fixture.root.querySelector('[data-cell="0:0"]');
-    const end = fixture.root.querySelector('[data-cell="0:2"]');
+    const placement = wordSearch.placements[0];
+    const start = fixture.root.querySelector(`[data-cell="${placement.start.row}:${placement.start.column}"]`);
+    const end = fixture.root.querySelector(`[data-cell="${placement.end.row}:${placement.end.column}"]`);
     start.dispatchEvent(new FixtureEvent('pointerdown', { pointerId: 7, clientX: 1, clientY: 1 }));
     fixture.document.setHitTarget(end);
     fixture.document.dispatchEvent(new FixtureEvent('pointermove', { pointerId: 8, clientX: 3, clientY: 1 }));
-    assert.equal(fixture.root.querySelector('[data-cell="0:2"]').classList.contains('is-preview'), false);
+    assert.equal(fixture.root.querySelector(`[data-cell="${placement.end.row}:${placement.end.column}"]`).classList.contains('is-preview'), false);
     fixture.document.dispatchEvent(new FixtureEvent('pointermove', { pointerId: 7, clientX: 3, clientY: 1 }));
     fixture.document.setHitTarget(null);
     fixture.document.dispatchEvent(new FixtureEvent('pointerup', { pointerId: 7, clientX: 50, clientY: 50 }));
-    assert.match(fixture.root.querySelector('.games-live-region').textContent, /CAT found/i);
+    assert.match(fixture.root.querySelector('.games-live-region').textContent, new RegExp(`${placement.word} found`, 'i'));
     assert.equal(fixture.document.listenerCount('pointermove'), 0);
   } finally { restore(); }
 });
@@ -181,14 +180,15 @@ test('Word Search document drag uses pointer IDs and hit testing, then clears on
 test('Word Search pointercancel clears a stale drag and ignores a later pointerup', async () => {
   const { fixture, restore } = await mounted('../../Resources/games/word-search-ui.js', 'renderWordSearch', 'word-search', wordSearch);
   try {
-    const start = fixture.root.querySelector('[data-cell="0:0"]');
-    const end = fixture.root.querySelector('[data-cell="0:2"]');
+    const placement = wordSearch.placements[0];
+    const start = fixture.root.querySelector(`[data-cell="${placement.start.row}:${placement.start.column}"]`);
+    const end = fixture.root.querySelector(`[data-cell="${placement.end.row}:${placement.end.column}"]`);
     start.dispatchEvent(new FixtureEvent('pointerdown', { pointerId: 9 }));
     assert.equal(fixture.document.listenerCount('pointermove'), 1);
     fixture.document.setHitTarget(end);
     fixture.document.dispatchEvent(new FixtureEvent('pointercancel', { pointerId: 9 }));
     fixture.document.dispatchEvent(new FixtureEvent('pointerup', { pointerId: 9 }));
-    assert.doesNotMatch(fixture.root.querySelector('.games-live-region').textContent, /CAT found/i);
+    assert.doesNotMatch(fixture.root.querySelector('.games-live-region').textContent, new RegExp(`${placement.word} found`, 'i'));
     assert.equal(fixture.document.listenerCount('pointermove'), 0);
   } finally { restore(); }
 });
@@ -196,14 +196,15 @@ test('Word Search pointercancel clears a stale drag and ignores a later pointeru
 test('Word Search lost pointer capture cancels the drag and removes document listeners', async () => {
   const { fixture, restore } = await mounted('../../Resources/games/word-search-ui.js', 'renderWordSearch', 'word-search', wordSearch);
   try {
-    const start = fixture.root.querySelector('[data-cell="0:0"]');
-    const end = fixture.root.querySelector('[data-cell="0:2"]');
+    const placement = wordSearch.placements[0];
+    const start = fixture.root.querySelector(`[data-cell="${placement.start.row}:${placement.start.column}"]`);
+    const end = fixture.root.querySelector(`[data-cell="${placement.end.row}:${placement.end.column}"]`);
     start.dispatchEvent(new FixtureEvent('pointerdown', { pointerId: 11 }));
     fixture.document.setHitTarget(end);
-    start.dispatchEvent(new FixtureEvent('lostpointercapture', { pointerId: 11 }));
+    fixture.document.dispatchEvent(new FixtureEvent('lostpointercapture', { pointerId: 11 }));
     fixture.document.dispatchEvent(new FixtureEvent('pointerup', { pointerId: 11 }));
     assert.equal(fixture.document.listenerCount('pointermove'), 0);
-    assert.doesNotMatch(fixture.root.querySelector('.games-live-region').textContent, /CAT found/i);
+    assert.doesNotMatch(fixture.root.querySelector('.games-live-region').textContent, new RegExp(`${placement.word} found`, 'i'));
   } finally { restore(); }
 });
 

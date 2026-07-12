@@ -28,6 +28,10 @@ export function validateCrosswordRun(payload, difficulty) {
   const play = payload.play;
   if (play == null) return true;
   const occupied = (row, column) => definition.cells[row]?.[column] != null;
+  const isComplete = Array.isArray(play.values) && play.values.length === definition.size
+    && definition.cells.every((row, rowIndex) => row.every((cell, columnIndex) => (
+      !cell || play.values[rowIndex]?.[columnIndex] === cell.solution
+    )));
   return Array.isArray(play.values) && play.values.length === definition.size
     && play.values.every((row, rowIndex) => Array.isArray(row) && row.length === definition.size
       && row.every((value, columnIndex) => occupied(rowIndex, columnIndex)
@@ -40,7 +44,7 @@ export function validateCrosswordRun(payload, difficulty) {
       const [row, column] = key.split(':').map(Number);
       return occupied(row, column);
     })
-    && typeof play.completed === 'boolean' && typeof play.assisted === 'boolean';
+    && play.completed === isComplete && typeof play.assisted === 'boolean';
 }
 
 const entryFor = (state, direction = state.direction) => {
