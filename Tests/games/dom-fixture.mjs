@@ -63,6 +63,7 @@ export class FixtureElement {
     this.hidden = false;
     this.disabled = false;
     this.value = '';
+    this.capturedPointers = new Set();
     this._textContent = '';
   }
   set id(value) { this.setAttribute('id', value); }
@@ -101,6 +102,9 @@ export class FixtureElement {
   }
   click() { this.dispatchEvent(new FixtureEvent('click')); }
   focus() { this.ownerDocument.activeElement = this; this.dispatchEvent(new FixtureEvent('focus', { bubbles: false })); }
+  setPointerCapture(pointerId) { this.capturedPointers.add(pointerId); }
+  releasePointerCapture(pointerId) { this.capturedPointers.delete(pointerId); }
+  hasPointerCapture(pointerId) { return this.capturedPointers.has(pointerId); }
   querySelectorAll(selector) {
     const found = [];
     const visit = (node) => {
@@ -117,6 +121,9 @@ export class FixtureElement {
 
 export function createDOMFixture({ search = '?difficulty=easy', confirm = true } = {}) {
   const listeners = new Map();
+  const intervals = new Map();
+  let nextInterval = 1;
+  let hitTarget = null;
   const document = {
     activeElement: null,
     visibilityState: 'visible',
@@ -124,6 +131,9 @@ export function createDOMFixture({ search = '?difficulty=easy', confirm = true }
     addEventListener(type, listener) { listeners.set(type, [...(listeners.get(type) ?? []), listener]); },
     removeEventListener(type, listener) { listeners.set(type, (listeners.get(type) ?? []).filter((value) => value !== listener)); },
     dispatchEvent(event) { for (const listener of listeners.get(event.type) ?? []) listener(event); },
+    elementFromPoint() { return hitTarget; },
+    listenerCount(type) { return (listeners.get(type) ?? []).length; },
+    setHitTarget(target) { hitTarget = target; },
   };
   document.body = document.createElement('body');
   document.querySelector = (...args) => document.body.querySelector(...args);
@@ -138,13 +148,25 @@ export function createDOMFixture({ search = '?difficulty=easy', confirm = true }
     removeItem(key) { values.delete(key); },
   };
   const location = { search, href: '' };
-  const window = { document, localStorage, location, confirm: () => confirm };
-  return { document, window, root, localStorage, location, Event: FixtureEvent };
+  const window = {
+    document, localStorage, location, confirm: () => confirm,
+    setInterval(callback) { const id = nextInterval; nextInterval += 1; intervals.set(id, callback); return id; },
+    clearInterval(id) { intervals.delete(id); },
+  };
+  return {
+    document, window, root, localStorage, location, Event: FixtureEvent,
+    activeIntervalCount: () => intervals.size,
+    tickIntervals: () => [...intervals.values()].forEach((callback) => callback()),
+  };
 }
 
 export function installDOM(fixture) {
-  const previous = Object.fromEntries(['document', 'window', 'localStorage', 'location', 'Event'].map((key) => [key, globalThis[key]]));
-  Object.assign(globalThis, fixture.window, { window: fixture.window, Event: FixtureEvent });
+  const keys = ['document', 'window', 'localStorage', 'location', 'Event', 'setInterval', 'clearInterval'];
+  const previous = Object.fromEntries(keys.map((key) => [key, globalThis[key]]));
+  Object.assign(globalThis, fixture.window, {
+    window: fixture.window, Event: FixtureEvent,
+    setInterval: fixture.window.setInterval, clearInterval: fixture.window.clearInterval,
+  });
   return () => {
     for (const [key, value] of Object.entries(previous)) {
       if (value === undefined) delete globalThis[key]; else globalThis[key] = value;

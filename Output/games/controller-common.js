@@ -1,10 +1,9 @@
-import {
-  completeRun, loadGameStore, markAssisted, saveGameStore, startRun, visibleElapsedMs,
-} from './core.js';
+import { completeRun, markAssisted, saveGameStore, startRun, visibleElapsedMs } from './core.js';
 import { safeLocalStorage, showStorageFailureNotice } from './hub-ui.js';
 
 export const difficulties = ['easy', 'medium', 'hard'];
 export const titleCase = (value) => value.charAt(0).toUpperCase() + value.slice(1);
+const activeSessions = new WeakMap();
 
 export function element(tag, attributes = {}, ...children) {
   const node = document.createElement(tag);
@@ -31,15 +30,61 @@ const seedValue = (previous) => {
   return seed;
 };
 
-export function createSession({ game, store, createPuzzle, createPlay, progressed, onRender }) {
+export function renderGameError(root) {
+  root.replaceChildren(element('section', { class: 'game-error', role: 'alert' },
+    element('h1', { text: 'Puzzle paused' }),
+    element('p', { text: 'This game could not start. Reload the page to try a fresh puzzle.' })));
+}
+
+export function renderReplacementKept(root, game, existingDifficulty) {
+  root.replaceChildren(element('section', { class: 'game-error', role: 'status' },
+    element('h1', { text: 'Saved puzzle kept' }),
+    element('p', { text: `${titleCase(existingDifficulty)} puzzle progress was kept on this device.` }),
+    element('a', {
+      class: 'btn btn-gold',
+      href: `/games/${game}?difficulty=${existingDifficulty}&continue=1`,
+      text: `Continue ${titleCase(existingDifficulty)}`,
+    }),
+    element('a', { class: 'back-link', href: '/games', text: 'Back to Games' })));
+}
+
+export function createSession({ root, game, store, createPuzzle, createPlay, progressed, validateRun, onRender }) {
+  activeSessions.get(root)?.dispose();
   const storage = safeLocalStorage(globalThis);
   const params = new URLSearchParams(globalThis.location?.search ?? '');
   const requested = params.get('difficulty');
   const difficulty = difficulties.includes(requested) ? requested : 'easy';
   const existing = store.runs?.[game];
-  const resume = params.get('continue') === '1' && existing?.difficulty === difficulty;
+  const existingStructValid = existing
+    && validateRun?.(existing.puzzle, existing.difficulty) !== false;
+  const existingValid = existing?.difficulty === difficulty
+    && existingStructValid;
+  const resume = params.get('continue') === '1' && existingValid;
   let currentStore = store;
   let run;
+  let cancelled = false;
+  let disposed = false;
+  let api;
+  const cleanups = new Set();
+
+  const dispose = () => {
+    if (disposed) return;
+    disposed = true;
+    for (const cleanup of cleanups) cleanup();
+    cleanups.clear();
+    if (activeSessions.get(root) === api) activeSessions.delete(root);
+  };
+  const listen = (target, type, listener) => {
+    target.addEventListener(type, listener);
+    cleanups.add(() => target.removeEventListener(type, listener));
+    return listener;
+  };
+  const repeat = (callback, milliseconds) => {
+    if (disposed) return null;
+    const handle = setInterval(callback, milliseconds);
+    cleanups.add(() => clearInterval(handle));
+    return handle;
+  };
 
   const begin = (seed = seedValue(currentStore.previousSeeds?.[game])) => {
     const definition = createPuzzle({ difficulty, seed });
@@ -58,9 +103,12 @@ export function createSession({ game, store, createPuzzle, createPlay, progresse
   };
 
   if (resume) run = existing;
-  else if (existing && progressed(existing.puzzle?.play)
+  else if (existingValid && progressed(existing.puzzle?.play)
       && globalThis.window?.confirm?.('Start a new puzzle and replace your saved progress?') === false) {
     run = existing;
+  } else if (existingStructValid && existing.difficulty !== difficulty && progressed(existing.puzzle?.play)
+      && globalThis.window?.confirm?.('Start a new puzzle and replace your saved progress?') === false) {
+    cancelled = true;
   } else begin();
 
   const updatePlay = (play) => {
@@ -78,12 +126,18 @@ export function createSession({ game, store, createPuzzle, createPlay, progresse
     const assisted = run.assisted;
     currentStore = completeRun(currentStore, game, Date.now());
     save();
+    dispose();
     return { elapsed, assisted };
   };
-  const playAnother = () => {
-    begin();
-    document.removeEventListener('visibilitychange', visibility);
-    onRender(currentStore);
+  const playAnother = async () => {
+    try {
+      begin();
+      dispose();
+      await onRender(currentStore);
+    } catch {
+      activeSessions.get(root)?.dispose();
+      renderGameError(root);
+    }
   };
 
   const visibility = () => {
@@ -96,9 +150,15 @@ export function createSession({ game, store, createPuzzle, createPlay, progresse
     currentStore = { ...currentStore, runs: { ...currentStore.runs, [game]: run } };
     save();
   };
-  document.addEventListener('visibilitychange', visibility);
+  if (run) listen(document, 'visibilitychange', visibility);
 
-  return { difficulty, get run() { return run; }, updatePlay, assist, finish, playAnother };
+  api = {
+    difficulty, cancelled, existingDifficulty: existing?.difficulty,
+    get run() { return run; }, updatePlay, assist, finish, playAnother, dispose, listen, repeat,
+    addCleanup(cleanup) { cleanups.add(cleanup); },
+  };
+  activeSessions.set(root, api);
+  return api;
 }
 
 export function sharedShell({ title, difficulty }) {

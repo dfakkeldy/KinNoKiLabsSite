@@ -1,6 +1,6 @@
-import { generateCrossword } from './crossword.js';
+import { generateCrossword, validateCrossword } from './crossword.js';
 import { visibleElapsedMs } from './core.js';
-import { completionPanel, createSession, element, formatElapsed, sharedShell } from './controller-common.js';
+import { completionPanel, createSession, element, formatElapsed, renderReplacementKept, sharedShell } from './controller-common.js';
 
 const directions = { across: [0, 1], down: [1, 0] };
 const keyFor = ({ row, column }) => `${row}:${column}`;
@@ -14,6 +14,33 @@ export function createCrosswordState(definition) {
     direction: first.direction,
     errors: [], assisted: false, completed: false,
   };
+}
+
+export function validateCrosswordRun(payload, difficulty) {
+  const definition = payload?.definition;
+  if (!definition || definition.difficulty !== difficulty || !Number.isInteger(definition.seed)
+      || definition.seed < 0 || !Number.isInteger(definition.size) || definition.size < 1
+      || !Array.isArray(definition.cells) || definition.cells.length !== definition.size
+      || definition.cells.some((row) => !Array.isArray(row) || row.length !== definition.size)
+      || !Array.isArray(definition.answers) || definition.answers.length < 1
+      || !validateCrossword(definition).valid
+      || definition.cells.flat().some((cell) => cell !== null && (!cell || !/^[A-Z]$/.test(cell.solution ?? '')))) return false;
+  const play = payload.play;
+  if (play == null) return true;
+  const occupied = (row, column) => definition.cells[row]?.[column] != null;
+  return Array.isArray(play.values) && play.values.length === definition.size
+    && play.values.every((row, rowIndex) => Array.isArray(row) && row.length === definition.size
+      && row.every((value, columnIndex) => occupied(rowIndex, columnIndex)
+        ? typeof value === 'string' && /^[A-Z]?$/.test(value) : value === null))
+    && Number.isInteger(play.selected?.row) && Number.isInteger(play.selected?.column)
+    && occupied(play.selected.row, play.selected.column)
+    && ['across', 'down'].includes(play.direction)
+    && Array.isArray(play.errors) && play.errors.every((key) => {
+      if (!/^\d+:\d+$/.test(key)) return false;
+      const [row, column] = key.split(':').map(Number);
+      return occupied(row, column);
+    })
+    && typeof play.completed === 'boolean' && typeof play.assisted === 'boolean';
 }
 
 const entryFor = (state, direction = state.direction) => {
@@ -55,6 +82,19 @@ export function reduceCrossword(state, action) {
     const row = Math.max(0, Math.min(state.definition.size - 1, action.row));
     const column = Math.max(0, Math.min(state.definition.size - 1, action.column));
     return state.definition.cells[row][column] ? { ...state, selected: { row, column } } : state;
+  }
+  if (action.type === 'navigate') {
+    let row = state.selected.row + action.dr, column = state.selected.column + action.dc;
+    while (row >= 0 && column >= 0 && row < state.definition.size && column < state.definition.size) {
+      if (state.definition.cells[row][column]) {
+        return {
+          ...state, selected: { row, column },
+          direction: action.dr === 0 ? 'across' : 'down',
+        };
+      }
+      row += action.dr; column += action.dc;
+    }
+    return state;
   }
   if (action.type === 'next-entry') {
     const current = entryFor(state);
@@ -106,10 +146,15 @@ const persisted = (definition, play, assisted) => ({
 export async function renderCrossword(root, store) {
   let session;
   session = createSession({
-    game: 'crossword', store, createPuzzle: generateCrossword, createPlay: createCrosswordState,
+    root, game: 'crossword', store, createPuzzle: generateCrossword, createPlay: createCrosswordState,
     progressed: (play) => play?.values?.some((row) => row.some(Boolean)),
+    validateRun: validateCrosswordRun,
     onRender: (nextStore) => renderCrossword(root, nextStore),
   });
+  if (session.cancelled) {
+    renderReplacementKept(root, 'crossword', session.existingDifficulty);
+    return;
+  }
   let state = persisted(session.run.puzzle.definition, session.run.puzzle.play, session.run.assisted);
   const shell = sharedShell({ title: 'Crossword', difficulty: session.difficulty });
   const instructions = element('details', { 'data-instructions': '' }, element('summary', { text: 'How to play' }),
@@ -127,7 +172,8 @@ export async function renderCrossword(root, store) {
     });
     clues.append(element('section', {}, element('h2', { text: direction === 'across' ? 'Across' : 'Down' }), list));
   }
-  layout.append(board, clues);
+  const boardScroll = element('div', { class: 'game-board-scroll' }, board);
+  layout.append(boardScroll, clues);
   const hint = element('button', { type: 'button', 'data-hint': '', text: 'Reveal Letter' });
   const check = element('button', { type: 'button', 'data-check': '', text: 'Check Entry' });
   const checkAll = element('button', { type: 'button', 'data-check-all': '', text: 'Check Puzzle' });
@@ -141,22 +187,32 @@ export async function renderCrossword(root, store) {
   };
   const draw = () => {
     board.replaceChildren();
-    state.definition.cells.forEach((row, rowIndex) => row.forEach((cell, columnIndex) => {
+    state.definition.cells.forEach((row, rowIndex) => {
+      const rowNode = element('div', { role: 'row', class: 'crossword-row' });
+      row.forEach((cell, columnIndex) => {
       if (!cell) return;
       const selected = rowIndex === state.selected.row && columnIndex === state.selected.column;
       const answer = cell[state.direction];
       const input = element('input', {
         class: `crossword-cell${selected ? ' is-selected' : ''}${state.errors.includes(`${rowIndex}:${columnIndex}`) ? ' is-error' : ''}`,
-        role: 'gridcell', 'aria-rowindex': rowIndex + 1, 'aria-colindex': columnIndex + 1,
         'aria-label': `${cell.number ? `${cell.number}, ` : ''}row ${rowIndex + 1}, column ${columnIndex + 1}${answer ? `, ${state.direction}` : ''}`,
         maxlength: '1', value: state.values[rowIndex][columnIndex], 'data-cell': `${rowIndex}:${columnIndex}`,
         tabindex: selected ? '0' : '-1',
       });
-      input.setAttribute('style', `grid-row:${rowIndex + 1};grid-column:${columnIndex + 1}`);
       input.addEventListener('click', () => dispatch({ type: 'select', row: rowIndex, column: columnIndex }, true));
       input.addEventListener('keydown', keydown);
-      board.append(input);
-    }));
+      const marker = cell.number ? element('span', {
+        class: 'crossword-number', 'data-cell-number': cell.number, 'aria-hidden': 'true', text: String(cell.number),
+      }) : null;
+      const gridCell = element('div', {
+        role: 'gridcell', class: 'crossword-gridcell', 'aria-rowindex': rowIndex + 1,
+        'aria-colindex': columnIndex + 1,
+      }, input, marker);
+      gridCell.setAttribute('style', `grid-row:${rowIndex + 1};grid-column:${columnIndex + 1}`);
+      rowNode.append(gridCell);
+      });
+      board.append(rowNode);
+    });
     shell.timer.textContent = formatElapsed(visibleElapsedMs(session.run, Date.now()));
     if (state.completed && !completed) {
       completed = true; const result = session.finish();
@@ -176,18 +232,19 @@ export async function renderCrossword(root, store) {
     const { row, column } = state.selected; const key = event.key;
     if (/^[A-Za-z]$/.test(key)) dispatch({ type: 'letter', value: key }, true);
     else if (key === 'Backspace' || key === 'Delete') dispatch({ type: 'erase' }, true);
-    else if (key === 'ArrowUp') dispatch({ type: 'move', row: row - 1, column }, true);
-    else if (key === 'ArrowDown') dispatch({ type: 'move', row: row + 1, column }, true);
-    else if (key === 'ArrowLeft') dispatch({ type: 'move', row, column: column - 1 }, true);
-    else if (key === 'ArrowRight') dispatch({ type: 'move', row, column: column + 1 }, true);
-    else if (key === 'Tab') dispatch({ type: 'next-entry', delta: event.shiftKey ? -1 : 1 }, true); else return;
+    else if (key === 'ArrowUp') dispatch({ type: 'navigate', dr: -1, dc: 0 }, true);
+    else if (key === 'ArrowDown') dispatch({ type: 'navigate', dr: 1, dc: 0 }, true);
+    else if (key === 'ArrowLeft') dispatch({ type: 'navigate', dr: 0, dc: -1 }, true);
+    else if (key === 'ArrowRight') dispatch({ type: 'navigate', dr: 0, dc: 1 }, true);
+    else if (key === ' ') dispatch({ type: 'select', row, column }, true);
+    else return;
     event.preventDefault();
   };
   hint.addEventListener('click', () => dispatch({ type: 'reveal' }));
   check.addEventListener('click', () => { dispatch({ type: 'check-entry' }); shell.live.textContent = `${state.errors.length} errors in this entry.`; });
   checkAll.addEventListener('click', () => { dispatch({ type: 'check-all' }); shell.live.textContent = `${state.errors.length} errors in the puzzle.`; });
-  shell.toolbar.querySelector('[data-new-game]').addEventListener('click', () => { if (!state.values.some((row) => row.some(Boolean)) || window.confirm('Replace this puzzle?')) session.playAnother(); });
+  shell.toolbar.querySelector('[data-new-game]').addEventListener('click', () => { if (!state.values.some((row) => row.some(Boolean)) || window.confirm('Replace this puzzle?')) void session.playAnother(); });
   shell.select.addEventListener('change', () => { globalThis.location.href = `/games/crossword?difficulty=${shell.select.value}`; });
   draw(); announceEntry();
-  const timerHandle = setInterval(() => { if (!completed) shell.timer.textContent = formatElapsed(visibleElapsedMs(session.run, Date.now())); }, 1000); timerHandle.unref?.();
+  session.repeat(() => { if (!completed) shell.timer.textContent = formatElapsed(visibleElapsedMs(session.run, Date.now())); }, 1000);
 }

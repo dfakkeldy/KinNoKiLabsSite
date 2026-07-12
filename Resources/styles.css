@@ -624,9 +624,11 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
 .game-danger:hover { background: #b6403b; }
 
 /* Shared controller layout for the game views added in later slices. */
+.games-app { min-width: 0; overflow-x: clip; }
 .game-toolbar, .game-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
 .game-toolbar { margin-bottom: 22px; }
 .game-board { width: min(100%, 42rem); margin: 0 auto; background: var(--surface); border: 2px solid var(--text); border-radius: 12px; overflow: hidden; }
+.game-board-scroll { width: 100%; max-width: 100%; min-width: 0; overflow-x: auto; overscroll-behavior-inline: contain; }
 .game-controls { justify-content: center; margin-top: 22px; }
 .game-controls button[aria-pressed="true"] { color: var(--gold-text); background: var(--fill); border: 2px solid var(--gold-500); }
 .game-complete { max-width: 620px; margin: 32px auto 0; padding: clamp(24px, 4vw, 36px); text-align: center; background: var(--surface); border: 1px solid var(--gold-hairline); border-top-width: 4px; border-radius: var(--radius-card); }
@@ -650,10 +652,13 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
 .games-app details summary { min-height: 44px; cursor: pointer; color: var(--game-text-primary); font-weight: 600; }
 .games-app details p { margin-top: 8px; }
 
-.sudoku-board { display: grid; grid-template-columns: repeat(9, 1fr); aspect-ratio: 1; }
+.sudoku-board { display: grid; grid-template-columns: repeat(9, 1fr); min-width: calc(9 * 44px); aspect-ratio: 1; }
+.sudoku-row { display: contents; }
+.sudoku-gridcell { display: flex; min-width: 44px; min-height: 44px; }
 .sudoku-cell {
-  min-width: 0;
-  min-height: 0;
+  width: 100%;
+  min-width: 44px;
+  min-height: 44px;
   padding: 0;
   color: var(--game-text-primary);
   background: var(--surface);
@@ -664,17 +669,20 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
   font-family: var(--font-mono);
   font-size: clamp(0.78rem, 4vw, 1.55rem);
 }
-.sudoku-cell:nth-child(3n):not(:nth-child(9n)) { border-right: 2px solid var(--game-text-tertiary); }
-.sudoku-cell:nth-child(n+19):nth-child(-n+27), .sudoku-cell:nth-child(n+46):nth-child(-n+54) { border-bottom: 2px solid var(--game-text-tertiary); }
+.sudoku-gridcell:nth-child(3n):not(:nth-child(9n)) .sudoku-cell { border-right: 2px solid var(--game-text-tertiary); }
+.sudoku-row:nth-child(3n):not(:nth-child(9n)) .sudoku-cell { border-bottom: 2px solid var(--game-text-tertiary); }
 .sudoku-cell.is-related { background: color-mix(in srgb, var(--gold-500) 8%, var(--surface)); }
 .sudoku-cell.is-selected { position: relative; z-index: 1; outline: 3px solid var(--gold-500); outline-offset: -3px; }
 .sudoku-cell.is-given { font-weight: 800; }
 .sudoku-cell.is-error { color: #ef8d87; background: color-mix(in srgb, #9e3733 24%, var(--surface)); }
 .sudoku-number-pad { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
 
-.crossword-layout, .word-search-layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(15rem, 0.75fr); gap: clamp(20px, 4vw, 42px); align-items: start; }
-.crossword-board { display: grid; grid-template-columns: repeat(var(--crossword-size), 1fr); grid-template-rows: repeat(var(--crossword-size), 1fr); aspect-ratio: 1; background: var(--fill-2); }
+.crossword-layout, .word-search-layout { display: grid; min-width: 0; grid-template-columns: minmax(0, 1.25fr) minmax(15rem, 0.75fr); gap: clamp(20px, 4vw, 42px); align-items: start; }
+.crossword-board { display: grid; grid-template-columns: repeat(var(--crossword-size), 1fr); grid-template-rows: repeat(var(--crossword-size), 1fr); min-width: calc(var(--crossword-size) * 44px); aspect-ratio: 1; background: var(--fill-2); }
+.crossword-row { display: contents; }
+.crossword-gridcell { position: relative; min-width: 44px; min-height: 44px; }
 .crossword-cell { min-width: 0; width: 100%; min-height: 0; height: 100%; padding: 0; text-align: center; color: var(--game-text-primary); background: var(--surface); border: 1px solid var(--separator); border-radius: 0; font-family: var(--font-mono); font-size: clamp(0.7rem, 3vw, 1.35rem); font-weight: 700; text-transform: uppercase; }
+.crossword-number { position: absolute; top: 2px; left: 4px; pointer-events: none; color: var(--game-text-tertiary); font-family: var(--font-mono); font-size: 0.62rem; line-height: 1; }
 .crossword-cell.is-selected { outline: 3px solid var(--gold-500); outline-offset: -3px; }
 .crossword-cell.is-error { color: #ef8d87; background: color-mix(in srgb, #9e3733 24%, var(--surface)); }
 .crossword-clues { display: grid; gap: 24px; }
@@ -683,8 +691,10 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
 .crossword-clues button { min-height: 44px; padding: 6px 8px; color: var(--game-text-secondary); background: transparent; border: 0; text-align: left; }
 .crossword-clues button:hover, .crossword-clues button:focus-visible { color: var(--game-text-accent); }
 
-.word-search-board { display: grid; grid-template-columns: repeat(var(--word-search-size), 1fr); aspect-ratio: 1; touch-action: pan-y; user-select: none; }
-.word-search-cell { min-width: 0; min-height: 0; padding: 0; color: var(--game-text-primary); background: var(--surface); border: 0; border-radius: 0; font-family: var(--font-mono); font-size: clamp(0.65rem, 3vw, 1.2rem); font-weight: 700; }
+.word-search-board { display: grid; grid-template-columns: repeat(var(--word-search-size), 1fr); min-width: calc(var(--word-search-size) * 44px); aspect-ratio: 1; touch-action: pan-y; user-select: none; }
+.word-search-row { display: contents; }
+.word-search-gridcell { display: flex; min-width: 44px; min-height: 44px; }
+.word-search-cell { width: 100%; min-width: 44px; min-height: 44px; padding: 0; color: var(--game-text-primary); background: var(--surface); border: 0; border-radius: 0; font-family: var(--font-mono); font-size: clamp(0.65rem, 3vw, 1.2rem); font-weight: 700; }
 .word-search-cell.is-preview { background: color-mix(in srgb, var(--gold-500) 22%, var(--surface)); }
 .word-search-cell.is-found { color: var(--surface); background: var(--game-text-accent); }
 .word-search-list { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 12px; list-style: none; }
