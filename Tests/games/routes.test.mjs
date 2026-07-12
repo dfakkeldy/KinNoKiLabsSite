@@ -15,6 +15,7 @@ for (const [route, page] of [
     const html = readFileSync(path, 'utf8');
     assert.match(html, new RegExp(`data-game-page="${page}"`));
     assert.match(html, /<script[^>]+type="module"[^>]+src="\/games\/ui\.js"/);
+    assert.match(html, /<meta property="og:image" content="https:\/\/kinnokilabs\.com\/images\/games\/og\.png"\s*\/?>/);
     assert.match(html, /href="\/games"[^>]*aria-current="page"/);
     assert.equal(
       [...html.matchAll(/href="\/games"[^>]*aria-current="page"/g)].length,
