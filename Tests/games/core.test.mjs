@@ -5,7 +5,7 @@ import {
   resetGameStore, saveGameStore, startRun, visibleElapsedMs,
 } from '../../Resources/games/core.js';
 import {
-  gameCardModel, renderHubMarkup, safeLocalStorage, statsModel,
+  gameCardModel, renderHub, renderHubMarkup, safeLocalStorage, statsModel,
 } from '../../Resources/games/hub-ui.js';
 
 const memoryStorage = (initial = {}) => {
@@ -123,4 +123,180 @@ test('storage access failures become a recoverable storage adapter', () => {
 
   assert.doesNotThrow(() => loadGameStore(storage));
   assert.equal(saveGameStore(storage, loadGameStore(storage)).ok, false);
+});
+
+test('malformed v1 state is normalized before the hub can render it', () => {
+  const hostile = {
+    version: 1,
+    runs: {
+      sudoku: { difficulty: '\"><img src=x onerror=alert(1)>', seed: 4, startedAt: 1, elapsedBeforeStartMs: 0 },
+      crossword: { seed: 5 },
+      'word-search': { difficulty: 'hard', seed: 6, puzzle: {}, startedAt: 10, elapsedBeforeStartMs: 20, assisted: false },
+      '<script>': { difficulty: 'easy' },
+    },
+    previousSeeds: { sudoku: -4, crossword: 7.8, '<img>': 4 },
+    stats: {
+      totalCompleted: '<img src=x onerror=alert(2)>',
+      currentStreak: -12,
+      lastCompletedDate: '<script>alert(3)</script>',
+      games: {
+        sudoku: { completed: 4.8, bestMs: { easy: -1, medium: 61599, hard: '<b>bad</b>' } },
+        crossword: '<img src=x>',
+        'word-search': { completed: Number.MAX_VALUE, bestMs: null },
+        '<svg onload=alert(4)>': { completed: 99 },
+      },
+    },
+  };
+
+  const store = loadGameStore(memoryStorage({ 'kinnoki-games:v1': JSON.stringify(hostile) }));
+  const markup = renderHubMarkup(store);
+
+  assert.deepEqual(Object.keys(store.runs), ['word-search']);
+  assert.deepEqual(store.previousSeeds, { crossword: 7 });
+  assert.equal(store.stats.totalCompleted, 0);
+  assert.equal(store.stats.currentStreak, 0);
+  assert.equal(store.stats.lastCompletedDate, null);
+  assert.equal(store.stats.games.sudoku.completed, 4);
+  assert.deepEqual(store.stats.games.sudoku.bestMs, { easy: null, medium: 61599, hard: null });
+  assert.equal(store.stats.games.crossword.completed, 0);
+  assert.doesNotMatch(markup, /<(?:img|script|svg|b)\b/i);
+});
+
+test('missing v1 fields recover to a complete safe store', () => {
+  const store = loadGameStore(memoryStorage({ 'kinnoki-games:v1': '{"version":1}' }));
+
+  assert.deepEqual(store.runs, {});
+  assert.deepEqual(store.previousSeeds, {});
+  assert.equal(store.stats.totalCompleted, 0);
+  assert.deepEqual(Object.keys(store.stats.games), ['sudoku', 'crossword', 'word-search']);
+  assert.doesNotThrow(() => renderHubMarkup(store));
+});
+
+test('hub models reject unknown games and invalid run difficulties', () => {
+  const empty = loadGameStore(memoryStorage());
+  assert.equal(gameCardModel(empty, { id: '<img src=x>', title: '<b>Bad</b>' }), null);
+
+  const invalidRun = structuredClone(empty);
+  invalidRun.runs.sudoku = { difficulty: undefined };
+  assert.doesNotThrow(() => renderHubMarkup(invalidRun));
+  assert.equal(gameCardModel(invalidRun, { id: 'sudoku', title: 'Sudoku' }).continueHref, null);
+
+  assert.equal(startRun(empty, 'unknown', 'easy', 1, {}, 1), empty);
+  assert.equal(startRun(empty, 'sudoku', 'nightmare', 1, {}, 1), empty);
+});
+
+test('raw hostile statistics never become hub HTML or invalid numbers', () => {
+  const hostile = {
+    runs: {},
+    stats: {
+      totalCompleted: '<img src=x onerror=alert(1)>',
+      currentStreak: Number.NaN,
+      games: {
+        sudoku: { completed: -2, bestMs: { easy: -500, medium: Number.POSITIVE_INFINITY } },
+      },
+    },
+  };
+
+  const statistics = statsModel(hostile);
+  const markup = renderHubMarkup(hostile);
+
+  assert.equal(statistics.total, '0');
+  assert.equal(statistics.streak, '0');
+  assert.deepEqual(statistics.games.sudoku, { completed: '0 completed', best: '—' });
+  assert.doesNotMatch(markup, /<img\b|Infinity|NaN|-500/i);
+});
+
+class FakeControl {
+  constructor({ hidden = false } = {}) {
+    this.hidden = hidden;
+    this.open = false;
+    this.listeners = new Map();
+    this.textContent = '';
+  }
+
+  addEventListener(type, listener) {
+    this.listeners.set(type, listener);
+  }
+
+  click() {
+    this.listeners.get('click')?.();
+  }
+
+  showModal() { this.open = true; }
+  close() { this.open = false; }
+}
+
+class HubFixture {
+  set innerHTML(value) {
+    this.markup = value;
+    this.reset = new FakeControl();
+    this.cancel = new FakeControl();
+    this.confirm = new FakeControl();
+    this.dialog = new FakeControl();
+    this.notice = new FakeControl({ hidden: true });
+  }
+
+  querySelector(selector) {
+    return {
+      '[data-reset-games]': this.reset,
+      '[data-dialog-cancel]': this.cancel,
+      '[data-dialog-confirm]': this.confirm,
+      '[data-reset-dialog]': this.dialog,
+      '.game-storage-notice': this.notice,
+    }[selector] ?? null;
+  }
+}
+
+async function withBrowserGlobals(storage, body) {
+  const storageDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
+  const documentDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'document');
+  const liveRegion = new FakeControl();
+  Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: storage });
+  Object.defineProperty(globalThis, 'document', {
+    configurable: true,
+    value: { querySelector: (selector) => (selector === '.games-live-region' ? liveRegion : null) },
+  });
+  try {
+    await body(liveRegion);
+  } finally {
+    if (storageDescriptor) Object.defineProperty(globalThis, 'localStorage', storageDescriptor);
+    else delete globalThis.localStorage;
+    if (documentDescriptor) Object.defineProperty(globalThis, 'document', documentDescriptor);
+    else delete globalThis.document;
+  }
+}
+
+test('confirmed reset removes the stored game state and announces success', async () => {
+  const storage = memoryStorage({ 'kinnoki-games:v1': JSON.stringify(loadGameStore(memoryStorage())) });
+  await withBrowserGlobals(storage, async (liveRegion) => {
+    const root = new HubFixture();
+    await renderHub(root, loadGameStore(storage));
+
+    root.reset.click();
+    assert.equal(root.dialog.open, true);
+    root.confirm.click();
+
+    assert.equal(storage.getItem('kinnoki-games:v1'), null);
+    assert.equal(liveRegion.textContent, 'Game data reset.');
+  });
+});
+
+test('failed reset uses one polite visible status without a duplicate announcement', async () => {
+  const storage = {
+    getItem: () => null,
+    setItem() {},
+    removeItem() { throw new Error('blocked'); },
+  };
+  await withBrowserGlobals(storage, async (liveRegion) => {
+    const root = new HubFixture();
+    await renderHub(root, loadGameStore(storage));
+    assert.match(root.markup, /class="game-storage-notice" role="status" aria-live="polite"/);
+    assert.doesNotMatch(root.markup, /class="game-storage-notice" role="alert"/);
+
+    root.reset.click();
+    root.confirm.click();
+
+    assert.equal(root.notice.hidden, false);
+    assert.equal(liveRegion.textContent, '');
+  });
 });
