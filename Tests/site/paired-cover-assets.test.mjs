@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const provenance = JSON.parse(readFileSync(path.join(root, 'Resources/learn/paired-cover-provenance.json')));
+const sourceManifest = JSON.parse(readFileSync(path.join(root, 'Resources/learn/paired-cover-source-manifest.json')));
 const catalog = JSON.parse(readFileSync(path.join(root, 'Resources/listen/books.json')));
 
 const portraitSlugs = [
@@ -33,6 +34,8 @@ function dimensions(file) {
 }
 
 test('all six learn covers are verified 1600 by 2560 portraits', () => {
+  assert.equal(sourceManifest.sourceCommit, '18a7ad0717a4338d7c777bfed01a5bdb9ab6353d');
+  assert.equal(provenance.source.commit, sourceManifest.sourceCommit);
   assert.deepEqual(Object.keys(provenance.books), portraitSlugs);
   for (const slug of portraitSlugs) {
     const file = path.join(root, `Resources/learn/covers/${slug}.png`);
