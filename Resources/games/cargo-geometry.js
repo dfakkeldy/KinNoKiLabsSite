@@ -82,8 +82,10 @@ export function placePiece(board, piece) {
   if (!Number.isSafeInteger(piece?.pieceId) || piece.pieceId < 0) throw new TypeError('Invalid piece identity');
   const rotation = rotationsFor(piece.typeId).find((candidate) => candidate.rotation === piece.rotation);
   if (!rotation || !canPlace(board, rotation.cells, { row: piece.row, column: piece.column }, { ignorePieceId: piece.pieceId })) throw new RangeError('Invalid cargo placement');
-  const next = board.map((row) => [...row]);
-  for (const { row, column } of placedCells(rotation.cells, piece)) next[row][column] = { pieceId: piece.pieceId, typeId: piece.typeId };
+  const destinations = placedCells(rotation.cells, piece);
+  const next = [...board];
+  for (const row of new Set(destinations.map((cell) => cell.row))) next[row] = [...board[row]];
+  for (const { row, column } of destinations) next[row][column] = { pieceId: piece.pieceId, typeId: piece.typeId };
   return next;
 }
 
@@ -180,9 +182,21 @@ export function dispatchCompletedManifests(board, manifests) {
 export class ManifestGenerationError extends Error {}
 
 export function selectManifestZones({ board, width, height, shapeIds, seed, index, count, occupied = [] }) {
-  if (!Array.isArray(shapeIds) || shapeIds.some((id) => !manifestById.has(id)) || !Number.isSafeInteger(count) || count < 0) throw new TypeError('Invalid manifest selection request');
+  const dimensionsValid = Number.isSafeInteger(width) && width > 0
+    && Number.isSafeInteger(height) && height > 0;
+  const boardValid = dimensionsValid && validateBoard(board, { width, height }).valid;
+  const selectionValid = Array.isArray(shapeIds) && shapeIds.every((id) => manifestById.has(id))
+    && Number.isSafeInteger(seed) && seed >= 0
+    && Number.isSafeInteger(index) && index >= 0
+    && Number.isSafeInteger(count) && count >= 0 && Array.isArray(occupied);
+  const occupiedCells = selectionValid ? occupied.flatMap((entry) => entry?.cells ?? [entry]) : [];
+  const occupiedValid = occupiedCells.every(({ row, column } = {}) => (
+    Number.isSafeInteger(row) && row >= 0 && row < height
+      && Number.isSafeInteger(column) && column >= 0 && column < width
+  ));
+  if (!boardValid || !selectionValid || !occupiedValid) throw new TypeError('Invalid manifest selection request');
   if (count === 0) return [];
-  const blocked = new Set(occupied.flatMap((entry) => entry?.cells ?? [entry]).map(({ row, column }) => row + ':' + column));
+  const blocked = new Set(occupiedCells.map(({ row, column }) => row + ':' + column));
   const candidates = [];
   for (const shapeId of shapeIds) {
     const shape = manifestById.get(shapeId);
@@ -210,6 +224,11 @@ export function selectManifestZones({ board, width, height, shapeIds, seed, inde
 }
 
 export function selectNextManifestZones({ startIndex, maxAttempts = 64, ...options }) {
+  if (!Number.isSafeInteger(startIndex) || startIndex < 0
+      || !Number.isSafeInteger(maxAttempts) || maxAttempts < 1 || maxAttempts > 64
+      || startIndex > Number.MAX_SAFE_INTEGER - maxAttempts) {
+    throw new TypeError('Invalid manifest attempt request');
+  }
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     const acceptedIndex = startIndex + attempt;
     try { return { manifests: selectManifestZones({ ...options, index: acceptedIndex }), nextIndex: acceptedIndex + 1 }; }
