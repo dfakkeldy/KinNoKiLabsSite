@@ -289,3 +289,117 @@ test('async Play Another render failures become a visible game error', async () 
     assert.equal(fixture.root.querySelector('[role="alert"]')?.textContent.includes('could not start'), true);
   } finally { restore(); }
 });
+
+const silentAudioFactory = () => ({
+  start: async () => {}, resume: async () => {}, pause: async () => {},
+  stop: async () => {}, finish() {}, dispose: async () => {},
+  setPreferences() {}, setIntensity() {}, playEffect() {},
+});
+
+async function waitForControllerState(predicate, message) {
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    if (predicate()) return;
+    await Promise.resolve();
+  }
+  assert.fail(message);
+}
+
+test('cargo grids, live regions, and automatic status use exact accessibility semantics', async () => {
+  for (const game of [
+    {
+      search: '?difficulty=easy',
+      path: '../../Resources/games/kinnoki-stack-ui.js',
+      render: 'renderKinnokiStack',
+      cell: '[role="gridcell"]',
+      count: 216,
+      tabStops: 0,
+      automaticStatus: ['[data-timer]', '[data-stack-score]'],
+    },
+    {
+      search: '?mode=contracts&difficulty=easy',
+      path: '../../Resources/games/kinnoki-yard-ui.js',
+      render: 'renderKinnokiYard',
+      cell: '[data-yard-cell]',
+      count: null,
+      tabStops: 1,
+      automaticStatus: ['[data-timer]', '[data-yard-moves]'],
+    },
+  ]) {
+    const fixture = createDOMFixture({ search: game.search });
+    const restore = installDOM(fixture);
+    try {
+      const module = await import(game.path);
+      const controller = await module[game.render](
+        fixture.root,
+        createEmptyGameStore(),
+        { audioFactory: silentAudioFactory },
+      );
+      const cells = fixture.root.querySelectorAll(game.cell);
+      if (game.count !== null) assert.equal(cells.length, game.count);
+      assert.ok(cells.length > 0);
+      assert.equal(
+        cells.filter((cell) => cell.getAttribute('tabindex') === '0').length,
+        game.tabStops,
+      );
+      if (game.tabStops === 0) {
+        assert.ok(cells.every((cell) => cell.getAttribute('tabindex') === '-1'));
+      }
+      const eventRegion = fixture.root.querySelector('.games-live-region');
+      assert.equal(eventRegion.getAttribute('role'), 'status');
+      assert.equal(eventRegion.getAttribute('aria-live'), 'polite');
+      for (const selector of game.automaticStatus) {
+        assert.equal(fixture.root.querySelector(selector).getAttribute('aria-live'), null);
+      }
+      controller.dispose();
+      assert.equal(fixture.document.listenerCount('keydown'), 0);
+      assert.equal(fixture.activeFrameCount(), 0);
+    } finally { restore(); }
+  }
+});
+
+test('Stack terminal rendering focuses the summary and disposal clears active resources', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy' });
+  const restore = installDOM(fixture);
+  try {
+    const stack = await import('../../Resources/games/kinnoki-stack.js');
+    const engine = {
+      ...stack,
+      reduceStack(state, action) {
+        if (action.type !== 'hard-drop') return stack.reduceStack(state, action);
+        return {
+          state: {
+            ...state,
+            status: 'terminal',
+            terminalReason: 'crane-line',
+            score: 0,
+            combo: 0,
+            bestCombo: 0,
+            dispatchedManifests: 0,
+          },
+          events: [{ type: 'terminal', reason: 'crane-line' }],
+        };
+      },
+    };
+    const { renderKinnokiStack } = await import(
+      '../../Resources/games/kinnoki-stack-ui.js'
+    );
+    const controller = await renderKinnokiStack(
+      fixture.root,
+      createEmptyGameStore(),
+      { engine, audioFactory: silentAudioFactory },
+    );
+    fixture.root.querySelector('[data-start-game]').click();
+    await waitForControllerState(
+      () => fixture.root.querySelector('[data-stack-hard-drop]').disabled === false,
+      'Stack never entered observable active state',
+    );
+    fixture.root.querySelector('[data-stack-hard-drop]').click();
+    const heading = fixture.root.querySelector('[data-complete-heading]');
+    assert.equal(fixture.document.activeElement, heading);
+    assert.equal(fixture.document.listenerCount('keydown'), 0);
+    assert.equal(fixture.activeFrameCount(), 0);
+    controller.dispose();
+    assert.equal(fixture.document.listenerCount('keydown'), 0);
+    assert.equal(fixture.activeFrameCount(), 0);
+  } finally { restore(); }
+});
