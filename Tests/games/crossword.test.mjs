@@ -175,9 +175,71 @@ test('hard generation has a short real-time bound and returns a valid puzzle', {
   }
 });
 
-test('crossword wall-clock deadline falls back before another search attempt', () => {
+test('clock speed cannot change deterministic Crossword output', () => {
   let clock = 0;
-  const puzzle = generateCrossword({ difficulty: 'hard', seed: 7, entries, now: () => (clock += 100) });
-  assert.equal(puzzle.usedFallback, true);
-  assert.deepEqual(validateCrossword(puzzle), { valid: true, errors: [] });
+  const normal = generateCrossword({ difficulty: 'medium', seed: 7, entries });
+  const hostileClock = generateCrossword({
+    difficulty: 'medium', seed: 7, entries, now: () => (clock += 100),
+  });
+  assert.deepEqual(hostileClock, normal);
+});
+
+test('100 hard seeds provide broad deterministic puzzle diversity', { timeout: 20000 }, () => {
+  const signatures = new Set();
+  for (let seed = 0; seed < 100; seed += 1) {
+    const first = generateCrossword({ difficulty: 'hard', seed, entries });
+    const second = generateCrossword({ difficulty: 'hard', seed, entries });
+    assert.deepEqual(first, second, `hard seed ${seed} must repeat exactly`);
+    assert.equal(first.answers.length, 13);
+    assert.deepEqual(validateCrossword(first), { valid: true, errors: [] });
+    signatures.add(JSON.stringify({
+      answers: first.answers.map(({ answer, row, column, direction }) => (
+        [answer, row, column, direction]
+      )),
+      grid: first.cells.map((row) => row.map((cell) => cell?.solution ?? '#').join('')).join('/'),
+    }));
+  }
+  assert.ok(signatures.size >= 12, `expected at least 12 hard signatures, got ${signatures.size}`);
+});
+
+test('representative consecutive hard seeds differ for Play Another', () => {
+  const signature = (puzzle) => JSON.stringify({
+    answers: puzzle.answers.map(({ answer }) => answer),
+    grid: puzzle.cells.map((row) => row.map((cell) => cell?.solution ?? '#')),
+  });
+  assert.notEqual(
+    signature(generateCrossword({ difficulty: 'hard', seed: 41, entries })),
+    signature(generateCrossword({ difficulty: 'hard', seed: 42, entries })),
+  );
+});
+
+test('sparse custom content gets a valid deterministic seed-keyed fallback', () => {
+  const fallbacks = [];
+  for (const seed of [3, 92]) {
+    const first = generateCrossword({ difficulty: 'hard', seed, entries: [] });
+    assert.deepEqual(first, generateCrossword({ difficulty: 'hard', seed, entries: [] }));
+    assert.equal(first.answers.length, 13);
+    assert.deepEqual(validateCrossword(first), { valid: true, errors: [] });
+    fallbacks.push(first);
+  }
+  const signature = (puzzle) => JSON.stringify({
+    answers: puzzle.answers.map(({ answer, row, column, direction }) => [answer, row, column, direction]),
+    grid: puzzle.cells.map((row) => row.map((cell) => cell?.solution ?? '#')),
+  });
+  assert.notEqual(signature(fallbacks[0]), signature(fallbacks[1]));
+});
+
+test('all difficulty generators remain individually and collectively bounded', { timeout: 20000 }, () => {
+  const started = performance.now();
+  for (const difficulty of ['easy', 'medium', 'hard']) {
+    for (let seed = 0; seed < 40; seed += 1) {
+      const seedStarted = performance.now();
+      const puzzle = generateCrossword({ difficulty, seed, entries });
+      const duration = performance.now() - seedStarted;
+      assert.ok(duration < 250, `${difficulty} seed ${seed} took ${duration.toFixed(1)}ms`);
+      assert.equal(puzzle.answers.length, { easy: 7, medium: 10, hard: 13 }[difficulty]);
+      assert.deepEqual(validateCrossword(puzzle), { valid: true, errors: [] });
+    }
+  }
+  assert.ok(performance.now() - started < 10000);
 });

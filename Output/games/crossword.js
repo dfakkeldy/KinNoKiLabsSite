@@ -235,7 +235,7 @@ const FALLBACK_LAYOUTS = {
     ['CAPER', 7, 6, 'across'], ['RCMP', 7, 10, 'down'],
     ['WHALE', 8, 0, 'across'], ['ATLAS', 10, 0, 'across'],
   ],
-  hard: [
+  hard: [[
     ['ALBERTA', 0, 1, 'across'], ['BASKETBALL', 0, 3, 'down'],
     ['WINNIPEG', 0, 10, 'down'], ['GRAVITY', 1, 8, 'down'],
     ['STLAWRENCE', 2, 3, 'across'], ['OTTER', 4, 0, 'across'],
@@ -243,7 +243,31 @@ const FALLBACK_LAYOUTS = {
     ['TRIANGLE', 4, 12, 'down'], ['BALLET', 6, 3, 'across'],
     ['LOUISBOURG', 9, 3, 'across'], ['SQUARE', 11, 7, 'across'],
     ['ACADIAN', 12, 0, 'across'],
-  ],
+  ], [
+    ['ATLANTIC', 0, 5, 'down'], ['LOUISBOURG', 0, 7, 'down'],
+    ['WINNIPEG', 0, 11, 'down'], ['SASKATOON', 1, 0, 'across'],
+    ['SQUARE', 1, 0, 'down'], ['STLAWRENCE', 3, 3, 'down'],
+    ['ISLAND', 3, 7, 'across'], ['STANNS', 4, 2, 'across'],
+    ['CAUSEWAY', 5, 9, 'down'], ['MANITOBA', 6, 2, 'across'],
+    ['CANSO', 7, 1, 'down'], ['MAGNET', 9, 5, 'across'],
+    ['ORCHESTRA', 11, 1, 'across'],
+  ], [
+    ['STLAWRENCE', 0, 5, 'down'], ['CIRCLE', 0, 11, 'down'],
+    ['CRYSTAL', 1, 1, 'across'], ['LOUISBOURG', 1, 7, 'down'],
+    ['OTTER', 2, 7, 'across'], ['BALLET', 4, 9, 'down'],
+    ['MANITOBA', 5, 2, 'down'], ['BASKETBALL', 6, 1, 'across'],
+    ['MIKMAQ', 7, 0, 'down'], ['MAGNET', 7, 11, 'down'],
+    ['CAUSEWAY', 8, 5, 'across'], ['MOOSE', 10, 0, 'across'],
+    ['ATLANTIC', 12, 2, 'across'],
+  ], [
+    ['NORTH', 0, 2, 'down'], ['BALLET', 0, 10, 'down'],
+    ['CAUSEWAY', 1, 4, 'across'], ['CIRCLE', 1, 4, 'down'],
+    ['PORTHOOD', 2, 0, 'down'], ['OTTER', 3, 0, 'across'],
+    ['LOUISBOURG', 3, 8, 'down'], ['MOOSE', 4, 6, 'across'],
+    ['MAGNET', 4, 6, 'down'], ['PENGUIN', 6, 3, 'across'],
+    ['DOLPHIN', 6, 11, 'down'], ['BASKETBALL', 8, 2, 'across'],
+    ['ORCHESTRA', 11, 1, 'across'],
+  ]],
 };
 
 const fallbackCache = new Map();
@@ -267,10 +291,13 @@ function freezePuzzle(puzzle) {
   return Object.freeze(puzzle);
 }
 
-function bundledFallback(difficulty) {
-  if (!fallbackCache.has(difficulty)) {
+function bundledFallback(difficulty, seed) {
+  const layouts = difficulty === 'hard' ? FALLBACK_LAYOUTS.hard : [FALLBACK_LAYOUTS[difficulty]];
+  const variant = (seed >>> 0) % layouts.length;
+  const cacheKey = `${difficulty}:${variant}`;
+  if (!fallbackCache.has(cacheKey)) {
     const byAnswer = new Map(bundledEntries.map((entry) => [entry.answer, entry]));
-    const placed = FALLBACK_LAYOUTS[difficulty].map(([answer, row, column, direction]) => ({
+    const placed = layouts[variant].map(([answer, row, column, direction]) => ({
       entry: byAnswer.get(answer), row, column, direction,
     }));
     let grid = emptyGrid(LIMITS[difficulty].size);
@@ -280,27 +307,24 @@ function bundledFallback(difficulty) {
     });
     const validation = validateCrossword(puzzle);
     if (!validation.valid) throw new Error(`Bundled ${difficulty} crossword is invalid`);
-    fallbackCache.set(difficulty, freezePuzzle(puzzle));
+    fallbackCache.set(cacheKey, freezePuzzle(puzzle));
   }
-  return clonePuzzle(fallbackCache.get(difficulty));
+  return { ...clonePuzzle(fallbackCache.get(cacheKey)), seed: seed >>> 0 };
 }
 
 export function generateCrossword({
   difficulty, seed, entries = bundledEntries,
-  now = () => globalThis.performance?.now?.() ?? Date.now(),
 }) {
   const limits = LIMITS[difficulty];
   if (!limits) throw new RangeError(`Unsupported crossword difficulty: ${difficulty}`);
 
-  const started = now();
-  if (difficulty === 'hard' || now() - started > 75) return bundledFallback(difficulty);
   for (let attempt = 0; attempt < 1; attempt += 1) {
     const candidateSeed = attempt === 0 ? seed >>> 0 : deriveSeed(seed, attempt - 1);
     const boundedLimits = { ...limits, attempts: Math.min(limits.attempts, 240) };
     const puzzle = attemptPuzzle({ difficulty, seed: candidateSeed, entries, limits: boundedLimits });
     if (puzzle && validateCrossword(puzzle).valid) return puzzle;
   }
-  return bundledFallback(difficulty);
+  return bundledFallback(difficulty, seed);
 }
 
 export function validateCrossword(puzzle) {
