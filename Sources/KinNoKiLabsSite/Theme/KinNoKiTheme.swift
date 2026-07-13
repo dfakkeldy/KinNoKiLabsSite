@@ -87,11 +87,15 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
         let main: Node<HTML.BodyContext>
         let active: String
         switch page.path.string {
-        case "services": main = servicesMain(); active = "/services"
-        case "learn":    main = learnMain();    active = ""
-        case "about":    main = aboutMain();    active = "/about"
-        case "support":  main = supportMain();  active = ""
-        default:         main = proseMain(page); active = ""
+        case "games":             main = gamesMain(page: "hub");         active = "/games"
+        case "games/sudoku":      main = gamesMain(page: "sudoku");      active = "/games"
+        case "games/crossword":   main = gamesMain(page: "crossword");   active = "/games"
+        case "games/word-search": main = gamesMain(page: "word-search"); active = "/games"
+        case "services":          main = servicesMain();                  active = "/services"
+        case "learn":             main = learnMain();                     active = ""
+        case "about":             main = aboutMain();                     active = "/about"
+        case "support":           main = supportMain();                   active = ""
+        default:                  main = proseMain(page);                  active = ""
         }
         return HTML(
             .lang(context.site.language),
@@ -205,6 +209,7 @@ private func siteHeader(active: String) -> Node<HTML.BodyContext> {
                     .ul(
                         .class("nav-links"),
                         navLink("/", "Home", active),
+                        navLink("/games", "Games", active),
                         navLink("/services", "Services", active),
                         navLink("/apps", "Apps", active),
                         navLink("/posts", "Posts", active),
@@ -287,11 +292,12 @@ private func mobileMenu(active: String) -> Node<HTML.BodyContext> {
             )
         ),
         .nav(
-            mobileLink("/", "Home"),
-            mobileLink("/services", "Services"),
-            mobileLink("/apps", "Apps"),
-            mobileLink("/posts", "Posts"),
-            mobileLink("/about", "About"),
+            mobileLink("/", "Home", active),
+            mobileLink("/games", "Games", active),
+            mobileLink("/services", "Services", active),
+            mobileLink("/apps", "Apps", active),
+            mobileLink("/posts", "Posts", active),
+            mobileLink("/about", "About", active),
             .button(
                 .class("font-toggle"),
                 .attribute(named: "type", value: "button"),
@@ -304,8 +310,16 @@ private func mobileMenu(active: String) -> Node<HTML.BodyContext> {
     )
 }
 
-private func mobileLink(_ path: String, _ title: String) -> Node<HTML.BodyContext> {
-    .a(.href(path), .text(title), iconChevronDim())
+private func mobileLink(_ path: String, _ title: String, _ active: String) -> Node<HTML.BodyContext> {
+    if path == active {
+        return .a(
+            .href(path),
+            .attribute(named: "aria-current", value: "page"),
+            .text(title),
+            iconChevronDim()
+        )
+    }
+    return .a(.href(path), .text(title), iconChevronDim())
 }
 
 // MARK: - Shared footer
@@ -356,6 +370,25 @@ private func siteFooter() -> Node<HTML.BodyContext> {
 }
 
 // MARK: - Data-driven pages (posts, app items, prose)
+
+private func gamesMain(page: String) -> Node<HTML.BodyContext> {
+    .main(
+        .class("site-main games-main"),
+        .attribute(named: "data-game-page", value: page),
+        .div(
+            .class("games-live-region"),
+            .attribute(named: "aria-live", value: "polite")
+        ),
+        .div(
+            .class("games-app"),
+            .attribute(named: "id", value: "games-app")
+        ),
+        .element(named: "script", nodes: [
+            .attribute(named: "type", value: "module"),
+            .attribute(named: "src", value: "/games/ui.js")
+        ])
+    )
+}
 
 private func postsListMain(_ section: Section<KinNoKiLabsSite>) -> Node<HTML.BodyContext> {
     .main(

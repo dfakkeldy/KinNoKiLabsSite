@@ -1,0 +1,201 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import themes from '../../Resources/games/word-search-content.js';
+import {
+  findSelection,
+  generateWordSearch,
+  validateWordSearch,
+} from '../../Resources/games/word-search.js';
+
+const RULES = {
+  easy: { size: 10, words: 8, directions: new Set(['0:1', '1:0']) },
+  medium: { size: 13, words: 12, directions: new Set(['0:1', '1:0', '1:1', '1:-1']) },
+  hard: {
+    size: 16,
+    words: 16,
+    directions: new Set(['0:1', '0:-1', '1:0', '-1:0', '1:1', '1:-1', '-1:1', '-1:-1']),
+  },
+};
+
+const directionOf = (placement) => {
+  const rowDelta = Math.sign(placement.end.row - placement.start.row);
+  const columnDelta = Math.sign(placement.end.column - placement.start.column);
+  return `${rowDelta}:${columnDelta}`;
+};
+
+function coordinatedFakePuzzle() {
+  const words = ['ZZZ', 'YYY', 'XXX', 'WWW', 'VVV', 'UUU', 'QQQ', 'JJJ'];
+  const grid = Array.from({ length: 10 }, () => Array(10).fill('A'));
+  const placements = words.map((word, row) => {
+    for (let column = 0; column < word.length; column += 1) grid[row][column] = word[column];
+    return {
+      word,
+      start: { row, column: 0 },
+      end: { row, column: word.length - 1 },
+    };
+  });
+  return { seed: 1, difficulty: 'easy', size: 10, theme: 'Kitchen', grid, placements };
+}
+
+test('themes are public, normalized, and balanced across topic groups', () => {
+  assert.ok(themes.length >= 12);
+  const tagCounts = { general: 0, canada: 0, 'cape-breton': 0 };
+  const requiredNames = new Set([
+    'Atlantic Wildlife',
+    'Canadian Places',
+    'Kitchen',
+    'Weather',
+    'Cape Breton Music',
+    'Coastal Words',
+  ]);
+
+  for (const theme of themes) {
+    assert.ok(requiredNames.delete(theme.name) || typeof theme.name === 'string');
+    assert.equal(theme.words.length, 18);
+    assert.equal(new Set(theme.words).size, theme.words.length);
+    for (const word of theme.words) assert.match(word, /^[A-Z]{3,16}$/);
+    for (const tag of Object.keys(tagCounts)) {
+      if (theme.tags.includes(tag)) tagCounts[tag] += 1;
+    }
+  }
+
+  assert.equal(requiredNames.size, 0);
+  assert.deepEqual(tagCounts, { general: 4, canada: 4, 'cape-breton': 4 });
+});
+
+for (const difficulty of ['easy', 'medium', 'hard']) {
+  test(`${difficulty} word search is deterministic and contains every listed word`, () => {
+    const puzzle = generateWordSearch({ difficulty, seed: 77, themes });
+    const rules = RULES[difficulty];
+
+    assert.deepEqual(puzzle, generateWordSearch({ difficulty, seed: 77, themes }));
+    assert.deepEqual(validateWordSearch(puzzle), { valid: true, errors: [] });
+    assert.equal(puzzle.size, rules.size);
+    assert.equal(puzzle.grid.length, rules.size);
+    assert.equal(puzzle.placements.length, rules.words);
+
+    for (const placement of puzzle.placements) {
+      assert.ok(rules.directions.has(directionOf(placement)));
+      assert.equal(findSelection(puzzle, placement.start, placement.end)?.word, placement.word);
+      assert.equal(findSelection(puzzle, placement.end, placement.start)?.word, placement.word);
+    }
+  });
+}
+
+test('different seeds produce different word searches', () => {
+  assert.notDeepEqual(
+    generateWordSearch({ difficulty: 'medium', seed: 1, themes }),
+    generateWordSearch({ difficulty: 'medium', seed: 2, themes }),
+  );
+});
+
+test('selection only matches tracked placement endpoints', () => {
+  const puzzle = generateWordSearch({ difficulty: 'easy', seed: 31, themes });
+  assert.equal(findSelection(puzzle, { row: 0, column: 0 }, { row: 0, column: 0 }), null);
+  assert.equal(findSelection(puzzle, null, puzzle.placements[0].end), null);
+});
+
+test('selection accepts a duplicate straight occurrence of an unfinished listed word', () => {
+  const puzzle = generateWordSearch({ difficulty: 'easy', seed: 31, themes });
+  const placement = puzzle.placements[0];
+  const row = puzzle.grid.findIndex((_, index) => index !== placement.start.row);
+  const word = placement.word;
+  for (let column = 0; column < word.length; column += 1) puzzle.grid[row][column] = word[column];
+  const match = findSelection(puzzle, { row, column: 0 }, { row, column: word.length - 1 });
+  assert.equal(match?.word, word);
+});
+
+test('every listed-word occurrence is selectable across many generated seeds', { timeout: 20000 }, () => {
+  const occurrences = (puzzle, word) => {
+    const matches = [];
+    for (let row = 0; row < puzzle.size; row += 1) for (let column = 0; column < puzzle.size; column += 1) {
+      for (const direction of RULES[puzzle.difficulty].directions) {
+        const [dr, dc] = direction.split(':').map(Number);
+        const text = Array.from({ length: word.length }, (_, index) => (
+          puzzle.grid[row + dr * index]?.[column + dc * index]
+        )).join('');
+        if (text === word) matches.push([
+          { row, column },
+          { row: row + dr * (word.length - 1), column: column + dc * (word.length - 1) },
+        ]);
+      }
+    }
+    return matches;
+  };
+  for (const difficulty of ['easy', 'medium', 'hard']) for (let seed = 1; seed <= 20; seed += 1) {
+    const puzzle = generateWordSearch({ difficulty, seed, themes });
+    for (const { word } of puzzle.placements) {
+      const matches = occurrences(puzzle, word);
+      assert.ok(matches.length >= 1);
+      for (const [start, end] of matches) {
+        assert.equal(findSelection(puzzle, start, end)?.word, word, `${difficulty} seed ${seed} accepts ${word}`);
+      }
+    }
+  }
+});
+
+test('invalid theme input fails without entering an unbounded placement loop', () => {
+  assert.throws(
+    () => generateWordSearch({
+      difficulty: 'hard',
+      seed: 1,
+      themes: [{ name: 'Too Small', tags: ['general'], words: ['ONLY', 'THREE', 'WORDS'] }],
+    }),
+    /eligible theme/i,
+  );
+});
+
+test('validator reports malformed puzzles instead of throwing', () => {
+  const puzzle = generateWordSearch({ difficulty: 'easy', seed: 18, themes });
+  puzzle.placements[0].end.row = puzzle.size;
+  let result;
+  assert.doesNotThrow(() => { result = validateWordSearch(puzzle); });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.length > 0);
+});
+
+test('validator rejects an unknown named theme', () => {
+  const puzzle = generateWordSearch({ difficulty: 'easy', seed: 18, themes });
+  puzzle.theme = 'Invented Theme';
+  const result = validateWordSearch(puzzle);
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.includes('Unknown theme: Invented Theme'));
+});
+
+test('validator rejects a placement word outside the named theme', () => {
+  const puzzle = generateWordSearch({ difficulty: 'easy', seed: 18, themes });
+  const replacement = 'Z'.repeat(puzzle.placements[0].word.length);
+  puzzle.placements[0].word = replacement;
+  const result = validateWordSearch(puzzle);
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.includes(`Word not in theme: ${replacement}`));
+});
+
+test('validator rejects coordinated grid and placement corruption', () => {
+  const result = validateWordSearch(coordinatedFakePuzzle());
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.includes('Word not in theme: ZZZ'));
+});
+
+test('validator rejects the wrong placement count', () => {
+  const puzzle = generateWordSearch({ difficulty: 'easy', seed: 18, themes });
+  puzzle.placements.pop();
+  const result = validateWordSearch(puzzle);
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.includes('Invalid placement count'));
+});
+
+test('90 seeded word searches meet exact rules and validate', { timeout: 20000 }, () => {
+  for (const difficulty of ['easy', 'medium', 'hard']) {
+    const rules = RULES[difficulty];
+    for (let seed = 1; seed <= 30; seed += 1) {
+      const puzzle = generateWordSearch({ difficulty, seed, themes });
+      assert.deepEqual(validateWordSearch(puzzle), { valid: true, errors: [] });
+      assert.equal(puzzle.size, rules.size);
+      assert.equal(puzzle.placements.length, rules.words);
+      for (const placement of puzzle.placements) {
+        assert.ok(rules.directions.has(directionOf(placement)));
+      }
+    }
+  }
+});

@@ -18,6 +18,9 @@ make generate          # equivalent: publish generate
 # Generate and serve locally at http://localhost:8000
 make preview           # equivalent: publish run
 
+# Run the Arcade Hall JavaScript and generated-route tests
+make test-games
+
 # Build the Swift package / clean artifacts
 swift build
 make clean             # equivalent: swift package clean
@@ -33,6 +36,8 @@ make clean             # equivalent: swift package clean
 - **`Sources/KinNoKiLabsSite/Theme/KinNoKiTheme.swift`** — Custom Plot-based `HTMLFactory` theme (the "metal on black" redesign). Shared class-based `<header>`/mobile menu/`<footer>` chrome wraps every page. Two rendering strategies coexist by design: the **copy-locked marketing pages** (home, `/apps`, `/apps/echo`, `/services`, `/about`, `/support`) are recreated in the theme with `Node.raw(...)` — their layout and copy live in Swift ("prototype wins" over any markdown body); the **article pages** (posts, `/privacy`, and the `echo-*` / `*-help` guides) reflow their markdown through a `.prose` container. Interaction — dark-by-default theme toggle, OpenDyslexic font toggle, mobile menu, and reveal-on-scroll — is wired by `Resources/site.js` against the emitted classes, plus an inline no-flash `<head>` snippet that sets `data-theme` before first paint. `styles.css` is the handoff bundle verbatim; theme-emitted layout/prose classes are appended below a clearly-marked "Project additions" divider.
 - **`Content/`** — Markdown source files. Top-level `.md` files become pages (e.g., `about.md` → `/about`); subdirectories become sections (e.g., `Content/posts/` → `SectionID.posts`).
 - **`Resources/`** — Static assets copied verbatim to the output root. `styles.css` (dark-default tokens + light override), `site.js` (theme/font/menu/reveal behavior; also documents the no-flash snippet the theme inlines), brand + app + screenshot art under `images/{brand,apps,screenshots}`, and `OpenDyslexic-Regular.otf`. `logo.png` is kept for the favicon/og:image only.
+- **Arcade Hall** — `/games`, `/games/sudoku`, `/games/crossword`, and `/games/word-search` are generated from the matching files under `Content/`. The reusable puzzle engines and shared helpers live in `Resources/games/core.js`, `controller-common.js`, and the game modules; DOM rendering and interaction adapters live in the matching `*-ui.js` controllers. Browser state, including preferences and puzzle progress, stays local to that browser and is never uploaded.
+- **`Tests/games/`** — Node tests cover the pure game engines, DOM controllers, accessibility behavior, and generated routes. Run them with `make test-games` after game changes; generate the site before running route assertions directly.
 
 ### Publish Conventions
 

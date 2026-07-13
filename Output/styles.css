@@ -46,6 +46,12 @@
   --gold-text: color-mix(in srgb, var(--gold-500) 65%, var(--text));
   --gold-hairline: color-mix(in srgb, var(--gold-500) 26%, transparent);
 
+  /* Measured against --bg, --surface, and --surface-2 (WCAG AA normal text). */
+  --game-text-primary: #f5f5f7;
+  --game-text-secondary: #b8b8bf;
+  --game-text-tertiary: #a6a6ad;
+  --game-text-accent: #e0c47a;
+
   --font-sans: 'Lexend', -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
   --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
 
@@ -71,6 +77,10 @@
   --fill: rgba(120, 120, 128, 0.12);
   --fill-2: rgba(120, 120, 128, 0.08);
   --nav-bg: rgba(245, 245, 247, 0.72);
+  --game-text-primary: #1d1d1f;
+  --game-text-secondary: #595960;
+  --game-text-tertiary: #68686f;
+  --game-text-accent: #6f5417;
 }
 
 /* ── Base ───────────────────────────────────────────── */
@@ -550,3 +560,181 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
 .prose pre code { background: none; padding: 0; }
 .prose hr { border: none; border-top: 1px solid var(--separator); margin: 28px 0; }
 .prose img { max-width: 100%; border-radius: 12px; }
+
+/* ── Arcade Hall + shared game system ───────────────── */
+.games-main {
+  max-width: var(--max-width);
+  min-height: 60vh;
+  margin: 0 auto;
+  padding: clamp(48px, 7vw, 82px) clamp(16px, 4vw, 32px) 24px;
+}
+.games-hero { max-width: 780px; margin: 0 auto clamp(36px, 5vw, 58px); text-align: center; }
+.games-hero h1 { font-size: clamp(2.4rem, 6vw, 4.8rem); letter-spacing: -0.045em; margin-bottom: 18px; }
+.games-hero > p:last-child { max-width: 650px; margin: 0 auto; color: var(--game-text-secondary); font-size: clamp(1rem, 2vw, 1.15rem); }
+.games-main .eyebrow { color: var(--game-text-accent); }
+.game-card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 2vw, 20px); }
+.game-card {
+  display: flex;
+  min-width: 0;
+  min-height: 440px;
+  flex-direction: column;
+  padding: clamp(22px, 3vw, 30px);
+  overflow: hidden;
+  background: linear-gradient(155deg, color-mix(in srgb, var(--surface-2) 66%, var(--surface)), var(--surface) 58%);
+  border: 1px solid var(--separator);
+  border-top-color: color-mix(in srgb, var(--gold-500) 42%, var(--separator));
+  border-radius: var(--radius-bento);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18), inset 0 1px rgba(255, 255, 255, 0.04);
+  transition: transform 0.2s var(--ease), border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.game-card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--gold-500) 48%, var(--separator)); box-shadow: var(--shadow-card-hover); }
+.game-card-topline { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 26px; }
+.game-card-eyebrow { color: var(--game-text-accent); font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+.game-card-symbol { display: inline-grid; width: 42px; height: 42px; flex: none; place-items: center; color: var(--game-text-accent); background: var(--fill-2); border: 1px solid var(--gold-hairline); border-radius: 11px; font-family: var(--font-mono); font-size: 1.15rem; font-weight: 700; }
+.game-card h2 { font-size: clamp(1.55rem, 3vw, 2rem); margin-bottom: 10px; }
+.game-card-description { color: var(--game-text-secondary); font-size: 0.94rem; line-height: 1.65; }
+.game-continue { width: 100%; margin-top: 24px; }
+.difficulty-links { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: auto; padding-top: 28px; }
+.difficulty-links > span { width: 100%; color: var(--game-text-tertiary); font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.difficulty-links a { display: inline-flex; min-width: 44px; min-height: 44px; padding: 7px 11px; align-items: center; justify-content: center; color: var(--game-text-primary); background: var(--fill-2); border: 1px solid var(--separator); border-radius: 9px; font-size: 0.78rem; font-weight: 600; text-decoration: none; }
+.difficulty-links a:hover { border-color: var(--gold-hairline); color: var(--game-text-accent); }
+.game-card-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--separator); }
+.game-card-stats div { min-width: 0; }
+.game-card-stats dt { color: var(--game-text-tertiary); font-size: 0.7rem; }
+.game-card-stats dd { margin-top: 3px; color: var(--game-text-primary); font-family: var(--font-mono); font-size: 0.82rem; }
+.games-stats { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: clamp(22px, 4vw, 48px); align-items: center; margin-top: clamp(36px, 6vw, 64px); padding: clamp(24px, 4vw, 36px); background: color-mix(in srgb, var(--gold-500) 6%, var(--surface)); border: 1px solid var(--gold-hairline); border-radius: var(--radius-bento); }
+.games-stats h2 { margin-bottom: 7px; font-size: clamp(1.35rem, 3vw, 1.75rem); }
+.games-stats > div > p:last-child { color: var(--game-text-secondary); font-size: 0.88rem; }
+.games-stats-summary { display: flex; gap: clamp(20px, 4vw, 42px); }
+.games-stats-summary div { display: flex; min-width: 92px; flex-direction: column-reverse; }
+.games-stats-summary dt { color: var(--game-text-secondary); font-size: 0.72rem; }
+.games-stats-summary dd { color: var(--game-text-accent); font-family: var(--font-mono); font-size: 1.65rem; font-weight: 700; }
+.games-reset { min-width: 44px; min-height: 44px; height: 44px; color: var(--game-text-primary); font-size: 0.82rem; }
+.game-storage-notice, .game-error { padding: 18px 20px; margin-bottom: 24px; background: color-mix(in srgb, #d09a45 11%, var(--surface)); border: 1px solid color-mix(in srgb, #d09a45 48%, var(--separator)); border-left-width: 4px; border-radius: 12px; }
+.game-storage-notice { color: var(--game-text-primary); font-size: 0.88rem; }
+.game-storage-notice[hidden] { display: none; }
+.games-live-region { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.game-dialog { width: min(calc(100% - 32px), 510px); padding: 0; color: var(--text); background: var(--surface); border: 1px solid var(--gold-hairline); border-radius: var(--radius-card); box-shadow: 0 28px 90px rgba(0, 0, 0, 0.56); }
+.game-dialog::backdrop { background: rgba(0, 0, 0, 0.72); backdrop-filter: blur(5px); }
+.game-dialog form { padding: clamp(24px, 5vw, 34px); }
+.game-dialog h2 { margin-bottom: 12px; }
+.game-dialog form > p:not(.eyebrow) { color: var(--game-text-secondary); font-size: 0.92rem; }
+.game-dialog-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 26px; }
+.game-danger { color: #fff; background: #9e3733; border-color: #c85a54; }
+.game-danger:hover { background: #b6403b; }
+
+/* Shared controller layout for the game views added in later slices. */
+.games-app { min-width: 0; overflow-x: clip; }
+.game-toolbar, .game-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.game-toolbar { margin-bottom: 22px; }
+.game-board { width: min(100%, 42rem); margin: 0 auto; background: var(--surface); border: 2px solid var(--text); border-radius: 12px; overflow: hidden; }
+.game-board-scroll { width: 100%; max-width: 100%; min-width: 0; overflow-x: auto; overscroll-behavior-inline: contain; }
+.game-controls { justify-content: center; margin-top: 22px; }
+.game-controls button[aria-pressed="true"] { color: var(--gold-text); background: var(--fill); border: 2px solid var(--gold-500); }
+.game-complete { max-width: 620px; margin: 32px auto 0; padding: clamp(24px, 4vw, 36px); text-align: center; background: var(--surface); border: 1px solid var(--gold-hairline); border-top-width: 4px; border-radius: var(--radius-card); }
+.game-error { max-width: 640px; margin-inline: auto; }
+.game-error h1 { margin-bottom: 8px; font-size: clamp(1.8rem, 5vw, 2.7rem); }
+.game-error p { color: var(--game-text-secondary); }
+
+.game-toolbar h1 { margin: 0 auto 0 0; font-size: clamp(1.7rem, 4vw, 2.5rem); }
+.game-toolbar label { display: inline-flex; align-items: center; gap: 8px; color: var(--game-text-secondary); font-size: 0.85rem; }
+.game-toolbar select, .game-toolbar button, .game-controls button, .sudoku-number-pad button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px 12px;
+  color: var(--game-text-primary);
+  background: var(--surface-2);
+  border: 1px solid var(--separator);
+  border-radius: 9px;
+}
+.game-toolbar time { min-width: 4ch; color: var(--game-text-accent); font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.games-app details { max-width: 52rem; margin: 0 auto 20px; color: var(--game-text-secondary); }
+.games-app details summary { min-height: 44px; cursor: pointer; color: var(--game-text-primary); font-weight: 600; }
+.games-app details p { margin-top: 8px; }
+
+.sudoku-board { display: grid; grid-template-columns: repeat(9, 1fr); min-width: calc(9 * 44px); aspect-ratio: 1; }
+.sudoku-row { display: contents; }
+.sudoku-gridcell { display: flex; min-width: 44px; min-height: 44px; }
+.sudoku-cell {
+  width: 100%;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  color: var(--game-text-primary);
+  background: var(--surface);
+  border: 0 solid var(--separator);
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+  border-radius: 0;
+  font-family: var(--font-mono);
+  font-size: clamp(0.78rem, 4vw, 1.55rem);
+}
+.sudoku-gridcell:nth-child(3n):not(:nth-child(9n)) .sudoku-cell { border-right: 2px solid var(--game-text-tertiary); }
+.sudoku-row:nth-child(3n):not(:nth-child(9n)) .sudoku-cell { border-bottom: 2px solid var(--game-text-tertiary); }
+.sudoku-cell.is-related { background: color-mix(in srgb, var(--gold-500) 8%, var(--surface)); }
+.sudoku-cell.is-selected { position: relative; z-index: 1; outline: 3px solid var(--gold-500); outline-offset: -3px; }
+.sudoku-cell.is-given { font-weight: 800; }
+.sudoku-cell.is-error {
+  color: #ef8d87;
+  border: 3px double currentColor;
+  background: color-mix(in srgb, #9e3733 24%, var(--surface));
+  background-image: repeating-linear-gradient(135deg, transparent 0 7px, currentColor 7px 9px, transparent 9px 16px);
+}
+.sudoku-number-pad { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+
+.crossword-layout, .word-search-layout { display: grid; min-width: 0; grid-template-columns: minmax(0, 1.25fr) minmax(15rem, 0.75fr); gap: clamp(20px, 4vw, 42px); align-items: start; }
+.crossword-board { display: grid; grid-template-columns: repeat(var(--crossword-size), 1fr); grid-template-rows: repeat(var(--crossword-size), 1fr); min-width: calc(var(--crossword-size) * 44px); aspect-ratio: 1; background: var(--fill-2); }
+.crossword-row { display: contents; }
+.crossword-gridcell { position: relative; min-width: 44px; min-height: 44px; }
+.crossword-cell { min-width: 0; width: 100%; min-height: 0; height: 100%; padding: 0; text-align: center; color: var(--game-text-primary); background: var(--surface); border: 1px solid var(--separator); border-radius: 0; font-family: var(--font-mono); font-size: clamp(0.7rem, 3vw, 1.35rem); font-weight: 700; text-transform: uppercase; }
+.crossword-number { position: absolute; top: 2px; left: 4px; pointer-events: none; color: var(--game-text-tertiary); font-family: var(--font-mono); font-size: 0.62rem; line-height: 1; }
+.crossword-cell.is-selected { outline: 3px solid var(--gold-500); outline-offset: -3px; }
+.crossword-cell.is-error {
+  color: #ef8d87;
+  border: 3px double currentColor;
+  background: color-mix(in srgb, #9e3733 24%, var(--surface));
+  background-image: repeating-linear-gradient(135deg, transparent 0 7px, currentColor 7px 9px, transparent 9px 16px);
+}
+
+.game-assisted-status { margin: 12px auto; color: var(--game-text-secondary); text-align: center; }
+.crossword-clues { display: grid; gap: 24px; }
+.crossword-clues h2 { margin-bottom: 8px; font-size: 1.1rem; }
+.crossword-clues ol { display: grid; gap: 5px; padding-left: 1.5rem; }
+.crossword-clues button { min-height: 44px; padding: 6px 8px; color: var(--game-text-secondary); background: transparent; border: 0; text-align: left; }
+.crossword-clues button:hover, .crossword-clues button:focus-visible { color: var(--game-text-accent); }
+
+.word-search-board { display: grid; grid-template-columns: repeat(var(--word-search-size), 1fr); min-width: calc(var(--word-search-size) * 44px); aspect-ratio: 1; touch-action: pan-y; user-select: none; }
+.word-search-board-column { min-width: 0; }
+.word-search-pan { display: grid; grid-template-columns: auto minmax(7rem, 1fr) auto; gap: 10px; align-items: center; margin-top: 10px; }
+.word-search-pan button { min-width: 44px; min-height: 44px; padding: 8px 12px; color: var(--game-text-primary); background: var(--surface-2); border: 1px solid var(--separator); border-radius: 9px; }
+.word-search-pan input[type="range"] { width: 100%; min-height: 44px; accent-color: var(--gold-500); touch-action: pan-x; }
+.word-search-row { display: contents; }
+.word-search-gridcell { display: flex; min-width: 44px; min-height: 44px; }
+.word-search-cell { width: 100%; min-width: 44px; min-height: 44px; padding: 0; color: var(--game-text-primary); background: var(--surface); border: 0; border-radius: 0; font-family: var(--font-mono); font-size: clamp(0.65rem, 3vw, 1.2rem); font-weight: 700; }
+.word-search-cell.is-preview { background: color-mix(in srgb, var(--gold-500) 22%, var(--surface)); }
+.word-search-cell.is-found { color: var(--surface); background: var(--game-text-accent); }
+.word-search-list { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 12px; list-style: none; }
+.word-search-list li { color: var(--game-text-primary); font-family: var(--font-mono); font-size: 0.85rem; }
+.word-search-list li.is-found { color: var(--game-text-tertiary); text-decoration: line-through; }
+
+@media (max-width: 759px) {
+  .games-main { padding-top: 40px; }
+  .games-hero { text-align: left; }
+  .games-hero > p:last-child { margin-left: 0; }
+  .game-card-grid { grid-template-columns: 1fr; }
+  .game-card { min-height: 0; }
+  .games-stats { grid-template-columns: 1fr; }
+  .games-stats-summary { justify-content: flex-start; }
+  .games-reset { width: 100%; }
+  .game-dialog-actions { flex-direction: column-reverse; }
+  .game-dialog-actions .btn { width: 100%; }
+  .game-toolbar h1 { width: 100%; order: -1; }
+  .crossword-layout, .word-search-layout { grid-template-columns: 1fr; }
+  .crossword-layout .game-board, .word-search-layout .game-board { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  body, .game-card, .btn { transition: none; }
+  .game-card:hover, .btn:hover, .btn:active { transform: none; }
+}
