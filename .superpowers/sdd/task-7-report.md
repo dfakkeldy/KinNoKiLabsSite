@@ -66,3 +66,78 @@ make test-games
 ## Concerns
 
 None within Task 7 scope. Controller integration remains outside this task.
+
+---
+
+## Integrity Review Follow-up
+
+### Findings resolved
+
+The original structural validator trusted coordinated saved fields. It accepted
+an arbitrary initial manifest identity paired with a forged stream index, a
+lone board cargo cell, forged accounting on an untouched state, and an
+unrelated forged Undo snapshot. `ENDLESS_RULES` also froze only its outer map.
+
+### RED
+
+Added the four reviewer probes plus coverage for deep rule immutability,
+placement and dispatch accounting, simultaneous manifests, combo reset,
+saturation, reducer-produced terminals (including a zero-dispatch terminal),
+terminal immutability, and positive facade routing.
+
+Command:
+
+```sh
+node --test Tests/games/kinnoki-yard-endless.test.mjs
+```
+
+The integrity run failed on deep immutability, coordinated saved-state
+provenance, and terminal-state validation. One simultaneous-dispatch fixture
+initially had the wrong missing-cell geometry; it was corrected before
+production work. Existing score/reset/saturation behavior remained green and
+was retained as direct contract coverage.
+
+### Implementation
+
+- Added serialized `actionHistory` containing exact successful placements.
+- Every validation replays those actions from the deterministic seeded initial
+  state through the real reducer.
+- Every Undo snapshot is bound to the corresponding replay prefix and exact
+  board, manifest, stream, score, combo, best-combo, and dispatch state.
+- Current board cargo, trays, manifests, manifest index, batches, sequence,
+  scoring, combos, and dispatch totals must equal the independently replayed
+  result. Selection and allowed rotations remain legal non-placement UI state.
+- Active manifests must belong to the deterministic difficulty pool and cannot
+  remain completed after a reducer transition.
+- Reducer-produced `no-placement` terminal states now validate, while Continue
+  still rejects terminal play and terminal reducers remain immutable.
+- `ENDLESS_RULES`, each difficulty configuration, and every manifest-shape
+  array are frozen.
+
+### GREEN
+
+Focused Endless and Contract suites passed 25/25. Yard/core/storage passed
+73/73:
+
+```sh
+node --test Tests/games/core.test.mjs Tests/games/storage-v2.test.mjs \
+  Tests/games/kinnoki-yard-solver.test.mjs \
+  Tests/games/kinnoki-yard-generator.test.mjs \
+  Tests/games/kinnoki-yard-contracts.test.mjs \
+  Tests/games/kinnoki-yard-endless.test.mjs
+```
+
+The full Arcade Hall regression passed 209/209:
+
+```sh
+make test-games
+```
+
+A direct legal placement followed by Undo also validated with empty replay and
+snapshot histories while preserving `assisted: true`.
+
+### Concerns
+
+Replay work is linear in the number of successful Endless placements and is
+performed only when authenticating persisted state. No controller integration
+or generated `Output/` files were changed.

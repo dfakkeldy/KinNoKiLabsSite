@@ -1160,21 +1160,21 @@ export function validateContractState(value, difficulty) {
 }
 
 export const ENDLESS_RULES = Object.freeze({
-  easy: {
+  easy: Object.freeze({
     width: 10, height: 10, cargoCount: 6,
     rotationPolicy: 'all', manifestCount: 1,
-    manifestShapeIds: ['rectangle-eight'],
-  },
-  medium: {
+    manifestShapeIds: Object.freeze(['rectangle-eight']),
+  }),
+  medium: Object.freeze({
     width: 9, height: 9, cargoCount: 12,
     rotationPolicy: 'selected-opposites', manifestCount: 2,
-    manifestShapeIds: ['rectangle-six', 'step-five', 'step-seven'],
-  },
-  hard: {
+    manifestShapeIds: Object.freeze(['rectangle-six', 'step-five', 'step-seven']),
+  }),
+  hard: Object.freeze({
     width: 8, height: 8, cargoCount: 12,
     rotationPolicy: 'initial-plus-one', manifestCount: 2,
-    manifestShapeIds: ['step-five', 'corner-six', 'harbour-seven'],
-  },
+    manifestShapeIds: Object.freeze(['step-five', 'corner-six', 'harbour-seven']),
+  }),
 });
 
 export function createEndlessDefinition({ difficulty, seed }) {
@@ -1237,11 +1237,13 @@ export function createEndlessState(definition) {
     selectedPieceId: tray[0].pieceId, focus: { row: 0, column: 0 },
     manifests: selected.manifests, manifestIndex: selected.nextIndex,
     sequenceIndex: 3, batchIndex: 0, score: 0, combo: 0, bestCombo: 0,
-    dispatchedManifests: 0, assisted: false, history: [], terminalReason: null };
+    dispatchedManifests: 0, assisted: false, history: [], actionHistory: [],
+    terminalReason: null };
 }
 
 export function prepareEndlessForContinue(play) {
-  if (!validateEndlessState(play, play?.definition?.difficulty).valid) {
+  if (!validateEndlessState(play, play?.definition?.difficulty).valid
+      || play.status === 'terminal') {
     throw new TypeError('Invalid saved Endless Yard');
   }
   return structuredClone({ ...play, status: 'paused' });
@@ -1252,7 +1254,7 @@ const endlessSnapshot = (state) => structuredClone({
   focus: state.focus, manifests: state.manifests, manifestIndex: state.manifestIndex,
   sequenceIndex: state.sequenceIndex, batchIndex: state.batchIndex,
   score: state.score, combo: state.combo, bestCombo: state.bestCombo,
-  dispatchedManifests: state.dispatchedManifests,
+  dispatchedManifests: state.dispatchedManifests, actionHistory: state.actionHistory,
 });
 
 export function hasAnyEndlessPlacement(state) {
@@ -1347,6 +1349,10 @@ export function reduceEndless(state, action) {
   }
 
   const history = [...state.history, endlessSnapshot(state)];
+  const actionHistory = [...(state.actionHistory ?? []), {
+    pieceId: piece.pieceId, rotation: piece.rotation,
+    row: action.row, column: action.column,
+  }];
   const placedBoard = placePiece(state.board, { pieceId: piece.pieceId,
     typeId: piece.typeId, rotation: piece.rotation, ...origin });
   const placementScore = 10 * rotated.cells.length;
@@ -1387,7 +1393,7 @@ export function reduceEndless(state, action) {
       const tray = state.tray.filter((value) => value.pieceId !== piece.pieceId);
       return { state: { ...state, board, score, combo, bestCombo,
         manifests: incomplete, dispatchedManifests, history, tray,
-        selectedPieceId: tray[0]?.pieceId ?? null, status: 'error' },
+        selectedPieceId: tray[0]?.pieceId ?? null, status: 'error', actionHistory },
       events: [...events, { type: 'error', code: 'manifest-generation',
         message: 'A new Cargo Manifest could not be prepared.' }] };
     }
@@ -1406,7 +1412,7 @@ export function reduceEndless(state, action) {
   }
   let next = { ...state, board, tray, selectedPieceId: tray[0].pieceId,
     manifests, manifestIndex, sequenceIndex, batchIndex, score, combo, bestCombo,
-    dispatchedManifests, history };
+    dispatchedManifests, history, actionHistory };
   if (!hasAnyEndlessPlacement(next)) {
     next = { ...next, status: 'terminal', terminalReason: 'no-placement' };
     events.push({ type: 'terminal', reason: 'no-placement' });
@@ -1471,7 +1477,7 @@ export function yardCompletionPayload(state, elapsedMs) {
 }
 
 const endlessSnapshotKeys = Object.freeze([
-  'batchIndex', 'bestCombo', 'board', 'combo', 'dispatchedManifests', 'focus',
+  'actionHistory', 'batchIndex', 'bestCombo', 'board', 'combo', 'dispatchedManifests', 'focus',
   'manifestIndex', 'manifests', 'score', 'selectedPieceId', 'sequenceIndex', 'tray',
 ]);
 
@@ -1545,7 +1551,74 @@ const endlessPositionErrors = (position, definition, rules) => {
   if ((position?.board ?? []).flat().some((cell) => cell && trayIds.has(cell.pieceId))) {
     errors.push('Endless tray cargo is already on the board');
   }
+  try {
+    if (dispatchCompletedManifests(position.board, position.manifests).completed.length > 0) {
+      errors.push('completed Endless manifest was not dispatched');
+    }
+  } catch {
+    errors.push('invalid Endless dispatch state');
+  }
   return errors;
+};
+
+const sameJson = (left, right) => JSON.stringify(left) === JSON.stringify(right);
+const endlessReplayFields = Object.freeze([
+  'batchIndex', 'bestCombo', 'board', 'combo', 'dispatchedManifests',
+  'manifestIndex', 'manifests', 'score', 'sequenceIndex',
+]);
+const endlessTrayStream = (tray) => tray.map(({
+  pieceId, typeId, allowedRotations, batchIndex,
+}) => ({ pieceId, typeId, allowedRotations, batchIndex }));
+
+const validEndlessAction = (action) => (
+  isRecord(action)
+  && sameJson(Object.keys(action).sort(), ['column', 'pieceId', 'rotation', 'row'])
+  && safeCount(action.pieceId)
+  && Number.isInteger(action.rotation)
+  && Number.isInteger(action.row)
+  && Number.isInteger(action.column)
+);
+
+const replayEndlessHistory = (value, definition) => {
+  if (!Array.isArray(value?.actionHistory) || !Array.isArray(value?.history)
+      || value.actionHistory.length !== value.history.length) return false;
+  try {
+    let replay = { ...createEndlessState(definition), status: 'active' };
+    for (const [index, action] of value.actionHistory.entries()) {
+      const snapshot = value.history[index];
+      if (!validEndlessAction(action)
+          || !sameJson(snapshot?.actionHistory, value.actionHistory.slice(0, index))
+          || !sameJson(endlessTrayStream(snapshot?.tray), endlessTrayStream(replay.tray))
+          || !endlessReplayFields.every((field) => sameJson(snapshot?.[field], replay[field]))) {
+        return false;
+      }
+      const piece = replay.tray.find(({ pieceId }) => pieceId === action.pieceId);
+      if (!piece || !piece.allowedRotations.includes(action.rotation)) return false;
+      const prepared = {
+        ...replay,
+        selectedPieceId: piece.pieceId,
+        tray: replay.tray.map((candidate) => candidate.pieceId === piece.pieceId
+          ? { ...candidate, rotation: action.rotation } : candidate),
+      };
+      const result = reduceEndless(prepared, {
+        type: 'place-piece', row: action.row, column: action.column,
+      });
+      if (result.events[0]?.type !== 'placed') return false;
+      replay = result.state;
+    }
+    if (!sameJson(endlessTrayStream(value?.tray), endlessTrayStream(replay.tray))
+        || !endlessReplayFields.every((field) => sameJson(value?.[field], replay[field]))) {
+      return false;
+    }
+    if (value.status === 'terminal') {
+      return replay.status === 'terminal'
+        && value.terminalReason === 'no-placement'
+        && !hasAnyEndlessPlacement(value);
+    }
+    return replay.status === 'active' && value.terminalReason === null;
+  } catch {
+    return false;
+  }
 };
 
 export function validateEndlessState(value, difficulty) {
@@ -1554,8 +1627,10 @@ export function validateEndlessState(value, difficulty) {
     const rules = ENDLESS_RULES[difficulty];
     const definition = value?.definition;
     if (value?.kind !== 'endless') errors.push('invalid Endless kind');
-    if (!['preview', 'active', 'paused'].includes(value?.status)
-        || value?.terminalReason !== null) {
+    if (!['preview', 'active', 'paused', 'terminal'].includes(value?.status)
+        || (value.status === 'terminal'
+          ? value?.terminalReason !== 'no-placement'
+          : value?.terminalReason !== null)) {
       errors.push('invalid saved Endless status');
     }
     let expectedDefinition;
@@ -1577,6 +1652,9 @@ export function validateEndlessState(value, difficulty) {
       || endlessPositionErrors(entry, definition, rules).length > 0
     ))) {
       errors.push('invalid Endless history');
+    }
+    if (!expectedDefinition || !replayEndlessHistory(value, expectedDefinition)) {
+      errors.push('invalid Endless action history');
     }
   } catch {
     errors.push('invalid Endless state');
