@@ -53,13 +53,16 @@ export function solveContract(definition, placements = {}, {
   const pieceById = new Map(definition.pieces.map((piece) => [piece.pieceId, piece]));
   const occupied = new Set();
   const fixed = [];
-  const fixedEntries = Object.entries(placements).sort(
+  const fixedEntries = Object.entries(placements);
+  if (fixedEntries.some(([, placement]) => (
+    placement === null || typeof placement !== 'object' || Array.isArray(placement)
+  ))) {
+    return { status: 'dead-end', placements: [], operations: 0 };
+  }
+  fixedEntries.sort(
     (left, right) => left[1].pieceId - right[1].pieceId,
   );
   for (const [placementKey, placement] of fixedEntries) {
-    if (placement === null || typeof placement !== 'object' || Array.isArray(placement)) {
-      return { status: 'dead-end', placements: [], operations: 0 };
-    }
     const piece = pieceById.get(placement.pieceId);
     if (placementKey !== String(placement.pieceId)
         || !piece || piece.typeId !== placement.typeId
@@ -77,16 +80,19 @@ export function solveContract(definition, placements = {}, {
   if (operationLimit > 0 && fixed.length === 0 && Array.isArray(definition.witness)
       && definition.witness.length === definition.pieces.length) {
     const witnessOccupied = new Set();
+    const witnessPieceIds = new Set();
     const witness = [];
     let witnessValid = true;
     for (const placement of definition.witness) {
       const piece = placement && typeof placement === 'object'
         ? pieceById.get(placement.pieceId) : null;
       if (!piece || (piece.typeId !== placement.typeId && placement.typeId !== undefined)
-          || !piece.allowedRotations.includes(placement.rotation)) {
+          || !piece.allowedRotations.includes(placement.rotation)
+          || witnessPieceIds.has(placement.pieceId)) {
         witnessValid = false;
         break;
       }
+      witnessPieceIds.add(placement.pieceId);
       const cells = placementCells(piece, placement);
       if (cells.some((cell) => !targetKeys.has(keyFor(cell))
           || witnessOccupied.has(keyFor(cell)))) {
@@ -96,7 +102,9 @@ export function solveContract(definition, placements = {}, {
       for (const cell of cells) witnessOccupied.add(keyFor(cell));
       witness.push({ ...placement, typeId: piece.typeId });
     }
-    if (witnessValid && witnessOccupied.size === targetKeys.size) {
+    if (witnessValid && witnessOccupied.size === targetKeys.size
+        && witnessPieceIds.size === pieceById.size
+        && [...pieceById.keys()].every((pieceId) => witnessPieceIds.has(pieceId))) {
       return { status: 'solved', placements: sortedPlacements(witness), operations: 0 };
     }
   }

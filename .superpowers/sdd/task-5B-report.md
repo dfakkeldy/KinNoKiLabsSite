@@ -65,3 +65,28 @@ edited.
 ## Concerns
 
 None. The complete game suite is green.
+
+## Review Follow-up
+
+Two focused regressions were added after review. RED reproduced both findings:
+the hostile multi-entry placement map threw while the comparator dereferenced
+`null`, and a duplicated witness piece ID was returned as solved while omitting
+another definition piece. The solver now validates every fixed-placement value
+before sorting, and the witness fast path requires unique IDs exactly equal to
+the definition piece-ID set.
+
+Focused command:
+
+```text
+node --test Tests/games/kinnoki-yard-solver.test.mjs Tests/games/kinnoki-yard-generator.test.mjs Tests/games/cargo-geometry.test.mjs Tests/games/core.test.mjs
+```
+
+Result: exit 0, 52 tests passed, 0 failed, in 13.13 seconds.
+
+Full command:
+
+```text
+make test-games
+```
+
+Result: exit 0, 183 tests passed, 0 failed, in 28.70 seconds.

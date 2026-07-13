@@ -48,6 +48,30 @@ test('placement-map keys must equal their embedded numeric piece identity', () =
   });
 });
 
+test('multiple hostile placement values fail closed before sorting', () => {
+  for (const placements of [
+    { 0: null, 1: null },
+    { 0: undefined, 1: 4 },
+  ]) {
+    assert.doesNotThrow(() => solveContract(pairContract, placements));
+    assert.deepEqual(solveContract(pairContract, placements), {
+      status: 'dead-end', placements: [], operations: 0,
+    });
+  }
+});
+
+test('bundled witness fast path requires every piece identity exactly once', () => {
+  const forged = {
+    ...pairContract,
+    witness: pairContract.witness.map((placement, index) => (
+      index === 1 ? { ...placement, pieceId: 0 } : placement
+    )),
+  };
+  const result = solveContract(forged, {});
+  assert.equal(result.status, 'solved');
+  assert.deepEqual(result.placements.map(({ pieceId }) => pieceId), [0, 1, 2, 3, 4, 5]);
+});
+
 test('legal but unfinishable placement is a proved dead end', () => {
   const deadEnd = {
     0: { pieceId: 0, typeId: 'crate-pair', rotation: 0, row: 0, column: 1 },
