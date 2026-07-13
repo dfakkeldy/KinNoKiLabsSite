@@ -398,6 +398,19 @@ test('Endless snapshots have bounded non-recursive provenance shape', () => {
   assert.deepEqual(validateEndlessState(state, 'easy'), { valid: true, errors: [] });
 });
 
+test('realistic long Endless Undo runs retain linear compact authenticated saves', () => {
+  let state = reduceEndless(endlessState('easy', 15), { type: 'start' }).state;
+  for (let cycle = 0; cycle < 256; cycle += 1) {
+    state = placeGreedily(state).state;
+    state = reduceEndless(state, { type: 'undo' }).state;
+  }
+
+  assert.equal(state.history.length, 0);
+  assert.ok(state.commandLog.length <= 1 + (256 * 4));
+  assert.ok(JSON.stringify(state).length < 30_000);
+  assert.deepEqual(validateEndlessState(state, 'easy'), { valid: true, errors: [] });
+});
+
 test('Yard reducer owns focus changes and continue authentication', () => {
   const preview = endlessState('medium', 37);
   const active = reduceYard(preview, { type: 'start' }).state;

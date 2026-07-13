@@ -27,6 +27,7 @@ const DIFFICULTY_COPY = Object.freeze({
   hard: 'Hard: faster, one preview, irregular manifests and frequent tides.',
 });
 const CARGO_BY_ID = new Map(CARGO_CATALOG.map((cargo) => [cargo.id, cargo]));
+const CLOCK_CHECKPOINT_MS = 1000;
 
 export const defaultStackEngine = Object.freeze({
   advanceStackTime,
@@ -664,6 +665,10 @@ class StackController {
       entryKind: this.entryKind,
     });
   }
+
+  paintClock() {
+    this.view.timer.textContent = formatElapsed(this.lifecycle.elapsed());
+  }
 }
 
 StackController.prototype.listenPassive = function listenPassive(target, type, listener) {
@@ -734,6 +739,7 @@ StackController.prototype.activate = async function activate(kind, api) {
   this.entryKind = null;
   this.activeApi = api;
   this.lastFrameTime = null;
+  this.lastCheckpointElapsedMs = this.lifecycle.elapsed();
   this.registerActiveHandlers(api);
   for (const event of transition.events) this.announcer.announce(event);
   this.audio.setIntensity(stackIntensity(this.state));
@@ -803,7 +809,19 @@ StackController.prototype.frame = function frame(timestamp) {
   const delta = this.lastFrameTime === null ? 0 : Math.max(0, timestamp - this.lastFrameTime);
   this.lastFrameTime = timestamp;
   try {
-    this.accept(this.engine.advanceStackTime(this.state, delta), null);
+    const previous = this.state;
+    const result = this.engine.advanceStackTime(previous, delta);
+    if (isClockOnlyTransition(previous, result)) {
+      this.state = result.state;
+      this.paintClock();
+      const elapsed = this.lifecycle.elapsed();
+      if (elapsed - this.lastCheckpointElapsedMs >= CLOCK_CHECKPOINT_MS) {
+        this.persistence.savePlay(this.state, elapsed);
+        this.lastCheckpointElapsedMs = elapsed;
+      }
+    } else {
+      this.accept(result, null);
+    }
   } catch (error) {
     this.fail(error);
     return;
@@ -812,6 +830,15 @@ StackController.prototype.frame = function frame(timestamp) {
       && this.lifecycle.state === 'active') {
     this.activeApi.requestActiveFrame((nextTimestamp) => this.frame(nextTimestamp));
   }
+};
+
+const isClockOnlyTransition = (previous, result) => {
+  if (result.events.length > 0) return false;
+  const next = result.state;
+  if (next === previous) return true;
+  const keys = Object.keys(previous);
+  return keys.length === Object.keys(next).length
+    && keys.every((key) => key === 'gravityAccumulatorMs' || previous[key] === next[key]);
 };
 
 StackController.prototype.accept = function accept(result, focusTarget) {
@@ -824,7 +851,11 @@ StackController.prototype.accept = function accept(result, focusTarget) {
 
   const changed = result.state !== this.state;
   this.state = result.state;
-  if (changed) this.persistence.savePlay(this.state, this.lifecycle.elapsed());
+  if (changed) {
+    const elapsed = this.lifecycle.elapsed();
+    this.persistence.savePlay(this.state, elapsed);
+    this.lastCheckpointElapsedMs = elapsed;
+  }
 
   for (const event of result.events) {
     this.announcer.announce(event);
@@ -840,7 +871,9 @@ StackController.prototype.accept = function accept(result, focusTarget) {
 
 StackController.prototype.snapshot = function snapshot() {
   if (this.persistence.store.runs[GAME]) {
-    this.persistence.savePlay(this.state, this.lifecycle.elapsed());
+    const elapsed = this.lifecycle.elapsed();
+    this.persistence.savePlay(this.state, elapsed);
+    this.lastCheckpointElapsedMs = elapsed;
   }
 };
 
@@ -999,6 +1032,7 @@ StackController.prototype.cleanup = function cleanup() {
 
 StackController.prototype.dispose = function dispose() {
   if (this.disposed) return;
+  this.snapshot();
   this.lifecycle.dispose();
   this.cleanup();
 };

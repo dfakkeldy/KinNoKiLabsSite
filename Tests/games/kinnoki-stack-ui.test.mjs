@@ -242,6 +242,122 @@ test('validated assisted resume normalizes the generic run envelope before Conti
   } finally { restore(); }
 });
 
+test('clock-only RAF ticks bound persistence and full-board paints', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy' });
+  const restore = installDOM(fixture);
+  let writes = 0;
+  const storage = {
+    getItem: (...args) => fixture.localStorage.getItem(...args),
+    removeItem: (...args) => fixture.localStorage.removeItem(...args),
+    setItem(...args) { writes += 1; fixture.localStorage.setItem(...args); },
+  };
+  try {
+    let now = 0;
+    const stack = await import('../../Resources/games/kinnoki-stack.js');
+    const engine = {
+      ...stack,
+      advanceStackTime(state, deltaMs) {
+        return {
+          state: { ...state, gravityAccumulatorMs: state.gravityAccumulatorMs + deltaMs },
+          events: [],
+        };
+      },
+    };
+    const { renderKinnokiStack } = await import('../../Resources/games/kinnoki-stack-ui.js');
+    const controller = await renderKinnokiStack(fixture.root, createEmptyGameStore(), {
+      storage, monotonicNow: () => now, audioFactory: silentAudio, engine,
+    });
+    fixture.root.querySelector('[data-start-game]').click();
+    await Promise.resolve();
+    const firstCell = fixture.root.querySelector('[data-stack-cell="0:0"]');
+    const originalSetAttribute = firstCell.setAttribute.bind(firstCell);
+    let firstCellPaints = 0;
+    firstCell.setAttribute = (...args) => {
+      if (args[0] === 'aria-label') firstCellPaints += 1;
+      return originalSetAttribute(...args);
+    };
+    writes = 0;
+
+    for (let frame = 0; frame < 120; frame += 1) {
+      now = frame * 16;
+      fixture.tickFrames(now);
+    }
+
+    assert.ok(writes <= 1, `expected at most one checkpoint write, received ${writes}`);
+    assert.equal(firstCellPaints, 0);
+    assert.equal(fixture.root.querySelector('[data-timer]').textContent, '0:01');
+    controller.dispose();
+  } finally { restore(); }
+});
+
+test('gravity, pause, and dispose promptly checkpoint exact resumable Stack semantics', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy' });
+  const restore = installDOM(fixture);
+  let writes = 0;
+  const storage = {
+    getItem: (...args) => fixture.localStorage.getItem(...args),
+    removeItem: (...args) => fixture.localStorage.removeItem(...args),
+    setItem(...args) { writes += 1; fixture.localStorage.setItem(...args); },
+  };
+  try {
+    let now = 0;
+    const { renderKinnokiStack } = await import('../../Resources/games/kinnoki-stack-ui.js');
+    const controller = await renderKinnokiStack(fixture.root, createEmptyGameStore(), {
+      storage, monotonicNow: () => now, audioFactory: silentAudio,
+    });
+    fixture.root.querySelector('[data-start-game]').click();
+    await Promise.resolve();
+    const firstCell = fixture.root.querySelector('[data-stack-cell="0:0"]');
+    const originalSetAttribute = firstCell.setAttribute.bind(firstCell);
+    let firstCellPaints = 0;
+    firstCell.setAttribute = (...args) => {
+      if (args[0] === 'aria-label') firstCellPaints += 1;
+      return originalSetAttribute(...args);
+    };
+    writes = 0;
+    fixture.tickFrames(0);
+    for (const timestamp of [250, 500, 750, 900]) {
+      now = timestamp;
+      fixture.tickFrames(timestamp);
+    }
+    assert.equal(writes, 1);
+    assert.equal(firstCellPaints, 1);
+    let saved = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2));
+    assert.equal(saved.runs['kinnoki-stack'].puzzle.play.active.row, 1);
+
+    now = 1075;
+    fixture.tickFrames(1075);
+    fixture.root.querySelector('[data-pause-game]').click();
+    saved = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2));
+    assert.equal(saved.runs['kinnoki-stack'].puzzle.play.status, 'paused');
+    assert.equal(saved.runs['kinnoki-stack'].puzzle.play.gravityAccumulatorMs, 175);
+    assert.equal(saved.runs['kinnoki-stack'].elapsedBeforeStartMs, 1075);
+
+    fixture.root.querySelector('[data-resume-game]').click();
+    await Promise.resolve();
+    now = 1200;
+    fixture.tickFrames(1200);
+    controller.dispose();
+    saved = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2));
+    assert.equal(saved.runs['kinnoki-stack'].puzzle.play.gravityAccumulatorMs, 0);
+    assert.equal(saved.runs['kinnoki-stack'].elapsedBeforeStartMs, 1200);
+
+    fixture.location.search = '?difficulty=easy&continue=1';
+    const continued = await renderKinnokiStack(fixture.root, saved, {
+      storage, monotonicNow: () => now, audioFactory: silentAudio,
+    });
+    assert.equal(fixture.root.querySelector('[data-continue-game]').hidden, false);
+    fixture.root.querySelector('[data-continue-game]').click();
+    await Promise.resolve();
+    const resumed = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2))
+      .runs['kinnoki-stack'];
+    assert.equal(resumed.puzzle.play.active.row, 1);
+    assert.equal(resumed.puzzle.play.gravityAccumulatorMs, 0);
+    assert.equal(resumed.elapsedBeforeStartMs, 1200);
+    continued.dispose();
+  } finally { restore(); }
+});
+
 test('null terminal payload fails recoverably before lifecycle terminal settlement', async () => {
   const fixture = createDOMFixture();
   const restore = installDOM(fixture);
