@@ -113,6 +113,31 @@ test('Stack validator accepts an untouched state and rejects forged geometry', (
   }, 'medium').valid, false);
 });
 
+test('Stack validator rejects a progressed manifest forged with mirrored provenance', () => {
+  const progressed = apply({ ...stackState('easy', 23), status: 'active' }, {
+    type: 'hard-drop',
+  });
+  const original = progressed.manifests[0];
+  const columnDelta = original.origin.column > 0 ? -1 : 1;
+  const shifted = {
+    ...original,
+    origin: { ...original.origin, column: original.origin.column + columnDelta },
+    cells: original.cells.map(({ row, column }) => ({
+      row,
+      column: column + columnDelta,
+    })),
+  };
+  const forged = {
+    ...progressed,
+    manifests: [shifted],
+    manifestProvenance: {
+      ...progressed.manifestProvenance,
+      manifests: [shifted],
+    },
+  };
+  assert.equal(validateStackState(forged, 'easy').valid, false);
+});
+
 test('Stack definitions reject values outside the unsigned seed contract', () => {
   assert.throws(() => createStackDefinition({ difficulty: 'easy', seed: -1 }), TypeError);
   assert.throws(() => createStackDefinition({ difficulty: 'easy', seed: 0x1_0000_0000 }), TypeError);

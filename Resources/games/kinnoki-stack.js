@@ -40,9 +40,20 @@ const tideForEvent = (definition, eventIndex) => {
   return { direction: rng.int(2) === 0 ? 'left' : 'right', placementsRemaining: range[0] + rng.int(range[1] - range[0] + 1), eventIndex };
 };
 const cloneSerializable = (value) => JSON.parse(JSON.stringify(value));
-const manifestProvenanceFor = (manifests, nextIndex) => ({
+const manifestGenerationRecord = ({
+  board, occupied, startIndex, count, selected,
+}) => ({
+  board: cloneSerializable(board),
+  occupied: cloneSerializable(occupied),
+  startIndex,
+  count,
+  manifests: cloneSerializable(selected.manifests),
+  nextIndex: selected.nextIndex,
+});
+const manifestProvenanceFor = (manifests, nextIndex, generations) => ({
   nextIndex,
-  manifests: cloneSerializable(manifests),
+  currentManifestIds: manifests.map(({ id }) => id),
+  generations,
 });
 
 export function createStackState(definition) {
@@ -54,7 +65,10 @@ export function createStackState(definition) {
   const selected = selectNextManifestZones({ board, width: STACK_WIDTH, height: STACK_HEIGHT, shapeIds: config.manifestShapeIds, seed: definition.seed, startIndex: 0, count: config.manifestCount });
   const active = activeAtSpawn(cargoForIndex(definition, 0));
   const preview = Array.from({ length: config.previewCount }, (_, offset) => cargoForIndex(definition, offset + 1));
-  return { definition, difficulty: definition.difficulty, width: STACK_WIDTH, height: STACK_HEIGHT, status: 'preview', board, active, preview, sequenceIndex: 0, nextPieceId: config.previewCount + 1, manifests: selected.manifests, manifestIndex: selected.nextIndex, manifestProvenance: manifestProvenanceFor(selected.manifests, selected.nextIndex), tide: tideForEvent(definition, 0), components: [], score: 0, combo: 0, bestCombo: 0, dispatchedManifests: 0, placements: 0, assisted: false, stepMode: false, grounded: null, gravityAccumulatorMs: 0, terminalReason: null };
+  const initialGeneration = manifestGenerationRecord({
+    board, occupied: [], startIndex: 0, count: config.manifestCount, selected,
+  });
+  return { definition, difficulty: definition.difficulty, width: STACK_WIDTH, height: STACK_HEIGHT, status: 'preview', board, active, preview, sequenceIndex: 0, nextPieceId: config.previewCount + 1, manifests: selected.manifests, manifestIndex: selected.nextIndex, manifestProvenance: manifestProvenanceFor(selected.manifests, selected.nextIndex, [initialGeneration]), tide: tideForEvent(definition, 0), components: [], score: 0, combo: 0, bestCombo: 0, dispatchedManifests: 0, placements: 0, assisted: false, stepMode: false, grounded: null, gravityAccumulatorMs: 0, terminalReason: null };
 }
 export function prepareStackForContinue(play) {
   if (!['active', 'paused'].includes(play?.status) || !validateStackState(play, play?.difficulty).valid) throw new TypeError('Saved Kinnoki Stack state is invalid');
@@ -106,11 +120,19 @@ function resolveManifests(state, board, score, events) {
   const dispatchScore = Math.min(Number.MAX_SAFE_INTEGER, 100 * dispatched.dispatchedCells * combo);
   events.push({ type: 'dispatch', manifestIds: dispatched.completed.map(({ id }) => id), cells: dispatched.dispatchedCells, combo, scoreAdded: dispatchScore });
   const incomplete = state.manifests.filter((manifest) => !dispatched.completed.some(({ id }) => id === manifest.id));
-  const result = { board: dispatched.board, manifests: incomplete, manifestIndex: state.manifestIndex, manifestProvenance: manifestProvenanceFor(incomplete, state.manifestIndex), components: connectedComponents(dispatched.board), score: saturatingAdd(score, dispatchScore), combo, bestCombo: Math.max(state.bestCombo, combo), dispatchedManifests: saturatingAdd(state.dispatchedManifests, dispatched.completed.length), error: null };
+  const priorGenerations = state.manifestProvenance?.generations ?? [];
+  const result = { board: dispatched.board, manifests: incomplete, manifestIndex: state.manifestIndex, manifestProvenance: manifestProvenanceFor(incomplete, state.manifestIndex, priorGenerations), components: connectedComponents(dispatched.board), score: saturatingAdd(score, dispatchScore), combo, bestCombo: Math.max(state.bestCombo, combo), dispatchedManifests: saturatingAdd(state.dispatchedManifests, dispatched.completed.length), error: null };
   try {
     const replacement = selectNextManifestZones({ board: dispatched.board, width: STACK_WIDTH, height: STACK_HEIGHT, shapeIds: STACK_CONFIG[state.difficulty].manifestShapeIds, seed: state.definition.seed, startIndex: state.manifestIndex, count: dispatched.completed.length, occupied: incomplete });
     const manifests = [...incomplete, ...replacement.manifests];
-    return { ...result, manifests, manifestIndex: replacement.nextIndex, manifestProvenance: manifestProvenanceFor(manifests, replacement.nextIndex) };
+    const generation = manifestGenerationRecord({
+      board: dispatched.board,
+      occupied: incomplete,
+      startIndex: state.manifestIndex,
+      count: dispatched.completed.length,
+      selected: replacement,
+    });
+    return { ...result, manifests, manifestIndex: replacement.nextIndex, manifestProvenance: manifestProvenanceFor(manifests, replacement.nextIndex, [...priorGenerations, generation]) };
   } catch (error) {
     if (!(error instanceof ManifestGenerationError)) throw error;
     return { ...result, error: { type: 'error', code: 'manifest-generation', message: 'A new Cargo Manifest could not be prepared.' } };
@@ -211,9 +233,48 @@ export function validateStackState(value, difficulty) {
       const match = /^manifest-(\d+)-(\d+)$/.exec(id);
       return match !== null && Number(match[1]) < value?.manifestIndex;
     });
-  if (!sameJson(provenance?.manifests, value?.manifests)
+  const currentManifestIds = value?.manifests?.map(({ id }) => id);
+  const generatedManifests = new Map();
+  let generationsValid = Array.isArray(provenance?.generations)
+    && provenance.generations.length > 0;
+  if (generationsValid) {
+    for (const generation of provenance.generations) {
+      try {
+        const selected = selectNextManifestZones({
+          board: generation.board,
+          width: STACK_WIDTH,
+          height: STACK_HEIGHT,
+          shapeIds: config.manifestShapeIds,
+          seed: definition.seed,
+          startIndex: generation.startIndex,
+          count: generation.count,
+          occupied: generation.occupied,
+        });
+        if (!sameJson(selected.manifests, generation.manifests)
+            || selected.nextIndex !== generation.nextIndex
+            || generation.nextIndex > value.manifestIndex) {
+          generationsValid = false;
+          break;
+        }
+        for (const manifest of selected.manifests) {
+          if (generatedManifests.has(manifest.id)) generationsValid = false;
+          generatedManifests.set(manifest.id, manifest);
+        }
+      } catch {
+        generationsValid = false;
+        break;
+      }
+    }
+  }
+  const currentManifestsGenerated = Array.isArray(value?.manifests)
+    && value.manifests.every((manifest) => (
+      sameJson(generatedManifests.get(manifest.id), manifest)
+    ));
+  if (!sameJson(provenance?.currentManifestIds, currentManifestIds)
       || provenance?.nextIndex !== value?.manifestIndex
-      || !manifestIdsMatchIndex) {
+      || !manifestIdsMatchIndex
+      || !generationsValid
+      || !currentManifestsGenerated) {
     errors.push('invalid manifest provenance');
   }
   if (value?.placements === 0) {
