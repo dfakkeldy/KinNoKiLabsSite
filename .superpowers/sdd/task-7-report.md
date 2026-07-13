@@ -221,3 +221,61 @@ make test-games
 ### Concerns
 
 None within Task 7 scope. Generated `Output/` remains untouched.
+
+---
+
+## Canonical Focus Follow-up
+
+### Blocker resolved
+
+Focus was validated and included in snapshots, but the reducer exposed no way
+to change it. Task 11's planned controller therefore mutated `state.focus`
+directly, which could not be distinguished from a forged save.
+
+### RED
+
+Added regressions proving that:
+
+- an active Yard can change focus through `reduceYard`, validate, and prepare
+  for Continue;
+- the reducer-derived focus appears exactly in the next placement snapshot;
+- changing that snapshot focus or directly changing live focus without a
+  command fails validation;
+- out-of-bounds, null, and same-cell requests preserve state and command-log
+  identity.
+
+Before production changes, legitimate `set-focus` calls were rejected as
+unsupported and both accepted-focus assertions remained at `{ row: 0,
+column: 0 }`.
+
+### Implementation and interface handoff
+
+- Added `{ type: 'set-focus', focus: { row, column } }` to both Contract and
+  Endless reducers, so the unified `reduceYard` facade is the single focus
+  mutation interface for either mode.
+- Coordinates must be exact integer row/column records within the definition's
+  board. Null and extra/malformed fields are rejected.
+- Same-cell focus is an identity-preserving no-op with no event or command.
+- Endless accepted changes emit `focus-changed`, append one canonical command,
+  and replay into the exact live and pre-placement snapshot focus.
+- Contract accepted changes use the same action/event contract and preserve
+  existing Contract validation semantics.
+
+Task 11 must replace the planned direct assignment in
+`YardController.prototype.setFocus` with dispatch of this exact action. Direct
+controller mutation is no longer a valid persisted Endless state and will be
+rejected during Continue authentication. This is the remaining ledger-facing
+handoff; no Task 11 controller file exists in Task 7 scope to update here.
+
+The command is constant-size, snapshots remain non-recursive, and validation
+remains `O(n)` in retained commands.
+
+### GREEN
+
+Focused Endless and Contract suites passed 32/32. Yard/core/storage passed
+80/80. The full Arcade Hall regression passed 216/216.
+
+### Concerns
+
+Task 11 must dispatch `set-focus` rather than copying `focus` onto controller
+state. No other Task 7 concern remains.

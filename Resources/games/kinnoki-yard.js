@@ -950,6 +950,22 @@ const reduceContractBase = (state, action) => {
   }
   if (state.status !== 'active') return contractInvalid(state, action.type, 'Game is paused.');
 
+  if (action.type === 'set-focus') {
+    const focus = action.focus;
+    if (!isRecord(focus)
+        || JSON.stringify(Object.keys(focus).sort()) !== JSON.stringify(['column', 'row'])
+        || !Number.isInteger(focus.row) || !Number.isInteger(focus.column)
+        || focus.row < 0 || focus.row >= state.definition.height
+        || focus.column < 0 || focus.column >= state.definition.width) {
+      return contractInvalid(state, action.type, 'Focus must be an in-bounds Yard cell.');
+    }
+    if (focus.row === state.focus.row && focus.column === state.focus.column) {
+      return { state, events: [] };
+    }
+    return { state: { ...state, focus: { ...focus } },
+      events: [{ type: 'focus-changed', focus: { ...focus } }] };
+  }
+
   if (action.type === 'select-piece') {
     const piece = state.definition.pieces.find((value) => value.pieceId === action.pieceId);
     if (!piece) return contractInvalid(state, action.type, 'Unknown cargo piece.');
@@ -1307,6 +1323,23 @@ const reduceEndlessInternal = (state, action, {
       : endlessInvalid(state, 'resume', 'Endless Yard cannot resume from this state.');
   }
   if (state.status !== 'active') return endlessInvalid(state, action.type, 'Game is paused.');
+  if (action.type === 'set-focus') {
+    const focus = action.focus;
+    if (!isRecord(focus)
+        || !sameJson(Object.keys(focus).sort(), ['column', 'row'])
+        || !Number.isInteger(focus.row) || !Number.isInteger(focus.column)
+        || focus.row < 0 || focus.row >= state.definition.height
+        || focus.column < 0 || focus.column >= state.definition.width) {
+      return endlessInvalid(state, action.type, 'Focus must be an in-bounds Yard cell.');
+    }
+    if (focus.row === state.focus.row && focus.column === state.focus.column) {
+      return { state, events: [] };
+    }
+    const nextFocus = { row: focus.row, column: focus.column };
+    return { state: appendEndlessCommand({ ...state, focus: nextFocus },
+      { type: 'set-focus', focus: nextFocus }, record),
+    events: [{ type: 'focus-changed', focus: nextFocus }] };
+  }
   if (action.type === 'hint') {
     return endlessInvalid(state, 'hint', 'Hint is unavailable in Endless Yard.');
   }
@@ -1599,6 +1632,13 @@ const validEndlessCommand = (command) => {
   }
   if (command.type === 'select-piece') {
     return exactCommandKeys(command, ['pieceId', 'type']) && safeCount(command.pieceId);
+  }
+  if (command.type === 'set-focus') {
+    return exactCommandKeys(command, ['focus', 'type'])
+      && isRecord(command.focus)
+      && sameJson(Object.keys(command.focus).sort(), ['column', 'row'])
+      && Number.isInteger(command.focus.row)
+      && Number.isInteger(command.focus.column);
   }
   if (command.type === 'rotate-piece') {
     return exactCommandKeys(command, ['quarterTurns', 'type']) && command.quarterTurns === 1;

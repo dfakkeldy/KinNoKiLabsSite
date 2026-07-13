@@ -397,3 +397,46 @@ test('Endless snapshots have bounded non-recursive provenance shape', () => {
   assert.ok(JSON.stringify(state).length < initialSize + (state.history.length * 12000));
   assert.deepEqual(validateEndlessState(state, 'easy'), { valid: true, errors: [] });
 });
+
+test('Yard reducer owns focus changes and continue authentication', () => {
+  const preview = endlessState('medium', 37);
+  const active = reduceYard(preview, { type: 'start' }).state;
+  const focused = reduceYard(active, {
+    type: 'set-focus', focus: { row: 4, column: 5 },
+  }).state;
+  assert.deepEqual(focused.focus, { row: 4, column: 5 });
+  assert.deepEqual(focused.commandLog.at(-1), {
+    type: 'set-focus', focus: { row: 4, column: 5 },
+  });
+  assert.deepEqual(validateYardState(focused, 'medium', 'endless'), {
+    valid: true, errors: [],
+  });
+  assert.deepEqual(prepareYardForContinue(focused).focus, { row: 4, column: 5 });
+});
+
+test('Endless replay authenticates focus in exact pre-placement snapshots', () => {
+  let state = reduceEndless(endlessState('easy', 43), { type: 'start' }).state;
+  state = reduceEndless(state, {
+    type: 'set-focus', focus: { row: 6, column: 7 },
+  }).state;
+  const placed = placeGreedily(state).state;
+  assert.deepEqual(placed.history[0].focus, { row: 6, column: 7 });
+  assert.deepEqual(validateEndlessState(placed, 'easy'), { valid: true, errors: [] });
+  const forged = structuredClone(placed);
+  forged.history[0].focus = { row: 0, column: 0 };
+  assert.equal(validateEndlessState(forged, 'easy').valid, false);
+});
+
+test('Endless rejects direct, invalid, and idempotent focus mutations', () => {
+  const active = reduceEndless(endlessState('hard', 47), { type: 'start' }).state;
+  assert.equal(validateEndlessState({
+    ...active, focus: { row: 1, column: 1 },
+  }, 'hard').valid, false);
+
+  for (const focus of [active.focus, { row: -1, column: 0 },
+    { row: 0, column: 8 }, null]) {
+    const result = reduceEndless(active, { type: 'set-focus', focus });
+    assert.equal(result.state, active);
+    assert.equal(result.state.commandLog, active.commandLog);
+  }
+});
