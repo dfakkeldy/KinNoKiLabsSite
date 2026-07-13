@@ -201,7 +201,7 @@ export function createSession({
   };
   const playAnother = async (seed) => {
     try {
-      begin(seed);
+      begin(Number.isInteger(seed) && seed >= 0 ? seed : undefined);
       dispose();
       await onRender(currentStore);
     } catch {
@@ -307,6 +307,6 @@ export function completionPanel({ elapsed, assisted, playAnother }) {
   const panel = element('section', { class: 'game-complete' }, heading,
     element('p', { text: `${formatElapsed(elapsed)}${assisted ? ' · Assisted' : ''}` }),
     element('button', { type: 'button', 'data-play-another': '', text: 'Play Another' }));
-  panel.querySelector('[data-play-another]').addEventListener('click', playAnother);
+  panel.querySelector('[data-play-another]').addEventListener('click', () => playAnother());
   return { panel, heading };
 }

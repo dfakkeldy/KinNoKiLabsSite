@@ -166,3 +166,23 @@ test('Play Another retries a colliding definition and persists its actual derive
     assert.notEqual(renderedStore.runs.crossword.seed, 3);
   } finally { restore(); }
 });
+
+test('clicking Play Another never coerces its MouseEvent into seed zero', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' }); const restore = installDOM(fixture);
+  try {
+    const module = await import('../../Resources/games/word-search-ui.js');
+    const { puzzleSignature } = await import('../../Resources/games/controller-common.js');
+    const definition = generateWordSearch({ difficulty: 'easy', seed: 77 });
+    const play = module.createWordSearchState(definition);
+    const target = definition.placements[0];
+    play.found = definition.placements.slice(1).map(({ word }) => word);
+    await module.renderWordSearch(fixture.root, storeWith('word-search', definition, play));
+    fixture.root.querySelector(`[data-cell="${target.start.row}:${target.start.column}"]`).click();
+    fixture.root.querySelector(`[data-cell="${target.end.row}:${target.end.column}"]`).click();
+    fixture.root.querySelector('[data-play-another]').click();
+    await Promise.resolve();
+    const next = JSON.parse(fixture.localStorage.getItem('kinnoki-games:v1')).runs['word-search'];
+    assert.notEqual(next.seed, 0);
+    assert.notEqual(puzzleSignature(next.puzzle.definition), puzzleSignature(definition));
+  } finally { restore(); }
+});
