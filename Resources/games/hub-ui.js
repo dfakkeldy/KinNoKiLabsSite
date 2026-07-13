@@ -77,11 +77,34 @@ export function gameCardModel(store, game) {
   };
 }
 
+const defaultModeStats = (store, game) => (
+  store.stats?.games?.[game]?.modes?.default ?? {
+    completed: 0,
+    records: { time: { easy: null, medium: null, hard: null } },
+  }
+);
+
+const sharedStatsSummary = (store, games) => {
+  const total = nonNegativeInteger(store.stats?.totalCompleted);
+  const streak = nonNegativeInteger(store.stats?.currentStreak);
+  return {
+    total: String(total),
+    totalLabel: total === 1 ? 'Puzzle completed' : 'Puzzles completed',
+    streak: String(streak),
+    streakLabel: 'Day streak',
+    games,
+    zeroState: total === 0
+      ? 'Your first puzzle finish will start the record book. Your progress stays on this device.'
+      : total + ' ' + (total === 1 ? 'puzzle' : 'puzzles')
+        + ' finished on this device.',
+  };
+};
+
 export function statsModel(store) {
   const games = Object.fromEntries(GAMES.map((game) => {
-    const stats = store.stats?.games?.[game.id] ?? { completed: 0, bestMs: {} };
+    const stats = defaultModeStats(store, game.id);
     const bestTimes = DIFFICULTIES
-      .map((difficulty) => stats?.bestMs?.[difficulty])
+      .map((difficulty) => stats.records?.time?.[difficulty])
       .filter((value) => Number.isFinite(value) && value >= 0);
     const completed = nonNegativeInteger(stats?.completed);
     return [game.id, {
@@ -89,19 +112,7 @@ export function statsModel(store) {
       best: bestTimes.length ? formatTime(Math.min(...bestTimes)) : '—',
     }];
   }));
-  const total = nonNegativeInteger(store.stats?.totalCompleted);
-  const streak = nonNegativeInteger(store.stats?.currentStreak);
-
-  return {
-    total: String(total),
-    totalLabel: total === 1 ? 'Puzzle completed' : 'Puzzles completed',
-    streak: String(streak),
-    streakLabel: streak === 1 ? 'Day streak' : 'Day streak',
-    games,
-    zeroState: total === 0
-      ? 'Your first puzzle finish will start the record book. Your progress stays on this device.'
-      : `${total} ${total === 1 ? 'puzzle' : 'puzzles'} finished on this device.`,
-  };
+  return sharedStatsSummary(store, games);
 }
 
 const difficultyMarkup = (card) => card.difficulties.map(({ label, href }) => (
