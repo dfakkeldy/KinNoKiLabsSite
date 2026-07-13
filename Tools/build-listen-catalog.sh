@@ -330,4 +330,9 @@ jq -s \
 validate_staged_bundle
 listen_catalog_publish_staged_bundle
 
+# The catalog builder owns audio/text synchronization; the paired-cover helper
+# then replaces only verified artwork fields and player derivatives. It fails
+# closed if the selected Explainer receipts or canonical cover bytes drift.
+BOOKS_REPO="$BOOKS_REPO" "$SITE_ROOT/Tools/sync-paired-cover-assets.sh"
+
 echo "WROTE $FINAL_CATALOG ($(jq '.books | length' "$FINAL_CATALOG") books, source $SHA)"

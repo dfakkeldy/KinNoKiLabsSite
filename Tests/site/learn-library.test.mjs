@@ -8,6 +8,24 @@ const count = (text) => html.split(text).length - 1;
 const publicLibrary = 'https://github.com/dfakkeldy/explainer-audiobooks';
 const approvedBooks = [
   {
+    slug: 'echo-from-the-inside',
+    title: 'Echo, From the Inside',
+    runtime: '17 chapters · about 5.4 hours',
+    description: "A gentle tour of how a real iOS app is put together, taught through Echo's public source.",
+  },
+  {
+    slug: 'why-it-feels-right',
+    title: 'Why It Feels Right',
+    runtime: '18 chapters · about 5.0 hours',
+    description: 'A plain-language guide to Apple design vocabulary and why some interfaces quietly feel better than others.',
+  },
+  {
+    slug: 'findable',
+    title: 'Findable',
+    runtime: '8 chapters · about 3.0 hours',
+    description: 'An honest beginner guide to getting a small app discovered without pretending marketing is magic.',
+  },
+  {
     slug: 'chicken-predators',
     title: 'Chicken Predators',
     runtime: '16 chapters · about 3.1 hours',
@@ -36,6 +54,9 @@ for (const book of approvedBooks) {
     assert.equal(matchingCards.length, 1, `${book.title} must occupy one book card`);
     const card = matchingCards[0];
 
+    assert.ok(card.includes(
+      `<img class="learn-book-cover" src="/learn/covers/${book.slug}.png" alt="Cover of ${book.title}" width="1600" height="2560" loading="lazy" decoding="async">`,
+    ));
     assert.ok(card.includes(`<p class="learn-book-runtime">${book.runtime}</p>`));
     assert.ok(card.includes(`<p>${book.description}</p>`));
 

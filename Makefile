@@ -10,7 +10,7 @@
 #   make listen-catalog  Regenerate Resources/listen/books.json + per-book
 #                        assets from local checkouts (Tools/build-listen-catalog.sh)
 
-.PHONY: publish preview generate clean test test-listen test-games listen-catalog
+.PHONY: publish preview generate clean test test-listen test-games listen-catalog paired-covers
 
 generate:
 	publish generate
@@ -37,3 +37,6 @@ test-games:
 
 listen-catalog:
 	Tools/build-listen-catalog.sh
+
+paired-covers:
+	Tools/sync-paired-cover-assets.sh

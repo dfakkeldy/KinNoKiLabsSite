@@ -233,7 +233,9 @@
         "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/chicken-predators",
         "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/chicken-predators/chicken-predators.epub",
         "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/chicken-predators/chicken-predators.md"
-      }
+      },
+      "coverSourceSha256": "18c6520b20c4ba39346d03e84a856eb1785968327cce69bdb58ce234f031d59d",
+      "coverDerivativeSha256": "43db413ee3c777fb3dd4607c72f77769389abe8a9b1aaacc2c4bd54842d9dc5b"
     },
     {
       "slug": "rodents-in-the-walls",
@@ -381,7 +383,9 @@
         "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/the-new-deal",
         "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/the-new-deal/the-new-deal.epub",
         "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/the-new-deal/the-new-deal.md"
-      }
+      },
+      "coverSourceSha256": "2034da6997ad9c451a3542049fbce5cfbc0203a6675a36bc405413de20a437c0",
+      "coverDerivativeSha256": "ecc8f6a93a99e254038f1a5a5048ba07cab247f96e3dad2402e066a2b3280d91"
     }
   ]
 }

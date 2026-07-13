@@ -471,12 +471,12 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
 .learn-section-heading p:not(.eyebrow),
 .learn-request-grid > div > p { color: var(--text-muted); font-size: 1rem; line-height: 1.7; margin: 0; }
 .learn-book-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-.learn-book-card { display: flex; flex-direction: column; justify-content: space-between; min-height: 260px; padding: 24px; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); }
-.learn-book-card::before { content: ""; display: block; width: 42px; height: 3px; background: var(--grad-gold); border-radius: var(--radius-pill); margin-bottom: 18px; }
+.learn-book-card { display: grid; grid-template-columns: minmax(96px, 132px) minmax(0, 1fr); grid-template-rows: 1fr auto; gap: 18px 22px; min-height: 260px; padding: 20px; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); }
+.learn-book-cover { grid-row: 1 / span 2; width: 100%; height: auto; aspect-ratio: 5 / 8; object-fit: cover; border-radius: 8px; box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18); }
 .learn-book-runtime { color: var(--text-quaternary); font-family: var(--font-mono); font-size: 0.76rem; margin: 0 0 10px; }
 .learn-book-card h3 { font-size: 1.15rem; letter-spacing: 0; margin: 0 0 8px; }
 .learn-book-card p:not(.learn-book-runtime) { color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; margin: 0; }
-.learn-book-links { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 24px; }
+.learn-book-links { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 0; }
 .learn-book-links a { color: var(--text); font-size: 0.86rem; font-weight: 500; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent); text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
 .learn-book-links a:hover { color: var(--gold-text); }
 .learn-library-link { margin: 20px 0 0; }
@@ -496,7 +496,7 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
   .learn-notes { grid-template-columns: 1fr; }
   .learn-hero { margin-bottom: 48px; }
   .learn-hero h1 { font-size: 2.25rem; max-width: 100%; }
-  .learn-book-card { min-height: auto; }
+  .learn-book-card { grid-template-columns: minmax(88px, 112px) minmax(0, 1fr); min-height: auto; padding: 16px; }
   .learn-request-grid { padding: 24px; }
 }
 
