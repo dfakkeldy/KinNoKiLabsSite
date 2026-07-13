@@ -1,6 +1,5 @@
 import { generateSudoku, isValidSudokuBoard, solveSudoku } from './sudoku.js';
-import { visibleElapsedMs } from './core.js';
-import { completionPanel, createSession, element, formatElapsed, renderReplacementKept, sharedShell } from './controller-common.js';
+import { completionPanel, createSession, element, formatElapsed, makeGameTerminal, renderReplacementKept, sharedShell } from './controller-common.js';
 
 const blankNotes = () => Array.from({ length: 81 }, () => []);
 const complete = (state) => state.values.every((value, index) => value === state.definition.solution[index]);
@@ -57,6 +56,7 @@ export function validateSudokuRun(payload, difficulty) {
 const snapshot = (state) => ({ values: [...state.values], notes: state.notes.map((notes) => [...notes]) });
 
 export function reduceSudoku(state, action) {
+  if (state.completed) return state;
   const selected = state.selected ?? 0;
   if (action.type === 'select') return { ...state, selected: Math.max(0, Math.min(80, action.index)) };
   if (action.type === 'move') {
@@ -133,6 +133,7 @@ export async function renderSudoku(root, store) {
   }
   let state = persisted(session.run.puzzle.definition, session.run.puzzle.play, session.run.assisted);
   const shell = sharedShell({ title: 'Sudoku', difficulty: session.difficulty });
+  shell.setAssisted(state.assisted);
   const instructions = element('details', { 'data-instructions': '' },
     element('summary', { text: 'How to play' }),
     element('p', { text: 'Choose a cell and enter 1–9. Arrow keys move, P toggles pencil marks, U undoes, and Delete erases.' }));
@@ -147,7 +148,7 @@ export async function renderSudoku(root, store) {
     ...Array.from({ length: 9 }, (_, index) => element('button', { type: 'button', 'data-number': index + 1, text: String(index + 1) })));
   controls.append(pencil, undo, erase, hint, check, numberPad);
   const boardScroll = element('div', { class: 'game-board-scroll' }, board);
-  root.replaceChildren(shell.toolbar, shell.notice, instructions, boardScroll, controls, shell.live);
+  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, boardScroll, controls, shell.live);
 
   let completed = false;
   const draw = () => {
@@ -177,10 +178,11 @@ export async function renderSudoku(root, store) {
       board.append(rowNode);
     }
     pencil.setAttribute('aria-pressed', String(state.pencil));
-    shell.timer.textContent = formatElapsed(visibleElapsedMs(session.run, Date.now()));
+    shell.timer.textContent = formatElapsed(session.elapsed());
     if (state.completed && !completed) {
       completed = true;
       const result = session.finish();
+      makeGameTerminal(root);
       const completion = completionPanel({ ...result, playAnother: session.playAnother });
       root.append(completion.panel);
       shell.live.textContent = 'Sudoku complete.';
@@ -188,11 +190,15 @@ export async function renderSudoku(root, store) {
     }
   };
   const dispatch = (action, focus = false) => {
+    if (completed || state.completed || session.finished) return;
     const next = reduceSudoku(state, action);
     if (next === state) return;
     state = next;
-    if (action.type === 'reveal' || action.type === 'check') session.assist();
-    if (action.type === 'reveal') shell.live.textContent = 'Hint revealed. This puzzle is now assisted.';
+    if (action.type === 'reveal' || action.type === 'check') {
+      session.assist();
+      shell.setAssisted(true, true);
+    }
+    if (action.type === 'reveal') shell.live.textContent = 'Hint revealed. Assisted run; this time is ineligible for best-time records.';
     session.updatePlay(state);
     draw();
     if (focus && !state.completed) board.querySelector(`[data-cell="${state.selected}"]`)?.focus();
@@ -215,9 +221,10 @@ export async function renderSudoku(root, store) {
   undo.addEventListener('click', () => dispatch({ type: 'undo' }));
   erase.addEventListener('click', () => dispatch({ type: 'erase' }));
   hint.addEventListener('click', () => dispatch({ type: 'reveal' }));
-  check.addEventListener('click', () => { dispatch({ type: 'check' }); shell.live.textContent = `${state.errors.length} errors found.`; });
+  check.addEventListener('click', () => { dispatch({ type: 'check' }); shell.live.textContent = `${state.errors.length} errors found. Assisted run; this time is ineligible for best-time records.`; });
+  shell.toolbar.querySelector('[data-restart]').addEventListener('click', () => { if (window.confirm('Restart this puzzle? Current progress will be cleared.')) void session.restart(); });
   shell.toolbar.querySelector('[data-new-game]').addEventListener('click', () => { if (!state.history.length || window.confirm('Replace this puzzle?')) void session.playAnother(); });
   shell.select.addEventListener('change', () => { globalThis.location.href = `/games/sudoku?difficulty=${shell.select.value}`; });
   draw();
-  session.repeat(() => { if (!completed) shell.timer.textContent = formatElapsed(visibleElapsedMs(session.run, Date.now())); }, 1000);
+  session.repeat(() => { if (!completed) shell.timer.textContent = formatElapsed(session.elapsed()); }, 1000);
 }

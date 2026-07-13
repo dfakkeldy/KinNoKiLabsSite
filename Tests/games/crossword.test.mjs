@@ -165,3 +165,19 @@ test('60 seeded crosswords meet their exact targets and validate', { timeout: 20
     }
   }
 });
+
+test('hard generation has a short real-time bound and returns a valid puzzle', { timeout: 5000 }, () => {
+  for (let seed = 1; seed <= 12; seed += 1) {
+    const started = performance.now();
+    const puzzle = generateCrossword({ difficulty: 'hard', seed, entries });
+    assert.ok(performance.now() - started < 250, `hard seed ${seed} exceeded 250ms`);
+    assert.deepEqual(validateCrossword(puzzle), { valid: true, errors: [] });
+  }
+});
+
+test('crossword wall-clock deadline falls back before another search attempt', () => {
+  let clock = 0;
+  const puzzle = generateCrossword({ difficulty: 'hard', seed: 7, entries, now: () => (clock += 100) });
+  assert.equal(puzzle.usedFallback, true);
+  assert.deepEqual(validateCrossword(puzzle), { valid: true, errors: [] });
+});

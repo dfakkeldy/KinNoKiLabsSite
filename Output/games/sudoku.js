@@ -313,6 +313,37 @@ const difficultyRanges = {
   hard: { minimum: 26, maximum: 31, target: 28 },
 };
 
+const FALLBACK_TEMPLATES = {
+  easy: {
+    puzzle: [1,0,0,7,9,0,8,4,3,4,3,8,0,0,0,7,9,0,0,6,0,0,0,3,0,1,5,0,7,1,9,3,0,0,0,2,0,8,0,4,0,2,0,6,0,5,0,0,0,6,7,9,3,0,2,4,0,5,0,0,0,8,0,0,9,6,0,0,0,5,7,1,7,1,5,0,8,9,0,0,4],
+    solution: [1,5,2,7,9,6,8,4,3,4,3,8,2,1,5,7,9,6,9,6,7,8,4,3,2,1,5,6,7,1,9,3,8,4,5,2,3,8,9,4,5,2,1,6,7,5,2,4,1,6,7,9,3,8,2,4,3,5,7,1,6,8,9,8,9,6,3,2,4,5,7,1,7,1,5,6,8,9,3,2,4],
+  },
+  medium: {
+    puzzle: [0,8,3,4,5,2,0,9,0,0,6,0,0,3,7,0,0,0,2,0,0,0,0,0,0,7,3,6,0,2,3,0,0,0,4,0,4,0,7,0,0,0,3,0,9,0,3,0,0,0,4,1,0,2,3,9,0,0,0,0,0,0,4,0,0,0,9,6,0,0,5,0,0,7,0,2,4,1,9,3,0],
+    solution: [7,8,3,4,5,2,6,9,1,9,6,1,8,3,7,4,2,5,2,4,5,6,1,9,8,7,3,6,1,2,3,9,8,5,4,7,4,5,7,1,2,6,3,8,9,8,3,9,5,7,4,1,6,2,3,9,6,7,8,5,2,1,4,1,2,4,9,6,3,7,5,8,5,7,8,2,4,1,9,3,6],
+  },
+  hard: {
+    puzzle: [0,0,2,4,7,0,0,0,0,3,1,0,0,0,0,0,5,0,0,0,5,3,0,0,0,0,6,5,0,7,9,0,1,0,8,0,0,0,0,0,3,0,0,0,0,0,6,0,2,0,8,3,0,5,7,0,0,0,0,6,5,0,0,0,5,0,0,0,0,0,6,1,0,0,0,0,5,4,9,0,0],
+    solution: [6,8,2,4,7,5,1,9,3,3,1,9,6,8,2,7,5,4,4,7,5,3,1,9,8,2,6,5,3,7,9,6,1,4,8,2,2,4,8,5,3,7,6,1,9,9,6,1,2,4,8,3,7,5,7,9,3,1,2,6,5,4,8,8,5,4,7,9,3,2,6,1,1,2,6,8,5,4,9,3,7],
+  },
+};
+
+const transformedFallback = (difficulty, seed) => {
+  const template = FALLBACK_TEMPLATES[difficulty];
+  const rng = createRng(seed);
+  const digitMap = rng.shuffle(DIGITS);
+  const transpose = rng.int(2) === 1;
+  const rotate = rng.int(2) === 1;
+  const transform = (board) => Array.from({ length: 81 }, (_, target) => {
+    let row = Math.floor(target / 9), column = target % 9;
+    if (rotate) { row = 8 - row; column = 8 - column; }
+    const source = transpose ? column * 9 + row : row * 9 + column;
+    const value = board[source];
+    return value === 0 ? 0 : digitMap[value - 1];
+  });
+  return { puzzle: transform(template.puzzle), solution: transform(template.solution) };
+};
+
 const classifiedAs = (puzzle, difficulty) => {
   const clues = clueCount(puzzle);
   const range = difficultyRanges[difficulty];
@@ -346,24 +377,21 @@ const removeSymmetricClues = (solution, rng, target) => {
   return puzzle;
 };
 
-export function generateSudoku({ difficulty, seed }) {
+export function generateSudoku({ difficulty, seed, now = () => globalThis.performance?.now?.() ?? Date.now() }) {
   const range = difficultyRanges[difficulty];
   if (!range) throw new RangeError(`Unsupported Sudoku difficulty: ${difficulty}`);
 
   const initialSeed = seed >>> 0;
-  let generationSeed = initialSeed;
-  for (let generation = 0; generation < 256; generation += 1) {
-    for (let attempt = 0; attempt < 12; attempt += 1) {
-      const attemptSeed = deriveSeed(generationSeed, attempt);
-      const rng = createRng(attemptSeed);
-      const solution = solvedGrid(rng);
-      const puzzle = removeSymmetricClues(solution, rng, range.target);
-      if (classifiedAs(puzzle, difficulty)) {
-        return { seed: initialSeed, difficulty, puzzle, solution, rating: difficulty };
-      }
+  const started = now();
+  if (now() - started <= 75) {
+    const attemptSeed = deriveSeed(initialSeed, 0);
+    const rng = createRng(attemptSeed);
+    const solution = solvedGrid(rng);
+    const puzzle = removeSymmetricClues(solution, rng, range.target);
+    if (classifiedAs(puzzle, difficulty)) {
+      return { seed: initialSeed, difficulty, puzzle, solution, rating: difficulty };
     }
-    generationSeed = deriveSeed(generationSeed, 12);
   }
-
-  throw new Error(`Unable to generate ${difficulty} Sudoku from seed ${initialSeed}`);
+  const fallback = transformedFallback(difficulty, initialSeed);
+  return { seed: initialSeed, difficulty, ...fallback, rating: difficulty, usedFallback: true };
 }

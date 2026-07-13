@@ -164,18 +164,21 @@ test('a progressed run is preserved when replacement confirmation is declined', 
 test('visibility changes persist elapsed play without counting hidden time', async () => {
   const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' }); const restore = installDOM(fixture);
   const originalNow = Date.now;
+  const originalPerformance = globalThis.performance;
   try {
-    let now = 1000; Date.now = () => now;
+    let now = 1000, active = 100; Date.now = () => now;
+    globalThis.performance = { now: () => active };
     const { renderSudoku } = await import('../../Resources/games/sudoku-ui.js');
     const store = { version: 1, runs: { sudoku: { difficulty: 'easy', seed: 1, puzzle: { definition: sudokuPuzzle }, startedAt: 0, elapsedBeforeStartMs: 0, assisted: false } }, previousSeeds: {}, stats: { totalCompleted: 0, currentStreak: 0, lastCompletedDate: null, games: {} } };
     await renderSudoku(fixture.root, store);
+    active = 1100;
     fixture.document.visibilityState = 'hidden'; fixture.document.dispatchEvent(new FixtureEvent('visibilitychange'));
     now = 11000; fixture.document.visibilityState = 'visible'; fixture.document.dispatchEvent(new FixtureEvent('visibilitychange'));
-    now = 12000; fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`).click();
+    now = 12000; active = 2100; fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`).click();
     const run = JSON.parse(fixture.localStorage.getItem('kinnoki-games:v1')).runs.sudoku;
     assert.equal(run.elapsedBeforeStartMs, 1000);
     assert.equal(run.startedAt, 11000);
-  } finally { Date.now = originalNow; restore(); }
+  } finally { Date.now = originalNow; globalThis.performance = originalPerformance; restore(); }
 });
 
 test('Play Another starts a run whose seed differs from the completed seed', async () => {

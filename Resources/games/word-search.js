@@ -58,6 +58,21 @@ function candidatesFor(grid, word, directions) {
   return candidates;
 }
 
+function occurrenceCount(grid, word, directions) {
+  let count = 0;
+  for (let row = 0; row < grid.length; row += 1) {
+    for (let column = 0; column < grid.length; column += 1) {
+      for (const direction of directions) {
+        const rendered = cellsFor(word, row, column, direction)
+          .map(({ row: cellRow, column: cellColumn }) => grid[cellRow]?.[cellColumn])
+          .join('');
+        if (rendered === word) count += 1;
+      }
+    }
+  }
+  return count;
+}
+
 function attemptBoard(words, size, directions, seed) {
   const rng = createRng(seed);
   const grid = Array.from({ length: size }, () => Array(size).fill(null));
@@ -81,12 +96,16 @@ function attemptBoard(words, size, directions, seed) {
     });
   }
 
-  for (let row = 0; row < size; row += 1) {
-    for (let column = 0; column < size; column += 1) {
-      if (grid[row][column] === null) grid[row][column] = FILLER[rng.int(FILLER.length)];
+  let filled = grid;
+  for (let fillerAttempt = 0; fillerAttempt < 8; fillerAttempt += 1) {
+    filled = grid.map((row) => row.map((letter) => (
+      letter ?? FILLER[rng.int(FILLER.length)]
+    )));
+    if (words.every((word) => occurrenceCount(filled, word, directions) === 1)) {
+      return { grid: filled, placements };
     }
   }
-  return { grid, placements };
+  return { grid: filled, placements };
 }
 
 export function generateWordSearch({ difficulty, seed, themes = bundledThemes }) {
@@ -136,10 +155,26 @@ const sameCoordinate = (left, right) => (
 
 export function findSelection(puzzle, start, end) {
   if (!Array.isArray(puzzle?.placements) || !start || !end) return null;
-  return puzzle.placements.find((placement) => (
+  const canonical = puzzle.placements.find((placement) => (
     (sameCoordinate(placement?.start, start) && sameCoordinate(placement?.end, end))
       || (sameCoordinate(placement?.start, end) && sameCoordinate(placement?.end, start))
-  )) ?? null;
+  ));
+  if (canonical) return canonical;
+  const rowDelta = end.row - start.row;
+  const columnDelta = end.column - start.column;
+  if (rowDelta !== 0 && columnDelta !== 0 && Math.abs(rowDelta) !== Math.abs(columnDelta)) return null;
+  const length = Math.max(Math.abs(rowDelta), Math.abs(columnDelta)) + 1;
+  const dr = Math.sign(rowDelta), dc = Math.sign(columnDelta);
+  const allowed = DIRECTIONS[puzzle.difficulty]?.some(([allowedRow, allowedColumn]) => (
+    (allowedRow === dr && allowedColumn === dc)
+      || (allowedRow === -dr && allowedColumn === -dc)
+  ));
+  if (!allowed) return null;
+  const rendered = Array.from({ length }, (_, index) => (
+    puzzle.grid?.[start.row + dr * index]?.[start.column + dc * index]
+  )).join('');
+  const reverse = [...rendered].reverse().join('');
+  return puzzle.placements.find(({ word }) => word === rendered || word === reverse) ?? null;
 }
 
 export function validateWordSearch(puzzle, catalog = bundledThemes) {

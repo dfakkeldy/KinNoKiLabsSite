@@ -1,4 +1,4 @@
-import { completeRun, markAssisted, saveGameStore, startRun, visibleElapsedMs } from './core.js';
+import { completeRun, markAssisted, saveGameStore, startRun } from './core.js';
 import { safeLocalStorage, showStorageFailureNotice } from './hub-ui.js';
 
 export const difficulties = ['easy', 'medium', 'hard'];
@@ -48,7 +48,11 @@ export function renderReplacementKept(root, game, existingDifficulty) {
     element('a', { class: 'back-link', href: '/games', text: 'Back to Games' })));
 }
 
-export function createSession({ root, game, store, createPuzzle, createPlay, progressed, validateRun, onRender }) {
+export function createSession({
+  root, game, store, createPuzzle, createPlay, progressed, validateRun, onRender,
+  wallNow = () => Date.now(),
+  monotonicNow = () => globalThis.performance?.now?.() ?? Date.now(),
+}) {
   activeSessions.get(root)?.dispose();
   const storage = safeLocalStorage(globalThis);
   const params = new URLSearchParams(globalThis.location?.search ?? '');
@@ -64,6 +68,10 @@ export function createSession({ root, game, store, createPuzzle, createPlay, pro
   let run;
   let cancelled = false;
   let disposed = false;
+  let finished = false;
+  let paused = false;
+  let activeStarted = monotonicNow();
+  let completionResult = null;
   let api;
   const cleanups = new Set();
 
@@ -91,8 +99,11 @@ export function createSession({ root, game, store, createPuzzle, createPlay, pro
     currentStore = startRun(currentStore, game, difficulty, seed, {
       definition,
       play: createPlay(definition),
-    }, Date.now());
+    }, wallNow());
     run = currentStore.runs[game];
+    activeStarted = monotonicNow();
+    paused = false;
+    finished = false;
     save();
   };
 
@@ -102,32 +113,59 @@ export function createSession({ root, game, store, createPuzzle, createPlay, pro
     return result;
   };
 
-  if (resume) run = existing;
+  if (resume) {
+    run = { ...existing, startedAt: wallNow() };
+    currentStore = { ...currentStore, runs: { ...currentStore.runs, [game]: run } };
+    activeStarted = monotonicNow();
+    save();
+  }
   else if (existingValid && progressed(existing.puzzle?.play)
       && globalThis.window?.confirm?.('Start a new puzzle and replace your saved progress?') === false) {
-    run = existing;
+    run = { ...existing, startedAt: wallNow() };
+    currentStore = { ...currentStore, runs: { ...currentStore.runs, [game]: run } };
+    activeStarted = monotonicNow();
+    save();
   } else if (existingStructValid && existing.difficulty !== difficulty && progressed(existing.puzzle?.play)
       && globalThis.window?.confirm?.('Start a new puzzle and replace your saved progress?') === false) {
     cancelled = true;
   } else begin();
 
   const updatePlay = (play) => {
+    if (disposed || finished || !run) return;
     run = { ...run, puzzle: { ...run.puzzle, play } };
     currentStore = { ...currentStore, runs: { ...currentStore.runs, [game]: run } };
     save();
   };
   const assist = () => {
+    if (disposed || finished || !run) return false;
     currentStore = markAssisted(currentStore, game);
     run = currentStore.runs[game];
     save();
+    return true;
+  };
+  const elapsed = () => {
+    if (!run) return completionResult?.elapsed ?? 0;
+    const activeDelta = paused ? 0 : Math.max(0, monotonicNow() - activeStarted);
+    return Math.max(0, Math.trunc(run.elapsedBeforeStartMs + activeDelta));
+  };
+  const snapshotElapsed = () => {
+    if (!run || finished) return;
+    run = { ...run, elapsedBeforeStartMs: elapsed(), startedAt: wallNow() };
+    activeStarted = monotonicNow();
+    currentStore = { ...currentStore, runs: { ...currentStore.runs, [game]: run } };
+    save();
   };
   const finish = () => {
-    const elapsed = visibleElapsedMs(run, Date.now());
+    if (completionResult) return completionResult;
+    snapshotElapsed();
+    finished = true;
+    const elapsedMs = run.elapsedBeforeStartMs;
     const assisted = run.assisted;
-    currentStore = completeRun(currentStore, game, Date.now());
+    currentStore = completeRun(currentStore, game, run.startedAt);
     save();
     dispose();
-    return { elapsed, assisted };
+    completionResult = { elapsed: elapsedMs, assisted };
+    return completionResult;
   };
   const playAnother = async () => {
     try {
@@ -139,22 +177,59 @@ export function createSession({ root, game, store, createPuzzle, createPlay, pro
       renderGameError(root);
     }
   };
+  const restart = async () => {
+    if (!run || finished) return;
+    const definition = run.puzzle.definition;
+    currentStore = startRun(currentStore, game, difficulty, run.seed, {
+      definition, play: createPlay(definition),
+    }, wallNow());
+    run = currentStore.runs[game];
+    activeStarted = monotonicNow();
+    paused = false;
+    save();
+    dispose();
+    try {
+      await onRender(currentStore);
+    } catch {
+      renderGameError(root);
+    }
+  };
 
   const visibility = () => {
-    if (!currentStore.runs?.[game]) return;
-    const now = Date.now();
+    if (!currentStore.runs?.[game] || finished) return;
     if (document.visibilityState === 'hidden') {
-      const elapsed = visibleElapsedMs(run, now);
-      run = { ...run, elapsedBeforeStartMs: elapsed, startedAt: now };
-    } else run = { ...run, startedAt: now };
+      snapshotElapsed();
+      paused = true;
+    } else {
+      run = { ...run, startedAt: wallNow() };
+      activeStarted = monotonicNow();
+      paused = false;
+      currentStore = { ...currentStore, runs: { ...currentStore.runs, [game]: run } };
+      save();
+    }
+  };
+  const pagehide = () => {
+    snapshotElapsed();
+    paused = true;
+  };
+  const pageshow = () => {
+    if (!run || finished) return;
+    run = { ...run, startedAt: wallNow() };
+    activeStarted = monotonicNow();
+    paused = false;
     currentStore = { ...currentStore, runs: { ...currentStore.runs, [game]: run } };
     save();
   };
-  if (run) listen(document, 'visibilitychange', visibility);
+  if (run) {
+    listen(document, 'visibilitychange', visibility);
+    listen(globalThis.window, 'pagehide', pagehide);
+    listen(globalThis.window, 'pageshow', pageshow);
+  }
 
   api = {
     difficulty, cancelled, existingDifficulty: existing?.difficulty,
-    get run() { return run; }, updatePlay, assist, finish, playAnother, dispose, listen, repeat,
+    get run() { return run; }, get finished() { return finished; },
+    updatePlay, assist, elapsed, finish, playAnother, restart, dispose, listen, repeat,
     addCleanup(cleanup) { cleanups.add(cleanup); },
   };
   activeSessions.set(root, api);
@@ -170,11 +245,29 @@ export function sharedShell({ title, difficulty }) {
   const timer = element('time', { 'data-timer': '', text: '0:00', 'aria-label': 'Elapsed time' });
   const toolbar = element('div', { class: 'game-toolbar' }, breadcrumb, heading,
     element('label', { text: 'Difficulty ' }, select), timer,
+    element('button', { type: 'button', 'data-restart': '', text: 'Restart' }),
     element('button', { type: 'button', 'data-new-game': '', text: 'New Game' }));
   const notice = element('p', { class: 'game-storage-notice', role: 'status', 'aria-live': 'polite', hidden: true,
     text: 'Local progress is unavailable. You can still play.' });
   const live = element('p', { class: 'games-live-region', role: 'status', 'aria-live': 'polite' });
-  return { toolbar, select, timer, notice, live };
+  const assistedStatus = element('p', {
+    class: 'game-assisted-status', 'data-assisted-status': '', role: 'status', 'aria-live': 'polite',
+    text: 'Hints and checks make this run ineligible for best-time records.',
+  });
+  const setAssisted = (assisted, announce = false) => {
+    assistedStatus.textContent = assisted
+      ? 'Assisted run — ineligible for best-time records.'
+      : 'Hints and checks make this run ineligible for best-time records.';
+    if (announce && assisted) live.textContent = 'Assisted run. This time is ineligible for best-time records.';
+  };
+  return { toolbar, select, timer, notice, live, assistedStatus, setAssisted };
+}
+
+export function makeGameTerminal(root) {
+  root.querySelector('[role="grid"]')?.setAttribute('inert', '');
+  for (const selector of ['button', 'input', 'select']) {
+    for (const control of root.querySelectorAll(selector)) control.disabled = true;
+  }
 }
 
 export function completionPanel({ elapsed, assisted, playAnother }) {

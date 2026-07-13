@@ -1,6 +1,5 @@
 import { generateCrossword, validateCrossword } from './crossword.js';
-import { visibleElapsedMs } from './core.js';
-import { completionPanel, createSession, element, formatElapsed, renderReplacementKept, sharedShell } from './controller-common.js';
+import { completionPanel, createSession, element, formatElapsed, makeGameTerminal, renderReplacementKept, sharedShell } from './controller-common.js';
 
 const directions = { across: [0, 1], down: [1, 0] };
 const keyFor = ({ row, column }) => `${row}:${column}`;
@@ -73,6 +72,7 @@ const moveWithinEntry = (state, delta) => {
 };
 
 export function reduceCrossword(state, action) {
+  if (state.completed) return state;
   if (action.type === 'select') {
     const cell = state.definition.cells[action.row]?.[action.column];
     if (!cell) return state;
@@ -161,6 +161,7 @@ export async function renderCrossword(root, store) {
   }
   let state = persisted(session.run.puzzle.definition, session.run.puzzle.play, session.run.assisted);
   const shell = sharedShell({ title: 'Crossword', difficulty: session.difficulty });
+  shell.setAssisted(state.assisted);
   const instructions = element('details', { 'data-instructions': '' }, element('summary', { text: 'How to play' }),
     element('p', { text: 'Type letters. Arrow keys move, Backspace erases, Tab moves through clues, and selecting a crossing twice changes direction.' }));
   const layout = element('div', { class: 'crossword-layout' });
@@ -182,7 +183,7 @@ export async function renderCrossword(root, store) {
   const check = element('button', { type: 'button', 'data-check': '', text: 'Check Entry' });
   const checkAll = element('button', { type: 'button', 'data-check-all': '', text: 'Check Puzzle' });
   const controls = element('div', { class: 'game-controls' }, hint, check, checkAll);
-  root.replaceChildren(shell.toolbar, shell.notice, instructions, layout, controls, shell.live);
+  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, layout, controls, shell.live);
   let completed = false;
 
   const announceEntry = () => {
@@ -197,9 +198,10 @@ export async function renderCrossword(root, store) {
       if (!cell) return;
       const selected = rowIndex === state.selected.row && columnIndex === state.selected.column;
       const answer = cell[state.direction];
+      const mistake = state.errors.includes(`${rowIndex}:${columnIndex}`);
       const input = element('input', {
-        class: `crossword-cell${selected ? ' is-selected' : ''}${state.errors.includes(`${rowIndex}:${columnIndex}`) ? ' is-error' : ''}`,
-        'aria-label': `${cell.number ? `${cell.number}, ` : ''}row ${rowIndex + 1}, column ${columnIndex + 1}${answer ? `, ${state.direction}` : ''}`,
+        class: `crossword-cell${selected ? ' is-selected' : ''}${mistake ? ' is-error' : ''}`,
+        'aria-label': `${cell.number ? `${cell.number}, ` : ''}row ${rowIndex + 1}, column ${columnIndex + 1}${answer ? `, ${state.direction}` : ''}${mistake ? ', mistake' : ''}`,
         maxlength: '1', value: state.values[rowIndex][columnIndex], 'data-cell': `${rowIndex}:${columnIndex}`,
         tabindex: selected ? '0' : '-1',
       });
@@ -217,19 +219,23 @@ export async function renderCrossword(root, store) {
       });
       board.append(rowNode);
     });
-    shell.timer.textContent = formatElapsed(visibleElapsedMs(session.run, Date.now()));
+    shell.timer.textContent = formatElapsed(session.elapsed());
     if (state.completed && !completed) {
-      completed = true; const result = session.finish();
+      completed = true; const result = session.finish(); makeGameTerminal(root);
       const completion = completionPanel({ ...result, playAnother: session.playAnother });
       root.append(completion.panel); shell.live.textContent = 'Crossword complete.'; completion.heading.focus();
     }
   };
   const dispatch = (action, focus = false) => {
+    if (completed || state.completed || session.finished) return;
     const next = reduceCrossword(state, action); if (next === state) return;
     state = next;
-    if (['reveal', 'check-entry', 'check-all'].includes(action.type)) session.assist();
+    const assistedAction = ['reveal', 'check-entry', 'check-all'].includes(action.type);
+    if (assistedAction) { session.assist(); shell.setAssisted(true); }
     session.updatePlay(state); draw();
-    if (!state.completed) announceEntry();
+    if (!state.completed) {
+      if (assistedAction) shell.setAssisted(true, true); else announceEntry();
+    }
     if (focus && !state.completed) board.querySelector(`[data-cell="${keyFor(state.selected)}"]`)?.focus();
   };
   const keydown = (event) => {
@@ -245,10 +251,11 @@ export async function renderCrossword(root, store) {
     event.preventDefault();
   };
   hint.addEventListener('click', () => dispatch({ type: 'reveal' }));
-  check.addEventListener('click', () => { dispatch({ type: 'check-entry' }); shell.live.textContent = `${state.errors.length} errors in this entry.`; });
-  checkAll.addEventListener('click', () => { dispatch({ type: 'check-all' }); shell.live.textContent = `${state.errors.length} errors in the puzzle.`; });
+  check.addEventListener('click', () => { dispatch({ type: 'check-entry' }); shell.live.textContent = `${state.errors.length} errors in this entry. Assisted run; this time is ineligible for best-time records.`; });
+  checkAll.addEventListener('click', () => { dispatch({ type: 'check-all' }); shell.live.textContent = `${state.errors.length} errors in the puzzle. Assisted run; this time is ineligible for best-time records.`; });
+  shell.toolbar.querySelector('[data-restart]').addEventListener('click', () => { if (window.confirm('Restart this puzzle? Current progress will be cleared.')) void session.restart(); });
   shell.toolbar.querySelector('[data-new-game]').addEventListener('click', () => { if (!state.values.some((row) => row.some(Boolean)) || window.confirm('Replace this puzzle?')) void session.playAnother(); });
   shell.select.addEventListener('change', () => { globalThis.location.href = `/games/crossword?difficulty=${shell.select.value}`; });
   draw(); announceEntry();
-  session.repeat(() => { if (!completed) shell.timer.textContent = formatElapsed(visibleElapsedMs(session.run, Date.now())); }, 1000);
+  session.repeat(() => { if (!completed) shell.timer.textContent = formatElapsed(session.elapsed()); }, 1000);
 }

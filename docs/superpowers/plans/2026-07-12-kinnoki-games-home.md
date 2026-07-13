@@ -154,7 +154,7 @@ test('assisted completion increments totals but not best time', () => {
 
 - [ ] **Step 2: Run the shared-core test and verify the module is missing**
 
-Run: `node --test Tests/games/core.test.mjs`  
+Run: `node --test Tests/games/core.test.mjs`
 Expected: FAIL with `ERR_MODULE_NOT_FOUND` for `Resources/games/core.js`.
 
 - [ ] **Step 3: Implement the versioned store, Mulberry32 RNG, immutable run updates, streak dates, and storage error return values**
@@ -187,7 +187,7 @@ Add `startRun`, `markAssisted`, `completeRun`, and `visibleElapsedMs` using obje
 
 - [ ] **Step 4: Run the core tests**
 
-Run: `node --test Tests/games/core.test.mjs`  
+Run: `node --test Tests/games/core.test.mjs`
 Expected: all shared-core tests PASS.
 
 - [ ] **Step 5: Add repeatable game test targets**
@@ -249,7 +249,7 @@ test('different seeds produce different puzzles', () => {
 
 - [ ] **Step 2: Run the Sudoku test and verify it fails**
 
-Run: `node --test Tests/games/sudoku.test.mjs`  
+Run: `node --test Tests/games/sudoku.test.mjs`
 Expected: FAIL with `ERR_MODULE_NOT_FOUND` for `sudoku.js`.
 
 - [ ] **Step 3: Implement row/column/box validation and a bounded candidate solver**
@@ -282,7 +282,7 @@ Generate a base Latin-pattern solution, shuffle digits, row bands, rows within b
 
 - [ ] **Step 5: Run Sudoku tests and a 30-seed validity sweep**
 
-Run: `node --test Tests/games/sudoku.test.mjs`  
+Run: `node --test Tests/games/sudoku.test.mjs`
 Expected: PASS, including 10 seeds per difficulty completing within the test timeout.
 
 - [ ] **Step 6: Commit Sudoku**
@@ -342,7 +342,7 @@ test('impossible content returns the bundled known-valid puzzle', () => {
 
 - [ ] **Step 2: Run the Crossword test and verify it fails**
 
-Run: `node --test Tests/games/crossword.test.mjs`  
+Run: `node --test Tests/games/crossword.test.mjs`
 Expected: FAIL with `ERR_MODULE_NOT_FOUND`.
 
 - [ ] **Step 3: Add the reviewed clue bank**
@@ -376,7 +376,7 @@ Place the first answer through the center, then recursively choose shuffled cros
 
 - [ ] **Step 5: Run Crossword tests and a 60-puzzle generation sweep**
 
-Run: `node --test Tests/games/crossword.test.mjs`  
+Run: `node --test Tests/games/crossword.test.mjs`
 Expected: PASS for 20 seeds at each difficulty with every puzzle valid.
 
 - [ ] **Step 6: Commit Crossword**
@@ -422,7 +422,7 @@ for (const difficulty of ['easy', 'medium', 'hard']) {
 
 - [ ] **Step 2: Run the Word Search test and verify it fails**
 
-Run: `node --test Tests/games/word-search.test.mjs`  
+Run: `node --test Tests/games/word-search.test.mjs`
 Expected: FAIL with `ERR_MODULE_NOT_FOUND`.
 
 - [ ] **Step 3: Add themed word lists and difficulty rules**
@@ -447,7 +447,7 @@ Order selected words longest-first, score candidate placements by valid overlap 
 
 - [ ] **Step 5: Run Word Search tests and a 90-puzzle sweep**
 
-Run: `node --test Tests/games/word-search.test.mjs`  
+Run: `node --test Tests/games/word-search.test.mjs`
 Expected: PASS for 30 seeds per difficulty.
 
 - [ ] **Step 6: Commit Word Search**
@@ -494,7 +494,7 @@ for (const [route, page] of [['games', 'hub'], ['games/sudoku', 'sudoku'], ['gam
 
 - [ ] **Step 2: Run generation and verify the new route test fails**
 
-Run: `make generate && node --test Tests/games/routes.test.mjs`  
+Run: `make generate && node --test Tests/games/routes.test.mjs`
 Expected: FAIL because `Output/games/index.html` does not exist.
 
 - [ ] **Step 3: Add metadata pages**
@@ -542,7 +542,7 @@ private func gamesMain(page: String) -> Node<HTML.BodyContext> {
 
 - [ ] **Step 6: Generate and run the route test**
 
-Run: `make generate && node --test Tests/games/routes.test.mjs`  
+Run: `make generate && node --test Tests/games/routes.test.mjs`
 Expected: all four route contracts PASS.
 
 - [ ] **Step 7: Commit routes and navigation**
@@ -573,7 +573,7 @@ Add pure exports `gameCardModel(store, game)` and `statsModel(store)` to `hub-ui
 
 - [ ] **Step 2: Run focused tests and verify failures**
 
-Run: `node --test Tests/games/core.test.mjs Tests/games/routes.test.mjs`  
+Run: `node --test Tests/games/core.test.mjs Tests/games/routes.test.mjs`
 Expected: FAIL because hub modules and rendered contracts are absent.
 
 - [ ] **Step 3: Implement route bootstrap and the Arcade Hall model**
@@ -606,7 +606,7 @@ Append `.games-main`, `.games-hero`, `.game-card-grid`, `.game-card`, `.difficul
 
 - [ ] **Step 5: Generate and run focused tests**
 
-Run: `make generate && node --test Tests/games/core.test.mjs Tests/games/routes.test.mjs`  
+Run: `make generate && node --test Tests/games/core.test.mjs Tests/games/routes.test.mjs`
 Expected: PASS.
 
 - [ ] **Step 6: Commit the Arcade Hall**
@@ -639,7 +639,7 @@ Create a dependency-free DOM fixture with `createElement`, attributes, class lis
 
 - [ ] **Step 2: Run game tests and verify reducer-module failures**
 
-Run: `node --test Tests/games/*.test.mjs`  
+Run: `node --test Tests/games/*.test.mjs`
 Expected: FAIL for missing controller exports and route contracts.
 
 - [ ] **Step 3: Implement Sudoku rendering and input**
@@ -660,7 +660,7 @@ Parse `difficulty` and `continue` with `URLSearchParams`; default to Easy for in
 
 - [ ] **Step 7: Run the complete game test suite**
 
-Run: `node --test Tests/games/*.test.mjs`  
+Run: `node --test Tests/games/*.test.mjs`
 Expected: PASS with no unhandled promise rejection or console error.
 
 - [ ] **Step 8: Commit playable controllers**

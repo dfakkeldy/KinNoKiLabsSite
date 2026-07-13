@@ -1,7 +1,7 @@
 # KinNoKi Games Home Design
 
-**Date:** 2026-07-12  
-**Status:** Approved in conversation; awaiting written-spec review  
+**Date:** 2026-07-12
+**Status:** Approved in conversation; awaiting written-spec review
 **Public destination:** `https://kinnokilabs.com/games`
 
 ## Objective

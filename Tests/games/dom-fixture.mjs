@@ -139,6 +139,7 @@ export class FixtureElement {
 
 export function createDOMFixture({ search = '?difficulty=easy', confirm = true } = {}) {
   const listeners = new Map();
+  const windowListeners = new Map();
   const intervals = new Map();
   let nextInterval = 1;
   let hitTarget = null;
@@ -168,6 +169,10 @@ export function createDOMFixture({ search = '?difficulty=easy', confirm = true }
   const location = { search, href: '' };
   const window = {
     document, localStorage, location, confirm: () => confirm,
+    addEventListener(type, listener) { windowListeners.set(type, [...(windowListeners.get(type) ?? []), listener]); },
+    removeEventListener(type, listener) { windowListeners.set(type, (windowListeners.get(type) ?? []).filter((value) => value !== listener)); },
+    dispatchEvent(event) { for (const listener of windowListeners.get(event.type) ?? []) listener(event); },
+    listenerCount(type) { return (windowListeners.get(type) ?? []).length; },
     setInterval(callback) { const id = nextInterval; nextInterval += 1; intervals.set(id, callback); return id; },
     clearInterval(id) { intervals.delete(id); },
   };

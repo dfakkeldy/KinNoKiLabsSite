@@ -674,7 +674,12 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
 .sudoku-cell.is-related { background: color-mix(in srgb, var(--gold-500) 8%, var(--surface)); }
 .sudoku-cell.is-selected { position: relative; z-index: 1; outline: 3px solid var(--gold-500); outline-offset: -3px; }
 .sudoku-cell.is-given { font-weight: 800; }
-.sudoku-cell.is-error { color: #ef8d87; background: color-mix(in srgb, #9e3733 24%, var(--surface)); }
+.sudoku-cell.is-error {
+  color: #ef8d87;
+  border: 3px double currentColor;
+  background: color-mix(in srgb, #9e3733 24%, var(--surface));
+  background-image: repeating-linear-gradient(135deg, transparent 0 7px, currentColor 7px 9px, transparent 9px 16px);
+}
 .sudoku-number-pad { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
 
 .crossword-layout, .word-search-layout { display: grid; min-width: 0; grid-template-columns: minmax(0, 1.25fr) minmax(15rem, 0.75fr); gap: clamp(20px, 4vw, 42px); align-items: start; }
@@ -684,7 +689,14 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
 .crossword-cell { min-width: 0; width: 100%; min-height: 0; height: 100%; padding: 0; text-align: center; color: var(--game-text-primary); background: var(--surface); border: 1px solid var(--separator); border-radius: 0; font-family: var(--font-mono); font-size: clamp(0.7rem, 3vw, 1.35rem); font-weight: 700; text-transform: uppercase; }
 .crossword-number { position: absolute; top: 2px; left: 4px; pointer-events: none; color: var(--game-text-tertiary); font-family: var(--font-mono); font-size: 0.62rem; line-height: 1; }
 .crossword-cell.is-selected { outline: 3px solid var(--gold-500); outline-offset: -3px; }
-.crossword-cell.is-error { color: #ef8d87; background: color-mix(in srgb, #9e3733 24%, var(--surface)); }
+.crossword-cell.is-error {
+  color: #ef8d87;
+  border: 3px double currentColor;
+  background: color-mix(in srgb, #9e3733 24%, var(--surface));
+  background-image: repeating-linear-gradient(135deg, transparent 0 7px, currentColor 7px 9px, transparent 9px 16px);
+}
+
+.game-assisted-status { margin: 12px auto; color: var(--game-text-secondary); text-align: center; }
 .crossword-clues { display: grid; gap: 24px; }
 .crossword-clues h2 { margin-bottom: 8px; font-size: 1.1rem; }
 .crossword-clues ol { display: grid; gap: 5px; padding-left: 1.5rem; }

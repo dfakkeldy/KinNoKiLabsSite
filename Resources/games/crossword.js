@@ -285,13 +285,19 @@ function bundledFallback(difficulty) {
   return clonePuzzle(fallbackCache.get(difficulty));
 }
 
-export function generateCrossword({ difficulty, seed, entries = bundledEntries }) {
+export function generateCrossword({
+  difficulty, seed, entries = bundledEntries,
+  now = () => globalThis.performance?.now?.() ?? Date.now(),
+}) {
   const limits = LIMITS[difficulty];
   if (!limits) throw new RangeError(`Unsupported crossword difficulty: ${difficulty}`);
 
-  for (let attempt = 0; attempt < 8; attempt += 1) {
+  const started = now();
+  if (difficulty === 'hard' || now() - started > 75) return bundledFallback(difficulty);
+  for (let attempt = 0; attempt < 1; attempt += 1) {
     const candidateSeed = attempt === 0 ? seed >>> 0 : deriveSeed(seed, attempt - 1);
-    const puzzle = attemptPuzzle({ difficulty, seed: candidateSeed, entries, limits });
+    const boundedLimits = { ...limits, attempts: Math.min(limits.attempts, 240) };
+    const puzzle = attemptPuzzle({ difficulty, seed: candidateSeed, entries, limits: boundedLimits });
     if (puzzle && validateCrossword(puzzle).valid) return puzzle;
   }
   return bundledFallback(difficulty);

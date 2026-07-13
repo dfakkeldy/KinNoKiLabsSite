@@ -95,6 +95,45 @@ test('selection only matches tracked placement endpoints', () => {
   assert.equal(findSelection(puzzle, null, puzzle.placements[0].end), null);
 });
 
+test('selection accepts a duplicate straight occurrence of an unfinished listed word', () => {
+  const puzzle = generateWordSearch({ difficulty: 'easy', seed: 31, themes });
+  const placement = puzzle.placements[0];
+  const row = puzzle.grid.findIndex((_, index) => index !== placement.start.row);
+  const word = placement.word;
+  for (let column = 0; column < word.length; column += 1) puzzle.grid[row][column] = word[column];
+  const match = findSelection(puzzle, { row, column: 0 }, { row, column: word.length - 1 });
+  assert.equal(match?.word, word);
+});
+
+test('every listed-word occurrence is selectable across many generated seeds', { timeout: 20000 }, () => {
+  const occurrences = (puzzle, word) => {
+    const matches = [];
+    for (let row = 0; row < puzzle.size; row += 1) for (let column = 0; column < puzzle.size; column += 1) {
+      for (const direction of RULES[puzzle.difficulty].directions) {
+        const [dr, dc] = direction.split(':').map(Number);
+        const text = Array.from({ length: word.length }, (_, index) => (
+          puzzle.grid[row + dr * index]?.[column + dc * index]
+        )).join('');
+        if (text === word) matches.push([
+          { row, column },
+          { row: row + dr * (word.length - 1), column: column + dc * (word.length - 1) },
+        ]);
+      }
+    }
+    return matches;
+  };
+  for (const difficulty of ['easy', 'medium', 'hard']) for (let seed = 1; seed <= 20; seed += 1) {
+    const puzzle = generateWordSearch({ difficulty, seed, themes });
+    for (const { word } of puzzle.placements) {
+      const matches = occurrences(puzzle, word);
+      assert.ok(matches.length >= 1);
+      for (const [start, end] of matches) {
+        assert.equal(findSelection(puzzle, start, end)?.word, word, `${difficulty} seed ${seed} accepts ${word}`);
+      }
+    }
+  }
+});
+
 test('invalid theme input fails without entering an unbounded placement loop', () => {
   assert.throws(
     () => generateWordSearch({

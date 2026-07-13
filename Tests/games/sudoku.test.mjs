@@ -72,3 +72,30 @@ test('30 seeded Sudokus stay within clue ranges and remain uniquely solvable', {
     }
   }
 });
+
+test('supported Sudoku seeds always return a deterministic exactly classified puzzle', { timeout: 30000 }, () => {
+  for (const difficulty of ['easy', 'medium', 'hard']) {
+    for (let seed = 0; seed < 50; seed += 1) {
+      const first = generateSudoku({ difficulty, seed });
+      const second = generateSudoku({ difficulty, seed });
+      assert.deepEqual(first, second, `${difficulty} seed ${seed} must repeat`);
+      const solved = solveSudoku(first.puzzle, 2);
+      assert.equal(solved.solutions.length, 1, `${difficulty} seed ${seed} must be unique`);
+      assert.equal(solved.techniques.includes('guess'), false);
+      assert.equal(first.rating, difficulty);
+      if (difficulty === 'easy') assert.equal(solved.techniques.includes('candidate-elimination'), false);
+      if (difficulty === 'medium') {
+        assert.equal(solved.techniques.includes('candidate-elimination'), true);
+        assert.equal(solved.techniques.includes('advanced-elimination'), false);
+      }
+      if (difficulty === 'hard') assert.equal(solved.techniques.includes('advanced-elimination'), true);
+    }
+  }
+});
+
+test('Sudoku generation obeys a wall-clock safety deadline and still returns a valid fallback', () => {
+  let clock = 0;
+  const puzzle = generateSudoku({ difficulty: 'medium', seed: 19, now: () => (clock += 100) });
+  assert.equal(solveSudoku(puzzle.puzzle, 2).solutions.length, 1);
+  assert.equal(puzzle.rating, 'medium');
+});

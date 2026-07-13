@@ -1,6 +1,5 @@
 import { findSelection, generateWordSearch, validateWordSearch } from './word-search.js';
-import { visibleElapsedMs } from './core.js';
-import { completionPanel, createSession, element, formatElapsed, renderReplacementKept, sharedShell } from './controller-common.js';
+import { completionPanel, createSession, element, formatElapsed, makeGameTerminal, renderReplacementKept, sharedShell } from './controller-common.js';
 
 const same = (left, right) => left?.row === right?.row && left?.column === right?.column;
 const keyFor = ({ row, column }) => `${row}:${column}`;
@@ -58,6 +57,7 @@ export function validateWordSearchRun(payload, difficulty) {
 }
 
 export function reduceWordSearch(state, action) {
+  if (state.completed) return state;
   if (action.type === 'move') {
     return { ...state, focus: {
       row: Math.max(0, Math.min(state.definition.size - 1, action.row)),
@@ -112,6 +112,7 @@ export async function renderWordSearch(root, store) {
   }
   let state = persisted(session.run.puzzle.definition, session.run.puzzle.play, session.run.assisted);
   const shell = sharedShell({ title: 'Word Search', difficulty: session.difficulty });
+  shell.setAssisted(state.assisted);
   const instructions = element('details', { 'data-instructions': '' }, element('summary', { text: 'How to play' }),
     element('p', { text: 'Drag or activate the first and last letters. Use the horizontal board navigation rail to reach offscreen columns without changing your selection.' }));
   const layout = element('div', { class: 'word-search-layout' });
@@ -131,7 +132,7 @@ export async function renderWordSearch(root, store) {
   const panRail = element('div', { class: 'word-search-pan', role: 'group', 'aria-label': 'Horizontal board navigation' }, panLeft, panRange, panRight);
   const boardColumn = element('div', { class: 'word-search-board-column' }, boardScroll, panRail);
   layout.append(boardColumn, element('section', {}, element('h2', { text: state.definition.theme }), words));
-  root.replaceChildren(shell.toolbar, shell.notice, instructions, layout, controls, shell.live);
+  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, layout, controls, shell.live);
   let drag = null, completed = false, suppressClickUntil = 0;
 
   const maximumScroll = () => Math.max(0, boardScroll.scrollWidth - boardScroll.clientWidth);
@@ -237,19 +238,22 @@ export async function renderWordSearch(root, store) {
     state.definition.placements.forEach(({ word }) => words.append(element('li', {
       class: state.found.includes(word) ? 'is-found' : '', text: word,
     })));
-    shell.timer.textContent = formatElapsed(visibleElapsedMs(session.run, Date.now()));
+    shell.timer.textContent = formatElapsed(session.elapsed());
     if (state.completed && !completed) {
-      completed = true; const result = session.finish();
+      completed = true; const result = session.finish(); makeGameTerminal(root);
       const completion = completionPanel({ ...result, playAnother: session.playAnother });
       root.append(completion.panel); shell.live.textContent = 'Word Search complete.'; completion.heading.focus();
     }
   };
   const dispatch = (action, focus = false) => {
+    if (completed || state.completed || session.finished) return;
     const before = state.found.length; const next = reduceWordSearch(state, action); if (next === state) return;
     state = next;
-    if (action.type === 'hint' || action.type === 'check') session.assist();
+    const assistedAction = action.type === 'hint' || action.type === 'check';
+    if (assistedAction) { session.assist(); shell.setAssisted(true); }
     session.updatePlay(state); draw();
-    if (state.found.length > before && !state.completed) shell.live.textContent = `${state.lastFound} found.`;
+    if (assistedAction && !state.completed) shell.setAssisted(true, true);
+    else if (state.found.length > before && !state.completed) shell.live.textContent = `${state.lastFound} found.`;
     if (focus && !state.completed) board.querySelector(`[data-cell="${keyFor(state.focus)}"]`)?.focus();
   };
   const keydown = (event) => {
@@ -262,10 +266,11 @@ export async function renderWordSearch(root, store) {
     event.preventDefault();
   };
   hint.addEventListener('click', () => dispatch({ type: 'hint' }));
-  check.addEventListener('click', () => { dispatch({ type: 'check' }); shell.live.textContent = `${state.definition.placements.length - state.found.length} words remaining.`; });
+  check.addEventListener('click', () => { dispatch({ type: 'check' }); shell.live.textContent = `${state.definition.placements.length - state.found.length} words remaining. Assisted run; this time is ineligible for best-time records.`; });
+  shell.toolbar.querySelector('[data-restart]').addEventListener('click', () => { if (window.confirm('Restart this puzzle? Current progress will be cleared.')) void session.restart(); });
   shell.toolbar.querySelector('[data-new-game]').addEventListener('click', () => { if (!state.found.length || window.confirm('Replace this puzzle?')) void session.playAnother(); });
   shell.select.addEventListener('change', () => { globalThis.location.href = `/games/word-search?difficulty=${shell.select.value}`; });
   draw();
   syncPan();
-  session.repeat(() => { if (!completed) shell.timer.textContent = formatElapsed(visibleElapsedMs(session.run, Date.now())); }, 1000);
+  session.repeat(() => { if (!completed) shell.timer.textContent = formatElapsed(session.elapsed()); }, 1000);
 }
