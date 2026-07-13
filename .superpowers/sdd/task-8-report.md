@@ -84,3 +84,48 @@ exit 0
 
 None within Task 8 scope. Controller event mapping and lifecycle integration
 remain owned by later tasks in the approved plan.
+
+## Lifecycle Review Follow-Up
+
+Two Important review findings were corrected in commit `ec45b34`.
+
+### RED
+
+Two fake-time regressions were added before production changes. The focused
+audio command failed 7/9 with the intended evidence:
+
+```text
+pause cancels lookahead music voices before a backlog-free resume
+Expected 0 active sources; actual 2
+
+pause during terminal fade preserves exactly-once self-disposal
+Expected 1 retained disposal timer; actual 0
+```
+
+### Fix
+
+- Scheduled music voices now have their own tracking set. Ordinary pause stops,
+  disconnects, and untracks those voices before suspending the context; effects
+  remain governed by their existing independent voice/rate contract.
+- Once `finish` owns the terminal cadence and fade, pause/visibility calls no-op
+  instead of cancelling its timer or suspending its context. The one-second
+  timer therefore reaches idempotent disposal exactly once.
+- Resume still re-anchors `nextNoteTime` and waits for the next lookahead poll,
+  so cancelled pre-pause music cannot flush as backlog.
+
+### GREEN and Regression Evidence
+
+```text
+node --test Tests/games/game-audio.test.mjs
+tests 9; pass 9; fail 0
+
+focused Task 8/core/storage/Stack/Yard command
+tests 111; pass 111; fail 0
+
+make test-games
+tests 225; pass 225; fail 0
+```
+
+Gesture gating, finish idempotence, effect rate/voice caps, independent channel
+settings, one-notice silent fallback, and the Store v2 accounting/assistance/
+abandonment boundaries remained green. Generated `Output/` was not edited.
