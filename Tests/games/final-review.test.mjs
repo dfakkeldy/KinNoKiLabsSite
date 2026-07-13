@@ -144,3 +144,25 @@ test('mistakes have patterned non-colour styling and Crossword accessible names'
     assert.match(fixture.root.querySelector(`[data-cell="${answer.row}:${answer.column}"]`).getAttribute('aria-label'), /mistake/i);
   } finally { restore(); }
 });
+
+test('Play Another retries a colliding definition and persists its actual derived seed', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=hard&continue=1' }); const restore = installDOM(fixture);
+  try {
+    const { createSession } = await import('../../Resources/games/controller-common.js');
+    const current = { seed: 2, difficulty: 'hard', signature: 'same' };
+    const alternate = { seed: 99, difficulty: 'hard', signature: 'different' };
+    const store = storeWith('crossword', current, {});
+    let calls = 0, renderedStore;
+    const session = createSession({
+      root: fixture.root, game: 'crossword', store,
+      createPuzzle: () => (calls++ === 0 ? current : alternate),
+      createPlay: () => ({}), progressed: () => false, validateRun: () => true,
+      definitionSignature: (definition) => definition.signature,
+      onRender: async (nextStore) => { renderedStore = nextStore; },
+    });
+    await session.playAnother(3);
+    assert.equal(calls, 2);
+    assert.equal(renderedStore.runs.crossword.puzzle.definition.signature, 'different');
+    assert.notEqual(renderedStore.runs.crossword.seed, 3);
+  } finally { restore(); }
+});

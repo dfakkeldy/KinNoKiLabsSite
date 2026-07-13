@@ -293,7 +293,7 @@ function freezePuzzle(puzzle) {
 
 function bundledFallback(difficulty, seed) {
   const layouts = difficulty === 'hard' ? FALLBACK_LAYOUTS.hard : [FALLBACK_LAYOUTS[difficulty]];
-  const variant = (seed >>> 0) % layouts.length;
+  const variant = deriveSeed(seed, 0) % layouts.length;
   const cacheKey = `${difficulty}:${variant}`;
   if (!fallbackCache.has(cacheKey)) {
     const byAnswer = new Map(bundledEntries.map((entry) => [entry.answer, entry]));

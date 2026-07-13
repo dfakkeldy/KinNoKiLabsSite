@@ -213,6 +213,17 @@ test('representative consecutive hard seeds differ for Play Another', () => {
   );
 });
 
+test('hard seeds 2 and 3 do not repeat the same answer and grid signature', () => {
+  const signature = (puzzle) => JSON.stringify({
+    answers: puzzle.answers.map(({ answer, row, column, direction }) => [answer, row, column, direction]),
+    grid: puzzle.cells.map((row) => row.map((cell) => cell?.solution ?? '#')),
+  });
+  assert.notEqual(
+    signature(generateCrossword({ difficulty: 'hard', seed: 2, entries })),
+    signature(generateCrossword({ difficulty: 'hard', seed: 3, entries })),
+  );
+});
+
 test('sparse custom content gets a valid deterministic seed-keyed fallback', () => {
   const fallbacks = [];
   for (const seed of [3, 92]) {
