@@ -101,6 +101,10 @@ export class FixtureElement {
     const listeners = this.listeners.get(type) ?? [];
     listeners.push(listener); this.listeners.set(type, listeners);
   }
+  removeEventListener(type, listener) {
+    this.listeners.set(type, (this.listeners.get(type) ?? [])
+      .filter((value) => value !== listener));
+  }
   dispatchEvent(event) {
     if (!event.target) event.target = this;
     event.currentTarget = this;
