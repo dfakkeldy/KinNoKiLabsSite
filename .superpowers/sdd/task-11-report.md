@@ -51,3 +51,20 @@ Only the Yard controller, its tests, and this report were added. Generated
 `Output/` was not edited. Real-browser route wiring, visual CSS integration,
 and responsive screenshot validation remain outside Task 11's controller-only
 scope.
+
+## Saved assistance admission follow-up
+
+Closed an admission gap where a structurally valid play state could disagree
+with the generic run envelope's `assisted` value. Yard now requires the envelope
+to be a boolean exactly equal to the engine-authenticated play assistance state.
+It does not normalize or admit either mismatch direction or nonboolean values.
+
+RED controller tests proved that `run.assisted === false` with assisted play,
+`run.assisted === true` with unassisted play, and representative string, number,
+and null envelopes previously reached the Continue shell. GREEN proves every
+case is abandoned, fails closed with the invalid-save recovery UI, exposes no
+Continue control, and therefore cannot reach the later completion consistency
+guard.
+
+The final focused Yard/engine/controller/lifecycle/audio/core/storage matrix
+passed 117/117. The full `make test-games` regression passed 269/269.

@@ -568,7 +568,8 @@ function validStoredYardRun(run, engine) {
       && run.puzzle?.definition?.mode === run.mode
       && run.puzzle?.definition?.difficulty === run.difficulty
       && run.puzzle?.play?.kind === run.mode
-      && (run.assisted !== true || run.puzzle.play.assisted === true)
+      && typeof run.assisted === 'boolean'
+      && run.assisted === run.puzzle.play.assisted
       && engine.yardDefinitionSignature(run.puzzle.definition) === run.signature
       && engine.yardDefinitionSignature(run.puzzle.play.definition) === run.signature
       && engine.validateYardState(

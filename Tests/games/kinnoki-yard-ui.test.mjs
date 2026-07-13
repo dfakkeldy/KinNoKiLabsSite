@@ -62,7 +62,7 @@ import {
   createContractState, generateContract, reduceContract, yardDefinitionSignature,
 } from '../../Resources/games/kinnoki-yard.js';
 import {
-  openGameStore, startRun, STORE_KEYS,
+  markAssisted, openGameStore, startRun, STORE_KEYS,
 } from '../../Resources/games/core.js';
 
 test('Contract and Endless expose their exact mode-specific controls', async () => {
@@ -139,6 +139,75 @@ test('Yard rejects a saved run whose signature does not match its definition', a
     assert.match(fixture.root.textContent, /Saved Kinnoki Yard state is invalid/);
     assert.equal(fixture.root.querySelector('[data-continue-game]'), null);
   } finally { restore(); }
+});
+
+test('Yard rejects either saved assistance mismatch before Continue admission', async () => {
+  const definition = generateContract({ difficulty: 'easy', seed: 820 });
+  let assistedPlay = reduceContract(
+    createContractState(definition), { type: 'start' },
+  ).state;
+  assistedPlay = reduceContract(assistedPlay, { type: 'hint' }).state;
+  assert.equal(assistedPlay.assisted, true);
+
+  const falseEnvelope = startRun(createEmptyGameStore(), {
+    game: 'kinnoki-yard', mode: 'contracts', difficulty: 'easy', seed: 820,
+    signature: yardDefinitionSignature(definition),
+    puzzle: { definition, play: assistedPlay }, now: 100,
+  });
+  assert.equal(falseEnvelope.runs['kinnoki-yard'].assisted, false);
+
+  const unassistedPlay = reduceContract(
+    createContractState(definition), { type: 'start' },
+  ).state;
+  let trueEnvelope = startRun(createEmptyGameStore(), {
+    game: 'kinnoki-yard', mode: 'contracts', difficulty: 'easy', seed: 820,
+    signature: yardDefinitionSignature(definition),
+    puzzle: { definition, play: unassistedPlay }, now: 100,
+  });
+  trueEnvelope = markAssisted(trueEnvelope, 'kinnoki-yard');
+  assert.equal(trueEnvelope.runs['kinnoki-yard'].assisted, true);
+
+  for (const store of [falseEnvelope, trueEnvelope]) {
+    const fixture = createDOMFixture({ search: '?mode=contracts&difficulty=easy' });
+    const restore = installDOM(fixture);
+    try {
+      const { renderKinnokiYard } = await import('../../Resources/games/kinnoki-yard-ui.js');
+      await renderKinnokiYard(fixture.root, store, {
+        storage: fixture.localStorage,
+        audioFactory: silentYardAudioFactory,
+      });
+      assert.match(fixture.root.textContent, /Saved Kinnoki Yard state is invalid/);
+      assert.equal(fixture.root.querySelector('[data-continue-game]'), null);
+      assert.equal(openGameStore(fixture.localStorage).store.runs['kinnoki-yard'], undefined);
+    } finally { restore(); }
+  }
+});
+
+test('Yard rejects nonboolean saved assistance envelopes before Continue admission', async () => {
+  const definition = generateContract({ difficulty: 'easy', seed: 821 });
+  const play = reduceContract(createContractState(definition), { type: 'start' }).state;
+  const base = startRun(createEmptyGameStore(), {
+    game: 'kinnoki-yard', mode: 'contracts', difficulty: 'easy', seed: 821,
+    signature: yardDefinitionSignature(definition),
+    puzzle: { definition, play }, now: 100,
+  });
+
+  for (const hostileAssisted of ['false', 0, null]) {
+    const store = structuredClone(base);
+    store.runs['kinnoki-yard'].assisted = hostileAssisted;
+    const fixture = createDOMFixture({ search: '?mode=contracts&difficulty=easy' });
+    const restore = installDOM(fixture);
+    try {
+      const { renderKinnokiYard } = await import('../../Resources/games/kinnoki-yard-ui.js');
+      await renderKinnokiYard(fixture.root, store, {
+        storage: fixture.localStorage,
+        audioFactory: silentYardAudioFactory,
+      });
+      assert.match(fixture.root.textContent, /Saved Kinnoki Yard state is invalid/);
+      assert.equal(fixture.root.querySelector('[data-continue-game]'), null);
+      assert.equal(openGameStore(fixture.localStorage).store.runs['kinnoki-yard'], undefined);
+    } finally { restore(); }
+  }
 });
 
 test('declined active mode replacement changes no lifecycle or saved state', async () => {
