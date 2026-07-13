@@ -141,3 +141,83 @@ snapshot histories while preserving `assisted: true`.
 Replay work is linear in the number of successful Endless placements and is
 performed only when authenticating persisted state. No controller integration
 or generated `Output/` files were changed.
+
+---
+
+## Second Integrity Review Follow-up
+
+### Findings resolved
+
+Placement-only provenance erased Undo evidence, so assistance could be forged
+back to `false`. It also did not authenticate exact pre-placement selection or
+rotation, and lifecycle status was not derived from provenance. Finally, each
+snapshot recursively embedded the placement history, causing superlinear saved
+state growth.
+
+### RED
+
+Added reviewer regressions for:
+
+- legal placement plus Undo followed by an `assisted: false` forgery;
+- a history snapshot changed to another legal tray selection or rotation;
+- a progressed active state forged back to preview;
+- a 12-placement saved run whose snapshots must contain no command/history
+  provenance and whose serialized size must remain bounded linearly.
+
+Command:
+
+```sh
+node --test Tests/games/kinnoki-yard-endless.test.mjs
+```
+
+All four new boundaries failed before production changes: the three forgeries
+were accepted and `commandLog` did not exist.
+
+### Implementation
+
+- Replaced placement-only `actionHistory` with retained canonical `commandLog`.
+- Successful state-changing start, pause, resume, selection, rotation,
+  placement, Undo, and continue-preparation operations append exact commands.
+  Invalid actions and idempotent lifecycle calls do not append evidence.
+- Undo restores only the position snapshot, retains its command evidence, and
+  derives sticky assistance during replay.
+- Snapshots contain only position fields. They never contain `history`,
+  `commandLog`, or command prefixes.
+- Validation replays from the deterministic preview state and compares kind,
+  lifecycle status, terminal reason, assistance, exact tray selection and
+  rotations, focus, board, manifests, stream indices, accounting, and the exact
+  current Undo snapshot stack.
+- Continue preparation records an explicit `prepare-continue` command, so its
+  paused status is replayable even when preparing a preview or active save.
+- Renamed the saturation test to accurately state that it proves combo reset
+  while preserving counters that are already saturated; it does not claim to
+  create a real saturated dispatch increment.
+
+### Complexity and storage shape
+
+For `n` retained commands, serialized provenance is `O(n)`. Each position
+snapshot has a fixed upper bound because Endless board dimensions, tray, and
+manifest counts are bounded and no snapshot embeds another history.
+
+Validation is `O(n)` in retained commands: it suppresses command recording and
+history retention during reducer replay, maintains one validator-owned snapshot
+stack, and performs one final linear comparison. Fixed board/manifest scans per
+placement are constant with respect to `n`.
+
+### GREEN
+
+Focused Endless and Contract suites passed 29/29. Yard/core/storage passed
+77/77. The full Arcade Hall regression passed 213/213:
+
+```sh
+node --test Tests/games/core.test.mjs Tests/games/storage-v2.test.mjs \
+  Tests/games/kinnoki-yard-solver.test.mjs \
+  Tests/games/kinnoki-yard-generator.test.mjs \
+  Tests/games/kinnoki-yard-contracts.test.mjs \
+  Tests/games/kinnoki-yard-endless.test.mjs
+make test-games
+```
+
+### Concerns
+
+None within Task 7 scope. Generated `Output/` remains untouched.

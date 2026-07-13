@@ -1237,7 +1237,7 @@ export function createEndlessState(definition) {
     selectedPieceId: tray[0].pieceId, focus: { row: 0, column: 0 },
     manifests: selected.manifests, manifestIndex: selected.nextIndex,
     sequenceIndex: 3, batchIndex: 0, score: 0, combo: 0, bestCombo: 0,
-    dispatchedManifests: 0, assisted: false, history: [], actionHistory: [],
+    dispatchedManifests: 0, assisted: false, history: [], commandLog: [],
     terminalReason: null };
 }
 
@@ -1246,7 +1246,8 @@ export function prepareEndlessForContinue(play) {
       || play.status === 'terminal') {
     throw new TypeError('Invalid saved Endless Yard');
   }
-  return structuredClone({ ...play, status: 'paused' });
+  return structuredClone({ ...play, status: 'paused',
+    commandLog: [...play.commandLog, { type: 'prepare-continue' }] });
 }
 
 const endlessSnapshot = (state) => structuredClone({
@@ -1254,7 +1255,7 @@ const endlessSnapshot = (state) => structuredClone({
   focus: state.focus, manifests: state.manifests, manifestIndex: state.manifestIndex,
   sequenceIndex: state.sequenceIndex, batchIndex: state.batchIndex,
   score: state.score, combo: state.combo, bestCombo: state.bestCombo,
-  dispatchedManifests: state.dispatchedManifests, actionHistory: state.actionHistory,
+  dispatchedManifests: state.dispatchedManifests,
 });
 
 export function hasAnyEndlessPlacement(state) {
@@ -1274,12 +1275,19 @@ const endlessInvalid = (state, action, reason) => ({
   state, events: [{ type: 'invalid', action, reason }],
 });
 
-export function reduceEndless(state, action) {
+const appendEndlessCommand = (state, command, record) => record
+  ? { ...state, commandLog: [...(state.commandLog ?? []), structuredClone(command)] }
+  : state;
+
+const reduceEndlessInternal = (state, action, {
+  record = true, retainHistory = true,
+} = {}) => {
   if (['terminal', 'error', 'disposed'].includes(state.status)) return { state, events: [] };
   if (action.type === 'start') {
     if (state.status === 'active') return { state, events: [] };
     return state.status === 'preview'
-      ? { state: { ...state, status: 'active' }, events: [{ type: 'started' }] }
+      ? { state: appendEndlessCommand({ ...state, status: 'active' },
+        { type: 'start' }, record), events: [{ type: 'started' }] }
       : endlessInvalid(state, 'start', 'Endless Yard cannot start from this state.');
   }
   if (action.type === 'pause') {
@@ -1287,13 +1295,15 @@ export function reduceEndless(state, action) {
     if (state.status !== 'active' || !['user', 'hidden'].includes(action.reason)) {
       return endlessInvalid(state, 'pause', 'Endless Yard cannot pause from this state.');
     }
-    return { state: { ...state, status: 'paused' },
+    return { state: appendEndlessCommand({ ...state, status: 'paused' },
+      { type: 'pause', reason: action.reason }, record),
       events: [{ type: 'paused', reason: action.reason }] };
   }
   if (action.type === 'resume') {
     if (state.status === 'active') return { state, events: [] };
     return state.status === 'paused'
-      ? { state: { ...state, status: 'active' }, events: [{ type: 'resumed' }] }
+      ? { state: appendEndlessCommand({ ...state, status: 'active' },
+        { type: 'resume' }, record), events: [{ type: 'resumed' }] }
       : endlessInvalid(state, 'resume', 'Endless Yard cannot resume from this state.');
   }
   if (state.status !== 'active') return endlessInvalid(state, action.type, 'Game is paused.');
@@ -1303,7 +1313,8 @@ export function reduceEndless(state, action) {
   if (action.type === 'select-piece') {
     const piece = state.tray.find((value) => value.pieceId === action.pieceId);
     return piece
-      ? { state: { ...state, selectedPieceId: piece.pieceId },
+      ? { state: appendEndlessCommand({ ...state, selectedPieceId: piece.pieceId },
+        { type: 'select-piece', pieceId: piece.pieceId }, record),
         events: [{ type: 'selected', pieceId: piece.pieceId }] }
       : endlessInvalid(state, action.type, 'Unknown cargo piece.');
   }
@@ -1322,14 +1333,16 @@ export function reduceEndless(state, action) {
     const tray = state.tray.map((value, pieceIndex) => (
       pieceIndex === index ? { ...value, rotation } : value
     ));
-    return { state: { ...state, tray },
+    return { state: appendEndlessCommand({ ...state, tray },
+      { type: 'rotate-piece', quarterTurns: 1 }, record),
       events: [{ type: 'rotated', pieceId: piece.pieceId, rotation }] };
   }
   if (action.type === 'undo') {
     if (state.history.length === 0) return { state, events: [] };
     const restored = structuredClone(state.history.at(-1));
-    return { state: { ...state, ...restored, assisted: true,
-      history: state.history.slice(0, -1) },
+    const next = { ...state, ...restored, assisted: true,
+      history: state.history.slice(0, -1) };
+    return { state: appendEndlessCommand(next, { type: 'undo' }, record),
     events: [
       ...(state.assisted ? [] : [{ type: 'assisted', reason: 'endless-undo' }]),
       { type: 'undone', mode: 'endless', assisted: true },
@@ -1348,11 +1361,8 @@ export function reduceEndless(state, action) {
     return endlessInvalid(state, action.type, 'Cargo does not fit here.');
   }
 
-  const history = [...state.history, endlessSnapshot(state)];
-  const actionHistory = [...(state.actionHistory ?? []), {
-    pieceId: piece.pieceId, rotation: piece.rotation,
-    row: action.row, column: action.column,
-  }];
+  const history = retainHistory
+    ? [...state.history, endlessSnapshot(state)] : state.history;
   const placedBoard = placePiece(state.board, { pieceId: piece.pieceId,
     typeId: piece.typeId, rotation: piece.rotation, ...origin });
   const placementScore = 10 * rotated.cells.length;
@@ -1393,7 +1403,10 @@ export function reduceEndless(state, action) {
       const tray = state.tray.filter((value) => value.pieceId !== piece.pieceId);
       return { state: { ...state, board, score, combo, bestCombo,
         manifests: incomplete, dispatchedManifests, history, tray,
-        selectedPieceId: tray[0]?.pieceId ?? null, status: 'error', actionHistory },
+        selectedPieceId: tray[0]?.pieceId ?? null, status: 'error',
+        commandLog: record ? [...(state.commandLog ?? []), {
+          type: 'place-piece', row: action.row, column: action.column,
+        }] : state.commandLog },
       events: [...events, { type: 'error', code: 'manifest-generation',
         message: 'A new Cargo Manifest could not be prepared.' }] };
     }
@@ -1412,12 +1425,18 @@ export function reduceEndless(state, action) {
   }
   let next = { ...state, board, tray, selectedPieceId: tray[0].pieceId,
     manifests, manifestIndex, sequenceIndex, batchIndex, score, combo, bestCombo,
-    dispatchedManifests, history, actionHistory };
+    dispatchedManifests, history };
   if (!hasAnyEndlessPlacement(next)) {
     next = { ...next, status: 'terminal', terminalReason: 'no-placement' };
     events.push({ type: 'terminal', reason: 'no-placement' });
   }
-  return { state: next, events };
+  return { state: appendEndlessCommand(next, {
+    type: 'place-piece', row: action.row, column: action.column,
+  }, record), events };
+};
+
+export function reduceEndless(state, action) {
+  return reduceEndlessInternal(state, action);
 }
 
 export function yardDefinitionSignature(definition) {
@@ -1477,7 +1496,7 @@ export function yardCompletionPayload(state, elapsedMs) {
 }
 
 const endlessSnapshotKeys = Object.freeze([
-  'actionHistory', 'batchIndex', 'bestCombo', 'board', 'combo', 'dispatchedManifests', 'focus',
+  'batchIndex', 'bestCombo', 'board', 'combo', 'dispatchedManifests', 'focus',
   'manifestIndex', 'manifests', 'score', 'selectedPieceId', 'sequenceIndex', 'tray',
 ]);
 
@@ -1563,59 +1582,62 @@ const endlessPositionErrors = (position, definition, rules) => {
 
 const sameJson = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 const endlessReplayFields = Object.freeze([
-  'batchIndex', 'bestCombo', 'board', 'combo', 'dispatchedManifests',
-  'manifestIndex', 'manifests', 'score', 'sequenceIndex',
+  'assisted', 'batchIndex', 'bestCombo', 'board', 'combo', 'dispatchedManifests',
+  'focus', 'kind', 'manifestIndex', 'manifests', 'score',
+  'selectedPieceId', 'sequenceIndex', 'status', 'terminalReason', 'tray',
 ]);
-const endlessTrayStream = (tray) => tray.map(({
-  pieceId, typeId, allowedRotations, batchIndex,
-}) => ({ pieceId, typeId, allowedRotations, batchIndex }));
 
-const validEndlessAction = (action) => (
-  isRecord(action)
-  && sameJson(Object.keys(action).sort(), ['column', 'pieceId', 'rotation', 'row'])
-  && safeCount(action.pieceId)
-  && Number.isInteger(action.rotation)
-  && Number.isInteger(action.row)
-  && Number.isInteger(action.column)
-);
+const exactCommandKeys = (command, keys) => sameJson(Object.keys(command).sort(), keys);
+const validEndlessCommand = (command) => {
+  if (!isRecord(command) || typeof command.type !== 'string') return false;
+  if (['start', 'resume', 'undo', 'prepare-continue'].includes(command.type)) {
+    return exactCommandKeys(command, ['type']);
+  }
+  if (command.type === 'pause') {
+    return exactCommandKeys(command, ['reason', 'type'])
+      && ['user', 'hidden'].includes(command.reason);
+  }
+  if (command.type === 'select-piece') {
+    return exactCommandKeys(command, ['pieceId', 'type']) && safeCount(command.pieceId);
+  }
+  if (command.type === 'rotate-piece') {
+    return exactCommandKeys(command, ['quarterTurns', 'type']) && command.quarterTurns === 1;
+  }
+  if (command.type === 'place-piece') {
+    return exactCommandKeys(command, ['column', 'row', 'type'])
+      && Number.isInteger(command.row) && Number.isInteger(command.column);
+  }
+  return false;
+};
 
 const replayEndlessHistory = (value, definition) => {
-  if (!Array.isArray(value?.actionHistory) || !Array.isArray(value?.history)
-      || value.actionHistory.length !== value.history.length) return false;
+  if (!Array.isArray(value?.commandLog) || !Array.isArray(value?.history)) return false;
   try {
-    let replay = { ...createEndlessState(definition), status: 'active' };
-    for (const [index, action] of value.actionHistory.entries()) {
-      const snapshot = value.history[index];
-      if (!validEndlessAction(action)
-          || !sameJson(snapshot?.actionHistory, value.actionHistory.slice(0, index))
-          || !sameJson(endlessTrayStream(snapshot?.tray), endlessTrayStream(replay.tray))
-          || !endlessReplayFields.every((field) => sameJson(snapshot?.[field], replay[field]))) {
-        return false;
+    let replay = createEndlessState(definition);
+    const snapshots = [];
+    for (const command of value.commandLog) {
+      if (!validEndlessCommand(command)) return false;
+      if (command.type === 'prepare-continue') {
+        if (replay.status === 'terminal') return false;
+        replay = { ...replay, status: 'paused' };
+        continue;
       }
-      const piece = replay.tray.find(({ pieceId }) => pieceId === action.pieceId);
-      if (!piece || !piece.allowedRotations.includes(action.rotation)) return false;
-      const prepared = {
-        ...replay,
-        selectedPieceId: piece.pieceId,
-        tray: replay.tray.map((candidate) => candidate.pieceId === piece.pieceId
-          ? { ...candidate, rotation: action.rotation } : candidate),
-      };
-      const result = reduceEndless(prepared, {
-        type: 'place-piece', row: action.row, column: action.column,
+      if (command.type === 'undo') {
+        if (replay.status !== 'active' || snapshots.length === 0) return false;
+        replay = { ...replay, ...structuredClone(snapshots.pop()),
+          assisted: true, history: [] };
+        continue;
+      }
+      const snapshot = command.type === 'place-piece' ? endlessSnapshot(replay) : null;
+      const result = reduceEndlessInternal(replay, command, {
+        record: false, retainHistory: false,
       });
-      if (result.events[0]?.type !== 'placed') return false;
+      if (result.state === replay) return false;
       replay = result.state;
+      if (snapshot) snapshots.push(snapshot);
     }
-    if (!sameJson(endlessTrayStream(value?.tray), endlessTrayStream(replay.tray))
-        || !endlessReplayFields.every((field) => sameJson(value?.[field], replay[field]))) {
-      return false;
-    }
-    if (value.status === 'terminal') {
-      return replay.status === 'terminal'
-        && value.terminalReason === 'no-placement'
-        && !hasAnyEndlessPlacement(value);
-    }
-    return replay.status === 'active' && value.terminalReason === null;
+    return sameJson(value.history, snapshots)
+      && endlessReplayFields.every((field) => sameJson(value?.[field], replay[field]));
   } catch {
     return false;
   }

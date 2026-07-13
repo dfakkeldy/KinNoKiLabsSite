@@ -302,7 +302,7 @@ test('Endless dispatches simultaneous manifests with one combo multiplier', () =
   assert.equal(result.state.dispatchedManifests, 2);
 });
 
-test('Endless resets combos and saturates every accounting field', () => {
+test('Endless resets combos while preserving already saturated counters', () => {
   const base = endlessState('easy', 13);
   const fixture = {
     ...base, status: 'active', combo: 7, bestCombo: Number.MAX_SAFE_INTEGER,
@@ -340,4 +340,60 @@ test('Yard facade positively routes definitions, state, validation, and reducers
   });
   assert.equal(reduceYard(preview, { type: 'start' }).state.status, 'active');
   assert.equal(prepareYardForContinue(preview).status, 'paused');
+});
+
+test('Endless command provenance makes Undo assistance sticky', () => {
+  const active = reduceEndless(endlessState('easy', 15), { type: 'start' }).state;
+  const placed = placeGreedily(active).state;
+  const undone = reduceEndless(placed, { type: 'undo' }).state;
+  assert.equal(undone.assisted, true);
+  assert.deepEqual(validateEndlessState(undone, 'easy'), { valid: true, errors: [] });
+  assert.equal(validateEndlessState({ ...undone, assisted: false }, 'easy').valid, false);
+});
+
+test('Endless command provenance authenticates exact pre-placement selection and rotation', () => {
+  const active = reduceEndless(endlessState('easy', 19), { type: 'start' }).state;
+  const placed = placeGreedily(active).state;
+  const snapshot = placed.history[0];
+  const different = snapshot.tray.find(({ pieceId }) => pieceId !== snapshot.selectedPieceId);
+  assert.ok(different);
+  const forgedSelection = structuredClone(placed);
+  forgedSelection.history[0].selectedPieceId = different.pieceId;
+  assert.equal(validateEndlessState(forgedSelection, 'easy').valid, false);
+
+  const selected = snapshot.tray.find(({ pieceId }) => pieceId === snapshot.selectedPieceId);
+  if (selected.allowedRotations.length > 1) {
+    const forgedRotation = structuredClone(placed);
+    forgedRotation.history[0].tray.find(
+      ({ pieceId }) => pieceId === snapshot.selectedPieceId,
+    ).rotation = selected.allowedRotations.find((rotation) => rotation !== selected.rotation);
+    assert.equal(validateEndlessState(forgedRotation, 'easy').valid, false);
+  }
+});
+
+test('Endless lifecycle status must be derived by retained commands', () => {
+  const active = reduceEndless(endlessState('medium', 29), { type: 'start' }).state;
+  assert.deepEqual(validateEndlessState(active, 'medium'), { valid: true, errors: [] });
+  assert.equal(validateEndlessState({ ...active, status: 'preview' }, 'medium').valid, false);
+  const paused = reduceEndless(active, { type: 'pause', reason: 'hidden' }).state;
+  assert.deepEqual(validateEndlessState(paused, 'medium'), { valid: true, errors: [] });
+  const continued = prepareYardForContinue(active);
+  assert.deepEqual(validateEndlessState(continued, 'medium'), { valid: true, errors: [] });
+});
+
+test('Endless snapshots have bounded non-recursive provenance shape', () => {
+  let state = reduceEndless(endlessState('easy', 0), { type: 'start' }).state;
+  for (let placement = 0; placement < 12 && state.status === 'active'; placement += 1) {
+    state = placeGreedily(state).state;
+  }
+  assert.ok(state.history.length >= 10);
+  assert.ok(state.commandLog.length >= state.history.length);
+  for (const snapshot of state.history) {
+    assert.equal(Object.hasOwn(snapshot, 'history'), false);
+    assert.equal(Object.hasOwn(snapshot, 'commandLog'), false);
+    assert.equal(Object.hasOwn(snapshot, 'actionHistory'), false);
+  }
+  const initialSize = JSON.stringify(endlessState('easy', 0)).length;
+  assert.ok(JSON.stringify(state).length < initialSize + (state.history.length * 12000));
+  assert.deepEqual(validateEndlessState(state, 'easy'), { valid: true, errors: [] });
 });
