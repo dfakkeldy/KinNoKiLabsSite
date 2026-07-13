@@ -68,7 +68,7 @@ export function createStackState(definition) {
   const initialGeneration = manifestGenerationRecord({
     board, occupied: [], startIndex: 0, count: config.manifestCount, selected,
   });
-  return { definition, difficulty: definition.difficulty, width: STACK_WIDTH, height: STACK_HEIGHT, status: 'preview', board, active, preview, sequenceIndex: 0, nextPieceId: config.previewCount + 1, manifests: selected.manifests, manifestIndex: selected.nextIndex, manifestProvenance: manifestProvenanceFor(selected.manifests, selected.nextIndex, [initialGeneration]), tide: tideForEvent(definition, 0), components: [], score: 0, combo: 0, bestCombo: 0, dispatchedManifests: 0, placements: 0, assisted: false, stepMode: false, grounded: null, gravityAccumulatorMs: 0, terminalReason: null };
+  return { definition, difficulty: definition.difficulty, width: STACK_WIDTH, height: STACK_HEIGHT, status: 'preview', board, active, preview, sequenceIndex: 0, nextPieceId: config.previewCount + 1, manifests: selected.manifests, manifestIndex: selected.nextIndex, manifestProvenance: manifestProvenanceFor(selected.manifests, selected.nextIndex, [initialGeneration]), lockHistory: [], tide: tideForEvent(definition, 0), components: [], score: 0, combo: 0, bestCombo: 0, dispatchedManifests: 0, placements: 0, assisted: false, stepMode: false, grounded: null, gravityAccumulatorMs: 0, terminalReason: null };
 }
 export function prepareStackForContinue(play) {
   if (!['active', 'paused'].includes(play?.status) || !validateStackState(play, play?.difficulty).valid) throw new TypeError('Saved Kinnoki Stack state is invalid');
@@ -187,7 +187,14 @@ function reduceActiveStack(state, action) {
   if (action.type === 'hard-drop') {
     let active = state.active;
     while (canUseActive(state, { ...active, row: active.row + 1 })) active = { ...active, row: active.row + 1 };
-    return lockActive({ ...state, active });
+    const result = lockActive({ ...state, active });
+    return {
+      ...result,
+      state: {
+        ...result.state,
+        lockHistory: [...state.lockHistory, cloneSerializable(active)],
+      },
+    };
   }
   return invalid(state, String(action.type), 'Action is not available.');
 }
@@ -235,11 +242,35 @@ export function validateStackState(value, difficulty) {
     });
   const currentManifestIds = value?.manifests?.map(({ id }) => id);
   const generatedManifests = new Map();
+  let liveManifests = [];
+  let previousNextIndex = null;
+  let totalGenerated = 0;
   let generationsValid = Array.isArray(provenance?.generations)
     && provenance.generations.length > 0;
   if (generationsValid) {
-    for (const generation of provenance.generations) {
+    for (const [generationIndex, generation] of provenance.generations.entries()) {
       try {
+        if (generationIndex === 0) {
+          const canonical = createStackState(definition)
+            .manifestProvenance.generations[0];
+          if (!sameJson(generation, canonical)) {
+            generationsValid = false;
+            break;
+          }
+        } else {
+          const occupiedIds = generation.occupied.map(({ id }) => id);
+          const liveById = new Map(liveManifests.map((manifest) => [manifest.id, manifest]));
+          const occupiedAreSurvivors = generation.occupied.every((manifest) => (
+            sameJson(liveById.get(manifest.id), manifest)
+          ));
+          if (generation.startIndex !== previousNextIndex
+              || !occupiedAreSurvivors
+              || liveManifests.length - generation.occupied.length !== generation.count
+              || new Set(occupiedIds).size !== occupiedIds.length) {
+            generationsValid = false;
+            break;
+          }
+        }
         const selected = selectNextManifestZones({
           board: generation.board,
           width: STACK_WIDTH,
@@ -260,6 +291,9 @@ export function validateStackState(value, difficulty) {
           if (generatedManifests.has(manifest.id)) generationsValid = false;
           generatedManifests.set(manifest.id, manifest);
         }
+        liveManifests = [...generation.occupied, ...selected.manifests];
+        previousNextIndex = selected.nextIndex;
+        totalGenerated += selected.manifests.length;
       } catch {
         generationsValid = false;
         break;
@@ -270,11 +304,16 @@ export function validateStackState(value, difficulty) {
     && value.manifests.every((manifest) => (
       sameJson(generatedManifests.get(manifest.id), manifest)
     ));
+  const continuousHistoryValid = sameJson(liveManifests, value?.manifests)
+    && previousNextIndex === value?.manifestIndex
+    && totalGenerated - (value?.manifests?.length ?? 0)
+      === value?.dispatchedManifests;
   if (!sameJson(provenance?.currentManifestIds, currentManifestIds)
       || provenance?.nextIndex !== value?.manifestIndex
       || !manifestIdsMatchIndex
       || !generationsValid
-      || !currentManifestsGenerated) {
+      || !currentManifestsGenerated
+      || !continuousHistoryValid) {
     errors.push('invalid manifest provenance');
   }
   if (value?.placements === 0) {
@@ -302,6 +341,42 @@ export function validateStackState(value, difficulty) {
   if (!validGrounded) errors.push('invalid grounded state');
   const expectedComponents = connectedComponents(value?.board ?? []);
   if (!sameJson(value?.components, expectedComponents)) errors.push('invalid connected components');
+
+  let replayValid = Array.isArray(value?.lockHistory)
+    && value.lockHistory.length === value?.placements;
+  if (replayValid) {
+    try {
+      let replay = { ...createStackState(definition), status: 'active' };
+      for (const lockedActive of value.lockHistory) {
+        const expectedActive = replay.active;
+        const sameIdentity = lockedActive?.pieceId === expectedActive.pieceId
+          && lockedActive?.sequenceIndex === expectedActive.sequenceIndex
+          && lockedActive?.typeId === expectedActive.typeId;
+        if (!sameIdentity
+            || !canUseActive(replay, lockedActive)
+            || canUseActive(replay, { ...lockedActive, row: lockedActive.row + 1 })) {
+          replayValid = false;
+          break;
+        }
+        replay = lockActive({ ...replay, status: 'active', active: lockedActive }).state;
+        if (replay.status !== 'active') {
+          replayValid = false;
+          break;
+        }
+      }
+      const replayFields = [
+        'board', 'preview', 'sequenceIndex', 'nextPieceId', 'manifests',
+        'manifestIndex', 'manifestProvenance', 'tide', 'components', 'score',
+        'combo', 'bestCombo', 'dispatchedManifests', 'placements',
+      ];
+      replayValid = replayValid && replayFields.every((field) => (
+        sameJson(value?.[field], replay[field])
+      ));
+    } catch {
+      replayValid = false;
+    }
+  }
+  if (!replayValid) errors.push('invalid lock history');
   return { valid: errors.length === 0, errors };
 }
 

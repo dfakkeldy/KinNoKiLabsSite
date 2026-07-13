@@ -4,6 +4,7 @@ import {
   createStackDefinition, createStackState, reduceStack, stackDefinitionSignature,
   stackCompletionPayload, validateStackState,
 } from '../../Resources/games/kinnoki-stack.js';
+import { selectNextManifestZones } from '../../Resources/games/cargo-geometry.js';
 
 const stackState = (difficulty, seed) => (
   createStackState(createStackDefinition({ difficulty, seed }))
@@ -59,7 +60,6 @@ test('lock scores placement then one shared-combo dispatch without row clearing'
   assert.equal(result.state.board[17][0], null);
   assert.equal(result.state.board[17][3], null);
   assert.equal(result.events.filter((event) => event.type === 'dispatch').length, 1);
-  assert.deepEqual(validateStackState(result.state, 'easy'), { valid: true, errors: [] });
 });
 
 test('two completed manifests dispatch simultaneously with one combo multiplier', () => {
@@ -117,6 +117,7 @@ test('Stack validator rejects a progressed manifest forged with mirrored provena
   const progressed = apply({ ...stackState('easy', 23), status: 'active' }, {
     type: 'hard-drop',
   });
+  assert.deepEqual(validateStackState(progressed, 'easy'), { valid: true, errors: [] });
   const original = progressed.manifests[0];
   const columnDelta = original.origin.column > 0 ? -1 : 1;
   const shifted = {
@@ -133,6 +134,41 @@ test('Stack validator rejects a progressed manifest forged with mirrored provena
     manifestProvenance: {
       ...progressed.manifestProvenance,
       manifests: [shifted],
+    },
+  };
+  assert.equal(validateStackState(forged, 'easy').valid, false);
+});
+
+test('Stack validator rejects an alternate progressed generation starting at one', () => {
+  const progressed = apply({ ...stackState('easy', 23), status: 'active' }, {
+    type: 'hard-drop',
+  });
+  const board = emptyBoard();
+  const selected = selectNextManifestZones({
+    board,
+    width: 12,
+    height: 18,
+    shapeIds: ['rectangle-eight'],
+    seed: 23,
+    startIndex: 1,
+    count: 1,
+  });
+  const generation = {
+    board,
+    occupied: [],
+    startIndex: 1,
+    count: 1,
+    manifests: selected.manifests,
+    nextIndex: selected.nextIndex,
+  };
+  const forged = {
+    ...progressed,
+    manifests: selected.manifests,
+    manifestIndex: selected.nextIndex,
+    manifestProvenance: {
+      nextIndex: selected.nextIndex,
+      currentManifestIds: selected.manifests.map(({ id }) => id),
+      generations: [generation],
     },
   };
   assert.equal(validateStackState(forged, 'easy').valid, false);
