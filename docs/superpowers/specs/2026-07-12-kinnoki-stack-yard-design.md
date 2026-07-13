@@ -1,7 +1,8 @@
 # Kinnoki Stack and Kinnoki Yard Design
 
 **Date:** 2026-07-12  
-**Status:** Approved in conversation; awaiting written-spec review  
+**Status:** Approved by Dan Fakkeldy on 2026-07-13
+
 **Public destinations:** `https://kinnokilabs.com/games/kinnoki-stack` and
 `https://kinnokilabs.com/games/kinnoki-yard`
 
