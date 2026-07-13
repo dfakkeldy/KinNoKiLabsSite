@@ -1158,3 +1158,428 @@ export function validateContractState(value, difficulty) {
   }
   return { valid: errors.length === 0, errors };
 }
+
+export const ENDLESS_RULES = Object.freeze({
+  easy: {
+    width: 10, height: 10, cargoCount: 6,
+    rotationPolicy: 'all', manifestCount: 1,
+    manifestShapeIds: ['rectangle-eight'],
+  },
+  medium: {
+    width: 9, height: 9, cargoCount: 12,
+    rotationPolicy: 'selected-opposites', manifestCount: 2,
+    manifestShapeIds: ['rectangle-six', 'step-five', 'step-seven'],
+  },
+  hard: {
+    width: 8, height: 8, cargoCount: 12,
+    rotationPolicy: 'initial-plus-one', manifestCount: 2,
+    manifestShapeIds: ['step-five', 'corner-six', 'harbour-seven'],
+  },
+});
+
+export function createEndlessDefinition({ difficulty, seed }) {
+  const rules = ENDLESS_RULES[difficulty];
+  if (!rules || !unsignedSeed(seed)) {
+    throw new TypeError('Invalid Endless definition request');
+  }
+  return Object.freeze({ version: 1, game: 'kinnoki-yard', mode: 'endless',
+    difficulty, seed: seed >>> 0, width: rules.width, height: rules.height });
+}
+
+export const endlessSignature = (definition) => JSON.stringify([
+  definition.version, definition.game, definition.mode, definition.difficulty,
+  definition.seed, definition.width, definition.height,
+]);
+
+const endlessPieceAt = (definition, sequenceIndex, batchIndex) => {
+  const rules = ENDLESS_RULES[definition.difficulty];
+  const rng = createRng(indexedSeed(definition.seed, 'yard-batch', sequenceIndex));
+  const type = CARGO_CATALOG[rng.int(rules.cargoCount)];
+  const rotations = rotationsFor(type.id);
+  const initial = rotations[rng.int(rotations.length)].rotation;
+  let allowedRotations = rotations.map(({ rotation }) => rotation);
+  if (rules.rotationPolicy === 'selected-opposites' && type.cells.length === 5) {
+    const opposite = rotations.find(({ rotation }) => rotation === ((initial + 2) % 4));
+    allowedRotations = [...new Set([initial, opposite?.rotation ?? initial])];
+  } else if (rules.rotationPolicy === 'initial-plus-one') {
+    const alternatives = rotations.filter(({ rotation }) => rotation !== initial);
+    const alternate = alternatives.length ? alternatives[rng.int(alternatives.length)].rotation : initial;
+    allowedRotations = [...new Set([initial, alternate])];
+  }
+  return { pieceId: sequenceIndex, typeId: type.id, allowedRotations,
+    rotation: initial, batchIndex };
+};
+
+const dealEndlessBatch = (definition, sequenceIndex, batchIndex) => (
+  [0, 1, 2].map((offset) => endlessPieceAt(
+    definition, sequenceIndex + offset, batchIndex,
+  ))
+);
+
+export function createEndlessState(definition) {
+  const rules = ENDLESS_RULES[definition?.difficulty];
+  let expectedDefinition;
+  try {
+    expectedDefinition = createEndlessDefinition({
+      difficulty: definition?.difficulty, seed: definition?.seed,
+    });
+  } catch {}
+  if (!rules || JSON.stringify(definition) !== JSON.stringify(expectedDefinition)) {
+    throw new TypeError('Invalid Endless definition');
+  }
+  const board = Array.from({ length: definition.height },
+    () => Array(definition.width).fill(null));
+  const selected = selectNextManifestZones({ board, width: definition.width,
+    height: definition.height, shapeIds: rules.manifestShapeIds,
+    seed: definition.seed, startIndex: 0, count: rules.manifestCount });
+  const tray = dealEndlessBatch(definition, 0, 0);
+  return { kind: 'endless', status: 'preview', definition, board, tray,
+    selectedPieceId: tray[0].pieceId, focus: { row: 0, column: 0 },
+    manifests: selected.manifests, manifestIndex: selected.nextIndex,
+    sequenceIndex: 3, batchIndex: 0, score: 0, combo: 0, bestCombo: 0,
+    dispatchedManifests: 0, assisted: false, history: [], terminalReason: null };
+}
+
+export function prepareEndlessForContinue(play) {
+  if (!validateEndlessState(play, play?.definition?.difficulty).valid) {
+    throw new TypeError('Invalid saved Endless Yard');
+  }
+  return structuredClone({ ...play, status: 'paused' });
+}
+
+const endlessSnapshot = (state) => structuredClone({
+  board: state.board, tray: state.tray, selectedPieceId: state.selectedPieceId,
+  focus: state.focus, manifests: state.manifests, manifestIndex: state.manifestIndex,
+  sequenceIndex: state.sequenceIndex, batchIndex: state.batchIndex,
+  score: state.score, combo: state.combo, bestCombo: state.bestCombo,
+  dispatchedManifests: state.dispatchedManifests,
+});
+
+export function hasAnyEndlessPlacement(state) {
+  return state.tray.some((piece) => rotationsFor(piece.typeId, piece.allowedRotations)
+    .some((rotated) => {
+      const bounds = boundsFor(rotated.cells);
+      for (let row = 0; row <= state.definition.height - bounds.height; row += 1) {
+        for (let column = 0; column <= state.definition.width - bounds.width; column += 1) {
+          if (canPlace(state.board, rotated.cells, { row, column })) return true;
+        }
+      }
+      return false;
+    }));
+}
+
+const endlessInvalid = (state, action, reason) => ({
+  state, events: [{ type: 'invalid', action, reason }],
+});
+
+export function reduceEndless(state, action) {
+  if (['terminal', 'error', 'disposed'].includes(state.status)) return { state, events: [] };
+  if (action.type === 'start') {
+    if (state.status === 'active') return { state, events: [] };
+    return state.status === 'preview'
+      ? { state: { ...state, status: 'active' }, events: [{ type: 'started' }] }
+      : endlessInvalid(state, 'start', 'Endless Yard cannot start from this state.');
+  }
+  if (action.type === 'pause') {
+    if (state.status === 'paused') return { state, events: [] };
+    if (state.status !== 'active' || !['user', 'hidden'].includes(action.reason)) {
+      return endlessInvalid(state, 'pause', 'Endless Yard cannot pause from this state.');
+    }
+    return { state: { ...state, status: 'paused' },
+      events: [{ type: 'paused', reason: action.reason }] };
+  }
+  if (action.type === 'resume') {
+    if (state.status === 'active') return { state, events: [] };
+    return state.status === 'paused'
+      ? { state: { ...state, status: 'active' }, events: [{ type: 'resumed' }] }
+      : endlessInvalid(state, 'resume', 'Endless Yard cannot resume from this state.');
+  }
+  if (state.status !== 'active') return endlessInvalid(state, action.type, 'Game is paused.');
+  if (action.type === 'hint') {
+    return endlessInvalid(state, 'hint', 'Hint is unavailable in Endless Yard.');
+  }
+  if (action.type === 'select-piece') {
+    const piece = state.tray.find((value) => value.pieceId === action.pieceId);
+    return piece
+      ? { state: { ...state, selectedPieceId: piece.pieceId },
+        events: [{ type: 'selected', pieceId: piece.pieceId }] }
+      : endlessInvalid(state, action.type, 'Unknown cargo piece.');
+  }
+  if (action.type === 'rotate-piece') {
+    if (action.quarterTurns !== 1) {
+      return endlessInvalid(state, action.type, 'Rotation must be one quarter turn.');
+    }
+    const index = state.tray.findIndex((value) => value.pieceId === state.selectedPieceId);
+    if (index < 0) return endlessInvalid(state, action.type, 'Choose cargo first.');
+    const piece = state.tray[index];
+    const rotationIndex = piece.allowedRotations.indexOf(piece.rotation);
+    const rotation = piece.allowedRotations[(rotationIndex + 1) % piece.allowedRotations.length];
+    if (rotation === piece.rotation) {
+      return endlessInvalid(state, action.type, 'This cargo has one fixed orientation.');
+    }
+    const tray = state.tray.map((value, pieceIndex) => (
+      pieceIndex === index ? { ...value, rotation } : value
+    ));
+    return { state: { ...state, tray },
+      events: [{ type: 'rotated', pieceId: piece.pieceId, rotation }] };
+  }
+  if (action.type === 'undo') {
+    if (state.history.length === 0) return { state, events: [] };
+    const restored = structuredClone(state.history.at(-1));
+    return { state: { ...state, ...restored, assisted: true,
+      history: state.history.slice(0, -1) },
+    events: [
+      ...(state.assisted ? [] : [{ type: 'assisted', reason: 'endless-undo' }]),
+      { type: 'undone', mode: 'endless', assisted: true },
+    ] };
+  }
+  if (action.type !== 'place-piece') {
+    return endlessInvalid(state, action.type, 'Unsupported Endless Yard action.');
+  }
+
+  const piece = state.tray.find((value) => value.pieceId === state.selectedPieceId);
+  const rotated = piece && rotationsFor(piece.typeId, piece.allowedRotations)
+    .find((value) => value.rotation === piece.rotation);
+  const origin = { row: action.row, column: action.column };
+  if (!piece || !rotated || !Number.isInteger(action.row) || !Number.isInteger(action.column)
+      || !canPlace(state.board, rotated.cells, origin)) {
+    return endlessInvalid(state, action.type, 'Cargo does not fit here.');
+  }
+
+  const history = [...state.history, endlessSnapshot(state)];
+  const placedBoard = placePiece(state.board, { pieceId: piece.pieceId,
+    typeId: piece.typeId, rotation: piece.rotation, ...origin });
+  const placementScore = 10 * rotated.cells.length;
+  let board = placedBoard;
+  let manifests = state.manifests;
+  let manifestIndex = state.manifestIndex;
+  let combo = state.combo;
+  let bestCombo = state.bestCombo;
+  let dispatchedManifests = state.dispatchedManifests;
+  let score = saturatingAdd(state.score, placementScore);
+  const events = [{ type: 'placed', mode: 'endless', pieceId: piece.pieceId,
+    row: action.row, column: action.column, rotation: piece.rotation,
+    scoreAdded: placementScore }];
+  const dispatched = dispatchCompletedManifests(placedBoard, state.manifests);
+  if (dispatched.completed.length > 0) {
+    combo = saturatingAdd(combo, 1);
+    bestCombo = Math.max(bestCombo, combo);
+    const dispatchScore = Math.min(Number.MAX_SAFE_INTEGER,
+      100 * dispatched.dispatchedCells * combo);
+    score = saturatingAdd(score, dispatchScore);
+    dispatchedManifests = saturatingAdd(dispatchedManifests, dispatched.completed.length);
+    board = dispatched.board;
+    const completedIds = new Set(dispatched.completed.map(({ id }) => id));
+    const incomplete = state.manifests.filter(({ id }) => !completedIds.has(id));
+    events.push({ type: 'dispatch',
+      manifestIds: dispatched.completed.map(({ id }) => id),
+      cells: dispatched.dispatchedCells, combo, scoreAdded: dispatchScore });
+    try {
+      const replacement = selectNextManifestZones({ board,
+        width: state.definition.width, height: state.definition.height,
+        shapeIds: ENDLESS_RULES[state.definition.difficulty].manifestShapeIds,
+        seed: state.definition.seed, startIndex: manifestIndex,
+        count: dispatched.completed.length,
+        occupied: incomplete.flatMap(({ cells }) => cells) });
+      manifests = [...incomplete, ...replacement.manifests];
+      manifestIndex = replacement.nextIndex;
+    } catch {
+      const tray = state.tray.filter((value) => value.pieceId !== piece.pieceId);
+      return { state: { ...state, board, score, combo, bestCombo,
+        manifests: incomplete, dispatchedManifests, history, tray,
+        selectedPieceId: tray[0]?.pieceId ?? null, status: 'error' },
+      events: [...events, { type: 'error', code: 'manifest-generation',
+        message: 'A new Cargo Manifest could not be prepared.' }] };
+    }
+  } else if (combo > 0) {
+    events.push({ type: 'combo-reset', previousCombo: combo });
+    combo = 0;
+  }
+
+  let tray = state.tray.filter((value) => value.pieceId !== piece.pieceId);
+  let sequenceIndex = state.sequenceIndex;
+  let batchIndex = state.batchIndex;
+  if (tray.length === 0) {
+    batchIndex = saturatingAdd(batchIndex, 1);
+    tray = dealEndlessBatch(state.definition, sequenceIndex, batchIndex);
+    sequenceIndex = saturatingAdd(sequenceIndex, 3);
+  }
+  let next = { ...state, board, tray, selectedPieceId: tray[0].pieceId,
+    manifests, manifestIndex, sequenceIndex, batchIndex, score, combo, bestCombo,
+    dispatchedManifests, history };
+  if (!hasAnyEndlessPlacement(next)) {
+    next = { ...next, status: 'terminal', terminalReason: 'no-placement' };
+    events.push({ type: 'terminal', reason: 'no-placement' });
+  }
+  return { state: next, events };
+}
+
+export function yardDefinitionSignature(definition) {
+  if (definition?.mode === 'contracts') return contractSignature(definition);
+  if (definition?.mode === 'endless') return endlessSignature(definition);
+  throw new TypeError('Invalid Yard definition mode');
+}
+
+export function createYardState(definition) {
+  if (definition?.mode === 'contracts' && validateContractDefinition(definition).valid) {
+    return createContractState(definition);
+  }
+  if (definition?.mode === 'endless') return createEndlessState(definition);
+  throw new TypeError('Invalid Yard definition');
+}
+
+export function prepareYardForContinue(play) {
+  if (play?.kind === 'contracts') return prepareContractForContinue(play);
+  if (play?.kind === 'endless') return prepareEndlessForContinue(play);
+  throw new TypeError('Invalid Yard state kind');
+}
+
+export function reduceYard(state, action) {
+  if (state?.kind === 'contracts') return reduceContract(state, action);
+  if (state?.kind === 'endless') return reduceEndless(state, action);
+  throw new TypeError('Invalid Yard state kind');
+}
+
+export function validateYardState(value, difficulty, mode) {
+  if (mode === 'contracts') return validateContractState(value, difficulty);
+  if (mode === 'endless') return validateEndlessState(value, difficulty);
+  return { valid: false, errors: ['invalid Yard mode'] };
+}
+
+const safeCount = (value) => Number.isSafeInteger(value) && value >= 0;
+
+export function yardCompletionPayload(state, elapsedMs) {
+  if (state?.status !== 'terminal') return null;
+  if (!safeCount(elapsedMs)) {
+    throw new TypeError('Elapsed time must be a non-negative safe integer');
+  }
+  if (state.kind === 'contracts') return {
+    game: 'kinnoki-yard', mode: 'contracts',
+    records: { time: elapsedMs, moves: state.moves },
+    summary: { elapsedMs, moves: state.moves, assisted: state.assisted,
+      piecesPlaced: Object.keys(state.placements).length,
+      totalPieces: state.definition.pieces.length },
+  };
+  if (state.kind === 'endless' && state.terminalReason === 'no-placement') return {
+    game: 'kinnoki-yard', mode: 'endless',
+    records: { score: state.score, combo: state.bestCombo },
+    summary: { score: state.score, dispatchedManifests: state.dispatchedManifests,
+      bestCombo: state.bestCombo, elapsedMs, assisted: state.assisted,
+      reason: 'no-placement' },
+  };
+  return null;
+}
+
+const endlessSnapshotKeys = Object.freeze([
+  'batchIndex', 'bestCombo', 'board', 'combo', 'dispatchedManifests', 'focus',
+  'manifestIndex', 'manifests', 'score', 'selectedPieceId', 'sequenceIndex', 'tray',
+]);
+
+const endlessPositionErrors = (position, definition, rules) => {
+  const errors = [];
+  if (!validateBoard(position?.board, {
+    width: rules.width, height: rules.height,
+  }).valid) errors.push('invalid Endless board');
+
+  for (const key of ['manifestIndex', 'sequenceIndex', 'batchIndex', 'score',
+    'combo', 'bestCombo', 'dispatchedManifests']) {
+    if (!safeCount(position?.[key])) errors.push(`invalid Endless ${key}`);
+  }
+  if (safeCount(position?.combo) && safeCount(position?.bestCombo)
+      && position.bestCombo < position.combo) errors.push('invalid Endless best combo');
+
+  const expectedBatch = safeCount(position?.sequenceIndex)
+    && position.sequenceIndex >= 3 && position.sequenceIndex % 3 === 0
+    ? (position.sequenceIndex / 3) - 1 : null;
+  if (expectedBatch === null || position?.batchIndex !== expectedBatch) {
+    errors.push('invalid Endless stream indices');
+  }
+  if (!Array.isArray(position?.tray)
+      || position.tray.length < 1 || position.tray.length > 3) {
+    errors.push('invalid Endless tray');
+  } else if (expectedBatch !== null) {
+    const firstPieceId = position.sequenceIndex - 3;
+    let previousPieceId = firstPieceId - 1;
+    for (const piece of position.tray) {
+      let expected;
+      try { expected = endlessPieceAt(definition, piece?.pieceId, expectedBatch); } catch {}
+      if (!expected || piece.pieceId < firstPieceId || piece.pieceId >= position.sequenceIndex
+          || piece.pieceId <= previousPieceId
+          || piece.batchIndex !== expectedBatch
+          || piece.typeId !== expected.typeId
+          || JSON.stringify(piece.allowedRotations) !== JSON.stringify(expected.allowedRotations)
+          || !piece.allowedRotations.includes(piece.rotation)) {
+        errors.push('invalid Endless tray piece');
+      }
+      previousPieceId = piece?.pieceId;
+    }
+  }
+  if (!position?.tray?.some((piece) => piece.pieceId === position.selectedPieceId)) {
+    errors.push('invalid Endless selection');
+  }
+  if (!Number.isInteger(position?.focus?.row)
+      || !Number.isInteger(position?.focus?.column)
+      || position.focus.row < 0 || position.focus.row >= rules.height
+      || position.focus.column < 0 || position.focus.column >= rules.width) {
+    errors.push('invalid Endless focus');
+  }
+
+  const manifestCells = new Set();
+  const manifestIds = new Set();
+  if (!Array.isArray(position?.manifests)
+      || position.manifests.length !== rules.manifestCount) {
+    errors.push('invalid Endless manifests');
+  } else {
+    for (const manifest of position.manifests) {
+      if (!validateManifest(manifest, { width: rules.width, height: rules.height }).valid
+          || manifestIds.has(manifest.id)) errors.push('invalid Endless manifest');
+      manifestIds.add(manifest.id);
+      for (const cell of manifest.cells ?? []) {
+        const key = keyFor(cell);
+        if (manifestCells.has(key)) errors.push('overlapping Endless manifests');
+        manifestCells.add(key);
+      }
+    }
+  }
+  const trayIds = new Set((position?.tray ?? []).map(({ pieceId }) => pieceId));
+  if ((position?.board ?? []).flat().some((cell) => cell && trayIds.has(cell.pieceId))) {
+    errors.push('Endless tray cargo is already on the board');
+  }
+  return errors;
+};
+
+export function validateEndlessState(value, difficulty) {
+  const errors = [];
+  try {
+    const rules = ENDLESS_RULES[difficulty];
+    const definition = value?.definition;
+    if (value?.kind !== 'endless') errors.push('invalid Endless kind');
+    if (!['preview', 'active', 'paused'].includes(value?.status)
+        || value?.terminalReason !== null) {
+      errors.push('invalid saved Endless status');
+    }
+    let expectedDefinition;
+    try {
+      expectedDefinition = createEndlessDefinition({
+        difficulty, seed: definition?.seed,
+      });
+    } catch {}
+    if (!rules || JSON.stringify(definition) !== JSON.stringify(expectedDefinition)) {
+      errors.push('invalid Endless definition');
+    } else {
+      errors.push(...endlessPositionErrors(value, definition, rules));
+    }
+    if (typeof value?.assisted !== 'boolean' || !Array.isArray(value?.history)) {
+      errors.push('invalid Endless history');
+    } else if (value.history.some((entry) => (
+      !isRecord(entry)
+      || JSON.stringify(Object.keys(entry).sort()) !== JSON.stringify(endlessSnapshotKeys)
+      || endlessPositionErrors(entry, definition, rules).length > 0
+    ))) {
+      errors.push('invalid Endless history');
+    }
+  } catch {
+    errors.push('invalid Endless state');
+  }
+  return { valid: errors.length === 0, errors };
+}
