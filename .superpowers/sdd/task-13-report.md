@@ -33,4 +33,3 @@ The supplied test requires the audio range rule to contain `min-width: 44px`, wh
 - `git diff --check` — pass
 - Focused six-file suite — 69/69 pass
 - `make test-games` — 287/287 pass
-

@@ -10,7 +10,7 @@ Complete.
 - Boundary RED: after source implementation but before generation, the same suite passed its source/bootstrap assertions and retained 8 expected generated-output failures.
 - Artwork-review RED: the durable raster hash check failed against the superseded social art while the corrected five-card hub regression passed.
 - GREEN: after `make generate`, the focused suite passed all 18 tests.
-- GREEN: `make test-games` passed all 298 tests.
+- GREEN: `make test-games` passed all 299 tests.
 
 ## Implementation
 
@@ -33,7 +33,7 @@ Complete.
 ## Verification
 
 - Focused route/source/bootstrap suite — 18/18 pass
-- Full `make test-games` suite — 298/298 pass
+- Full `make test-games` suite — 299/299 pass
 - Social raster dimensions — 1734 by 907
 - Social raster reviewed text, five-panel composition, and irregular non-tetromino cargo parcels — pass
 - Required generated file assertions — pass
