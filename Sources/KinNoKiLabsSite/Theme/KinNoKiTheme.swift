@@ -894,6 +894,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
 
         <div class="learn-book-grid">
           <article class="learn-book-card">
+            <img class="learn-book-cover" src="/learn/covers/echo-from-the-inside.png" alt="Cover of Echo, From the Inside" width="1600" height="2560" loading="lazy" decoding="async">
             <div>
               <p class="learn-book-runtime">17 chapters · about 5.4 hours</p>
               <h3>Echo, From the Inside</h3>
@@ -907,6 +908,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
           </article>
 
           <article class="learn-book-card">
+            <img class="learn-book-cover" src="/learn/covers/why-it-feels-right.png" alt="Cover of Why It Feels Right" width="1600" height="2560" loading="lazy" decoding="async">
             <div>
               <p class="learn-book-runtime">18 chapters · about 5.0 hours</p>
               <h3>Why It Feels Right</h3>
@@ -920,6 +922,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
           </article>
 
           <article class="learn-book-card">
+            <img class="learn-book-cover" src="/learn/covers/findable.png" alt="Cover of Findable" width="1600" height="2560" loading="lazy" decoding="async">
             <div>
               <p class="learn-book-runtime">8 chapters · about 3.0 hours</p>
               <h3>Findable</h3>
@@ -932,6 +935,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
             </div>
           </article>
           <article class="learn-book-card">
+            <img class="learn-book-cover" src="/learn/covers/rodents-in-the-walls.png" alt="Cover of Rodents in the Walls" width="1600" height="2560" loading="lazy" decoding="async">
             <div>
               <p class="learn-book-runtime">9 chapters · about 2.0 hours</p>
               <h3>Rodents in the Walls</h3>
@@ -945,6 +949,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
           </article>
 
           <article class="learn-book-card">
+            <img class="learn-book-cover" src="/learn/covers/chicken-predators.png" alt="Cover of Chicken Predators" width="1600" height="2560" loading="lazy" decoding="async">
             <div>
               <p class="learn-book-runtime">16 chapters · about 3.1 hours</p>
               <h3>Chicken Predators</h3>
@@ -958,6 +963,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
           </article>
 
           <article class="learn-book-card">
+            <img class="learn-book-cover" src="/learn/covers/the-new-deal.png" alt="Cover of The New Deal" width="1600" height="2560" loading="lazy" decoding="async">
             <div>
               <p class="learn-book-runtime">9 chapters · about 1.9 hours</p>
               <h3>The New Deal</h3>

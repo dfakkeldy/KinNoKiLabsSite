@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "18a7ad0717a4338d7c777bfed01a5bdb9ab6353d",
+  "books": {
+    "echo-from-the-inside": {
+      "receiptSha256": "a06939bb93c60335c8179ce5c2c903ea906b21b549a797663f2a73558cba2e1b",
+      "candidateId": "rooms-inside-the-app",
+      "portrait": { "sha256": "0fe641954a1f20016613596afbaa8a95dc218611077c276bb13aa8cc191c40d1", "specSha256": "c222305af7fbce14a0705f37c3a74cd72f934632a3b6b7b2d4529a10f4ac5639" },
+      "square": { "sha256": "3fd3c6c167ba13f8080c67d2aeb315851f63a0e2955e970daab0cff77d435ff9", "specSha256": "fd273d99771580fcd7d5457141c5206f14d18c22eae9a330bd699a3398b20cc3" }
+    },
+    "why-it-feels-right": {
+      "receiptSha256": "e1a287ae9a78197f3b113c61d20c722cde7ce7fdf9c85d8da0cb9018d4cc96ba",
+      "candidateId": "impossible-teapot",
+      "portrait": { "sha256": "3fbc32510e611766c150c6280dc0059b634d1c6d4f0923beec84291fb0e819b3", "specSha256": "61c356e384e430fc579e0ee002224110895db47d7b2249ae6b317942389aad63" },
+      "square": { "sha256": "060252a5878ee62f05586c5583fd71862d58f35202dd7692c1a48942ccde84d4", "specSha256": "81457474f25eda8986b1584655dfb842daee7871d401e9f720eeb335b591787a" }
+    },
+    "findable": {
+      "receiptSha256": "740492733ee69bc9ff62f3d8d1dbfc25aba60a93b01a779ae5d1033a8f42988f",
+      "candidateId": "exact-phrase",
+      "portrait": { "sha256": "4b0ca55fb5e4f4edca32102c0fd3b49b67db1ed67399578ac8d241735501fe19", "specSha256": "c251c17e74553aeb140103d4da6798d8c0cec84e814fbeea1872cbae12289fdf" },
+      "square": { "sha256": "b56aec2a60d6a609bf416935791f03d3a612d9eb2837fd568c7a61815720b3e4", "specSha256": "f24070f6af4904bf7f14516d8b63787c267b61292ce7bf5f35eb4ad7723c92ee" }
+    },
+    "rodents-in-the-walls": {
+      "receiptSha256": "d1c87d54233960540be9baa5e82c7a816718c212d332ae8f8b3364b3b6643ea9",
+      "candidateId": "c2a-compact-ribbon-editorial-footer",
+      "portrait": { "sha256": "e1afe1fbcbd440927c8d4d62de475af3230afe0d8edbbb6a886c498fc21af2a2", "specSha256": "917f7f7b6866e668c3da8b144609ecf093d111112c0177d2d92a179678fc53e3" },
+      "square": null
+    },
+    "chicken-predators": {
+      "receiptSha256": "d13eb40de8a1d67fb3a9e1d55f12aa7fe2898ba6a25ca2d987f2c8ee4b44b225",
+      "candidateId": "night-at-the-fence",
+      "portrait": { "sha256": "1745b28342f6e70061f5333f9c7f29e1e5adcbe726e111432f88563648b87210", "specSha256": "89d3b59a714aefe45e3d7c88f26dd3e5b8f78a004e2b38d598f3d302b70086f3" },
+      "square": { "sha256": "18c6520b20c4ba39346d03e84a856eb1785968327cce69bdb58ce234f031d59d", "specSha256": "404a3b69dabcdc2b20e8ad83de179a8fefdd3bc13faa2035f6e09a35a3a833ea" }
+    },
+    "the-new-deal": {
+      "receiptSha256": "87f1a12509bd14ab95bde7aec45b65604e5e4db1b2d2db2f960cea6940754ed0",
+      "candidateId": "weight-of-the-mailbag",
+      "portrait": { "sha256": "3d6ded0e0af6c9454d6a5712e78fbba84fb8aa4f0dbd72fd5ce7e72768d14a37", "specSha256": "b6f801a44d7b944189c482d9d4836bb0d03d0d81274f75ff57d36abb018113df" },
+      "square": { "sha256": "2034da6997ad9c451a3542049fbce5cfbc0203a6675a36bc405413de20a437c0", "specSha256": "be94fee278f98d193e7a809f83f385b5da169bb39c3b3a453209e98d8915ec0d" }
+    }
+  }
+}
