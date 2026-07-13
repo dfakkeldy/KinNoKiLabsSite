@@ -312,7 +312,10 @@ export function createGameLifecycle({
   onError = () => {},
   onDispose = () => {},
 }) {
-  activeSessions.get(root)?.dispose();
+  const previous = activeSessions.get(root);
+  previous?.dispose();
+  const reentrantOwner = activeSessions.get(root);
+  if (reentrantOwner && reentrantOwner !== previous) return reentrantOwner;
 
   const document = root.ownerDocument ?? globalThis.document;
   const window = document?.defaultView ?? globalThis.window;
@@ -323,6 +326,7 @@ export function createGameLifecycle({
   let activatedAt = null;
   let disposed = false;
   let didDisposeCallback = false;
+  let didReportError = false;
   let api;
 
   const elapsed = () => {
@@ -359,20 +363,41 @@ export function createGameLifecycle({
     return handle;
   };
 
-  const snapshotActive = () => {
+  const captureActiveElapsed = () => {
     if (currentState !== 'active' || activatedAt === null) return false;
     elapsedBeforeActivation = elapsed();
     activatedAt = null;
-    onSnapshot(elapsedBeforeActivation);
     return true;
+  };
+
+  const reportError = (error) => {
+    if (didReportError) return;
+    didReportError = true;
+    try { onError(error, api); } catch { /* Error reporting must fail closed. */ }
+  };
+
+  const failFromCallback = (error) => {
+    if (disposed || currentState === 'terminal' || currentState === 'error') return false;
+    captureActiveElapsed();
+    clearActive();
+    currentState = 'error';
+    reportError(error);
+    return true;
+  };
+
+  const notifySnapshot = () => {
+    try { onSnapshot(elapsedBeforeActivation); } catch (error) { failFromCallback(error); }
   };
 
   const pause = (reason = 'user') => {
     if (currentState !== 'active' || disposed) return false;
-    snapshotActive();
+    captureActiveElapsed();
     clearActive();
     currentState = 'paused';
-    onPause(reason, api);
+    notifySnapshot();
+    if (currentState === 'paused') {
+      try { onPause(reason, api); } catch (error) { failFromCallback(error); }
+    }
     return true;
   };
 
@@ -390,34 +415,35 @@ export function createGameLifecycle({
     currentState = 'active';
     activatedAt = monotonicNow();
     installActiveLifecycleListeners();
-    await onActivate(kind, api);
+    try { await onActivate(kind, api); } catch (error) { failFromCallback(error); }
     return currentState === 'active';
   };
 
   const settle = (nextState) => {
     if (disposed || currentState === 'terminal' || currentState === 'error') return false;
-    snapshotActive();
+    const didSnapshot = captureActiveElapsed();
     clearActive();
     currentState = nextState;
+    if (didSnapshot) notifySnapshot();
     return true;
   };
 
   const finish = () => settle('terminal');
   const fail = (error) => {
     if (!settle('error')) return false;
-    onError(error, api);
+    reportError(error);
     return true;
   };
 
   const dispose = () => {
     if (disposed) return false;
     disposed = true;
+    currentState = 'disposed';
     clearActive();
     clear(passiveCleanups);
-    currentState = 'disposed';
     if (!didDisposeCallback) {
       didDisposeCallback = true;
-      onDispose(api);
+      try { onDispose(api); } catch { /* Disposal must fail closed. */ }
     }
     return true;
   };

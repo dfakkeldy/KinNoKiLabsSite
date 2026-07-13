@@ -88,3 +88,193 @@ test('fatal failure snapshots once, clears active resources, and reports once', 
     assert.deepEqual(errors, ['bad state']);
   } finally { restore(); }
 });
+
+test('continue activates preview and replacement disposes the ordinary previous owner', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { createGameLifecycle } = await import('../../Resources/games/controller-common.js');
+    const calls = [];
+    const first = createGameLifecycle({
+      root: fixture.root,
+      onActivate: (kind, api) => {
+        calls.push(kind);
+        api.listenActive(fixture.document, 'keydown', () => {});
+      },
+      onDispose: () => calls.push('disposed-first'),
+    });
+    assert.equal(await first.start('continue'), true);
+    const second = createGameLifecycle({ root: fixture.root });
+    assert.equal(first.state, 'disposed');
+    assert.equal(second.state, 'preview');
+    assert.deepEqual(calls, ['continue', 'disposed-first']);
+    assert.equal(fixture.document.listenerCount('keydown'), 0);
+  } finally { restore(); }
+});
+
+test('reentrant replacement preserves the lifecycle created by prior disposal', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { createGameLifecycle } = await import('../../Resources/games/controller-common.js');
+    let nested;
+    const first = createGameLifecycle({
+      root: fixture.root,
+      onDispose: () => {
+        nested = createGameLifecycle({
+          root: fixture.root,
+          onActivate: (_kind, api) => {
+            api.listenActive(fixture.document, 'keydown', () => {});
+            api.requestActiveFrame(() => {});
+          },
+        });
+        void nested.start('start');
+      },
+    });
+    const returned = createGameLifecycle({ root: fixture.root });
+    assert.equal(first.state, 'disposed');
+    assert.equal(returned, nested);
+    assert.equal(nested.state, 'active');
+    assert.equal(fixture.document.listenerCount('keydown'), 1);
+    assert.equal(fixture.activeFrameCount(), 1);
+    nested.dispose();
+    assert.equal(fixture.document.listenerCount('keydown'), 0);
+    assert.equal(fixture.activeFrameCount(), 0);
+  } finally { restore(); }
+});
+
+test('snapshot reentrancy gives terminal and error transitions precedence over pause', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { createGameLifecycle } = await import('../../Resources/games/controller-common.js');
+    const pauses = [];
+    let finishing;
+    finishing = createGameLifecycle({
+      root: fixture.root,
+      onActivate: (_kind, api) => api.listenActive(fixture.document, 'keydown', () => {}),
+      onSnapshot: () => finishing.finish(),
+      onPause: (reason) => pauses.push(reason),
+    });
+    await finishing.start('start');
+    assert.equal(finishing.pause('user'), true);
+    assert.equal(finishing.state, 'terminal');
+    assert.deepEqual(pauses, []);
+    assert.equal(fixture.document.listenerCount('keydown'), 0);
+
+    const errors = [];
+    let failing;
+    failing = createGameLifecycle({
+      root: fixture.root,
+      onActivate: (_kind, api) => api.requestActiveFrame(() => {}),
+      onSnapshot: () => failing.fail(new Error('snapshot chose error')),
+      onError: (error) => errors.push(error.message),
+    });
+    await failing.start('start');
+    assert.equal(failing.pause('user'), true);
+    assert.equal(failing.state, 'error');
+    assert.deepEqual(errors, ['snapshot chose error']);
+    assert.equal(fixture.activeFrameCount(), 0);
+  } finally { restore(); }
+});
+
+test('throwing callbacks fail closed without leaked resources or duplicate error reports', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { createGameLifecycle } = await import('../../Resources/games/controller-common.js');
+    const errors = [];
+    const lifecycle = createGameLifecycle({
+      root: fixture.root,
+      onActivate: (_kind, api) => {
+        api.listenActive(fixture.document, 'keydown', () => {});
+        api.requestActiveFrame(() => {});
+      },
+      onSnapshot: () => { throw new Error('snapshot exploded'); },
+      onError: (error) => { errors.push(error.message); throw new Error('report exploded'); },
+    });
+    await lifecycle.start('start');
+    assert.doesNotThrow(() => lifecycle.pause('user'));
+    assert.equal(lifecycle.state, 'error');
+    assert.deepEqual(errors, ['snapshot exploded']);
+    assert.equal(fixture.document.listenerCount('keydown'), 0);
+    assert.equal(fixture.activeFrameCount(), 0);
+    assert.equal(lifecycle.fail(new Error('duplicate')), false);
+    assert.deepEqual(errors, ['snapshot exploded']);
+
+    const activationErrors = [];
+    const activationFailure = createGameLifecycle({
+      root: fixture.root,
+      onActivate: (_kind, api) => {
+        api.listenActive(fixture.document, 'keyup', () => {});
+        throw new Error('activation exploded');
+      },
+      onError: (error) => activationErrors.push(error.message),
+    });
+    assert.equal(await activationFailure.start('start'), false);
+    assert.equal(activationFailure.state, 'error');
+    assert.deepEqual(activationErrors, ['activation exploded']);
+    assert.equal(fixture.document.listenerCount('keyup'), 0);
+
+    const disposing = createGameLifecycle({
+      root: fixture.root,
+      onActivate: (_kind, api) => api.requestActiveFrame(() => {}),
+      onDispose: () => { throw new Error('dispose exploded'); },
+    });
+    await disposing.start('start');
+    assert.doesNotThrow(() => disposing.dispose());
+    assert.equal(disposing.state, 'disposed');
+    assert.equal(fixture.activeFrameCount(), 0);
+  } finally { restore(); }
+});
+
+test('cleanup is reverse ordered and fractional elapsed truncates across active epochs', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  let now = 10.25;
+  try {
+    const { createGameLifecycle } = await import('../../Resources/games/controller-common.js');
+    const removals = [];
+    const target = {
+      addEventListener() {},
+      removeEventListener(_type, listener) { removals.push(listener.name); },
+    };
+    const lifecycle = createGameLifecycle({
+      root: fixture.root, initialElapsedMs: 3.9, monotonicNow: () => now,
+      onActivate: (_kind, api) => {
+        api.listenActive(target, 'event', function first() {});
+        api.listenActive(target, 'event', function second() {});
+      },
+    });
+    await lifecycle.start('start');
+    now = 11.10;
+    lifecycle.pause();
+    assert.equal(lifecycle.elapsed(), 3);
+    assert.deepEqual(removals, ['second', 'first']);
+    now = 20.20;
+    await lifecycle.start('resume');
+    now = 22.95;
+    assert.equal(lifecycle.elapsed(), 5);
+    lifecycle.pause();
+    assert.equal(lifecycle.elapsed(), 5);
+  } finally { restore(); }
+});
+
+test('recursive animation requests are deferred to the next explicit fixture frame', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { createGameLifecycle } = await import('../../Resources/games/controller-common.js');
+    const timestamps = [];
+    const lifecycle = createGameLifecycle({
+      root: fixture.root,
+      onActivate: (_kind, api) => {
+        api.requestActiveFrame((timestamp) => {
+          timestamps.push(timestamp);
+          api.requestActiveFrame((nextTimestamp) => timestamps.push(nextTimestamp));
+        });
+      },
+    });
+    await lifecycle.start('start');
+    fixture.tickFrames(10);
+    assert.deepEqual(timestamps, [10]);
+    assert.equal(fixture.activeFrameCount(), 1);
+    fixture.tickFrames(20);
+    assert.deepEqual(timestamps, [10, 20]);
+    assert.equal(fixture.activeFrameCount(), 0);
+  } finally { restore(); }
+});
