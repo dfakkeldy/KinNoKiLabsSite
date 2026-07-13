@@ -123,9 +123,9 @@ test('Sudoku keyboard and pointer actions update cells and persist progress', as
     const cell = fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`);
     cell.click(); cell.dispatchEvent(new FixtureEvent('keydown', { key: '2' }));
     assert.equal(fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`).textContent, '2');
-    assert.match(fixture.localStorage.getItem('kinnoki-games:v1'), /"sudoku"/);
+    assert.match(fixture.localStorage.getItem('kinnoki-games:v2'), /"sudoku"/);
     fixture.root.querySelector('[data-hint]').click();
-    assert.match(fixture.localStorage.getItem('kinnoki-games:v1'), /"assisted":true/);
+    assert.match(fixture.localStorage.getItem('kinnoki-games:v2'), /"assisted":true/);
     assert.match(fixture.root.querySelector('.games-live-region').textContent, /hint revealed.*assisted/i);
   } finally { restore(); }
 });
@@ -157,7 +157,7 @@ test('a progressed run is preserved when replacement confirmation is declined', 
     fixture.localStorage.setItem('kinnoki-games:v1', JSON.stringify(store));
     await renderSudoku(fixture.root, store);
     assert.equal(fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`).textContent, '2');
-    assert.equal(JSON.parse(fixture.localStorage.getItem('kinnoki-games:v1')).runs.sudoku.seed, 1);
+    assert.equal(JSON.parse(fixture.localStorage.getItem('kinnoki-games:v2')).runs.sudoku.seed, 1);
   } finally { restore(); }
 });
 
@@ -175,7 +175,7 @@ test('visibility changes persist elapsed play without counting hidden time', asy
     fixture.document.visibilityState = 'hidden'; fixture.document.dispatchEvent(new FixtureEvent('visibilitychange'));
     now = 11000; fixture.document.visibilityState = 'visible'; fixture.document.dispatchEvent(new FixtureEvent('visibilitychange'));
     now = 12000; active = 2100; fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`).click();
-    const run = JSON.parse(fixture.localStorage.getItem('kinnoki-games:v1')).runs.sudoku;
+    const run = JSON.parse(fixture.localStorage.getItem('kinnoki-games:v2')).runs.sudoku;
     assert.equal(run.elapsedBeforeStartMs, 1000);
     assert.equal(run.startedAt, 11000);
   } finally { Date.now = originalNow; globalThis.performance = originalPerformance; restore(); }
@@ -192,7 +192,7 @@ test('Play Another starts a run whose seed differs from the completed seed', asy
     fixture.root.querySelector(`[data-cell="${target.start.row}:${target.start.column}"]`).dispatchEvent(new FixtureEvent('keydown', { key: 'Enter' }));
     fixture.root.querySelector(`[data-cell="${target.end.row}:${target.end.column}"]`).focus(); fixture.root.querySelector(`[data-cell="${target.end.row}:${target.end.column}"]`).dispatchEvent(new FixtureEvent('keydown', { key: 'Enter' }));
     fixture.root.querySelector('[data-play-another]').click();
-    const next = JSON.parse(fixture.localStorage.getItem('kinnoki-games:v1'));
+    const next = JSON.parse(fixture.localStorage.getItem('kinnoki-games:v2'));
     assert.notEqual(next.runs['word-search'].seed, next.previousSeeds['word-search']);
   } finally { restore(); }
 });

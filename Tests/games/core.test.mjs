@@ -60,6 +60,11 @@ test('temporary positional adapters preserve legacy controller stores', () => {
   assert.equal(store.stats.totalCompleted, 1);
   assert.equal(store.stats.games.sudoku.bestMs.easy, 3000);
   assert.equal(store.previousSeeds.sudoku, 7);
+
+  const storage = memoryStorage();
+  assert.equal(saveGameStore(storage, store).ok, true);
+  assert.equal(storage.getItem('kinnoki-games:v1'), null);
+  assert.equal(JSON.parse(storage.getItem('kinnoki-games:v2')).version, 2);
 });
 
 test('unfinished game offers a difficulty-specific continue link', () => {

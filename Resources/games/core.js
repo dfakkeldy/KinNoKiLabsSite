@@ -285,11 +285,8 @@ const migrateV1Store = (value) => {
 
 export function saveGameStore(storage, store) {
   try {
-    if (store?.version === 1) {
-      storage.setItem(STORE_KEYS.v1, JSON.stringify(store));
-      return { ok: true };
-    }
-    storage.setItem(STORE_KEYS.v2, JSON.stringify(sanitizeV2Store(store)));
+    const normalized = store?.version === 1 ? migrateV1Store(store) : store;
+    storage.setItem(STORE_KEYS.v2, JSON.stringify(sanitizeV2Store(normalized)));
     return { ok: true };
   } catch (error) { return { ok: false, error }; }
 }

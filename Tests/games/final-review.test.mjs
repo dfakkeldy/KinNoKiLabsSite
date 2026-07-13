@@ -41,7 +41,7 @@ test('resuming re-anchors time so a long closed interval is excluded', async () 
     assert.equal(session.elapsed(), 750);
     fixture.window.dispatchEvent(new FixtureEvent('pagehide'));
     wall += 99_000; active += 99_000;
-    assert.equal(JSON.parse(fixture.localStorage.getItem('kinnoki-games:v1')).runs.sudoku.elapsedBeforeStartMs, 750);
+    assert.equal(JSON.parse(fixture.localStorage.getItem('kinnoki-games:v2')).runs.sudoku.elapsedBeforeStartMs, 750);
     assert.equal(fixture.window.listenerCount('pagehide'), 1);
     fixture.window.dispatchEvent(new FixtureEvent('pageshow'));
     active += 250;
@@ -76,12 +76,12 @@ test('completion disables game controls and cannot increment statistics twice', 
     await module.renderWordSearch(fixture.root, storeWith('word-search', definition, play));
     fixture.root.querySelector(`[data-cell="${target.start.row}:${target.start.column}"]`).click();
     fixture.root.querySelector(`[data-cell="${target.end.row}:${target.end.column}"]`).click();
-    const once = JSON.parse(fixture.localStorage.getItem('kinnoki-games:v1'));
+    const once = JSON.parse(fixture.localStorage.getItem('kinnoki-games:v2'));
     assert.equal(once.stats.totalCompleted, 1);
     for (const control of fixture.root.querySelectorAll('.game-board button')) assert.equal(control.disabled, true);
     for (const control of fixture.root.querySelectorAll('.game-controls button')) assert.equal(control.disabled, true);
     fixture.root.querySelector('[data-hint]').click();
-    assert.equal(JSON.parse(fixture.localStorage.getItem('kinnoki-games:v1')).stats.totalCompleted, 1);
+    assert.equal(JSON.parse(fixture.localStorage.getItem('kinnoki-games:v2')).stats.totalCompleted, 1);
   } finally { restore(); }
 });
 
@@ -116,7 +116,7 @@ test('Restart keeps the exact definition and seed while resetting play and assis
     store.stats.totalCompleted = 7;
     await module.renderSudoku(fixture.root, store);
     fixture.root.querySelector('[data-restart]').click(); await Promise.resolve();
-    const saved = JSON.parse(fixture.localStorage.getItem('kinnoki-games:v1'));
+    const saved = JSON.parse(fixture.localStorage.getItem('kinnoki-games:v2'));
     assert.equal(saved.runs.sudoku.seed, 42);
     assert.deepEqual(saved.runs.sudoku.puzzle.definition, definition);
     assert.equal(saved.runs.sudoku.puzzle.play.values[editable], 0);
@@ -181,7 +181,7 @@ test('clicking Play Another never coerces its MouseEvent into seed zero', async 
     fixture.root.querySelector(`[data-cell="${target.end.row}:${target.end.column}"]`).click();
     fixture.root.querySelector('[data-play-another]').click();
     await Promise.resolve();
-    const next = JSON.parse(fixture.localStorage.getItem('kinnoki-games:v1')).runs['word-search'];
+    const next = JSON.parse(fixture.localStorage.getItem('kinnoki-games:v2')).runs['word-search'];
     assert.notEqual(next.seed, 0);
     assert.notEqual(puzzleSignature(next.puzzle.definition), puzzleSignature(definition));
   } finally { restore(); }
