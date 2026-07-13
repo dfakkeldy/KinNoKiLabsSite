@@ -4,13 +4,24 @@ import { readFileSync } from 'node:fs';
 import { createDOMFixture, FixtureEvent, installDOM } from './dom-fixture.mjs';
 import { generateSudoku } from '../../Resources/games/sudoku.js';
 import { generateWordSearch } from '../../Resources/games/word-search.js';
+import { createEmptyGameStore, STORE_KEYS } from '../../Resources/games/core.js';
 
-const emptyStats = () => ({ totalCompleted: 0, currentStreak: 0, lastCompletedDate: null, games: {} });
-const storeWith = (game, definition, play = undefined, difficulty = 'easy') => ({
-  version: 1,
-  runs: { [game]: { difficulty, seed: definition.seed ?? 1, puzzle: { definition, ...(play ? { play } : {}) }, startedAt: 0, elapsedBeforeStartMs: 0, assisted: false } },
-  previousSeeds: {}, stats: emptyStats(),
-});
+const v2StoreWithRun = ({
+  game, definition, play, difficulty = definition.difficulty ?? 'easy',
+  seed = definition.seed ?? 1, startedAt = 0, elapsedBeforeStartMs = 0, assisted = false,
+}) => {
+  const store = createEmptyGameStore();
+  store.runs[game] = {
+    game, mode: 'default', difficulty, seed: seed >>> 0,
+    signature: 'fixture:' + game + ':' + JSON.stringify(definition),
+    puzzle: { definition, ...(play === undefined ? {} : { play }) },
+    startedAt, elapsedBeforeStartMs, assisted,
+  };
+  return store;
+};
+const storeWith = (game, definition, play = undefined, difficulty = 'easy') => (
+  v2StoreWithRun({ game, definition, play, difficulty })
+);
 
 const sudoku = generateSudoku({ difficulty: 'easy', seed: 20260712 });
 const sudokuGiven = sudoku.puzzle.findIndex(Boolean);
@@ -122,11 +133,11 @@ test('declining a different-difficulty replacement keeps the saved run without r
     const module = await import('../../Resources/games/sudoku-ui.js');
     const play = module.createSudokuState(sudoku); play.values[sudokuEditable] = 2;
     const store = storeWith('sudoku', sudoku, play, 'easy');
-    fixture.localStorage.setItem('kinnoki-games:v1', JSON.stringify(store));
+    fixture.localStorage.setItem(STORE_KEYS.v2, JSON.stringify(store));
     await module.renderSudoku(fixture.root, store);
     assert.equal(fixture.root.querySelector('[role="grid"]'), null);
     assert.match(fixture.root.textContent, /Easy puzzle.*kept/i);
-    assert.equal(JSON.parse(fixture.localStorage.getItem('kinnoki-games:v1')).runs.sudoku.difficulty, 'easy');
+    assert.equal(JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2)).runs.sudoku.difficulty, 'easy');
   } finally { restore(); }
 });
 
@@ -232,9 +243,13 @@ test('each hostile persisted run falls back through its game validator to a fres
       const validateRun = game === 'sudoku' ? module.validateSudokuRun
         : game === 'crossword' ? module.validateCrosswordRun : module.validateWordSearchRun;
       const store = storeWith(game, valid); store.runs[game].puzzle = hostile;
+      let signatureCalls = 0;
       const session = createSession({
         root: fixture.root, game, store, createPuzzle: () => valid, createPlay,
         progressed: () => true, validateRun, onRender: async () => {},
+        definitionSignature: () => (
+          signatureCalls++ === 0 ? 'hostile-fixture' : 'valid-fixture'
+        ),
       });
       assert.equal(session.run.puzzle.definition, valid);
       assert.equal(validateRun(session.run.puzzle, 'easy'), true);
@@ -262,7 +277,7 @@ test('async Play Another render failures become a visible game error', async () 
   const fixture = createDOMFixture(); const restore = installDOM(fixture);
   try {
     const { createSession } = await import('../../Resources/games/controller-common.js');
-    const store = { version: 1, runs: {}, previousSeeds: {}, stats: emptyStats() };
+    const store = createEmptyGameStore();
     const session = createSession({
       root: fixture.root, game: 'sudoku', store,
       createPuzzle: ({ difficulty, seed }) => ({ seed, difficulty }),

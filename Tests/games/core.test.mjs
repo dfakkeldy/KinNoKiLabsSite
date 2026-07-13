@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  completeRun, createEmptyGameStore, createRng, loadGameStore, markAssisted,
+  chooseFreshDefinition, completeRun, createEmptyGameStore, createRng, loadGameStore, markAssisted,
   resetGameStore, saveGameStore, startRun, visibleElapsedMs,
 } from '../../Resources/games/core.js';
 import {
@@ -20,6 +20,34 @@ const memoryStorage = (initial = {}) => {
 test('same seed produces the same sequence', () => {
   const a = createRng(42); const b = createRng(42);
   assert.deepEqual([a.next(), a.int(20), a.next()], [b.next(), b.int(20), b.next()]);
+});
+
+test('fresh definition rejects completed and abandoned signatures within 64 candidates', () => {
+  const seenSeeds = [];
+  const result = chooseFreshDefinition({
+    game: 'sudoku', mode: 'default', difficulty: 'easy', initialSeed: 9,
+    previousSeed: 9, previousSignature: 'signature-10',
+    abandonedSignature: 'signature-11',
+    createDefinition: ({ seed }) => { seenSeeds.push(seed); return { seed }; },
+    signatureOf: ({ seed }) => `signature-${seed}`,
+  });
+  assert.equal(result.signature === 'signature-10', false);
+  assert.equal(result.signature === 'signature-11', false);
+  assert.equal(result.seed === 9, false);
+  assert.ok(seenSeeds.length <= 64);
+});
+
+test('completed session stores the actual definition signature under default history', () => {
+  let store = createEmptyGameStore();
+  store = startRun(store, {
+    game: 'sudoku', mode: 'default', difficulty: 'easy', seed: 5,
+    signature: 'sudoku-definition-5', puzzle: {}, now: 100,
+  });
+  store = completeRun(store, {
+    game: 'sudoku', mode: 'default', now: 1100, records: { time: 1000 },
+  });
+  assert.equal(store.previousSeeds.sudoku, 5);
+  assert.equal(store.previousSignatures.sudoku, 'sudoku-definition-5');
 });
 
 test('corrupt storage recovers to an empty v2 store', () => {
@@ -45,26 +73,10 @@ test('assisted completion increments totals but not best time', () => {
   assert.equal(store.stats.games.sudoku.modes.default.records.time.easy, null);
 });
 
-test('temporary positional adapters preserve legacy controller stores', () => {
-  const gameStats = { completed: 0, bestMs: { easy: null, medium: null, hard: null } };
-  let store = {
-    version: 1, runs: {}, previousSeeds: {},
-    stats: {
-      totalCompleted: 0, currentStreak: 0, lastCompletedDate: null,
-      games: { sudoku: gameStats },
-    },
-  };
-  store = startRun(store, 'sudoku', 'easy', 7, { definition: {}, play: {} }, 1000);
-  store.runs.sudoku.elapsedBeforeStartMs = 3000;
-  store = completeRun(store, 'sudoku', 1000);
-  assert.equal(store.stats.totalCompleted, 1);
-  assert.equal(store.stats.games.sudoku.bestMs.easy, 3000);
-  assert.equal(store.previousSeeds.sudoku, 7);
-
-  const storage = memoryStorage();
-  assert.equal(saveGameStore(storage, store).ok, true);
-  assert.equal(storage.getItem('kinnoki-games:v1'), null);
-  assert.equal(JSON.parse(storage.getItem('kinnoki-games:v2')).version, 2);
+test('lifecycle APIs reject removed positional calls', () => {
+  const store = createEmptyGameStore();
+  assert.strictEqual(startRun(store, 'sudoku', 'easy', 7, {}, 1000), store);
+  assert.strictEqual(completeRun(store, 'sudoku', 1000), store);
 });
 
 test('unfinished game offers a difficulty-specific continue link', () => {

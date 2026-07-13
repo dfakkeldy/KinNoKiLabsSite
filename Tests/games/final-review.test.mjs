@@ -5,22 +5,26 @@ import { createDOMFixture, FixtureEvent, installDOM } from './dom-fixture.mjs';
 import { generateSudoku } from '../../Resources/games/sudoku.js';
 import { generateCrossword } from '../../Resources/games/crossword.js';
 import { generateWordSearch } from '../../Resources/games/word-search.js';
+import { createEmptyGameStore, STORE_KEYS } from '../../Resources/games/core.js';
 
-const gameStats = () => ({ completed: 0, bestMs: { easy: null, medium: null, hard: null } });
-const emptyStore = () => ({
-  version: 1, runs: {}, previousSeeds: {},
-  stats: { totalCompleted: 0, currentStreak: 0, lastCompletedDate: null,
-    games: { sudoku: gameStats(), crossword: gameStats(), 'word-search': gameStats() } },
-});
-const storeWith = (game, definition, play, overrides = {}) => {
-  const store = emptyStore();
+const v2StoreWithRun = ({
+  game, definition, play, difficulty = definition.difficulty ?? 'easy',
+  seed = definition.seed ?? 1, startedAt = 0, elapsedBeforeStartMs = 0, assisted = false,
+}) => {
+  const store = createEmptyGameStore();
   store.runs[game] = {
-    difficulty: definition.difficulty, seed: definition.seed,
-    puzzle: { definition, play }, startedAt: 10, elapsedBeforeStartMs: 500,
-    assisted: false, ...overrides,
+    game, mode: 'default', difficulty, seed: seed >>> 0,
+    signature: 'fixture:' + game + ':' + JSON.stringify(definition),
+    puzzle: { definition, ...(play === undefined ? {} : { play }) },
+    startedAt, elapsedBeforeStartMs, assisted,
   };
   return store;
 };
+const storeWith = (game, definition, play, overrides = {}) => (
+  v2StoreWithRun({
+    game, definition, play, startedAt: 10, elapsedBeforeStartMs: 500, ...overrides,
+  })
+);
 
 test('resuming re-anchors time so a long closed interval is excluded', async () => {
   const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' });
@@ -41,7 +45,7 @@ test('resuming re-anchors time so a long closed interval is excluded', async () 
     assert.equal(session.elapsed(), 750);
     fixture.window.dispatchEvent(new FixtureEvent('pagehide'));
     wall += 99_000; active += 99_000;
-    assert.equal(JSON.parse(fixture.localStorage.getItem('kinnoki-games:v2')).runs.sudoku.elapsedBeforeStartMs, 750);
+    assert.equal(JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2)).runs.sudoku.elapsedBeforeStartMs, 750);
     assert.equal(fixture.window.listenerCount('pagehide'), 1);
     fixture.window.dispatchEvent(new FixtureEvent('pageshow'));
     active += 250;
@@ -76,12 +80,12 @@ test('completion disables game controls and cannot increment statistics twice', 
     await module.renderWordSearch(fixture.root, storeWith('word-search', definition, play));
     fixture.root.querySelector(`[data-cell="${target.start.row}:${target.start.column}"]`).click();
     fixture.root.querySelector(`[data-cell="${target.end.row}:${target.end.column}"]`).click();
-    const once = JSON.parse(fixture.localStorage.getItem('kinnoki-games:v2'));
+    const once = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2));
     assert.equal(once.stats.totalCompleted, 1);
     for (const control of fixture.root.querySelectorAll('.game-board button')) assert.equal(control.disabled, true);
     for (const control of fixture.root.querySelectorAll('.game-controls button')) assert.equal(control.disabled, true);
     fixture.root.querySelector('[data-hint]').click();
-    assert.equal(JSON.parse(fixture.localStorage.getItem('kinnoki-games:v2')).stats.totalCompleted, 1);
+    assert.equal(JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2)).stats.totalCompleted, 1);
   } finally { restore(); }
 });
 
@@ -116,7 +120,7 @@ test('Restart keeps the exact definition and seed while resetting play and assis
     store.stats.totalCompleted = 7;
     await module.renderSudoku(fixture.root, store);
     fixture.root.querySelector('[data-restart]').click(); await Promise.resolve();
-    const saved = JSON.parse(fixture.localStorage.getItem('kinnoki-games:v2'));
+    const saved = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2));
     assert.equal(saved.runs.sudoku.seed, 42);
     assert.deepEqual(saved.runs.sudoku.puzzle.definition, definition);
     assert.equal(saved.runs.sudoku.puzzle.play.values[editable], 0);
@@ -181,7 +185,7 @@ test('clicking Play Another never coerces its MouseEvent into seed zero', async 
     fixture.root.querySelector(`[data-cell="${target.end.row}:${target.end.column}"]`).click();
     fixture.root.querySelector('[data-play-another]').click();
     await Promise.resolve();
-    const next = JSON.parse(fixture.localStorage.getItem('kinnoki-games:v2')).runs['word-search'];
+    const next = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2)).runs['word-search'];
     assert.notEqual(next.seed, 0);
     assert.notEqual(puzzleSignature(next.puzzle.definition), puzzleSignature(definition));
   } finally { restore(); }

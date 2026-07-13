@@ -1,4 +1,7 @@
-import { completeRun, deriveSeed, markAssisted, saveGameStore, startRun } from './core.js';
+import {
+  chooseFreshDefinition, completeRun, deriveSeed, historyKey, markAssisted,
+  saveGameStore, startRun,
+} from './core.js';
 import { safeLocalStorage, showStorageFailureNotice } from './hub-ui.js';
 
 export const difficulties = ['easy', 'medium', 'hard'];
@@ -45,11 +48,13 @@ export const formatElapsed = (milliseconds) => {
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
 };
 
-const seedValue = (previous) => {
-  let seed = (Date.now() ^ Math.floor(Math.random() * 0xffffffff)) >>> 0;
-  if (seed === previous) seed = (seed + 1) >>> 0;
+export function defaultSeedFactory({ previousSeed = null } = {}) {
+  const words = new Uint32Array(1);
+  try { globalThis.crypto?.getRandomValues?.(words); } catch { words[0] = 0; }
+  let seed = ((Date.now() >>> 0) ^ words[0]) >>> 0;
+  if (seed === previousSeed) seed = deriveSeed(seed, 0);
   return seed;
-};
+}
 
 export function renderGameError(root) {
   root.replaceChildren(element('section', { class: 'game-error', role: 'alert' },
@@ -69,12 +74,14 @@ export function renderReplacementKept(root, game, existingDifficulty) {
     element('a', { class: 'back-link', href: '/games', text: 'Back to Games' })));
 }
 
-export function createSession({
-  root, game, store, createPuzzle, createPlay, progressed, validateRun, onRender,
-  definitionSignature = puzzleSignature,
-  wallNow = () => Date.now(),
-  monotonicNow = () => globalThis.performance?.now?.() ?? Date.now(),
-}) {
+export function createSession(options) {
+  const {
+    root, game, store, createPuzzle, createPlay, progressed, validateRun, onRender,
+    definitionSignature = puzzleSignature,
+    seedFactory = defaultSeedFactory,
+    wallNow = () => Date.now(),
+    monotonicNow = () => globalThis.performance?.now?.() ?? Date.now(),
+  } = options;
   activeSessions.get(root)?.dispose();
   const storage = safeLocalStorage(globalThis);
   const params = new URLSearchParams(globalThis.location?.search ?? '');
@@ -116,22 +123,41 @@ export function createSession({
     return handle;
   };
 
-  const begin = (requestedSeed = seedValue(currentStore.previousSeeds?.[game])) => {
-    const previousSignature = run?.puzzle?.definition
-      ? definitionSignature(run.puzzle.definition) : null;
-    let seed = requestedSeed >>> 0;
-    let definition;
-    for (let retry = 0; retry < 64; retry += 1) {
-      definition = createPuzzle({ difficulty, seed });
-      if (previousSignature === null || definitionSignature(definition) !== previousSignature) break;
-      definition = null;
-      seed = deriveSeed(seed, retry);
-    }
-    if (!definition) throw new Error(`Unable to generate a non-repeating ${game} puzzle`);
-    currentStore = startRun(currentStore, game, difficulty, seed, {
-      definition,
-      play: createPlay(definition),
-    }, wallNow());
+  const begin = (requestedSeed) => {
+    const key = historyKey(game, 'default');
+    const abandonedDefinition = run?.puzzle?.definition ?? existing?.puzzle?.definition;
+    const abandonedSignature = abandonedDefinition
+      ? definitionSignature(abandonedDefinition) : null;
+    const initialSeed = Number.isSafeInteger(requestedSeed) && requestedSeed >= 0
+      ? requestedSeed >>> 0
+      : seedFactory({
+          game,
+          mode: 'default',
+          previousSeed: currentStore.previousSeeds?.[key] ?? null,
+        });
+    const selected = chooseFreshDefinition({
+      game,
+      mode: 'default',
+      difficulty,
+      initialSeed,
+      previousSeed: currentStore.previousSeeds?.[key] ?? null,
+      previousSignature: currentStore.previousSignatures?.[key] ?? null,
+      abandonedSignature,
+      createDefinition: ({ seed }) => createPuzzle({ difficulty, seed }),
+      signatureOf: definitionSignature,
+    });
+    currentStore = startRun(currentStore, {
+      game,
+      mode: 'default',
+      difficulty,
+      seed: selected.seed,
+      signature: selected.signature,
+      puzzle: {
+        definition: selected.definition,
+        play: createPlay(selected.definition),
+      },
+      now: wallNow(),
+    });
     run = currentStore.runs[game];
     activeStarted = monotonicNow();
     paused = false;
@@ -193,7 +219,10 @@ export function createSession({
     finished = true;
     const elapsedMs = run.elapsedBeforeStartMs;
     const assisted = run.assisted;
-    currentStore = completeRun(currentStore, game, run.startedAt);
+    currentStore = completeRun(currentStore, {
+      game, mode: 'default', now: wallNow(),
+      records: { time: elapsedMs },
+    });
     save();
     dispose();
     completionResult = { elapsed: elapsedMs, assisted };
@@ -212,9 +241,14 @@ export function createSession({
   const restart = async () => {
     if (!run || finished) return;
     const definition = run.puzzle.definition;
-    currentStore = startRun(currentStore, game, difficulty, run.seed, {
-      definition, play: createPlay(definition),
-    }, wallNow());
+    currentStore = startRun(currentStore, {
+      game, mode: 'default',
+      difficulty: run.difficulty,
+      seed: run.seed,
+      signature: run.signature,
+      puzzle: { definition, play: createPlay(definition) },
+      now: wallNow(),
+    });
     run = currentStore.runs[game];
     activeStarted = monotonicNow();
     paused = false;
