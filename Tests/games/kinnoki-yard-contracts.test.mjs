@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  createContractState, generateContract, reduceContract, solveContract,
-  validateContractState,
+  createContractState, generateContract, prepareContractForContinue, reduceContract,
+  solveContract, validateContractState,
 } from '../../Resources/games/kinnoki-yard.js';
 
 const transition = (state, action) => reduceContract(state, action).state;
@@ -153,4 +153,60 @@ test('Contract lifecycle no-ops and action payloads follow the shared contract',
   assert.match(reduceContract(resumed, {
     type: 'rotate-piece', quarterTurns: 2,
   }).events[0].reason, /one quarter turn/i);
+});
+
+test('Contract validator authenticates persisted hints against the canonical solver result', () => {
+  const state = createContractState(pairContract);
+  assert.equal(validateContractState({
+    ...state,
+    hint: {
+      status: 'solved',
+      placement: {
+        pieceId: 0, typeId: 'crate-pair', rotation: 0, row: 999, column: 999,
+      },
+    },
+  }, 'easy').valid, false);
+  assert.equal(validateContractState({
+    ...state,
+    hint: { status: 'dead-end', message: 'This solvable board is stuck.' },
+  }, 'easy').valid, false);
+});
+
+test('prepare Contract for continue validates, clones, and pauses saved play', () => {
+  const active = transition(createContractState(pairContract), { type: 'start' });
+  const continued = prepareContractForContinue(active);
+  assert.equal(continued.status, 'paused');
+  assert.notEqual(continued, active);
+  assert.notEqual(continued.board, active.board);
+  assert.throws(() => prepareContractForContinue({
+    ...active, status: 'terminal', terminalReason: 'completed',
+  }), TypeError);
+});
+
+test('move counting saturates and rejected actions preserve state identity', () => {
+  const active = {
+    ...transition(createContractState(generateContract({ difficulty: 'easy', seed: 12 })), {
+      type: 'start',
+    }),
+    moves: Number.MAX_SAFE_INTEGER,
+  };
+  const rotated = reduceContract(active, { type: 'rotate-piece', quarterTurns: 1 });
+  assert.equal(rotated.state.moves, Number.MAX_SAFE_INTEGER);
+  const rejected = reduceContract(rotated.state, {
+    type: 'place-piece', row: -1, column: -1,
+  });
+  assert.equal(rejected.state, rotated.state);
+  assert.equal(rejected.state.moves, Number.MAX_SAFE_INTEGER);
+});
+
+test('Contract history snapshots do not alias later mutable position objects', () => {
+  const active = transition(createContractState(generateContract({
+    difficulty: 'easy', seed: 12,
+  })), { type: 'start' });
+  const rotated = transition(active, { type: 'rotate-piece', quarterTurns: 1 });
+  const snapshot = structuredClone(rotated.history[0]);
+  rotated.board[0][0] = { pieceId: 999 };
+  rotated.placements.forged = { pieceId: 999 };
+  rotated.focus.row = 1;
+  assert.deepEqual(rotated.history[0], snapshot);
 });

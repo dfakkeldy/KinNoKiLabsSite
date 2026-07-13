@@ -55,3 +55,31 @@ make test-games
 
 None within Task 6 scope. Task 7 remains responsible for the mode facade and
 storage/controller integration.
+
+## Review Follow-up
+
+An Important review finding identified that persisted non-null hints were
+validated by shape rather than by solver provenance.
+
+### RED
+
+Added a regression with both a plausible solved placement at row/column `999`
+and a forged dead-end message on a solvable state. The focused Contract run
+failed because the solved forgery was accepted (`true !== false`); the other ten
+Contract tests passed.
+
+### GREEN
+
+Non-null hints are now recomputed from the saved definition and placements via
+`getContractHint`/`solveContract` and must exactly equal the canonical hint.
+Additional tests cover continue validation and deep cloning, move saturation,
+rejected-action reference identity, and history snapshot alias isolation.
+
+- Contract suite: 11/11 passed.
+- Focused Yard/core/storage suite: 59/59 passed.
+- Full `make test-games`: 195/195 passed.
+
+The follow-up remains limited to the Yard engine, Contract tests, and this
+report; `Output/` was not touched. `getContractHint` remains guarded from
+completed-state calls through terminal reducer immutability; no new public hint
+status was introduced solely for an unreachable reducer path.

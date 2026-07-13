@@ -1120,18 +1120,10 @@ const contractPositionErrors = (position, definition) => {
 
   const hint = position?.hint;
   if (hint !== null) {
-    const hinted = hint?.status === 'solved' && hint.placement;
-    const hintedPiece = hinted && definition.pieces.find(
-      (piece) => piece.pieceId === hinted.pieceId,
-    );
-    const solvedHintValid = hintedPiece
-      && !Object.hasOwn(position.placements, String(hinted.pieceId))
-      && hintedPiece.typeId === hinted.typeId
-      && hintedPiece.allowedRotations.includes(hinted.rotation)
-      && Number.isInteger(hinted.row) && Number.isInteger(hinted.column);
-    const deadEndHintValid = hint?.status === 'dead-end'
-      && typeof hint.message === 'string' && hint.message.length > 0;
-    if (!solvedHintValid && !deadEndHintValid) errors.push('invalid Contract hint');
+    const canonicalHint = getContractHint({ definition, placements: position.placements });
+    if (JSON.stringify(hint) !== JSON.stringify(canonicalHint)) {
+      errors.push('invalid Contract hint');
+    }
   }
   return errors;
 };
