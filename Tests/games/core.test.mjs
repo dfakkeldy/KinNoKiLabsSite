@@ -45,6 +45,23 @@ test('assisted completion increments totals but not best time', () => {
   assert.equal(store.stats.games.sudoku.modes.default.records.time.easy, null);
 });
 
+test('temporary positional adapters preserve legacy controller stores', () => {
+  const gameStats = { completed: 0, bestMs: { easy: null, medium: null, hard: null } };
+  let store = {
+    version: 1, runs: {}, previousSeeds: {},
+    stats: {
+      totalCompleted: 0, currentStreak: 0, lastCompletedDate: null,
+      games: { sudoku: gameStats },
+    },
+  };
+  store = startRun(store, 'sudoku', 'easy', 7, { definition: {}, play: {} }, 1000);
+  store.runs.sudoku.elapsedBeforeStartMs = 3000;
+  store = completeRun(store, 'sudoku', 1000);
+  assert.equal(store.stats.totalCompleted, 1);
+  assert.equal(store.stats.games.sudoku.bestMs.easy, 3000);
+  assert.equal(store.previousSeeds.sudoku, 7);
+});
+
 test('unfinished game offers a difficulty-specific continue link', () => {
   let store = loadGameStore(memoryStorage());
   store = startRun(store, { game: 'sudoku', mode: 'default', difficulty: 'medium', seed: 7, signature: 'test:sudoku:7', puzzle: { definition: { puzzle: [], solution: [] }, play: {} }, now: 1000 });

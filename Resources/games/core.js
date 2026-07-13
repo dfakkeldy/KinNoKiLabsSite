@@ -285,6 +285,10 @@ const migrateV1Store = (value) => {
 
 export function saveGameStore(storage, store) {
   try {
+    if (store?.version === 1) {
+      storage.setItem(STORE_KEYS.v1, JSON.stringify(store));
+      return { ok: true };
+    }
     storage.setItem(STORE_KEYS.v2, JSON.stringify(sanitizeV2Store(store)));
     return { ok: true };
   } catch (error) { return { ok: false, error }; }
@@ -318,9 +322,27 @@ export function resetGameStore(storage) {
   return firstError ? { ok: false, error: firstError } : { ok: true };
 }
 
-export function startRun(store, {
-  game, mode = 'default', difficulty, seed, signature, puzzle, now,
-}) {
+export function startRun(store, request, legacyDifficulty, legacySeed, legacyPuzzle, legacyNow) {
+  if (typeof request === 'string') {
+    const game = request;
+    if (store?.version === 1) {
+      if (!['sudoku', 'crossword', 'word-search'].includes(game)
+          || !DIFFICULTIES.includes(legacyDifficulty)) return store;
+      return {
+        ...store,
+        runs: { ...store.runs, [game]: {
+          difficulty: legacyDifficulty, seed: legacySeed >>> 0, puzzle: legacyPuzzle,
+          startedAt: legacyNow, elapsedBeforeStartMs: 0, assisted: false,
+        } },
+      };
+    }
+    request = {
+      game, difficulty: legacyDifficulty, seed: legacySeed,
+      signature: legacyRunSignature(game, legacySeed, legacyPuzzle?.definition),
+      puzzle: legacyPuzzle, now: legacyNow,
+    };
+  }
+  const { game, mode = 'default', difficulty, seed, signature, puzzle, now } = request ?? {};
   if (!validMode(game, mode) || !DIFFICULTIES.includes(difficulty)
       || !Number.isFinite(seed) || seed < 0 || typeof signature !== 'string'
       || signature.length === 0 || !isObject(puzzle) || !Number.isFinite(now)) return store;
@@ -363,7 +385,46 @@ const nextStreak = (stats, completedDate) => {
   }
   return 1;
 };
-export function completeRun(store, { game, mode = 'default', now, records = {} }) {
+export function completeRun(store, request, legacyNow) {
+  if (typeof request === 'string') {
+    const game = request;
+    const legacyRun = store.runs?.[game];
+    if (!legacyRun) return store;
+    if (store?.version === 1) {
+      const elapsedMs = visibleElapsedMs(legacyRun, legacyNow);
+      const completedDate = localDate(legacyNow);
+      const currentGameStats = store.stats.games[game] ?? {
+        completed: 0, bestMs: emptyDifficultyMap(),
+      };
+      const currentBest = currentGameStats.bestMs[legacyRun.difficulty] ?? null;
+      const bestMs = legacyRun.assisted ? currentGameStats.bestMs : {
+        ...currentGameStats.bestMs,
+        [legacyRun.difficulty]: currentBest === null
+          ? elapsedMs : Math.min(currentBest, elapsedMs),
+      };
+      const { [game]: completedRun, ...runs } = store.runs;
+      return {
+        ...store, runs,
+        previousSeeds: { ...store.previousSeeds, [game]: completedRun.seed },
+        stats: {
+          ...store.stats,
+          totalCompleted: saturatingAdd(store.stats.totalCompleted, 1),
+          currentStreak: nonNegativeSafeInteger(nextStreak(store.stats, completedDate)),
+          lastCompletedDate: completedDate,
+          games: { ...store.stats.games, [game]: {
+            ...currentGameStats,
+            completed: saturatingAdd(currentGameStats.completed, 1),
+            bestMs,
+          } },
+        },
+      };
+    }
+    request = {
+      game, now: legacyNow,
+      records: { time: visibleElapsedMs(legacyRun, legacyNow) },
+    };
+  }
+  const { game, mode = 'default', now, records = {} } = request ?? {};
   const run = store.runs?.[game];
   if (!run || run.mode !== mode || !Number.isFinite(now)) return store;
   const { [game]: completedRun, ...runs } = store.runs;
