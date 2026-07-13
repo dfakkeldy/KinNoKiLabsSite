@@ -80,8 +80,7 @@ export class FixtureElement {
   get innerHTML() { return this.textContent; }
   append(...children) {
     for (const child of children.flat()) {
-      if (child == null) continue;
-      if (typeof child === 'string') this._textContent += child;
+      if (typeof child !== 'object' || child == null) this._textContent += String(child);
       else { child.parentNode = this; this.children.push(child); }
     }
   }

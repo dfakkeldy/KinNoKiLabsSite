@@ -21,6 +21,14 @@ const crosswordPuzzle = {
 };
 const wordSearchPuzzle = generateWordSearch({ difficulty: 'easy', seed: 77 });
 
+test('shared element helper omits absent optional children', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { element } = await import('../../Resources/games/controller-common.js');
+    assert.equal(element('div', {}, null, undefined).textContent, '');
+  } finally { restore(); }
+});
+
 test('Sudoku reducer supports movement, edit, pencil, erase, undo, assistance, and fixed cells', async () => {
   const { createSudokuState, reduceSudoku } = await import('../../Resources/games/sudoku-ui.js');
   let state = createSudokuState(sudokuPuzzle);
@@ -100,6 +108,7 @@ for (const [name, modulePath, renderName, expectedCells] of [
       assert.ok(fixture.root.querySelector('[data-instructions]'));
       assert.equal(fixture.root.querySelector('[aria-live="polite"]')?.getAttribute('role'), 'status');
       assert.equal(fixture.root.querySelectorAll('[role="gridcell"]').length, expectedCells);
+      if (name === 'Crossword') assert.doesNotMatch(fixture.root.textContent, /\bnull\b/);
     } finally { restore(); }
   });
 }
@@ -117,6 +126,7 @@ test('Sudoku keyboard and pointer actions update cells and persist progress', as
     assert.match(fixture.localStorage.getItem('kinnoki-games:v1'), /"sudoku"/);
     fixture.root.querySelector('[data-hint]').click();
     assert.match(fixture.localStorage.getItem('kinnoki-games:v1'), /"assisted":true/);
+    assert.match(fixture.root.querySelector('.games-live-region').textContent, /hint revealed.*assisted/i);
   } finally { restore(); }
 });
 

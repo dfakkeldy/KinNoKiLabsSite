@@ -18,6 +18,9 @@ make generate          # equivalent: publish generate
 # Generate and serve locally at http://localhost:8000
 make preview           # equivalent: publish run
 
+# Run the Arcade Hall JavaScript and generated-route tests
+make test-games
+
 # Build the Swift package / clean artifacts
 swift build
 make clean             # equivalent: swift package clean
@@ -33,6 +36,8 @@ make clean             # equivalent: swift package clean
 - **`Sources/KinNoKiLabsSite/Theme/KinNoKiTheme.swift`** — Custom Plot-based `HTMLFactory` theme providing a sticky navigation bar and modern layout. The theme generates full HTML documents with shared `<header>`, `<main>`, and `<footer>` across all page types (index, sections, items, pages, tags).
 - **`Content/`** — Markdown source files. Top-level `.md` files become pages (e.g., `about.md` → `/about`); subdirectories become sections (e.g., `Content/posts/` → `SectionID.posts`).
 - **`Resources/`** — Static assets (images, CSS, JS) copied verbatim to the output root. `styles.css` defines all site styling including the sticky nav, typography, and light/dark mode support.
+- **Arcade Hall** — `/games`, `/games/sudoku`, `/games/crossword`, and `/games/word-search` are generated from the matching files under `Content/`. The reusable puzzle engines and shared helpers live in `Resources/games/core.js`, `controller-common.js`, and the game modules; DOM rendering and interaction adapters live in the matching `*-ui.js` controllers. Browser state, including preferences and puzzle progress, stays local to that browser and is never uploaded.
+- **`Tests/games/`** — Node tests cover the pure game engines, DOM controllers, accessibility behavior, and generated routes. Run them with `make test-games` after game changes; generate the site before running route assertions directly.
 
 ### Publish Conventions
 

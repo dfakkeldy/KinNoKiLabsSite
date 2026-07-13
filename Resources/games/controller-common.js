@@ -15,7 +15,7 @@ export function element(tag, attributes = {}, ...children) {
     else if (name in node && ['hidden', 'disabled', 'tabIndex'].includes(name)) node[name] = value;
     else node.setAttribute(name, value === true ? '' : String(value));
   }
-  node.append(...children.flat());
+  node.append(...children.flat().filter((child) => child != null));
   return node;
 }
 

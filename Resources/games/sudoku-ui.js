@@ -192,6 +192,7 @@ export async function renderSudoku(root, store) {
     if (next === state) return;
     state = next;
     if (action.type === 'reveal' || action.type === 'check') session.assist();
+    if (action.type === 'reveal') shell.live.textContent = 'Hint revealed. This puzzle is now assisted.';
     session.updatePlay(state);
     draw();
     if (focus && !state.completed) board.querySelector(`[data-cell="${state.selected}"]`)?.focus();
