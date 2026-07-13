@@ -159,49 +159,123 @@ function lockActive(state) {
   return spawnNext(settled, events);
 }
 
+function lockAndRecordActive(state) {
+  const lockedActive = cloneSerializable(state.active);
+  const result = lockActive(state);
+  return {
+    ...result,
+    state: {
+      ...result.state,
+      lockHistory: [...state.lockHistory, lockedActive],
+    },
+  };
+}
+
 const invalid = (state, action, reason) => ({ state, events: [{ type: 'invalid', action, reason }] });
 const canUseActive = (state, active) => {
   const rotation = rotationsFor(active.typeId).find((candidate) => candidate.rotation === active.rotation);
   return rotation !== undefined && canPlace(state.board, rotation.cells, active);
 };
 const movedState = (state, active, source) => ({ state: { ...state, active }, events: [{ type: 'moved', source, row: active.row, column: active.column }] });
+const canDescend = (state) => canUseActive(state, {
+  ...state.active,
+  row: state.active.row + 1,
+});
+const groundedAfterTransformation = (state, active) => (
+  canDescend({ ...state, active }) ? null : state.grounded
+);
 function rotateActive(state) {
   const rotations = rotationsFor(state.active.typeId);
   const current = rotations.findIndex(({ rotation }) => rotation === state.active.rotation);
   const nextRotation = rotations[(current + 1) % rotations.length];
   const active = { ...state.active, rotation: nextRotation.rotation, bounds: boundsFor(nextRotation.cells) };
   if (!canPlace(state.board, nextRotation.cells, active)) return invalid(state, 'rotate', 'Cargo cannot rotate here.');
-  return { state: { ...state, active }, events: [{ type: 'rotated', pieceId: active.pieceId, rotation: active.rotation }] };
+  return { state: { ...state, active, grounded: groundedAfterTransformation(state, active) }, events: [{ type: 'rotated', pieceId: active.pieceId, rotation: active.rotation }] };
 }
+
+function setStackStepMode(state, enabled) {
+  if (typeof enabled !== 'boolean') return invalid(state, 'set-step-mode', 'Step Mode requires a boolean value.');
+  if (state.stepMode === enabled) return { state, events: [] };
+  let grounded = state.grounded;
+  if (enabled && grounded?.kind === 'automatic') grounded = { kind: 'step', blockedOnce: true };
+  else if (!enabled && grounded?.kind === 'step') grounded = { kind: 'automatic', remainingMs: STACK_CONFIG[state.difficulty].lockDelayMs };
+  const newlyAssisted = enabled && !state.assisted;
+  return {
+    state: { ...state, assisted: state.assisted || enabled, stepMode: enabled, grounded, gravityAccumulatorMs: enabled ? state.gravityAccumulatorMs : 0 },
+    events: newlyAssisted ? [{ type: 'assisted', reason: 'step-mode' }] : [],
+  };
+}
+
+function advanceStackStep(state) {
+  if (!state.stepMode) return invalid(state, 'advance-step', 'Enable Step Mode first.');
+  const active = { ...state.active, row: state.active.row + 1 };
+  if (canUseActive(state, active)) return { state: { ...state, active, grounded: null }, events: [{ type: 'moved', source: 'step', row: active.row, column: active.column }] };
+  if (state.grounded?.kind === 'step' && state.grounded.blockedOnce) return lockAndRecordActive({ ...state, grounded: null, gravityAccumulatorMs: 0 });
+  return { state: { ...state, grounded: { kind: 'step', blockedOnce: true } }, events: [] };
+}
+
 function reduceActiveStack(state, action) {
   if (action.type === 'move') {
     if (![-1, 1].includes(action.deltaColumn)) return invalid(state, 'move', 'Move must be one column.');
     const active = { ...state.active, column: state.active.column + action.deltaColumn };
-    return canUseActive(state, active) ? movedState(state, active, 'player') : invalid(state, 'move', 'Cargo cannot move there.');
+    return canUseActive(state, active)
+      ? movedState({ ...state, grounded: groundedAfterTransformation(state, active) }, active, 'player')
+      : invalid(state, 'move', 'Cargo cannot move there.');
   }
   if (action.type === 'rotate') return action.quarterTurns === 1 ? rotateActive(state) : invalid(state, 'rotate', 'Rotation must be one quarter turn.');
   if (action.type === 'soft-drop') {
     const active = { ...state.active, row: state.active.row + 1 };
-    return canUseActive(state, active) ? movedState(state, active, 'player') : invalid(state, 'soft-drop', 'Cargo cannot descend.');
+    return canUseActive(state, active) ? movedState({ ...state, grounded: null }, active, 'player') : invalid(state, 'soft-drop', 'Cargo cannot descend.');
   }
   if (action.type === 'hard-drop') {
     let active = state.active;
     while (canUseActive(state, { ...active, row: active.row + 1 })) active = { ...active, row: active.row + 1 };
-    const result = lockActive({ ...state, active });
-    return {
-      ...result,
-      state: {
-        ...result.state,
-        lockHistory: [...state.lockHistory, cloneSerializable(active)],
-      },
-    };
+    return lockAndRecordActive({ ...state, active, grounded: null, gravityAccumulatorMs: 0 });
   }
   return invalid(state, String(action.type), 'Action is not available.');
 }
-export function reduceStack(state, action) {
+function reduceStackLifecycle(state, action) {
+  if (action.type === 'start') {
+    if (state.status === 'active') return { state, events: [] };
+    return state.status === 'preview' ? { state: { ...state, status: 'active' }, events: [{ type: 'started' }] } : invalid(state, 'start', 'The run cannot start from this state.');
+  }
+  if (action.type === 'pause') {
+    if (state.status === 'paused') return { state, events: [] };
+    if (state.status !== 'active' || !['user', 'hidden'].includes(action.reason)) return invalid(state, 'pause', 'The run cannot pause from this state.');
+    return { state: { ...state, status: 'paused' }, events: [{ type: 'paused', reason: action.reason }] };
+  }
+  if (action.type === 'resume') {
+    if (state.status === 'active') return { state, events: [] };
+    return state.status === 'paused' ? { state: { ...state, status: 'active', gravityAccumulatorMs: 0 }, events: [{ type: 'resumed' }] } : invalid(state, 'resume', 'The run cannot resume from this state.');
+  }
+  return null;
+}
+
+export function reduceStack(state, action = {}) {
   if (['terminal', 'error', 'disposed'].includes(state.status)) return { state, events: [] };
-  if (state.status !== 'active') return invalid(state, String(action?.type), 'Start or resume the run first.');
-  return reduceActiveStack(state, action ?? {});
+  const lifecycle = reduceStackLifecycle(state, action);
+  if (lifecycle !== null) return lifecycle;
+  if (action.type === 'set-step-mode') return ['active', 'paused'].includes(state.status) ? setStackStepMode(state, action.enabled) : invalid(state, action.type, 'Start the run before changing Step Mode.');
+  if (state.status !== 'active') return invalid(state, String(action.type), 'Start or resume the run first.');
+  if (action.type === 'advance-step') return advanceStackStep(state);
+  return reduceActiveStack(state, action);
+}
+
+export function advanceStackTime(state, deltaMs) {
+  if (state.status !== 'active' || state.stepMode) return { state, events: [] };
+  const delta = Number.isFinite(deltaMs) ? Math.max(0, Math.min(STACK_MAX_FRAME_DELTA_MS, deltaMs)) : 0;
+  if (delta === 0) return { state, events: [] };
+  if (state.grounded?.kind === 'automatic') {
+    const remainingMs = Math.max(0, state.grounded.remainingMs - delta);
+    if (remainingMs > 0) return { state: { ...state, grounded: { kind: 'automatic', remainingMs } }, events: [] };
+    return lockAndRecordActive({ ...state, grounded: null, gravityAccumulatorMs: 0 });
+  }
+  const fallMs = STACK_CONFIG[state.difficulty].fallMs;
+  const accumulated = state.gravityAccumulatorMs + delta;
+  if (accumulated < fallMs) return { state: { ...state, gravityAccumulatorMs: accumulated }, events: [] };
+  const active = { ...state.active, row: state.active.row + 1 };
+  if (canUseActive(state, active)) return { state: { ...state, active, grounded: null, gravityAccumulatorMs: accumulated - fallMs }, events: [{ type: 'moved', source: 'gravity', row: active.row, column: active.column }] };
+  return { state: { ...state, grounded: { kind: 'automatic', remainingMs: STACK_CONFIG[state.difficulty].lockDelayMs }, gravityAccumulatorMs: 0 }, events: [] };
 }
 
 const nonNegativeSafeInteger = (value) => Number.isSafeInteger(value) && value >= 0;
