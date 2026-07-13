@@ -1,6 +1,6 @@
 import {
   chooseFreshDefinition, completeRun, deriveSeed, historyKey, markAssisted,
-  saveGameStore, startRun,
+  sanitizeAudioPreferences, saveGameStore, startRun,
 } from './core.js';
 import { safeLocalStorage, showStorageFailureNotice } from './hub-ui.js';
 
@@ -56,22 +56,196 @@ export function defaultSeedFactory({ previousSeed = null } = {}) {
   return seed;
 }
 
-export function renderGameError(root) {
+export function renderGameError(root, {
+  title = 'Game paused',
+  message = 'This game could not continue.',
+  newGameHref = globalThis.location?.pathname ?? '/games',
+} = {}) {
   root.replaceChildren(element('section', { class: 'game-error', role: 'alert' },
-    element('h1', { text: 'Puzzle paused' }),
-    element('p', { text: 'This game could not start. Reload the page to try a fresh puzzle.' })));
-}
-
-export function renderReplacementKept(root, game, existingDifficulty) {
-  root.replaceChildren(element('section', { class: 'game-error', role: 'status' },
-    element('h1', { text: 'Saved puzzle kept' }),
-    element('p', { text: `${titleCase(existingDifficulty)} puzzle progress was kept on this device.` }),
+    element('h1', { text: title }),
+    element('p', { text: message }),
     element('a', {
-      class: 'btn btn-gold',
-      href: `/games/${game}?difficulty=${existingDifficulty}&continue=1`,
-      text: `Continue ${titleCase(existingDifficulty)}`,
+      class: 'btn btn-gold', href: newGameHref, text: 'Start a New Game',
     }),
     element('a', { class: 'back-link', href: '/games', text: 'Back to Games' })));
+}
+
+export function renderReplacementKept(root, game, existingDifficulty, mode = null) {
+  const isYard = game === 'kinnoki-yard'
+    && (mode === 'contracts' || mode === 'endless');
+  const difficulty = titleCase(existingDifficulty);
+  const href = isYard
+    ? `/games/${game}?mode=${mode}&difficulty=${existingDifficulty}&continue=1`
+    : `/games/${game}?difficulty=${existingDifficulty}&continue=1`;
+  const label = isYard
+    ? `Continue ${mode === 'endless' ? 'Endless Yard' : 'Contract'} · ${difficulty}`
+    : `Continue ${difficulty}`;
+  root.replaceChildren(element('section', { class: 'game-error', role: 'status' },
+    element('h1', { text: 'Saved puzzle kept' }),
+    element('p', {
+      text: `${difficulty} ${isYard ? 'run' : 'puzzle'} progress was kept on this device.`,
+    }),
+    element('a', { class: 'btn btn-gold', href, text: label }),
+    element('a', { class: 'back-link', href: '/games', text: 'Back to Games' })));
+}
+
+const eventAnnouncement = (event) => {
+  switch (event?.type) {
+    case 'started': return 'Run started.';
+    case 'paused': return 'Run paused.';
+    case 'resumed': return 'Run resumed.';
+    case 'assisted': return 'Assistance enabled. This run is ineligible for records.';
+    case 'invalid': return event.reason || 'That action is unavailable.';
+    case 'error': return event.message || 'The game could not continue.';
+    case 'moved': return `Cargo moved to row ${event.row + 1}, column ${event.column + 1}.`;
+    case 'rotated': return 'Cargo rotated.';
+    case 'placed': return 'Cargo placed.';
+    case 'repositioned': return 'Cargo repositioned.';
+    case 'selected': return 'Cargo selected.';
+    case 'spawned': return 'Next cargo ready.';
+    case 'tide-warning':
+      return `${titleCase(event.direction)} tide in ${event.placementsRemaining} placements.`;
+    case 'tide-shift':
+      return `${titleCase(event.direction)} tide shifted ${event.movedComponents} cargo groups.`;
+    case 'dispatch': return `Manifest dispatched. Combo ${event.combo}.`;
+    case 'combo-reset': return 'Manifest combo reset.';
+    case 'undone': return 'Last placement undone.';
+    case 'hint': return 'Hint ready.';
+    case 'hint-dead-end': return event.message || 'No valid completion remains.';
+    case 'completed': return `Contract completed in ${event.moves} moves.`;
+    case 'terminal':
+      if (event.reason === 'crane-line') return 'Run ended. Cargo reached the crane line.';
+      if (event.reason === 'spawn-blocked') {
+        return 'Run ended. The next cargo could not enter the dock.';
+      }
+      return 'Run ended. No legal cargo placement remains.';
+    default: return null;
+  }
+};
+
+export function createEventAnnouncer({
+  region,
+  monotonicNow = () => globalThis.performance?.now?.() ?? Date.now(),
+  minimumGapMs = 180,
+}) {
+  let disposed = false;
+  let lastLimitedKey = null;
+  let lastLimitedAt = Number.NEGATIVE_INFINITY;
+
+  const announce = (event) => {
+    if (disposed || !event || (event.type === 'moved' && event.source === 'gravity')) {
+      return false;
+    }
+    const message = eventAnnouncement(event);
+    if (!message) return false;
+    const limited = event.type === 'moved' || event.type === 'invalid';
+    const key = `${event.type}:${event.action ?? event.reason ?? ''}`;
+    const now = monotonicNow();
+    if (limited && key === lastLimitedKey && now - lastLimitedAt < minimumGapMs) {
+      return false;
+    }
+    if (limited) {
+      lastLimitedKey = key;
+      lastLimitedAt = now;
+    }
+    region.textContent = message;
+    return true;
+  };
+
+  return {
+    announce,
+    dispose() {
+      if (disposed) return false;
+      disposed = true;
+      lastLimitedKey = null;
+      return true;
+    },
+  };
+}
+
+export function createAudioControls({
+  document = globalThis.document,
+  preferences,
+  onChange = () => {},
+}) {
+  let current = sanitizeAudioPreferences(preferences);
+  let disposed = false;
+  const element = document.createElement('fieldset');
+  element.className = 'game-audio-controls';
+  const legend = document.createElement('legend');
+  legend.textContent = 'Audio';
+  element.append(legend);
+
+  const makeChannel = (name, key) => {
+    const row = document.createElement('div');
+    row.className = 'game-audio-channel';
+    const label = document.createElement('label');
+    const labelText = document.createElement('span');
+    labelText.textContent = name;
+    const range = document.createElement('input');
+    range.setAttribute('type', 'range');
+    range.setAttribute('min', '0');
+    range.setAttribute('max', '1');
+    range.setAttribute('step', '0.05');
+    range.setAttribute('aria-label', `${name} volume`);
+    range.setAttribute(`data-audio-${key}-volume`, '');
+    label.append(labelText, range);
+    const toggle = document.createElement('button');
+    toggle.setAttribute('type', 'button');
+    toggle.setAttribute(`data-audio-${key}-toggle`, '');
+    row.append(label, toggle);
+    element.append(row);
+    return { range, toggle };
+  };
+
+  const music = makeChannel('Music', 'music');
+  const effects = makeChannel('Effects', 'effects');
+  const paint = () => {
+    music.range.value = String(current.musicVolume);
+    effects.range.value = String(current.effectsVolume);
+    for (const [control, enabled, name] of [
+      [music.toggle, current.musicEnabled, 'music'],
+      [effects.toggle, current.effectsEnabled, 'effects'],
+    ]) {
+      control.setAttribute('aria-pressed', String(!enabled));
+      control.textContent = enabled ? `Mute ${name}` : `Unmute ${name}`;
+    }
+  };
+  const commit = (patch) => {
+    if (disposed) return false;
+    current = sanitizeAudioPreferences({ ...current, ...patch });
+    paint();
+    onChange({ ...current });
+    return true;
+  };
+  const onMusicToggle = () => commit({ musicEnabled: !current.musicEnabled });
+  const onEffectsToggle = () => commit({ effectsEnabled: !current.effectsEnabled });
+  const onMusicInput = () => commit({ musicVolume: Number(music.range.value) });
+  const onEffectsInput = () => commit({ effectsVolume: Number(effects.range.value) });
+  music.toggle.addEventListener('click', onMusicToggle);
+  effects.toggle.addEventListener('click', onEffectsToggle);
+  music.range.addEventListener('input', onMusicInput);
+  effects.range.addEventListener('input', onEffectsInput);
+  paint();
+
+  return {
+    element,
+    setPreferences(value) {
+      if (disposed) return false;
+      current = sanitizeAudioPreferences(value);
+      paint();
+      return true;
+    },
+    dispose() {
+      if (disposed) return false;
+      disposed = true;
+      music.toggle.removeEventListener('click', onMusicToggle);
+      effects.toggle.removeEventListener('click', onEffectsToggle);
+      music.range.removeEventListener('input', onMusicInput);
+      effects.range.removeEventListener('input', onEffectsInput);
+      return true;
+    },
+  };
 }
 
 export function createSession(options) {
@@ -235,7 +409,10 @@ export function createSession(options) {
       await onRender(currentStore);
     } catch {
       activeSessions.get(root)?.dispose();
-      renderGameError(root);
+      renderGameError(root, {
+        title: 'Puzzle paused',
+        message: 'This game could not start. Reload the page to try a fresh puzzle.',
+      });
     }
   };
   const restart = async () => {
@@ -257,7 +434,10 @@ export function createSession(options) {
     try {
       await onRender(currentStore);
     } catch {
-      renderGameError(root);
+      renderGameError(root, {
+        title: 'Puzzle paused',
+        message: 'This game could not start. Reload the page to try a fresh puzzle.',
+      });
     }
   };
 
