@@ -278,3 +278,77 @@ test('recursive animation requests are deferred to the next explicit fixture fra
     assert.equal(fixture.activeFrameCount(), 0);
   } finally { restore(); }
 });
+
+test('finish keeps terminal precedence while reporting a throwing snapshot exactly once', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { createGameLifecycle } = await import('../../Resources/games/controller-common.js');
+    const errors = [];
+    const lifecycle = createGameLifecycle({
+      root: fixture.root,
+      onActivate: (_kind, api) => {
+        api.listenActive(fixture.document, 'keydown', () => {});
+        api.requestActiveFrame(() => {});
+      },
+      onSnapshot: () => { throw new Error('terminal snapshot exploded'); },
+      onError: (error) => {
+        errors.push(error.message);
+        throw new Error('report callback exploded');
+      },
+    });
+    await lifecycle.start('start');
+    assert.doesNotThrow(() => assert.equal(lifecycle.finish(), true));
+    assert.equal(lifecycle.state, 'terminal');
+    assert.equal(fixture.document.listenerCount('keydown'), 0);
+    assert.equal(fixture.activeFrameCount(), 0);
+    assert.deepEqual(errors, ['terminal snapshot exploded']);
+    assert.equal(lifecycle.finish(), false);
+    assert.deepEqual(errors, ['terminal snapshot exploded']);
+  } finally { restore(); }
+});
+
+test('explicit fail reports its original error once when snapshot also throws', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { createGameLifecycle } = await import('../../Resources/games/controller-common.js');
+    const errors = [];
+    const lifecycle = createGameLifecycle({
+      root: fixture.root,
+      onActivate: (_kind, api) => api.requestActiveFrame(() => {}),
+      onSnapshot: () => { throw new Error('secondary snapshot error'); },
+      onError: (error) => errors.push(error.message),
+    });
+    await lifecycle.start('start');
+    assert.equal(lifecycle.fail(new Error('primary failure')), true);
+    assert.equal(lifecycle.state, 'error');
+    assert.equal(fixture.activeFrameCount(), 0);
+    assert.deepEqual(errors, ['primary failure']);
+    assert.equal(lifecycle.fail(new Error('duplicate')), false);
+    assert.deepEqual(errors, ['primary failure']);
+  } finally { restore(); }
+});
+
+test('throwing onPause clears resources and reports one deterministic error', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { createGameLifecycle } = await import('../../Resources/games/controller-common.js');
+    const errors = [];
+    const lifecycle = createGameLifecycle({
+      root: fixture.root,
+      onActivate: (_kind, api) => {
+        api.listenActive(fixture.document, 'keyup', () => {});
+        api.requestActiveFrame(() => {});
+      },
+      onPause: () => { throw new Error('pause callback exploded'); },
+      onError: (error) => errors.push(error.message),
+    });
+    await lifecycle.start('start');
+    assert.doesNotThrow(() => assert.equal(lifecycle.pause('user'), true));
+    assert.equal(lifecycle.state, 'error');
+    assert.equal(fixture.document.listenerCount('keyup'), 0);
+    assert.equal(fixture.activeFrameCount(), 0);
+    assert.deepEqual(errors, ['pause callback exploded']);
+    assert.equal(lifecycle.pause('duplicate'), false);
+    assert.deepEqual(errors, ['pause callback exploded']);
+  } finally { restore(); }
+});

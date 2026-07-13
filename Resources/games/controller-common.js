@@ -386,7 +386,12 @@ export function createGameLifecycle({
   };
 
   const notifySnapshot = () => {
-    try { onSnapshot(elapsedBeforeActivation); } catch (error) { failFromCallback(error); }
+    try {
+      onSnapshot(elapsedBeforeActivation);
+      return null;
+    } catch (error) {
+      return error;
+    }
   };
 
   const pause = (reason = 'user') => {
@@ -394,7 +399,8 @@ export function createGameLifecycle({
     captureActiveElapsed();
     clearActive();
     currentState = 'paused';
-    notifySnapshot();
+    const snapshotError = notifySnapshot();
+    if (snapshotError) failFromCallback(snapshotError);
     if (currentState === 'paused') {
       try { onPause(reason, api); } catch (error) { failFromCallback(error); }
     }
@@ -424,7 +430,8 @@ export function createGameLifecycle({
     const didSnapshot = captureActiveElapsed();
     clearActive();
     currentState = nextState;
-    if (didSnapshot) notifySnapshot();
+    const snapshotError = didSnapshot ? notifySnapshot() : null;
+    if (snapshotError && nextState === 'terminal') reportError(snapshotError);
     return true;
   };
 
