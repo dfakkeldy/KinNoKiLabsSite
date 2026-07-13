@@ -230,7 +230,7 @@ const difficultyMarkup = (group) => group.difficulties.map(({ label, href }) => 
 )).join('');
 
 const modeGroupsMarkup = (card) => card.modeGroups.map((group) => (
-  '<div class="difficulty-links" aria-label="Choose '
+  '<div class="difficulty-links" role="group" aria-label="Choose '
     + escapeHTML(card.title) + ' ' + escapeHTML(group.label) + ' difficulty">'
     + '<span>' + escapeHTML(group.label) + '</span>'
     + difficultyMarkup(group)

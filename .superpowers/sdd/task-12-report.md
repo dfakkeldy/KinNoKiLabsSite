@@ -88,3 +88,37 @@ native-control semantics, and reduced-motion stylesheet assertions.
 - Route/bootstrap publication of the Stack and Yard pages is intentionally not
   part of Task 12 and remains for its dedicated integration slice.
 - Live visual QA should be repeated when the in-app Browser runtime is available.
+
+## Accessibility review follow-up
+
+An Important review finding identified that `aria-label` alone did not establish
+a grouping role for each repeated Yard difficulty set. The Contract and Endless
+containers now use `role="group"` with their exact existing accessible labels,
+so each repeated Easy, Medium, and Hard link is exposed within a mode-specific
+group.
+
+### Follow-up RED
+
+The expanded DOM-level regression parsed the rendered hub into fixture elements
+and queried `[role="group"]`. It failed with no Yard groups found while all other
+new catalogue, URL, Continue, stats, normalization, and semantic-label cases
+passed. This isolated the missing role rather than merely matching an HTML
+string.
+
+### Follow-up GREEN
+
+```bash
+node --test Tests/games/hub-five-games.test.mjs Tests/games/core.test.mjs Tests/games/storage-v2.test.mjs
+# 39 passed, 0 failed
+
+make test-games
+# 282 passed, 0 failed
+```
+
+The expanded Task 12 suite now fixes the exact five-game order and approved
+mode/record metadata; Contract-before-Endless action order and URLs; both Yard
+Continue labels and URLs; typed record min/max/zero behavior; hostile finite
+normalization and safe-integer clamping; typed `dl` labels; and the catalogue's
+top-level freeze. The freeze is intentionally shallow because the approved
+brief specifies `Object.freeze([...])` only; nested game, mode, and record values
+are not represented as deeply immutable.
