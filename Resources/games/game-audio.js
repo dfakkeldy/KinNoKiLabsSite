@@ -51,6 +51,7 @@ export function createGameAudio({
   let intensity = { height: 0, tidePressure: 0 };
   let layerGains = { bass: 0, harmony: 0, percussion: 0 };
   const sources = new Set();
+  const musicVoices = new Set();
   const effectVoices = [];
   const timeouts = new Set();
   const lastEffectAt = new Map();
@@ -76,6 +77,7 @@ export function createGameAudio({
   };
   const scheduleTone = ({
     frequency, at, duration, destination, waveform = 'sine', amplitude = 0.12,
+    channel = 'effect',
   }) => {
     const oscillator = context.createOscillator();
     const gain = context.createGain();
@@ -88,6 +90,7 @@ export function createGameAudio({
     oscillator.connect(gain).connect(destination);
     oscillator.onended = () => {
       sources.delete(oscillator);
+      musicVoices.delete(voice);
       const effectIndex = effectVoices.indexOf(voice);
       if (effectIndex >= 0) effectVoices.splice(effectIndex, 1);
       try { oscillator.disconnect(); gain.disconnect(); } catch { /* already disconnected */ }
@@ -95,6 +98,7 @@ export function createGameAudio({
     oscillator.start(at);
     oscillator.stop(at + duration + 0.02);
     sources.add(oscillator);
+    if (channel === 'music') musicVoices.add(voice);
     return voice;
   };
   const scheduleMusic = () => {
@@ -106,28 +110,29 @@ export function createGameAudio({
       scheduleTone({
         frequency: midiHz(config.rootMidi + interval), at: nextNoteTime,
         duration: beat * 0.8, destination: musicMaster, waveform: config.waveform,
+        channel: 'music',
       });
       if (arrangement === 'yard') {
         scheduleTone({
           frequency: midiHz(config.rootMidi - 5), at: nextNoteTime,
           duration: beat * 1.8, destination: musicMaster,
-          waveform: 'sine', amplitude: 0.035,
+          waveform: 'sine', amplitude: 0.035, channel: 'music',
         });
       } else {
         if (layerGains.bass > 0) scheduleTone({
           frequency: midiHz(config.rootMidi - 12), at: nextNoteTime,
           duration: beat * 0.9, destination: musicMaster,
-          waveform: 'triangle', amplitude: layerGains.bass,
+          waveform: 'triangle', amplitude: layerGains.bass, channel: 'music',
         });
         if (layerGains.harmony > 0) scheduleTone({
           frequency: midiHz(config.rootMidi + interval + 7), at: nextNoteTime,
           duration: beat * 0.7, destination: musicMaster,
-          waveform: 'sine', amplitude: layerGains.harmony,
+          waveform: 'sine', amplitude: layerGains.harmony, channel: 'music',
         });
         if (layerGains.percussion > 0) scheduleTone({
           frequency: midiHz(config.rootMidi - 24), at: nextNoteTime,
           duration: 0.045, destination: musicMaster,
-          waveform: 'square', amplitude: layerGains.percussion,
+          waveform: 'square', amplitude: layerGains.percussion, channel: 'music',
         });
       }
       nextNoteIndex += 1;
@@ -230,11 +235,24 @@ export function createGameAudio({
       catch { /* already stopped */ }
     }
     sources.clear();
+    musicVoices.clear();
     effectVoices.length = 0;
   };
+  const stopMusic = () => {
+    for (const voice of musicVoices) {
+      try {
+        voice.oscillator.stop(context?.currentTime ?? 0);
+        voice.oscillator.disconnect();
+        voice.gain.disconnect();
+      } catch { /* already stopped */ }
+      sources.delete(voice.oscillator);
+    }
+    musicVoices.clear();
+  };
   const pause = async () => {
-    cancelFinish();
+    if (finishing || disposed) return;
     clearScheduler();
+    stopMusic();
     try { await context?.suspend?.(); } catch { silence(); }
   };
   const resume = async () => {
@@ -288,6 +306,7 @@ export function createGameAudio({
     contextState: context?.state ?? null,
     schedulerActive: scheduler !== null,
     activeSources: sources.size,
+    activeMusicVoices: musicVoices.size,
     activeEffectVoices: effectVoices.length,
     musicGain: musicMaster?.gain.value ?? 0,
     effectsGain: effectsMaster?.gain.value ?? 0,

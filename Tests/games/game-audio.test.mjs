@@ -28,13 +28,13 @@ class FakeNode {
 class FakeAudioContext {
   constructor() {
     this.currentTime = 0; this.state = 'suspended'; this.destination = new FakeNode();
-    this.oscillators = []; this.gains = [];
+    this.oscillators = []; this.gains = []; this.closeCount = 0;
   }
   createOscillator() { const node = new FakeNode(); this.oscillators.push(node); return node; }
   createGain() { const node = new FakeNode(); this.gains.push(node); return node; }
   resume() { this.state = 'running'; return Promise.resolve(); }
   suspend() { this.state = 'suspended'; return Promise.resolve(); }
-  close() { this.state = 'closed'; return Promise.resolve(); }
+  close() { this.closeCount += 1; this.state = 'closed'; return Promise.resolve(); }
 }
 
 const preferences = {
@@ -83,6 +83,24 @@ test('context is not created until Start and pause/resume has no backlog', async
   assert.ok(audio.debugState().nextNoteTime <= 100.25);
   await audio.dispose();
   assert.equal(context.state, 'closed');
+});
+
+test('pause cancels lookahead music voices before a backlog-free resume', async () => {
+  const context = new FakeAudioContext();
+  const audio = createGameAudio({ audioContextFactory: () => context, preferences });
+  await audio.start({ arrangement: 'yard' });
+  const oldMusic = [...context.oscillators];
+  assert.ok(oldMusic.length >= 2);
+  assert.ok(audio.debugState().activeSources >= 2);
+  context.currentTime = 100;
+  await audio.pause();
+  assert.equal(audio.debugState().activeSources, 0);
+  assert.ok(oldMusic.every((source) => source.stopped.includes(100)));
+  await audio.resume();
+  assert.ok(audio.debugState().nextNoteTime <= 100.25);
+  assert.equal(context.oscillators.length, oldMusic.length,
+    'resume waits for fresh lookahead instead of flushing old music');
+  await audio.dispose();
 });
 
 test('both arrangements share one frozen motif and exact tempos', async () => {
@@ -172,6 +190,27 @@ test('finish preserves one cadence, then fades and self-disposes without leaks',
   assert.equal(audio.debugState().disposed, true);
   assert.equal(audio.debugState().activeSources, 0);
   assert.equal(clock.size(), 0);
+});
+
+test('pause during terminal fade preserves exactly-once self-disposal', async () => {
+  const clock = fakeClock();
+  const context = new FakeAudioContext();
+  const audio = createGameAudio({
+    audioContextFactory: () => context, preferences,
+    setTimeoutFn: clock.setTimeout, clearTimeoutFn: clock.clearTimeout,
+  });
+  await audio.start({ arrangement: 'stack' });
+  assert.equal(audio.finish({ outcome: 'terminal' }), true);
+  await audio.pause();
+  assert.equal(clock.size(), 1, 'pause must retain terminal disposal timer');
+  clock.advance(1000);
+  await Promise.resolve();
+  assert.equal(audio.debugState().disposed, true);
+  assert.equal(audio.debugState().activeSources, 0);
+  assert.equal(context.state, 'closed');
+  assert.equal(context.closeCount, 1);
+  await audio.dispose();
+  assert.equal(context.closeCount, 1);
 });
 
 test('audio failure is silent and notices at most once', async () => {
