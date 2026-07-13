@@ -886,3 +886,283 @@ export function validateContractDefinition(definition) {
   if (!solverValid) errors.push('invalid contract solver proof');
   return { valid: errors.length === 0, errors };
 }
+
+const contractSnapshot = (state) => structuredClone({
+  board: state.board,
+  placements: state.placements,
+  selectedPieceId: state.selectedPieceId,
+  selectedRotation: state.selectedRotation,
+  focus: state.focus,
+  hint: state.hint,
+});
+
+export function createContractState(definition) {
+  if (!validateContractDefinition(definition).valid) {
+    throw new TypeError('Invalid Contract definition');
+  }
+  return {
+    kind: 'contracts', status: 'preview', definition,
+    board: Array.from({ length: definition.height },
+      () => Array(definition.width).fill(null)),
+    placements: {},
+    selectedPieceId: definition.pieces[0]?.pieceId ?? null,
+    selectedRotation: definition.pieces[0]?.initialRotation ?? 0,
+    focus: { row: 0, column: 0 }, moves: 0, assisted: false,
+    hint: null, history: [], terminalReason: null,
+  };
+}
+
+export function prepareContractForContinue(play) {
+  const result = validateContractState(play, play?.definition?.difficulty);
+  if (!result.valid || play.status === 'terminal' || play.status === 'error') {
+    throw new TypeError('Invalid saved Contract');
+  }
+  return structuredClone({ ...play, status: 'paused' });
+}
+
+const contractInvalid = (state, action, reason) => ({
+  state, events: [{ type: 'invalid', action, reason }],
+});
+
+const reduceContractBase = (state, action) => {
+  if (['terminal', 'error', 'disposed'].includes(state.status)) {
+    return { state, events: [] };
+  }
+  if (action.type === 'start') {
+    if (state.status === 'active') return { state, events: [] };
+    return state.status === 'preview'
+      ? { state: { ...state, status: 'active' }, events: [{ type: 'started' }] }
+      : contractInvalid(state, 'start', 'The Contract cannot start from this state.');
+  }
+  if (action.type === 'pause') {
+    if (state.status === 'paused') return { state, events: [] };
+    if (state.status !== 'active' || !['user', 'hidden'].includes(action.reason)) {
+      return contractInvalid(state, 'pause', 'The Contract cannot pause from this state.');
+    }
+    return { state: { ...state, status: 'paused' },
+      events: [{ type: 'paused', reason: action.reason }] };
+  }
+  if (action.type === 'resume') {
+    if (state.status === 'active') return { state, events: [] };
+    return state.status === 'paused'
+      ? { state: { ...state, status: 'active' }, events: [{ type: 'resumed' }] }
+      : contractInvalid(state, 'resume', 'The Contract cannot resume from this state.');
+  }
+  if (state.status !== 'active') return contractInvalid(state, action.type, 'Game is paused.');
+
+  if (action.type === 'select-piece') {
+    const piece = state.definition.pieces.find((value) => value.pieceId === action.pieceId);
+    if (!piece) return contractInvalid(state, action.type, 'Unknown cargo piece.');
+    const rotation = state.placements[piece.pieceId]?.rotation ?? piece.initialRotation;
+    return { state: { ...state, selectedPieceId: piece.pieceId,
+      selectedRotation: rotation, hint: null },
+    events: [{ type: 'selected', pieceId: piece.pieceId }] };
+  }
+
+  if (action.type === 'rotate-piece') {
+    if (action.quarterTurns !== 1) {
+      return contractInvalid(state, action.type, 'Rotation must be one quarter turn.');
+    }
+    const piece = state.definition.pieces.find(
+      (value) => value.pieceId === state.selectedPieceId,
+    );
+    if (!piece || piece.allowedRotations.length < 2) {
+      return contractInvalid(state, action.type, 'This cargo has one fixed orientation.');
+    }
+    const index = piece.allowedRotations.indexOf(state.selectedRotation);
+    const rotation = piece.allowedRotations[(index + 1) % piece.allowedRotations.length];
+    const next = { ...state, selectedRotation: rotation, hint: null,
+      moves: saturatingAdd(state.moves, 1),
+      history: [...state.history, contractSnapshot(state)] };
+    return { state: next, events: [{ type: 'rotated', pieceId: piece.pieceId, rotation }] };
+  }
+  return null;
+};
+
+const reduceContractPlacement = (state, action) => {
+  if (action.type !== 'place-piece') return null;
+  const piece = state.definition.pieces.find(
+    (value) => value.pieceId === state.selectedPieceId,
+  );
+  if (!piece || !Number.isInteger(action.row) || !Number.isInteger(action.column)) {
+    return contractInvalid(state, action.type, 'Choose cargo and a target cell.');
+  }
+  const rotated = rotationsFor(piece.typeId, piece.allowedRotations)
+    .find((value) => value.rotation === state.selectedRotation);
+  const origin = { row: action.row, column: action.column };
+  const cells = placedCells(rotated.cells, origin);
+  const target = new Set(state.definition.target.map(keyFor));
+  const cleared = removePiece(state.board, piece.pieceId);
+  if (!cells.every((cell) => target.has(keyFor(cell)))
+      || !canPlace(cleared, rotated.cells, origin)) {
+    return contractInvalid(state, action.type, 'Cargo does not fit the Contract target.');
+  }
+  const repositioning = Object.hasOwn(state.placements, String(piece.pieceId));
+  const placement = { pieceId: piece.pieceId, typeId: piece.typeId,
+    rotation: state.selectedRotation, row: action.row, column: action.column };
+  const board = placePiece(cleared, placement);
+  const placements = { ...state.placements, [piece.pieceId]: placement };
+  const moves = saturatingAdd(state.moves, 1);
+  const complete = Object.keys(placements).length === state.definition.pieces.length
+    && board.flat().filter(Boolean).length === state.definition.target.length;
+  const next = { ...state, board, placements, moves, hint: null,
+    history: [...state.history, contractSnapshot(state)],
+    status: complete ? 'terminal' : 'active',
+    terminalReason: complete ? 'completed' : null };
+  const event = repositioning
+    ? { type: 'repositioned', mode: 'contracts', pieceId: piece.pieceId,
+      row: action.row, column: action.column, rotation: state.selectedRotation, move: moves }
+    : { type: 'placed', mode: 'contracts', pieceId: piece.pieceId,
+      row: action.row, column: action.column, rotation: state.selectedRotation, move: moves };
+  return { state: next, events: complete
+    ? [event, { type: 'completed', moves }] : [event] };
+};
+
+export function getContractHint(state) {
+  const result = solveContract(state.definition, state.placements);
+  if (result.status !== 'solved') return {
+    status: 'dead-end',
+    message: 'Undo to the most recent completable position or Restart this contract.',
+  };
+  const piece = [...state.definition.pieces]
+    .filter((value) => !Object.hasOwn(state.placements, String(value.pieceId)))
+    .sort((left, right) => left.trayIndex - right.trayIndex)[0];
+  return { status: 'solved', placement: result.placements
+    .find((value) => value.pieceId === piece.pieceId) };
+}
+
+export function reduceContract(state, action) {
+  const base = reduceContractBase(state, action);
+  if (base) return base;
+  const placement = reduceContractPlacement(state, action);
+  if (placement) return placement;
+  if (action.type === 'undo') {
+    if (state.history.length === 0) return { state, events: [] };
+    const snapshot = state.history.at(-1);
+    const moves = saturatingAdd(state.moves, 1);
+    const next = { ...state, ...structuredClone(snapshot), moves,
+      assisted: state.assisted, history: state.history.slice(0, -1) };
+    return { state: next, events: [{ type: 'undone', mode: 'contracts',
+      move: moves, assisted: false }] };
+  }
+  if (action.type === 'hint') {
+    const hint = getContractHint(state);
+    const assistedEvent = state.assisted ? []
+      : [{ type: 'assisted', reason: 'hint' }];
+    if (hint.status === 'dead-end') return {
+      state: { ...state, assisted: true, hint },
+      events: [...assistedEvent, { type: 'hint-dead-end', message: hint.message }],
+    };
+    const { pieceId, row, column, rotation } = hint.placement;
+    return { state: { ...state, assisted: true, hint },
+      events: [...assistedEvent, { type: 'hint', pieceId, row, column, rotation }] };
+  }
+  return contractInvalid(state, action.type, 'Unsupported Contract action.');
+}
+
+const contractSnapshotKeys = Object.freeze([
+  'board', 'focus', 'hint', 'placements', 'selectedPieceId', 'selectedRotation',
+]);
+const isRecord = (value) => value !== null && typeof value === 'object'
+  && !Array.isArray(value);
+
+const contractPositionErrors = (position, definition) => {
+  const errors = [];
+  if (!isRecord(position?.placements)) return ['invalid Contract placements'];
+  const placementEntries = Object.entries(position.placements);
+  if (placementEntries.some(([key, placement]) => key !== String(placement?.pieceId))) {
+    errors.push('invalid Contract placement key');
+  }
+
+  let board = Array.from({ length: definition.height },
+    () => Array(definition.width).fill(null));
+  const target = new Set(definition.target.map(keyFor));
+  for (const [, placement] of placementEntries
+    .sort((left, right) => left[1].pieceId - right[1].pieceId)) {
+    const piece = definition.pieces.find(
+      (candidate) => candidate.pieceId === placement?.pieceId,
+    );
+    if (!piece || piece.typeId !== placement.typeId
+        || !piece.allowedRotations.includes(placement.rotation)
+        || !Number.isInteger(placement.row) || !Number.isInteger(placement.column)) {
+      errors.push('invalid Contract placement');
+      continue;
+    }
+    const rotated = rotationsFor(piece.typeId, piece.allowedRotations)
+      .find((candidate) => candidate.rotation === placement.rotation);
+    const origin = { row: placement.row, column: placement.column };
+    const cells = placedCells(rotated.cells, origin);
+    if (!cells.every((cell) => target.has(keyFor(cell)))
+        || !canPlace(board, rotated.cells, origin)) {
+      errors.push('invalid Contract placement geometry');
+      continue;
+    }
+    board = placePiece(board, placement);
+  }
+  if (!validateBoard(position?.board, {
+    width: definition.width, height: definition.height,
+  }).valid || JSON.stringify(board) !== JSON.stringify(position.board)) {
+    errors.push('board mismatch');
+  }
+
+  const selected = definition.pieces.find(
+    (piece) => piece.pieceId === position?.selectedPieceId,
+  );
+  if (!selected || !selected.allowedRotations.includes(position?.selectedRotation)) {
+    errors.push('invalid Contract selection');
+  }
+  if (!Number.isInteger(position?.focus?.row)
+      || !Number.isInteger(position?.focus?.column)
+      || position.focus.row < 0 || position.focus.row >= definition.height
+      || position.focus.column < 0 || position.focus.column >= definition.width) {
+    errors.push('invalid Contract focus');
+  }
+
+  const hint = position?.hint;
+  if (hint !== null) {
+    const hinted = hint?.status === 'solved' && hint.placement;
+    const hintedPiece = hinted && definition.pieces.find(
+      (piece) => piece.pieceId === hinted.pieceId,
+    );
+    const solvedHintValid = hintedPiece
+      && !Object.hasOwn(position.placements, String(hinted.pieceId))
+      && hintedPiece.typeId === hinted.typeId
+      && hintedPiece.allowedRotations.includes(hinted.rotation)
+      && Number.isInteger(hinted.row) && Number.isInteger(hinted.column);
+    const deadEndHintValid = hint?.status === 'dead-end'
+      && typeof hint.message === 'string' && hint.message.length > 0;
+    if (!solvedHintValid && !deadEndHintValid) errors.push('invalid Contract hint');
+  }
+  return errors;
+};
+
+export function validateContractState(value, difficulty) {
+  const errors = [];
+  try {
+    if (value?.kind !== 'contracts') errors.push('invalid Contract kind');
+    if (!['preview', 'active', 'paused'].includes(value?.status)
+        || value?.terminalReason !== null) errors.push('invalid saved Contract status');
+    if (value?.definition?.difficulty !== difficulty
+        || !validateContractDefinition(value?.definition).valid) {
+      errors.push('invalid Contract definition');
+    } else {
+      errors.push(...contractPositionErrors(value, value.definition));
+    }
+    if (!Number.isSafeInteger(value?.moves) || value.moves < 0) errors.push('invalid moves');
+    if (typeof value?.assisted !== 'boolean') errors.push('invalid assistance');
+    if (!Array.isArray(value?.history)) {
+      errors.push('invalid Contract history');
+    } else if (value.history.some((entry) => {
+      if (!isRecord(entry)
+          || JSON.stringify(Object.keys(entry).sort()) !== JSON.stringify(contractSnapshotKeys)) {
+        return true;
+      }
+      return contractPositionErrors(entry, value.definition).length > 0;
+    })) {
+      errors.push('invalid Contract history');
+    }
+  } catch {
+    errors.push('invalid Contract state');
+  }
+  return { valid: errors.length === 0, errors };
+}
