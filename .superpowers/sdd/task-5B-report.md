@@ -90,3 +90,17 @@ make test-games
 ```
 
 Result: exit 0, 183 tests passed, 0 failed, in 28.70 seconds.
+
+### Attacker-controlled identity follow-up
+
+RED reproduced a `TypeError: Cannot convert a Symbol value to a number` when
+the placement comparator subtracted hostile piece IDs. Regression coverage now
+includes multi-entry maps containing both `Symbol` and `BigInt` identities.
+Every entry's safe-integer identity, matching key, type, and rotation is now
+validated before numeric sorting.
+
+Focused result: exit 0, 53 tests passed, 0 failed, in 13.55 seconds using the
+four-file command above.
+
+Full `make test-games` result: exit 0, 184 tests passed, 0 failed, in 29.60
+seconds.

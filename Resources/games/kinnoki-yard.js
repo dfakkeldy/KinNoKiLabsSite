@@ -54,21 +54,22 @@ export function solveContract(definition, placements = {}, {
   const occupied = new Set();
   const fixed = [];
   const fixedEntries = Object.entries(placements);
-  if (fixedEntries.some(([, placement]) => (
-    placement === null || typeof placement !== 'object' || Array.isArray(placement)
-  ))) {
+  if (fixedEntries.some(([placementKey, placement]) => {
+    if (placement === null || typeof placement !== 'object' || Array.isArray(placement)
+        || !Number.isSafeInteger(placement.pieceId)) return true;
+    const piece = pieceById.get(placement.pieceId);
+    return placementKey !== String(placement.pieceId)
+      || !piece
+      || piece.typeId !== placement.typeId
+      || !piece.allowedRotations.includes(placement.rotation);
+  })) {
     return { status: 'dead-end', placements: [], operations: 0 };
   }
   fixedEntries.sort(
     (left, right) => left[1].pieceId - right[1].pieceId,
   );
-  for (const [placementKey, placement] of fixedEntries) {
+  for (const [, placement] of fixedEntries) {
     const piece = pieceById.get(placement.pieceId);
-    if (placementKey !== String(placement.pieceId)
-        || !piece || piece.typeId !== placement.typeId
-        || !piece.allowedRotations.includes(placement.rotation)) {
-      return { status: 'dead-end', placements: [], operations: 0 };
-    }
     const cells = placementCells(piece, placement);
     if (cells.some((cell) => !targetKeys.has(keyFor(cell)) || occupied.has(keyFor(cell)))) {
       return { status: 'dead-end', placements: [], operations: 0 };

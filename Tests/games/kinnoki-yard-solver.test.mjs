@@ -60,6 +60,19 @@ test('multiple hostile placement values fail closed before sorting', () => {
   }
 });
 
+test('attacker-controlled piece identities fail closed before numeric sorting', () => {
+  for (const pieceId of [Symbol('piece'), 1n]) {
+    const placements = {
+      0: { pieceId, typeId: 'crate-pair', rotation: 0, row: 0, column: 0 },
+      1: { pieceId: 1, typeId: 'crate-pair', rotation: 0, row: 0, column: 2 },
+    };
+    assert.doesNotThrow(() => solveContract(pairContract, placements));
+    assert.deepEqual(solveContract(pairContract, placements), {
+      status: 'dead-end', placements: [], operations: 0,
+    });
+  }
+});
+
 test('bundled witness fast path requires every piece identity exactly once', () => {
   const forged = {
     ...pairContract,
