@@ -402,10 +402,18 @@ class StackPersistence {
     if (!run || run.assisted !== state.assisted) {
       throw new Error('Stack assistance state is inconsistent at completion.');
     }
-    this.value = completeRun(this.value, {
+    const previous = this.value;
+    const completed = completeRun(previous, {
       game: GAME, mode: MODE, now: this.wallNow(), records,
     });
-    this.write();
+    if (completed === previous || completed.runs[GAME]) {
+      throw new Error('Stack completion accounting could not be applied.');
+    }
+    this.value = completed;
+    if (!this.write()) {
+      this.value = previous;
+      throw new Error('Stack completion could not be saved.');
+    }
   }
 
   setAudio(preferences) {
@@ -603,6 +611,7 @@ class StackController {
     this.passiveCleanups = new Set();
     this.activeApi = null;
     this.lastFrameTime = null;
+    this.finishing = false;
     this.finished = false;
     this.errorRendered = false;
     this.disposed = false;
@@ -892,19 +901,42 @@ StackController.prototype.replaceWithDifficulty = async function replaceWithDiff
   });
 };
 
+const validCompletionPayload = (payload, state) => {
+  const summary = payload?.summary;
+  const records = payload?.records;
+  const integers = [
+    records?.score, records?.combo, summary?.score, summary?.dispatchedManifests,
+    summary?.bestCombo, summary?.elapsedMs,
+  ];
+  return payload?.game === GAME && payload.mode === MODE
+    && integers.every((value) => Number.isSafeInteger(value) && value >= 0)
+    && summary.assisted === state.assisted
+    && typeof summary.reason === 'string' && summary.reason.length > 0;
+};
+
 StackController.prototype.finishTerminal = function finishTerminal() {
-  if (this.finished || this.disposed) return;
-  const elapsedMs = this.lifecycle.elapsed();
-  if (!this.lifecycle.finish()) return;
-  const payload = this.engine.stackCompletionPayload(this.state, elapsedMs);
-  if (!payload) {
-    this.fail(new Error('Kinnoki Stack ended without a completion payload.'));
+  if (this.finishing || this.finished || this.disposed) return;
+  this.finishing = true;
+  let payload;
+  try {
+    payload = this.engine.stackCompletionPayload(this.state, this.lifecycle.elapsed());
+    if (!payload) throw new Error('Kinnoki Stack ended without a completion payload.');
+    if (!validCompletionPayload(payload, this.state)) {
+      throw new Error('Kinnoki Stack ended with an invalid completion payload.');
+    }
+    this.persistence.complete(payload.records, this.state);
+    if (!this.lifecycle.finish()) {
+      throw new Error('Kinnoki Stack completion lifecycle could not settle.');
+    }
+  } catch (error) {
+    this.finishing = false;
+    this.fail(error);
     return;
   }
 
   this.finished = true;
+  this.finishing = false;
   this.entryKind = null;
-  this.persistence.complete(payload.records, this.state);
   this.audio.finish();
   makeGameTerminal(this.root);
 

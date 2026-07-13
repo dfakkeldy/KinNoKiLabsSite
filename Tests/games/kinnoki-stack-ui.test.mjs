@@ -3,6 +3,31 @@ import assert from 'node:assert/strict';
 import { createDOMFixture, FixtureEvent, installDOM } from './dom-fixture.mjs';
 import { createEmptyGameStore, STORE_KEYS } from '../../Resources/games/core.js';
 
+const silentAudio = () => ({
+  start: async () => {}, resume: async () => {}, pause: async () => {},
+  stop: async () => {}, finish() {}, dispose: async () => {},
+  setPreferences() {}, setIntensity() {}, playEffect() {},
+});
+
+async function terminalEngine(overrides = {}) {
+  const stack = await import('../../Resources/games/kinnoki-stack.js');
+  return {
+    ...stack,
+    ...overrides,
+    reduceStack(state, action) {
+      if (action.type !== 'hard-drop') return stack.reduceStack(state, action);
+      return {
+        state: {
+          ...state, status: 'terminal', terminalReason: 'crane-line',
+          active: null, score: 0, combo: 0, bestCombo: 0, dispatchedManifests: 0,
+          ...(overrides.terminalState ?? {}),
+        },
+        events: [{ type: 'terminal', reason: 'crane-line' }],
+      };
+    },
+  };
+}
+
 test('Stack renders 216 non-tabbable cells and stays inert before Start', async () => {
   const fixture = createDOMFixture({ search: '?difficulty=easy' });
   const restore = installDOM(fixture);
@@ -213,6 +238,249 @@ test('validated assisted resume normalizes the generic run envelope before Conti
     store = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2));
     assert.equal(store.runs['kinnoki-stack'].assisted, true);
     assert.equal(store.runs['kinnoki-stack'].puzzle.play.assisted, true);
+    controller.dispose();
+  } finally { restore(); }
+});
+
+test('null terminal payload fails recoverably before lifecycle terminal settlement', async () => {
+  const fixture = createDOMFixture();
+  const restore = installDOM(fixture);
+  let finishes = 0;
+  try {
+    const engine = await terminalEngine({ stackCompletionPayload: () => null });
+    const { renderKinnokiStack } = await import('../../Resources/games/kinnoki-stack-ui.js');
+    await renderKinnokiStack(fixture.root, createEmptyGameStore(), {
+      engine,
+      audioFactory: () => ({ ...silentAudio(), finish() { finishes += 1; } }),
+    });
+    fixture.root.querySelector('[data-start-game]').click();
+    await Promise.resolve();
+    fixture.root.querySelector('[data-stack-hard-drop]').click();
+    assert.match(fixture.root.querySelector('[role="alert"]').textContent,
+      /without a completion payload/i);
+    assert.equal(finishes, 0);
+    assert.equal(fixture.document.listenerCount('keydown'), 0);
+    assert.equal(fixture.activeFrameCount(), 0);
+  } finally { restore(); }
+});
+
+test('invalid terminal payload fails before completion accounting', async () => {
+  const fixture = createDOMFixture();
+  const restore = installDOM(fixture);
+  try {
+    const engine = await terminalEngine({
+      stackCompletionPayload: () => ({
+        game: 'kinnoki-stack', mode: 'default', records: { score: -1, combo: 0 },
+        summary: {
+          score: -1, dispatchedManifests: 0, bestCombo: 0, elapsedMs: 0,
+          assisted: false, reason: 'crane-line',
+        },
+      }),
+    });
+    const { renderKinnokiStack } = await import('../../Resources/games/kinnoki-stack-ui.js');
+    await renderKinnokiStack(fixture.root, createEmptyGameStore(), {
+      engine, audioFactory: silentAudio,
+    });
+    fixture.root.querySelector('[data-start-game]').click();
+    await Promise.resolve();
+    fixture.root.querySelector('[data-stack-hard-drop]').click();
+    assert.match(fixture.root.querySelector('[role="alert"]').textContent,
+      /invalid completion payload/i);
+    const saved = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2));
+    assert.equal(saved.stats.totalCompleted, 0);
+  } finally { restore(); }
+});
+
+test('reentrant terminal storage callback cannot duplicate completion writes', async () => {
+  const fixture = createDOMFixture();
+  const restore = installDOM(fixture);
+  let completionWrites = 0;
+  let hardDrop = null;
+  const storage = {
+    getItem: (...args) => fixture.localStorage.getItem(...args),
+    removeItem: (...args) => fixture.localStorage.removeItem(...args),
+    setItem(key, value) {
+      fixture.localStorage.setItem(key, value);
+      if (JSON.parse(value).stats.totalCompleted === 1) {
+        completionWrites += 1;
+        hardDrop?.click();
+      }
+    },
+  };
+  try {
+    const engine = await terminalEngine();
+    const { renderKinnokiStack } = await import('../../Resources/games/kinnoki-stack-ui.js');
+    await renderKinnokiStack(fixture.root, createEmptyGameStore(), {
+      engine, storage, audioFactory: silentAudio,
+    });
+    fixture.root.querySelector('[data-start-game]').click();
+    await Promise.resolve();
+    hardDrop = fixture.root.querySelector('[data-stack-hard-drop]');
+    hardDrop.click();
+    assert.equal(completionWrites, 1);
+    assert.equal(JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2))
+      .stats.totalCompleted, 1);
+  } finally { restore(); }
+});
+
+test('terminal assistance inconsistency fails recoverably without duplicate accounting', async () => {
+  const fixture = createDOMFixture();
+  const restore = installDOM(fixture);
+  try {
+    const engine = await terminalEngine({ terminalState: { assisted: false } });
+    const { renderKinnokiStack } = await import('../../Resources/games/kinnoki-stack-ui.js');
+    await renderKinnokiStack(fixture.root, createEmptyGameStore(), {
+      engine, audioFactory: silentAudio,
+    });
+    fixture.root.querySelector('[data-start-game]').click();
+    await Promise.resolve();
+    fixture.root.querySelector('[data-step-mode]').click();
+    assert.doesNotThrow(() => fixture.root.querySelector('[data-stack-hard-drop]').click());
+    assert.match(fixture.root.querySelector('[role="alert"]').textContent,
+      /assistance state is inconsistent/i);
+    const saved = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2));
+    assert.equal(saved.stats.totalCompleted, 0);
+    assert.equal(saved.runs['kinnoki-stack'], undefined);
+  } finally { restore(); }
+});
+
+test('terminal storage write failure rolls accounting back and fails recoverably', async () => {
+  const fixture = createDOMFixture();
+  const restore = installDOM(fixture);
+  const storage = {
+    getItem: () => null,
+    setItem() { throw new Error('disk full'); },
+    removeItem() {},
+  };
+  try {
+    const engine = await terminalEngine();
+    const { renderKinnokiStack } = await import('../../Resources/games/kinnoki-stack-ui.js');
+    await renderKinnokiStack(fixture.root, createEmptyGameStore(), {
+      engine, storage, audioFactory: silentAudio,
+    });
+    fixture.root.querySelector('[data-start-game]').click();
+    await Promise.resolve();
+    fixture.root.querySelector('[data-stack-hard-drop]').click();
+    assert.match(fixture.root.querySelector('[role="alert"]').textContent,
+      /could not be saved/i);
+    assert.equal(fixture.document.listenerCount('keydown'), 0);
+    assert.equal(fixture.activeFrameCount(), 0);
+  } finally { restore(); }
+});
+
+test('keyboard and native controls dispatch while paint preserves control focus', async () => {
+  const fixture = createDOMFixture();
+  const restore = installDOM(fixture);
+  try {
+    const { renderKinnokiStack } = await import('../../Resources/games/kinnoki-stack-ui.js');
+    const controller = await renderKinnokiStack(fixture.root, createEmptyGameStore(), {
+      audioFactory: silentAudio,
+    });
+    fixture.root.querySelector('[data-start-game]').click();
+    await Promise.resolve();
+    const initialColumn = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2))
+      .runs['kinnoki-stack'].puzzle.play.active.column;
+    const left = fixture.root.querySelector('[data-stack-left]');
+    left.focus();
+    left.click();
+    assert.equal(fixture.document.activeElement, left);
+    fixture.document.activeElement = null;
+    fixture.document.dispatchEvent(new FixtureEvent('keydown', { key: 'ArrowRight' }));
+    const play = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2))
+      .runs['kinnoki-stack'].puzzle.play;
+    assert.equal(play.active.column, initialColumn);
+    controller.dispose();
+  } finally { restore(); }
+});
+
+test('visibility and pagehide pause require explicit Resume without listener leaks', async () => {
+  for (const source of ['visibility', 'pagehide']) {
+    const fixture = createDOMFixture();
+    const restore = installDOM(fixture);
+    try {
+      const { renderKinnokiStack } = await import('../../Resources/games/kinnoki-stack-ui.js');
+      const controller = await renderKinnokiStack(fixture.root, createEmptyGameStore(), {
+        audioFactory: silentAudio,
+      });
+      fixture.root.querySelector('[data-start-game]').click();
+      await Promise.resolve();
+      if (source === 'visibility') {
+        fixture.document.visibilityState = 'hidden';
+        fixture.document.dispatchEvent(new FixtureEvent('visibilitychange'));
+      } else fixture.window.dispatchEvent(new FixtureEvent('pagehide'));
+      assert.equal(fixture.document.listenerCount('keydown'), 0);
+      assert.equal(fixture.activeFrameCount(), 0);
+      const resume = fixture.root.querySelector('[data-resume-game]');
+      assert.equal(resume.hidden, false);
+      if (source === 'visibility') {
+        fixture.document.visibilityState = 'visible';
+        fixture.document.dispatchEvent(new FixtureEvent('visibilitychange'));
+      }
+      assert.equal(fixture.document.listenerCount('keydown'), 0);
+      resume.click();
+      await Promise.resolve();
+      assert.equal(fixture.document.listenerCount('keydown'), 1);
+      controller.dispose();
+    } finally { restore(); }
+  }
+});
+
+test('accepted New Run abandons active storage and hostile saved state fails closed', async () => {
+  const fixture = createDOMFixture();
+  const restore = installDOM(fixture);
+  try {
+    const { renderKinnokiStack } = await import('../../Resources/games/kinnoki-stack-ui.js');
+    const controller = await renderKinnokiStack(fixture.root, createEmptyGameStore(), {
+      audioFactory: silentAudio, confirm: () => true,
+    });
+    fixture.root.querySelector('[data-start-game]').click();
+    await Promise.resolve();
+    fixture.root.querySelector('[data-new-run]').click();
+    await Promise.resolve(); await Promise.resolve();
+    let saved = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2));
+    assert.equal(saved.runs['kinnoki-stack'], undefined);
+    assert.ok(fixture.root.querySelector('[data-start-game]'));
+    controller.dispose();
+
+    const hostile = {
+      ...saved,
+      runs: { 'kinnoki-stack': {
+        game: 'kinnoki-stack', mode: 'default', difficulty: 'easy', seed: 1,
+        signature: 'forged', assisted: false, puzzle: { definition: {}, play: {} },
+      } },
+    };
+    await renderKinnokiStack(fixture.root, hostile, { audioFactory: silentAudio });
+    assert.match(fixture.root.querySelector('[role="alert"]').textContent,
+      /saved Kinnoki Stack state is invalid/i);
+    saved = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2));
+    assert.equal(saved.runs['kinnoki-stack'], undefined);
+  } finally { restore(); }
+});
+
+test('audio receives event effects, intensity, and persisted setting changes', async () => {
+  const fixture = createDOMFixture();
+  const restore = installDOM(fixture);
+  const calls = { effects: [], intensity: [], preferences: [] };
+  try {
+    const { renderKinnokiStack } = await import('../../Resources/games/kinnoki-stack-ui.js');
+    const controller = await renderKinnokiStack(fixture.root, createEmptyGameStore(), {
+      audioFactory: () => ({
+        ...silentAudio(),
+        playEffect(value) { calls.effects.push(value); },
+        setIntensity(value) { calls.intensity.push(value); },
+        setPreferences(value) { calls.preferences.push(value); },
+      }),
+    });
+    fixture.root.querySelector('[data-start-game]').click();
+    await Promise.resolve();
+    fixture.root.querySelector('[data-stack-left]').click();
+    assert.ok(calls.effects.includes('move'));
+    assert.ok(calls.intensity.length >= 2);
+    const volume = fixture.root.querySelector('[data-audio-music-volume]');
+    volume.value = '0.2';
+    volume.dispatchEvent(new FixtureEvent('input'));
+    assert.equal(calls.preferences.at(-1).musicVolume, 0.2);
+    assert.equal(JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2)).audio.musicVolume, 0.2);
     controller.dispose();
   } finally { restore(); }
 });

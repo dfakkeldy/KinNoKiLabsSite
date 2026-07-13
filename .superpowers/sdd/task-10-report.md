@@ -35,3 +35,28 @@ Implemented the `renderKinnokiStack(root, store, dependencies)` controller with 
 - Gameplay controls are native buttons; the dock cells are non-tabbable gridcells with text labels and cargo pattern names.
 - The controller introduces no motion effects; the shared page reduced-motion policy remains applicable.
 - Stack-specific visual sizing and route wiring remain outside this controller-only task; no generated `Output/` files were edited.
+
+## Important-defect follow-up
+
+Refactored terminal completion so payload validation and durable Store v2 accounting happen while the lifecycle can still fail. `lifecycle.finish()` now runs only after completion persistence succeeds. Completion persistence is transactional in memory: a failed write restores the active-run store and throws into recoverable lifecycle error handling instead of showing a false successful completion.
+
+The controller now also guards the in-progress terminal transaction against synchronous reentrancy. Normal zero-valued score/combo/manifests still completes once, stores one completion, and calls audio `finish({ outcome: 'terminal' })` without `stop()`.
+
+### Follow-up TDD evidence
+
+- RED: 11/14 controller tests passed; the null payload, completion inconsistency, and completion write-failure regressions failed because terminal settlement prevented recoverable alert rendering.
+- GREEN: 16/16 controller tests passed after the ordering and transactional persistence fix.
+- Focused Stack/controller/lifecycle/audio/core/storage matrix: 88/88 passed.
+- Full `make test-games`: 256/256 passed.
+
+### Added high-risk coverage
+
+- Null and structurally invalid completion payloads.
+- Completion assistance inconsistency and failed durable completion writes.
+- Synchronous reentrant completion-write callbacks and exactly-once accounting.
+- Keyboard map plus native-button dispatch and focus stability across paint.
+- Hidden-page and `pagehide` pauses that require explicit Resume.
+- Accepted New Run abandonment and hostile saved-state rejection.
+- Audio effect, intensity, preference, and persisted-setting mapping.
+
+Real-browser interaction and visual verification remain assigned to the later integration task; this follow-up validates the controller with the deterministic DOM fixture only.
