@@ -1,5 +1,5 @@
 ---
 title: Games
-description: Play unlimited Sudoku, Crossword, and Word Search puzzles from KinNoKi Labs.
+description: Play five unlimited puzzle and cargo games from KinNoKi Labs, each with three difficulty levels and local progress.
 image: /images/games/og.png
 ---

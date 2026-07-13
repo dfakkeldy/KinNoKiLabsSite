@@ -572,7 +572,11 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
 .games-hero h1 { font-size: clamp(2.4rem, 6vw, 4.8rem); letter-spacing: -0.045em; margin-bottom: 18px; }
 .games-hero > p:last-child { max-width: 650px; margin: 0 auto; color: var(--game-text-secondary); font-size: clamp(1rem, 2vw, 1.15rem); }
 .games-main .eyebrow { color: var(--game-text-accent); }
-.game-card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 2vw, 20px); }
+.game-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: clamp(14px, 2vw, 20px);
+}
 .game-card {
   display: flex;
   min-width: 0;
@@ -625,6 +629,45 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
 
 /* Shared controller layout for the game views added in later slices. */
 .games-app { min-width: 0; overflow-x: clip; }
+.game-preplay,
+.game-status-grid,
+.game-audio-controls,
+.stack-controls,
+.yard-controls,
+.yard-pan-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.stack-controls button {
+  min-width: 44px;
+  min-height: 44px;
+}
+.yard-controls button {
+  min-width: 44px;
+  min-height: 44px;
+}
+.yard-cell {
+  min-width: 44px;
+  min-height: 44px;
+}
+.yard-tray-piece {
+  min-width: 44px;
+  min-height: 44px;
+}
+.yard-pan-controls button {
+  min-width: 44px;
+  min-height: 44px;
+}
+.game-audio-controls button {
+  min-width: 44px;
+  min-height: 44px;
+}
+.game-audio-controls input[type="range"] {
+  width: 132px;
+  min-width: 44px;
+  min-height: 44px;
+}
 .game-toolbar, .game-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
 .game-toolbar { margin-bottom: 22px; }
 .game-board { width: min(100%, 42rem); margin: 0 auto; background: var(--surface); border: 2px solid var(--text); border-radius: 12px; overflow: hidden; }
@@ -717,6 +760,175 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
 .word-search-list li { color: var(--game-text-primary); font-family: var(--font-mono); font-size: 0.85rem; }
 .word-search-list li.is-found { color: var(--game-text-tertiary); text-decoration: line-through; }
 
+.stack-game {
+  min-width: 0;
+}
+.stack-dock {
+  position: relative;
+  width: min(100%, calc(12 * 44px));
+  margin-inline: auto;
+  overflow: hidden;
+  background: var(--surface);
+  border: 2px solid var(--game-text-primary);
+  border-radius: 12px;
+}
+.stack-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  width: 100%;
+  aspect-ratio: 2 / 3;
+}
+.stack-row { display: contents; }
+.stack-cell {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  place-items: center;
+  color: var(--game-text-primary);
+  background-color: var(--surface);
+  border-right: 1px solid var(--separator);
+  border-bottom: 1px solid var(--separator);
+  font-family: var(--font-mono);
+  font-size: clamp(0.55rem, 2vw, 0.9rem);
+}
+.stack-crane-line {
+  position: absolute;
+  z-index: 2;
+  inset: calc(4 / 18 * 100%) 0 auto;
+  height: 0;
+  overflow: visible;
+  color: var(--game-text-accent);
+  border-top: 3px double currentColor;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-align: right;
+}
+.stack-cargo-active {
+  border: 3px solid var(--game-text-accent);
+  animation: cargo-active-pulse 700ms ease-in-out infinite alternate;
+}
+.stack-cargo-settled { border: 2px solid var(--game-text-primary); }
+.stack-manifest-cell {
+  outline: 2px dashed var(--game-text-accent);
+  outline-offset: -3px;
+}
+.stack-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+}
+.stack-preview li {
+  padding: 8px 10px;
+  color: var(--game-text-primary);
+  background-color: var(--surface-2);
+  border: 1px solid var(--separator);
+  border-radius: 8px;
+}
+.cargo-pattern-dots {
+  background-image: radial-gradient(currentColor 1px, transparent 1px);
+  background-size: 7px 7px;
+}
+.cargo-pattern-diagonal {
+  background-image: repeating-linear-gradient(135deg, transparent 0 5px, currentColor 5px 6px);
+}
+.cargo-pattern-crosshatch {
+  background-image:
+    repeating-linear-gradient(45deg, transparent 0 6px, currentColor 6px 7px),
+    repeating-linear-gradient(135deg, transparent 0 6px, currentColor 6px 7px);
+}
+.cargo-pattern-bands {
+  background-image: repeating-linear-gradient(90deg, transparent 0 7px, currentColor 7px 9px);
+}
+@keyframes cargo-active-pulse {
+  from { outline: 1px solid transparent; }
+  to { outline: 3px solid var(--game-text-accent); }
+}
+
+.yard-game,
+.yard-board-column { min-width: 0; }
+.yard-board-scroll {
+  width: 100%;
+  max-width: 100%;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 2px solid var(--game-text-primary);
+  border-radius: 12px;
+  background: var(--surface);
+  scroll-behavior: smooth;
+}
+.yard-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--yard-columns), 44px);
+  width: calc(var(--yard-columns) * 44px);
+}
+.yard-row { display: contents; }
+.yard-gridcell {
+  display: flex;
+  min-width: 44px;
+  min-height: 44px;
+}
+.yard-cell {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  color: var(--game-text-primary);
+  background-color: var(--surface);
+  border: 1px solid var(--separator);
+  border-radius: 0;
+  font-family: var(--font-mono);
+}
+.yard-cell-target { border: 2px dashed var(--game-text-tertiary); }
+.yard-cell-manifest {
+  outline: 2px dashed var(--game-text-accent);
+  outline-offset: -4px;
+}
+.yard-cell-selected {
+  position: relative;
+  z-index: 1;
+  border: 3px double var(--game-text-accent);
+}
+.yard-cell-placed { border: 3px solid var(--game-text-primary); }
+.yard-cell-invalid {
+  border: 4px double var(--game-text-primary);
+  background-image: repeating-linear-gradient(135deg, transparent 0 6px, currentColor 6px 8px);
+}
+.yard-cell-hint {
+  outline: 4px dotted var(--game-text-accent);
+  outline-offset: -5px;
+}
+.yard-tray {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.yard-tray-piece {
+  padding: 8px 12px;
+  color: var(--game-text-primary);
+  background-color: var(--surface-2);
+  border: 2px solid var(--separator);
+  border-radius: 9px;
+  text-align: left;
+}
+.yard-tray-piece.is-selected { border: 4px double var(--game-text-accent); }
+.yard-tray-piece.is-placed {
+  text-decoration: line-through;
+  border-style: dashed;
+}
+.yard-pan-controls {
+  justify-content: space-between;
+  margin-top: 10px;
+}
+.yard-cell:focus-visible,
+.yard-tray-piece:focus-visible,
+.yard-pan-controls button:focus-visible {
+  outline: 3px solid var(--gold-text);
+  outline-offset: 3px;
+}
+body.font-opendyslexic .yard-cell:focus-visible,
+body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
+
 @media (max-width: 759px) {
   .games-main { padding-top: 40px; }
   .games-hero { text-align: left; }
@@ -733,8 +945,38 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
   .crossword-layout .game-board, .word-search-layout .game-board { width: 100%; }
 }
 
+@media (max-width: 759px) {
+  .stack-game .game-status-grid,
+  .yard-game .game-status-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .stack-controls,
+  .yard-controls,
+  .game-audio-controls { align-items: stretch; }
+
+  .stack-controls button,
+  .yard-controls button { flex: 1 1 8rem; }
+
+  .yard-pan-controls { display: flex; }
+  .yard-board-scroll { max-width: 100%; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   body, .game-card, .btn { transition: none; }
   .game-card:hover, .btn:hover, .btn:active { transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stack-cargo-active,
+  .cargo-dispatching,
+  .cargo-tide-shifting {
+    animation: none;
+    transition: none;
+    transform: none;
+  }
+
+  .yard-board-scroll { scroll-behavior: auto; }
 }
