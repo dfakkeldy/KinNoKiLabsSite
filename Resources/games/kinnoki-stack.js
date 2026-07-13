@@ -40,6 +40,10 @@ const tideForEvent = (definition, eventIndex) => {
   return { direction: rng.int(2) === 0 ? 'left' : 'right', placementsRemaining: range[0] + rng.int(range[1] - range[0] + 1), eventIndex };
 };
 const cloneSerializable = (value) => JSON.parse(JSON.stringify(value));
+const manifestProvenanceFor = (manifests, nextIndex) => ({
+  nextIndex,
+  manifests: cloneSerializable(manifests),
+});
 
 export function createStackState(definition) {
   let expectedDefinition;
@@ -50,7 +54,7 @@ export function createStackState(definition) {
   const selected = selectNextManifestZones({ board, width: STACK_WIDTH, height: STACK_HEIGHT, shapeIds: config.manifestShapeIds, seed: definition.seed, startIndex: 0, count: config.manifestCount });
   const active = activeAtSpawn(cargoForIndex(definition, 0));
   const preview = Array.from({ length: config.previewCount }, (_, offset) => cargoForIndex(definition, offset + 1));
-  return { definition, difficulty: definition.difficulty, width: STACK_WIDTH, height: STACK_HEIGHT, status: 'preview', board, active, preview, sequenceIndex: 0, nextPieceId: config.previewCount + 1, manifests: selected.manifests, manifestIndex: selected.nextIndex, tide: tideForEvent(definition, 0), components: [], score: 0, combo: 0, bestCombo: 0, dispatchedManifests: 0, placements: 0, assisted: false, stepMode: false, grounded: null, gravityAccumulatorMs: 0, terminalReason: null };
+  return { definition, difficulty: definition.difficulty, width: STACK_WIDTH, height: STACK_HEIGHT, status: 'preview', board, active, preview, sequenceIndex: 0, nextPieceId: config.previewCount + 1, manifests: selected.manifests, manifestIndex: selected.nextIndex, manifestProvenance: manifestProvenanceFor(selected.manifests, selected.nextIndex), tide: tideForEvent(definition, 0), components: [], score: 0, combo: 0, bestCombo: 0, dispatchedManifests: 0, placements: 0, assisted: false, stepMode: false, grounded: null, gravityAccumulatorMs: 0, terminalReason: null };
 }
 export function prepareStackForContinue(play) {
   if (!['active', 'paused'].includes(play?.status) || !validateStackState(play, play?.difficulty).valid) throw new TypeError('Saved Kinnoki Stack state is invalid');
@@ -96,16 +100,17 @@ function resolveManifests(state, board, score, events) {
   const dispatched = dispatchCompletedManifests(board, state.manifests);
   if (dispatched.completed.length === 0) {
     if (state.combo > 0) events.push({ type: 'combo-reset', previousCombo: state.combo });
-    return { board, manifests: state.manifests, manifestIndex: state.manifestIndex, components: connectedComponents(board), score, combo: 0, bestCombo: state.bestCombo, dispatchedManifests: state.dispatchedManifests, error: null };
+    return { board, manifests: state.manifests, manifestIndex: state.manifestIndex, manifestProvenance: state.manifestProvenance, components: connectedComponents(board), score, combo: 0, bestCombo: state.bestCombo, dispatchedManifests: state.dispatchedManifests, error: null };
   }
   const combo = saturatingAdd(state.combo, 1);
   const dispatchScore = Math.min(Number.MAX_SAFE_INTEGER, 100 * dispatched.dispatchedCells * combo);
   events.push({ type: 'dispatch', manifestIds: dispatched.completed.map(({ id }) => id), cells: dispatched.dispatchedCells, combo, scoreAdded: dispatchScore });
   const incomplete = state.manifests.filter((manifest) => !dispatched.completed.some(({ id }) => id === manifest.id));
-  const result = { board: dispatched.board, manifests: incomplete, manifestIndex: state.manifestIndex, components: connectedComponents(dispatched.board), score: saturatingAdd(score, dispatchScore), combo, bestCombo: Math.max(state.bestCombo, combo), dispatchedManifests: saturatingAdd(state.dispatchedManifests, dispatched.completed.length), error: null };
+  const result = { board: dispatched.board, manifests: incomplete, manifestIndex: state.manifestIndex, manifestProvenance: manifestProvenanceFor(incomplete, state.manifestIndex), components: connectedComponents(dispatched.board), score: saturatingAdd(score, dispatchScore), combo, bestCombo: Math.max(state.bestCombo, combo), dispatchedManifests: saturatingAdd(state.dispatchedManifests, dispatched.completed.length), error: null };
   try {
     const replacement = selectNextManifestZones({ board: dispatched.board, width: STACK_WIDTH, height: STACK_HEIGHT, shapeIds: STACK_CONFIG[state.difficulty].manifestShapeIds, seed: state.definition.seed, startIndex: state.manifestIndex, count: dispatched.completed.length, occupied: incomplete });
-    return { ...result, manifests: [...incomplete, ...replacement.manifests], manifestIndex: replacement.nextIndex };
+    const manifests = [...incomplete, ...replacement.manifests];
+    return { ...result, manifests, manifestIndex: replacement.nextIndex, manifestProvenance: manifestProvenanceFor(manifests, replacement.nextIndex) };
   } catch (error) {
     if (!(error instanceof ManifestGenerationError)) throw error;
     return { ...result, error: { type: 'error', code: 'manifest-generation', message: 'A new Cargo Manifest could not be prepared.' } };
@@ -126,7 +131,7 @@ function lockActive(state) {
   const placed = placeAndApplyTide(state);
   const events = [...placed.events];
   const resolved = resolveManifests(state, placed.board, placed.score, events);
-  const settled = { ...state, board: resolved.board, manifests: resolved.manifests, manifestIndex: resolved.manifestIndex, tide: placed.tide, components: resolved.components, score: resolved.score, combo: resolved.combo, bestCombo: resolved.bestCombo, dispatchedManifests: resolved.dispatchedManifests, placements: placed.placements, active: null, grounded: null, gravityAccumulatorMs: 0 };
+  const settled = { ...state, board: resolved.board, manifests: resolved.manifests, manifestIndex: resolved.manifestIndex, manifestProvenance: resolved.manifestProvenance, tide: placed.tide, components: resolved.components, score: resolved.score, combo: resolved.combo, bestCombo: resolved.bestCombo, dispatchedManifests: resolved.dispatchedManifests, placements: placed.placements, active: null, grounded: null, gravityAccumulatorMs: 0 };
   if (resolved.error !== null) return { state: { ...settled, status: 'error' }, events: [...events, resolved.error] };
   if (settled.board[0].some(Boolean) || settled.board[1].some(Boolean)) return { state: terminalState(settled, 'crane-line'), events: [...events, { type: 'terminal', reason: 'crane-line' }] };
   return spawnNext(settled, events);
@@ -199,6 +204,32 @@ export function validateStackState(value, difficulty) {
     const result = validateManifest(manifest, { width: STACK_WIDTH, height: STACK_HEIGHT });
     if (!result.valid) errors.push(...result.errors);
     for (const { row, column } of manifest.cells ?? []) { const key = row + ':' + column; if (manifestCells.has(key)) errors.push('overlapping manifests'); manifestCells.add(key); }
+  }
+  const provenance = value?.manifestProvenance;
+  const manifestIdsMatchIndex = Array.isArray(value?.manifests)
+    && value.manifests.every(({ id } = {}) => {
+      const match = /^manifest-(\d+)-(\d+)$/.exec(id);
+      return match !== null && Number(match[1]) < value?.manifestIndex;
+    });
+  if (!sameJson(provenance?.manifests, value?.manifests)
+      || provenance?.nextIndex !== value?.manifestIndex
+      || !manifestIdsMatchIndex) {
+    errors.push('invalid manifest provenance');
+  }
+  if (value?.placements === 0) {
+    try {
+      const initial = selectNextManifestZones({
+        board: emptyStackBoard(), width: STACK_WIDTH, height: STACK_HEIGHT,
+        shapeIds: config.manifestShapeIds, seed: definition.seed,
+        startIndex: 0, count: config.manifestCount,
+      });
+      if (!sameJson(value.manifests, initial.manifests)
+          || value.manifestIndex !== initial.nextIndex) {
+        errors.push('invalid initial manifests');
+      }
+    } catch {
+      errors.push('invalid initial manifests');
+    }
   }
   const counters = [value?.score, value?.combo, value?.bestCombo, value?.dispatchedManifests, value?.placements, value?.sequenceIndex, value?.nextPieceId, value?.manifestIndex];
   if (counters.some((counter) => !nonNegativeSafeInteger(counter)) || value.bestCombo < value.combo || !nonNegativeFinite(value?.gravityAccumulatorMs) || typeof value.assisted !== 'boolean' || typeof value.stepMode !== 'boolean') errors.push('invalid counters');

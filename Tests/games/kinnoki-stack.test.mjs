@@ -59,6 +59,7 @@ test('lock scores placement then one shared-combo dispatch without row clearing'
   assert.equal(result.state.board[17][0], null);
   assert.equal(result.state.board[17][3], null);
   assert.equal(result.events.filter((event) => event.type === 'dispatch').length, 1);
+  assert.deepEqual(validateStackState(result.state, 'easy'), { valid: true, errors: [] });
 });
 
 test('two completed manifests dispatch simultaneously with one combo multiplier', () => {
@@ -94,6 +95,22 @@ test('Stack validator accepts an untouched state and rejects forged geometry', (
   assert.equal(validateStackState({ ...state, definition: { ...state.definition, version: 2 } }, 'medium').valid, false);
   assert.equal(validateStackState({ ...state, active: { ...state.active, sequenceIndex: state.sequenceIndex + 1 } }, 'medium').valid, false);
   assert.equal(validateStackState({ ...state, tide: { ...state.tide, direction: state.tide.direction === 'left' ? 'right' : 'left' } }, 'medium').valid, false);
+  const shiftedManifest = {
+    ...state.manifests[0],
+    origin: {
+      ...state.manifests[0].origin,
+      column: state.manifests[0].origin.column === 0 ? 1 : 0,
+    },
+  };
+  const columnDelta = shiftedManifest.origin.column - state.manifests[0].origin.column;
+  shiftedManifest.cells = state.manifests[0].cells.map(({ row, column }) => ({
+    row,
+    column: column + columnDelta,
+  }));
+  assert.equal(validateStackState({
+    ...state,
+    manifests: [shiftedManifest, ...state.manifests.slice(1)],
+  }, 'medium').valid, false);
 });
 
 test('Stack definitions reject values outside the unsigned seed contract', () => {
