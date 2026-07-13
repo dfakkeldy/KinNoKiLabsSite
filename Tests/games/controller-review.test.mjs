@@ -4,13 +4,24 @@ import { readFileSync } from 'node:fs';
 import { createDOMFixture, FixtureEvent, installDOM } from './dom-fixture.mjs';
 import { generateSudoku } from '../../Resources/games/sudoku.js';
 import { generateWordSearch } from '../../Resources/games/word-search.js';
+import { createEmptyGameStore, STORE_KEYS } from '../../Resources/games/core.js';
 
-const emptyStats = () => ({ totalCompleted: 0, currentStreak: 0, lastCompletedDate: null, games: {} });
-const storeWith = (game, definition, play = undefined, difficulty = 'easy') => ({
-  version: 1,
-  runs: { [game]: { difficulty, seed: definition.seed ?? 1, puzzle: { definition, ...(play ? { play } : {}) }, startedAt: 0, elapsedBeforeStartMs: 0, assisted: false } },
-  previousSeeds: {}, stats: emptyStats(),
-});
+const v2StoreWithRun = ({
+  game, definition, play, difficulty = definition.difficulty ?? 'easy',
+  seed = definition.seed ?? 1, startedAt = 0, elapsedBeforeStartMs = 0, assisted = false,
+}) => {
+  const store = createEmptyGameStore();
+  store.runs[game] = {
+    game, mode: 'default', difficulty, seed: seed >>> 0,
+    signature: 'fixture:' + game + ':' + JSON.stringify(definition),
+    puzzle: { definition, ...(play === undefined ? {} : { play }) },
+    startedAt, elapsedBeforeStartMs, assisted,
+  };
+  return store;
+};
+const storeWith = (game, definition, play = undefined, difficulty = 'easy') => (
+  v2StoreWithRun({ game, definition, play, difficulty })
+);
 
 const sudoku = generateSudoku({ difficulty: 'easy', seed: 20260712 });
 const sudokuGiven = sudoku.puzzle.findIndex(Boolean);
@@ -122,11 +133,11 @@ test('declining a different-difficulty replacement keeps the saved run without r
     const module = await import('../../Resources/games/sudoku-ui.js');
     const play = module.createSudokuState(sudoku); play.values[sudokuEditable] = 2;
     const store = storeWith('sudoku', sudoku, play, 'easy');
-    fixture.localStorage.setItem('kinnoki-games:v1', JSON.stringify(store));
+    fixture.localStorage.setItem(STORE_KEYS.v2, JSON.stringify(store));
     await module.renderSudoku(fixture.root, store);
     assert.equal(fixture.root.querySelector('[role="grid"]'), null);
     assert.match(fixture.root.textContent, /Easy puzzle.*kept/i);
-    assert.equal(JSON.parse(fixture.localStorage.getItem('kinnoki-games:v1')).runs.sudoku.difficulty, 'easy');
+    assert.equal(JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2)).runs.sudoku.difficulty, 'easy');
   } finally { restore(); }
 });
 
@@ -232,9 +243,13 @@ test('each hostile persisted run falls back through its game validator to a fres
       const validateRun = game === 'sudoku' ? module.validateSudokuRun
         : game === 'crossword' ? module.validateCrosswordRun : module.validateWordSearchRun;
       const store = storeWith(game, valid); store.runs[game].puzzle = hostile;
+      let signatureCalls = 0;
       const session = createSession({
         root: fixture.root, game, store, createPuzzle: () => valid, createPlay,
         progressed: () => true, validateRun, onRender: async () => {},
+        definitionSignature: () => (
+          signatureCalls++ === 0 ? 'hostile-fixture' : 'valid-fixture'
+        ),
       });
       assert.equal(session.run.puzzle.definition, valid);
       assert.equal(validateRun(session.run.puzzle, 'easy'), true);
@@ -262,7 +277,7 @@ test('async Play Another render failures become a visible game error', async () 
   const fixture = createDOMFixture(); const restore = installDOM(fixture);
   try {
     const { createSession } = await import('../../Resources/games/controller-common.js');
-    const store = { version: 1, runs: {}, previousSeeds: {}, stats: emptyStats() };
+    const store = createEmptyGameStore();
     const session = createSession({
       root: fixture.root, game: 'sudoku', store,
       createPuzzle: ({ difficulty, seed }) => ({ seed, difficulty }),
@@ -272,5 +287,119 @@ test('async Play Another render failures become a visible game error', async () 
     });
     await session.playAnother();
     assert.equal(fixture.root.querySelector('[role="alert"]')?.textContent.includes('could not start'), true);
+  } finally { restore(); }
+});
+
+const silentAudioFactory = () => ({
+  start: async () => {}, resume: async () => {}, pause: async () => {},
+  stop: async () => {}, finish() {}, dispose: async () => {},
+  setPreferences() {}, setIntensity() {}, playEffect() {},
+});
+
+async function waitForControllerState(predicate, message) {
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    if (predicate()) return;
+    await Promise.resolve();
+  }
+  assert.fail(message);
+}
+
+test('cargo grids, live regions, and automatic status use exact accessibility semantics', async () => {
+  for (const game of [
+    {
+      search: '?difficulty=easy',
+      path: '../../Resources/games/kinnoki-stack-ui.js',
+      render: 'renderKinnokiStack',
+      cell: '[role="gridcell"]',
+      count: 216,
+      tabStops: 0,
+      automaticStatus: ['[data-timer]', '[data-stack-score]'],
+    },
+    {
+      search: '?mode=contracts&difficulty=easy',
+      path: '../../Resources/games/kinnoki-yard-ui.js',
+      render: 'renderKinnokiYard',
+      cell: '[data-yard-cell]',
+      count: null,
+      tabStops: 1,
+      automaticStatus: ['[data-timer]', '[data-yard-moves]'],
+    },
+  ]) {
+    const fixture = createDOMFixture({ search: game.search });
+    const restore = installDOM(fixture);
+    try {
+      const module = await import(game.path);
+      const controller = await module[game.render](
+        fixture.root,
+        createEmptyGameStore(),
+        { audioFactory: silentAudioFactory },
+      );
+      const cells = fixture.root.querySelectorAll(game.cell);
+      if (game.count !== null) assert.equal(cells.length, game.count);
+      assert.ok(cells.length > 0);
+      assert.equal(
+        cells.filter((cell) => cell.getAttribute('tabindex') === '0').length,
+        game.tabStops,
+      );
+      if (game.tabStops === 0) {
+        assert.ok(cells.every((cell) => cell.getAttribute('tabindex') === '-1'));
+      }
+      const eventRegion = fixture.root.querySelector('.games-live-region');
+      assert.equal(eventRegion.getAttribute('role'), 'status');
+      assert.equal(eventRegion.getAttribute('aria-live'), 'polite');
+      for (const selector of game.automaticStatus) {
+        assert.equal(fixture.root.querySelector(selector).getAttribute('aria-live'), null);
+      }
+      controller.dispose();
+      assert.equal(fixture.document.listenerCount('keydown'), 0);
+      assert.equal(fixture.activeFrameCount(), 0);
+    } finally { restore(); }
+  }
+});
+
+test('Stack terminal rendering focuses the summary and disposal clears active resources', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy' });
+  const restore = installDOM(fixture);
+  try {
+    const stack = await import('../../Resources/games/kinnoki-stack.js');
+    const engine = {
+      ...stack,
+      reduceStack(state, action) {
+        if (action.type !== 'hard-drop') return stack.reduceStack(state, action);
+        return {
+          state: {
+            ...state,
+            status: 'terminal',
+            terminalReason: 'crane-line',
+            score: 0,
+            combo: 0,
+            bestCombo: 0,
+            dispatchedManifests: 0,
+          },
+          events: [{ type: 'terminal', reason: 'crane-line' }],
+        };
+      },
+    };
+    const { renderKinnokiStack } = await import(
+      '../../Resources/games/kinnoki-stack-ui.js'
+    );
+    const controller = await renderKinnokiStack(
+      fixture.root,
+      createEmptyGameStore(),
+      { engine, audioFactory: silentAudioFactory },
+    );
+    fixture.root.querySelector('[data-start-game]').click();
+    await waitForControllerState(
+      () => fixture.root.querySelector('[data-stack-hard-drop]').disabled === false,
+      'Stack never entered observable active state',
+    );
+    fixture.root.querySelector('[data-stack-hard-drop]').click();
+    const heading = fixture.root.querySelector('[data-complete-heading]');
+    assert.equal(fixture.document.activeElement, heading);
+    assert.equal(fixture.document.listenerCount('keydown'), 0);
+    assert.equal(fixture.activeFrameCount(), 0);
+    controller.dispose();
+    assert.equal(fixture.document.listenerCount('keydown'), 0);
+    assert.equal(fixture.activeFrameCount(), 0);
   } finally { restore(); }
 });

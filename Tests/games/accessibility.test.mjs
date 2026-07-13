@@ -87,3 +87,35 @@ test('difficulty links and reset control are at least 44 by 44 CSS pixels', () =
   assert.match(reset, /min-height:\s*44px/);
   assert.doesNotMatch(reset, /height:\s*(?:[0-3]?\d|4[0-3])px/);
 });
+
+test('cargo controls and Yard cells retain 44 CSS-pixel targets', () => {
+  for (const selector of [
+    '.stack-controls button', '.yard-controls button',
+    '.yard-cell', '.yard-tray-piece', '.yard-pan-controls button',
+    '.game-audio-controls button', '.game-audio-controls input[type="range"]',
+  ]) {
+    const body = ruleBody(selector);
+    assert.match(body, /min-width:\s*44px/);
+    assert.match(body, /min-height:\s*44px/);
+  }
+});
+
+test('cargo state has non-colour patterns and local overflow containment', () => {
+  for (const selector of [
+    '.cargo-pattern-dots', '.cargo-pattern-diagonal',
+    '.cargo-pattern-crosshatch', '.cargo-pattern-bands',
+  ]) assert.match(ruleBody(selector), /background-image:/);
+  assert.match(ruleBody('.yard-board-scroll'), /overflow:\s*auto/);
+  assert.match(ruleBody('.games-app'), /overflow-x:\s*clip/);
+});
+
+test('cargo motion and board panning have reduced-motion overrides', () => {
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.stack-cargo-active[\s\S]*?animation:\s*none/);
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.cargo-dispatching[\s\S]*?transition:\s*none/);
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.cargo-tide-shifting[\s\S]*?transform:\s*none/);
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.yard-board-scroll[\s\S]*?scroll-behavior:\s*auto/);
+});

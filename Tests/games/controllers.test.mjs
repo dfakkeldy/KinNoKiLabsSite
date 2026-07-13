@@ -3,6 +3,32 @@ import assert from 'node:assert/strict';
 import { createDOMFixture, FixtureEvent, installDOM } from './dom-fixture.mjs';
 import { generateSudoku } from '../../Resources/games/sudoku.js';
 import { generateWordSearch } from '../../Resources/games/word-search.js';
+import { createEmptyGameStore, STORE_KEYS } from '../../Resources/games/core.js';
+
+const v2StoreWithRun = ({
+  game,
+  definition,
+  play,
+  difficulty = definition.difficulty ?? 'easy',
+  seed = definition.seed ?? 1,
+  startedAt = 0,
+  elapsedBeforeStartMs = 0,
+  assisted = false,
+}) => {
+  const store = createEmptyGameStore();
+  store.runs[game] = {
+    game,
+    mode: 'default',
+    difficulty,
+    seed: seed >>> 0,
+    signature: 'fixture:' + game + ':' + JSON.stringify(definition),
+    puzzle: { definition, ...(play === undefined ? {} : { play }) },
+    startedAt,
+    elapsedBeforeStartMs,
+    assisted,
+  };
+  return store;
+};
 
 const sudokuPuzzle = generateSudoku({ difficulty: 'easy', seed: 20260712 });
 const sudokuGiven = sudokuPuzzle.puzzle.findIndex(Boolean);
@@ -26,6 +52,37 @@ test('shared element helper omits absent optional children', async () => {
   try {
     const { element } = await import('../../Resources/games/controller-common.js');
     assert.equal(element('div', {}, null, undefined).textContent, '');
+  } finally { restore(); }
+});
+
+test('accepted puzzle replacement excludes the saved definition signature', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy', confirm: true });
+  const restore = installDOM(fixture);
+  try {
+    const { createSession } = await import('../../Resources/games/controller-common.js');
+    const { createEmptyGameStore: emptyStore, startRun } = await import('../../Resources/games/core.js');
+    const savedDefinition = { difficulty: 'easy', seed: 9, id: 'saved-definition' };
+    let store = emptyStore();
+    store = startRun(store, {
+      game: 'sudoku', mode: 'default', difficulty: 'easy', seed: 9,
+      signature: savedDefinition.id,
+      puzzle: { definition: savedDefinition, play: { progressed: true } }, now: 0,
+    });
+    const seenSeeds = [];
+    const session = createSession({
+      root: fixture.root, game: 'sudoku', store,
+      createPuzzle: ({ seed }) => {
+        seenSeeds.push(seed);
+        return { difficulty: 'easy', seed, id: seed === 9 ? savedDefinition.id : `fresh-${seed}` };
+      },
+      createPlay: () => ({}), progressed: () => true, validateRun: () => true,
+      definitionSignature: (definition) => definition.id,
+      seedFactory: () => 9, wallNow: () => 100, monotonicNow: () => 0,
+      onRender: async () => {},
+    });
+    assert.ok(seenSeeds.length >= 2);
+    assert.notEqual(session.run.signature, savedDefinition.id);
+    session.dispose();
   } finally { restore(); }
 });
 
@@ -96,7 +153,7 @@ for (const [name, modulePath, renderName, expectedCells] of [
       const module = await import(modulePath);
       const puzzle = name === 'Sudoku' ? sudokuPuzzle : name === 'Crossword' ? crosswordPuzzle : wordSearchPuzzle;
       const game = name === 'Sudoku' ? 'sudoku' : name === 'Crossword' ? 'crossword' : 'word-search';
-      const store = { version: 1, runs: { [game]: { difficulty: 'easy', seed: puzzle.seed, puzzle: { definition: puzzle }, startedAt: 0, elapsedBeforeStartMs: 0, assisted: false } }, previousSeeds: {}, stats: { totalCompleted: 0, currentStreak: 0, lastCompletedDate: null, games: {} } };
+      const store = v2StoreWithRun({ game, definition: puzzle });
       fixture.location.search = '?difficulty=easy&continue=1';
       await module[renderName](fixture.root, store);
       assert.equal(fixture.root.querySelector('[href="/games"]')?.textContent.includes('Games'), true);
@@ -117,15 +174,15 @@ test('Sudoku keyboard and pointer actions update cells and persist progress', as
   const fixture = createDOMFixture(); const restore = installDOM(fixture);
   try {
     const { renderSudoku } = await import('../../Resources/games/sudoku-ui.js');
-    const store = { version: 1, runs: { sudoku: { difficulty: 'easy', seed: 1, puzzle: { definition: sudokuPuzzle }, startedAt: 0, elapsedBeforeStartMs: 0, assisted: false } }, previousSeeds: {}, stats: { totalCompleted: 0, currentStreak: 0, lastCompletedDate: null, games: {} } };
+    const store = v2StoreWithRun({ game: 'sudoku', definition: sudokuPuzzle, seed: 1 });
     fixture.location.search = '?difficulty=easy&continue=1';
     await renderSudoku(fixture.root, store);
     const cell = fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`);
     cell.click(); cell.dispatchEvent(new FixtureEvent('keydown', { key: '2' }));
     assert.equal(fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`).textContent, '2');
-    assert.match(fixture.localStorage.getItem('kinnoki-games:v1'), /"sudoku"/);
+    assert.match(fixture.localStorage.getItem(STORE_KEYS.v2), /"sudoku"/);
     fixture.root.querySelector('[data-hint]').click();
-    assert.match(fixture.localStorage.getItem('kinnoki-games:v1'), /"assisted":true/);
+    assert.match(fixture.localStorage.getItem(STORE_KEYS.v2), /"assisted":true/);
     assert.match(fixture.root.querySelector('.games-live-region').textContent, /hint revealed.*assisted/i);
   } finally { restore(); }
 });
@@ -136,7 +193,7 @@ test('Word Search announces a found word and focuses completion after the final 
     const { renderWordSearch } = await import('../../Resources/games/word-search-ui.js');
     const target = wordSearchPuzzle.placements[0];
     const state = { focus: target.start, start: null, preview: null, found: wordSearchPuzzle.placements.slice(1).map(({ word }) => word), completed: false, assisted: false };
-    const store = { version: 1, runs: { 'word-search': { difficulty: 'easy', seed: wordSearchPuzzle.seed, puzzle: { definition: wordSearchPuzzle, play: state }, startedAt: 0, elapsedBeforeStartMs: 0, assisted: false } }, previousSeeds: {}, stats: { totalCompleted: 0, currentStreak: 0, lastCompletedDate: null, games: { 'word-search': { completed: 0, bestMs: { easy: null, medium: null, hard: null } } } } };
+    const store = v2StoreWithRun({ game: 'word-search', definition: wordSearchPuzzle, play: state });
     fixture.location.search = '?difficulty=easy&continue=1';
     await renderWordSearch(fixture.root, store);
     fixture.root.querySelector(`[data-cell="${target.start.row}:${target.start.column}"]`).dispatchEvent(new FixtureEvent('keydown', { key: 'Enter' }));
@@ -153,11 +210,11 @@ test('a progressed run is preserved when replacement confirmation is declined', 
     const { renderSudoku } = await import('../../Resources/games/sudoku-ui.js');
     const play = (await import('../../Resources/games/sudoku-ui.js')).createSudokuState(sudokuPuzzle);
     play.values[sudokuEditable] = 2;
-    const store = { version: 1, runs: { sudoku: { difficulty: 'easy', seed: 1, puzzle: { definition: sudokuPuzzle, play }, startedAt: 10, elapsedBeforeStartMs: 0, assisted: false } }, previousSeeds: {}, stats: { totalCompleted: 0, currentStreak: 0, lastCompletedDate: null, games: {} } };
-    fixture.localStorage.setItem('kinnoki-games:v1', JSON.stringify(store));
+    const store = v2StoreWithRun({ game: 'sudoku', definition: sudokuPuzzle, play, seed: 1, startedAt: 10 });
+    fixture.localStorage.setItem(STORE_KEYS.v2, JSON.stringify(store));
     await renderSudoku(fixture.root, store);
     assert.equal(fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`).textContent, '2');
-    assert.equal(JSON.parse(fixture.localStorage.getItem('kinnoki-games:v1')).runs.sudoku.seed, 1);
+    assert.equal(JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2)).runs.sudoku.seed, 1);
   } finally { restore(); }
 });
 
@@ -169,13 +226,13 @@ test('visibility changes persist elapsed play without counting hidden time', asy
     let now = 1000, active = 100; Date.now = () => now;
     globalThis.performance = { now: () => active };
     const { renderSudoku } = await import('../../Resources/games/sudoku-ui.js');
-    const store = { version: 1, runs: { sudoku: { difficulty: 'easy', seed: 1, puzzle: { definition: sudokuPuzzle }, startedAt: 0, elapsedBeforeStartMs: 0, assisted: false } }, previousSeeds: {}, stats: { totalCompleted: 0, currentStreak: 0, lastCompletedDate: null, games: {} } };
+    const store = v2StoreWithRun({ game: 'sudoku', definition: sudokuPuzzle, seed: 1 });
     await renderSudoku(fixture.root, store);
     active = 1100;
     fixture.document.visibilityState = 'hidden'; fixture.document.dispatchEvent(new FixtureEvent('visibilitychange'));
     now = 11000; fixture.document.visibilityState = 'visible'; fixture.document.dispatchEvent(new FixtureEvent('visibilitychange'));
     now = 12000; active = 2100; fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`).click();
-    const run = JSON.parse(fixture.localStorage.getItem('kinnoki-games:v1')).runs.sudoku;
+    const run = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2)).runs.sudoku;
     assert.equal(run.elapsedBeforeStartMs, 1000);
     assert.equal(run.startedAt, 11000);
   } finally { Date.now = originalNow; globalThis.performance = originalPerformance; restore(); }
@@ -187,12 +244,12 @@ test('Play Another starts a run whose seed differs from the completed seed', asy
     const { renderWordSearch } = await import('../../Resources/games/word-search-ui.js');
     const target = wordSearchPuzzle.placements[0];
     const play = { ...((await import('../../Resources/games/word-search-ui.js')).createWordSearchState(wordSearchPuzzle)), focus: target.start, found: wordSearchPuzzle.placements.slice(1).map(({ word }) => word) };
-    const store = { version: 1, runs: { 'word-search': { difficulty: 'easy', seed: wordSearchPuzzle.seed, puzzle: { definition: wordSearchPuzzle, play }, startedAt: Date.now(), elapsedBeforeStartMs: 0, assisted: false } }, previousSeeds: {}, stats: { totalCompleted: 0, currentStreak: 0, lastCompletedDate: null, games: { 'word-search': { completed: 0, bestMs: { easy: null, medium: null, hard: null } } } } };
+    const store = v2StoreWithRun({ game: 'word-search', definition: wordSearchPuzzle, play, startedAt: Date.now() });
     await renderWordSearch(fixture.root, store);
     fixture.root.querySelector(`[data-cell="${target.start.row}:${target.start.column}"]`).dispatchEvent(new FixtureEvent('keydown', { key: 'Enter' }));
     fixture.root.querySelector(`[data-cell="${target.end.row}:${target.end.column}"]`).focus(); fixture.root.querySelector(`[data-cell="${target.end.row}:${target.end.column}"]`).dispatchEvent(new FixtureEvent('keydown', { key: 'Enter' }));
     fixture.root.querySelector('[data-play-another]').click();
-    const next = JSON.parse(fixture.localStorage.getItem('kinnoki-games:v1'));
+    const next = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2));
     assert.notEqual(next.runs['word-search'].seed, next.previousSeeds['word-search']);
   } finally { restore(); }
 });

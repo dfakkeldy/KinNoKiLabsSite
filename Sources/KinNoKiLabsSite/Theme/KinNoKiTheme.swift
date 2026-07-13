@@ -91,6 +91,12 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
         case "games/sudoku":      main = gamesMain(page: "sudoku");      active = "/games"
         case "games/crossword":   main = gamesMain(page: "crossword");   active = "/games"
         case "games/word-search": main = gamesMain(page: "word-search"); active = "/games"
+        case "games/kinnoki-stack":
+            main = gamesMain(page: "kinnoki-stack")
+            active = "/games"
+        case "games/kinnoki-yard":
+            main = gamesMain(page: "kinnoki-yard")
+            active = "/games"
         case "services":          main = servicesMain();                  active = "/services"
         case "learn":             main = learnMain();                     active = ""
         case "about":             main = aboutMain();                     active = "/about"

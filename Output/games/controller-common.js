@@ -1,4 +1,7 @@
-import { completeRun, deriveSeed, markAssisted, saveGameStore, startRun } from './core.js';
+import {
+  chooseFreshDefinition, completeRun, deriveSeed, historyKey, markAssisted,
+  sanitizeAudioPreferences, saveGameStore, startRun,
+} from './core.js';
 import { safeLocalStorage, showStorageFailureNotice } from './hub-ui.js';
 
 export const difficulties = ['easy', 'medium', 'hard'];
@@ -45,36 +48,214 @@ export const formatElapsed = (milliseconds) => {
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
 };
 
-const seedValue = (previous) => {
-  let seed = (Date.now() ^ Math.floor(Math.random() * 0xffffffff)) >>> 0;
-  if (seed === previous) seed = (seed + 1) >>> 0;
+export function defaultSeedFactory({ previousSeed = null } = {}) {
+  const words = new Uint32Array(1);
+  try { globalThis.crypto?.getRandomValues?.(words); } catch { words[0] = 0; }
+  let seed = ((Date.now() >>> 0) ^ words[0]) >>> 0;
+  if (seed === previousSeed) seed = deriveSeed(seed, 0);
   return seed;
-};
-
-export function renderGameError(root) {
-  root.replaceChildren(element('section', { class: 'game-error', role: 'alert' },
-    element('h1', { text: 'Puzzle paused' }),
-    element('p', { text: 'This game could not start. Reload the page to try a fresh puzzle.' })));
 }
 
-export function renderReplacementKept(root, game, existingDifficulty) {
-  root.replaceChildren(element('section', { class: 'game-error', role: 'status' },
-    element('h1', { text: 'Saved puzzle kept' }),
-    element('p', { text: `${titleCase(existingDifficulty)} puzzle progress was kept on this device.` }),
+export function renderGameError(root, {
+  title = 'Game paused',
+  message = 'This game could not continue.',
+  newGameHref = globalThis.location?.pathname ?? '/games',
+} = {}) {
+  root.replaceChildren(element('section', { class: 'game-error', role: 'alert' },
+    element('h1', { text: title }),
+    element('p', { text: message }),
     element('a', {
-      class: 'btn btn-gold',
-      href: `/games/${game}?difficulty=${existingDifficulty}&continue=1`,
-      text: `Continue ${titleCase(existingDifficulty)}`,
+      class: 'btn btn-gold', href: newGameHref, text: 'Start a New Game',
     }),
     element('a', { class: 'back-link', href: '/games', text: 'Back to Games' })));
 }
 
-export function createSession({
-  root, game, store, createPuzzle, createPlay, progressed, validateRun, onRender,
-  definitionSignature = puzzleSignature,
-  wallNow = () => Date.now(),
+export function renderReplacementKept(root, game, existingDifficulty, mode = null) {
+  const isYard = game === 'kinnoki-yard'
+    && (mode === 'contracts' || mode === 'endless');
+  const difficulty = titleCase(existingDifficulty);
+  const href = isYard
+    ? `/games/${game}?mode=${mode}&difficulty=${existingDifficulty}&continue=1`
+    : `/games/${game}?difficulty=${existingDifficulty}&continue=1`;
+  const label = isYard
+    ? `Continue ${mode === 'endless' ? 'Endless Yard' : 'Contract'} · ${difficulty}`
+    : `Continue ${difficulty}`;
+  root.replaceChildren(element('section', { class: 'game-error', role: 'status' },
+    element('h1', { text: 'Saved puzzle kept' }),
+    element('p', {
+      text: `${difficulty} ${isYard ? 'run' : 'puzzle'} progress was kept on this device.`,
+    }),
+    element('a', { class: 'btn btn-gold', href, text: label }),
+    element('a', { class: 'back-link', href: '/games', text: 'Back to Games' })));
+}
+
+const eventAnnouncement = (event) => {
+  switch (event?.type) {
+    case 'started': return 'Run started.';
+    case 'paused': return 'Run paused.';
+    case 'resumed': return 'Run resumed.';
+    case 'assisted': return 'Assistance enabled. This run is ineligible for records.';
+    case 'invalid': return event.reason || 'That action is unavailable.';
+    case 'error': return event.message || 'The game could not continue.';
+    case 'moved': return `Cargo moved to row ${event.row + 1}, column ${event.column + 1}.`;
+    case 'rotated': return 'Cargo rotated.';
+    case 'placed': return 'Cargo placed.';
+    case 'repositioned': return 'Cargo repositioned.';
+    case 'selected': return 'Cargo selected.';
+    case 'spawned': return 'Next cargo ready.';
+    case 'tide-warning':
+      return `${titleCase(event.direction)} tide in ${event.placementsRemaining} placements.`;
+    case 'tide-shift':
+      return `${titleCase(event.direction)} tide shifted ${event.movedComponents} cargo groups.`;
+    case 'dispatch': return `Manifest dispatched. Combo ${event.combo}.`;
+    case 'combo-reset': return 'Manifest combo reset.';
+    case 'undone': return 'Last placement undone.';
+    case 'hint': return 'Hint ready.';
+    case 'hint-dead-end': return event.message || 'No valid completion remains.';
+    case 'completed': return `Contract completed in ${event.moves} moves.`;
+    case 'terminal':
+      if (event.reason === 'crane-line') return 'Run ended. Cargo reached the crane line.';
+      if (event.reason === 'spawn-blocked') {
+        return 'Run ended. The next cargo could not enter the dock.';
+      }
+      return 'Run ended. No legal cargo placement remains.';
+    default: return null;
+  }
+};
+
+export function createEventAnnouncer({
+  region,
   monotonicNow = () => globalThis.performance?.now?.() ?? Date.now(),
+  minimumGapMs = 180,
 }) {
+  let disposed = false;
+  let lastLimitedKey = null;
+  let lastLimitedAt = Number.NEGATIVE_INFINITY;
+
+  const announce = (event) => {
+    if (disposed || !event || (event.type === 'moved' && event.source === 'gravity')) {
+      return false;
+    }
+    const message = eventAnnouncement(event);
+    if (!message) return false;
+    const limited = event.type === 'moved' || event.type === 'invalid';
+    const key = `${event.type}:${event.action ?? event.reason ?? ''}`;
+    const now = monotonicNow();
+    if (limited && key === lastLimitedKey && now - lastLimitedAt < minimumGapMs) {
+      return false;
+    }
+    if (limited) {
+      lastLimitedKey = key;
+      lastLimitedAt = now;
+    }
+    region.textContent = message;
+    return true;
+  };
+
+  return {
+    announce,
+    dispose() {
+      if (disposed) return false;
+      disposed = true;
+      lastLimitedKey = null;
+      return true;
+    },
+  };
+}
+
+export function createAudioControls({
+  document = globalThis.document,
+  preferences,
+  onChange = () => {},
+}) {
+  let current = sanitizeAudioPreferences(preferences);
+  let disposed = false;
+  const element = document.createElement('fieldset');
+  element.className = 'game-audio-controls';
+  const legend = document.createElement('legend');
+  legend.textContent = 'Audio';
+  element.append(legend);
+
+  const makeChannel = (name, key) => {
+    const row = document.createElement('div');
+    row.className = 'game-audio-channel';
+    const label = document.createElement('label');
+    const labelText = document.createElement('span');
+    labelText.textContent = name;
+    const range = document.createElement('input');
+    range.setAttribute('type', 'range');
+    range.setAttribute('min', '0');
+    range.setAttribute('max', '1');
+    range.setAttribute('step', '0.05');
+    range.setAttribute('aria-label', `${name} volume`);
+    range.setAttribute(`data-audio-${key}-volume`, '');
+    label.append(labelText, range);
+    const toggle = document.createElement('button');
+    toggle.setAttribute('type', 'button');
+    toggle.setAttribute(`data-audio-${key}-toggle`, '');
+    row.append(label, toggle);
+    element.append(row);
+    return { range, toggle };
+  };
+
+  const music = makeChannel('Music', 'music');
+  const effects = makeChannel('Effects', 'effects');
+  const paint = () => {
+    music.range.value = String(current.musicVolume);
+    effects.range.value = String(current.effectsVolume);
+    for (const [control, enabled, name] of [
+      [music.toggle, current.musicEnabled, 'music'],
+      [effects.toggle, current.effectsEnabled, 'effects'],
+    ]) {
+      control.setAttribute('aria-pressed', String(!enabled));
+      control.textContent = enabled ? `Mute ${name}` : `Unmute ${name}`;
+    }
+  };
+  const commit = (patch) => {
+    if (disposed) return false;
+    current = sanitizeAudioPreferences({ ...current, ...patch });
+    paint();
+    onChange({ ...current });
+    return true;
+  };
+  const onMusicToggle = () => commit({ musicEnabled: !current.musicEnabled });
+  const onEffectsToggle = () => commit({ effectsEnabled: !current.effectsEnabled });
+  const onMusicInput = () => commit({ musicVolume: Number(music.range.value) });
+  const onEffectsInput = () => commit({ effectsVolume: Number(effects.range.value) });
+  music.toggle.addEventListener('click', onMusicToggle);
+  effects.toggle.addEventListener('click', onEffectsToggle);
+  music.range.addEventListener('input', onMusicInput);
+  effects.range.addEventListener('input', onEffectsInput);
+  paint();
+
+  return {
+    element,
+    setPreferences(value) {
+      if (disposed) return false;
+      current = sanitizeAudioPreferences(value);
+      paint();
+      return true;
+    },
+    dispose() {
+      if (disposed) return false;
+      disposed = true;
+      music.toggle.removeEventListener('click', onMusicToggle);
+      effects.toggle.removeEventListener('click', onEffectsToggle);
+      music.range.removeEventListener('input', onMusicInput);
+      effects.range.removeEventListener('input', onEffectsInput);
+      return true;
+    },
+  };
+}
+
+export function createSession(options) {
+  const {
+    root, game, store, createPuzzle, createPlay, progressed, validateRun, onRender,
+    definitionSignature = puzzleSignature,
+    seedFactory = defaultSeedFactory,
+    wallNow = () => Date.now(),
+    monotonicNow = () => globalThis.performance?.now?.() ?? Date.now(),
+  } = options;
   activeSessions.get(root)?.dispose();
   const storage = safeLocalStorage(globalThis);
   const params = new URLSearchParams(globalThis.location?.search ?? '');
@@ -116,22 +297,41 @@ export function createSession({
     return handle;
   };
 
-  const begin = (requestedSeed = seedValue(currentStore.previousSeeds?.[game])) => {
-    const previousSignature = run?.puzzle?.definition
-      ? definitionSignature(run.puzzle.definition) : null;
-    let seed = requestedSeed >>> 0;
-    let definition;
-    for (let retry = 0; retry < 64; retry += 1) {
-      definition = createPuzzle({ difficulty, seed });
-      if (previousSignature === null || definitionSignature(definition) !== previousSignature) break;
-      definition = null;
-      seed = deriveSeed(seed, retry);
-    }
-    if (!definition) throw new Error(`Unable to generate a non-repeating ${game} puzzle`);
-    currentStore = startRun(currentStore, game, difficulty, seed, {
-      definition,
-      play: createPlay(definition),
-    }, wallNow());
+  const begin = (requestedSeed) => {
+    const key = historyKey(game, 'default');
+    const abandonedDefinition = run?.puzzle?.definition ?? existing?.puzzle?.definition;
+    const abandonedSignature = abandonedDefinition
+      ? definitionSignature(abandonedDefinition) : null;
+    const initialSeed = Number.isSafeInteger(requestedSeed) && requestedSeed >= 0
+      ? requestedSeed >>> 0
+      : seedFactory({
+          game,
+          mode: 'default',
+          previousSeed: currentStore.previousSeeds?.[key] ?? null,
+        });
+    const selected = chooseFreshDefinition({
+      game,
+      mode: 'default',
+      difficulty,
+      initialSeed,
+      previousSeed: currentStore.previousSeeds?.[key] ?? null,
+      previousSignature: currentStore.previousSignatures?.[key] ?? null,
+      abandonedSignature,
+      createDefinition: ({ seed }) => createPuzzle({ difficulty, seed }),
+      signatureOf: definitionSignature,
+    });
+    currentStore = startRun(currentStore, {
+      game,
+      mode: 'default',
+      difficulty,
+      seed: selected.seed,
+      signature: selected.signature,
+      puzzle: {
+        definition: selected.definition,
+        play: createPlay(selected.definition),
+      },
+      now: wallNow(),
+    });
     run = currentStore.runs[game];
     activeStarted = monotonicNow();
     paused = false;
@@ -193,7 +393,10 @@ export function createSession({
     finished = true;
     const elapsedMs = run.elapsedBeforeStartMs;
     const assisted = run.assisted;
-    currentStore = completeRun(currentStore, game, run.startedAt);
+    currentStore = completeRun(currentStore, {
+      game, mode: 'default', now: wallNow(),
+      records: { time: elapsedMs },
+    });
     save();
     dispose();
     completionResult = { elapsed: elapsedMs, assisted };
@@ -206,15 +409,23 @@ export function createSession({
       await onRender(currentStore);
     } catch {
       activeSessions.get(root)?.dispose();
-      renderGameError(root);
+      renderGameError(root, {
+        title: 'Puzzle paused',
+        message: 'This game could not start. Reload the page to try a fresh puzzle.',
+      });
     }
   };
   const restart = async () => {
     if (!run || finished) return;
     const definition = run.puzzle.definition;
-    currentStore = startRun(currentStore, game, difficulty, run.seed, {
-      definition, play: createPlay(definition),
-    }, wallNow());
+    currentStore = startRun(currentStore, {
+      game, mode: 'default',
+      difficulty: run.difficulty,
+      seed: run.seed,
+      signature: run.signature,
+      puzzle: { definition, play: createPlay(definition) },
+      now: wallNow(),
+    });
     run = currentStore.runs[game];
     activeStarted = monotonicNow();
     paused = false;
@@ -223,7 +434,10 @@ export function createSession({
     try {
       await onRender(currentStore);
     } catch {
-      renderGameError(root);
+      renderGameError(root, {
+        title: 'Puzzle paused',
+        message: 'This game could not start. Reload the page to try a fresh puzzle.',
+      });
     }
   };
 
@@ -264,6 +478,177 @@ export function createSession({
     updatePlay, assist, elapsed, finish, playAnother, restart, dispose, listen, repeat,
     addCleanup(cleanup) { cleanups.add(cleanup); },
   };
+  activeSessions.set(root, api);
+  return api;
+}
+
+export function createGameLifecycle({
+  root,
+  initialElapsedMs = 0,
+  monotonicNow = () => globalThis.performance?.now?.() ?? Date.now(),
+  onActivate = () => {},
+  onPause = () => {},
+  onSnapshot = () => {},
+  onError = () => {},
+  onDispose = () => {},
+}) {
+  const previous = activeSessions.get(root);
+  previous?.dispose();
+  const reentrantOwner = activeSessions.get(root);
+  if (reentrantOwner && reentrantOwner !== previous) return reentrantOwner;
+
+  const document = root.ownerDocument ?? globalThis.document;
+  const window = document?.defaultView ?? globalThis.window;
+  const passiveCleanups = new Set();
+  const activeCleanups = new Set();
+  let currentState = 'preview';
+  let elapsedBeforeActivation = Math.max(0, Math.trunc(initialElapsedMs));
+  let activatedAt = null;
+  let disposed = false;
+  let didDisposeCallback = false;
+  let didReportError = false;
+  let api;
+
+  const elapsed = () => {
+    const activeDelta = currentState === 'active' && activatedAt !== null
+      ? Math.max(0, monotonicNow() - activatedAt)
+      : 0;
+    return Math.max(0, Math.trunc(elapsedBeforeActivation + activeDelta));
+  };
+
+  const clear = (cleanups) => {
+    const pending = [...cleanups];
+    cleanups.clear();
+    for (const cleanup of pending.reverse()) cleanup();
+  };
+  const clearActive = () => clear(activeCleanups);
+
+  const listenActive = (target, type, listener, options) => {
+    if (currentState !== 'active' || disposed) return null;
+    target.addEventListener(type, listener, options);
+    const cleanup = () => target.removeEventListener(type, listener, options);
+    activeCleanups.add(cleanup);
+    return listener;
+  };
+
+  const requestActiveFrame = (callback) => {
+    if (currentState !== 'active' || disposed) return null;
+    let cleanup;
+    const handle = globalThis.requestAnimationFrame((timestamp) => {
+      activeCleanups.delete(cleanup);
+      if (currentState === 'active' && !disposed) callback(timestamp);
+    });
+    cleanup = () => globalThis.cancelAnimationFrame(handle);
+    activeCleanups.add(cleanup);
+    return handle;
+  };
+
+  const captureActiveElapsed = () => {
+    if (currentState !== 'active' || activatedAt === null) return false;
+    elapsedBeforeActivation = elapsed();
+    activatedAt = null;
+    return true;
+  };
+
+  const reportError = (error) => {
+    if (didReportError) return;
+    didReportError = true;
+    try { onError(error, api); } catch { /* Error reporting must fail closed. */ }
+  };
+
+  const failFromCallback = (error) => {
+    if (disposed || currentState === 'terminal' || currentState === 'error') return false;
+    captureActiveElapsed();
+    clearActive();
+    currentState = 'error';
+    reportError(error);
+    return true;
+  };
+
+  const notifySnapshot = () => {
+    try {
+      onSnapshot(elapsedBeforeActivation);
+      return null;
+    } catch (error) {
+      return error;
+    }
+  };
+
+  const pause = (reason = 'user') => {
+    if (currentState !== 'active' || disposed) return false;
+    captureActiveElapsed();
+    clearActive();
+    currentState = 'paused';
+    const snapshotError = notifySnapshot();
+    if (snapshotError) failFromCallback(snapshotError);
+    if (currentState === 'paused') {
+      try { onPause(reason, api); } catch (error) { failFromCallback(error); }
+    }
+    return true;
+  };
+
+  const installActiveLifecycleListeners = () => {
+    listenActive(document, 'visibilitychange', () => {
+      if (document.visibilityState === 'hidden') pause('hidden');
+    });
+    listenActive(window, 'pagehide', () => pause('hidden'));
+  };
+
+  const start = async (kind) => {
+    const valid = (currentState === 'preview' && (kind === 'start' || kind === 'continue'))
+      || (currentState === 'paused' && kind === 'resume');
+    if (!valid || disposed) return false;
+    currentState = 'active';
+    activatedAt = monotonicNow();
+    installActiveLifecycleListeners();
+    try { await onActivate(kind, api); } catch (error) { failFromCallback(error); }
+    return currentState === 'active';
+  };
+
+  const settle = (nextState) => {
+    if (disposed || currentState === 'terminal' || currentState === 'error') return false;
+    const didSnapshot = captureActiveElapsed();
+    clearActive();
+    currentState = nextState;
+    const snapshotError = didSnapshot ? notifySnapshot() : null;
+    if (snapshotError && nextState === 'terminal') reportError(snapshotError);
+    return true;
+  };
+
+  const finish = () => settle('terminal');
+  const fail = (error) => {
+    if (!settle('error')) return false;
+    reportError(error);
+    return true;
+  };
+
+  const dispose = () => {
+    if (disposed) return false;
+    disposed = true;
+    currentState = 'disposed';
+    clearActive();
+    clear(passiveCleanups);
+    if (!didDisposeCallback) {
+      didDisposeCallback = true;
+      try { onDispose(api); } catch { /* Disposal must fail closed. */ }
+    }
+    return true;
+  };
+
+  api = {
+    get state() { return currentState; },
+    elapsed,
+    start,
+    pause,
+    finish,
+    fail,
+    dispose,
+    listenActive,
+    requestActiveFrame,
+  };
+  passiveCleanups.add(() => {
+    if (activeSessions.get(root) === api) activeSessions.delete(root);
+  });
   activeSessions.set(root, api);
   return api;
 }

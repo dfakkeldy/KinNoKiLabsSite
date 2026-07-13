@@ -1,12 +1,52 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  completeRun, createRng, loadGameStore, markAssisted,
+  abandonRun, chooseFreshDefinition, completeRun, createEmptyGameStore, createRng, loadGameStore, markAssisted,
   resetGameStore, saveGameStore, startRun, visibleElapsedMs,
 } from '../../Resources/games/core.js';
 import {
   gameCardModel, renderHub, renderHubMarkup, safeLocalStorage, statsModel,
 } from '../../Resources/games/hub-ui.js';
+
+test('zero-dispatch terminals count and assisted runs preserve unassisted records', () => {
+  let store = createEmptyGameStore();
+  store = startRun(store, {
+    game: 'kinnoki-stack', mode: 'default', difficulty: 'easy', seed: 1,
+    signature: 'stack-1', puzzle: {}, now: 0,
+  });
+  store = completeRun(store, {
+    game: 'kinnoki-stack', mode: 'default', now: 1000,
+    records: { score: 0, combo: 0 },
+  });
+  assert.equal(store.stats.totalCompleted, 1);
+  assert.equal(store.stats.games['kinnoki-stack'].modes.default.completed, 1);
+  assert.equal(store.stats.games['kinnoki-stack'].modes.default.records.score.easy, 0);
+
+  store = startRun(store, {
+    game: 'kinnoki-stack', mode: 'default', difficulty: 'easy', seed: 2,
+    signature: 'stack-2', puzzle: {}, now: 2000,
+  });
+  store = markAssisted(store, 'kinnoki-stack');
+  store = completeRun(store, {
+    game: 'kinnoki-stack', mode: 'default', now: 3000,
+    records: { score: 9999, combo: 8 },
+  });
+  assert.equal(store.stats.totalCompleted, 2);
+  assert.equal(store.stats.games['kinnoki-stack'].modes.default.records.score.easy, 0);
+  assert.equal(store.stats.games['kinnoki-stack'].modes.default.records.combo.easy, 0);
+});
+
+test('abandoned replacement changes no completion accounting', () => {
+  let store = startRun(createEmptyGameStore(), {
+    game: 'kinnoki-yard', mode: 'endless', difficulty: 'hard', seed: 8,
+    signature: 'yard-8', puzzle: {}, now: 100,
+  });
+  const before = structuredClone(store.stats);
+  store = abandonRun(store, { game: 'kinnoki-yard', expectedSignature: 'yard-8' });
+  assert.deepEqual(store.stats, before);
+  assert.equal(store.runs['kinnoki-yard'], undefined);
+  assert.equal(store.previousSignatures['kinnoki-yard:endless'], undefined);
+});
 
 const memoryStorage = (initial = {}) => {
   const values = new Map(Object.entries(initial));
@@ -22,9 +62,37 @@ test('same seed produces the same sequence', () => {
   assert.deepEqual([a.next(), a.int(20), a.next()], [b.next(), b.int(20), b.next()]);
 });
 
-test('corrupt storage recovers to an empty v1 store', () => {
+test('fresh definition rejects completed and abandoned signatures within 64 candidates', () => {
+  const seenSeeds = [];
+  const result = chooseFreshDefinition({
+    game: 'sudoku', mode: 'default', difficulty: 'easy', initialSeed: 9,
+    previousSeed: 9, previousSignature: 'signature-10',
+    abandonedSignature: 'signature-11',
+    createDefinition: ({ seed }) => { seenSeeds.push(seed); return { seed }; },
+    signatureOf: ({ seed }) => `signature-${seed}`,
+  });
+  assert.equal(result.signature === 'signature-10', false);
+  assert.equal(result.signature === 'signature-11', false);
+  assert.equal(result.seed === 9, false);
+  assert.ok(seenSeeds.length <= 64);
+});
+
+test('completed session stores the actual definition signature under default history', () => {
+  let store = createEmptyGameStore();
+  store = startRun(store, {
+    game: 'sudoku', mode: 'default', difficulty: 'easy', seed: 5,
+    signature: 'sudoku-definition-5', puzzle: {}, now: 100,
+  });
+  store = completeRun(store, {
+    game: 'sudoku', mode: 'default', now: 1100, records: { time: 1000 },
+  });
+  assert.equal(store.previousSeeds.sudoku, 5);
+  assert.equal(store.previousSignatures.sudoku, 'sudoku-definition-5');
+});
+
+test('corrupt storage recovers to an empty v2 store', () => {
   const store = loadGameStore(memoryStorage({ 'kinnoki-games:v1': '{bad json' }));
-  assert.equal(store.version, 1);
+  assert.equal(store.version, 2);
   assert.deepEqual(store.runs, {});
   assert.equal(store.stats.totalCompleted, 0);
 });
@@ -36,18 +104,24 @@ test('hidden time is excluded from elapsed play time', () => {
 
 test('assisted completion increments totals but not best time', () => {
   let store = loadGameStore(memoryStorage());
-  store = startRun(store, 'sudoku', 'easy', 7, { puzzle: [] }, 1000);
+  store = startRun(store, { game: 'sudoku', mode: 'default', difficulty: 'easy', seed: 7, signature: 'test:sudoku:7', puzzle: { definition: { puzzle: [], solution: [] }, play: {} }, now: 1000 });
   store = markAssisted(store, 'sudoku');
   store.runs.sudoku.elapsedBeforeStartMs = 30000;
-  store = completeRun(store, 'sudoku', 1000);
+  store = completeRun(store, { game: 'sudoku', mode: 'default', now: 1000, records: { time: 30000 } });
   assert.equal(store.stats.totalCompleted, 1);
-  assert.equal(store.stats.games.sudoku.completed, 1);
-  assert.equal(store.stats.games.sudoku.bestMs.easy, null);
+  assert.equal(store.stats.games.sudoku.modes.default.completed, 1);
+  assert.equal(store.stats.games.sudoku.modes.default.records.time.easy, null);
+});
+
+test('lifecycle APIs reject removed positional calls', () => {
+  const store = createEmptyGameStore();
+  assert.strictEqual(startRun(store, 'sudoku', 'easy', 7, {}, 1000), store);
+  assert.strictEqual(completeRun(store, 'sudoku', 1000), store);
 });
 
 test('unfinished game offers a difficulty-specific continue link', () => {
   let store = loadGameStore(memoryStorage());
-  store = startRun(store, 'sudoku', 'medium', 7, { puzzle: [] }, 1000);
+  store = startRun(store, { game: 'sudoku', mode: 'default', difficulty: 'medium', seed: 7, signature: 'test:sudoku:7', puzzle: { definition: { puzzle: [], solution: [] }, play: {} }, now: 1000 });
 
   const card = gameCardModel(store, { id: 'sudoku', title: 'Sudoku' });
 
@@ -72,11 +146,11 @@ test('game without a run offers all difficulty choices', () => {
 
 test('statistics format times and keep assisted best times private', () => {
   let store = loadGameStore(memoryStorage());
-  store.stats.games.sudoku.bestMs.medium = 61500;
-  store = startRun(store, 'crossword', 'easy', 9, { puzzle: [] }, 1000);
+  store.stats.games.sudoku.modes.default.records.time.medium = 61500;
+  store = startRun(store, { game: 'crossword', mode: 'default', difficulty: 'easy', seed: 9, signature: 'test:crossword:9', puzzle: { definition: { puzzle: [], solution: [] }, play: {} }, now: 1000 });
   store = markAssisted(store, 'crossword');
   store.runs.crossword.elapsedBeforeStartMs = 22000;
-  store = completeRun(store, 'crossword', 1000);
+  store = completeRun(store, { game: 'crossword', mode: 'default', now: 1000, records: { time: 22000 } });
 
   const statistics = statsModel(store);
 
@@ -92,15 +166,16 @@ test('statistics zero state is friendly', () => {
   assert.match(statistics.zeroState, /this device/i);
 });
 
-test('hub markup has one heading, a labelled games region, reset, and three cards', () => {
+test('hub markup has one heading, a labelled games region, reset, and five cards', () => {
   const markup = renderHubMarkup(loadGameStore(memoryStorage()));
 
   assert.equal([...markup.matchAll(/<h1(?:\s|>)/g)].length, 1);
   assert.match(markup, /<section[^>]+aria-labelledby="games-heading"/);
   assert.match(markup, /<button[^>]+data-reset-games[^>]*>Reset Game Data<\/button>/);
-  for (const title of ['Sudoku', 'Crossword', 'Word Search']) {
+  for (const title of ['Sudoku', 'Crossword', 'Word Search', 'Kinnoki Stack', 'Kinnoki Yard']) {
     assert.match(markup, new RegExp(`<h2[^>]*>${title}</h2>`));
   }
+  assert.equal([...markup.matchAll(/<article class="game-card/g)].length, 5);
 });
 
 test('reset removes local game data and reports storage failures', () => {
@@ -156,9 +231,9 @@ test('malformed v1 state is normalized before the hub can render it', () => {
   assert.equal(store.stats.totalCompleted, 0);
   assert.equal(store.stats.currentStreak, 0);
   assert.equal(store.stats.lastCompletedDate, null);
-  assert.equal(store.stats.games.sudoku.completed, 4);
-  assert.deepEqual(store.stats.games.sudoku.bestMs, { easy: null, medium: 61599, hard: null });
-  assert.equal(store.stats.games.crossword.completed, 0);
+  assert.equal(store.stats.games.sudoku.modes.default.completed, 4);
+  assert.deepEqual(store.stats.games.sudoku.modes.default.records.time, { easy: null, medium: 61599, hard: null });
+  assert.equal(store.stats.games.crossword.modes.default.completed, 0);
   assert.doesNotMatch(markup, /<(?:img|script|svg|b)\b/i);
 });
 
@@ -168,7 +243,9 @@ test('missing v1 fields recover to a complete safe store', () => {
   assert.deepEqual(store.runs, {});
   assert.deepEqual(store.previousSeeds, {});
   assert.equal(store.stats.totalCompleted, 0);
-  assert.deepEqual(Object.keys(store.stats.games), ['sudoku', 'crossword', 'word-search']);
+  assert.deepEqual(Object.keys(store.stats.games), [
+    'sudoku', 'crossword', 'word-search', 'kinnoki-stack', 'kinnoki-yard',
+  ]);
   assert.doesNotThrow(() => renderHubMarkup(store));
 });
 
@@ -181,8 +258,8 @@ test('hub models reject unknown games and invalid run difficulties', () => {
   assert.doesNotThrow(() => renderHubMarkup(invalidRun));
   assert.equal(gameCardModel(invalidRun, { id: 'sudoku', title: 'Sudoku' }).continueHref, null);
 
-  assert.equal(startRun(empty, 'unknown', 'easy', 1, {}, 1), empty);
-  assert.equal(startRun(empty, 'sudoku', 'nightmare', 1, {}, 1), empty);
+  assert.equal(startRun(empty, { game: 'unknown', difficulty: 'easy', seed: 1, signature: 'x', puzzle: {}, now: 1 }), empty);
+  assert.equal(startRun(empty, { game: 'sudoku', difficulty: 'nightmare', seed: 1, signature: 'x', puzzle: {}, now: 1 }), empty);
 });
 
 test('raw hostile statistics never become hub HTML or invalid numbers', () => {

@@ -5,13 +5,24 @@ import { generateSudoku } from '../../Resources/games/sudoku.js';
 import { generateCrossword } from '../../Resources/games/crossword.js';
 import { generateWordSearch } from '../../Resources/games/word-search.js';
 import { createDOMFixture, FixtureEvent, installDOM } from './dom-fixture.mjs';
+import { createEmptyGameStore, STORE_KEYS } from '../../Resources/games/core.js';
 
-const emptyStats = () => ({ totalCompleted: 0, currentStreak: 0, lastCompletedDate: null, games: {} });
-const storeWith = (game, definition, play) => ({
-  version: 1,
-  runs: { [game]: { difficulty: definition.difficulty, seed: definition.seed, puzzle: { definition, play }, startedAt: Date.now(), elapsedBeforeStartMs: 0, assisted: false } },
-  previousSeeds: {}, stats: emptyStats(),
-});
+const v2StoreWithRun = ({
+  game, definition, play, difficulty = definition.difficulty ?? 'easy',
+  seed = definition.seed ?? 1, startedAt = 0, elapsedBeforeStartMs = 0, assisted = false,
+}) => {
+  const store = createEmptyGameStore();
+  store.runs[game] = {
+    game, mode: 'default', difficulty, seed: seed >>> 0,
+    signature: 'fixture:' + game + ':' + JSON.stringify(definition),
+    puzzle: { definition, ...(play === undefined ? {} : { play }) },
+    startedAt, elapsedBeforeStartMs, assisted,
+  };
+  return store;
+};
+const storeWith = (game, definition, play) => (
+  v2StoreWithRun({ game, definition, play, startedAt: Date.now() })
+);
 
 test('Sudoku keeps focus through sequential digit, pencil, erase, and undo keys', async () => {
   const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' }); const restore = installDOM(fixture);
@@ -56,9 +67,9 @@ test('Word Search suppresses the compatibility click after a pointer drag', asyn
     fixture.document.setHitTarget(fixture.root.querySelector(`[data-cell="${placement.end.row}:${placement.end.column}"]`));
     fixture.document.dispatchEvent(new FixtureEvent('pointermove', { pointerId: 4 }));
     fixture.document.dispatchEvent(new FixtureEvent('pointerup', { pointerId: 4 }));
-    const savedBeforeClick = fixture.localStorage.getItem('kinnoki-games:v1');
+    const savedBeforeClick = fixture.localStorage.getItem(STORE_KEYS.v2);
     fixture.root.querySelector(`[data-cell="${placement.end.row}:${placement.end.column}"]`).click();
-    assert.equal(fixture.localStorage.getItem('kinnoki-games:v1'), savedBeforeClick, 'compatibility click does not begin another selection');
+    assert.equal(fixture.localStorage.getItem(STORE_KEYS.v2), savedBeforeClick, 'compatibility click does not begin another selection');
   } finally { restore(); }
 });
 
@@ -124,12 +135,12 @@ test('Word Search exposes an accessible 44px pan rail that scrolls without selec
     assert.equal(rail.querySelector('[data-pan-left]').textContent.includes('Left'), true);
     assert.equal(rail.querySelector('[data-pan-right]').textContent.includes('Right'), true);
     assert.equal(rail.querySelector('input[type="range"]').getAttribute('aria-label'), 'Horizontal board position');
-    const saved = fixture.localStorage.getItem('kinnoki-games:v1');
+    const saved = fixture.localStorage.getItem(STORE_KEYS.v2);
     rail.querySelector('[data-pan-right]').click();
     assert.ok(scroller.scrollLeft > 0);
     const range = rail.querySelector('input[type="range"]'); range.value = '100'; range.dispatchEvent(new FixtureEvent('input'));
     assert.equal(scroller.scrollLeft, scroller.scrollWidth - scroller.clientWidth);
-    assert.equal(fixture.localStorage.getItem('kinnoki-games:v1'), saved, 'panning does not change puzzle selection');
+    assert.equal(fixture.localStorage.getItem(STORE_KEYS.v2), saved, 'panning does not change puzzle selection');
     const css = readFileSync(new URL('../../Resources/styles.css', import.meta.url), 'utf8');
     assert.match(css, /\.word-search-pan button\s*\{[^}]*min-width:\s*44px;[^}]*min-height:\s*44px;/s);
     assert.match(css, /\.word-search-pan input\[type="range"\]\s*\{[^}]*min-height:\s*44px;/s);
