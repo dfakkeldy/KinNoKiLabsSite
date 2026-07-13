@@ -302,6 +302,144 @@ export function createSession(options) {
   return api;
 }
 
+export function createGameLifecycle({
+  root,
+  initialElapsedMs = 0,
+  monotonicNow = () => globalThis.performance?.now?.() ?? Date.now(),
+  onActivate = () => {},
+  onPause = () => {},
+  onSnapshot = () => {},
+  onError = () => {},
+  onDispose = () => {},
+}) {
+  activeSessions.get(root)?.dispose();
+
+  const document = root.ownerDocument ?? globalThis.document;
+  const window = document?.defaultView ?? globalThis.window;
+  const passiveCleanups = new Set();
+  const activeCleanups = new Set();
+  let currentState = 'preview';
+  let elapsedBeforeActivation = Math.max(0, Math.trunc(initialElapsedMs));
+  let activatedAt = null;
+  let disposed = false;
+  let didDisposeCallback = false;
+  let api;
+
+  const elapsed = () => {
+    const activeDelta = currentState === 'active' && activatedAt !== null
+      ? Math.max(0, monotonicNow() - activatedAt)
+      : 0;
+    return Math.max(0, Math.trunc(elapsedBeforeActivation + activeDelta));
+  };
+
+  const clear = (cleanups) => {
+    const pending = [...cleanups];
+    cleanups.clear();
+    for (const cleanup of pending.reverse()) cleanup();
+  };
+  const clearActive = () => clear(activeCleanups);
+
+  const listenActive = (target, type, listener, options) => {
+    if (currentState !== 'active' || disposed) return null;
+    target.addEventListener(type, listener, options);
+    const cleanup = () => target.removeEventListener(type, listener, options);
+    activeCleanups.add(cleanup);
+    return listener;
+  };
+
+  const requestActiveFrame = (callback) => {
+    if (currentState !== 'active' || disposed) return null;
+    let cleanup;
+    const handle = globalThis.requestAnimationFrame((timestamp) => {
+      activeCleanups.delete(cleanup);
+      if (currentState === 'active' && !disposed) callback(timestamp);
+    });
+    cleanup = () => globalThis.cancelAnimationFrame(handle);
+    activeCleanups.add(cleanup);
+    return handle;
+  };
+
+  const snapshotActive = () => {
+    if (currentState !== 'active' || activatedAt === null) return false;
+    elapsedBeforeActivation = elapsed();
+    activatedAt = null;
+    onSnapshot(elapsedBeforeActivation);
+    return true;
+  };
+
+  const pause = (reason = 'user') => {
+    if (currentState !== 'active' || disposed) return false;
+    snapshotActive();
+    clearActive();
+    currentState = 'paused';
+    onPause(reason, api);
+    return true;
+  };
+
+  const installActiveLifecycleListeners = () => {
+    listenActive(document, 'visibilitychange', () => {
+      if (document.visibilityState === 'hidden') pause('hidden');
+    });
+    listenActive(window, 'pagehide', () => pause('hidden'));
+  };
+
+  const start = async (kind) => {
+    const valid = (currentState === 'preview' && (kind === 'start' || kind === 'continue'))
+      || (currentState === 'paused' && kind === 'resume');
+    if (!valid || disposed) return false;
+    currentState = 'active';
+    activatedAt = monotonicNow();
+    installActiveLifecycleListeners();
+    await onActivate(kind, api);
+    return currentState === 'active';
+  };
+
+  const settle = (nextState) => {
+    if (disposed || currentState === 'terminal' || currentState === 'error') return false;
+    snapshotActive();
+    clearActive();
+    currentState = nextState;
+    return true;
+  };
+
+  const finish = () => settle('terminal');
+  const fail = (error) => {
+    if (!settle('error')) return false;
+    onError(error, api);
+    return true;
+  };
+
+  const dispose = () => {
+    if (disposed) return false;
+    disposed = true;
+    clearActive();
+    clear(passiveCleanups);
+    currentState = 'disposed';
+    if (!didDisposeCallback) {
+      didDisposeCallback = true;
+      onDispose(api);
+    }
+    return true;
+  };
+
+  api = {
+    get state() { return currentState; },
+    elapsed,
+    start,
+    pause,
+    finish,
+    fail,
+    dispose,
+    listenActive,
+    requestActiveFrame,
+  };
+  passiveCleanups.add(() => {
+    if (activeSessions.get(root) === api) activeSessions.delete(root);
+  });
+  activeSessions.set(root, api);
+  return api;
+}
+
 export function sharedShell({ title, difficulty }) {
   const breadcrumb = element('a', { href: '/games', class: 'back-link', text: '← Games' });
   const heading = element('h1', { text: title });

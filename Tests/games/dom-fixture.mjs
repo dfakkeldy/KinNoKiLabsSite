@@ -141,7 +141,9 @@ export function createDOMFixture({ search = '?difficulty=easy', confirm = true }
   const listeners = new Map();
   const windowListeners = new Map();
   const intervals = new Map();
+  const frames = new Map();
   let nextInterval = 1;
+  let nextFrame = 1;
   let hitTarget = null;
   const document = {
     activeElement: null,
@@ -169,6 +171,10 @@ export function createDOMFixture({ search = '?difficulty=easy', confirm = true }
   const location = { search, href: '' };
   const window = {
     document, localStorage, location, confirm: () => confirm,
+    requestAnimationFrame(callback) {
+      const id = nextFrame; nextFrame += 1; frames.set(id, callback); return id;
+    },
+    cancelAnimationFrame(id) { frames.delete(id); },
     addEventListener(type, listener) { windowListeners.set(type, [...(windowListeners.get(type) ?? []), listener]); },
     removeEventListener(type, listener) { windowListeners.set(type, (windowListeners.get(type) ?? []).filter((value) => value !== listener)); },
     dispatchEvent(event) { for (const listener of windowListeners.get(event.type) ?? []) listener(event); },
@@ -180,15 +186,26 @@ export function createDOMFixture({ search = '?difficulty=easy', confirm = true }
     document, window, root, localStorage, location, Event: FixtureEvent,
     activeIntervalCount: () => intervals.size,
     tickIntervals: () => [...intervals.values()].forEach((callback) => callback()),
+    activeFrameCount: () => frames.size,
+    tickFrames(timestamp) {
+      const pending = [...frames.values()];
+      frames.clear();
+      for (const callback of pending) callback(timestamp);
+    },
   };
 }
 
 export function installDOM(fixture) {
-  const keys = ['document', 'window', 'localStorage', 'location', 'Event', 'setInterval', 'clearInterval'];
+  const keys = [
+    'document', 'window', 'localStorage', 'location', 'Event', 'setInterval', 'clearInterval',
+    'requestAnimationFrame', 'cancelAnimationFrame',
+  ];
   const previous = Object.fromEntries(keys.map((key) => [key, globalThis[key]]));
   Object.assign(globalThis, fixture.window, {
     window: fixture.window, Event: FixtureEvent,
     setInterval: fixture.window.setInterval, clearInterval: fixture.window.clearInterval,
+    requestAnimationFrame: fixture.window.requestAnimationFrame,
+    cancelAnimationFrame: fixture.window.cancelAnimationFrame,
   });
   return () => {
     for (const [key, value] of Object.entries(previous)) {
