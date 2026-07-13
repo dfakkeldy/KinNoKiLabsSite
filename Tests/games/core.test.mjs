@@ -1,12 +1,52 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  chooseFreshDefinition, completeRun, createEmptyGameStore, createRng, loadGameStore, markAssisted,
+  abandonRun, chooseFreshDefinition, completeRun, createEmptyGameStore, createRng, loadGameStore, markAssisted,
   resetGameStore, saveGameStore, startRun, visibleElapsedMs,
 } from '../../Resources/games/core.js';
 import {
   gameCardModel, renderHub, renderHubMarkup, safeLocalStorage, statsModel,
 } from '../../Resources/games/hub-ui.js';
+
+test('zero-dispatch terminals count and assisted runs preserve unassisted records', () => {
+  let store = createEmptyGameStore();
+  store = startRun(store, {
+    game: 'kinnoki-stack', mode: 'default', difficulty: 'easy', seed: 1,
+    signature: 'stack-1', puzzle: {}, now: 0,
+  });
+  store = completeRun(store, {
+    game: 'kinnoki-stack', mode: 'default', now: 1000,
+    records: { score: 0, combo: 0 },
+  });
+  assert.equal(store.stats.totalCompleted, 1);
+  assert.equal(store.stats.games['kinnoki-stack'].modes.default.completed, 1);
+  assert.equal(store.stats.games['kinnoki-stack'].modes.default.records.score.easy, 0);
+
+  store = startRun(store, {
+    game: 'kinnoki-stack', mode: 'default', difficulty: 'easy', seed: 2,
+    signature: 'stack-2', puzzle: {}, now: 2000,
+  });
+  store = markAssisted(store, 'kinnoki-stack');
+  store = completeRun(store, {
+    game: 'kinnoki-stack', mode: 'default', now: 3000,
+    records: { score: 9999, combo: 8 },
+  });
+  assert.equal(store.stats.totalCompleted, 2);
+  assert.equal(store.stats.games['kinnoki-stack'].modes.default.records.score.easy, 0);
+  assert.equal(store.stats.games['kinnoki-stack'].modes.default.records.combo.easy, 0);
+});
+
+test('abandoned replacement changes no completion accounting', () => {
+  let store = startRun(createEmptyGameStore(), {
+    game: 'kinnoki-yard', mode: 'endless', difficulty: 'hard', seed: 8,
+    signature: 'yard-8', puzzle: {}, now: 100,
+  });
+  const before = structuredClone(store.stats);
+  store = abandonRun(store, { game: 'kinnoki-yard', expectedSignature: 'yard-8' });
+  assert.deepEqual(store.stats, before);
+  assert.equal(store.runs['kinnoki-yard'], undefined);
+  assert.equal(store.previousSignatures['kinnoki-yard:endless'], undefined);
+});
 
 const memoryStorage = (initial = {}) => {
   const values = new Map(Object.entries(initial));
