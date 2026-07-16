@@ -120,6 +120,55 @@ test('cargo motion and board panning have reduced-motion overrides', () => {
     /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.yard-board-scroll[\s\S]*?scroll-behavior:\s*auto/);
 });
 
+test('Stack overlay glide, score pop and cargo thumbnails have reduced-motion overrides', () => {
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.stack-active-overlay[\s\S]*?transition:\s*none/);
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.stack-overlay-cell[\s\S]*?animation:\s*none/);
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.game-score-pop[\s\S]*?animation:\s*none/);
+});
+
+test('the hard-drop ghost cue is structural (dashed outline), distinct from the manifest target dash', () => {
+  const ghost = ruleBody('.stack-cell.is-ghost');
+  assert.match(ghost, /outline:\s*2px\s+dashed/);
+  const manifest = ruleBody('.stack-manifest-cell');
+  assert.match(manifest, /outline:\s*2px\s+dashed/);
+  assert.notEqual(ghost, manifest, 'the ghost cue is a distinct rule from the manifest-target cue');
+});
+
+test('the tide edge cue is a positioned bar (structural, not a pure hue shift)', () => {
+  const left = ruleBody('.stack-dock.is-tide-left::before');
+  const right = ruleBody('.stack-dock.is-tide-right::before');
+  assert.match(left, /left:\s*0/);
+  assert.match(right, /right:\s*0/);
+  for (const body of [left, right]) {
+    assert.match(body, /width:/, 'the tide cue is a discrete edge bar, not just a background tint');
+    assert.match(body, /position:\s*absolute/);
+  }
+});
+
+test('cargo thumbnails position every cell by percentage from cell-coordinate custom properties', () => {
+  const thumb = ruleBody('.cargo-thumb');
+  assert.match(thumb, /aspect-ratio:\s*var\(--cargo-thumb-columns/);
+  const cell = ruleBody('.cargo-thumb-cell');
+  assert.match(cell, /position:\s*absolute/);
+  assert.match(cell, /left:\s*calc\(var\(--cargo-thumb-cell-column/);
+  assert.match(cell, /top:\s*calc\(var\(--cargo-thumb-cell-row/);
+});
+
+test('every declared animation references a keyframe that actually exists', () => {
+  const seen = new Set();
+  for (const match of css.matchAll(/animation:\s*([a-zA-Z][\w-]*)/g)) {
+    const name = match[1];
+    if (name === 'none' || seen.has(name)) continue;
+    seen.add(name);
+    assert.match(css, new RegExp(`@keyframes\\s+${escaped(name)}\\s*\\{`),
+      `animation "${name}" has no matching @keyframes definition`);
+  }
+  assert.ok(seen.size > 5, 'sanity check: the stylesheet does declare several animations');
+});
+
 test('celebration overlay and completion entrance have reduced-motion overrides', () => {
   assert.match(css,
     /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.game-celebration[\s\S]*?display:\s*none/);

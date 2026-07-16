@@ -43,6 +43,35 @@ export function element(tag, attributes = {}, ...children) {
   return node;
 }
 
+// Shared thumbnail builder for cargo/piece previews (Kinnoki Stack next-cargo
+// pills, Kinnoki Yard tray pieces). `cells` are piece-local {row, column}
+// integers (already reflecting whatever rotation the caller wants shown);
+// the bounding box and every cell position are derived purely from those
+// integers via CSS percentage math (custom properties + calc()), so this
+// never reads layout. `rotation` is recorded as metadata (a data attribute)
+// for callers that want a rotation-aware hook in CSS or tests; it does not
+// re-derive cell coordinates.
+export function cargoThumb(cells, { patternClass, rotation = 0 } = {}) {
+  const columns = Math.max(...cells.map((cell) => cell.column)) + 1;
+  const rows = Math.max(...cells.map((cell) => cell.row)) + 1;
+  const thumb = element('div', {
+    class: 'cargo-thumb',
+    'aria-hidden': 'true',
+    'data-rotation': String(((rotation % 4) + 4) % 4),
+  });
+  thumb.style.setProperty('--cargo-thumb-columns', String(columns));
+  thumb.style.setProperty('--cargo-thumb-rows', String(rows));
+  thumb.append(...cells.map((cell) => {
+    const thumbCell = element('div', {
+      class: ['cargo-thumb-cell', patternClass].filter(Boolean).join(' '),
+    });
+    thumbCell.style.setProperty('--cargo-thumb-cell-column', String(cell.column));
+    thumbCell.style.setProperty('--cargo-thumb-cell-row', String(cell.row));
+    return thumbCell;
+  }));
+  return thumb;
+}
+
 export const formatElapsed = (milliseconds) => {
   const seconds = Math.max(0, Math.floor(milliseconds / 1000));
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;

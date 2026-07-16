@@ -637,6 +637,7 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
 .game-storage-notice { color: var(--game-text-primary); font-size: 0.88rem; }
 .game-storage-notice[hidden] { display: none; }
 .games-live-region { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .game-dialog {
   width: min(calc(100% - 32px), 510px);
   padding: clamp(24px, 5vw, 34px);
@@ -968,6 +969,41 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
   outline: 2px dashed var(--game-text-accent);
   outline-offset: -3px;
 }
+/* Non-colour cue for the hard-drop landing preview: a dashed, low-contrast
+   outline (structural, distinct from the manifest target's accent-coloured
+   dash), not a hue shift. */
+.stack-cell.is-ghost {
+  outline: 2px dashed var(--game-text-tertiary);
+  outline-offset: -3px;
+}
+/* The active piece now lives entirely in .stack-active-overlay (a single
+   absolutely-positioned layer inside .stack-dock) instead of being painted
+   into grid cells every frame. Position comes from --piece-col/--piece-row
+   custom properties (set in JS from state, never from a layout read) times
+   a per-axis cell-size percentage derived purely from the fixed 12x18 dock
+   grid — pure CSS math. */
+.stack-active-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  --piece-col: 0;
+  --piece-row: 0;
+  transform: translate(calc(var(--piece-col) * (100% / 12)), calc(var(--piece-row) * (100% / 18)));
+}
+.stack-active-overlay[hidden] { display: none; }
+.stack-active-overlay.is-transition-enabled { transition: transform 0.15s ease-out; }
+/* Set for one paint right after a tide-shift resolves, so the freshly
+   spawned piece eases in slower than a normal move/rotate glide. */
+.stack-active-overlay.is-tide-sliding { transition: transform 0.45s ease; }
+.stack-overlay-cell {
+  position: absolute;
+  box-sizing: border-box;
+  width: calc(100% / 12);
+  height: calc(100% / 18);
+  left: calc(var(--cell-col, 0) * (100% / 12));
+  top: calc(var(--cell-row, 0) * (100% / 18));
+}
 .stack-preview {
   display: flex;
   flex-wrap: wrap;
@@ -976,6 +1012,9 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
   list-style: none;
 }
 .stack-preview li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 8px 10px;
   color: var(--game-text-primary);
   background-color: var(--surface-2);
@@ -1000,6 +1039,91 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
 @keyframes cargo-active-pulse {
   from { outline: 1px solid transparent; }
   to { outline: 3px solid var(--game-text-accent); }
+}
+/* Manifest dispatch: a brief flash on every cleared cell. */
+.cargo-dispatching { animation: games-dispatch-flash 350ms ease; }
+@keyframes games-dispatch-flash {
+  0% { background-color: color-mix(in srgb, var(--gold-500) 70%, var(--surface)); }
+  100% { background-color: var(--surface); }
+}
+/* Tide shift: a brief nudge on every cell the tide just carried. */
+.cargo-tide-shifting { animation: games-cargo-nudge 400ms ease; }
+@keyframes games-cargo-nudge {
+  0% { transform: translateX(0); }
+  35% { transform: translateX(4px); }
+  100% { transform: translateX(0); }
+}
+/* Tide warning: an inset edge bar on the side the tide will pull from — a
+   shape/position cue (which edge lit up), not just a colour, so it still
+   reads without relying on hue; the live-region announcement carries the
+   equivalent information for assistive tech. */
+.stack-dock.is-tide-left::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  width: 6px;
+  pointer-events: none;
+  background: var(--gold-500);
+  box-shadow: 0 0 12px 2px var(--gold-500);
+}
+.stack-dock.is-tide-right::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 2;
+  width: 6px;
+  pointer-events: none;
+  background: var(--gold-500);
+  box-shadow: 0 0 12px 2px var(--gold-500);
+}
+.stack-score-pop-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  pointer-events: none;
+}
+.game-score-pop {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  padding: 2px 8px;
+  color: var(--game-text-accent);
+  background-color: color-mix(in srgb, var(--surface) 70%, transparent);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+  animation: games-score-pop-float 700ms ease-out forwards;
+}
+@keyframes games-score-pop-float {
+  0% { transform: translate(-50%, 0); opacity: 1; }
+  100% { transform: translate(-50%, -28px); opacity: 0; }
+}
+/* Shared cargo/piece thumbnail (Kinnoki Stack previews, Kinnoki Yard tray):
+   percentage-positioned cells sized from custom properties set in JS from
+   cell coordinates, never from a layout read. */
+.cargo-thumb {
+  position: relative;
+  display: inline-block;
+  width: 2.4rem;
+  aspect-ratio: var(--cargo-thumb-columns, 1) / var(--cargo-thumb-rows, 1);
+}
+.cargo-thumb-cell {
+  position: absolute;
+  box-sizing: border-box;
+  width: calc(100% / var(--cargo-thumb-columns, 1));
+  height: calc(100% / var(--cargo-thumb-rows, 1));
+  left: calc(var(--cargo-thumb-cell-column, 0) * (100% / var(--cargo-thumb-columns, 1)));
+  top: calc(var(--cargo-thumb-cell-row, 0) * (100% / var(--cargo-thumb-rows, 1)));
+  border: 1px solid var(--game-text-primary);
+  background-color: var(--surface-2);
 }
 
 .yard-game,
@@ -1128,12 +1252,17 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 
 @media (prefers-reduced-motion: reduce) {
   .stack-cargo-active,
+  .stack-overlay-cell,
   .cargo-dispatching,
   .cargo-tide-shifting {
     animation: none;
     transition: none;
     transform: none;
   }
+
+  .stack-active-overlay,
+  .stack-active-overlay.is-tide-sliding { transition: none; }
+  .game-score-pop { animation: none; }
 
   .yard-board-scroll { scroll-behavior: auto; }
 
