@@ -494,6 +494,167 @@ test('completion flow renders the record line end-to-end when a run breaks the t
   } finally { restore(); }
 });
 
+test('Sudoku patches cell nodes in place instead of replacing them on dispatch', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { renderSudoku } = await import('../../Resources/games/sudoku-ui.js');
+    const store = v2StoreWithRun({ game: 'sudoku', definition: sudokuPuzzle, seed: 1 });
+    fixture.location.search = '?difficulty=easy&continue=1';
+    await renderSudoku(fixture.root, store);
+    const before = fixture.root.querySelector('[data-cell="0"]');
+    const editable = fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`);
+    editable.dispatchEvent(new FixtureEvent('keydown', { key: 'ArrowRight' }));
+    // Use a plain boolean check (not assert.equal) so a mismatch reports a
+    // short failure instead of node:assert trying to diff two large,
+    // circularly-linked DOM-fixture trees.
+    assert.ok(fixture.root.querySelector('[data-cell="0"]') === before,
+      'the cell node identity is preserved across a select dispatch');
+    assert.ok(fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`) === editable,
+      'the previously-selected cell node also keeps its identity');
+  } finally { restore(); }
+});
+
+test('same-digit highlight marks every cell sharing the selected value', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { renderSudoku, createSudokuState } = await import('../../Resources/games/sudoku-ui.js');
+    const play = createSudokuState(sudokuPuzzle);
+    const editableIndices = sudokuPuzzle.puzzle
+      .reduce((acc, value, index) => (value === 0 ? [...acc, index] : acc), []);
+    const [a, b] = editableIndices;
+    play.values[a] = 7; play.values[b] = 7;
+    play.selected = a;
+    const store = v2StoreWithRun({ game: 'sudoku', definition: sudokuPuzzle, play, seed: 1 });
+    fixture.location.search = '?difficulty=easy&continue=1';
+    await renderSudoku(fixture.root, store);
+    assert.ok(fixture.root.querySelector(`[data-cell="${b}"]`).classList.contains('is-same-digit'),
+      'a different cell holding the same digit is marked');
+    assert.ok(fixture.root.querySelector(`[data-cell="${a}"]`).classList.contains('is-same-digit'),
+      'the selected cell itself also carries the shared-value marker');
+  } finally { restore(); }
+});
+
+test('pencil notes render as a 9-slot notes grid', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { renderSudoku } = await import('../../Resources/games/sudoku-ui.js');
+    const store = v2StoreWithRun({ game: 'sudoku', definition: sudokuPuzzle, seed: 1 });
+    fixture.location.search = '?difficulty=easy&continue=1';
+    await renderSudoku(fixture.root, store);
+    const cell = fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`);
+    cell.click();
+    fixture.root.querySelector('[data-pencil]').click();
+    cell.dispatchEvent(new FixtureEvent('keydown', { key: '3' }));
+    const grid = cell.querySelector('.sudoku-notes-grid');
+    assert.ok(grid, 'a notes grid renders once a pencil mark is set');
+    const notes = cell.querySelectorAll('.sudoku-note');
+    assert.equal(notes.length, 9, 'the notes grid always has 9 fixed slots');
+    assert.equal(notes.filter((note) => note.textContent === '3').length, 1);
+    assert.equal(notes.filter((note) => note.textContent === '').length, 8);
+  } finally { restore(); }
+});
+
+test('completion adds is-celebrating to every cell alongside the record line', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' }); const restore = installDOM(fixture);
+  try {
+    const { renderSudoku, createSudokuState } = await import('../../Resources/games/sudoku-ui.js');
+    const play = createSudokuState(sudokuPuzzle);
+    play.values = [...sudokuPuzzle.solution];
+    play.values[sudokuEditable] = 0;
+    const store = v2StoreWithRun({ game: 'sudoku', definition: sudokuPuzzle, play, seed: 1 });
+    await renderSudoku(fixture.root, store);
+    const cell = fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`);
+    cell.click();
+    cell.dispatchEvent(new FixtureEvent('keydown', { key: String(sudokuPuzzle.solution[sudokuEditable]) }));
+    assert.ok(fixture.root.querySelector('.game-complete-record'), 'the completion breaks the time record');
+    const celebrating = fixture.root.querySelectorAll('.sudoku-cell.is-celebrating');
+    assert.equal(celebrating.length, 81, 'every cell is marked celebrating on completion');
+  } finally { restore(); }
+});
+
+test('Restart shows a confirm dialog instead of window.confirm, and confirming clears progress', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { renderSudoku } = await import('../../Resources/games/sudoku-ui.js');
+    const store = v2StoreWithRun({ game: 'sudoku', definition: sudokuPuzzle, seed: 1 });
+    fixture.location.search = '?difficulty=easy&continue=1';
+    await renderSudoku(fixture.root, store);
+    const cell = fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`);
+    cell.click(); cell.dispatchEvent(new FixtureEvent('keydown', { key: '4' }));
+    fixture.root.querySelector('[data-restart]').click();
+    const dialog = fixture.root.querySelector('dialog.game-dialog');
+    assert.ok(dialog, 'restart opens a confirm dialog rather than window.confirm');
+    dialog.querySelector('[data-dialog-confirm]').click();
+    assert.equal(fixture.root.querySelector('dialog.game-dialog'), null, 'confirming closes the dialog');
+    assert.equal(fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`).textContent, '',
+      'confirming restart clears progress');
+  } finally { restore(); }
+});
+
+test('cancelling the Restart dialog keeps progress intact', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { renderSudoku } = await import('../../Resources/games/sudoku-ui.js');
+    const store = v2StoreWithRun({ game: 'sudoku', definition: sudokuPuzzle, seed: 1 });
+    fixture.location.search = '?difficulty=easy&continue=1';
+    await renderSudoku(fixture.root, store);
+    const cell = fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`);
+    cell.click(); cell.dispatchEvent(new FixtureEvent('keydown', { key: '4' }));
+    fixture.root.querySelector('[data-restart]').click();
+    fixture.root.querySelector('[data-dialog-cancel]').click();
+    assert.equal(fixture.root.querySelector('dialog.game-dialog'), null, 'cancelling closes the dialog');
+    assert.equal(fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`).textContent, '4',
+      'declining restart keeps the current progress');
+  } finally { restore(); }
+});
+
+test('New Game skips the confirm dialog when nothing has been entered yet this session', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { renderSudoku } = await import('../../Resources/games/sudoku-ui.js');
+    const store = v2StoreWithRun({ game: 'sudoku', definition: sudokuPuzzle, seed: 1 });
+    fixture.location.search = '?difficulty=easy&continue=1';
+    await renderSudoku(fixture.root, store);
+    fixture.root.querySelector('[data-new-game]').click();
+    assert.equal(fixture.root.querySelector('dialog.game-dialog'), null, 'no progress means no confirm prompt');
+    const next = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2));
+    assert.notEqual(next.runs.sudoku.seed, 1, 'a fresh puzzle starts immediately');
+  } finally { restore(); }
+});
+
+test('New Game shows a confirm dialog once the player has made an edit this session', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { renderSudoku } = await import('../../Resources/games/sudoku-ui.js');
+    const store = v2StoreWithRun({ game: 'sudoku', definition: sudokuPuzzle, seed: 1 });
+    fixture.location.search = '?difficulty=easy&continue=1';
+    await renderSudoku(fixture.root, store);
+    const cell = fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`);
+    cell.click(); cell.dispatchEvent(new FixtureEvent('keydown', { key: '4' }));
+    fixture.root.querySelector('[data-new-game]').click();
+    const dialog = fixture.root.querySelector('dialog.game-dialog');
+    assert.ok(dialog, 'an edit this session requires confirmation before replacing the puzzle');
+    dialog.querySelector('[data-dialog-cancel]').click();
+    assert.equal(fixture.root.querySelector('dialog.game-dialog'), null);
+    assert.equal(fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`).textContent, '4',
+      'cancelling keeps the current puzzle');
+  } finally { restore(); }
+});
+
+test('Sudoku mounts effects-only audio controls in the toolbar area', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { renderSudoku } = await import('../../Resources/games/sudoku-ui.js');
+    const store = v2StoreWithRun({ game: 'sudoku', definition: sudokuPuzzle, seed: 1 });
+    fixture.location.search = '?difficulty=easy&continue=1';
+    await renderSudoku(fixture.root, store);
+    assert.equal(fixture.root.querySelectorAll('[data-audio-music-volume]').length, 0,
+      'sudoku audio controls are effects-only');
+    assert.equal(fixture.root.querySelectorAll('[data-audio-effects-volume]').length, 1);
+    assert.equal(fixture.root.querySelectorAll('[data-audio-effects-toggle]').length, 1);
+  } finally { restore(); }
+});
+
 test('completion flow renders no record line end-to-end for an assisted completion', async () => {
   const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' }); const restore = installDOM(fixture);
   try {

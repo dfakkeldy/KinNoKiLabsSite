@@ -1,5 +1,10 @@
 import { generateSudoku, isValidSudokuBoard, solveSudoku } from './sudoku.js';
-import { completionPanel, createSession, element, formatElapsed, makeGameTerminal, renderReplacementKept, sharedShell } from './controller-common.js';
+import { celebrate } from './celebration.js';
+import { createGameAudio } from './game-audio.js';
+import {
+  completionPanel, createAudioControls, createConfirmDialog, createSession, element,
+  formatElapsed, makeGameTerminal, prefersReducedMotion, renderReplacementKept, sharedShell,
+} from './controller-common.js';
 
 const blankNotes = () => Array.from({ length: 81 }, () => []);
 const complete = (state) => state.values.every((value, index) => value === state.definition.solution[index]);
@@ -147,40 +152,104 @@ export async function renderSudoku(root, store) {
   const numberPad = element('div', { class: 'sudoku-number-pad', 'aria-label': 'Number pad' },
     ...Array.from({ length: 9 }, (_, index) => element('button', { type: 'button', 'data-number': index + 1, text: String(index + 1) })));
   controls.append(pencil, undo, erase, hint, check, numberPad);
+  const numberPadButtons = [...numberPad.querySelectorAll('[data-number]')];
   const boardScroll = element('div', { class: 'game-board-scroll' }, board);
-  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, boardScroll, controls, shell.live);
+
+  // Effects-only audio: lazily started on the player's first gesture (a
+  // click/keydown inside dispatch()) so we never call AudioContext.resume()
+  // before a user gesture has actually happened.
+  const puzzleAudio = createGameAudio({ preferences: store.audio });
+  let audioStarted = false;
+  const ensurePuzzleAudioStarted = () => {
+    if (audioStarted) return;
+    audioStarted = true;
+    void puzzleAudio.start({});
+  };
+  const audioControls = createAudioControls({
+    channels: ['effects'],
+    preferences: store.audio,
+    onChange: (preferences) => { puzzleAudio.setPreferences(preferences); },
+  });
+  session.addCleanup(() => { if (!completed) void puzzleAudio.dispose(); });
+
+  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, boardScroll, controls, audioControls.element, shell.live);
+
+  // Build the 81 cell buttons (and their wrappers + fixed 9-slot notes grids)
+  // once. draw() below only ever patches attributes/classes/content on these
+  // same nodes so identity survives across dispatches.
+  const cellButtons = [];
+  const cellWrappers = [];
+  const noteSpansByCell = [];
+  const notesGridByCell = [];
+  for (let row = 0; row < 9; row += 1) {
+    const rowNode = element('div', { role: 'row', class: 'sudoku-row' });
+    for (let column = 0; column < 9; column += 1) {
+      const index = row * 9 + column;
+      const cell = element('button', { type: 'button', 'data-cell': index });
+      cell.addEventListener('click', () => dispatch({ type: 'select', index }, true));
+      // Deferred reference: keydown is declared later in this function, so
+      // wrap it instead of passing the (not-yet-initialized) binding directly.
+      cell.addEventListener('keydown', (event) => keydown(event));
+      const noteSpans = Array.from({ length: 9 }, () => element('span', { class: 'sudoku-note' }));
+      noteSpansByCell[index] = noteSpans;
+      notesGridByCell[index] = element('div', { class: 'sudoku-notes-grid' }, ...noteSpans);
+      const wrapper = element('div', {
+        role: 'gridcell', class: 'sudoku-gridcell', 'aria-rowindex': row + 1, 'aria-colindex': column + 1,
+      }, cell);
+      rowNode.append(wrapper);
+      cellButtons[index] = cell;
+      cellWrappers[index] = wrapper;
+    }
+    board.append(rowNode);
+  }
 
   let completed = false;
   const draw = () => {
-    board.replaceChildren();
     const selectedRow = Math.floor(state.selected / 9), selectedColumn = state.selected % 9;
+    const selectedValue = state.values[state.selected];
     for (let row = 0; row < 9; row += 1) {
-      const rowNode = element('div', { role: 'row', class: 'sudoku-row' });
       for (let column = 0; column < 9; column += 1) {
-      const index = row * 9 + column, value = state.values[index];
-      const given = state.definition.puzzle[index] !== 0;
-      const related = row === selectedRow || column === selectedColumn
-        || (Math.floor(row / 3) === Math.floor(selectedRow / 3) && Math.floor(column / 3) === Math.floor(selectedColumn / 3));
-      const noteText = !value && state.notes[index].length ? `, pencil notes ${state.notes[index].join(', ')}` : '';
-      const label = `Row ${row + 1}, column ${column + 1}${given ? ', given' : ', editable'}${value ? `, ${value}` : ', empty'}${noteText}${state.errors.includes(index) ? ', mistake' : ''}`;
-      const cell = element('button', {
-        type: 'button', class: `sudoku-cell${given ? ' is-given' : ''}${related ? ' is-related' : ''}${index === state.selected ? ' is-selected' : ''}${state.errors.includes(index) ? ' is-error' : ''}`,
-        'aria-label': label, 'data-cell': index,
-        tabindex: index === state.selected ? '0' : '-1', text: value || state.notes[index].join(' '),
-      });
-      cell.addEventListener('click', () => dispatch({ type: 'select', index }, true));
-      cell.addEventListener('keydown', keydown);
-      rowNode.append(element('div', {
-        role: 'gridcell', class: 'sudoku-gridcell', 'aria-rowindex': row + 1,
-        'aria-colindex': column + 1, 'aria-selected': String(index === state.selected),
-      }, cell));
+        const index = row * 9 + column, value = state.values[index];
+        const given = state.definition.puzzle[index] !== 0;
+        const related = row === selectedRow || column === selectedColumn
+          || (Math.floor(row / 3) === Math.floor(selectedRow / 3) && Math.floor(column / 3) === Math.floor(selectedColumn / 3));
+        const isSelected = index === state.selected;
+        const isError = state.errors.includes(index);
+        const sameDigit = selectedValue !== 0 && value === selectedValue;
+        const noteText = !value && state.notes[index].length ? `, pencil notes ${state.notes[index].join(', ')}` : '';
+        const label = `Row ${row + 1}, column ${column + 1}${given ? ', given' : ', editable'}${value ? `, ${value}` : ', empty'}${noteText}${isError ? ', mistake' : ''}`;
+        const cell = cellButtons[index];
+        cell.className = `sudoku-cell${given ? ' is-given' : ''}${related ? ' is-related' : ''}${isSelected ? ' is-selected' : ''}${isError ? ' is-error' : ''}${sameDigit ? ' is-same-digit' : ''}`;
+        cell.setAttribute('aria-label', label);
+        cell.setAttribute('tabindex', isSelected ? '0' : '-1');
+        cellWrappers[index].setAttribute('aria-selected', String(isSelected));
+        if (!value && state.notes[index].length) {
+          const noteSpans = noteSpansByCell[index];
+          for (let digit = 1; digit <= 9; digit += 1) {
+            noteSpans[digit - 1].textContent = state.notes[index].includes(digit) ? String(digit) : '';
+          }
+          cell.replaceChildren(notesGridByCell[index]);
+        } else {
+          cell.textContent = value ? String(value) : '';
+        }
       }
-      board.append(rowNode);
     }
+    const digitCounts = Array(10).fill(0);
+    for (const value of state.values) if (value) digitCounts[value] += 1;
+    for (let digit = 1; digit <= 9; digit += 1) numberPadButtons[digit - 1].disabled = digitCounts[digit] >= 9;
     pencil.setAttribute('aria-pressed', String(state.pencil));
     shell.timer.textContent = formatElapsed(session.elapsed());
     if (state.completed && !completed) {
       completed = true;
+      puzzleAudio.finish({ outcome: 'completion' });
+      const reducedMotion = prefersReducedMotion();
+      const lastRow = Math.floor(state.selected / 9), lastColumn = state.selected % 9;
+      for (let index = 0; index < 81; index += 1) {
+        const distance = reducedMotion ? 0 : Math.abs(Math.floor(index / 9) - lastRow) + Math.abs(index % 9 - lastColumn);
+        cellButtons[index].classList.add('is-celebrating');
+        cellButtons[index].style.setProperty('--cell-delay', `${distance * 20}ms`);
+      }
+      celebrate({ root });
       const result = session.finish();
       makeGameTerminal(root);
       const completion = completionPanel({ ...result, playAnother: session.playAnother });
@@ -191,9 +260,18 @@ export async function renderSudoku(root, store) {
   };
   const dispatch = (action, focus = false) => {
     if (completed || state.completed || session.finished) return;
+    const previousErrors = state.errors;
+    const wasPencil = state.pencil;
     const next = reduceSudoku(state, action);
     if (next === state) return;
     state = next;
+    ensurePuzzleAudioStarted();
+    if (action.type === 'digit' && !wasPencil) puzzleAudio.playEffect('puzzle-place');
+    if (action.type === 'check') {
+      for (const index of state.errors) {
+        if (!previousErrors.includes(index)) puzzleAudio.playEffect('puzzle-error');
+      }
+    }
     if (action.type === 'reveal' || action.type === 'check') {
       session.assist();
       shell.setAssisted(true, true);
@@ -201,7 +279,7 @@ export async function renderSudoku(root, store) {
     if (action.type === 'reveal') shell.live.textContent = 'Hint revealed. Assisted run; this time is ineligible for best-time records.';
     session.updatePlay(state);
     draw();
-    if (focus && !state.completed) board.querySelector(`[data-cell="${state.selected}"]`)?.focus();
+    if (focus && !state.completed) cellButtons[state.selected]?.focus();
   };
   const keydown = (event) => {
     const key = event.key;
@@ -222,8 +300,23 @@ export async function renderSudoku(root, store) {
   erase.addEventListener('click', () => dispatch({ type: 'erase' }));
   hint.addEventListener('click', () => dispatch({ type: 'reveal' }));
   check.addEventListener('click', () => { dispatch({ type: 'check' }); shell.live.textContent = `${state.errors.length} errors found. Assisted run; this time is ineligible for best-time records.`; });
-  shell.toolbar.querySelector('[data-restart]').addEventListener('click', () => { if (window.confirm('Restart this puzzle? Current progress will be cleared.')) void session.restart(); });
-  shell.toolbar.querySelector('[data-new-game]').addEventListener('click', () => { if (!state.history.length || window.confirm('Replace this puzzle?')) void session.playAnother(); });
+  shell.toolbar.querySelector('[data-restart]').addEventListener('click', () => {
+    const dialog = createConfirmDialog(root, {
+      title: 'Restart this puzzle?', body: 'Current progress will be cleared.',
+      confirmLabel: 'Restart', cancelLabel: 'Cancel',
+      onConfirm: () => { void session.restart(); }, onCancel: () => {},
+    });
+    dialog.open();
+  });
+  shell.toolbar.querySelector('[data-new-game]').addEventListener('click', () => {
+    if (!state.history.length) { void session.playAnother(); return; }
+    const dialog = createConfirmDialog(root, {
+      title: 'Replace this puzzle?', body: 'Current progress will be cleared.',
+      confirmLabel: 'New Game', cancelLabel: 'Cancel',
+      onConfirm: () => { void session.playAnother(); }, onCancel: () => {},
+    });
+    dialog.open();
+  });
   shell.select.addEventListener('change', () => { globalThis.location.href = `/games/sudoku?difficulty=${shell.select.value}`; });
   draw();
   session.repeat(() => { if (!completed) shell.timer.textContent = formatElapsed(session.elapsed()); }, 1000);

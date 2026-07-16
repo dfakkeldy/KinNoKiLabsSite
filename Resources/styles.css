@@ -655,7 +655,9 @@ dialog.game-dialog[open] { animation: games-fade-up 0.2s ease; }
 .game-danger:hover { background: #b6403b; }
 
 /* Shared controller layout for the game views added in later slices. */
-.games-app { min-width: 0; overflow-x: clip; }
+/* position: relative makes this a valid mount root for the absolutely
+   positioned .game-celebration overlay (see celebration.js). */
+.games-app { position: relative; min-width: 0; overflow-x: clip; }
 .game-preplay,
 .game-status-grid,
 .game-audio-controls,
@@ -732,6 +734,17 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
   from { transform: translateY(0) rotate(0deg); opacity: 1; }
   to { transform: translateY(340px) rotate(220deg); opacity: 0; }
 }
+@keyframes games-cell-shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-3px); }
+  40%, 60% { transform: translateX(3px); }
+}
+@keyframes games-cell-bloom {
+  0% { transform: scale(1); background-color: var(--surface); }
+  45% { transform: scale(1.18); background-color: color-mix(in srgb, var(--gold-500) 60%, var(--surface)); }
+  100% { transform: scale(1); background-color: var(--surface); }
+}
 @keyframes games-fade-up {
   from { transform: translateY(12px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
@@ -805,19 +818,43 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
   border-radius: 0;
   font-family: var(--font-mono);
   font-size: clamp(0.78rem, 4vw, 1.55rem);
+  transition: background-color .12s ease, color .12s ease, outline-color .12s ease;
 }
 .sudoku-gridcell:nth-child(3n):not(:nth-child(9n)) .sudoku-cell { border-right: 2px solid var(--game-text-tertiary); }
 .sudoku-row:nth-child(3n):not(:nth-child(9n)) .sudoku-cell { border-bottom: 2px solid var(--game-text-tertiary); }
 .sudoku-cell.is-related { background: color-mix(in srgb, var(--gold-500) 8%, var(--surface)); }
 .sudoku-cell.is-selected { position: relative; z-index: 1; outline: 3px solid var(--gold-500); outline-offset: -3px; }
 .sudoku-cell.is-given { font-weight: 800; }
+/* Non-colour cue for the same-digit highlight: a bolder weight, not just a tint. */
+.sudoku-cell.is-same-digit { background: color-mix(in srgb, var(--gold-500) 16%, var(--surface)); font-weight: 700; }
 .sudoku-cell.is-error {
   color: #ef8d87;
   border: 3px double currentColor;
   background: color-mix(in srgb, #9e3733 24%, var(--surface));
   background-image: repeating-linear-gradient(135deg, transparent 0 7px, currentColor 7px 9px, transparent 9px 16px);
+  animation: games-cell-shake 200ms ease;
+}
+.sudoku-cell.is-celebrating {
+  animation: games-cell-bloom .5s ease both;
+  animation-delay: var(--cell-delay, 0ms);
 }
 .sudoku-number-pad { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.sudoku-notes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 100%;
+  height: 100%;
+}
+.sudoku-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--game-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  line-height: 1;
+}
 
 .crossword-layout, .word-search-layout { display: grid; min-width: 0; grid-template-columns: minmax(0, 1.25fr) minmax(15rem, 0.75fr); gap: clamp(20px, 4vw, 42px); align-items: start; }
 .crossword-board { display: grid; grid-template-columns: repeat(var(--crossword-size), 1fr); grid-template-rows: repeat(var(--crossword-size), 1fr); min-width: calc(var(--crossword-size) * 44px); aspect-ratio: 1; background: var(--fill-2); }
@@ -1085,4 +1122,8 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   .game-toolbar button, .game-toolbar select, .game-controls button, .sudoku-number-pad button, .word-search-pan button, .stack-controls button, .yard-controls button, .yard-pan-controls button, .yard-tray-piece, .difficulty-links a, .charts-controls button {
     transition: none;
   }
+
+  .sudoku-cell { transition: none; }
+  .sudoku-cell.is-error { animation: none; }
+  .sudoku-cell.is-celebrating { animation: none; }
 }

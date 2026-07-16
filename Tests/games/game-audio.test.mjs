@@ -244,6 +244,31 @@ test('puzzle effect names schedule without throwing under the fake context', asy
   }
 });
 
+test('start() without an arrangement creates a context, skips music, and still plays puzzle effects', async () => {
+  const context = new FakeAudioContext();
+  const audio = createGameAudio({
+    audioContextFactory: () => context, preferences, monotonicNow: () => 10,
+    setIntervalFn: () => { throw new Error('effects-only mode must not start a music scheduler'); },
+  });
+  await audio.start({});
+  assert.equal(audio.debugState().tempo, null, 'no arrangement means no music tempo');
+  assert.equal(audio.debugState().musicGain, 0, 'no musicMaster was created');
+  assert.doesNotThrow(() => audio.playEffect('puzzle-place'));
+  assert.ok(audio.debugState().activeEffectVoices > 0, 'effects still schedule audible voices');
+  await audio.dispose();
+});
+
+test('puzzle-error is rate-limited like the other cooldown effects', async () => {
+  const context = new FakeAudioContext();
+  const audio = createGameAudio({
+    audioContextFactory: () => context, preferences, monotonicNow: () => 10,
+  });
+  await audio.start({});
+  for (let index = 0; index < 20; index += 1) audio.playEffect('puzzle-error');
+  assert.ok(audio.debugState().activeEffectVoices <= 1, 'rapid-fire puzzle-error calls collapse to one cooldown window');
+  await audio.dispose();
+});
+
 test('createAudioControls({ channels: ["effects"] }) renders only the effects row', () => {
   const fixture = createDOMFixture();
   const controls = createAudioControls({

@@ -127,6 +127,15 @@ test('celebration overlay and completion entrance have reduced-motion overrides'
     /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.game-complete[\s\S]*?animation:\s*none/);
 });
 
+test('Sudoku cell transition, error shake and celebration bloom have reduced-motion overrides', () => {
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.sudoku-cell\s*\{[\s\S]*?transition:\s*none/);
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.sudoku-cell\.is-error[\s\S]*?animation:\s*none/);
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.sudoku-cell\.is-celebrating[\s\S]*?animation:\s*none/);
+});
+
 for (const theme of [
   { name: 'dark', selector: ':root' },
   { name: 'light', selector: '[data-theme="light"]' },
