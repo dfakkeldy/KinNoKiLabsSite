@@ -1,5 +1,5 @@
 import {
-  chooseFreshDefinition, completeRun, deriveSeed, historyKey, markAssisted,
+  abandonRun, chooseFreshDefinition, completeRun, deriveSeed, historyKey, markAssisted,
   recordsBrokenBy, sanitizeAudioPreferences, saveGameStore, startRun,
 } from './core.js';
 import { safeLocalStorage, showStorageFailureNotice } from './hub-ui.js';
@@ -372,8 +372,8 @@ export function createSession(options) {
   else if (existingValid && progressed(existing.puzzle?.play)) {
     // Non-destructive default: resume the saved run immediately, exactly like a
     // declined confirmation used to. A dialog then offers the destructive
-    // alternative (starting fresh) asynchronously, since a <dialog> — unlike
-    // window.confirm — cannot block this constructor for an answer.
+    // alternative (starting fresh) asynchronously, since a <dialog> — unlike a
+    // blocking native confirm — cannot pause this constructor for an answer.
     run = { ...existing, startedAt: wallNow() };
     currentStore = { ...currentStore, runs: { ...currentStore.runs, [game]: run } };
     activeStarted = monotonicNow();
@@ -393,9 +393,34 @@ export function createSession(options) {
       cleanups.add(confirmDialog.close);
       confirmDialog.open();
     });
-  } else if (existingStructValid && existing.difficulty !== difficulty && progressed(existing.puzzle?.play)
-      && globalThis.window?.confirm?.('Start a new puzzle and replace your saved progress?') === false) {
+  } else if (existingStructValid && existing.difficulty !== difficulty && progressed(existing.puzzle?.play)) {
+    // Non-destructive default: keep the saved run and let the controller render
+    // its "Saved puzzle kept" screen synchronously, exactly like a declined
+    // confirm used to. The dialog then offers the destructive alternative.
     cancelled = true;
+    Promise.resolve().then(() => {
+      if (disposed) return;
+      const confirmDialog = createConfirmDialog(root, {
+        title: 'Replace saved progress?',
+        body: `You have a ${titleCase(existing.difficulty)} puzzle in progress. Start ${titleCase(difficulty)} and replace it?`,
+        confirmLabel: 'Start new',
+        cancelLabel: 'Keep saved puzzle',
+        onConfirm: () => {
+          currentStore = abandonRun(currentStore, { game });
+          save();
+          Promise.resolve().then(() => onRender(currentStore)).catch(() => {
+            activeSessions.get(root)?.dispose();
+            renderGameError(root, {
+              title: 'Puzzle paused',
+              message: 'This game could not start. Reload the page to try a fresh puzzle.',
+            });
+          });
+        },
+        onCancel: () => {},
+      });
+      cleanups.add(confirmDialog.close);
+      confirmDialog.open();
+    });
   } else begin();
 
   const updatePlay = (play) => {

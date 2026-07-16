@@ -241,8 +241,8 @@ test('Word Search announces a found word and focuses completion after the final 
   } finally { restore(); }
 });
 
-test('a progressed run is preserved when replacement confirmation is declined', async () => {
-  const fixture = createDOMFixture({ search: '?difficulty=easy', confirm: false }); const restore = installDOM(fixture);
+test('a progressed same-difficulty run is preserved by default before the replace dialog is answered', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy' }); const restore = installDOM(fixture);
   try {
     const { renderSudoku } = await import('../../Resources/games/sudoku-ui.js');
     const play = (await import('../../Resources/games/sudoku-ui.js')).createSudokuState(sudokuPuzzle);
@@ -360,6 +360,54 @@ test('session.finish() reports recordsBroken for a first unassisted completion',
     });
     const result = session.finish();
     assert.deepEqual(result.recordsBroken, ['time'], 'a first-ever completion breaks the time record');
+  } finally { restore(); }
+});
+
+const flushMicrotasks = async (count = 20) => {
+  for (let index = 0; index < count; index += 1) await Promise.resolve();
+};
+
+test('a different-difficulty conflict shows the kept screen plus a dialog, and confirming starts fresh', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=medium' }); const restore = installDOM(fixture);
+  try {
+    const { renderSudoku, createSudokuState } = await import('../../Resources/games/sudoku-ui.js');
+    const play = createSudokuState(sudokuPuzzle);
+    play.values[sudokuEditable] = 2;
+    const store = v2StoreWithRun({ game: 'sudoku', definition: sudokuPuzzle, play, seed: 1, startedAt: 10 });
+    fixture.localStorage.setItem(STORE_KEYS.v2, JSON.stringify(store));
+    await renderSudoku(fixture.root, store);
+    assert.match(fixture.root.textContent, /Easy puzzle.*kept/is, 'the non-destructive kept screen renders first');
+    await flushMicrotasks();
+    const dialog = fixture.root.querySelector('dialog.game-dialog');
+    assert.ok(dialog, 'a replace dialog is offered on top of the kept screen');
+    assert.match(dialog.textContent, /Easy puzzle in progress.*Start Medium/s, 'the body names both difficulties');
+    assert.equal(dialog.querySelector('[data-dialog-cancel]').textContent, 'Keep saved puzzle');
+    dialog.querySelector('[data-dialog-confirm]').click();
+    await flushMicrotasks();
+    const next = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2));
+    assert.equal(next.runs.sudoku.difficulty, 'medium', 'confirming abandons the saved run and starts the requested difficulty');
+    assert.ok(fixture.root.querySelector('[role="grid"]'), 'the fresh run renders a playable grid');
+    assert.equal(fixture.root.querySelector('dialog.game-dialog'), null, 'confirming closes the dialog');
+  } finally { restore(); }
+});
+
+test('cancelling the different-difficulty dialog keeps the saved run and the kept screen', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=medium' }); const restore = installDOM(fixture);
+  try {
+    const { renderSudoku, createSudokuState } = await import('../../Resources/games/sudoku-ui.js');
+    const play = createSudokuState(sudokuPuzzle);
+    play.values[sudokuEditable] = 2;
+    const store = v2StoreWithRun({ game: 'sudoku', definition: sudokuPuzzle, play, seed: 1, startedAt: 10 });
+    fixture.localStorage.setItem(STORE_KEYS.v2, JSON.stringify(store));
+    await renderSudoku(fixture.root, store);
+    await flushMicrotasks();
+    fixture.root.querySelector('[data-dialog-cancel]').click();
+    await flushMicrotasks();
+    assert.equal(fixture.root.querySelector('dialog.game-dialog'), null, 'cancelling closes the dialog');
+    assert.match(fixture.root.textContent, /Easy puzzle.*kept/is, 'the kept screen remains');
+    const kept = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2)).runs.sudoku;
+    assert.equal(kept.difficulty, 'easy');
+    assert.equal(kept.seed, 1, 'the saved run is untouched');
   } finally { restore(); }
 });
 
