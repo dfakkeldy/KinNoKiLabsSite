@@ -71,6 +71,13 @@
           <span id="chapterNow">&nbsp;</span>
         </p>
 
+        <!-- Slideshow stage: listen.js shows the current figure cue from
+             listen-core's resolver here. Cover-only books never unhide it. -->
+        <figure id="figurePanel" class="room-figure" hidden>
+          <img id="figureImg" alt="" decoding="async">
+          <figcaption id="figureCaption" hidden></figcaption>
+        </figure>
+
         <div class="room-captions" id="captionPanel">
           <!-- Visual karaoke spans; hidden from screen readers. A parallel
                plain-text node exposes the current paragraph once per block

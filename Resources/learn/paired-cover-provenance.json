@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "source": {
     "repository": "dfakkeldy/explainer-audiobooks",
-    "commit": "18a7ad0717a4338d7c777bfed01a5bdb9ab6353d"
+    "commit": "8482eae48becda2ef4be819a09a1afab195641bf"
   },
   "books": {
     "echo-from-the-inside": {

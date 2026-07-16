@@ -145,6 +145,39 @@ body.font-opendyslexic .room-bar .font-toggle {
 .room-chapter-btn .t { font-family: var(--font-mono); font-size: 11.5px; color: var(--room-text-tertiary); flex: none; }
 .room-chapters [aria-current="true"] .room-chapter-btn { color: var(--room-text-accent); font-weight: 600; }
 
+/* ── Stage: figure (slideshow) ──────────────────────── */
+/* Hidden until listen.js gets an imageCue from the resolver; cover-only
+   books never unhide it. Same surface/border material as the captions
+   so the stage reads as one instrument. */
+.room-figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-card);
+}
+.room-figure[hidden] { display: none; }
+.room-figure img {
+  display: block;
+  width: 100%;
+  max-height: 46vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+.room-figure figcaption {
+  color: var(--room-text-tertiary);
+  font-size: 12.5px;
+  line-height: 1.5;
+  text-align: center;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .room-figure { transition: opacity 0.2s var(--ease); }
+  .room-figure.swap { opacity: 0; }
+}
+
 /* ── Stage: captions ────────────────────────────────── */
 .room-stage { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 .room-now {
@@ -354,19 +387,47 @@ body.font-opendyslexic .room-bar .font-toggle {
 .room-library { margin-top: clamp(36px, 6vw, 56px); }
 .room-library-title { font-size: 17px; letter-spacing: -0.01em; margin: 0 0 4px; }
 .room-library-sub { color: var(--room-text-secondary); font-size: 13.5px; margin: 0 0 14px; }
-.room-library ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr)); gap: 8px; }
+.room-library ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr)); gap: 10px; }
+/* Visual card: an optional cover thumbnail in column one spanning the
+   text rows (title / subtitle / byline / actions) beside it. Cover-less
+   entries collapse to a single text column, so nothing breaks while a
+   book has no staged cover. */
 .room-library li {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-rows: min-content;
+  align-content: start;
+  row-gap: 3px;
   border: 1px solid var(--separator);
   border-radius: 12px;
-  padding: 10px 14px;
+  padding: 12px 14px;
   font-size: 13.5px;
 }
+.room-library li:has(> .room-lib-cover) {
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 12px;
+}
+/* Sized like the player's cover frame — a fixed width and an automatic
+   height, with no forced ratio and no cropping — so each cover keeps its
+   natural shape. Most are portrait, but the paired-m4b books ship square
+   art: a 5/8 aspect-ratio plus object-fit:cover scaled that square to the
+   box height and clipped 37.5% off its sides, cutting the title. The
+   width/height attributes the player sets from the catalog give the
+   browser the true intrinsic ratio before the image loads. */
+.room-library li .room-lib-cover {
+  grid-column: 1;
+  grid-row: 1 / span 4;
+  width: 76px;
+  height: auto;
+  display: block;
+  border: 1px solid var(--separator);
+  border-radius: 8px;
+  background: var(--fill-2);
+}
 .room-library li .room-lib-title { color: var(--text); font-weight: 500; min-width: 0; }
-.room-library li .room-lib-links { display: flex; gap: 10px; flex: none; }
+.room-library li .room-lib-subtitle { color: var(--room-text-secondary); font-size: 12.5px; line-height: 1.45; }
+.room-library li .room-lib-by { color: var(--room-text-tertiary); font-size: 12px; }
+.room-library li .room-lib-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px; align-self: end; justify-self: start; }
 .room-library li a { color: var(--room-text-secondary); font-size: 12.5px; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent); text-underline-offset: 3px; }
 .room-library li a.room-lib-listen {
   color: var(--room-text-accent);

@@ -32,16 +32,28 @@
 
 - Stage `Resources/listen/books/<slug>/cover.jpg` (sips, quality 80, max 768px)
   for **all** allow-listed books, not just playable ones.
-- Every catalog entry gains `cover` + `coverAlt`. Playable entries keep their
-  richer shape unchanged.
+- Every catalog entry gains `cover` + `coverAlt` + `coverWidth`/`coverHeight`
+  (measured from the staged file). Playable entries keep their richer shape
+  unchanged.
+
+  Covers are not uniformly shaped: `Tools/sync-paired-cover-assets.sh` installs
+  **square 768×768** player derivatives for the two paired-cover books
+  (chicken-predators, the-new-deal) after the builder runs, while the other nine
+  are 480×768 portraits. The player must therefore size thumbnails from the
+  per-book dimensions instead of assuming a ratio — forcing one crops the square
+  artwork. The sync script owns the final bytes for its slugs, so it re-patches
+  their dimensions and re-verifies them against what it installs.
 - Validation: staged asset dirs must equal the **full** allow-list; per-slug
   expected entries are `cover.jpg` for links-only books and
   `alignment.json blocks.json cover.jpg` (+ optional `figures/`) for playable.
 
 Player (`listen.js` `renderLibrary`) renders the strip as a visual grid: cover
-thumbnail (lazy-loaded, `coverAlt` alt text), title, subtitle when present,
-writtenBy byline, and the existing actions (Listen → EPUB → Read). The selected
-book stays excluded; the no-streamable empty state reuses the same grid.
+thumbnail (lazy-loaded, `coverAlt` alt text, `width`/`height` set from the
+catalog dimensions so each cover keeps its natural shape and still reserves its
+space), title, subtitle when present, writtenBy byline, and the existing actions
+(Listen → EPUB → Read). The selected book stays excluded; the no-streamable
+empty state reuses the same grid. This matches `.room-cover-frame img`, the
+established convention for the main player cover.
 
 ### B. Slideshow: figure pipeline + stage renderer
 
