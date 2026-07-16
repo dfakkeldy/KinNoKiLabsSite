@@ -860,22 +860,30 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
 .crossword-board { display: grid; grid-template-columns: repeat(var(--crossword-size), 1fr); grid-template-rows: repeat(var(--crossword-size), 1fr); min-width: calc(var(--crossword-size) * 44px); aspect-ratio: 1; background: var(--fill-2); }
 .crossword-row { display: contents; }
 .crossword-gridcell { position: relative; min-width: 44px; min-height: 44px; }
-.crossword-cell { min-width: 0; width: 100%; min-height: 0; height: 100%; padding: 0; text-align: center; color: var(--game-text-primary); background: var(--surface); border: 1px solid var(--separator); border-radius: 0; font-family: var(--font-mono); font-size: clamp(0.7rem, 3vw, 1.35rem); font-weight: 700; text-transform: uppercase; }
+.crossword-cell { min-width: 0; width: 100%; min-height: 0; height: 100%; padding: 0; text-align: center; color: var(--game-text-primary); background: var(--surface); border: 1px solid var(--separator); border-radius: 0; font-family: var(--font-mono); font-size: clamp(0.7rem, 3vw, 1.35rem); font-weight: 700; text-transform: uppercase; transition: background-color .12s ease, color .12s ease, outline-color .12s ease; }
 .crossword-number { position: absolute; top: 2px; left: 4px; pointer-events: none; color: var(--game-text-tertiary); font-family: var(--font-mono); font-size: 0.62rem; line-height: 1; }
-.crossword-cell.is-selected { outline: 3px solid var(--gold-500); outline-offset: -3px; }
+.crossword-cell.is-active-entry { background: color-mix(in srgb, var(--gold-500) 8%, var(--surface)); }
+.crossword-cell.is-selected { position: relative; z-index: 1; outline: 3px solid var(--gold-500); outline-offset: -3px; }
 .crossword-cell.is-error {
   color: #ef8d87;
   border: 3px double currentColor;
   background: color-mix(in srgb, #9e3733 24%, var(--surface));
   background-image: repeating-linear-gradient(135deg, transparent 0 7px, currentColor 7px 9px, transparent 9px 16px);
+  animation: games-cell-shake 200ms ease;
+}
+.crossword-cell.is-celebrating {
+  animation: games-cell-bloom .5s ease both;
+  animation-delay: var(--cell-delay, 0ms);
 }
 
 .game-assisted-status { margin: 12px auto; color: var(--game-text-secondary); text-align: center; }
 .crossword-clues { display: grid; gap: 24px; }
 .crossword-clues h2 { margin-bottom: 8px; font-size: 1.1rem; }
-.crossword-clues ol { display: grid; gap: 5px; padding-left: 1.5rem; }
+.crossword-clues ul { display: grid; gap: 5px; padding-left: 1.5rem; }
 .crossword-clues button { min-height: 44px; padding: 6px 8px; color: var(--game-text-secondary); background: transparent; border: 0; text-align: left; }
 .crossword-clues button:hover, .crossword-clues button:focus-visible { color: var(--game-text-accent); }
+/* Non-colour cue for the active clue: a gold hairline plus a bolder weight, not just a tint. */
+[data-clue].is-active { border: 1px solid var(--gold-hairline); font-weight: 800; }
 
 .word-search-board { display: grid; grid-template-columns: repeat(var(--word-search-size), 1fr); min-width: calc(var(--word-search-size) * 44px); aspect-ratio: 1; touch-action: pan-y; user-select: none; }
 .word-search-board-column { min-width: 0; }
@@ -1126,4 +1134,8 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   .sudoku-cell { transition: none; }
   .sudoku-cell.is-error { animation: none; }
   .sudoku-cell.is-celebrating { animation: none; }
+
+  .crossword-cell { transition: none; }
+  .crossword-cell.is-error { animation: none; }
+  .crossword-cell.is-celebrating { animation: none; }
 }

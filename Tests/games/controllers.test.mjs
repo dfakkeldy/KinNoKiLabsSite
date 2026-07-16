@@ -702,3 +702,168 @@ test('completion flow renders no record line end-to-end for an assisted completi
       'an assisted run is ineligible for records so no line renders');
   } finally { restore(); }
 });
+
+test('Crossword patches cell nodes and clue buttons in place instead of replacing them on dispatch', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { renderCrossword } = await import('../../Resources/games/crossword-ui.js');
+    const store = v2StoreWithRun({ game: 'crossword', definition: crosswordPuzzle });
+    fixture.location.search = '?difficulty=easy&continue=1';
+    await renderCrossword(fixture.root, store);
+    const cellBefore = fixture.root.querySelector('[data-cell="0:0"]');
+    const clueBefore = fixture.root.querySelector('[data-clue="1:across"]');
+    cellBefore.dispatchEvent(new FixtureEvent('keydown', { key: 'ArrowDown' }));
+    assert.ok(fixture.root.querySelector('[data-cell="0:0"]') === cellBefore,
+      'the cell node identity is preserved across a select dispatch');
+    assert.ok(fixture.root.querySelector('[data-clue="1:across"]') === clueBefore,
+      'clue button node identity is preserved across a select dispatch');
+  } finally { restore(); }
+});
+
+test('Crossword marks every cell of the active entry and the matching clue button', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { renderCrossword } = await import('../../Resources/games/crossword-ui.js');
+    const store = v2StoreWithRun({ game: 'crossword', definition: crosswordPuzzle });
+    fixture.location.search = '?difficulty=easy&continue=1';
+    await renderCrossword(fixture.root, store);
+    // The initial selection is CAT across (0,0)-(0,2); CAR down shares (0,0) only.
+    for (const key of ['0:0', '0:1', '0:2']) {
+      assert.ok(fixture.root.querySelector(`[data-cell="${key}"]`).classList.contains('is-active-entry'),
+        `${key} is part of the active across entry`);
+    }
+    assert.equal(fixture.root.querySelector('[data-cell="1:0"]').classList.contains('is-active-entry'), false,
+      '1:0 belongs only to the inactive down entry');
+    assert.ok(fixture.root.querySelector('[data-clue="1:across"]').classList.contains('is-active'));
+    assert.equal(fixture.root.querySelector('[data-clue="1:down"]').classList.contains('is-active'), false);
+
+    // Selecting a down-only cell switches the active entry and clue.
+    fixture.root.querySelector('[data-cell="1:0"]').click();
+    for (const key of ['0:0', '1:0', '2:0']) {
+      assert.ok(fixture.root.querySelector(`[data-cell="${key}"]`).classList.contains('is-active-entry'),
+        `${key} is part of the newly active down entry`);
+    }
+    assert.equal(fixture.root.querySelector('[data-cell="0:1"]').classList.contains('is-active-entry'), false);
+    assert.ok(fixture.root.querySelector('[data-clue="1:down"]').classList.contains('is-active'));
+    assert.equal(fixture.root.querySelector('[data-clue="1:across"]').classList.contains('is-active'), false);
+  } finally { restore(); }
+});
+
+test('Crossword clue lists render as plain lists so clue numbers do not double up', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { renderCrossword } = await import('../../Resources/games/crossword-ui.js');
+    const store = v2StoreWithRun({ game: 'crossword', definition: crosswordPuzzle });
+    fixture.location.search = '?difficulty=easy&continue=1';
+    await renderCrossword(fixture.root, store);
+    assert.equal(fixture.root.querySelectorAll('.crossword-clues ol').length, 0,
+      'ordered lists would print a second, browser-rendered ordinal alongside the printed clue number');
+    assert.equal(fixture.root.querySelectorAll('.crossword-clues ul').length, 2);
+    const clueText = fixture.root.querySelector('[data-clue="1:across"]').textContent;
+    assert.doesNotMatch(clueText, /^\d+\.\s*\d+\./, 'the clue text itself carries only one number');
+    assert.match(clueText, /^1\.\s/);
+  } finally { restore(); }
+});
+
+test('Crossword completion adds is-celebrating in reading order to every occupied cell', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' }); const restore = installDOM(fixture);
+  try {
+    const { renderCrossword, createCrosswordState } = await import('../../Resources/games/crossword-ui.js');
+    const play = createCrosswordState(crosswordPuzzle);
+    play.values = crosswordPuzzle.cells.map((row) => row.map((cell) => cell?.solution ?? null));
+    play.values[0][0] = ''; // leave one cell blank to complete via keyboard
+    const store = v2StoreWithRun({ game: 'crossword', definition: crosswordPuzzle, play });
+    await renderCrossword(fixture.root, store);
+    const cell = fixture.root.querySelector('[data-cell="0:0"]');
+    cell.click();
+    cell.dispatchEvent(new FixtureEvent('keydown', { key: 'C' }));
+    assert.ok(fixture.root.querySelector('.game-complete'), 'the completion panel renders');
+    const occupied = ['0:0', '0:1', '0:2', '1:0', '2:0'];
+    for (const key of occupied) {
+      assert.ok(fixture.root.querySelector(`[data-cell="${key}"]`).classList.contains('is-celebrating'),
+        `${key} is marked celebrating on completion`);
+    }
+    assert.equal(fixture.root.querySelector('[data-cell="0:0"]').style.getPropertyValue('--cell-delay'), '0ms',
+      'the first cell in reading order has no delay');
+  } finally { restore(); }
+});
+
+test('Crossword Restart shows a confirm dialog instead of window.confirm, and confirming clears progress', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { renderCrossword } = await import('../../Resources/games/crossword-ui.js');
+    const store = v2StoreWithRun({ game: 'crossword', definition: crosswordPuzzle });
+    fixture.location.search = '?difficulty=easy&continue=1';
+    await renderCrossword(fixture.root, store);
+    const cell = fixture.root.querySelector('[data-cell="0:0"]');
+    cell.click(); cell.dispatchEvent(new FixtureEvent('keydown', { key: 'C' }));
+    fixture.root.querySelector('[data-restart]').click();
+    const dialog = fixture.root.querySelector('dialog.game-dialog');
+    assert.ok(dialog, 'restart opens a confirm dialog rather than window.confirm');
+    dialog.querySelector('[data-dialog-confirm]').click();
+    assert.equal(fixture.root.querySelector('dialog.game-dialog'), null, 'confirming closes the dialog');
+    assert.equal(fixture.root.querySelector('[data-cell="0:0"]').value, '', 'confirming restart clears progress');
+  } finally { restore(); }
+});
+
+test('Crossword cancelling the Restart dialog keeps progress intact', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { renderCrossword } = await import('../../Resources/games/crossword-ui.js');
+    const store = v2StoreWithRun({ game: 'crossword', definition: crosswordPuzzle });
+    fixture.location.search = '?difficulty=easy&continue=1';
+    await renderCrossword(fixture.root, store);
+    const cell = fixture.root.querySelector('[data-cell="0:0"]');
+    cell.click(); cell.dispatchEvent(new FixtureEvent('keydown', { key: 'C' }));
+    fixture.root.querySelector('[data-restart]').click();
+    fixture.root.querySelector('[data-dialog-cancel]').click();
+    assert.equal(fixture.root.querySelector('dialog.game-dialog'), null, 'cancelling closes the dialog');
+    assert.equal(fixture.root.querySelector('[data-cell="0:0"]').value, 'C', 'declining restart keeps progress');
+  } finally { restore(); }
+});
+
+test('Crossword New Game skips the confirm dialog when nothing has been entered yet, and prompts once it has', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { renderCrossword } = await import('../../Resources/games/crossword-ui.js');
+    const store = v2StoreWithRun({ game: 'crossword', definition: crosswordPuzzle });
+    fixture.location.search = '?difficulty=easy&continue=1';
+    await renderCrossword(fixture.root, store);
+    fixture.root.querySelector('[data-new-game]').click();
+    assert.equal(fixture.root.querySelector('dialog.game-dialog'), null, 'no progress means no confirm prompt');
+    const afterFresh = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2));
+    assert.notEqual(afterFresh.runs.crossword.seed, crosswordPuzzle.seed, 'a fresh puzzle starts immediately');
+  } finally { restore(); }
+});
+
+test('Crossword New Game shows a confirm dialog once a letter has been entered', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { renderCrossword } = await import('../../Resources/games/crossword-ui.js');
+    const store = v2StoreWithRun({ game: 'crossword', definition: crosswordPuzzle });
+    fixture.location.search = '?difficulty=easy&continue=1';
+    await renderCrossword(fixture.root, store);
+    const cell = fixture.root.querySelector('[data-cell="0:0"]');
+    cell.click(); cell.dispatchEvent(new FixtureEvent('keydown', { key: 'C' }));
+    fixture.root.querySelector('[data-new-game]').click();
+    const dialog = fixture.root.querySelector('dialog.game-dialog');
+    assert.ok(dialog, 'an edit requires confirmation before replacing the puzzle');
+    dialog.querySelector('[data-dialog-cancel]').click();
+    assert.equal(fixture.root.querySelector('dialog.game-dialog'), null);
+    assert.equal(fixture.root.querySelector('[data-cell="0:0"]').value, 'C', 'cancelling keeps the current puzzle');
+  } finally { restore(); }
+});
+
+test('Crossword mounts effects-only audio controls in the toolbar area', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { renderCrossword } = await import('../../Resources/games/crossword-ui.js');
+    const store = v2StoreWithRun({ game: 'crossword', definition: crosswordPuzzle });
+    fixture.location.search = '?difficulty=easy&continue=1';
+    await renderCrossword(fixture.root, store);
+    assert.equal(fixture.root.querySelectorAll('[data-audio-music-volume]').length, 0,
+      'crossword audio controls are effects-only');
+    assert.equal(fixture.root.querySelectorAll('[data-audio-effects-volume]').length, 1);
+    assert.equal(fixture.root.querySelectorAll('[data-audio-effects-toggle]').length, 1);
+  } finally { restore(); }
+});

@@ -136,6 +136,24 @@ test('Sudoku cell transition, error shake and celebration bloom have reduced-mot
     /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.sudoku-cell\.is-celebrating[\s\S]*?animation:\s*none/);
 });
 
+test('Crossword cell transition, error shake and celebration bloom have reduced-motion overrides', () => {
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.crossword-cell\s*\{[\s\S]*?transition:\s*none/);
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.crossword-cell\.is-error[\s\S]*?animation:\s*none/);
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.crossword-cell\.is-celebrating[\s\S]*?animation:\s*none/);
+});
+
+test('Crossword active-entry and active-clue states carry non-colour cues', () => {
+  const activeEntry = ruleBody('.crossword-cell.is-active-entry');
+  assert.match(activeEntry, /background:/, 'the active entry mirrors the sudoku is-related tint pattern');
+  const activeClue = ruleBody('[data-clue].is-active');
+  assert.match(activeClue, /border[^;]*:/i, 'the active clue gets a gold hairline');
+  assert.match(activeClue, /font-weight\s*:\s*(?:7\d\d|800|900|bold)/i,
+    'the active clue also carries a non-colour cue beyond the hairline');
+});
+
 for (const theme of [
   { name: 'dark', selector: ':root' },
   { name: 'light', selector: '[data-theme="light"]' },

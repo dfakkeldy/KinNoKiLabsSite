@@ -1,8 +1,14 @@
 import { generateCrossword, validateCrossword } from './crossword.js';
-import { completionPanel, createSession, element, formatElapsed, makeGameTerminal, renderReplacementKept, sharedShell } from './controller-common.js';
+import { celebrate } from './celebration.js';
+import { createGameAudio } from './game-audio.js';
+import {
+  completionPanel, createAudioControls, createConfirmDialog, createSession, element,
+  formatElapsed, makeGameTerminal, prefersReducedMotion, renderReplacementKept, sharedShell,
+} from './controller-common.js';
 
 const directions = { across: [0, 1], down: [1, 0] };
 const keyFor = ({ row, column }) => `${row}:${column}`;
+const clueKeyFor = (answer) => `${answer.number}:${answer.direction}`;
 
 export function createCrosswordState(definition) {
   const first = definition.answers[0];
@@ -168,11 +174,14 @@ export async function renderCrossword(root, store) {
   const board = element('div', { class: 'game-board crossword-board', role: 'grid', 'aria-label': 'Crossword puzzle' });
   board.setAttribute('style', `--crossword-size:${state.definition.size}`);
   const clues = element('div', { class: 'crossword-clues' });
+  const clueButtons = new Map();
   for (const direction of ['across', 'down']) {
-    const list = element('ol', { 'aria-label': direction === 'across' ? 'Across clues' : 'Down clues' });
+    const list = element('ul', { 'aria-label': direction === 'across' ? 'Across clues' : 'Down clues' });
     state.definition.answers.filter((answer) => answer.direction === direction).forEach((answer) => {
-      const button = element('button', { type: 'button', 'data-clue': `${answer.number}:${direction}`, text: `${answer.number}. ${answer.clue}` });
+      const key = clueKeyFor(answer);
+      const button = element('button', { type: 'button', 'data-clue': key, text: `${answer.number}. ${answer.clue}` });
       button.addEventListener('click', () => dispatch({ type: 'select', row: answer.row, column: answer.column, direction }, true));
+      clueButtons.set(key, button);
       list.append(element('li', {}, button));
     });
     clues.append(element('section', {}, element('h2', { text: direction === 'across' ? 'Across' : 'Down' }), list));
@@ -183,30 +192,49 @@ export async function renderCrossword(root, store) {
   const check = element('button', { type: 'button', 'data-check': '', text: 'Check Entry' });
   const checkAll = element('button', { type: 'button', 'data-check-all': '', text: 'Check Puzzle' });
   const controls = element('div', { class: 'game-controls' }, hint, check, checkAll);
-  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, layout, controls, shell.live);
+
+  // Effects-only audio: lazily started on the player's first gesture (a
+  // click/keydown inside dispatch()) so we never call AudioContext.resume()
+  // before a user gesture has actually happened. Mirrors sudoku-ui.js.
+  const puzzleAudio = createGameAudio({ preferences: store.audio });
+  let audioStarted = false;
+  const ensurePuzzleAudioStarted = () => {
+    if (audioStarted) return;
+    audioStarted = true;
+    void puzzleAudio.start({});
+  };
+  const audioControls = createAudioControls({
+    channels: ['effects'],
+    preferences: store.audio,
+    onChange: (preferences) => {
+      puzzleAudio.setPreferences(preferences);
+      session.setAudio(preferences);
+    },
+  });
+  session.addCleanup(() => {
+    audioControls.dispose();
+    if (!completed) void puzzleAudio.dispose();
+  });
+
+  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, layout, controls, audioControls.element, shell.live);
   let completed = false;
 
-  const announceEntry = () => {
-    const answer = entryFor(state);
-    if (answer) shell.live.textContent = `${answer.number} ${answer.direction}. ${answer.clue}`;
-  };
-  const draw = () => {
-    board.replaceChildren();
-    state.definition.cells.forEach((row, rowIndex) => {
-      const rowNode = element('div', { role: 'row', class: 'crossword-row' });
-      row.forEach((cell, columnIndex) => {
+  // Build the grid inputs (and their number markers) once. draw() below only
+  // ever patches attributes/classes/value on these same nodes so cell and
+  // clue-button identity survives across dispatches, matching the sudoku
+  // build-once/patch-in-place pattern.
+  const cellInputs = state.definition.cells.map((row) => row.map(() => null));
+  state.definition.cells.forEach((row, rowIndex) => {
+    const rowNode = element('div', { role: 'row', class: 'crossword-row' });
+    row.forEach((cell, columnIndex) => {
       if (!cell) return;
-      const selected = rowIndex === state.selected.row && columnIndex === state.selected.column;
-      const answer = cell[state.direction];
-      const mistake = state.errors.includes(`${rowIndex}:${columnIndex}`);
       const input = element('input', {
-        class: `crossword-cell${selected ? ' is-selected' : ''}${mistake ? ' is-error' : ''}`,
-        'aria-label': `${cell.number ? `${cell.number}, ` : ''}row ${rowIndex + 1}, column ${columnIndex + 1}${answer ? `, ${state.direction}` : ''}${mistake ? ', mistake' : ''}`,
-        maxlength: '1', value: state.values[rowIndex][columnIndex], 'data-cell': `${rowIndex}:${columnIndex}`,
-        tabindex: selected ? '0' : '-1',
+        class: 'crossword-cell', maxlength: '1', 'data-cell': `${rowIndex}:${columnIndex}`,
       });
       input.addEventListener('click', () => dispatch({ type: 'select', row: rowIndex, column: columnIndex }, true));
-      input.addEventListener('keydown', keydown);
+      // Deferred reference: keydown is declared later in this function, so
+      // wrap it instead of passing the (not-yet-initialized) binding directly.
+      input.addEventListener('keydown', (event) => keydown(event));
       const marker = cell.number ? element('span', {
         class: 'crossword-number', 'data-cell-number': cell.number, 'aria-hidden': 'true', text: String(cell.number),
       }) : null;
@@ -216,27 +244,70 @@ export async function renderCrossword(root, store) {
       }, input, marker);
       gridCell.setAttribute('style', `grid-row:${rowIndex + 1};grid-column:${columnIndex + 1}`);
       rowNode.append(gridCell);
-      });
-      board.append(rowNode);
+      cellInputs[rowIndex][columnIndex] = input;
     });
+    board.append(rowNode);
+  });
+
+  const announceEntry = () => {
+    const answer = entryFor(state);
+    if (answer) shell.live.textContent = `${answer.number} ${answer.direction}. ${answer.clue}`;
+  };
+  const draw = () => {
+    const activeEntry = entryFor(state);
+    const activeKeys = activeEntry ? new Set(positions(activeEntry).map(keyFor)) : new Set();
+    const activeClueKey = activeEntry ? clueKeyFor(activeEntry) : null;
+    state.definition.cells.forEach((row, rowIndex) => row.forEach((cell, columnIndex) => {
+      if (!cell) return;
+      const input = cellInputs[rowIndex][columnIndex];
+      const selected = rowIndex === state.selected.row && columnIndex === state.selected.column;
+      const answer = cell[state.direction];
+      const mistake = state.errors.includes(keyFor({ row: rowIndex, column: columnIndex }));
+      const isActiveEntry = activeKeys.has(keyFor({ row: rowIndex, column: columnIndex }));
+      input.className = `crossword-cell${selected ? ' is-selected' : ''}${isActiveEntry ? ' is-active-entry' : ''}${mistake ? ' is-error' : ''}`;
+      input.setAttribute('aria-label', `${cell.number ? `${cell.number}, ` : ''}row ${rowIndex + 1}, column ${columnIndex + 1}${answer ? `, ${state.direction}` : ''}${mistake ? ', mistake' : ''}`);
+      input.value = state.values[rowIndex][columnIndex];
+      input.setAttribute('tabindex', selected ? '0' : '-1');
+    }));
+    for (const [key, button] of clueButtons) button.classList.toggle('is-active', key === activeClueKey);
     shell.timer.textContent = formatElapsed(session.elapsed());
     if (state.completed && !completed) {
-      completed = true; const result = session.finish(); makeGameTerminal(root);
+      completed = true;
+      puzzleAudio.finish({ outcome: 'completion' });
+      const reducedMotion = prefersReducedMotion();
+      let order = 0;
+      state.definition.cells.forEach((row, rowIndex) => row.forEach((cell, columnIndex) => {
+        if (!cell) return;
+        const input = cellInputs[rowIndex][columnIndex];
+        input.classList.add('is-celebrating');
+        input.style.setProperty('--cell-delay', `${reducedMotion ? 0 : order * 20}ms`);
+        order += 1;
+      }));
+      celebrate({ root });
+      const result = session.finish(); makeGameTerminal(root);
       const completion = completionPanel({ ...result, playAnother: session.playAnother });
       root.append(completion.panel); shell.live.textContent = 'Crossword complete.'; completion.heading.focus();
     }
   };
   const dispatch = (action, focus = false) => {
     if (completed || state.completed || session.finished) return;
+    const previousErrors = state.errors;
     const next = reduceCrossword(state, action); if (next === state) return;
     state = next;
+    ensurePuzzleAudioStarted();
+    if (action.type === 'letter') puzzleAudio.playEffect('puzzle-place');
+    if (action.type === 'check-entry' || action.type === 'check-all') {
+      for (const key of state.errors) {
+        if (!previousErrors.includes(key)) puzzleAudio.playEffect('puzzle-error');
+      }
+    }
     const assistedAction = ['reveal', 'check-entry', 'check-all'].includes(action.type);
     if (assistedAction) { session.assist(); shell.setAssisted(true); }
     session.updatePlay(state); draw();
     if (!state.completed) {
       if (assistedAction) shell.setAssisted(true, true); else announceEntry();
     }
-    if (focus && !state.completed) board.querySelector(`[data-cell="${keyFor(state.selected)}"]`)?.focus();
+    if (focus && !state.completed) cellInputs[state.selected.row][state.selected.column]?.focus();
   };
   const keydown = (event) => {
     const { row, column } = state.selected; const key = event.key;
@@ -253,8 +324,23 @@ export async function renderCrossword(root, store) {
   hint.addEventListener('click', () => dispatch({ type: 'reveal' }));
   check.addEventListener('click', () => { dispatch({ type: 'check-entry' }); shell.live.textContent = `${state.errors.length} errors in this entry. Assisted run; this time is ineligible for best-time records.`; });
   checkAll.addEventListener('click', () => { dispatch({ type: 'check-all' }); shell.live.textContent = `${state.errors.length} errors in the puzzle. Assisted run; this time is ineligible for best-time records.`; });
-  shell.toolbar.querySelector('[data-restart]').addEventListener('click', () => { if (window.confirm('Restart this puzzle? Current progress will be cleared.')) void session.restart(); });
-  shell.toolbar.querySelector('[data-new-game]').addEventListener('click', () => { if (!state.values.some((row) => row.some(Boolean)) || window.confirm('Replace this puzzle?')) void session.playAnother(); });
+  shell.toolbar.querySelector('[data-restart]').addEventListener('click', () => {
+    const dialog = createConfirmDialog(root, {
+      title: 'Restart this puzzle?', body: 'Current progress will be cleared.',
+      confirmLabel: 'Restart', cancelLabel: 'Cancel',
+      onConfirm: () => { void session.restart(); }, onCancel: () => {},
+    });
+    dialog.open();
+  });
+  shell.toolbar.querySelector('[data-new-game]').addEventListener('click', () => {
+    if (!state.values.some((row) => row.some(Boolean))) { void session.playAnother(); return; }
+    const dialog = createConfirmDialog(root, {
+      title: 'Replace this puzzle?', body: 'Current progress will be cleared.',
+      confirmLabel: 'New Game', cancelLabel: 'Cancel',
+      onConfirm: () => { void session.playAnother(); }, onCancel: () => {},
+    });
+    dialog.open();
+  });
   shell.select.addEventListener('change', () => { globalThis.location.href = `/games/crossword?difficulty=${shell.select.value}`; });
   draw(); announceEntry();
   session.repeat(() => { if (!completed) shell.timer.textContent = formatElapsed(session.elapsed()); }, 1000);
