@@ -145,6 +145,37 @@ test('Crossword cell transition, error shake and celebration bloom have reduced-
     /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.crossword-cell\.is-celebrating[\s\S]*?animation:\s*none/);
 });
 
+test('Word Search cell transition, rejection shake and celebration bloom have reduced-motion overrides', () => {
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.word-search-cell\s*\{[\s\S]*?transition:\s*none/);
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.word-search-cell\.is-rejected[\s\S]*?animation:\s*none/);
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.word-search-cell\.is-found[\s\S]*?animation:\s*none/);
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.word-search-cell\.is-celebrating[\s\S]*?animation:\s*none/);
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.word-search-list li\.is-found-item[\s\S]*?transition:\s*none/);
+});
+
+test('Word Search rejection cue carries a structural non-colour cue beyond the shake', () => {
+  const rejected = ruleBody('.word-search-cell.is-rejected');
+  assert.match(rejected, /outline[^;]*:/i, 'the rejection cue carries a structural edge marker, not just a shake');
+  assert.match(rejected, /animation\s*:\s*games-cell-shake/);
+});
+
+test('Word Search found-word list item carries the strike-through non-colour cue', () => {
+  const item = ruleBody('.word-search-list li.is-found-item');
+  assert.match(item, /text-decoration\s*:\s*line-through/);
+});
+
+test('Word Search found-cell pop animation references a defined keyframe', () => {
+  const found = ruleBody('.word-search-cell.is-found');
+  const match = found.match(/animation\s*:\s*([\w-]+)/);
+  assert.ok(match, 'is-found declares an animation');
+  assert.match(css, new RegExp(`@keyframes\\s+${escaped(match[1])}\\s*\\{`), `${match[1]} keyframes must actually be defined`);
+});
+
 test('Crossword active-entry and active-clue states carry non-colour cues', () => {
   const activeEntry = ruleBody('.crossword-cell.is-active-entry');
   assert.match(activeEntry, /background:/, 'the active entry mirrors the sudoku is-related tint pattern');

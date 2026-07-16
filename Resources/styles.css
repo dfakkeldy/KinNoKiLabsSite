@@ -745,6 +745,11 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
   45% { transform: scale(1.18); background-color: color-mix(in srgb, var(--gold-500) 60%, var(--surface)); }
   100% { transform: scale(1); background-color: var(--surface); }
 }
+@keyframes games-cell-pop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
 @keyframes games-fade-up {
   from { transform: translateY(12px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
@@ -894,12 +899,19 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
 .word-search-pan input[type="range"] { width: 100%; min-height: 44px; accent-color: var(--gold-500); touch-action: pan-x; }
 .word-search-row { display: contents; }
 .word-search-gridcell { display: flex; min-width: 44px; min-height: 44px; }
-.word-search-cell { width: 100%; min-width: 44px; min-height: 44px; padding: 0; color: var(--game-text-primary); background: var(--surface); border: 0; border-radius: 0; font-family: var(--font-mono); font-size: clamp(0.65rem, 3vw, 1.2rem); font-weight: 700; }
+.word-search-cell { width: 100%; min-width: 44px; min-height: 44px; padding: 0; color: var(--game-text-primary); background: var(--surface); border: 0; border-radius: 0; font-family: var(--font-mono); font-size: clamp(0.65rem, 3vw, 1.2rem); font-weight: 700; transition: background-color .12s ease, color .12s ease, outline-color .12s ease; }
 .word-search-cell.is-preview { background: color-mix(in srgb, var(--gold-500) 22%, var(--surface)); }
-.word-search-cell.is-found { color: var(--surface); background: var(--game-text-accent); }
+.word-search-cell.is-found { color: var(--surface); background: var(--game-text-accent); animation: games-cell-pop .3s ease; }
+/* Non-colour cue for a rejected ("not a word here") guess: a warning outline
+   (structural edge), not just the shake, so it reads without relying on hue. */
+.word-search-cell.is-rejected { outline: 3px solid #ef8d87; outline-offset: -3px; animation: games-cell-shake 200ms ease; }
+.word-search-cell.is-celebrating { animation: games-cell-bloom .5s ease both; animation-delay: var(--cell-delay, 0ms); }
 .word-search-list { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 12px; list-style: none; }
 .word-search-list li { color: var(--game-text-primary); font-family: var(--font-mono); font-size: 0.85rem; }
-.word-search-list li.is-found { color: var(--game-text-tertiary); text-decoration: line-through; }
+/* Non-colour cue for a found word: the strike-through itself, not the tone
+   change, is what still reads it as "solved" for colour-vision-deficient
+   sighted users; opacity settles in with a transition ("strike-in"). */
+.word-search-list li.is-found-item { color: var(--game-text-tertiary); text-decoration: line-through; opacity: .7; transition: opacity .3s ease; }
 
 .stack-game {
   min-width: 0;
@@ -1140,4 +1152,10 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   .crossword-cell { transition: none; }
   .crossword-cell.is-error { animation: none; }
   .crossword-cell.is-celebrating { animation: none; }
+
+  .word-search-cell { transition: none; }
+  .word-search-cell.is-rejected { animation: none; }
+  .word-search-cell.is-found { animation: none; }
+  .word-search-cell.is-celebrating { animation: none; }
+  .word-search-list li.is-found-item { transition: none; }
 }

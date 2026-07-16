@@ -241,6 +241,120 @@ test('Word Search announces a found word and focuses completion after the final 
   } finally { restore(); }
 });
 
+test('Word Search cell nodes stay identical across pointermove preview updates (patch-in-place, not rebuilt)', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' }); const restore = installDOM(fixture);
+  try {
+    const { renderWordSearch } = await import('../../Resources/games/word-search-ui.js');
+    const placement = wordSearchPuzzle.placements[0];
+    const store = v2StoreWithRun({ game: 'word-search', definition: wordSearchPuzzle });
+    await renderWordSearch(fixture.root, store);
+    const start = fixture.root.querySelector(`[data-cell="${placement.start.row}:${placement.start.column}"]`);
+    const endBefore = fixture.root.querySelector(`[data-cell="${placement.end.row}:${placement.end.column}"]`);
+    const startBefore = start;
+    const cellCountBefore = fixture.root.querySelectorAll('[data-cell]').length;
+    start.dispatchEvent(new FixtureEvent('pointerdown', { pointerId: 41 }));
+    fixture.document.setHitTarget(endBefore);
+    fixture.document.dispatchEvent(new FixtureEvent('pointermove', { pointerId: 41 }));
+    fixture.document.dispatchEvent(new FixtureEvent('pointermove', { pointerId: 41 }));
+    const startAfter = fixture.root.querySelector(`[data-cell="${placement.start.row}:${placement.start.column}"]`);
+    const endAfter = fixture.root.querySelector(`[data-cell="${placement.end.row}:${placement.end.column}"]`);
+    // Compared as a boolean, not the raw nodes: a direct assert.equal(nodeA,
+    // nodeB) that actually fails would make node's assert try to serialize
+    // these deeply cross-linked fixture objects into an error message, which
+    // is prohibitively slow. The boolean keeps a failure's diagnostic cheap.
+    assert.equal(startAfter === startBefore, true, 'the previewed start cell is the same DOM node before and after pointermove redraws');
+    assert.equal(endAfter === endBefore, true, 'the previewed end cell is the same DOM node before and after pointermove redraws');
+    assert.equal(fixture.root.querySelectorAll('[data-cell]').length, cellCountBefore, 'no cells were rebuilt or duplicated');
+    assert.match(endAfter.className, /is-preview/, 'the preview still patched onto the existing node');
+  } finally { restore(); }
+});
+
+test('Word Search marks an invalid endpoint selection rejected, announces it, and clears the cue on animationend', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' }); const restore = installDOM(fixture);
+  try {
+    const { renderWordSearch } = await import('../../Resources/games/word-search-ui.js');
+    const store = v2StoreWithRun({ game: 'word-search', definition: wordSearchPuzzle });
+    await renderWordSearch(fixture.root, store);
+    // A straight two-cell line can never equal a real word (words are 3+
+    // letters), so this selection is guaranteed invalid regardless of the
+    // puzzle's actual letter placement.
+    const start = fixture.root.querySelector('[data-cell="0:0"]');
+    const invalidEnd = fixture.root.querySelector('[data-cell="0:1"]');
+    start.dispatchEvent(new FixtureEvent('pointerdown', { pointerId: 42 }));
+    fixture.document.setHitTarget(invalidEnd);
+    fixture.document.dispatchEvent(new FixtureEvent('pointerup', { pointerId: 42 }));
+    assert.match(start.className, /is-rejected/, 'the first previewed cell is marked rejected');
+    assert.match(invalidEnd.className, /is-rejected/, 'the second previewed cell is marked rejected');
+    assert.match(fixture.root.querySelector('.games-live-region').textContent, /not a word here/i);
+    start.dispatchEvent(new FixtureEvent('animationend'));
+    assert.doesNotMatch(
+      fixture.root.querySelector('[data-cell="0:0"]').className, /is-rejected/,
+      'a delegated animationend listener clears the cue from the cell it fired on',
+    );
+    assert.match(
+      fixture.root.querySelector('[data-cell="0:1"]').className, /is-rejected/,
+      'the other cell keeps its cue until its own animationend fires',
+    );
+  } finally { restore(); }
+});
+
+test('Word Search pops a found cell and strikes its list item in place', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' }); const restore = installDOM(fixture);
+  try {
+    const module = await import('../../Resources/games/word-search-ui.js');
+    const target = wordSearchPuzzle.placements[0];
+    const play = { ...module.createWordSearchState(wordSearchPuzzle), focus: target.start };
+    const store = v2StoreWithRun({ game: 'word-search', definition: wordSearchPuzzle, play });
+    await module.renderWordSearch(fixture.root, store);
+    const listItemBefore = [...fixture.root.querySelectorAll('.word-search-list li')]
+      .find((item) => item.textContent === target.word);
+    assert.equal(listItemBefore.className, '');
+    fixture.root.querySelector(`[data-cell="${target.start.row}:${target.start.column}"]`).dispatchEvent(new FixtureEvent('keydown', { key: 'Enter' }));
+    const end = fixture.root.querySelector(`[data-cell="${target.end.row}:${target.end.column}"]`); end.focus(); end.dispatchEvent(new FixtureEvent('keydown', { key: 'Enter' }));
+    const startCell = fixture.root.querySelector(`[data-cell="${target.start.row}:${target.start.column}"]`);
+    assert.match(startCell.className, /is-found/, 'the found cell carries the pop-triggering is-found class');
+    const listItemAfter = [...fixture.root.querySelectorAll('.word-search-list li')]
+      .find((item) => item.textContent === target.word);
+    assert.equal(listItemAfter === listItemBefore, true, 'the same list-item node is patched in place, not rebuilt');
+    assert.equal(listItemAfter.className, 'is-found-item', 'the word-list item gains the strike-in class');
+  } finally { restore(); }
+});
+
+test('Word Search Restart and New Game route through the shared confirm dialog, not window.confirm', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' }); const restore = installDOM(fixture);
+  try {
+    const { renderWordSearch } = await import('../../Resources/games/word-search-ui.js');
+    const store = v2StoreWithRun({ game: 'word-search', definition: wordSearchPuzzle });
+    await renderWordSearch(fixture.root, store);
+    fixture.root.querySelector('[data-restart]').click();
+    const restartDialog = fixture.root.querySelector('dialog.game-dialog');
+    assert.ok(restartDialog, 'restart opens a confirm dialog instead of relying on window.confirm');
+    assert.equal(restartDialog.querySelector('[data-dialog-confirm]').textContent, 'Restart');
+    restartDialog.querySelector('[data-dialog-cancel]').click();
+    assert.equal(fixture.root.querySelector('dialog.game-dialog'), null, 'cancelling closes the dialog without restarting');
+
+    // No progress yet: New Game keeps its no-progress fast path and skips the dialog.
+    fixture.root.querySelector('[data-new-game]').click();
+    await Promise.resolve();
+    assert.equal(fixture.root.querySelector('dialog.game-dialog'), null, 'an unstarted puzzle skips the confirmation');
+  } finally { restore(); }
+});
+
+test('Word Search New Game confirms via dialog once a word has been found', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' }); const restore = installDOM(fixture);
+  try {
+    const module = await import('../../Resources/games/word-search-ui.js');
+    const target = wordSearchPuzzle.placements[0];
+    const play = { ...module.createWordSearchState(wordSearchPuzzle), found: [target.word] };
+    const store = v2StoreWithRun({ game: 'word-search', definition: wordSearchPuzzle, play });
+    await module.renderWordSearch(fixture.root, store);
+    fixture.root.querySelector('[data-new-game]').click();
+    const dialog = fixture.root.querySelector('dialog.game-dialog');
+    assert.ok(dialog, 'progress found so far means New Game opens a confirm dialog');
+    assert.equal(dialog.querySelector('[data-dialog-confirm]').textContent, 'New Game');
+  } finally { restore(); }
+});
+
 test('a progressed same-difficulty run is preserved by default before the replace dialog is answered', async () => {
   const fixture = createDOMFixture({ search: '?difficulty=easy' }); const restore = installDOM(fixture);
   try {
