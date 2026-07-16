@@ -1156,6 +1156,9 @@ YardController.prototype.handlePause = function handlePause(reason) {
   this.persistence.savePlay(this.state, this.lifecycle.elapsed());
   for (const event of result.events) this.announcer.announce(event);
   void this.audio.pause();
+  // A paused game has no meaningful hover/focus target; drop it explicitly
+  // rather than letting a stale origin potentially reappear on resume.
+  this.ghostOrigin = null;
   this.paint();
   this.view.resume.focus();
 };
