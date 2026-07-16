@@ -438,6 +438,18 @@ export function createSession(options) {
     save();
     return true;
   };
+  // Persist a shared audio-preference change (mirrors Stack/Yard's
+  // persistence.setAudio). Guards only on disposal, like the other mutators;
+  // finish() disposes the session and makeGameTerminal disables the audio
+  // controls anyway, so no post-completion writes can occur. The cancelled
+  // path ("Saved puzzle kept" screen) never mounts audio controls, so it
+  // needs no special handling.
+  const setAudio = (preferences) => {
+    if (disposed) return false;
+    currentStore = { ...currentStore, audio: sanitizeAudioPreferences(preferences) };
+    save();
+    return true;
+  };
   const elapsed = () => {
     if (!run) return completionResult?.elapsed ?? 0;
     const activeDelta = paused ? 0 : Math.max(0, monotonicNow() - activeStarted);
@@ -537,7 +549,7 @@ export function createSession(options) {
   api = {
     difficulty, cancelled, existingDifficulty: existing?.difficulty,
     get run() { return run; }, get finished() { return finished; },
-    updatePlay, assist, elapsed, finish, playAnother, restart, dispose, listen, repeat,
+    updatePlay, assist, setAudio, elapsed, finish, playAnother, restart, dispose, listen, repeat,
     addCleanup(cleanup) { cleanups.add(cleanup); },
   };
   activeSessions.set(root, api);

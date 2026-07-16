@@ -655,6 +655,36 @@ test('Sudoku mounts effects-only audio controls in the toolbar area', async () =
   } finally { restore(); }
 });
 
+test('changing an audio preference through the rendered controls persists to the store', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { renderSudoku } = await import('../../Resources/games/sudoku-ui.js');
+    const store = v2StoreWithRun({ game: 'sudoku', definition: sudokuPuzzle, seed: 1 });
+    fixture.location.search = '?difficulty=easy&continue=1';
+    await renderSudoku(fixture.root, store);
+    fixture.root.querySelector('[data-audio-effects-toggle]').click();
+    const savedAfterMute = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2));
+    assert.equal(savedAfterMute.audio.effectsEnabled, false,
+      'muting effects persists through the session store round-trip');
+
+    const volume = fixture.root.querySelector('[data-audio-effects-volume]');
+    volume.value = '0.2';
+    volume.dispatchEvent(new FixtureEvent('input'));
+    const savedAfterVolume = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2));
+    assert.equal(savedAfterVolume.audio.effectsVolume, 0.2,
+      'the effects volume also persists');
+    assert.equal(savedAfterVolume.audio.effectsEnabled, false,
+      'the earlier mute is not reverted by the later volume change');
+
+    // A re-render from the persisted store reflects the saved preference.
+    await renderSudoku(fixture.root, savedAfterVolume);
+    assert.equal(
+      fixture.root.querySelector('[data-audio-effects-toggle]').textContent,
+      'Unmute effects',
+      'a fresh render from the persisted store shows the muted state');
+  } finally { restore(); }
+});
+
 test('completion flow renders no record line end-to-end for an assisted completion', async () => {
   const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' }); const restore = installDOM(fixture);
   try {

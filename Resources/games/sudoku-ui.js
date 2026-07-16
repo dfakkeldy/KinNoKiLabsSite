@@ -168,9 +168,15 @@ export async function renderSudoku(root, store) {
   const audioControls = createAudioControls({
     channels: ['effects'],
     preferences: store.audio,
-    onChange: (preferences) => { puzzleAudio.setPreferences(preferences); },
+    onChange: (preferences) => {
+      puzzleAudio.setPreferences(preferences);
+      session.setAudio(preferences);
+    },
   });
-  session.addCleanup(() => { if (!completed) void puzzleAudio.dispose(); });
+  session.addCleanup(() => {
+    audioControls.dispose();
+    if (!completed) void puzzleAudio.dispose();
+  });
 
   root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, boardScroll, controls, audioControls.element, shell.live);
 
