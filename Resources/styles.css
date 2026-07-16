@@ -862,7 +862,9 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
 .crossword-gridcell { position: relative; min-width: 44px; min-height: 44px; }
 .crossword-cell { min-width: 0; width: 100%; min-height: 0; height: 100%; padding: 0; text-align: center; color: var(--game-text-primary); background: var(--surface); border: 1px solid var(--separator); border-radius: 0; font-family: var(--font-mono); font-size: clamp(0.7rem, 3vw, 1.35rem); font-weight: 700; text-transform: uppercase; transition: background-color .12s ease, color .12s ease, outline-color .12s ease; }
 .crossword-number { position: absolute; top: 2px; left: 4px; pointer-events: none; color: var(--game-text-tertiary); font-family: var(--font-mono); font-size: 0.62rem; line-height: 1; }
-.crossword-cell.is-active-entry { background: color-mix(in srgb, var(--gold-500) 8%, var(--surface)); }
+/* Non-colour cue for the active entry: an inset bottom edge marker reads as an
+   underline rail across the whole entry even in forced-monochrome. */
+.crossword-cell.is-active-entry { background: color-mix(in srgb, var(--gold-500) 8%, var(--surface)); box-shadow: inset 0 -3px 0 var(--gold-500); }
 .crossword-cell.is-selected { position: relative; z-index: 1; outline: 3px solid var(--gold-500); outline-offset: -3px; }
 .crossword-cell.is-error {
   color: #ef8d87;

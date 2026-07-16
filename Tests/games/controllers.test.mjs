@@ -731,9 +731,13 @@ test('Crossword marks every cell of the active entry and the matching clue butto
     for (const key of ['0:0', '0:1', '0:2']) {
       assert.ok(fixture.root.querySelector(`[data-cell="${key}"]`).classList.contains('is-active-entry'),
         `${key} is part of the active across entry`);
+      assert.match(fixture.root.querySelector(`[data-cell="${key}"]`).getAttribute('aria-label'), /active entry/i,
+        `${key} announces its active-entry membership`);
     }
     assert.equal(fixture.root.querySelector('[data-cell="1:0"]').classList.contains('is-active-entry'), false,
       '1:0 belongs only to the inactive down entry');
+    assert.doesNotMatch(fixture.root.querySelector('[data-cell="1:0"]').getAttribute('aria-label'), /active entry/i,
+      'a cell outside the active entry does not announce membership');
     assert.ok(fixture.root.querySelector('[data-clue="1:across"]').classList.contains('is-active'));
     assert.equal(fixture.root.querySelector('[data-clue="1:down"]').classList.contains('is-active'), false);
 

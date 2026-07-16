@@ -148,6 +148,8 @@ test('Crossword cell transition, error shake and celebration bloom have reduced-
 test('Crossword active-entry and active-clue states carry non-colour cues', () => {
   const activeEntry = ruleBody('.crossword-cell.is-active-entry');
   assert.match(activeEntry, /background:/, 'the active entry mirrors the sudoku is-related tint pattern');
+  assert.match(activeEntry, /(?:box-shadow\s*:\s*inset|outline[^;]*:|border[^;]*:)/i,
+    'the active entry carries a structural non-colour cue (edge marker), not just a tint');
   const activeClue = ruleBody('[data-clue].is-active');
   assert.match(activeClue, /border[^;]*:/i, 'the active clue gets a gold hairline');
   assert.match(activeClue, /font-weight\s*:\s*(?:7\d\d|800|900|bold)/i,

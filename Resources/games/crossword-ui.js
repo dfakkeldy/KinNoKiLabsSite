@@ -192,6 +192,7 @@ export async function renderCrossword(root, store) {
   const check = element('button', { type: 'button', 'data-check': '', text: 'Check Entry' });
   const checkAll = element('button', { type: 'button', 'data-check-all': '', text: 'Check Puzzle' });
   const controls = element('div', { class: 'game-controls' }, hint, check, checkAll);
+  let completed = false;
 
   // Effects-only audio: lazily started on the player's first gesture (a
   // click/keydown inside dispatch()) so we never call AudioContext.resume()
@@ -217,7 +218,6 @@ export async function renderCrossword(root, store) {
   });
 
   root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, layout, controls, audioControls.element, shell.live);
-  let completed = false;
 
   // Build the grid inputs (and their number markers) once. draw() below only
   // ever patches attributes/classes/value on these same nodes so cell and
@@ -265,7 +265,7 @@ export async function renderCrossword(root, store) {
       const mistake = state.errors.includes(keyFor({ row: rowIndex, column: columnIndex }));
       const isActiveEntry = activeKeys.has(keyFor({ row: rowIndex, column: columnIndex }));
       input.className = `crossword-cell${selected ? ' is-selected' : ''}${isActiveEntry ? ' is-active-entry' : ''}${mistake ? ' is-error' : ''}`;
-      input.setAttribute('aria-label', `${cell.number ? `${cell.number}, ` : ''}row ${rowIndex + 1}, column ${columnIndex + 1}${answer ? `, ${state.direction}` : ''}${mistake ? ', mistake' : ''}`);
+      input.setAttribute('aria-label', `${cell.number ? `${cell.number}, ` : ''}row ${rowIndex + 1}, column ${columnIndex + 1}${answer ? `, ${state.direction}` : ''}${isActiveEntry ? ', active entry' : ''}${mistake ? ', mistake' : ''}`);
       input.value = state.values[rowIndex][columnIndex];
       input.setAttribute('tabindex', selected ? '0' : '-1');
     }));
