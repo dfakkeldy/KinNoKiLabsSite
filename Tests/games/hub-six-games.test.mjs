@@ -26,7 +26,7 @@ const parseModeGroups = (markup) => {
   return root;
 };
 
-test('catalogue is top-level frozen in exact five-game order with approved metadata', () => {
+test('catalogue is top-level frozen in exact six-game order with approved metadata', () => {
   assert.equal(Object.isFrozen(GAMES), true);
   assert.deepEqual(GAMES.map(({ id, title, modes, records }) => ({ id, title, modes, records })), [
     { id: 'sudoku', title: 'Sudoku', modes: [{ id: 'default', label: 'New puzzle' }], records: ['time'] },
@@ -37,15 +37,16 @@ test('catalogue is top-level frozen in exact five-game order with approved metad
       { id: 'contracts', label: 'Puzzle Contracts' },
       { id: 'endless', label: 'Endless Yard' },
     ], records: ['time', 'moves', 'score', 'combo'] },
+    { id: 'kinnoki-charts', title: 'Kinnoki Charts', modes: [{ id: 'default', label: 'New chart' }], records: ['time'] },
   ]);
 });
 
-test('hub renders five cards without stale three-game language', () => {
+test('hub renders six cards without stale three-game language', () => {
   const markup = renderHubMarkup(createEmptyGameStore());
   for (const title of [
-    'Sudoku', 'Crossword', 'Word Search', 'Kinnoki Stack', 'Kinnoki Yard',
+    'Sudoku', 'Crossword', 'Word Search', 'Kinnoki Stack', 'Kinnoki Yard', 'Kinnoki Charts',
   ]) assert.match(markup, new RegExp('<h2[^>]*>' + title + '</h2>'));
-  assert.equal([...markup.matchAll(/<article class="game-card/g)].length, 5);
+  assert.equal([...markup.matchAll(/<article class="game-card/g)].length, 6);
   assert.doesNotMatch(markup, /three familiar|three classics|three games/i);
 });
 

@@ -178,16 +178,16 @@ test('statistics zero state is friendly', () => {
   assert.match(statistics.zeroState, /this device/i);
 });
 
-test('hub markup has one heading, a labelled games region, reset, and five cards', () => {
+test('hub markup has one heading, a labelled games region, reset, and six cards', () => {
   const markup = renderHubMarkup(loadGameStore(memoryStorage()));
 
   assert.equal([...markup.matchAll(/<h1(?:\s|>)/g)].length, 1);
   assert.match(markup, /<section[^>]+aria-labelledby="games-heading"/);
   assert.match(markup, /<button[^>]+data-reset-games[^>]*>Reset Game Data<\/button>/);
-  for (const title of ['Sudoku', 'Crossword', 'Word Search', 'Kinnoki Stack', 'Kinnoki Yard']) {
+  for (const title of ['Sudoku', 'Crossword', 'Word Search', 'Kinnoki Stack', 'Kinnoki Yard', 'Kinnoki Charts']) {
     assert.match(markup, new RegExp(`<h2[^>]*>${title}</h2>`));
   }
-  assert.equal([...markup.matchAll(/<article class="game-card/g)].length, 5);
+  assert.equal([...markup.matchAll(/<article class="game-card/g)].length, 6);
 });
 
 test('reset removes local game data and reports storage failures', () => {

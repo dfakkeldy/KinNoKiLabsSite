@@ -14,7 +14,7 @@ test('reviewed Arcade Hall social art is exact and generator-copied byte-for-byt
   assert.deepEqual(output, source);
 });
 
-for (const page of ['kinnoki-stack', 'kinnoki-yard']) {
+for (const page of ['kinnoki-stack', 'kinnoki-yard', 'kinnoki-charts']) {
   test(`${page} has a metadata-only content source`, () => {
     const source = readFileSync(new URL(`../../Content/games/${page}.md`, import.meta.url), 'utf8');
     assert.match(source, /^---\n[\s\S]+\n---\n$/);
@@ -22,13 +22,15 @@ for (const page of ['kinnoki-stack', 'kinnoki-yard']) {
   });
 }
 
-test('bootstrap opens validated Stack and Yard runs and lazy-loads both controllers', () => {
+test('bootstrap opens validated Stack, Yard, and Charts runs and lazy-loads all three controllers', () => {
   const source = readFileSync(new URL('../../Resources/games/ui.js', import.meta.url), 'utf8');
   assert.match(source, /openGameStore\(storage, \{ runValidators \}\)/);
   assert.match(source, /validateStackState\(run\?\.puzzle\?\.play, run\?\.difficulty\)\.valid/);
   assert.match(source, /validateYardState\(run\?\.puzzle\?\.play, run\?\.difficulty, run\?\.mode\)\.valid/);
+  assert.match(source, /validateChartsState\(run\?\.puzzle\?\.play, run\?\.difficulty\)\.valid/);
   assert.match(source, /import\('\.\/kinnoki-stack-ui\.js'\)/);
   assert.match(source, /import\('\.\/kinnoki-yard-ui\.js'\)/);
+  assert.match(source, /import\('\.\/kinnoki-charts-ui\.js'\)/);
   assert.match(source, /renderGameError\(root,/);
 });
 
@@ -36,6 +38,7 @@ for (const resource of [
   'cargo-geometry.js', 'kinnoki-stack.js', 'kinnoki-yard.js', 'game-audio.js',
   'sudoku-ui.js', 'crossword-ui.js', 'word-search-ui.js',
   'kinnoki-stack-ui.js', 'kinnoki-yard-ui.js',
+  'kinnoki-charts.js', 'kinnoki-charts-ui.js', 'kinnoki-charts-content.js', 'celebration.js',
 ]) {
   test(`${resource} is shipped with generated game resources`, () => {
     assert.equal(existsSync(new URL(`../../Output/games/${resource}`, import.meta.url)), true);
@@ -49,6 +52,7 @@ for (const [route, page] of [
   ['games/word-search', 'word-search'],
   ['games/kinnoki-stack', 'kinnoki-stack'],
   ['games/kinnoki-yard', 'kinnoki-yard'],
+  ['games/kinnoki-charts', 'kinnoki-charts'],
 ]) {
   test(`${route} has the game shell, module, navigation, and current metadata`, () => {
     const html = readFileSync(new URL(`../../Output/${route}/index.html`, import.meta.url), 'utf8');
