@@ -1,7 +1,7 @@
 # Arcade Hall Glow-Up and Kinnoki Charts Design
 
 **Date:** 2026-07-16
-**Status:** Draft — awaiting approval by Dan Fakkeldy
+**Status:** Approved by Dan Fakkeldy on 2026-07-16
 
 **Public destinations:** all existing `/games` pages plus a new
 `https://kinnokilabs.com/games/kinnoki-charts`
