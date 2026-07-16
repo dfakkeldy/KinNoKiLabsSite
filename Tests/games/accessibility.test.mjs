@@ -126,3 +126,27 @@ test('celebration overlay and completion entrance have reduced-motion overrides'
   assert.match(css,
     /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.game-complete[\s\S]*?animation:\s*none/);
 });
+
+const SHARED_CONTROL_SELECTOR = '.game-toolbar button, .game-toolbar select, .game-controls button, '
+  + '.sudoku-number-pad button, .word-search-pan button, .stack-controls button, .yard-controls button, '
+  + '.yard-pan-controls button, .yard-tray-piece, .difficulty-links a, .charts-controls button';
+
+test('shared control feedback rule declares the transition on every game control', () => {
+  const body = ruleBody(SHARED_CONTROL_SELECTOR);
+  assert.match(body, /transition:\s*border-color[^;]*,\s*background-color[^;]*,\s*transform[^;]*;/);
+});
+
+test('game-mode-actions pins the mode links to the bottom of the card', () => {
+  assert.match(ruleBody('.game-mode-actions'), /margin-top:\s*auto/);
+});
+
+test('card entrance, shimmer, dialog motion and shared control transitions have reduced-motion overrides', () => {
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.game-card-grid \.game-card[\s\S]*?animation:\s*none/);
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.games-app:empty::before[\s\S]*?animation:\s*none/);
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?dialog\.game-dialog\[open\][\s\S]*?animation:\s*none/);
+  assert.match(css,
+    new RegExp(`@media\\s*\\(prefers-reduced-motion:\\s*reduce\\)[\\s\\S]*?${escaped('.game-toolbar button')}[\\s\\S]*?transition:\\s*none`));
+});

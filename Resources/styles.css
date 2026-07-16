@@ -586,19 +586,34 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
   overflow: hidden;
   background: linear-gradient(155deg, color-mix(in srgb, var(--surface-2) 66%, var(--surface)), var(--surface) 58%);
   border: 1px solid var(--separator);
-  border-top-color: color-mix(in srgb, var(--gold-500) 42%, var(--separator));
+  border-top-color: var(--card-accent, color-mix(in srgb, var(--gold-500) 42%, var(--separator)));
   border-radius: var(--radius-bento);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18), inset 0 1px rgba(255, 255, 255, 0.04);
   transition: transform 0.2s var(--ease), border-color 0.2s ease, box-shadow 0.2s ease;
 }
-.game-card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--gold-500) 48%, var(--separator)); box-shadow: var(--shadow-card-hover); }
+.game-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--gold-500) 48%, var(--separator));
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18), inset 0 1px rgba(255, 255, 255, 0.04), 0 0 0 1px var(--gold-hairline), var(--shadow-card-hover);
+}
 .game-card-topline { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 26px; }
 .game-card-eyebrow { color: var(--game-text-accent); font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
-.game-card-symbol { display: inline-grid; width: 42px; height: 42px; flex: none; place-items: center; color: var(--game-text-accent); background: var(--fill-2); border: 1px solid var(--gold-hairline); border-radius: 11px; font-family: var(--font-mono); font-size: 1.15rem; font-weight: 700; }
+.game-card-symbol { display: inline-grid; width: 42px; height: 42px; flex: none; place-items: center; color: var(--game-text-accent); background: var(--fill-2); border: 1px solid var(--card-accent, var(--gold-hairline)); border-radius: 11px; font-family: var(--font-mono); font-size: 1.15rem; font-weight: 700; }
+/* Per-card accents: tint only the top hairline + symbol border so the
+   measured --game-text-accent token keeps carrying the eyebrow text
+   (contrast already verified for that token; the accents below are
+   decorative, non-text boundaries only). */
+.game-card-sudoku { --card-accent: #c9a24b; }
+.game-card-crossword { --card-accent: #b8834d; }
+.game-card-word-search { --card-accent: #a6763f; }
+.game-card-kinnoki-stack { --card-accent: #c2793f; }
+.game-card-kinnoki-yard { --card-accent: #8f7a4a; }
+.game-card-kinnoki-charts { --card-accent: #d4a76a; }
 .game-card h2 { font-size: clamp(1.55rem, 3vw, 2rem); margin-bottom: 10px; }
 .game-card-description { color: var(--game-text-secondary); font-size: 0.94rem; line-height: 1.65; }
 .game-continue { width: 100%; margin-top: 24px; }
-.difficulty-links { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: auto; padding-top: 28px; }
+.game-mode-actions { display: flex; flex-direction: column; gap: 0.75rem; margin-top: auto; }
+.difficulty-links { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-top: 28px; }
 .difficulty-links > span { width: 100%; color: var(--game-text-tertiary); font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; }
 .difficulty-links a { display: inline-flex; min-width: 44px; min-height: 44px; padding: 7px 11px; align-items: center; justify-content: center; color: var(--game-text-primary); background: var(--fill-2); border: 1px solid var(--separator); border-radius: 9px; font-size: 0.78rem; font-weight: 600; text-decoration: none; }
 .difficulty-links a:hover { border-color: var(--gold-hairline); color: var(--game-text-accent); }
@@ -618,9 +633,17 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
 .game-storage-notice { color: var(--game-text-primary); font-size: 0.88rem; }
 .game-storage-notice[hidden] { display: none; }
 .games-live-region { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-.game-dialog { width: min(calc(100% - 32px), 510px); padding: 0; color: var(--text); background: var(--surface); border: 1px solid var(--gold-hairline); border-radius: var(--radius-card); box-shadow: 0 28px 90px rgba(0, 0, 0, 0.56); }
+.game-dialog {
+  width: min(calc(100% - 32px), 510px);
+  padding: clamp(24px, 5vw, 34px);
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--gold-hairline);
+  border-radius: var(--radius-card);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.56);
+}
 .game-dialog::backdrop { background: rgba(0, 0, 0, 0.72); backdrop-filter: blur(5px); }
-.game-dialog form { padding: clamp(24px, 5vw, 34px); }
+dialog.game-dialog[open] { animation: games-fade-up 0.2s ease; }
 .game-dialog h2 { margin-bottom: 12px; }
 .game-dialog form > p:not(.eyebrow) { color: var(--game-text-secondary); font-size: 0.92rem; }
 .game-dialog-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 26px; }
@@ -668,9 +691,12 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
   min-width: 44px;
   min-height: 44px;
 }
+fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius: 12px; background: var(--surface); padding: 0.75rem 1rem; }
+.game-audio-channel { display: flex; align-items: center; gap: 0.75rem; }
+.game-audio-channel input[type="range"] { accent-color: var(--gold-500); }
 .game-toolbar, .game-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
 .game-toolbar { margin-bottom: 22px; }
-.game-board { width: min(100%, 42rem); margin: 0 auto; background: var(--surface); border: 2px solid var(--text); border-radius: 12px; overflow: hidden; }
+.game-board { width: min(100%, 42rem); margin: 0 auto; background: var(--surface); border: 1px solid var(--separator); box-shadow: inset 0 0 0 1px var(--gold-hairline); border-radius: 12px; overflow: hidden; }
 .game-board-scroll { width: 100%; max-width: 100%; min-width: 0; overflow-x: auto; overscroll-behavior-inline: contain; }
 .game-controls { justify-content: center; margin-top: 22px; }
 .game-controls button[aria-pressed="true"] { color: var(--gold-text); background: var(--fill); border: 2px solid var(--gold-500); }
@@ -705,6 +731,42 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
 @keyframes games-fade-up {
   from { transform: translateY(12px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
+}
+@keyframes games-card-in {
+  from { transform: translateY(12px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes games-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+.game-card-grid .game-card { animation: games-card-in 0.4s ease both; }
+.game-card-grid .game-card:nth-child(2) { animation-delay: 60ms; }
+.game-card-grid .game-card:nth-child(3) { animation-delay: 120ms; }
+.game-card-grid .game-card:nth-child(4) { animation-delay: 180ms; }
+.game-card-grid .game-card:nth-child(5) { animation-delay: 240ms; }
+.game-card-grid .game-card:nth-child(6) { animation-delay: 300ms; }
+
+.games-app:empty { min-height: 40vh; }
+.games-app:empty::before {
+  content: '';
+  display: block;
+  height: 200px;
+  border-radius: 16px;
+  background: linear-gradient(100deg, var(--surface) 40%, var(--fill) 50%, var(--surface) 60%);
+  background-size: 200% 100%;
+  animation: games-shimmer 1.2s linear infinite;
+}
+
+.game-toolbar button, .game-toolbar select, .game-controls button, .sudoku-number-pad button, .word-search-pan button, .stack-controls button, .yard-controls button, .yard-pan-controls button, .yard-tray-piece, .difficulty-links a, .charts-controls button {
+  transition: border-color .15s ease, background-color .15s ease, transform .15s ease;
+}
+.game-toolbar button:hover, .game-toolbar select:hover, .game-controls button:hover, .sudoku-number-pad button:hover, .word-search-pan button:hover, .stack-controls button:hover, .yard-controls button:hover, .yard-pan-controls button:hover, .yard-tray-piece:hover, .difficulty-links a:hover, .charts-controls button:hover {
+  border-color: var(--gold-500);
+}
+.game-toolbar button:active, .game-toolbar select:active, .game-controls button:active, .sudoku-number-pad button:active, .word-search-pan button:active, .stack-controls button:active, .yard-controls button:active, .yard-pan-controls button:active, .yard-tray-piece:active, .difficulty-links a:active, .charts-controls button:active {
+  transform: scale(.97);
 }
 
 .game-toolbar h1 { margin: 0 auto 0 0; font-size: clamp(1.7rem, 4vw, 2.5rem); }
@@ -797,7 +859,8 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
   margin-inline: auto;
   overflow: hidden;
   background: var(--surface);
-  border: 2px solid var(--game-text-primary);
+  border: 1px solid var(--separator);
+  box-shadow: inset 0 0 0 1px var(--gold-hairline);
   border-radius: 12px;
 }
 .stack-grid {
@@ -881,7 +944,8 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
   max-width: 100%;
   overflow: auto;
   overscroll-behavior: contain;
-  border: 2px solid var(--game-text-primary);
+  border: 1px solid var(--separator);
+  box-shadow: inset 0 0 0 1px var(--gold-hairline);
   border-radius: 12px;
   background: var(--surface);
   scroll-behavior: smooth;
@@ -1010,4 +1074,11 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 
   .game-celebration { display: none; }
   .game-complete { animation: none; }
+
+  .game-card-grid .game-card { animation: none; }
+  .games-app:empty::before { animation: none; }
+  dialog.game-dialog[open] { animation: none; }
+  .game-toolbar button, .game-toolbar select, .game-controls button, .sudoku-number-pad button, .word-search-pan button, .stack-controls button, .yard-controls button, .yard-pan-controls button, .yard-tray-piece, .difficulty-links a, .charts-controls button {
+    transition: none;
+  }
 }
