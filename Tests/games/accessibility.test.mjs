@@ -127,6 +127,29 @@ test('celebration overlay and completion entrance have reduced-motion overrides'
     /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.game-complete[\s\S]*?animation:\s*none/);
 });
 
+for (const theme of [
+  { name: 'dark', selector: ':root' },
+  { name: 'light', selector: '[data-theme="light"]' },
+]) {
+  test(`${theme.name} board-frame token meets 3:1 non-text boundary contrast on page and board surfaces`, () => {
+    const frame = colorToken(theme.selector, '--game-board-frame');
+    for (const name of ['--bg', '--surface', '--surface-2']) {
+      const background = colorToken(theme.selector, name);
+      const ratio = contrastRatio(frame, background);
+      assert.ok(
+        ratio >= 3,
+        `${theme.name} --game-board-frame ${frame} is ${ratio.toFixed(2)}:1 on ${name} ${background}; expected >= 3:1`,
+      );
+    }
+  });
+}
+
+test('board frames carry their boundary with the measured frame token', () => {
+  for (const selector of ['.game-board', '.stack-dock', '.yard-board-scroll']) {
+    assert.match(ruleBody(selector), /border:\s*1px\s+solid\s+var\(--game-board-frame\)/);
+  }
+});
+
 const SHARED_CONTROL_SELECTOR = '.game-toolbar button, .game-toolbar select, .game-controls button, '
   + '.sudoku-number-pad button, .word-search-pan button, .stack-controls button, .yard-controls button, '
   + '.yard-pan-controls button, .yard-tray-piece, .difficulty-links a, .charts-controls button';

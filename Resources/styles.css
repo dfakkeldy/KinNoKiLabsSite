@@ -51,6 +51,8 @@
   --game-text-secondary: #b8b8bf;
   --game-text-tertiary: #a6a6ad;
   --game-text-accent: #e0c47a;
+  /* Non-text board boundary: >= 3:1 against --bg, --surface, --surface-2. */
+  --game-board-frame: #75757a;
 
   --font-sans: 'Lexend', -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
   --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
@@ -81,6 +83,7 @@
   --game-text-secondary: #595960;
   --game-text-tertiary: #68686f;
   --game-text-accent: #6f5417;
+  --game-board-frame: #828287;
 }
 
 /* ── Base ───────────────────────────────────────────── */
@@ -586,6 +589,7 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
   overflow: hidden;
   background: linear-gradient(155deg, color-mix(in srgb, var(--surface-2) 66%, var(--surface)), var(--surface) 58%);
   border: 1px solid var(--separator);
+  border-top-width: 2px;
   border-top-color: var(--card-accent, color-mix(in srgb, var(--gold-500) 42%, var(--separator)));
   border-radius: var(--radius-bento);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18), inset 0 1px rgba(255, 255, 255, 0.04);
@@ -696,7 +700,7 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
 .game-audio-channel input[type="range"] { accent-color: var(--gold-500); }
 .game-toolbar, .game-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
 .game-toolbar { margin-bottom: 22px; }
-.game-board { width: min(100%, 42rem); margin: 0 auto; background: var(--surface); border: 1px solid var(--separator); box-shadow: inset 0 0 0 1px var(--gold-hairline); border-radius: 12px; overflow: hidden; }
+.game-board { width: min(100%, 42rem); margin: 0 auto; background: var(--surface); border: 1px solid var(--game-board-frame); box-shadow: inset 0 0 0 1px var(--gold-hairline); border-radius: 12px; overflow: hidden; }
 .game-board-scroll { width: 100%; max-width: 100%; min-width: 0; overflow-x: auto; overscroll-behavior-inline: contain; }
 .game-controls { justify-content: center; margin-top: 22px; }
 .game-controls button[aria-pressed="true"] { color: var(--gold-text); background: var(--fill); border: 2px solid var(--gold-500); }
@@ -859,7 +863,7 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
   margin-inline: auto;
   overflow: hidden;
   background: var(--surface);
-  border: 1px solid var(--separator);
+  border: 1px solid var(--game-board-frame);
   box-shadow: inset 0 0 0 1px var(--gold-hairline);
   border-radius: 12px;
 }
@@ -944,7 +948,7 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
   max-width: 100%;
   overflow: auto;
   overscroll-behavior: contain;
-  border: 1px solid var(--separator);
+  border: 1px solid var(--game-board-frame);
   box-shadow: inset 0 0 0 1px var(--gold-hairline);
   border-radius: 12px;
   background: var(--surface);
