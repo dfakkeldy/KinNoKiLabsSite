@@ -402,3 +402,20 @@ export function completeRun(store, request) {
     },
   };
 }
+export function recordsBrokenBy(store, request) {
+  const { game, mode = 'default', records = {} } = request ?? {};
+  const run = store.runs?.[game];
+  if (!run || run.mode !== mode || run.assisted) return [];
+  const bucket = store.stats?.games?.[game]?.modes?.[mode];
+  if (!bucket) return [];
+  const broken = [];
+  for (const recordType of MODE_RECORDS[game][mode]) {
+    const candidate = optionalSafeInteger(records[recordType]);
+    if (candidate === null) continue;
+    const current = bucket.records[recordType][run.difficulty];
+    const improves = current === null
+      || (RECORD_STRATEGY[recordType] === 'min' ? candidate < current : candidate > current);
+    if (improves) broken.push(recordType);
+  }
+  return broken;
+}

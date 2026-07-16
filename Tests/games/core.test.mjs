@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   abandonRun, chooseFreshDefinition, completeRun, createEmptyGameStore, createRng, loadGameStore, markAssisted,
-  resetGameStore, saveGameStore, startRun, visibleElapsedMs,
+  recordsBrokenBy, resetGameStore, saveGameStore, startRun, visibleElapsedMs,
 } from '../../Resources/games/core.js';
 import {
   gameCardModel, renderHub, renderHubMarkup, safeLocalStorage, statsModel,
@@ -376,4 +376,113 @@ test('failed reset uses one polite visible status without a duplicate announceme
     assert.equal(root.notice.hidden, false);
     assert.equal(liveRegion.textContent, '');
   });
+});
+
+const NOW = 1000;
+
+function storeWithRun(game, { difficulty = 'easy', assisted = false } = {}) {
+  let store = createEmptyGameStore();
+  store = startRun(store, {
+    game, mode: 'default', difficulty, seed: 1,
+    signature: `${game}-1`, puzzle: {}, now: 0,
+  });
+  if (assisted) {
+    store = markAssisted(store, game);
+  }
+  return store;
+}
+
+function storeWithRecord(game, mode, recordType, difficulty, value, baseStore = null) {
+  const store = baseStore || createEmptyGameStore();
+  store.stats.games[game].modes[mode].records[recordType][difficulty] = value;
+  return store;
+}
+
+test('first unassisted completion breaks every supplied record', () => {
+  const store = storeWithRun('sudoku', { difficulty: 'easy', assisted: false });
+  assert.deepEqual(
+    recordsBrokenBy(store, { game: 'sudoku', now: NOW, records: { time: 120 } }),
+    ['time'],
+  );
+});
+
+test('slower time breaks nothing', () => {
+  const store = storeWithRecord('sudoku', 'default', 'time', 'easy', 90);
+  assert.deepEqual(
+    recordsBrokenBy(store, { game: 'sudoku', now: NOW, records: { time: 120 } }),
+    [],
+  );
+});
+
+test('faster time breaks time record', () => {
+  let store = storeWithRun('sudoku', { difficulty: 'easy', assisted: false });
+  store = storeWithRecord('sudoku', 'default', 'time', 'easy', 120, store);
+  assert.deepEqual(
+    recordsBrokenBy(store, { game: 'sudoku', now: NOW, records: { time: 90 } }),
+    ['time'],
+  );
+});
+
+test('assisted run breaks nothing', () => {
+  const store = storeWithRun('sudoku', { difficulty: 'easy', assisted: true });
+  assert.deepEqual(
+    recordsBrokenBy(store, { game: 'sudoku', now: NOW, records: { time: 120 } }),
+    [],
+  );
+});
+
+test('missing run breaks nothing', () => {
+  const store = createEmptyGameStore();
+  assert.deepEqual(
+    recordsBrokenBy(store, { game: 'sudoku', now: NOW, records: { time: 120 } }),
+    [],
+  );
+});
+
+test('mode mismatch breaks nothing', () => {
+  // Create a run in 'endless' mode
+  let store = createEmptyGameStore();
+  store = startRun(store, {
+    game: 'kinnoki-yard', mode: 'endless', difficulty: 'easy', seed: 1,
+    signature: 'kinnoki-yard-1', puzzle: {}, now: 0,
+  });
+  // Request records for 'contracts' mode (different from run's 'endless' mode)
+  assert.deepEqual(
+    recordsBrokenBy(store, { game: 'kinnoki-yard', mode: 'contracts', now: NOW, records: { time: 120 } }),
+    [],
+  );
+});
+
+test('higher score breaks score record (max strategy)', () => {
+  let store = storeWithRun('kinnoki-stack', { difficulty: 'easy', assisted: false });
+  store = storeWithRecord('kinnoki-stack', 'default', 'score', 'easy', 100, store);
+  store = storeWithRecord('kinnoki-stack', 'default', 'combo', 'easy', 3, store);
+  assert.deepEqual(
+    recordsBrokenBy(store, { game: 'kinnoki-stack', now: NOW, records: { score: 150, combo: 5 } }),
+    ['score', 'combo'],
+  );
+});
+
+test('lower score breaks nothing (max strategy)', () => {
+  const store = storeWithRecord('kinnoki-stack', 'default', 'score', 'easy', 100);
+  assert.deepEqual(
+    recordsBrokenBy(store, { game: 'kinnoki-stack', now: NOW, records: { score: 50, combo: 3 } }),
+    [],
+  );
+});
+
+test('non-finite candidates are ignored', () => {
+  const store = storeWithRun('sudoku', { difficulty: 'easy', assisted: false });
+  assert.deepEqual(
+    recordsBrokenBy(store, { game: 'sudoku', now: NOW, records: { time: Infinity } }),
+    [],
+  );
+});
+
+test('missing candidate is ignored', () => {
+  const store = storeWithRun('sudoku', { difficulty: 'easy', assisted: false });
+  assert.deepEqual(
+    recordsBrokenBy(store, { game: 'sudoku', now: NOW, records: { time: undefined } }),
+    [],
+  );
 });
