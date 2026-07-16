@@ -693,6 +693,14 @@ dialog.game-dialog[open] { animation: games-fade-up 0.2s ease; }
   min-width: 44px;
   min-height: 44px;
 }
+.charts-controls button {
+  min-width: 44px;
+  min-height: 44px;
+}
+.charts-cell {
+  min-width: 44px;
+  min-height: 44px;
+}
 .game-audio-controls input[type="range"] {
   width: 132px;
   min-width: 44px;
@@ -1249,6 +1257,110 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
 body.font-opendyslexic .yard-cell:focus-visible,
 body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 
+/* ── Kinnoki Charts (nonogram) ──────────────────────── */
+/* Row clues sit left of the grid, column clues sit above it; the whole
+   layout (clues + grid together) rides inside .game-board-scroll so a hard
+   15×15 board scrolls horizontally as one unit on narrow screens, matching
+   the board-scroll pattern the other puzzle games already use. */
+.charts-controls button {
+  padding: 8px 12px;
+  color: var(--game-text-primary);
+  background: var(--surface-2);
+  border: 1px solid var(--separator);
+  border-radius: 9px;
+}
+.charts-layout {
+  display: inline-grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas: "corner columns" "rows board";
+  gap: 4px;
+}
+.charts-corner { grid-area: corner; }
+.charts-columns {
+  grid-area: columns;
+  display: grid;
+  grid-template-columns: repeat(var(--charts-size), minmax(44px, 1fr));
+  align-items: end;
+}
+.charts-rows {
+  grid-area: rows;
+  display: grid;
+  grid-template-rows: repeat(var(--charts-size), minmax(44px, 1fr));
+  align-items: center;
+  justify-items: end;
+}
+.charts-board {
+  grid-area: board;
+  display: grid;
+  grid-template-columns: repeat(var(--charts-size), minmax(44px, 1fr));
+  grid-template-rows: repeat(var(--charts-size), minmax(44px, 1fr));
+  min-width: calc(var(--charts-size) * 44px);
+  aspect-ratio: 1;
+  background: var(--surface);
+  border: 1px solid var(--game-board-frame);
+  box-shadow: inset 0 0 0 1px var(--gold-hairline);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.charts-row { display: contents; }
+.charts-gridcell { display: flex; min-width: 44px; min-height: 44px; }
+.charts-clue {
+  padding: 2px 6px;
+  color: var(--game-text-secondary);
+  font-family: var(--font-mono);
+  font-size: clamp(0.68rem, 2.4vw, 0.85rem);
+  line-height: 1.2;
+  white-space: pre-line;
+  transition: opacity .2s ease;
+}
+.charts-clue-row { text-align: right; }
+.charts-clue-column { text-align: center; }
+/* Non-colour cue for a satisfied line: the strike-through itself, not the
+   dimmed opacity, is what still reads as "done" for colour-vision-deficient
+   sighted users — mirrors the Word Search found-word list-item pattern. */
+.charts-clue.is-satisfied { opacity: .45; text-decoration: line-through; }
+.charts-cell {
+  width: 100%;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  color: var(--game-text-primary);
+  background: var(--surface);
+  border: 0 solid var(--separator);
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+  border-radius: 0;
+  font-family: var(--font-mono);
+  font-size: clamp(0.9rem, 4vw, 1.4rem);
+  transition: background-color .12s ease, color .12s ease, outline-color .12s ease;
+}
+.charts-cell.is-related { background: color-mix(in srgb, var(--gold-500) 8%, var(--surface)); }
+.charts-cell.is-selected { position: relative; z-index: 1; outline: 3px solid var(--gold-500); outline-offset: -3px; }
+/* Non-colour cue for a filled cell: a full-cell block glyph (structural
+   shape/coverage), not just the gold tint. */
+.charts-cell.is-filled { background: var(--gold-500); color: var(--bg); font-weight: 800; }
+.charts-cell.is-filled.is-related { background: color-mix(in srgb, var(--gold-500) 85%, var(--surface)); }
+/* Non-colour cue for a marked-empty cell: the × glyph itself. */
+.charts-cell.is-marked { color: var(--game-text-tertiary); font-size: clamp(0.75rem, 3vw, 1.05rem); }
+.charts-cell.is-error {
+  color: #ef8d87;
+  border: 3px double currentColor;
+  background: color-mix(in srgb, #9e3733 24%, var(--surface));
+  background-image: repeating-linear-gradient(135deg, transparent 0 7px, currentColor 7px 9px, transparent 9px 16px);
+  animation: games-cell-shake 200ms ease;
+}
+.charts-cell.is-reveal {
+  animation: games-charts-reveal-bloom .6s ease both;
+  animation-delay: var(--cell-delay, 0ms);
+}
+.charts-cell.is-reveal-clear { transition: opacity .4s ease; opacity: 0; }
+@keyframes games-charts-reveal-bloom {
+  0% { transform: scale(1); background-color: var(--surface); }
+  45% { transform: scale(1.18); background-color: color-mix(in srgb, var(--gold-500) 85%, var(--surface)); color: var(--bg); }
+  100% { transform: scale(1); background-color: var(--gold-500); color: var(--bg); }
+}
+
 @media (max-width: 759px) {
   .games-main { padding-top: 40px; }
   .games-hero { text-align: left; }
@@ -1331,4 +1443,10 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   .word-search-cell.is-found { animation: none; }
   .word-search-cell.is-celebrating { animation: none; }
   .word-search-list li.is-found-item { transition: none; }
+
+  .charts-cell { transition: none; }
+  .charts-cell.is-error { animation: none; }
+  .charts-cell.is-reveal { animation: none; background-color: var(--gold-500); color: var(--bg); }
+  .charts-cell.is-reveal-clear { transition: none; opacity: 0; }
+  .charts-clue { transition: none; }
 }

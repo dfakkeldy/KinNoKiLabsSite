@@ -93,6 +93,7 @@ test('cargo controls and Yard cells retain 44 CSS-pixel targets', () => {
     '.stack-controls button', '.yard-controls button',
     '.yard-cell', '.yard-tray-piece', '.yard-pan-controls button',
     '.game-audio-controls button', '.game-audio-controls input[type="range"]',
+    '.charts-cell', '.charts-controls button',
   ]) {
     const body = ruleBody(selector);
     assert.match(body, /min-width:\s*44px/);
@@ -252,6 +253,29 @@ test('Word Search found-cell pop animation references a defined keyframe', () =>
   const found = ruleBody('.word-search-cell.is-found');
   const match = found.match(/animation\s*:\s*([\w-]+)/);
   assert.ok(match, 'is-found declares an animation');
+  assert.match(css, new RegExp(`@keyframes\\s+${escaped(match[1])}\\s*\\{`), `${match[1]} keyframes must actually be defined`);
+});
+
+test('Kinnoki Charts cell transition, error shake and reveal bloom have reduced-motion overrides', () => {
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.charts-cell\s*\{[\s\S]*?transition:\s*none/);
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.charts-cell\.is-error[\s\S]*?animation:\s*none/);
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.charts-cell\.is-reveal[\s\S]*?animation:\s*none/);
+});
+
+test('Kinnoki Charts satisfied clue carries the strike-through non-colour cue, not opacity alone', () => {
+  const satisfied = ruleBody('.charts-clue.is-satisfied');
+  assert.match(satisfied, /text-decoration\s*:\s*line-through/);
+  assert.match(satisfied, /opacity\s*:\s*\.45/);
+});
+
+test('Kinnoki Charts is-reveal uses its own bloom-to-gold keyframe, distinct from the shared cell bloom', () => {
+  const reveal = ruleBody('.charts-cell.is-reveal');
+  const match = reveal.match(/animation\s*:\s*([\w-]+)/);
+  assert.ok(match, 'is-reveal declares an animation');
+  assert.notEqual(match[1], 'games-cell-bloom', 'the reveal celebration ends filled gold, not back at --surface');
   assert.match(css, new RegExp(`@keyframes\\s+${escaped(match[1])}\\s*\\{`), `${match[1]} keyframes must actually be defined`);
 });
 
