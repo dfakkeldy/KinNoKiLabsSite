@@ -1,12 +1,24 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  abandonRun, chooseFreshDefinition, completeRun, createEmptyGameStore, createRng, loadGameStore, markAssisted,
-  recordsBrokenBy, resetGameStore, saveGameStore, startRun, visibleElapsedMs,
+  GAME_IDS, abandonRun, chooseFreshDefinition, completeRun, createEmptyGameStore, createRng, loadGameStore,
+  markAssisted, recordsBrokenBy, resetGameStore, saveGameStore, startRun, visibleElapsedMs,
 } from '../../Resources/games/core.js';
 import {
   gameCardModel, renderHub, renderHubMarkup, safeLocalStorage, statsModel,
 } from '../../Resources/games/hub-ui.js';
+
+test('kinnoki-charts is registered in the store schema with a fresh time record slot per difficulty', () => {
+  assert.ok(GAME_IDS.includes('kinnoki-charts'), 'kinnoki-charts must be a known game id');
+  const store = createEmptyGameStore();
+  const modes = store.stats.games['kinnoki-charts']?.modes;
+  assert.ok(modes, 'a fresh store materializes a kinnoki-charts stats slot');
+  assert.deepEqual(Object.keys(modes), ['default']);
+  assert.deepEqual(Object.keys(modes.default.records), ['time']);
+  for (const difficulty of ['easy', 'medium', 'hard']) {
+    assert.equal(modes.default.records.time[difficulty], null);
+  }
+});
 
 test('zero-dispatch terminals count and assisted runs preserve unassisted records', () => {
   let store = createEmptyGameStore();
@@ -244,7 +256,7 @@ test('missing v1 fields recover to a complete safe store', () => {
   assert.deepEqual(store.previousSeeds, {});
   assert.equal(store.stats.totalCompleted, 0);
   assert.deepEqual(Object.keys(store.stats.games), [
-    'sudoku', 'crossword', 'word-search', 'kinnoki-stack', 'kinnoki-yard',
+    'sudoku', 'crossword', 'word-search', 'kinnoki-stack', 'kinnoki-yard', 'kinnoki-charts',
   ]);
   assert.doesNotThrow(() => renderHubMarkup(store));
 });

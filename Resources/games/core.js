@@ -3,7 +3,7 @@ export const STORE_KEYS = Object.freeze({
   v2: 'kinnoki-games:v2',
 });
 export const GAME_IDS = Object.freeze([
-  'sudoku', 'crossword', 'word-search', 'kinnoki-stack', 'kinnoki-yard',
+  'sudoku', 'crossword', 'word-search', 'kinnoki-stack', 'kinnoki-yard', 'kinnoki-charts',
 ]);
 export const DIFFICULTIES = Object.freeze(['easy', 'medium', 'hard']);
 export const AUDIO_DEFAULTS = Object.freeze({
@@ -28,6 +28,7 @@ const MODE_RECORDS = Object.freeze({
   'word-search': { default: ['time'] },
   'kinnoki-stack': { default: ['score', 'combo'] },
   'kinnoki-yard': { contracts: ['time', 'moves'], endless: ['score', 'combo'] },
+  'kinnoki-charts': { default: ['time'] },
 });
 const RECORD_STRATEGY = Object.freeze({
   time: 'min', moves: 'min', score: 'max', combo: 'max',
