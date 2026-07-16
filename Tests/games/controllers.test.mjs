@@ -55,8 +55,8 @@ test('shared element helper omits absent optional children', async () => {
   } finally { restore(); }
 });
 
-test('accepted puzzle replacement excludes the saved definition signature', async () => {
-  const fixture = createDOMFixture({ search: '?difficulty=easy', confirm: true });
+test('a saved-progress conflict resumes by default and offers a dialog to start fresh', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy' });
   const restore = installDOM(fixture);
   try {
     const { createSession } = await import('../../Resources/games/controller-common.js');
@@ -80,8 +80,45 @@ test('accepted puzzle replacement excludes the saved definition signature', asyn
       seedFactory: () => 9, wallNow: () => 100, monotonicNow: () => 0,
       onRender: async () => {},
     });
+    // The saved run resumes immediately — no data is lost by default.
+    assert.equal(session.run.signature, savedDefinition.id);
+    assert.equal(seenSeeds.length, 0);
+    await Promise.resolve();
+    const dialog = fixture.root.querySelector('dialog.game-dialog');
+    assert.ok(dialog, 'a confirm dialog is offered for the conflicting saved run');
+    assert.equal(dialog.querySelector('[data-dialog-confirm]').textContent, 'Start new');
+    dialog.querySelector('[data-dialog-confirm]').click();
     assert.ok(seenSeeds.length >= 2);
     assert.notEqual(session.run.signature, savedDefinition.id);
+    assert.equal(fixture.root.querySelector('dialog.game-dialog'), null, 'confirming closes the dialog');
+    session.dispose();
+  } finally { restore(); }
+});
+
+test('declining the saved-progress dialog leaves the resumed run untouched', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy' });
+  const restore = installDOM(fixture);
+  try {
+    const { createSession } = await import('../../Resources/games/controller-common.js');
+    const { createEmptyGameStore: emptyStore, startRun } = await import('../../Resources/games/core.js');
+    const savedDefinition = { difficulty: 'easy', seed: 9, id: 'saved-definition' };
+    let store = emptyStore();
+    store = startRun(store, {
+      game: 'sudoku', mode: 'default', difficulty: 'easy', seed: 9,
+      signature: savedDefinition.id,
+      puzzle: { definition: savedDefinition, play: { progressed: true } }, now: 0,
+    });
+    const session = createSession({
+      root: fixture.root, game: 'sudoku', store,
+      createPuzzle: ({ seed }) => ({ difficulty: 'easy', seed, id: `fresh-${seed}` }),
+      createPlay: () => ({}), progressed: () => true, validateRun: () => true,
+      definitionSignature: (definition) => definition.id,
+      onRender: async () => {},
+    });
+    await Promise.resolve();
+    fixture.root.querySelector('[data-dialog-cancel]').click();
+    assert.equal(session.run.signature, savedDefinition.id, 'declining keeps the resumed run');
+    assert.equal(fixture.root.querySelector('dialog.game-dialog'), null, 'declining closes the dialog');
     session.dispose();
   } finally { restore(); }
 });
@@ -251,5 +288,93 @@ test('Play Another starts a run whose seed differs from the completed seed', asy
     fixture.root.querySelector('[data-play-another]').click();
     const next = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2));
     assert.notEqual(next.runs['word-search'].seed, next.previousSeeds['word-search']);
+  } finally { restore(); }
+});
+
+test('prefersReducedMotion defaults to false without matchMedia and honors a stubbed match', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { prefersReducedMotion } = await import('../../Resources/games/controller-common.js');
+    assert.equal(prefersReducedMotion(), false, 'no matchMedia on the fixture means no preference detected');
+    const originalMatchMedia = globalThis.matchMedia;
+    globalThis.matchMedia = (query) => ({ matches: true, media: query });
+    try {
+      assert.equal(prefersReducedMotion(), true);
+    } finally {
+      if (originalMatchMedia === undefined) delete globalThis.matchMedia;
+      else globalThis.matchMedia = originalMatchMedia;
+    }
+  } finally { restore(); }
+});
+
+test('createConfirmDialog mounts labeled actions, fires the matching callback, and close() removes it', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { createConfirmDialog } = await import('../../Resources/games/controller-common.js');
+    let confirmed = 0, cancelled = 0;
+    const confirmDialog = createConfirmDialog(fixture.root, {
+      title: 'Replace saved progress?', body: 'Start a new puzzle and replace your saved progress?',
+      confirmLabel: 'Start new', cancelLabel: 'Keep playing',
+      onConfirm: () => { confirmed += 1; }, onCancel: () => { cancelled += 1; },
+    });
+    confirmDialog.open();
+    const mounted = fixture.root.querySelector('dialog.game-dialog');
+    assert.ok(mounted, 'open() mounts the dialog into root');
+    assert.equal(mounted.querySelector('h2').textContent, 'Replace saved progress?');
+    assert.equal(mounted.querySelector('[data-dialog-confirm]').textContent, 'Start new');
+    assert.equal(mounted.querySelector('[data-dialog-cancel]').textContent, 'Keep playing');
+
+    mounted.querySelector('[data-dialog-confirm]').click();
+    assert.equal(confirmed, 1);
+    assert.equal(cancelled, 0);
+    assert.equal(fixture.root.querySelector('dialog.game-dialog'), null, 'confirming closes and removes the dialog');
+
+    const second = createConfirmDialog(fixture.root, {
+      title: 'Second', body: 'Body copy',
+      onConfirm: () => { confirmed += 1; }, onCancel: () => { cancelled += 1; },
+    });
+    second.open();
+    fixture.root.querySelector('[data-dialog-cancel]').click();
+    assert.equal(confirmed, 1);
+    assert.equal(cancelled, 1);
+    assert.equal(fixture.root.querySelector('dialog.game-dialog'), null, 'cancelling closes and removes the dialog');
+
+    const third = createConfirmDialog(fixture.root, { title: 'Third', body: 'Body copy' });
+    third.open();
+    assert.ok(fixture.root.querySelector('dialog.game-dialog'));
+    third.close();
+    assert.equal(fixture.root.querySelector('dialog.game-dialog'), null, 'close() removes the dialog directly');
+  } finally { restore(); }
+});
+
+test('session.finish() reports recordsBroken for a first unassisted completion', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' }); const restore = installDOM(fixture);
+  try {
+    const { createSession } = await import('../../Resources/games/controller-common.js');
+    const store = v2StoreWithRun({ game: 'sudoku', definition: sudokuPuzzle, seed: 1 });
+    const session = createSession({
+      root: fixture.root, game: 'sudoku', store,
+      createPuzzle: () => sudokuPuzzle, createPlay: () => ({}),
+      progressed: () => false, validateRun: () => true,
+      onRender: async () => {},
+    });
+    const result = session.finish();
+    assert.deepEqual(result.recordsBroken, ['time'], 'a first-ever completion breaks the time record');
+  } finally { restore(); }
+});
+
+test('session.finish() reports no broken records for an assisted run', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' }); const restore = installDOM(fixture);
+  try {
+    const { createSession } = await import('../../Resources/games/controller-common.js');
+    const store = v2StoreWithRun({ game: 'sudoku', definition: sudokuPuzzle, seed: 1, assisted: true });
+    const session = createSession({
+      root: fixture.root, game: 'sudoku', store,
+      createPuzzle: () => sudokuPuzzle, createPlay: () => ({}),
+      progressed: () => false, validateRun: () => true,
+      onRender: async () => {},
+    });
+    const result = session.finish();
+    assert.deepEqual(result.recordsBroken, [], 'assisted runs are ineligible for records');
   } finally { restore(); }
 });

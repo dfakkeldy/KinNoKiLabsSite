@@ -113,6 +113,12 @@ export class FixtureElement {
     return !event.defaultPrevented;
   }
   click() { this.dispatchEvent(new FixtureEvent('click')); }
+  remove() {
+    if (!this.parentNode) return;
+    if (this.contains(this.ownerDocument.activeElement)) this.ownerDocument.activeElement = null;
+    this.parentNode.children = this.parentNode.children.filter((child) => child !== this);
+    this.parentNode = null;
+  }
   focus() { this.ownerDocument.activeElement = this; this.dispatchEvent(new FixtureEvent('focus', { bubbles: false })); }
   setPointerCapture(pointerId) { this.capturedPointers.add(pointerId); }
   releasePointerCapture(pointerId) { this.capturedPointers.delete(pointerId); }

@@ -1,6 +1,6 @@
 import {
   chooseFreshDefinition, completeRun, deriveSeed, historyKey, markAssisted,
-  sanitizeAudioPreferences, saveGameStore, startRun,
+  recordsBrokenBy, sanitizeAudioPreferences, saveGameStore, startRun,
 } from './core.js';
 import { safeLocalStorage, showStorageFailureNotice } from './hub-ui.js';
 
@@ -47,6 +47,24 @@ export const formatElapsed = (milliseconds) => {
   const seconds = Math.max(0, Math.floor(milliseconds / 1000));
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
 };
+
+export function prefersReducedMotion() {
+  return globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
+}
+
+export function createConfirmDialog(root, { title, body, confirmLabel = 'Continue', cancelLabel = 'Cancel', onConfirm, onCancel }) {
+  const heading = element('h2', { text: title });
+  const confirm = element('button', { type: 'button', 'data-dialog-confirm': '', text: confirmLabel });
+  const cancel = element('button', { type: 'button', 'data-dialog-cancel': '', text: cancelLabel });
+  const dialog = element('dialog', { class: 'game-dialog' }, heading,
+    element('p', { text: body }),
+    element('div', { class: 'game-dialog-actions' }, cancel, confirm));
+  confirm.addEventListener('click', () => { close(); onConfirm?.(); });
+  cancel.addEventListener('click', () => { close(); onCancel?.(); });
+  function open() { root.append(dialog); dialog.showModal?.(); dialog.setAttribute('open', ''); }
+  function close() { dialog.close?.(); dialog.remove(); }
+  return { open, close, dialog };
+}
 
 export function defaultSeedFactory({ previousSeed = null } = {}) {
   const words = new Uint32Array(1);
@@ -351,12 +369,30 @@ export function createSession(options) {
     activeStarted = monotonicNow();
     save();
   }
-  else if (existingValid && progressed(existing.puzzle?.play)
-      && globalThis.window?.confirm?.('Start a new puzzle and replace your saved progress?') === false) {
+  else if (existingValid && progressed(existing.puzzle?.play)) {
+    // Non-destructive default: resume the saved run immediately, exactly like a
+    // declined confirmation used to. A dialog then offers the destructive
+    // alternative (starting fresh) asynchronously, since a <dialog> — unlike
+    // window.confirm — cannot block this constructor for an answer.
     run = { ...existing, startedAt: wallNow() };
     currentStore = { ...currentStore, runs: { ...currentStore.runs, [game]: run } };
     activeStarted = monotonicNow();
     save();
+    const startFresh = () => { void api.playAnother(); };
+    const resumeExisting = () => {};
+    Promise.resolve().then(() => {
+      if (disposed) return;
+      const confirmDialog = createConfirmDialog(root, {
+        title: 'Replace saved progress?',
+        body: 'Start a new puzzle and replace your saved progress?',
+        confirmLabel: 'Start new',
+        cancelLabel: 'Keep playing',
+        onConfirm: startFresh,
+        onCancel: resumeExisting,
+      });
+      cleanups.add(confirmDialog.close);
+      confirmDialog.open();
+    });
   } else if (existingStructValid && existing.difficulty !== difficulty && progressed(existing.puzzle?.play)
       && globalThis.window?.confirm?.('Start a new puzzle and replace your saved progress?') === false) {
     cancelled = true;
@@ -393,13 +429,12 @@ export function createSession(options) {
     finished = true;
     const elapsedMs = run.elapsedBeforeStartMs;
     const assisted = run.assisted;
-    currentStore = completeRun(currentStore, {
-      game, mode: 'default', now: wallNow(),
-      records: { time: elapsedMs },
-    });
+    const request = { game, mode: 'default', now: wallNow(), records: { time: elapsedMs } };
+    const recordsBroken = recordsBrokenBy(currentStore, request);
+    currentStore = completeRun(currentStore, request);
     save();
     dispose();
-    completionResult = { elapsed: elapsedMs, assisted };
+    completionResult = { elapsed: elapsedMs, assisted, recordsBroken };
     return completionResult;
   };
   const playAnother = async (seed) => {
