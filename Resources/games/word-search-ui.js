@@ -289,6 +289,16 @@ export async function renderWordSearch(root, store) {
   });
 
   const foundCells = () => state.definition.placements.filter(({ word }) => state.found.includes(word)).flatMap((placement) => cellsOnLine(placement.start, placement.end).map(keyFor));
+  // An attempted line that exactly re-traces an already-found word's placement
+  // (in either direction — sorted key sets are direction-agnostic) is a real
+  // word, just a solved one, so it must not get the "not a word" reject cue.
+  const matchesFoundWord = (lineKeys) => {
+    const attempted = [...lineKeys].sort().join('|');
+    return state.definition.placements.some(({ word, start, end }) => (
+      state.found.includes(word)
+      && cellsOnLine(start, end).map(keyFor).sort().join('|') === attempted
+    ));
+  };
   const draw = () => {
     const preview = cellsOnLine(state.start, state.preview).map(keyFor);
     const solved = foundCells();
@@ -347,10 +357,12 @@ export async function renderWordSearch(root, store) {
     // scored mistake, but guessing wrong here is normal, frequent play, not
     // a mistake worth a rate-limited buzz on every miss — visual cue plus the
     // live-region announcement carry it instead.
-    if (attemptedLine && !foundGrew) rejectedCells = new Set(attemptedLine);
+    const alreadyFound = attemptedLine && !foundGrew && matchesFoundWord(attemptedLine);
+    if (attemptedLine && !foundGrew && !alreadyFound) rejectedCells = new Set(attemptedLine);
     session.updatePlay(state); draw();
     if (assistedAction && !state.completed) shell.setAssisted(true, true);
     else if (foundGrew && !state.completed) shell.live.textContent = `${state.lastFound} found.`;
+    else if (alreadyFound && !state.completed) shell.live.textContent = 'Already found.';
     else if (attemptedLine && !foundGrew && !state.completed) shell.live.textContent = 'Not a word here.';
     if (focus && !state.completed) cellButtons.get(keyFor(state.focus))?.focus();
   };

@@ -903,7 +903,9 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
 .word-search-cell.is-preview { background: color-mix(in srgb, var(--gold-500) 22%, var(--surface)); }
 .word-search-cell.is-found { color: var(--surface); background: var(--game-text-accent); animation: games-cell-pop .3s ease; }
 /* Non-colour cue for a rejected ("not a word here") guess: a warning outline
-   (structural edge), not just the shake, so it reads without relying on hue. */
+   (structural edge), not just the shake, so it reads without relying on hue.
+   #ef8d87 is the same raw error hex the sudoku/crossword .is-error rules use —
+   no error/warning token exists in this stylesheet yet to reference instead. */
 .word-search-cell.is-rejected { outline: 3px solid #ef8d87; outline-offset: -3px; animation: games-cell-shake 200ms ease; }
 .word-search-cell.is-celebrating { animation: games-cell-bloom .5s ease both; animation-delay: var(--cell-delay, 0ms); }
 .word-search-list { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 12px; list-style: none; }

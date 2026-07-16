@@ -298,6 +298,30 @@ test('Word Search marks an invalid endpoint selection rejected, announces it, an
   } finally { restore(); }
 });
 
+test('Word Search re-tracing an already-found word announces "Already found." without the reject cue', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' }); const restore = installDOM(fixture);
+  try {
+    const module = await import('../../Resources/games/word-search-ui.js');
+    const target = wordSearchPuzzle.placements[0];
+    const play = { ...module.createWordSearchState(wordSearchPuzzle), found: [target.word] };
+    const store = v2StoreWithRun({ game: 'word-search', definition: wordSearchPuzzle, play });
+    await module.renderWordSearch(fixture.root, store);
+    const start = fixture.root.querySelector(`[data-cell="${target.start.row}:${target.start.column}"]`);
+    const end = fixture.root.querySelector(`[data-cell="${target.end.row}:${target.end.column}"]`);
+    // Exact re-trace of the found placement, dragged in the reverse direction
+    // to prove the check is direction-agnostic.
+    end.dispatchEvent(new FixtureEvent('pointerdown', { pointerId: 43 }));
+    fixture.document.setHitTarget(start);
+    fixture.document.dispatchEvent(new FixtureEvent('pointerup', { pointerId: 43 }));
+    assert.doesNotMatch(start.className, /is-rejected/, 'a re-traced found word is not marked rejected');
+    assert.doesNotMatch(end.className, /is-rejected/, 'a re-traced found word is not marked rejected');
+    assert.equal(fixture.root.querySelectorAll('.is-rejected').length, 0, 'no cell anywhere carries the reject cue');
+    const announced = fixture.root.querySelector('.games-live-region').textContent;
+    assert.doesNotMatch(announced, /not a word here/i, 'the factually wrong rejection message is not announced');
+    assert.equal(announced, 'Already found.');
+  } finally { restore(); }
+});
+
 test('Word Search pops a found cell and strikes its list item in place', async () => {
   const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' }); const restore = installDOM(fixture);
   try {
