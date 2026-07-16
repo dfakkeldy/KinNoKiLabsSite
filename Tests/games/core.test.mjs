@@ -407,7 +407,8 @@ test('first unassisted completion breaks every supplied record', () => {
 });
 
 test('slower time breaks nothing', () => {
-  const store = storeWithRecord('sudoku', 'default', 'time', 'easy', 90);
+  let store = storeWithRun('sudoku', { difficulty: 'easy', assisted: false });
+  store = storeWithRecord('sudoku', 'default', 'time', 'easy', 90, store);
   assert.deepEqual(
     recordsBrokenBy(store, { game: 'sudoku', now: NOW, records: { time: 120 } }),
     [],
@@ -464,7 +465,9 @@ test('higher score breaks score record (max strategy)', () => {
 });
 
 test('lower score breaks nothing (max strategy)', () => {
-  const store = storeWithRecord('kinnoki-stack', 'default', 'score', 'easy', 100);
+  let store = storeWithRun('kinnoki-stack', { difficulty: 'easy', assisted: false });
+  store = storeWithRecord('kinnoki-stack', 'default', 'score', 'easy', 100, store);
+  store = storeWithRecord('kinnoki-stack', 'default', 'combo', 'easy', 5, store);
   assert.deepEqual(
     recordsBrokenBy(store, { game: 'kinnoki-stack', now: NOW, records: { score: 50, combo: 3 } }),
     [],
