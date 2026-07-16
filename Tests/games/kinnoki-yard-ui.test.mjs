@@ -59,11 +59,57 @@ test('Yard asks for mode first and exposes one roving board tab stop', async () 
   } finally { restore(); }
 });
 import {
-  createContractState, generateContract, reduceContract, yardDefinitionSignature,
+  createContractState, generateContract, prepareContractForContinue, reduceContract,
+  yardDefinitionSignature,
 } from '../../Resources/games/kinnoki-yard.js';
 import {
   markAssisted, openGameStore, startRun, STORE_KEYS,
 } from '../../Resources/games/core.js';
+
+// A small, deterministic Contract fixture (mirrors kinnoki-yard-contracts.test.mjs's
+// `pairContract`): six fixed-rotation two-cell pieces tiling a 4x3 target with a
+// known witness solution, so ghost/hint footprint tests don't depend on solver
+// or generator randomness.
+function buildPairContractDefinition() {
+  return Object.freeze({
+    version: 1, game: 'kinnoki-yard', mode: 'contracts', difficulty: 'easy', seed: 700,
+    width: 4, height: 3,
+    target: [0, 1, 2].flatMap((row) => (
+      [0, 1, 2, 3].map((column) => ({ row, column }))
+    )),
+    pieces: [0, 1, 2, 3, 4, 5].map((pieceId) => ({
+      pieceId, typeId: 'crate-pair', allowedRotations: [0],
+      initialRotation: 0, trayIndex: pieceId,
+    })),
+    witness: [0, 1, 2, 3, 4, 5].map((pieceId) => ({
+      pieceId, rotation: 0,
+      row: Math.floor(pieceId / 2), column: (pieceId % 2) * 2,
+    })),
+    generation: {
+      usedFallback: false, attempt: 0, sourceId: null,
+      transformId: 'identity', operations: 0,
+    },
+  });
+}
+
+function pairContractStore() {
+  const definition = buildPairContractDefinition();
+  const active = reduceContract(createContractState(definition), { type: 'start' }).state;
+  const play = prepareContractForContinue(active);
+  const store = startRun(createEmptyGameStore(), {
+    game: 'kinnoki-yard', mode: 'contracts', difficulty: 'easy', seed: 700,
+    signature: yardDefinitionSignature(definition),
+    puzzle: { definition, play }, now: 100,
+  });
+  return { definition, store };
+}
+
+function clickTrayPiece(fixture, pieceId) {
+  const tray = fixture.root.querySelector('[data-yard-tray]');
+  const piece = tray.querySelector(`[data-yard-piece="${pieceId}"]`);
+  tray.dispatchEvent(new FixtureEvent('click', { target: { closest: () => piece } }));
+  return piece;
+}
 
 test('Contract and Endless expose their exact mode-specific controls', async () => {
   for (const [mode, hasHint] of [['contracts', true], ['endless', false]]) {
@@ -533,5 +579,265 @@ test('Endless zero-dispatch terminal writes exact zero records once', async () =
     assert.equal(bucket.records.score.easy, 0);
     assert.equal(bucket.records.combo.easy, 0);
     assert.equal(saved.runs['kinnoki-yard'], undefined);
+  } finally { restore(); }
+});
+
+test("Yard ghost preview tints the piece's full rotated footprint by placeability and clears on leave", async () => {
+  const { store } = pairContractStore();
+  const fixture = createDOMFixture({ search: '?mode=contracts&difficulty=easy' });
+  const restore = installDOM(fixture);
+  try {
+    const { renderKinnokiYard } = await import('../../Resources/games/kinnoki-yard-ui.js');
+    const controller = await renderKinnokiYard(fixture.root, store, {
+      audioFactory: silentYardAudioFactory,
+    });
+    fixture.root.querySelector('[data-continue-game]').click();
+    await waitForYardState(
+      () => fixture.root.querySelector('[data-yard-rotate]').disabled === false,
+      'Contract never resumed to active state',
+    );
+    clickTrayPiece(fixture, 0);
+
+    const validOrigin = fixture.root.querySelector('[data-yard-cell="0:0"]');
+    validOrigin.dispatchEvent(new FixtureEvent('pointerenter'));
+    assert.ok(validOrigin.classList.contains('is-ghost-valid'));
+    assert.ok(fixture.root.querySelector('[data-yard-cell="0:1"]')
+      .classList.contains('is-ghost-valid'));
+    assert.equal(fixture.root.querySelectorAll('.is-ghost-valid').length, 2);
+    assert.equal(fixture.root.querySelectorAll('.is-ghost-invalid').length, 0);
+
+    validOrigin.dispatchEvent(new FixtureEvent('pointerleave'));
+    assert.equal(fixture.root.querySelectorAll('.is-ghost-valid').length, 0);
+
+    // Piece 0 is a fixed-rotation two-cell horizontal piece; anchoring it at the
+    // target's rightmost column pushes its second cell off the 4-wide board, so
+    // this origin can never be a legal placement regardless of solver state.
+    const invalidOrigin = fixture.root.querySelector('[data-yard-cell="0:3"]');
+    invalidOrigin.dispatchEvent(new FixtureEvent('focusin'));
+    assert.ok(invalidOrigin.classList.contains('is-ghost-invalid'));
+    assert.equal(fixture.root.querySelectorAll('.is-ghost-valid').length, 0);
+
+    invalidOrigin.dispatchEvent(new FixtureEvent('focusout'));
+    assert.equal(fixture.root.querySelectorAll('.is-ghost-invalid').length, 0);
+
+    controller.dispose();
+  } finally { restore(); }
+});
+
+test('Contract hint highlights the full footprint and flashes the matching tray piece', async () => {
+  const { store } = pairContractStore();
+  const fixture = createDOMFixture({ search: '?mode=contracts&difficulty=easy' });
+  const restore = installDOM(fixture);
+  try {
+    const { renderKinnokiYard } = await import('../../Resources/games/kinnoki-yard-ui.js');
+    const controller = await renderKinnokiYard(fixture.root, store, {
+      audioFactory: silentYardAudioFactory,
+    });
+    fixture.root.querySelector('[data-continue-game]').click();
+    await waitForYardState(
+      () => fixture.root.querySelector('[data-yard-hint]').disabled === false,
+      'Contract never resumed to active state',
+    );
+    fixture.root.querySelector('[data-yard-hint]').click();
+
+    assert.ok(fixture.root.querySelector('[data-yard-cell="0:0"]').classList.contains('is-hint'));
+    assert.ok(fixture.root.querySelector('[data-yard-cell="0:1"]').classList.contains('is-hint'));
+    assert.equal(fixture.root.querySelectorAll('.is-hint').length, 2);
+
+    const flashedPiece = fixture.root.querySelector('[data-yard-piece="0"]');
+    assert.ok(flashedPiece.classList.contains('is-hint-flash'));
+    assert.equal(fixture.root.querySelectorAll('.is-hint-flash').length, 1);
+
+    controller.dispose();
+  } finally { restore(); }
+});
+
+test('an invalid Contract placement gets a one-shot cell flash cleared on animationend', async () => {
+  const { store } = pairContractStore();
+  const fixture = createDOMFixture({ search: '?mode=contracts&difficulty=easy' });
+  const restore = installDOM(fixture);
+  try {
+    const { renderKinnokiYard } = await import('../../Resources/games/kinnoki-yard-ui.js');
+    const controller = await renderKinnokiYard(fixture.root, store, {
+      audioFactory: silentYardAudioFactory,
+    });
+    fixture.root.querySelector('[data-continue-game]').click();
+    await waitForYardState(
+      () => fixture.root.querySelector('[data-yard-rotate]').disabled === false,
+      'Contract never resumed to active state',
+    );
+    clickTrayPiece(fixture, 0);
+    const invalidCell = fixture.root.querySelector('[data-yard-cell="0:3"]');
+    invalidCell.click();
+    assert.ok(invalidCell.classList.contains('yard-cell-invalid-flash'));
+    assert.equal(fixture.root.querySelectorAll('.yard-cell-invalid-flash').length, 1);
+    assert.equal(fixture.root.querySelectorAll('.yard-cell-invalid').length, 0);
+
+    invalidCell.dispatchEvent(new FixtureEvent('animationend'));
+    assert.equal(invalidCell.classList.contains('yard-cell-invalid-flash'), false);
+
+    controller.dispose();
+  } finally { restore(); }
+});
+
+test('reduced motion applies the static invalid stripe instead of the one-shot flash', async () => {
+  const { store } = pairContractStore();
+  const fixture = createDOMFixture({ search: '?mode=contracts&difficulty=easy' });
+  const restore = installDOM(fixture);
+  const originalMatchMedia = globalThis.matchMedia;
+  globalThis.matchMedia = (query) => ({ matches: true, media: query });
+  try {
+    const { renderKinnokiYard } = await import('../../Resources/games/kinnoki-yard-ui.js');
+    const controller = await renderKinnokiYard(fixture.root, store, {
+      audioFactory: silentYardAudioFactory,
+    });
+    fixture.root.querySelector('[data-continue-game]').click();
+    await waitForYardState(
+      () => fixture.root.querySelector('[data-yard-rotate]').disabled === false,
+      'Contract never resumed to active state',
+    );
+    clickTrayPiece(fixture, 0);
+    const invalidCell = fixture.root.querySelector('[data-yard-cell="0:3"]');
+    invalidCell.click();
+    assert.ok(invalidCell.classList.contains('yard-cell-invalid'));
+    assert.equal(invalidCell.classList.contains('yard-cell-invalid-flash'), false);
+    controller.dispose();
+  } finally {
+    if (originalMatchMedia === undefined) delete globalThis.matchMedia;
+    else globalThis.matchMedia = originalMatchMedia;
+    restore();
+  }
+});
+
+test('Yard tray thumbnails pre-rotate cargo cells and keep visually-hidden accessible labels', async () => {
+  const fixture = createDOMFixture({ search: '?mode=endless&difficulty=easy' });
+  const restore = installDOM(fixture);
+  try {
+    const { renderKinnokiYard } = await import('../../Resources/games/kinnoki-yard-ui.js');
+    const controller = await renderKinnokiYard(fixture.root, createEmptyGameStore(), {
+      storage: fixture.localStorage, seedFactory: () => 90, audioFactory: silentYardAudioFactory,
+    });
+    fixture.root.querySelector('[data-start-game]').click();
+    await waitForYardState(
+      () => fixture.root.querySelector('[data-yard-rotate]').disabled === false,
+      'Endless never entered active state',
+    );
+    const tray = fixture.root.querySelector('[data-yard-tray]');
+    const piece = tray.querySelector('[data-yard-piece]');
+    const thumb = piece.querySelector('.cargo-thumb');
+    assert.ok(thumb, 'tray piece renders a cargo-thumb');
+    // Seed 90's first Easy Endless piece is a hook-four dealt at rotation 3
+    // (3 columns x 2 rows); pre-rotation means the thumbnail reflects that
+    // bounding box, not the type's base (unrotated) shape.
+    assert.equal(thumb.style.getPropertyValue('--cargo-thumb-columns'), '3');
+    assert.equal(thumb.style.getPropertyValue('--cargo-thumb-rows'), '2');
+    const label = piece.querySelector('.visually-hidden');
+    assert.ok(label, 'tray piece keeps a visually-hidden accessible label');
+    assert.match(label.textContent, /Four-crate hook/);
+
+    fixture.root.querySelector('[data-yard-rotate]').click();
+    const rotatedThumb = tray.querySelector('[data-yard-piece]').querySelector('.cargo-thumb');
+    assert.equal(rotatedThumb.style.getPropertyValue('--cargo-thumb-columns'), '2');
+    assert.equal(rotatedThumb.style.getPropertyValue('--cargo-thumb-rows'), '3');
+    controller.dispose();
+  } finally { restore(); }
+});
+
+test('Yard timer text is written at most once per displayed second', async () => {
+  const fixture = createDOMFixture({ search: '?mode=contracts&difficulty=easy' });
+  const restore = installDOM(fixture);
+  let monotonic = 0;
+  try {
+    const { renderKinnokiYard } = await import('../../Resources/games/kinnoki-yard-ui.js');
+    const controller = await renderKinnokiYard(fixture.root, createEmptyGameStore(), {
+      seedFactory: () => 91,
+      monotonicNow: () => monotonic,
+      audioFactory: silentYardAudioFactory,
+    });
+    fixture.root.querySelector('[data-start-game]').click();
+    await waitForYardState(
+      () => fixture.root.querySelector('[data-yard-rotate]').disabled === false,
+      'Yard never entered observable active state',
+    );
+    const timer = fixture.root.querySelector('[data-timer]');
+    let writes = 0;
+    let current = timer.textContent;
+    Object.defineProperty(timer, 'textContent', {
+      configurable: true,
+      get() { return current; },
+      set(value) { writes += 1; current = value; },
+    });
+
+    for (let tick = 0; tick < 5; tick += 1) {
+      monotonic += 100;
+      fixture.tickFrames(monotonic);
+    }
+    assert.equal(writes, 0, 'no textContent write while the displayed second is unchanged');
+
+    monotonic = 1000;
+    fixture.tickFrames(monotonic);
+    assert.equal(writes, 1, 'textContent written exactly once when the displayed second changes');
+
+    controller.dispose();
+  } finally { restore(); }
+});
+
+test('Endless dispatch reuses the Task 8 score pop and dispatch flash', async () => {
+  const fixture = createDOMFixture({ search: '?mode=endless&difficulty=easy' });
+  const restore = installDOM(fixture);
+  try {
+    const yard = await import('../../Resources/games/kinnoki-yard.js');
+    let dispatchedManifest = null;
+    const engine = {
+      ...yard,
+      reduceYard(state, action) {
+        if (state.kind !== 'endless' || action.type !== 'rotate-piece') {
+          return yard.reduceYard(state, action);
+        }
+        const manifest = state.manifests[0];
+        dispatchedManifest = manifest;
+        const nextState = {
+          ...state,
+          manifests: state.manifests.slice(1),
+          score: state.score + 250,
+          combo: 1,
+          bestCombo: Math.max(state.bestCombo, 1),
+          dispatchedManifests: state.dispatchedManifests + 1,
+        };
+        return {
+          state: nextState,
+          events: [{
+            type: 'dispatch', manifestIds: [manifest.id],
+            cells: manifest.cells.length, combo: 1, scoreAdded: 250,
+          }],
+        };
+      },
+    };
+    const { renderKinnokiYard } = await import('../../Resources/games/kinnoki-yard-ui.js');
+    const controller = await renderKinnokiYard(fixture.root, createEmptyGameStore(), {
+      storage: fixture.localStorage, seedFactory: () => 90, engine,
+      audioFactory: silentYardAudioFactory,
+    });
+    fixture.root.querySelector('[data-start-game]').click();
+    await waitForYardState(
+      () => fixture.root.querySelector('[data-yard-rotate]').disabled === false,
+      'Endless never entered active state',
+    );
+    fixture.root.querySelector('[data-yard-rotate]').click();
+    assert.ok(dispatchedManifest, 'the fixture manifest was captured before dispatch');
+    const pop = fixture.root.querySelector('.game-score-pop');
+    assert.ok(pop, 'dispatch spawns a score pop');
+    assert.equal(pop.textContent, '+250 ×1');
+    for (const { row, column } of dispatchedManifest.cells) {
+      assert.ok(
+        fixture.root.querySelector(`[data-yard-cell="${row}:${column}"]`)
+          .classList.contains('cargo-dispatching'),
+        `cell ${row}:${column} should flash as dispatched`,
+      );
+    }
+
+    pop.dispatchEvent(new FixtureEvent('animationend'));
+    assert.equal(fixture.root.querySelector('.game-score-pop'), null);
+    controller.dispose();
   } finally { restore(); }
 });

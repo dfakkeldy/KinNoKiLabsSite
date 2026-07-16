@@ -1129,6 +1129,7 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
 .yard-game,
 .yard-board-column { min-width: 0; }
 .yard-board-scroll {
+  position: relative;
   width: 100%;
   max-width: 100%;
   overflow: auto;
@@ -1159,6 +1160,7 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
   border: 1px solid var(--separator);
   border-radius: 0;
   font-family: var(--font-mono);
+  transition: background-color 0.12s ease, outline-color 0.12s ease;
 }
 .yard-cell-target { border: 2px dashed var(--game-text-tertiary); }
 .yard-cell-manifest {
@@ -1175,9 +1177,39 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
   border: 4px double var(--game-text-primary);
   background-image: repeating-linear-gradient(135deg, transparent 0 6px, currentColor 6px 8px);
 }
-.yard-cell-hint {
+/* One-shot invalid-placement flash: reuses the exact stripe pattern above
+   (structural, not hue alone) plus a shake, cleared on animationend by a
+   delegated listener; reduced motion applies .yard-cell-invalid instead. */
+.yard-cell-invalid-flash {
+  border: 4px double var(--game-text-primary);
+  background-image: repeating-linear-gradient(135deg, transparent 0 6px, currentColor 6px 8px);
+  animation: games-cell-shake 200ms ease;
+}
+.yard-cell.is-hint {
   outline: 4px dotted var(--game-text-accent);
   outline-offset: -5px;
+}
+/* Ghost preview: the selected tray piece's full rotated footprint, tinted by
+   placeability on hover/focus. Valid is a solid gold outline (structural,
+   distinct from every dashed/dotted cue above); invalid reuses the
+   yard-cell-invalid stripe for its non-colour cue plus a muted red tint. */
+.yard-cell.is-ghost-valid {
+  outline: 3px solid var(--gold-500);
+  outline-offset: -4px;
+  background-color: color-mix(in srgb, var(--gold-500) 18%, var(--surface));
+}
+.yard-cell.is-ghost-invalid {
+  outline: 3px solid #ef8d87;
+  outline-offset: -4px;
+  background-image: repeating-linear-gradient(135deg, transparent 0 6px, currentColor 6px 8px);
+  background-color: color-mix(in srgb, #ef8d87 16%, var(--surface));
+}
+.yard-score-pop-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  pointer-events: none;
 }
 .yard-tray {
   display: flex;
@@ -1185,6 +1217,8 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
   gap: 10px;
 }
 .yard-tray-piece {
+  display: inline-flex;
+  align-items: center;
   padding: 8px 12px;
   color: var(--game-text-primary);
   background-color: var(--surface-2);
@@ -1196,6 +1230,11 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
 .yard-tray-piece.is-placed {
   text-decoration: line-through;
   border-style: dashed;
+}
+.yard-tray-piece.is-hint-flash { animation: games-hint-pulse 900ms ease-in-out; }
+@keyframes games-hint-pulse {
+  0%, 100% { outline: 2px solid transparent; }
+  50% { outline: 4px solid var(--game-text-accent); outline-offset: 2px; }
 }
 .yard-pan-controls {
   justify-content: space-between;
@@ -1265,6 +1304,9 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   .game-score-pop { animation: none; }
 
   .yard-board-scroll { scroll-behavior: auto; }
+  .yard-cell { transition: none; }
+  .yard-cell-invalid-flash { animation: none; }
+  .yard-tray-piece.is-hint-flash { animation: none; }
 
   .game-celebration { display: none; }
   .game-complete { animation: none; }

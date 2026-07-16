@@ -129,6 +129,36 @@ test('Stack overlay glide, score pop and cargo thumbnails have reduced-motion ov
     /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.game-score-pop[\s\S]*?animation:\s*none/);
 });
 
+test('Yard cell transitions, invalid one-shot flash and tray hint-flash have reduced-motion overrides', () => {
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.yard-cell\s*\{[\s\S]*?transition:\s*none/);
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.yard-cell-invalid-flash[\s\S]*?animation:\s*none/);
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.yard-tray-piece\.is-hint-flash[\s\S]*?animation:\s*none/);
+});
+
+test('the Yard invalid one-shot flash reuses the persistent invalid stripe pattern, not hue alone', () => {
+  const persistent = ruleBody('.yard-cell-invalid');
+  const flash = ruleBody('.yard-cell-invalid-flash');
+  assert.match(persistent, /background-image:\s*repeating-linear-gradient/);
+  const stripe = persistent.match(/background-image:\s*(repeating-linear-gradient\([^;]+\))/)[1];
+  assert.ok(flash.includes(stripe), 'the one-shot flash reuses the exact stripe pattern');
+  assert.match(flash, /animation\s*:\s*games-cell-shake/);
+});
+
+test('the Yard ghost preview cues are structural and distinct from each other and the hint cue', () => {
+  const valid = ruleBody('.yard-cell.is-ghost-valid');
+  assert.match(valid, /outline:\s*3px\s+solid/);
+  const invalid = ruleBody('.yard-cell.is-ghost-invalid');
+  assert.match(invalid, /outline:\s*3px\s+solid/);
+  assert.match(invalid, /background-image:\s*repeating-linear-gradient/,
+    'the invalid ghost cue carries the invalid stripe cue, not hue alone');
+  assert.notEqual(valid, invalid, 'the valid and invalid ghost cues are distinct rules');
+  const hint = ruleBody('.yard-cell.is-hint');
+  assert.match(hint, /outline:\s*4px\s+dotted/);
+});
+
 test('the hard-drop ghost cue is structural (dashed outline), distinct from the manifest target dash', () => {
   const ghost = ruleBody('.stack-cell.is-ghost');
   assert.match(ghost, /outline:\s*2px\s+dashed/);
