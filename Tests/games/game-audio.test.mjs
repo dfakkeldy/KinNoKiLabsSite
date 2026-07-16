@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {
   KINNOKI_MOTIF, createGameAudio,
 } from '../../Resources/games/game-audio.js';
+import { createAudioControls } from '../../Resources/games/controller-common.js';
+import { createDOMFixture } from './dom-fixture.mjs';
 
 class FakeParam {
   constructor(value = 0) { this.value = value; this.events = []; }
@@ -223,4 +225,53 @@ test('audio failure is silent and notices at most once', async () => {
   assert.doesNotThrow(() => audio.playEffect('placement'));
   assert.doesNotThrow(() => audio.setIntensity({ height: 1, tidePressure: 1 }));
   assert.equal(notices.length, 1);
+});
+
+test('puzzle effect names schedule without throwing under the fake context', async () => {
+  const context = new FakeAudioContext();
+  const audio = createGameAudio({
+    audioContextFactory: () => context, preferences, monotonicNow: () => 10,
+    setIntervalFn: () => 1, clearIntervalFn: () => {},
+  });
+  try {
+    await audio.start({ arrangement: 'stack' });
+    for (const name of ['puzzle-place', 'puzzle-found', 'puzzle-error']) {
+      assert.doesNotThrow(() => audio.playEffect(name));
+    }
+    assert.ok(audio.debugState().activeEffectVoices > 0, 'puzzle effects schedule audible voices');
+  } finally {
+    await audio.dispose();
+  }
+});
+
+test('createAudioControls({ channels: ["effects"] }) renders only the effects row', () => {
+  const fixture = createDOMFixture();
+  const controls = createAudioControls({
+    document: fixture.document,
+    channels: ['effects'],
+    preferences: {
+      musicEnabled: true, musicVolume: 0.35,
+      effectsEnabled: true, effectsVolume: 0.50,
+    },
+  });
+  fixture.root.append(controls.element);
+  assert.equal(fixture.root.querySelectorAll('[data-audio-music-volume]').length, 0,
+    'the music row is omitted when channels excludes it');
+  assert.equal(fixture.root.querySelectorAll('[data-audio-music-toggle]').length, 0);
+  assert.equal(fixture.root.querySelectorAll('[data-audio-effects-volume]').length, 1);
+  assert.equal(fixture.root.querySelectorAll('[data-audio-effects-toggle]').length, 1);
+});
+
+test('createAudioControls without channels keeps rendering both rows (existing callers unaffected)', () => {
+  const fixture = createDOMFixture();
+  const controls = createAudioControls({
+    document: fixture.document,
+    preferences: {
+      musicEnabled: true, musicVolume: 0.35,
+      effectsEnabled: true, effectsVolume: 0.50,
+    },
+  });
+  fixture.root.append(controls.element);
+  assert.equal(fixture.root.querySelectorAll('[data-audio-music-volume]').length, 1);
+  assert.equal(fixture.root.querySelectorAll('[data-audio-effects-volume]').length, 1);
 });

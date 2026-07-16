@@ -68,6 +68,12 @@ export class FixtureElement {
     this.scrollWidth = 704;
     this.capturedPointers = new Set();
     this._textContent = '';
+    this._styleProps = new Map();
+    this.style = {
+      setProperty: (name, value) => this._styleProps.set(name, String(value)),
+      getPropertyValue: (name) => this._styleProps.get(name) ?? '',
+      removeProperty: (name) => { const previous = this._styleProps.get(name) ?? ''; this._styleProps.delete(name); return previous; },
+    };
   }
   set id(value) { this.setAttribute('id', value); }
   get id() { return this.getAttribute('id') ?? ''; }

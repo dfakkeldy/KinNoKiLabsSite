@@ -119,3 +119,10 @@ test('cargo motion and board panning have reduced-motion overrides', () => {
   assert.match(css,
     /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.yard-board-scroll[\s\S]*?scroll-behavior:\s*auto/);
 });
+
+test('celebration overlay and completion entrance have reduced-motion overrides', () => {
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.game-celebration[\s\S]*?display:\s*none/);
+  assert.match(css,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.game-complete[\s\S]*?animation:\s*none/);
+});

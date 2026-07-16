@@ -185,6 +185,7 @@ export function createAudioControls({
   document = globalThis.document,
   preferences,
   onChange = () => {},
+  channels = ['music', 'effects'],
 }) {
   let current = sanitizeAudioPreferences(preferences);
   let disposed = false;
@@ -216,15 +217,16 @@ export function createAudioControls({
     return { range, toggle };
   };
 
-  const music = makeChannel('Music', 'music');
-  const effects = makeChannel('Effects', 'effects');
+  const music = channels.includes('music') ? makeChannel('Music', 'music') : null;
+  const effects = channels.includes('effects') ? makeChannel('Effects', 'effects') : null;
   const paint = () => {
-    music.range.value = String(current.musicVolume);
-    effects.range.value = String(current.effectsVolume);
+    if (music) music.range.value = String(current.musicVolume);
+    if (effects) effects.range.value = String(current.effectsVolume);
     for (const [control, enabled, name] of [
-      [music.toggle, current.musicEnabled, 'music'],
-      [effects.toggle, current.effectsEnabled, 'effects'],
+      [music?.toggle, current.musicEnabled, 'music'],
+      [effects?.toggle, current.effectsEnabled, 'effects'],
     ]) {
+      if (!control) continue;
       control.setAttribute('aria-pressed', String(!enabled));
       control.textContent = enabled ? `Mute ${name}` : `Unmute ${name}`;
     }
@@ -240,10 +242,10 @@ export function createAudioControls({
   const onEffectsToggle = () => commit({ effectsEnabled: !current.effectsEnabled });
   const onMusicInput = () => commit({ musicVolume: Number(music.range.value) });
   const onEffectsInput = () => commit({ effectsVolume: Number(effects.range.value) });
-  music.toggle.addEventListener('click', onMusicToggle);
-  effects.toggle.addEventListener('click', onEffectsToggle);
-  music.range.addEventListener('input', onMusicInput);
-  effects.range.addEventListener('input', onEffectsInput);
+  music?.toggle.addEventListener('click', onMusicToggle);
+  effects?.toggle.addEventListener('click', onEffectsToggle);
+  music?.range.addEventListener('input', onMusicInput);
+  effects?.range.addEventListener('input', onEffectsInput);
   paint();
 
   return {
@@ -257,10 +259,10 @@ export function createAudioControls({
     dispose() {
       if (disposed) return false;
       disposed = true;
-      music.toggle.removeEventListener('click', onMusicToggle);
-      effects.toggle.removeEventListener('click', onEffectsToggle);
-      music.range.removeEventListener('input', onMusicInput);
-      effects.range.removeEventListener('input', onEffectsInput);
+      music?.toggle.removeEventListener('click', onMusicToggle);
+      effects?.toggle.removeEventListener('click', onEffectsToggle);
+      music?.range.removeEventListener('input', onMusicInput);
+      effects?.range.removeEventListener('input', onEffectsInput);
       return true;
     },
   };
@@ -747,9 +749,22 @@ export function makeGameTerminal(root) {
   }
 }
 
-export function completionPanel({ elapsed, assisted, playAnother }) {
+const RECORD_LABELS = {
+  time: 'New best time!',
+  moves: 'Fewest moves!',
+  score: 'New best score!',
+  combo: 'Best combo!',
+};
+
+export function completionPanel({ elapsed, assisted, recordsBroken = [], playAnother }) {
   const heading = element('h2', { 'data-complete-heading': '', tabindex: '-1', text: 'Puzzle complete!' });
-  const panel = element('section', { class: 'game-complete' }, heading,
+  const recordLine = recordsBroken.length
+    ? element('p', {
+        class: 'game-complete-record',
+        text: recordsBroken.map((key) => RECORD_LABELS[key] ?? key).join(' · '),
+      })
+    : null;
+  const panel = element('section', { class: 'game-complete' }, heading, recordLine,
     element('p', { text: `${formatElapsed(elapsed)}${assisted ? ' · Assisted' : ''}` }),
     element('button', { type: 'button', 'data-play-another': '', text: 'Play Another' }));
   panel.querySelector('[data-play-another]').addEventListener('click', () => playAnother());

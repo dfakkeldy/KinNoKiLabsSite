@@ -426,3 +426,88 @@ test('session.finish() reports no broken records for an assisted run', async () 
     assert.deepEqual(result.recordsBroken, [], 'assisted runs are ineligible for records');
   } finally { restore(); }
 });
+
+test('completionPanel renders a game-complete-record line naming the broken record', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { completionPanel } = await import('../../Resources/games/controller-common.js');
+    const { panel } = completionPanel({
+      elapsed: 65000, assisted: false, recordsBroken: ['time'], playAnother: () => {},
+    });
+    const record = panel.querySelector('.game-complete-record');
+    assert.ok(record, 'a record line renders when recordsBroken is non-empty');
+    assert.equal(record.textContent, 'New best time!');
+  } finally { restore(); }
+});
+
+test('completionPanel joins multiple broken records with a middle dot', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { completionPanel } = await import('../../Resources/games/controller-common.js');
+    const { panel } = completionPanel({
+      elapsed: 65000, assisted: false, recordsBroken: ['time', 'moves'], playAnother: () => {},
+    });
+    assert.equal(panel.querySelector('.game-complete-record').textContent, 'New best time! · Fewest moves!');
+  } finally { restore(); }
+});
+
+test('completionPanel renders no record line when recordsBroken is empty or omitted', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { completionPanel } = await import('../../Resources/games/controller-common.js');
+    assert.equal(completionPanel({ elapsed: 1000, assisted: false, recordsBroken: [], playAnother: () => {} })
+      .panel.querySelector('.game-complete-record'), null);
+    assert.equal(completionPanel({ elapsed: 1000, assisted: false, playAnother: () => {} })
+      .panel.querySelector('.game-complete-record'), null, 'recordsBroken defaults to empty');
+  } finally { restore(); }
+});
+
+test('completionPanel places the record line between the heading and the elapsed line', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { completionPanel } = await import('../../Resources/games/controller-common.js');
+    const { panel } = completionPanel({
+      elapsed: 5000, assisted: false, recordsBroken: ['score'], playAnother: () => {},
+    });
+    assert.equal(panel.children[0].tagName, 'H2');
+    assert.equal(panel.children[1].className, 'game-complete-record');
+    assert.equal(panel.children[1].textContent, 'New best score!');
+    assert.equal(panel.children[2].tagName, 'P');
+  } finally { restore(); }
+});
+
+test('completion flow renders the record line end-to-end when a run breaks the time record', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' }); const restore = installDOM(fixture);
+  try {
+    const { renderSudoku, createSudokuState } = await import('../../Resources/games/sudoku-ui.js');
+    const play = createSudokuState(sudokuPuzzle);
+    play.values = [...sudokuPuzzle.solution];
+    play.values[sudokuEditable] = 0;
+    const store = v2StoreWithRun({ game: 'sudoku', definition: sudokuPuzzle, play, seed: 1 });
+    await renderSudoku(fixture.root, store);
+    const cell = fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`);
+    cell.click();
+    cell.dispatchEvent(new FixtureEvent('keydown', { key: String(sudokuPuzzle.solution[sudokuEditable]) }));
+    const record = fixture.root.querySelector('.game-complete-record');
+    assert.ok(record, 'a first-ever completion breaks the time record and renders the line');
+    assert.equal(record.textContent, 'New best time!');
+  } finally { restore(); }
+});
+
+test('completion flow renders no record line end-to-end for an assisted completion', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' }); const restore = installDOM(fixture);
+  try {
+    const { renderSudoku, createSudokuState } = await import('../../Resources/games/sudoku-ui.js');
+    const play = createSudokuState(sudokuPuzzle);
+    play.values = [...sudokuPuzzle.solution];
+    play.values[sudokuEditable] = 0;
+    play.assisted = true;
+    const store = v2StoreWithRun({ game: 'sudoku', definition: sudokuPuzzle, play, seed: 1, assisted: true });
+    await renderSudoku(fixture.root, store);
+    const cell = fixture.root.querySelector(`[data-cell="${sudokuEditable}"]`);
+    cell.click();
+    cell.dispatchEvent(new FixtureEvent('keydown', { key: String(sudokuPuzzle.solution[sudokuEditable]) }));
+    assert.equal(fixture.root.querySelector('.game-complete-record'), null,
+      'an assisted run is ineligible for records so no line renders');
+  } finally { restore(); }
+});

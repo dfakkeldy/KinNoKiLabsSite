@@ -210,6 +210,7 @@ export function createGameAudio({
       move: 0, rotate: 3, placement: -5, dispatch: 12,
       'tide-warning': -2, 'tide-shift': -7, invalid: -12,
       completion: 16, terminal: -16,
+      'puzzle-place': -5, 'puzzle-found': 2, 'puzzle-error': -12,
     }[name];
     if (semitone === undefined) return false;
     const voice = scheduleTone({

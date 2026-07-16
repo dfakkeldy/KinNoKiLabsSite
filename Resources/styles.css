@@ -674,10 +674,38 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
 .game-board-scroll { width: 100%; max-width: 100%; min-width: 0; overflow-x: auto; overscroll-behavior-inline: contain; }
 .game-controls { justify-content: center; margin-top: 22px; }
 .game-controls button[aria-pressed="true"] { color: var(--gold-text); background: var(--fill); border: 2px solid var(--gold-500); }
-.game-complete { max-width: 620px; margin: 32px auto 0; padding: clamp(24px, 4vw, 36px); text-align: center; background: var(--surface); border: 1px solid var(--gold-hairline); border-top-width: 4px; border-radius: var(--radius-card); }
+.game-complete { max-width: 620px; margin: 32px auto 0; padding: clamp(24px, 4vw, 36px); text-align: center; background: var(--surface); border: 1px solid var(--gold-hairline); border-top-width: 4px; border-radius: var(--radius-card); animation: games-fade-up 240ms var(--ease); }
+.game-complete-record { margin-top: 4px; color: var(--game-text-accent); font-weight: 700; }
 .game-error { max-width: 640px; margin-inline: auto; }
 .game-error h1 { margin-bottom: 8px; font-size: clamp(1.8rem, 5vw, 2.7rem); }
 .game-error p { color: var(--game-text-secondary); }
+
+.game-celebration {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.game-celebration-particle {
+  position: absolute;
+  top: -12px;
+  left: calc(5% + (var(--particle-index) * 4.5%));
+  width: 8px;
+  height: 8px;
+  background: var(--gold-500);
+  animation: games-confetti-fall 1100ms ease-in forwards;
+  animation-delay: calc(var(--particle-index) * 40ms);
+}
+.game-celebration-particle:nth-child(3n) { border-radius: 2px; }
+.game-celebration-particle:nth-child(3n + 1) { transform: rotate(45deg); }
+@keyframes games-confetti-fall {
+  from { transform: translateY(0) rotate(0deg); opacity: 1; }
+  to { transform: translateY(340px) rotate(220deg); opacity: 0; }
+}
+@keyframes games-fade-up {
+  from { transform: translateY(12px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
 
 .game-toolbar h1 { margin: 0 auto 0 0; font-size: clamp(1.7rem, 4vw, 2.5rem); }
 .game-toolbar label { display: inline-flex; align-items: center; gap: 8px; color: var(--game-text-secondary); font-size: 0.85rem; }
@@ -979,4 +1007,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   }
 
   .yard-board-scroll { scroll-behavior: auto; }
+
+  .game-celebration { display: none; }
+  .game-complete { animation: none; }
 }
