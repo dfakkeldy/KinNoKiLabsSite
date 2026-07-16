@@ -154,9 +154,18 @@ while IFS= read -r slug; do
     square_json='null'
     if grep -Fxq "$slug" <<<"$PLAYER_SLUGS"; then
       sips -s format jpeg -s formatOptions 86 -z 768 768 "$square" --out "$work/player/$slug.jpg" >/dev/null
+      # Measure the derivative rather than restating the requested size: the
+      # recorded dimensions also become the catalog's coverWidth/coverHeight,
+      # which the player trusts for each thumbnail's aspect ratio.
+      derivative_dims="$(dimensions "$work/player/$slug.jpg")"
+      [ "$derivative_dims" = "768 768" ] || {
+        echo "error: wrong player derivative dimensions for $slug: $derivative_dims" >&2; exit 1;
+      }
+      read -r derivative_width derivative_height <<<"$derivative_dims"
       derivative_hash="$(sha256 "$work/player/$slug.jpg")"
       square_json="$(jq -n --arg source "$square_hash" --arg derivative "$derivative_hash" \
-        '{sourceSha256:$source,derivativeSha256:$derivative,sourceDimensions:[2400,2400],derivativeDimensions:[768,768]}')"
+        --argjson width "$derivative_width" --argjson height "$derivative_height" \
+        '{sourceSha256:$source,derivativeSha256:$derivative,sourceDimensions:[2400,2400],derivativeDimensions:[$width,$height]}')"
     fi
   fi
 
@@ -185,9 +194,25 @@ for slug in $PLAYER_SLUGS; do mkdir -p "$work/install-listen/$slug"; cp "$work/p
 jq --slurpfile provenance "$work/paired-cover-provenance.json" '
   .books |= map(if (.slug == "chicken-predators" or .slug == "the-new-deal") then
     .coverSourceSha256 = $provenance[0].books[.slug].square.sourceSha256 |
-    .coverDerivativeSha256 = $provenance[0].books[.slug].square.derivativeSha256
+    .coverDerivativeSha256 = $provenance[0].books[.slug].square.derivativeSha256 |
+    .coverWidth = $provenance[0].books[.slug].square.derivativeDimensions[0] |
+    .coverHeight = $provenance[0].books[.slug].square.derivativeDimensions[1]
   else . end)
 ' "$CATALOG_PATH" > "$work/install-catalog.json"
+
+# The builder validates coverWidth/coverHeight against ITS staged covers, but
+# this script replaces those two covers afterwards — so it must re-verify the
+# fields it just rewrote against the square bytes actually being installed.
+while IFS= read -r slug; do
+  [ -n "$slug" ] || continue
+  patched_dims="$(jq -r --arg slug "$slug" \
+    '.books[] | select(.slug == $slug) | "\(.coverWidth) \(.coverHeight)"' "$work/install-catalog.json")"
+  installed_dims="$(dimensions "$work/install-listen/$slug/cover.jpg")"
+  [ "$patched_dims" = "$installed_dims" ] || {
+    echo "error: patched catalog dimensions ($patched_dims) do not match the installed cover ($installed_dims) for $slug" >&2
+    exit 1
+  }
+done <<<"$PLAYER_SLUGS"
 
 mkdir -p "$(dirname "$LEARN_ROOT")" "$(dirname "$LISTEN_BOOKS_ROOT")" "$(dirname "$CATALOG_PATH")"
 installing=1

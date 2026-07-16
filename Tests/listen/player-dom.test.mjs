@@ -53,6 +53,14 @@ class FakeNode {
     this.rel = '';
   }
 
+  get className() {
+    return [...this.classList.values].join(' ');
+  }
+
+  set className(value) {
+    this.classList.values = new Set(String(value).split(/\s+/).filter(Boolean));
+  }
+
   get textContent() {
     return this._textContent;
   }
@@ -126,29 +134,47 @@ async function settle() {
   await new Promise((resolve) => setImmediate(resolve));
 }
 
-async function bootPlayer({ catalog = cloneCatalog(), catalogFailure = false, mediaSession = false } = {}) {
+async function bootPlayer({
+  catalog = cloneCatalog(), catalogFailure = false, mediaSession = false,
+  blocks = [], anchors = [], trackImages = false,
+} = {}) {
   const ids = [
     'cover', 'bookTitle', 'bookSubtitle', 'bookByline', 'chapterCount', 'chapterList',
     'chapterNow', 'captionPanel', 'captionWords', 'captionText', 'status', 'emptyState',
     'selectedFormats', 'playPause', 'iconPlay', 'iconPause', 'back30', 'fwd30',
     'speed', 'scrubber', 'timeNow', 'timeTotal', 'library', 'honesty',
+    'figurePanel', 'figureImg', 'figureCaption',
   ];
-  const elements = new Map(ids.map((id) => [id, new FakeNode()]));
+  const elements = new Map(ids.map((id) => [id, new FakeNode(id === 'figureImg' ? 'img' : 'div')]));
   elements.get('playPause').disabled = true;
   elements.get('scrubber').disabled = true;
   elements.get('emptyState').hidden = true;
   elements.get('selectedFormats').hidden = true;
+  elements.get('figurePanel').hidden = true;
+  elements.get('figureCaption').hidden = true;
 
   const main = new FakeNode('main');
   const room = new FakeNode('section');
   const cta = new FakeNode('section');
   main.appendChild(room);
+  const figurePanel = elements.get('figurePanel');
+  figurePanel.appendChild(elements.get('figureImg'));
+  figurePanel.appendChild(elements.get('figureCaption'));
+  room.appendChild(figurePanel);
   room.appendChild(elements.get('status'));
   room.appendChild(elements.get('selectedFormats'));
   main.appendChild(elements.get('emptyState'));
   main.appendChild(cta);
   main.appendChild(elements.get('library'));
   main.appendChild(elements.get('honesty'));
+
+  const preloadedImages = [];
+  class FakeImage {
+    constructor() {
+      this.src = '';
+      preloadedImages.push(this);
+    }
+  }
 
   let audio;
   class FakeAudio {
@@ -234,9 +260,9 @@ async function bootPlayer({ catalog = cloneCatalog(), catalogFailure = false, me
         return { ok: true, json: async () => catalog };
       }
       if (String(input).endsWith('blocks.json')) {
-        return { ok: true, json: async () => ({ blocks: [] }) };
+        return { ok: true, json: async () => ({ blocks }) };
       }
-      return { ok: true, json: async () => [] };
+      return { ok: true, json: async () => anchors };
     },
     localStorage: { getItem: () => null, setItem() {} },
     location: { href: 'https://kinnokilabs.com/listen/', search: '?book=chicken-predators' },
@@ -248,6 +274,7 @@ async function bootPlayer({ catalog = cloneCatalog(), catalogFailure = false, me
     navigator,
     requestAnimationFrame: (callback) => callback(),
     window: { EchoListenCore: core, addEventListener() {} },
+    ...(trackImages ? { Image: FakeImage } : {}),
   }, { filename: 'Resources/listen/listen.js' });
 
   await settle();
@@ -258,7 +285,13 @@ async function bootPlayer({ catalog = cloneCatalog(), catalogFailure = false, me
     elements,
     main,
     mediaSessionHandlers,
+    mediaSessionMetadata: () => navigator.mediaSession?.metadata,
+    preloadedImages,
     room,
+    seek(t) {
+      audio.currentTime = t;
+      audio.dispatch('timeupdate');
+    },
     dispatchKeydown(overrides = {}) {
       const event = {
         key: ' ',
@@ -402,4 +435,365 @@ test('a catalog failure keeps its explicit visible retry status and no empty-sta
   assert.equal(player.elements.get('status').textContent, 'The book catalog couldn’t load. Reload to retry.');
   assert.equal(player.elements.get('emptyState').hidden, true);
   assert.equal(player.elements.get('selectedFormats').hidden, true);
+});
+
+/* ── Slideshow: figure stage ─────────────────────────────
+   Synthetic figure-bearing read-along data for the selected book
+   (chicken-predators). Figures fig1/fig2 carry their own sidecar anchors,
+   so their display windows are explicit: fig1 [100, 140), fig2 [400, 500).
+   The cover image block (chapterIndex null) must never produce a cue. */
+const figureBlocks = [
+  { id: 'cover-art', kind: 'image', imagePath: 'books/chicken-predators/cover.jpg', text: null, chapterIndex: null, sequenceIndex: 0 },
+  { id: 'b1', kind: 'text', text: 'Feathers on the ramp tell you who came hunting.', chapterIndex: 0, sequenceIndex: 1 },
+  { id: 'fig1', kind: 'image', imagePath: 'books/chicken-predators/figures/coop-diagram.png', text: 'A predator-proof coop layout', chapterIndex: 0, sequenceIndex: 2 },
+  { id: 'b2', kind: 'text', text: 'The coop is your first and best defence.', chapterIndex: 0, sequenceIndex: 3 },
+  { id: 'fig2', kind: 'image', imagePath: 'books/chicken-predators/figures/electric-fence.png', text: null, chapterIndex: 0, sequenceIndex: 4 },
+  { id: 'b3', kind: 'text', text: 'Electric fencing works when it is tight and hot.', chapterIndex: 0, sequenceIndex: 5 },
+];
+const figureAnchors = [
+  { blockId: 'b1', timestamp: 0 },
+  { blockId: 'fig1', timestamp: 100 },
+  { blockId: 'b2', timestamp: 140 },
+  { blockId: 'fig2', timestamp: 400 },
+  { blockId: 'b3', timestamp: 500 },
+];
+const textOnlyBlocks = figureBlocks.filter((block) => block.kind !== 'image' || block.chapterIndex === null);
+const textOnlyAnchors = figureAnchors.filter((anchor) => !anchor.blockId.startsWith('fig'));
+
+test('the template puts the figure stage inside the stage above the captions, hidden by default', () => {
+  const stageStart = playerTemplate.indexOf('<div class="room-stage">');
+  const figurePanel = playerTemplate.indexOf('id="figurePanel"');
+  const captionPanel = playerTemplate.indexOf('id="captionPanel"');
+
+  assert.ok(stageStart >= 0);
+  assert.ok(figurePanel > stageStart && figurePanel < captionPanel);
+  assert.match(playerTemplate, /<figure id="figurePanel" class="room-figure" hidden>/);
+  assert.match(playerTemplate, /<img id="figureImg" alt="" decoding="async">/);
+  assert.match(playerTemplate, /<figcaption id="figureCaption" hidden><\/figcaption>/);
+});
+
+test('the figure stage and library covers reuse existing room tokens', () => {
+  const figure = cssDeclarations('.room-figure');
+  assert.match(figure, /background:\s*var\(--surface\);/);
+  assert.match(figure, /border:\s*1px solid var\(--separator\);/);
+  assert.match(playerStyles, /\.room-figure\[hidden\]\s*\{\s*display:\s*none;\s*\}/);
+
+  const figureImg = cssDeclarations('.room-figure img');
+  assert.match(figureImg, /max-height:\s*46vh;/);
+  assert.match(figureImg, /object-fit:\s*contain;/);
+
+  assert.match(cssDeclarations('.room-figure figcaption'), /color:\s*var\(--room-text-tertiary\);/);
+
+  // The crossfade only runs when the visitor allows motion.
+  assert.match(
+    playerStyles,
+    /@media \(prefers-reduced-motion: no-preference\) \{\n {2}\.room-figure \{ transition: opacity 0\.2s var\(--ease\); \}\n {2}\.room-figure\.swap \{ opacity: 0; \}\n\}/,
+  );
+
+  const cover = cssDeclarations('.room-library li .room-lib-cover');
+  assert.match(cover, /border:\s*1px solid var\(--separator\);/);
+  assert.match(cover, /background:\s*var\(--fill-2\);/);
+
+  // Library covers follow the player cover frame's convention: a fixed
+  // width, an automatic height, and no forced shape — so square covers
+  // render square instead of being cropped to a portrait ratio.
+  assert.match(cover, /width:\s*76px;/);
+  assert.match(cover, /height:\s*auto;/);
+  assert.doesNotMatch(cover, /aspect-ratio:/);
+  assert.doesNotMatch(cover, /object-fit:/);
+  assert.match(cssDeclarations('.room-cover-frame img'), /width:\s*100%;\s*height:\s*auto;/);
+});
+
+test('a figure cue shows the panel with src, alt, and caption inside its window and hides it outside', async () => {
+  const player = await bootPlayer({ blocks: figureBlocks, anchors: figureAnchors });
+  const panel = player.elements.get('figurePanel');
+  const img = player.elements.get('figureImg');
+  const caption = player.elements.get('figureCaption');
+
+  assert.equal(panel.hidden, true, 'panel starts hidden');
+
+  player.seek(120);
+  assert.equal(panel.hidden, false);
+  assert.equal(isVisible(img), true);
+  assert.equal(img.src, 'books/chicken-predators/figures/coop-diagram.png');
+  assert.equal(img.alt, 'A predator-proof coop layout');
+  assert.equal(caption.hidden, false);
+  assert.equal(caption.textContent, 'A predator-proof coop layout');
+
+  player.seek(200);
+  assert.equal(panel.hidden, true, 'panel hides outside the display window');
+
+  player.seek(50);
+  assert.equal(panel.hidden, true);
+});
+
+test('a captionless figure keeps the figcaption hidden and falls back to a generic alt', async () => {
+  const player = await bootPlayer({ blocks: figureBlocks, anchors: figureAnchors });
+
+  player.seek(450);
+  assert.equal(player.elements.get('figurePanel').hidden, false);
+  assert.equal(player.elements.get('figureImg').src, 'books/chicken-predators/figures/electric-fence.png');
+  assert.equal(player.elements.get('figureImg').alt, 'Figure from this chapter');
+  assert.equal(player.elements.get('figureCaption').hidden, true);
+  assert.equal(player.elements.get('figureCaption').textContent, '');
+});
+
+test('a cover-only book never shows the figure panel while captions keep running', async () => {
+  const player = await bootPlayer({ blocks: textOnlyBlocks, anchors: textOnlyAnchors });
+  const panel = player.elements.get('figurePanel');
+
+  for (const t of [0, 120, 450, 600, 10000]) {
+    player.seek(t);
+    assert.equal(panel.hidden, true, `panel stays hidden at ${t}s`);
+  }
+
+  player.seek(450);
+  assert.equal(player.elements.get('captionText').textContent, 'The coop is your first and best defence.');
+});
+
+test('a figure image error hides the panel, keeps captions running, and only latches that src', async () => {
+  const player = await bootPlayer({ blocks: figureBlocks, anchors: figureAnchors });
+  const panel = player.elements.get('figurePanel');
+  const img = player.elements.get('figureImg');
+
+  player.seek(120);
+  assert.equal(panel.hidden, false);
+
+  img.dispatch('error');
+  assert.equal(panel.hidden, true);
+  assert.ok(player.debugLogs.some((line) => line.includes('figure image failed')));
+
+  // Captions keep running after the failure.
+  player.seek(150);
+  assert.equal(player.elements.get('captionText').textContent, 'The coop is your first and best defence.');
+  assert.equal(panel.hidden, true);
+
+  // Re-entering the failed figure's window must not retry that src.
+  img.src = 'SENTINEL';
+  player.seek(130);
+  assert.equal(panel.hidden, true);
+  assert.equal(img.src, 'SENTINEL', 'failed src is not re-set every tick');
+
+  // A different figure still gets its own attempt.
+  player.seek(450);
+  assert.equal(panel.hidden, false);
+  assert.equal(img.src, 'books/chicken-predators/figures/electric-fence.png');
+});
+
+test('showing a figure preloads the next interior figure in document order', async () => {
+  const player = await bootPlayer({ blocks: figureBlocks, anchors: figureAnchors, trackImages: true });
+
+  player.seek(120);
+  assert.deepEqual(
+    player.preloadedImages.map((image) => image.src),
+    ['books/chicken-predators/figures/electric-fence.png'],
+  );
+
+  // The last interior figure has no successor; the cover block never counts.
+  player.seek(450);
+  assert.equal(player.preloadedImages.length, 1);
+});
+
+test('a figure image reused by a later block still preloads its own successor', async () => {
+  // fig1 and fig3 legitimately share one file (a recurring diagram). The
+  // successor lookup must key off the block, not the path — matching on the
+  // path finds fig1 first and would preload fig2 again after fig3.
+  const recurring = 'books/chicken-predators/figures/coop-diagram.png';
+  const blocks = [
+    { id: 'cover-art', kind: 'image', imagePath: 'books/chicken-predators/cover.jpg', text: null, chapterIndex: null, sequenceIndex: 0 },
+    { id: 'b1', kind: 'text', text: 'Feathers on the ramp tell you who came hunting.', chapterIndex: 0, sequenceIndex: 1 },
+    { id: 'fig1', kind: 'image', imagePath: recurring, text: 'A predator-proof coop layout', chapterIndex: 0, sequenceIndex: 2 },
+    { id: 'b2', kind: 'text', text: 'The coop is your first and best defence.', chapterIndex: 0, sequenceIndex: 3 },
+    { id: 'fig2', kind: 'image', imagePath: 'books/chicken-predators/figures/electric-fence.png', text: null, chapterIndex: 0, sequenceIndex: 4 },
+    { id: 'b3', kind: 'text', text: 'Electric fencing works when it is tight and hot.', chapterIndex: 0, sequenceIndex: 5 },
+    { id: 'fig3', kind: 'image', imagePath: recurring, text: 'The same layout, revisited', chapterIndex: 0, sequenceIndex: 6 },
+    { id: 'b4', kind: 'text', text: 'Back to the coop with everything you now know.', chapterIndex: 0, sequenceIndex: 7 },
+    { id: 'fig4', kind: 'image', imagePath: 'books/chicken-predators/figures/night-latch.png', text: null, chapterIndex: 0, sequenceIndex: 8 },
+    { id: 'b5', kind: 'text', text: 'A latch a raccoon cannot work is the last word.', chapterIndex: 0, sequenceIndex: 9 },
+  ];
+  const anchors = [
+    { blockId: 'b1', timestamp: 0 },
+    { blockId: 'fig1', timestamp: 100 },
+    { blockId: 'b2', timestamp: 140 },
+    { blockId: 'fig2', timestamp: 400 },
+    { blockId: 'b3', timestamp: 500 },
+    { blockId: 'fig3', timestamp: 600 },
+    { blockId: 'b4', timestamp: 700 },
+    { blockId: 'fig4', timestamp: 800 },
+    { blockId: 'b5', timestamp: 900 },
+  ];
+  const player = await bootPlayer({ blocks, anchors, trackImages: true });
+
+  player.seek(120);
+  assert.deepEqual(player.preloadedImages.map((image) => image.src), [
+    'books/chicken-predators/figures/electric-fence.png',
+  ]);
+
+  // fig3 shares fig1's path; its successor is fig4, not fig1's successor.
+  player.seek(650);
+  assert.deepEqual(player.preloadedImages.map((image) => image.src), [
+    'books/chicken-predators/figures/electric-fence.png',
+    'books/chicken-predators/figures/night-latch.png',
+  ]);
+});
+
+/* ── Library grid ──────────────────────────────────────── */
+
+test('library entries with covers render visual cards with cover, subtitle, byline, and unchanged actions', async () => {
+  const catalog = cloneCatalog((book) => ({
+    ...book,
+    cover: book.cover ?? `books/${book.slug}/cover.jpg`,
+    coverAlt: book.coverAlt ?? `Cover of ${book.title}`,
+    coverWidth: 480,
+    coverHeight: 768,
+    subtitle: book.slug === 'why-it-feels-right' ? 'How intuition works' : book.subtitle,
+  }));
+  const player = await bootPlayer({ catalog });
+  const library = player.elements.get('library');
+
+  assert.equal(library.children.length, 10);
+  for (const item of library.children) {
+    const cover = item.children[0];
+    const title = item.children[1];
+    assert.equal(cover.tagName, 'IMG');
+    assert.ok(cover.classList.values.has('room-lib-cover'));
+    assert.equal(title.className, 'room-lib-title');
+    assert.equal(cover.alt, `Cover of ${title.textContent}`);
+    assert.match(cover.src, /^books\/[a-z0-9-]+\/cover\.jpg$/);
+    assert.equal(cover.loading, 'lazy');
+    // The size hints mirror the catalog's stated pixel dimensions.
+    assert.equal(cover.getAttribute('width'), '480');
+    assert.equal(cover.getAttribute('height'), '768');
+
+    const byline = descendants(item, (node) => node.classList.values.has('room-lib-by'));
+    assert.equal(byline.length, 1);
+    assert.match(byline[0].textContent, /^Written by .+$/);
+  }
+
+  const withSubtitle = library.children.find((item) => item.children[1].textContent === 'Why It Feels Right');
+  const subtitle = descendants(withSubtitle, (node) => node.classList.values.has('room-lib-subtitle'));
+  assert.equal(subtitle.length, 1);
+  assert.equal(subtitle[0].textContent, 'How intuition works');
+
+  const withoutSubtitle = library.children.find((item) => item.children[1].textContent === 'Tests First');
+  assert.equal(descendants(withoutSubtitle, (node) => node.classList.values.has('room-lib-subtitle')).length, 0);
+
+  // Actions are untouched: playable books keep Listen → EPUB → Read, text books EPUB → Read.
+  const rodents = library.children.find((item) => item.children[1].textContent === 'Rodents in the Walls');
+  const rodentsBook = publishedCatalog.books.find((book) => book.slug === 'rodents-in-the-walls');
+  const rodentsLinks = descendants(rodents, (node) => node.tagName === 'A');
+  assert.deepEqual(rodentsLinks.map((link) => link.textContent), ['Listen', 'EPUB', 'Read']);
+  assert.equal(rodentsLinks[0].href, '?book=rodents-in-the-walls');
+  assert.ok(rodentsLinks[0].classList.values.has('room-lib-listen') || rodentsLinks[0].className === 'room-lib-listen');
+  assert.equal(rodentsLinks[1].href, rodentsBook.links.epub);
+  assert.equal(rodentsLinks[2].href, rodentsBook.links.read);
+  assert.equal(rodentsLinks[2].target, '_blank');
+  assert.equal(rodentsLinks[2].rel, 'noopener');
+
+  const textLinks = descendants(withoutSubtitle, (node) => node.tagName === 'A');
+  assert.deepEqual(textLinks.map((link) => link.textContent), ['EPUB', 'Read']);
+});
+
+/* The two paired-m4b books ship square 768×768 art on purpose, so the grid
+   must take its ratio from the catalog rather than assume every cover is a
+   480×768 portrait. */
+function sizedCatalog(sizes) {
+  return cloneCatalog((book) => {
+    const { coverWidth, coverHeight, ...rest } = book;
+    return {
+      ...rest,
+      cover: rest.cover ?? `books/${rest.slug}/cover.jpg`,
+      coverAlt: rest.coverAlt ?? `Cover of ${rest.title}`,
+      ...(sizes[rest.slug] ?? {}),
+    };
+  });
+}
+
+function libraryCover(player, title) {
+  const item = player.elements.get('library').children
+    .find((node) => node.children[1]?.textContent === title);
+  assert.ok(item, `${title} is in the library`);
+  return item.children[0];
+}
+
+test('a square cover keeps its own dimensions instead of a forced portrait ratio', async () => {
+  const player = await bootPlayer({
+    catalog: sizedCatalog({
+      'the-new-deal': { coverWidth: 768, coverHeight: 768 },
+      'rodents-in-the-walls': { coverWidth: 480, coverHeight: 768 },
+    }),
+  });
+
+  const square = libraryCover(player, 'The New Deal');
+  assert.equal(square.getAttribute('width'), '768');
+  assert.equal(square.getAttribute('height'), '768');
+
+  const portrait = libraryCover(player, 'Rodents in the Walls');
+  assert.equal(portrait.getAttribute('width'), '480');
+  assert.equal(portrait.getAttribute('height'), '768');
+});
+
+test('a cover without catalog dimensions gets neither width nor height', async () => {
+  const player = await bootPlayer({ catalog: sizedCatalog({}) });
+  const library = player.elements.get('library');
+
+  assert.equal(library.children.length, 10);
+  for (const item of library.children) {
+    const cover = item.children[0];
+    assert.equal(cover.tagName, 'IMG');
+    assert.equal(cover.getAttribute('width'), null);
+    assert.equal(cover.getAttribute('height'), null);
+  }
+});
+
+test('a cover with only one usable dimension asserts no ratio at all', async () => {
+  const player = await bootPlayer({
+    catalog: sizedCatalog({
+      'the-new-deal': { coverWidth: 768 },
+      'rodents-in-the-walls': { coverWidth: 480, coverHeight: 0 },
+      'tests-first': { coverWidth: 480, coverHeight: 768.5 },
+    }),
+  });
+
+  for (const title of ['The New Deal', 'Rodents in the Walls', 'Tests First']) {
+    const cover = libraryCover(player, title);
+    assert.equal(cover.getAttribute('width'), null, `${title} width`);
+    assert.equal(cover.getAttribute('height'), null, `${title} height`);
+  }
+});
+
+test('MediaSession artwork sizes come from the catalog and are omitted when unstated', async () => {
+  const square = await bootPlayer({
+    mediaSession: true,
+    catalog: sizedCatalog({ 'chicken-predators': { coverWidth: 768, coverHeight: 768 } }),
+  });
+  const squareArt = square.mediaSessionMetadata().artwork[0];
+  assert.equal(squareArt.src, 'https://kinnokilabs.com/listen/books/chicken-predators/cover.jpg');
+  assert.equal(squareArt.type, 'image/jpeg');
+  assert.equal(squareArt.sizes, '768x768');
+
+  const unsized = await bootPlayer({ mediaSession: true, catalog: sizedCatalog({}) });
+  const unsizedArt = unsized.mediaSessionMetadata().artwork[0];
+  assert.equal(unsizedArt.src, 'https://kinnokilabs.com/listen/books/chicken-predators/cover.jpg');
+  assert.equal(unsizedArt.type, 'image/jpeg');
+  assert.ok(!('sizes' in unsizedArt), 'no size is asserted when the catalog states none');
+});
+
+test('library entries without covers render no img and keep title-first markup and actions', async () => {
+  const catalog = cloneCatalog((book) => {
+    const { cover, coverAlt, ...rest } = book;
+    return rest;
+  });
+  const player = await bootPlayer({ catalog });
+  const library = player.elements.get('library');
+
+  assert.equal(library.children.length, 10);
+  assert.equal(descendants(library, (node) => node.tagName === 'IMG').length, 0);
+  for (const item of library.children) {
+    assert.equal(item.children[0].className, 'room-lib-title');
+    assert.ok(item.children[0].textContent.length > 0);
+    const links = descendants(item, (node) => node.tagName === 'A');
+    assert.ok(links.length >= 2);
+    assert.deepEqual(links.slice(-2).map((link) => link.textContent), ['EPUB', 'Read']);
+  }
 });
