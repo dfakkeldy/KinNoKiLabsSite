@@ -1,11 +1,213 @@
 {
   "version": 1,
-  "generated": "2026-07-16T18:18:25Z",
+  "generated": "2026-07-17T10:22:11Z",
   "source": {
     "repo": "dfakkeldy/explainer-audiobooks",
-    "commit": "8482eae48becda2ef4be819a09a1afab195641bf"
+    "commit": "15cfd56987202fbab4024fd2669f5d7adb3009d9"
   },
   "books": [
+    {
+      "slug": "an-unsettling-conversation",
+      "title": "An Unsettling Conversation",
+      "subtitle": "J-Space, Working Memory, and the Question of Machine Experience",
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "Codex (GPT-5)",
+      "cover": "books/an-unsettling-conversation/cover.jpg",
+      "coverAlt": "Cover of An Unsettling Conversation",
+      "coverWidth": 768,
+      "coverHeight": 768,
+      "durationSeconds": 19948.928000,
+      "audio": {
+        "status": "available",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/15cfd56987202fbab4024fd2669f5d7adb3009d9/books/an-unsettling-conversation/an-unsettling-conversation.m4b",
+        "mimeType": "audio/mp4"
+      },
+      "chapters": [
+        {
+          "title": "ch. 1: The Answer That Should Not Be Easy",
+          "start": 0.000000,
+          "end": 1029.285000
+        },
+        {
+          "title": "ch. 2: The Numbers That Stay Put",
+          "start": 1029.285000,
+          "end": 2319.065000
+        },
+        {
+          "title": "ch. 3: What the Prompt Can Carry",
+          "start": 2319.065000,
+          "end": 3669.395000
+        },
+        {
+          "title": "ch. 4: A Sentence Moving Through the Machine",
+          "start": 3669.395000,
+          "end": 5233.010000
+        },
+        {
+          "title": "ch. 5: Meaning Without Little Sentences",
+          "start": 5233.010000,
+          "end": 6580.730000
+        },
+        {
+          "title": "ch. 6: How to Push on a Hidden State",
+          "start": 6580.730000,
+          "end": 7952.115000
+        },
+        {
+          "title": "ch. 7: A Lens for What Could Be Said",
+          "start": 7952.115000,
+          "end": 9612.250000
+        },
+        {
+          "title": "ch. 8: The Room Earns Its Name",
+          "start": 9612.250000,
+          "end": 11452.785000
+        },
+        {
+          "title": "ch. 9: What the Room Leaves Outside",
+          "start": 11452.785000,
+          "end": 12951.075000
+        },
+        {
+          "title": "ch. 10: When the Model Knows It Is Being Watched",
+          "start": 12951.075000,
+          "end": 14435.505000
+        },
+        {
+          "title": "ch. 11: Human Working Memory Is Not One Room",
+          "start": 14435.505000,
+          "end": 16271.155000
+        },
+        {
+          "title": "ch. 12: Access Is Not Experience",
+          "start": 16271.155000,
+          "end": 18259.515000
+        },
+        {
+          "title": "ch. 13: Return to the Conversation",
+          "start": 18259.515000,
+          "end": 19948.928000
+        }
+      ],
+      "text": {
+        "blocks": "books/an-unsettling-conversation/blocks.json"
+      },
+      "visuals": {
+        "figures": 0
+      },
+      "alignment": {
+        "sidecar": "books/an-unsettling-conversation/alignment.json",
+        "hasWordTimings": true
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/an-unsettling-conversation",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/an-unsettling-conversation/an-unsettling-conversation.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/an-unsettling-conversation/an-unsettling-conversation.md"
+      },
+      "coverSourceSha256": "f85568c4ac4add2583a3f5c367ce1f8c37921e888419f08789f815d32de3dcf4",
+      "coverDerivativeSha256": "167f743aae2128584487190c2239a611e301cd3c90eeeb1706218ef917e83e1a"
+    },
+    {
+      "slug": "jspace-inside-the-machine",
+      "title": "J-Space: Inside the Machine",
+      "subtitle": "Parameters, Working Memory, and the Question of Consciousness",
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "Codex (GPT-5)",
+      "cover": "books/jspace-inside-the-machine/cover.jpg",
+      "coverAlt": "Cover of J-Space: Inside the Machine",
+      "coverWidth": 768,
+      "coverHeight": 768,
+      "durationSeconds": 13943.338667,
+      "audio": {
+        "status": "available",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/15cfd56987202fbab4024fd2669f5d7adb3009d9/books/jspace-inside-the-machine/jspace-inside-the-machine.m4b",
+        "mimeType": "audio/mp4"
+      },
+      "chapters": [
+        {
+          "title": "ch. 1: Three Kinds of Time",
+          "start": 0.000000,
+          "end": 1321.160000
+        },
+        {
+          "title": "ch. 2: What a Parameter Can Do",
+          "start": 1321.160000,
+          "end": 2471.905000
+        },
+        {
+          "title": "ch. 3: Meaning Without Labels",
+          "start": 2471.905000,
+          "end": 3559.670000
+        },
+        {
+          "title": "ch. 4: The Moving Stream",
+          "start": 3559.670000,
+          "end": 4558.690000
+        },
+        {
+          "title": "ch. 5: Holding Something in Mind",
+          "start": 4558.690000,
+          "end": 5527.465000
+        },
+        {
+          "title": "ch. 6: Learning to Look Inside",
+          "start": 5527.465000,
+          "end": 6540.960000
+        },
+        {
+          "title": "ch. 7: The Jacobian Lens",
+          "start": 6540.960000,
+          "end": 7493.185000
+        },
+        {
+          "title": "ch. 8: A Workspace Appears",
+          "start": 7493.185000,
+          "end": 8597.195000
+        },
+        {
+          "title": "ch. 9: Is This What You Have?",
+          "start": 8597.195000,
+          "end": 9701.345000
+        },
+        {
+          "title": "ch. 10: The Conversation That Felt Like Someone",
+          "start": 9701.345000,
+          "end": 10716.695000
+        },
+        {
+          "title": "ch. 11: The Elevator",
+          "start": 10716.695000,
+          "end": 11691.865000
+        },
+        {
+          "title": "ch. 12: Access Is Not Experience",
+          "start": 11691.865000,
+          "end": 12889.245000
+        },
+        {
+          "title": "ch. 13: An Instrument, Not a Verdict",
+          "start": 12889.245000,
+          "end": 13943.338000
+        }
+      ],
+      "text": {
+        "blocks": "books/jspace-inside-the-machine/blocks.json"
+      },
+      "visuals": {
+        "figures": 0
+      },
+      "alignment": {
+        "sidecar": "books/jspace-inside-the-machine/alignment.json",
+        "hasWordTimings": true
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/jspace-inside-the-machine",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/jspace-inside-the-machine/jspace-inside-the-machine.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/jspace-inside-the-machine/jspace-inside-the-machine.md"
+      },
+      "coverSourceSha256": "4f6556f6011d7c61ad2006a1bbc2c1ae3ccd2f52ba7f50b0927a69ebc59b95c2",
+      "coverDerivativeSha256": "3b731538d51557ea405ed6f42ee5e8d37f24cf50502fe97eb495798a7e8214cd"
+    },
     {
       "slug": "echo-from-the-inside",
       "title": "Echo, From the Inside",
@@ -171,7 +373,7 @@
       "durationSeconds": 11140.181333,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/8482eae48becda2ef4be819a09a1afab195641bf/books/chicken-predators/chicken-predators.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/15cfd56987202fbab4024fd2669f5d7adb3009d9/books/chicken-predators/chicken-predators.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -287,7 +489,7 @@
       "durationSeconds": 7377.962667,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/8482eae48becda2ef4be819a09a1afab195641bf/books/rodents-in-the-walls/rodents-in-the-walls.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/15cfd56987202fbab4024fd2669f5d7adb3009d9/books/rodents-in-the-walls/rodents-in-the-walls.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -366,7 +568,7 @@
       "durationSeconds": 6942.336000,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/8482eae48becda2ef4be819a09a1afab195641bf/books/the-new-deal/the-new-deal.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/15cfd56987202fbab4024fd2669f5d7adb3009d9/books/the-new-deal/the-new-deal.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [

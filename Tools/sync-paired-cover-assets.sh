@@ -18,13 +18,17 @@ done
 [ -f "$SOURCE_MANIFEST_PATH" ] || { echo "error: source manifest not found: $SOURCE_MANIFEST_PATH" >&2; exit 1; }
 [ -f "$CATALOG_PATH" ] || { echo "error: listening catalog not found: $CATALOG_PATH" >&2; exit 1; }
 
-PORTRAIT_SLUGS="echo-from-the-inside
+PORTRAIT_SLUGS="an-unsettling-conversation
+jspace-inside-the-machine
+echo-from-the-inside
 why-it-feels-right
 findable
 rodents-in-the-walls
 chicken-predators
 the-new-deal"
-PLAYER_SLUGS="chicken-predators
+PLAYER_SLUGS="an-unsettling-conversation
+jspace-inside-the-machine
+chicken-predators
 the-new-deal"
 
 sha256() { shasum -a 256 "$1" | awk '{print $1}'; }
@@ -141,12 +145,14 @@ while IFS= read -r slug; do
     square="$book_dir/m4b-cover.png"
     square_spec="$book_dir/m4b-cover-spec.json"
     square_hash="$(jq -r "$manifest_query.square.sha256" "$SOURCE_MANIFEST_PATH")"
+    portrait_receipt_spec_hash="$(jq -r "($manifest_query.portrait.receiptSpecSha256 // $manifest_query.portrait.specSha256)" "$SOURCE_MANIFEST_PATH")"
+    square_receipt_spec_hash="$(jq -r "($manifest_query.square.receiptSpecSha256 // $manifest_query.square.specSha256)" "$SOURCE_MANIFEST_PATH")"
     verify_hash "square" "$square" "$square_hash"
     verify_hash "square spec" "$square_spec" "$(jq -r "$manifest_query.square.specSha256" "$SOURCE_MANIFEST_PATH")"
     [ "$(dimensions "$square")" = "2400 2400" ] || { echo "error: wrong square dimensions for $slug" >&2; exit 1; }
     jq -e --arg portrait "$(jq -r "$manifest_query.portrait.sha256" "$SOURCE_MANIFEST_PATH")" \
-      --arg portraitSpec "$(jq -r "$manifest_query.portrait.specSha256" "$SOURCE_MANIFEST_PATH")" \
-      --arg square "$square_hash" --arg squareSpec "$(jq -r "$manifest_query.square.specSha256" "$SOURCE_MANIFEST_PATH")" \
+      --arg portraitSpec "$portrait_receipt_spec_hash" \
+      --arg square "$square_hash" --arg squareSpec "$square_receipt_spec_hash" \
       '.variants.portrait.cover_sha256 == $portrait and .variants.portrait.specification_sha256 == $portraitSpec and
        .variants.square.cover_sha256 == $square and .variants.square.specification_sha256 == $squareSpec' "$receipt" >/dev/null || {
       echo "error: receipt variant hashes mismatch for $slug" >&2; exit 1;
@@ -191,8 +197,9 @@ cp "$work/paired-cover-provenance.json" "$work/install-learn/paired-cover-proven
 if [ -d "$LISTEN_BOOKS_ROOT" ]; then cp -R "$LISTEN_BOOKS_ROOT" "$work/install-listen"; else mkdir -p "$work/install-listen"; fi
 for slug in $PLAYER_SLUGS; do mkdir -p "$work/install-listen/$slug"; cp "$work/player/$slug.jpg" "$work/install-listen/$slug/cover.jpg"; done
 
-jq --slurpfile provenance "$work/paired-cover-provenance.json" '
-  .books |= map(if (.slug == "chicken-predators" or .slug == "the-new-deal") then
+jq --argjson playerSlugs "$(printf '%s\n' "$PLAYER_SLUGS" | jq -R -s 'split("\n") | map(select(length > 0))')" \
+  --slurpfile provenance "$work/paired-cover-provenance.json" '
+  .books |= map(.slug as $slug | if ($playerSlugs | index($slug)) != null then
     .coverSourceSha256 = $provenance[0].books[.slug].square.sourceSha256 |
     .coverDerivativeSha256 = $provenance[0].books[.slug].square.derivativeSha256 |
     .coverWidth = $provenance[0].books[.slug].square.derivativeDimensions[0] |
@@ -230,4 +237,4 @@ installing=0
 trap - ERR INT TERM
 rm -rf "$work"
 
-echo "Verified and installed six portrait covers and two square player derivatives from $expected_commit."
+echo "Verified and installed eight portrait covers and four square player derivatives from $expected_commit."

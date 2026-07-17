@@ -1,7 +1,19 @@
 {
   "schemaVersion": 1,
-  "sourceCommit": "8482eae48becda2ef4be819a09a1afab195641bf",
+  "sourceCommit": "15cfd56987202fbab4024fd2669f5d7adb3009d9",
   "books": {
+    "an-unsettling-conversation": {
+      "receiptSha256": "e03af343c74d4ebbf83dcb67610616e3fcae536dc74ed964ef92fd6ea6607839",
+      "candidateId": "cut-in-the-page",
+      "portrait": { "sha256": "b3db27921c56791003c33b25859d5dec4134429c8c3337b101ac3e45392a567f", "specSha256": "625af5242a2284fb2b324aa5372deaff625453e7f2805cd186a6dbbf896d2e63", "receiptSpecSha256": "2dea9f95b9f9fb370b5cf2ced5c6c6e267c5c800f089afad71534c0c0756173e" },
+      "square": { "sha256": "f85568c4ac4add2583a3f5c367ce1f8c37921e888419f08789f815d32de3dcf4", "specSha256": "15c4a9996e6ce2d757911c9869f09c8a0c18476d508e54c78982952bc6688cda", "receiptSpecSha256": "186c4d34308b24ac0e5e73a25ff044e7911be750c943fd7700d50dba8315ba05" }
+    },
+    "jspace-inside-the-machine": {
+      "receiptSha256": "b3d568170fd07dd0c207fbd8d4a5dfca188c1745d6a2493456087d3df60e4fa6",
+      "candidateId": "learned-watershed",
+      "portrait": { "sha256": "61f6b9a977fd47717f150cf30b382a9e7afcfc924791b3d8daaa02302d8718af", "specSha256": "8ce5a5c7a0538156dc3e74df0f720ef91814975609b4d3daf08e21d0936bc1f6", "receiptSpecSha256": "9360336f2b5d64c7526cccb1c6de1aec3a4191d79c43fddc35b39991d91e55d0" },
+      "square": { "sha256": "4f6556f6011d7c61ad2006a1bbc2c1ae3ccd2f52ba7f50b0927a69ebc59b95c2", "specSha256": "6acb24e480c5dfb96b9916481baa100247a50effc0ab8d45d318f0fd58d20e25", "receiptSpecSha256": "06e883765057c0b0378515901be3c9f51895e8b47d147f5174097af3eb2cc1a4" }
+    },
     "echo-from-the-inside": {
       "receiptSha256": "a06939bb93c60335c8179ce5c2c903ea906b21b549a797663f2a73558cba2e1b",
       "candidateId": "rooms-inside-the-app",

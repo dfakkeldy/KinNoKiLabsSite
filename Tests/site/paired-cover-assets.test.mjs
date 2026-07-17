@@ -12,6 +12,8 @@ const sourceManifest = JSON.parse(readFileSync(path.join(root, 'Resources/learn/
 const catalog = JSON.parse(readFileSync(path.join(root, 'Resources/listen/books.json')));
 
 const portraitSlugs = [
+  'an-unsettling-conversation',
+  'jspace-inside-the-machine',
   'echo-from-the-inside',
   'why-it-feels-right',
   'findable',
@@ -19,7 +21,12 @@ const portraitSlugs = [
   'chicken-predators',
   'the-new-deal',
 ];
-const migratedPlayerSlugs = ['chicken-predators', 'the-new-deal'];
+const migratedPlayerSlugs = [
+  'an-unsettling-conversation',
+  'jspace-inside-the-machine',
+  'chicken-predators',
+  'the-new-deal',
+];
 
 function hash(file) {
   return createHash('sha256').update(readFileSync(file)).digest('hex');
@@ -33,8 +40,8 @@ function dimensions(file) {
   ];
 }
 
-test('all six learn covers are verified 1600 by 2560 portraits', () => {
-  assert.equal(sourceManifest.sourceCommit, '8482eae48becda2ef4be819a09a1afab195641bf');
+test('all eight learn covers are verified 1600 by 2560 portraits', () => {
+  assert.equal(sourceManifest.sourceCommit, '15cfd56987202fbab4024fd2669f5d7adb3009d9');
   assert.equal(provenance.source.commit, sourceManifest.sourceCommit);
   assert.deepEqual(Object.keys(provenance.books), portraitSlugs);
   for (const slug of portraitSlugs) {
