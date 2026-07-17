@@ -485,6 +485,44 @@ test('createConfirmDialog mounts labeled actions, fires the matching callback, a
   } finally { restore(); }
 });
 
+test('createConfirmDialog removes the dialog and fires onCancel exactly once on a native close event', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { createConfirmDialog } = await import('../../Resources/games/controller-common.js');
+
+    // Esc during showModal() fires a native `close` event without going through
+    // either button. The jsdom fixture has no showModal(), so simulate the
+    // native event directly: it must still remove the dialog and fire onCancel.
+    let confirmed = 0, cancelled = 0;
+    const dialog = createConfirmDialog(fixture.root, {
+      title: 'Replace saved progress?', body: 'Start a new puzzle and replace your saved progress?',
+      onConfirm: () => { confirmed += 1; }, onCancel: () => { cancelled += 1; },
+    });
+    dialog.open();
+    const mounted = fixture.root.querySelector('dialog.game-dialog');
+    assert.ok(mounted, 'open() mounts the dialog into root');
+
+    mounted.dispatchEvent(new FixtureEvent('close'));
+    assert.equal(confirmed, 0);
+    assert.equal(cancelled, 1, 'a native close event fires onCancel');
+    assert.equal(fixture.root.querySelector('dialog.game-dialog'), null, 'a native close event removes the dialog node');
+
+    // Clicking cancel first, then receiving a stray close event afterward
+    // (e.g. from dialog.close() inside close()) must not double-fire onCancel.
+    const second = createConfirmDialog(fixture.root, {
+      title: 'Second', body: 'Body copy',
+      onConfirm: () => { confirmed += 1; }, onCancel: () => { cancelled += 1; },
+    });
+    second.open();
+    const secondMounted = fixture.root.querySelector('dialog.game-dialog');
+    secondMounted.querySelector('[data-dialog-cancel]').click();
+    assert.equal(cancelled, 2, 'the cancel button fires onCancel once');
+    secondMounted.dispatchEvent(new FixtureEvent('close'));
+    assert.equal(cancelled, 2, 'a stray close event after cancel does not double-fire onCancel');
+    assert.equal(confirmed, 0);
+  } finally { restore(); }
+});
+
 test('session.finish() reports recordsBroken for a first unassisted completion', async () => {
   const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' }); const restore = installDOM(fixture);
   try {
@@ -518,7 +556,7 @@ test('a different-difficulty conflict shows the kept screen plus a dialog, and c
     await flushMicrotasks();
     const dialog = fixture.root.querySelector('dialog.game-dialog');
     assert.ok(dialog, 'a replace dialog is offered on top of the kept screen');
-    assert.match(dialog.textContent, /Easy puzzle in progress.*Start Medium/s, 'the body names both difficulties');
+    assert.match(dialog.textContent, /Easy puzzle is in progress.*Start Medium/s, 'the body names both difficulties');
     assert.equal(dialog.querySelector('[data-dialog-cancel]').textContent, 'Keep saved puzzle');
     dialog.querySelector('[data-dialog-confirm]').click();
     await flushMicrotasks();
