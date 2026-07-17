@@ -669,6 +669,15 @@ dialog.game-dialog[open] { animation: games-fade-up 0.2s ease; }
   flex-wrap: wrap;
   gap: 12px;
 }
+.game-preplay button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px 12px;
+  color: var(--game-text-primary);
+  background: var(--surface-2);
+  border: 1px solid var(--separator);
+  border-radius: 9px;
+}
 .stack-controls button {
   min-width: 44px;
   min-height: 44px;
@@ -795,13 +804,13 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
   animation: games-shimmer 1.2s linear infinite;
 }
 
-.game-toolbar button, .game-toolbar select, .game-controls button, .sudoku-number-pad button, .word-search-pan button, .stack-controls button, .yard-controls button, .yard-pan-controls button, .yard-tray-piece, .difficulty-links a, .charts-controls button, .game-audio-controls button {
+.game-toolbar button, .game-toolbar select, .game-controls button, .sudoku-number-pad button, .word-search-pan button, .stack-controls button, .yard-controls button, .yard-pan-controls button, .yard-tray-piece, .difficulty-links a, .charts-controls button, .game-audio-controls button, .game-preplay button {
   transition: border-color .15s ease, background-color .15s ease, transform .15s ease;
 }
-.game-toolbar button:hover, .game-toolbar select:hover, .game-controls button:hover, .sudoku-number-pad button:hover, .word-search-pan button:hover, .stack-controls button:hover, .yard-controls button:hover, .yard-pan-controls button:hover, .yard-tray-piece:hover, .difficulty-links a:hover, .charts-controls button:hover, .game-audio-controls button:hover {
+.game-toolbar button:hover, .game-toolbar select:hover, .game-controls button:hover, .sudoku-number-pad button:hover, .word-search-pan button:hover, .stack-controls button:hover, .yard-controls button:hover, .yard-pan-controls button:hover, .yard-tray-piece:hover, .difficulty-links a:hover, .charts-controls button:hover, .game-audio-controls button:hover, .game-preplay button:hover {
   border-color: var(--gold-500);
 }
-.game-toolbar button:active, .game-toolbar select:active, .game-controls button:active, .sudoku-number-pad button:active, .word-search-pan button:active, .stack-controls button:active, .yard-controls button:active, .yard-pan-controls button:active, .yard-tray-piece:active, .difficulty-links a:active, .charts-controls button:active, .game-audio-controls button:active {
+.game-toolbar button:active, .game-toolbar select:active, .game-controls button:active, .sudoku-number-pad button:active, .word-search-pan button:active, .stack-controls button:active, .yard-controls button:active, .yard-pan-controls button:active, .yard-tray-piece:active, .difficulty-links a:active, .charts-controls button:active, .game-audio-controls button:active, .game-preplay button:active {
   transform: scale(.97);
 }
 
@@ -1431,7 +1440,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   .game-card-grid .game-card { animation: none; }
   .games-app:empty::before { animation: none; }
   dialog.game-dialog[open] { animation: none; }
-  .game-toolbar button, .game-toolbar select, .game-controls button, .sudoku-number-pad button, .word-search-pan button, .stack-controls button, .yard-controls button, .yard-pan-controls button, .yard-tray-piece, .difficulty-links a, .charts-controls button, .game-audio-controls button {
+  .game-toolbar button, .game-toolbar select, .game-controls button, .sudoku-number-pad button, .word-search-pan button, .stack-controls button, .yard-controls button, .yard-pan-controls button, .yard-tray-piece, .difficulty-links a, .charts-controls button, .game-audio-controls button, .game-preplay button {
     transition: none;
   }
 

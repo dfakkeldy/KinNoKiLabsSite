@@ -93,7 +93,7 @@ test('cargo controls and Yard cells retain 44 CSS-pixel targets', () => {
     '.stack-controls button', '.yard-controls button',
     '.yard-cell', '.yard-tray-piece', '.yard-pan-controls button',
     '.game-audio-controls button', '.game-audio-controls input[type="range"]',
-    '.charts-cell', '.charts-controls button',
+    '.charts-cell', '.charts-controls button', '.game-preplay button',
   ]) {
     const body = ruleBody(selector);
     assert.match(body, /min-width:\s*44px/);
@@ -316,7 +316,7 @@ test('board frames carry their boundary with the measured frame token', () => {
 const SHARED_CONTROL_SELECTOR = '.game-toolbar button, .game-toolbar select, .game-controls button, '
   + '.sudoku-number-pad button, .word-search-pan button, .stack-controls button, .yard-controls button, '
   + '.yard-pan-controls button, .yard-tray-piece, .difficulty-links a, .charts-controls button, '
-  + '.game-audio-controls button';
+  + '.game-audio-controls button, .game-preplay button';
 
 test('shared control feedback rule declares the transition on every game control', () => {
   const body = ruleBody(SHARED_CONTROL_SELECTOR);
@@ -325,6 +325,14 @@ test('shared control feedback rule declares the transition on every game control
 
 test('audio toggle buttons carry the shared control surface styling, not the native default', () => {
   const body = ruleBody('.game-audio-controls button');
+  assert.match(body, /color:\s*var\(--game-text-primary\)/);
+  assert.match(body, /background:\s*var\(--surface-2\)/);
+  assert.match(body, /border:\s*1px\s+solid\s+var\(--separator\)/);
+  assert.match(body, /border-radius:/);
+});
+
+test('preplay Start/Continue/Resume buttons carry the shared control surface styling', () => {
+  const body = ruleBody('.game-preplay button');
   assert.match(body, /color:\s*var\(--game-text-primary\)/);
   assert.match(body, /background:\s*var\(--surface-2\)/);
   assert.match(body, /border:\s*1px\s+solid\s+var\(--separator\)/);

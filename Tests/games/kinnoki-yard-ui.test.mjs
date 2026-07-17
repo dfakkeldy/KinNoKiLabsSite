@@ -743,6 +743,34 @@ test('Yard tray thumbnails pre-rotate cargo cells and keep visually-hidden acces
   } finally { restore(); }
 });
 
+test('Yard tray pieces keep the cargo pattern on the thumbnail cells, not the button background', async () => {
+  const fixture = createDOMFixture({ search: '?mode=endless&difficulty=easy' });
+  const restore = installDOM(fixture);
+  try {
+    const { renderKinnokiYard } = await import('../../Resources/games/kinnoki-yard-ui.js');
+    const controller = await renderKinnokiYard(fixture.root, createEmptyGameStore(), {
+      storage: fixture.localStorage, seedFactory: () => 90, audioFactory: silentYardAudioFactory,
+    });
+    fixture.root.querySelector('[data-start-game]').click();
+    await waitForYardState(
+      () => fixture.root.querySelector('[data-yard-rotate]').disabled === false,
+      'Endless never entered active state',
+    );
+    for (const piece of fixture.root.querySelectorAll('[data-yard-piece]')) {
+      assert.doesNotMatch(piece.className, /cargo-pattern-/,
+        'the tray button itself carries no pattern background that would drown the silhouette');
+      const pattern = piece.getAttribute('data-pattern');
+      assert.ok(pattern, 'the pattern identity stays exposed as a data attribute');
+      const patternedCells = piece.querySelectorAll(`.cargo-thumb-cell.cargo-pattern-${pattern}`);
+      assert.ok(patternedCells.length > 0,
+        'the non-colour pattern cue lives on the thumbnail cells');
+      assert.match(piece.querySelector('.visually-hidden').textContent, new RegExp(`${pattern} pattern`),
+        'the accessible label still names the pattern');
+    }
+    controller.dispose();
+  } finally { restore(); }
+});
+
 test('Yard timer text is written at most once per displayed second', async () => {
   const fixture = createDOMFixture({ search: '?mode=contracts&difficulty=easy' });
   const restore = installDOM(fixture);
