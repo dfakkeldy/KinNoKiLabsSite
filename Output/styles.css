@@ -51,6 +51,8 @@
   --game-text-secondary: #b8b8bf;
   --game-text-tertiary: #a6a6ad;
   --game-text-accent: #e0c47a;
+  /* Non-text board boundary: >= 3:1 against --bg, --surface, --surface-2. */
+  --game-board-frame: #75757a;
 
   --font-sans: 'Lexend', -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
   --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
@@ -81,6 +83,7 @@
   --game-text-secondary: #595960;
   --game-text-tertiary: #68686f;
   --game-text-accent: #6f5417;
+  --game-board-frame: #828287;
 }
 
 /* ── Base ───────────────────────────────────────────── */
@@ -586,19 +589,35 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
   overflow: hidden;
   background: linear-gradient(155deg, color-mix(in srgb, var(--surface-2) 66%, var(--surface)), var(--surface) 58%);
   border: 1px solid var(--separator);
-  border-top-color: color-mix(in srgb, var(--gold-500) 42%, var(--separator));
+  border-top-width: 2px;
+  border-top-color: var(--card-accent, color-mix(in srgb, var(--gold-500) 42%, var(--separator)));
   border-radius: var(--radius-bento);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18), inset 0 1px rgba(255, 255, 255, 0.04);
   transition: transform 0.2s var(--ease), border-color 0.2s ease, box-shadow 0.2s ease;
 }
-.game-card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--gold-500) 48%, var(--separator)); box-shadow: var(--shadow-card-hover); }
+.game-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--gold-500) 48%, var(--separator));
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18), inset 0 1px rgba(255, 255, 255, 0.04), 0 0 0 1px var(--gold-hairline), var(--shadow-card-hover);
+}
 .game-card-topline { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 26px; }
 .game-card-eyebrow { color: var(--game-text-accent); font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
-.game-card-symbol { display: inline-grid; width: 42px; height: 42px; flex: none; place-items: center; color: var(--game-text-accent); background: var(--fill-2); border: 1px solid var(--gold-hairline); border-radius: 11px; font-family: var(--font-mono); font-size: 1.15rem; font-weight: 700; }
+.game-card-symbol { display: inline-grid; width: 42px; height: 42px; flex: none; place-items: center; color: var(--game-text-accent); background: var(--fill-2); border: 1px solid var(--card-accent, var(--gold-hairline)); border-radius: 11px; font-family: var(--font-mono); font-size: 1.15rem; font-weight: 700; }
+/* Per-card accents: tint only the top hairline + symbol border so the
+   measured --game-text-accent token keeps carrying the eyebrow text
+   (contrast already verified for that token; the accents below are
+   decorative, non-text boundaries only). */
+.game-card-sudoku { --card-accent: #c9a24b; }
+.game-card-crossword { --card-accent: #b8834d; }
+.game-card-word-search { --card-accent: #a6763f; }
+.game-card-kinnoki-stack { --card-accent: #c2793f; }
+.game-card-kinnoki-yard { --card-accent: #8f7a4a; }
+.game-card-kinnoki-charts { --card-accent: #d4a76a; }
 .game-card h2 { font-size: clamp(1.55rem, 3vw, 2rem); margin-bottom: 10px; }
 .game-card-description { color: var(--game-text-secondary); font-size: 0.94rem; line-height: 1.65; }
 .game-continue { width: 100%; margin-top: 24px; }
-.difficulty-links { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: auto; padding-top: 28px; }
+.game-mode-actions { display: flex; flex-direction: column; gap: 0.75rem; margin-top: auto; }
+.difficulty-links { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-top: 28px; }
 .difficulty-links > span { width: 100%; color: var(--game-text-tertiary); font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; }
 .difficulty-links a { display: inline-flex; min-width: 44px; min-height: 44px; padding: 7px 11px; align-items: center; justify-content: center; color: var(--game-text-primary); background: var(--fill-2); border: 1px solid var(--separator); border-radius: 9px; font-size: 0.78rem; font-weight: 600; text-decoration: none; }
 .difficulty-links a:hover { border-color: var(--gold-hairline); color: var(--game-text-accent); }
@@ -618,9 +637,18 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
 .game-storage-notice { color: var(--game-text-primary); font-size: 0.88rem; }
 .game-storage-notice[hidden] { display: none; }
 .games-live-region { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-.game-dialog { width: min(calc(100% - 32px), 510px); padding: 0; color: var(--text); background: var(--surface); border: 1px solid var(--gold-hairline); border-radius: var(--radius-card); box-shadow: 0 28px 90px rgba(0, 0, 0, 0.56); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.game-dialog {
+  width: min(calc(100% - 32px), 510px);
+  padding: clamp(24px, 5vw, 34px);
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--gold-hairline);
+  border-radius: var(--radius-card);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.56);
+}
 .game-dialog::backdrop { background: rgba(0, 0, 0, 0.72); backdrop-filter: blur(5px); }
-.game-dialog form { padding: clamp(24px, 5vw, 34px); }
+dialog.game-dialog[open] { animation: games-fade-up 0.2s ease; }
 .game-dialog h2 { margin-bottom: 12px; }
 .game-dialog form > p:not(.eyebrow) { color: var(--game-text-secondary); font-size: 0.92rem; }
 .game-dialog-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 26px; }
@@ -628,7 +656,9 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
 .game-danger:hover { background: #b6403b; }
 
 /* Shared controller layout for the game views added in later slices. */
-.games-app { min-width: 0; overflow-x: clip; }
+/* position: relative makes this a valid mount root for the absolutely
+   positioned .game-celebration overlay (see celebration.js). */
+.games-app { position: relative; min-width: 0; overflow-x: clip; }
 .game-preplay,
 .game-status-grid,
 .game-audio-controls,
@@ -663,21 +693,112 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
   min-width: 44px;
   min-height: 44px;
 }
+.charts-controls button {
+  min-width: 44px;
+  min-height: 44px;
+}
+.charts-cell {
+  min-width: 44px;
+  min-height: 44px;
+}
 .game-audio-controls input[type="range"] {
   width: 132px;
   min-width: 44px;
   min-height: 44px;
 }
+fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius: 12px; background: var(--surface); padding: 0.75rem 1rem; }
+.game-audio-channel { display: flex; align-items: center; gap: 0.75rem; }
+.game-audio-channel input[type="range"] { accent-color: var(--gold-500); }
 .game-toolbar, .game-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
 .game-toolbar { margin-bottom: 22px; }
-.game-board { width: min(100%, 42rem); margin: 0 auto; background: var(--surface); border: 2px solid var(--text); border-radius: 12px; overflow: hidden; }
+.game-board { width: min(100%, 42rem); margin: 0 auto; background: var(--surface); border: 1px solid var(--game-board-frame); box-shadow: inset 0 0 0 1px var(--gold-hairline); border-radius: 12px; overflow: hidden; }
 .game-board-scroll { width: 100%; max-width: 100%; min-width: 0; overflow-x: auto; overscroll-behavior-inline: contain; }
 .game-controls { justify-content: center; margin-top: 22px; }
 .game-controls button[aria-pressed="true"] { color: var(--gold-text); background: var(--fill); border: 2px solid var(--gold-500); }
-.game-complete { max-width: 620px; margin: 32px auto 0; padding: clamp(24px, 4vw, 36px); text-align: center; background: var(--surface); border: 1px solid var(--gold-hairline); border-top-width: 4px; border-radius: var(--radius-card); }
+.game-complete { max-width: 620px; margin: 32px auto 0; padding: clamp(24px, 4vw, 36px); text-align: center; background: var(--surface); border: 1px solid var(--gold-hairline); border-top-width: 4px; border-radius: var(--radius-card); animation: games-fade-up 240ms var(--ease); }
+.game-complete-record { margin-top: 4px; color: var(--game-text-accent); font-weight: 700; }
 .game-error { max-width: 640px; margin-inline: auto; }
 .game-error h1 { margin-bottom: 8px; font-size: clamp(1.8rem, 5vw, 2.7rem); }
 .game-error p { color: var(--game-text-secondary); }
+
+.game-celebration {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.game-celebration-particle {
+  position: absolute;
+  top: -12px;
+  left: calc(5% + (var(--particle-index) * 4.5%));
+  width: 8px;
+  height: 8px;
+  background: var(--gold-500);
+  animation: games-confetti-fall 1100ms ease-in forwards;
+  animation-delay: calc(var(--particle-index) * 40ms);
+}
+.game-celebration-particle:nth-child(3n) { border-radius: 2px; }
+.game-celebration-particle:nth-child(3n + 1) { transform: rotate(45deg); }
+@keyframes games-confetti-fall {
+  from { transform: translateY(0) rotate(0deg); opacity: 1; }
+  to { transform: translateY(340px) rotate(220deg); opacity: 0; }
+}
+@keyframes games-cell-shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-3px); }
+  40%, 60% { transform: translateX(3px); }
+}
+@keyframes games-cell-bloom {
+  0% { transform: scale(1); background-color: var(--surface); }
+  45% { transform: scale(1.18); background-color: color-mix(in srgb, var(--gold-500) 60%, var(--surface)); }
+  100% { transform: scale(1); background-color: var(--surface); }
+}
+@keyframes games-cell-pop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+@keyframes games-fade-up {
+  from { transform: translateY(12px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes games-card-in {
+  from { transform: translateY(12px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes games-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+.game-card-grid .game-card { animation: games-card-in 0.4s ease both; }
+.game-card-grid .game-card:nth-child(2) { animation-delay: 60ms; }
+.game-card-grid .game-card:nth-child(3) { animation-delay: 120ms; }
+.game-card-grid .game-card:nth-child(4) { animation-delay: 180ms; }
+.game-card-grid .game-card:nth-child(5) { animation-delay: 240ms; }
+.game-card-grid .game-card:nth-child(6) { animation-delay: 300ms; }
+
+.games-app:empty { min-height: 40vh; }
+.games-app:empty::before {
+  content: '';
+  display: block;
+  height: 200px;
+  border-radius: 16px;
+  background: linear-gradient(100deg, var(--surface) 40%, var(--fill) 50%, var(--surface) 60%);
+  background-size: 200% 100%;
+  animation: games-shimmer 1.2s linear infinite;
+}
+
+.game-toolbar button, .game-toolbar select, .game-controls button, .sudoku-number-pad button, .word-search-pan button, .stack-controls button, .yard-controls button, .yard-pan-controls button, .yard-tray-piece, .difficulty-links a, .charts-controls button {
+  transition: border-color .15s ease, background-color .15s ease, transform .15s ease;
+}
+.game-toolbar button:hover, .game-toolbar select:hover, .game-controls button:hover, .sudoku-number-pad button:hover, .word-search-pan button:hover, .stack-controls button:hover, .yard-controls button:hover, .yard-pan-controls button:hover, .yard-tray-piece:hover, .difficulty-links a:hover, .charts-controls button:hover {
+  border-color: var(--gold-500);
+}
+.game-toolbar button:active, .game-toolbar select:active, .game-controls button:active, .sudoku-number-pad button:active, .word-search-pan button:active, .stack-controls button:active, .yard-controls button:active, .yard-pan-controls button:active, .yard-tray-piece:active, .difficulty-links a:active, .charts-controls button:active {
+  transform: scale(.97);
+}
 
 .game-toolbar h1 { margin: 0 auto 0 0; font-size: clamp(1.7rem, 4vw, 2.5rem); }
 .game-toolbar label { display: inline-flex; align-items: center; gap: 8px; color: var(--game-text-secondary); font-size: 0.85rem; }
@@ -711,40 +832,74 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
   border-radius: 0;
   font-family: var(--font-mono);
   font-size: clamp(0.78rem, 4vw, 1.55rem);
+  transition: background-color .12s ease, color .12s ease, outline-color .12s ease;
 }
 .sudoku-gridcell:nth-child(3n):not(:nth-child(9n)) .sudoku-cell { border-right: 2px solid var(--game-text-tertiary); }
 .sudoku-row:nth-child(3n):not(:nth-child(9n)) .sudoku-cell { border-bottom: 2px solid var(--game-text-tertiary); }
 .sudoku-cell.is-related { background: color-mix(in srgb, var(--gold-500) 8%, var(--surface)); }
 .sudoku-cell.is-selected { position: relative; z-index: 1; outline: 3px solid var(--gold-500); outline-offset: -3px; }
 .sudoku-cell.is-given { font-weight: 800; }
+/* Non-colour cue for the same-digit highlight: a bolder weight, not just a tint. */
+.sudoku-cell.is-same-digit { background: color-mix(in srgb, var(--gold-500) 16%, var(--surface)); font-weight: 700; }
 .sudoku-cell.is-error {
   color: #ef8d87;
   border: 3px double currentColor;
   background: color-mix(in srgb, #9e3733 24%, var(--surface));
   background-image: repeating-linear-gradient(135deg, transparent 0 7px, currentColor 7px 9px, transparent 9px 16px);
+  animation: games-cell-shake 200ms ease;
+}
+.sudoku-cell.is-celebrating {
+  animation: games-cell-bloom .5s ease both;
+  animation-delay: var(--cell-delay, 0ms);
 }
 .sudoku-number-pad { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.sudoku-notes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 100%;
+  height: 100%;
+}
+.sudoku-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--game-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  line-height: 1;
+}
 
 .crossword-layout, .word-search-layout { display: grid; min-width: 0; grid-template-columns: minmax(0, 1.25fr) minmax(15rem, 0.75fr); gap: clamp(20px, 4vw, 42px); align-items: start; }
 .crossword-board { display: grid; grid-template-columns: repeat(var(--crossword-size), 1fr); grid-template-rows: repeat(var(--crossword-size), 1fr); min-width: calc(var(--crossword-size) * 44px); aspect-ratio: 1; background: var(--fill-2); }
 .crossword-row { display: contents; }
 .crossword-gridcell { position: relative; min-width: 44px; min-height: 44px; }
-.crossword-cell { min-width: 0; width: 100%; min-height: 0; height: 100%; padding: 0; text-align: center; color: var(--game-text-primary); background: var(--surface); border: 1px solid var(--separator); border-radius: 0; font-family: var(--font-mono); font-size: clamp(0.7rem, 3vw, 1.35rem); font-weight: 700; text-transform: uppercase; }
+.crossword-cell { min-width: 0; width: 100%; min-height: 0; height: 100%; padding: 0; text-align: center; color: var(--game-text-primary); background: var(--surface); border: 1px solid var(--separator); border-radius: 0; font-family: var(--font-mono); font-size: clamp(0.7rem, 3vw, 1.35rem); font-weight: 700; text-transform: uppercase; transition: background-color .12s ease, color .12s ease, outline-color .12s ease; }
 .crossword-number { position: absolute; top: 2px; left: 4px; pointer-events: none; color: var(--game-text-tertiary); font-family: var(--font-mono); font-size: 0.62rem; line-height: 1; }
-.crossword-cell.is-selected { outline: 3px solid var(--gold-500); outline-offset: -3px; }
+/* Non-colour cue for the active entry: an inset bottom edge marker reads as an
+   underline rail across the whole entry even in forced-monochrome. */
+.crossword-cell.is-active-entry { background: color-mix(in srgb, var(--gold-500) 8%, var(--surface)); box-shadow: inset 0 -3px 0 var(--gold-500); }
+.crossword-cell.is-selected { position: relative; z-index: 1; outline: 3px solid var(--gold-500); outline-offset: -3px; }
 .crossword-cell.is-error {
   color: #ef8d87;
   border: 3px double currentColor;
   background: color-mix(in srgb, #9e3733 24%, var(--surface));
   background-image: repeating-linear-gradient(135deg, transparent 0 7px, currentColor 7px 9px, transparent 9px 16px);
+  animation: games-cell-shake 200ms ease;
+}
+.crossword-cell.is-celebrating {
+  animation: games-cell-bloom .5s ease both;
+  animation-delay: var(--cell-delay, 0ms);
 }
 
 .game-assisted-status { margin: 12px auto; color: var(--game-text-secondary); text-align: center; }
 .crossword-clues { display: grid; gap: 24px; }
 .crossword-clues h2 { margin-bottom: 8px; font-size: 1.1rem; }
-.crossword-clues ol { display: grid; gap: 5px; padding-left: 1.5rem; }
+.crossword-clues ul { display: grid; gap: 5px; padding-left: 1.5rem; }
 .crossword-clues button { min-height: 44px; padding: 6px 8px; color: var(--game-text-secondary); background: transparent; border: 0; text-align: left; }
 .crossword-clues button:hover, .crossword-clues button:focus-visible { color: var(--game-text-accent); }
+/* Non-colour cue for the active clue: a gold hairline plus a bolder weight, not just a tint. */
+[data-clue].is-active { border: 1px solid var(--gold-hairline); font-weight: 800; }
 
 .word-search-board { display: grid; grid-template-columns: repeat(var(--word-search-size), 1fr); min-width: calc(var(--word-search-size) * 44px); aspect-ratio: 1; touch-action: pan-y; user-select: none; }
 .word-search-board-column { min-width: 0; }
@@ -753,12 +908,21 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
 .word-search-pan input[type="range"] { width: 100%; min-height: 44px; accent-color: var(--gold-500); touch-action: pan-x; }
 .word-search-row { display: contents; }
 .word-search-gridcell { display: flex; min-width: 44px; min-height: 44px; }
-.word-search-cell { width: 100%; min-width: 44px; min-height: 44px; padding: 0; color: var(--game-text-primary); background: var(--surface); border: 0; border-radius: 0; font-family: var(--font-mono); font-size: clamp(0.65rem, 3vw, 1.2rem); font-weight: 700; }
+.word-search-cell { width: 100%; min-width: 44px; min-height: 44px; padding: 0; color: var(--game-text-primary); background: var(--surface); border: 0; border-radius: 0; font-family: var(--font-mono); font-size: clamp(0.65rem, 3vw, 1.2rem); font-weight: 700; transition: background-color .12s ease, color .12s ease, outline-color .12s ease; }
 .word-search-cell.is-preview { background: color-mix(in srgb, var(--gold-500) 22%, var(--surface)); }
-.word-search-cell.is-found { color: var(--surface); background: var(--game-text-accent); }
+.word-search-cell.is-found { color: var(--surface); background: var(--game-text-accent); animation: games-cell-pop .3s ease; }
+/* Non-colour cue for a rejected ("not a word here") guess: a warning outline
+   (structural edge), not just the shake, so it reads without relying on hue.
+   #ef8d87 is the same raw error hex the sudoku/crossword .is-error rules use —
+   no error/warning token exists in this stylesheet yet to reference instead. */
+.word-search-cell.is-rejected { outline: 3px solid #ef8d87; outline-offset: -3px; animation: games-cell-shake 200ms ease; }
+.word-search-cell.is-celebrating { animation: games-cell-bloom .5s ease both; animation-delay: var(--cell-delay, 0ms); }
 .word-search-list { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 12px; list-style: none; }
 .word-search-list li { color: var(--game-text-primary); font-family: var(--font-mono); font-size: 0.85rem; }
-.word-search-list li.is-found { color: var(--game-text-tertiary); text-decoration: line-through; }
+/* Non-colour cue for a found word: the strike-through itself, not the tone
+   change, is what still reads it as "solved" for colour-vision-deficient
+   sighted users; opacity settles in with a transition ("strike-in"). */
+.word-search-list li.is-found-item { color: var(--game-text-tertiary); text-decoration: line-through; opacity: .7; transition: opacity .3s ease; }
 
 .stack-game {
   min-width: 0;
@@ -769,7 +933,8 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
   margin-inline: auto;
   overflow: hidden;
   background: var(--surface);
-  border: 2px solid var(--game-text-primary);
+  border: 1px solid var(--game-board-frame);
+  box-shadow: inset 0 0 0 1px var(--gold-hairline);
   border-radius: 12px;
 }
 .stack-grid {
@@ -812,6 +977,41 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
   outline: 2px dashed var(--game-text-accent);
   outline-offset: -3px;
 }
+/* Non-colour cue for the hard-drop landing preview: a dashed, low-contrast
+   outline (structural, distinct from the manifest target's accent-coloured
+   dash), not a hue shift. */
+.stack-cell.is-ghost {
+  outline: 2px dashed var(--game-text-tertiary);
+  outline-offset: -3px;
+}
+/* The active piece now lives entirely in .stack-active-overlay (a single
+   absolutely-positioned layer inside .stack-dock) instead of being painted
+   into grid cells every frame. Position comes from --piece-col/--piece-row
+   custom properties (set in JS from state, never from a layout read) times
+   a per-axis cell-size percentage derived purely from the fixed 12x18 dock
+   grid — pure CSS math. */
+.stack-active-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  --piece-col: 0;
+  --piece-row: 0;
+  transform: translate(calc(var(--piece-col) * (100% / 12)), calc(var(--piece-row) * (100% / 18)));
+}
+.stack-active-overlay[hidden] { display: none; }
+.stack-active-overlay.is-transition-enabled { transition: transform 0.15s ease-out; }
+/* Set for one paint right after a tide-shift resolves, so the freshly
+   spawned piece eases in slower than a normal move/rotate glide. */
+.stack-active-overlay.is-tide-sliding { transition: transform 0.45s ease; }
+.stack-overlay-cell {
+  position: absolute;
+  box-sizing: border-box;
+  width: calc(100% / 12);
+  height: calc(100% / 18);
+  left: calc(var(--cell-col, 0) * (100% / 12));
+  top: calc(var(--cell-row, 0) * (100% / 18));
+}
 .stack-preview {
   display: flex;
   flex-wrap: wrap;
@@ -820,6 +1020,9 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
   list-style: none;
 }
 .stack-preview li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 8px 10px;
   color: var(--game-text-primary);
   background-color: var(--surface-2);
@@ -845,15 +1048,102 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
   from { outline: 1px solid transparent; }
   to { outline: 3px solid var(--game-text-accent); }
 }
+/* Manifest dispatch: a brief flash on every cleared cell. */
+.cargo-dispatching { animation: games-dispatch-flash 350ms ease; }
+@keyframes games-dispatch-flash {
+  0% { background-color: color-mix(in srgb, var(--gold-500) 70%, var(--surface)); }
+  100% { background-color: var(--surface); }
+}
+/* Tide shift: a brief nudge on every cell the tide just carried. */
+.cargo-tide-shifting { animation: games-cargo-nudge 400ms ease; }
+@keyframes games-cargo-nudge {
+  0% { transform: translateX(0); }
+  35% { transform: translateX(4px); }
+  100% { transform: translateX(0); }
+}
+/* Tide warning: an inset edge bar on the side the tide will pull from — a
+   shape/position cue (which edge lit up), not just a colour, so it still
+   reads without relying on hue; the live-region announcement carries the
+   equivalent information for assistive tech. */
+.stack-dock.is-tide-left::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  width: 6px;
+  pointer-events: none;
+  background: var(--gold-500);
+  box-shadow: 0 0 12px 2px var(--gold-500);
+}
+.stack-dock.is-tide-right::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 2;
+  width: 6px;
+  pointer-events: none;
+  background: var(--gold-500);
+  box-shadow: 0 0 12px 2px var(--gold-500);
+}
+.stack-score-pop-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  pointer-events: none;
+}
+.game-score-pop {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  padding: 2px 8px;
+  color: var(--game-text-accent);
+  background-color: color-mix(in srgb, var(--surface) 70%, transparent);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+  animation: games-score-pop-float 700ms ease-out forwards;
+}
+@keyframes games-score-pop-float {
+  0% { transform: translate(-50%, 0); opacity: 1; }
+  100% { transform: translate(-50%, -28px); opacity: 0; }
+}
+/* Shared cargo/piece thumbnail (Kinnoki Stack previews, Kinnoki Yard tray):
+   percentage-positioned cells sized from custom properties set in JS from
+   cell coordinates, never from a layout read. */
+.cargo-thumb {
+  position: relative;
+  display: inline-block;
+  width: 2.4rem;
+  aspect-ratio: var(--cargo-thumb-columns, 1) / var(--cargo-thumb-rows, 1);
+}
+.cargo-thumb-cell {
+  position: absolute;
+  box-sizing: border-box;
+  width: calc(100% / var(--cargo-thumb-columns, 1));
+  height: calc(100% / var(--cargo-thumb-rows, 1));
+  left: calc(var(--cargo-thumb-cell-column, 0) * (100% / var(--cargo-thumb-columns, 1)));
+  top: calc(var(--cargo-thumb-cell-row, 0) * (100% / var(--cargo-thumb-rows, 1)));
+  border: 1px solid var(--game-text-primary);
+  background-color: var(--surface-2);
+}
 
 .yard-game,
 .yard-board-column { min-width: 0; }
 .yard-board-scroll {
+  position: relative;
   width: 100%;
   max-width: 100%;
   overflow: auto;
   overscroll-behavior: contain;
-  border: 2px solid var(--game-text-primary);
+  border: 1px solid var(--game-board-frame);
+  box-shadow: inset 0 0 0 1px var(--gold-hairline);
   border-radius: 12px;
   background: var(--surface);
   scroll-behavior: smooth;
@@ -878,6 +1168,7 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
   border: 1px solid var(--separator);
   border-radius: 0;
   font-family: var(--font-mono);
+  transition: background-color 0.12s ease, outline-color 0.12s ease;
 }
 .yard-cell-target { border: 2px dashed var(--game-text-tertiary); }
 .yard-cell-manifest {
@@ -894,9 +1185,39 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
   border: 4px double var(--game-text-primary);
   background-image: repeating-linear-gradient(135deg, transparent 0 6px, currentColor 6px 8px);
 }
-.yard-cell-hint {
+/* One-shot invalid-placement flash: reuses the exact stripe pattern above
+   (structural, not hue alone) plus a shake, cleared on animationend by a
+   delegated listener; reduced motion applies .yard-cell-invalid instead. */
+.yard-cell-invalid-flash {
+  border: 4px double var(--game-text-primary);
+  background-image: repeating-linear-gradient(135deg, transparent 0 6px, currentColor 6px 8px);
+  animation: games-cell-shake 200ms ease;
+}
+.yard-cell.is-hint {
   outline: 4px dotted var(--game-text-accent);
   outline-offset: -5px;
+}
+/* Ghost preview: the selected tray piece's full rotated footprint, tinted by
+   placeability on hover/focus. Valid is a solid gold outline (structural,
+   distinct from every dashed/dotted cue above); invalid reuses the
+   yard-cell-invalid stripe for its non-colour cue plus a muted red tint. */
+.yard-cell.is-ghost-valid {
+  outline: 3px solid var(--gold-500);
+  outline-offset: -4px;
+  background-color: color-mix(in srgb, var(--gold-500) 18%, var(--surface));
+}
+.yard-cell.is-ghost-invalid {
+  outline: 3px solid #ef8d87;
+  outline-offset: -4px;
+  background-image: repeating-linear-gradient(135deg, transparent 0 6px, currentColor 6px 8px);
+  background-color: color-mix(in srgb, #ef8d87 16%, var(--surface));
+}
+.yard-score-pop-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  pointer-events: none;
 }
 .yard-tray {
   display: flex;
@@ -904,6 +1225,8 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
   gap: 10px;
 }
 .yard-tray-piece {
+  display: inline-flex;
+  align-items: center;
   padding: 8px 12px;
   color: var(--game-text-primary);
   background-color: var(--surface-2);
@@ -915,6 +1238,11 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
 .yard-tray-piece.is-placed {
   text-decoration: line-through;
   border-style: dashed;
+}
+.yard-tray-piece.is-hint-flash { animation: games-hint-pulse 900ms ease-in-out; }
+@keyframes games-hint-pulse {
+  0%, 100% { outline: 2px solid transparent; }
+  50% { outline: 4px solid var(--game-text-accent); outline-offset: 2px; }
 }
 .yard-pan-controls {
   justify-content: space-between;
@@ -928,6 +1256,110 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
 }
 body.font-opendyslexic .yard-cell:focus-visible,
 body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
+
+/* ── Kinnoki Charts (nonogram) ──────────────────────── */
+/* Row clues sit left of the grid, column clues sit above it; the whole
+   layout (clues + grid together) rides inside .game-board-scroll so a hard
+   15×15 board scrolls horizontally as one unit on narrow screens, matching
+   the board-scroll pattern the other puzzle games already use. */
+.charts-controls button {
+  padding: 8px 12px;
+  color: var(--game-text-primary);
+  background: var(--surface-2);
+  border: 1px solid var(--separator);
+  border-radius: 9px;
+}
+.charts-layout {
+  display: inline-grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas: "corner columns" "rows board";
+  gap: 4px;
+}
+.charts-corner { grid-area: corner; }
+.charts-columns {
+  grid-area: columns;
+  display: grid;
+  grid-template-columns: repeat(var(--charts-size), minmax(44px, 1fr));
+  align-items: end;
+}
+.charts-rows {
+  grid-area: rows;
+  display: grid;
+  grid-template-rows: repeat(var(--charts-size), minmax(44px, 1fr));
+  align-items: center;
+  justify-items: end;
+}
+.charts-board {
+  grid-area: board;
+  display: grid;
+  grid-template-columns: repeat(var(--charts-size), minmax(44px, 1fr));
+  grid-template-rows: repeat(var(--charts-size), minmax(44px, 1fr));
+  min-width: calc(var(--charts-size) * 44px);
+  aspect-ratio: 1;
+  background: var(--surface);
+  border: 1px solid var(--game-board-frame);
+  box-shadow: inset 0 0 0 1px var(--gold-hairline);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.charts-row { display: contents; }
+.charts-gridcell { display: flex; min-width: 44px; min-height: 44px; }
+.charts-clue {
+  padding: 2px 6px;
+  color: var(--game-text-secondary);
+  font-family: var(--font-mono);
+  font-size: clamp(0.68rem, 2.4vw, 0.85rem);
+  line-height: 1.2;
+  white-space: pre-line;
+  transition: opacity .2s ease;
+}
+.charts-clue-row { text-align: right; }
+.charts-clue-column { text-align: center; }
+/* Non-colour cue for a satisfied line: the strike-through itself, not the
+   dimmed opacity, is what still reads as "done" for colour-vision-deficient
+   sighted users — mirrors the Word Search found-word list-item pattern. */
+.charts-clue.is-satisfied { opacity: .45; text-decoration: line-through; }
+.charts-cell {
+  width: 100%;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  color: var(--game-text-primary);
+  background: var(--surface);
+  border: 0 solid var(--separator);
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+  border-radius: 0;
+  font-family: var(--font-mono);
+  font-size: clamp(0.9rem, 4vw, 1.4rem);
+  transition: background-color .12s ease, color .12s ease, outline-color .12s ease;
+}
+.charts-cell.is-related { background: color-mix(in srgb, var(--gold-500) 8%, var(--surface)); }
+.charts-cell.is-selected { position: relative; z-index: 1; outline: 3px solid var(--gold-500); outline-offset: -3px; }
+/* Non-colour cue for a filled cell: a full-cell block glyph (structural
+   shape/coverage), not just the gold tint. */
+.charts-cell.is-filled { background: var(--gold-500); color: var(--bg); font-weight: 800; }
+.charts-cell.is-filled.is-related { background: color-mix(in srgb, var(--gold-500) 85%, var(--surface)); }
+/* Non-colour cue for a marked-empty cell: the × glyph itself. */
+.charts-cell.is-marked { color: var(--game-text-tertiary); font-size: clamp(0.75rem, 3vw, 1.05rem); }
+.charts-cell.is-error {
+  color: #ef8d87;
+  border: 3px double currentColor;
+  background: color-mix(in srgb, #9e3733 24%, var(--surface));
+  background-image: repeating-linear-gradient(135deg, transparent 0 7px, currentColor 7px 9px, transparent 9px 16px);
+  animation: games-cell-shake 200ms ease;
+}
+.charts-cell.is-reveal {
+  animation: games-charts-reveal-bloom .6s ease both;
+  animation-delay: var(--cell-delay, 0ms);
+}
+.charts-cell.is-reveal-clear { transition: opacity .4s ease; opacity: 0; }
+@keyframes games-charts-reveal-bloom {
+  0% { transform: scale(1); background-color: var(--surface); }
+  45% { transform: scale(1.18); background-color: color-mix(in srgb, var(--gold-500) 85%, var(--surface)); color: var(--bg); }
+  100% { transform: scale(1); background-color: var(--gold-500); color: var(--bg); }
+}
 
 @media (max-width: 759px) {
   .games-main { padding-top: 40px; }
@@ -971,6 +1403,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 
 @media (prefers-reduced-motion: reduce) {
   .stack-cargo-active,
+  .stack-overlay-cell,
   .cargo-dispatching,
   .cargo-tide-shifting {
     animation: none;
@@ -978,5 +1411,42 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
     transform: none;
   }
 
+  .stack-active-overlay,
+  .stack-active-overlay.is-tide-sliding { transition: none; }
+  .game-score-pop { animation: none; }
+
   .yard-board-scroll { scroll-behavior: auto; }
+  .yard-cell { transition: none; }
+  .yard-cell-invalid-flash { animation: none; }
+  .yard-tray-piece.is-hint-flash { animation: none; }
+
+  .game-celebration { display: none; }
+  .game-complete { animation: none; }
+
+  .game-card-grid .game-card { animation: none; }
+  .games-app:empty::before { animation: none; }
+  dialog.game-dialog[open] { animation: none; }
+  .game-toolbar button, .game-toolbar select, .game-controls button, .sudoku-number-pad button, .word-search-pan button, .stack-controls button, .yard-controls button, .yard-pan-controls button, .yard-tray-piece, .difficulty-links a, .charts-controls button {
+    transition: none;
+  }
+
+  .sudoku-cell { transition: none; }
+  .sudoku-cell.is-error { animation: none; }
+  .sudoku-cell.is-celebrating { animation: none; }
+
+  .crossword-cell { transition: none; }
+  .crossword-cell.is-error { animation: none; }
+  .crossword-cell.is-celebrating { animation: none; }
+
+  .word-search-cell { transition: none; }
+  .word-search-cell.is-rejected { animation: none; }
+  .word-search-cell.is-found { animation: none; }
+  .word-search-cell.is-celebrating { animation: none; }
+  .word-search-list li.is-found-item { transition: none; }
+
+  .charts-cell { transition: none; }
+  .charts-cell.is-error { animation: none; }
+  .charts-cell.is-reveal { animation: none; background-color: var(--gold-500); color: var(--bg); }
+  .charts-cell.is-reveal-clear { transition: none; opacity: 0; }
+  .charts-clue { transition: none; }
 }

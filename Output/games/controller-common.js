@@ -1,6 +1,6 @@
 import {
-  chooseFreshDefinition, completeRun, deriveSeed, historyKey, markAssisted,
-  sanitizeAudioPreferences, saveGameStore, startRun,
+  abandonRun, chooseFreshDefinition, completeRun, deriveSeed, historyKey, markAssisted,
+  recordsBrokenBy, sanitizeAudioPreferences, saveGameStore, startRun,
 } from './core.js';
 import { safeLocalStorage, showStorageFailureNotice } from './hub-ui.js';
 
@@ -43,10 +43,57 @@ export function element(tag, attributes = {}, ...children) {
   return node;
 }
 
+// Shared thumbnail builder for cargo/piece previews (Kinnoki Stack next-cargo
+// pills, Kinnoki Yard tray pieces). `cells` are piece-local {row, column}
+// integers (already reflecting whatever rotation the caller wants shown);
+// the bounding box and every cell position are derived purely from those
+// integers via CSS percentage math (custom properties + calc()), so this
+// never reads layout. `rotation` is recorded as metadata (a data attribute)
+// for callers that want a rotation-aware hook in CSS or tests; it does not
+// re-derive cell coordinates.
+export function cargoThumb(cells, { patternClass, rotation = 0 } = {}) {
+  const columns = Math.max(...cells.map((cell) => cell.column)) + 1;
+  const rows = Math.max(...cells.map((cell) => cell.row)) + 1;
+  const thumb = element('div', {
+    class: 'cargo-thumb',
+    'aria-hidden': 'true',
+    'data-rotation': String(((rotation % 4) + 4) % 4),
+  });
+  thumb.style.setProperty('--cargo-thumb-columns', String(columns));
+  thumb.style.setProperty('--cargo-thumb-rows', String(rows));
+  thumb.append(...cells.map((cell) => {
+    const thumbCell = element('div', {
+      class: ['cargo-thumb-cell', patternClass].filter(Boolean).join(' '),
+    });
+    thumbCell.style.setProperty('--cargo-thumb-cell-column', String(cell.column));
+    thumbCell.style.setProperty('--cargo-thumb-cell-row', String(cell.row));
+    return thumbCell;
+  }));
+  return thumb;
+}
+
 export const formatElapsed = (milliseconds) => {
   const seconds = Math.max(0, Math.floor(milliseconds / 1000));
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
 };
+
+export function prefersReducedMotion() {
+  return globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
+}
+
+export function createConfirmDialog(root, { title, body, confirmLabel = 'Continue', cancelLabel = 'Cancel', onConfirm, onCancel }) {
+  const heading = element('h2', { text: title });
+  const confirm = element('button', { type: 'button', 'data-dialog-confirm': '', text: confirmLabel });
+  const cancel = element('button', { type: 'button', 'data-dialog-cancel': '', text: cancelLabel });
+  const dialog = element('dialog', { class: 'game-dialog' }, heading,
+    element('p', { text: body }),
+    element('div', { class: 'game-dialog-actions' }, cancel, confirm));
+  confirm.addEventListener('click', () => { close(); onConfirm?.(); });
+  cancel.addEventListener('click', () => { close(); onCancel?.(); });
+  function open() { root.append(dialog); dialog.showModal?.(); dialog.setAttribute('open', ''); }
+  function close() { dialog.close?.(); dialog.remove(); }
+  return { open, close, dialog };
+}
 
 export function defaultSeedFactory({ previousSeed = null } = {}) {
   const words = new Uint32Array(1);
@@ -167,6 +214,7 @@ export function createAudioControls({
   document = globalThis.document,
   preferences,
   onChange = () => {},
+  channels = ['music', 'effects'],
 }) {
   let current = sanitizeAudioPreferences(preferences);
   let disposed = false;
@@ -198,15 +246,16 @@ export function createAudioControls({
     return { range, toggle };
   };
 
-  const music = makeChannel('Music', 'music');
-  const effects = makeChannel('Effects', 'effects');
+  const music = channels.includes('music') ? makeChannel('Music', 'music') : null;
+  const effects = channels.includes('effects') ? makeChannel('Effects', 'effects') : null;
   const paint = () => {
-    music.range.value = String(current.musicVolume);
-    effects.range.value = String(current.effectsVolume);
+    if (music) music.range.value = String(current.musicVolume);
+    if (effects) effects.range.value = String(current.effectsVolume);
     for (const [control, enabled, name] of [
-      [music.toggle, current.musicEnabled, 'music'],
-      [effects.toggle, current.effectsEnabled, 'effects'],
+      [music?.toggle, current.musicEnabled, 'music'],
+      [effects?.toggle, current.effectsEnabled, 'effects'],
     ]) {
+      if (!control) continue;
       control.setAttribute('aria-pressed', String(!enabled));
       control.textContent = enabled ? `Mute ${name}` : `Unmute ${name}`;
     }
@@ -222,10 +271,10 @@ export function createAudioControls({
   const onEffectsToggle = () => commit({ effectsEnabled: !current.effectsEnabled });
   const onMusicInput = () => commit({ musicVolume: Number(music.range.value) });
   const onEffectsInput = () => commit({ effectsVolume: Number(effects.range.value) });
-  music.toggle.addEventListener('click', onMusicToggle);
-  effects.toggle.addEventListener('click', onEffectsToggle);
-  music.range.addEventListener('input', onMusicInput);
-  effects.range.addEventListener('input', onEffectsInput);
+  music?.toggle.addEventListener('click', onMusicToggle);
+  effects?.toggle.addEventListener('click', onEffectsToggle);
+  music?.range.addEventListener('input', onMusicInput);
+  effects?.range.addEventListener('input', onEffectsInput);
   paint();
 
   return {
@@ -239,10 +288,10 @@ export function createAudioControls({
     dispose() {
       if (disposed) return false;
       disposed = true;
-      music.toggle.removeEventListener('click', onMusicToggle);
-      effects.toggle.removeEventListener('click', onEffectsToggle);
-      music.range.removeEventListener('input', onMusicInput);
-      effects.range.removeEventListener('input', onEffectsInput);
+      music?.toggle.removeEventListener('click', onMusicToggle);
+      effects?.toggle.removeEventListener('click', onEffectsToggle);
+      music?.range.removeEventListener('input', onMusicInput);
+      effects?.range.removeEventListener('input', onEffectsInput);
       return true;
     },
   };
@@ -351,15 +400,58 @@ export function createSession(options) {
     activeStarted = monotonicNow();
     save();
   }
-  else if (existingValid && progressed(existing.puzzle?.play)
-      && globalThis.window?.confirm?.('Start a new puzzle and replace your saved progress?') === false) {
+  else if (existingValid && progressed(existing.puzzle?.play)) {
+    // Non-destructive default: resume the saved run immediately, exactly like a
+    // declined confirmation used to. A dialog then offers the destructive
+    // alternative (starting fresh) asynchronously, since a <dialog> — unlike a
+    // blocking native confirm — cannot pause this constructor for an answer.
     run = { ...existing, startedAt: wallNow() };
     currentStore = { ...currentStore, runs: { ...currentStore.runs, [game]: run } };
     activeStarted = monotonicNow();
     save();
-  } else if (existingStructValid && existing.difficulty !== difficulty && progressed(existing.puzzle?.play)
-      && globalThis.window?.confirm?.('Start a new puzzle and replace your saved progress?') === false) {
+    const startFresh = () => { void api.playAnother(); };
+    const resumeExisting = () => {};
+    Promise.resolve().then(() => {
+      if (disposed) return;
+      const confirmDialog = createConfirmDialog(root, {
+        title: 'Replace saved progress?',
+        body: 'Start a new puzzle and replace your saved progress?',
+        confirmLabel: 'Start new',
+        cancelLabel: 'Keep playing',
+        onConfirm: startFresh,
+        onCancel: resumeExisting,
+      });
+      cleanups.add(confirmDialog.close);
+      confirmDialog.open();
+    });
+  } else if (existingStructValid && existing.difficulty !== difficulty && progressed(existing.puzzle?.play)) {
+    // Non-destructive default: keep the saved run and let the controller render
+    // its "Saved puzzle kept" screen synchronously, exactly like a declined
+    // confirm used to. The dialog then offers the destructive alternative.
     cancelled = true;
+    Promise.resolve().then(() => {
+      if (disposed) return;
+      const confirmDialog = createConfirmDialog(root, {
+        title: 'Replace saved progress?',
+        body: `You have a ${titleCase(existing.difficulty)} puzzle in progress. Start ${titleCase(difficulty)} and replace it?`,
+        confirmLabel: 'Start new',
+        cancelLabel: 'Keep saved puzzle',
+        onConfirm: () => {
+          currentStore = abandonRun(currentStore, { game });
+          save();
+          Promise.resolve().then(() => onRender(currentStore)).catch(() => {
+            activeSessions.get(root)?.dispose();
+            renderGameError(root, {
+              title: 'Puzzle paused',
+              message: 'This game could not start. Reload the page to try a fresh puzzle.',
+            });
+          });
+        },
+        onCancel: () => {},
+      });
+      cleanups.add(confirmDialog.close);
+      confirmDialog.open();
+    });
   } else begin();
 
   const updatePlay = (play) => {
@@ -372,6 +464,18 @@ export function createSession(options) {
     if (disposed || finished || !run) return false;
     currentStore = markAssisted(currentStore, game);
     run = currentStore.runs[game];
+    save();
+    return true;
+  };
+  // Persist a shared audio-preference change (mirrors Stack/Yard's
+  // persistence.setAudio). Guards only on disposal, like the other mutators;
+  // finish() disposes the session and makeGameTerminal disables the audio
+  // controls anyway, so no post-completion writes can occur. The cancelled
+  // path ("Saved puzzle kept" screen) never mounts audio controls, so it
+  // needs no special handling.
+  const setAudio = (preferences) => {
+    if (disposed) return false;
+    currentStore = { ...currentStore, audio: sanitizeAudioPreferences(preferences) };
     save();
     return true;
   };
@@ -393,13 +497,12 @@ export function createSession(options) {
     finished = true;
     const elapsedMs = run.elapsedBeforeStartMs;
     const assisted = run.assisted;
-    currentStore = completeRun(currentStore, {
-      game, mode: 'default', now: wallNow(),
-      records: { time: elapsedMs },
-    });
+    const request = { game, mode: 'default', now: wallNow(), records: { time: elapsedMs } };
+    const recordsBroken = recordsBrokenBy(currentStore, request);
+    currentStore = completeRun(currentStore, request);
     save();
     dispose();
-    completionResult = { elapsed: elapsedMs, assisted };
+    completionResult = { elapsed: elapsedMs, assisted, recordsBroken };
     return completionResult;
   };
   const playAnother = async (seed) => {
@@ -475,7 +578,7 @@ export function createSession(options) {
   api = {
     difficulty, cancelled, existingDifficulty: existing?.difficulty,
     get run() { return run; }, get finished() { return finished; },
-    updatePlay, assist, elapsed, finish, playAnother, restart, dispose, listen, repeat,
+    updatePlay, assist, setAudio, elapsed, finish, playAnother, restart, dispose, listen, repeat,
     addCleanup(cleanup) { cleanups.add(cleanup); },
   };
   activeSessions.set(root, api);
@@ -687,9 +790,22 @@ export function makeGameTerminal(root) {
   }
 }
 
-export function completionPanel({ elapsed, assisted, playAnother }) {
+const RECORD_LABELS = {
+  time: 'New best time!',
+  moves: 'Fewest moves!',
+  score: 'New best score!',
+  combo: 'Best combo!',
+};
+
+export function completionPanel({ elapsed, assisted, recordsBroken = [], playAnother }) {
   const heading = element('h2', { 'data-complete-heading': '', tabindex: '-1', text: 'Puzzle complete!' });
-  const panel = element('section', { class: 'game-complete' }, heading,
+  const recordLine = recordsBroken.length
+    ? element('p', {
+        class: 'game-complete-record',
+        text: recordsBroken.map((key) => RECORD_LABELS[key] ?? key).join(' · '),
+      })
+    : null;
+  const panel = element('section', { class: 'game-complete' }, heading, recordLine,
     element('p', { text: `${formatElapsed(elapsed)}${assisted ? ' · Assisted' : ''}` }),
     element('button', { type: 'button', 'data-play-another': '', text: 'Play Another' }));
   panel.querySelector('[data-play-another]').addEventListener('click', () => playAnother());

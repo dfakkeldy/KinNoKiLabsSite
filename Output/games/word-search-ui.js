@@ -1,5 +1,10 @@
 import { findSelection, generateWordSearch, validateWordSearch } from './word-search.js';
-import { completionPanel, createSession, element, formatElapsed, makeGameTerminal, renderReplacementKept, sharedShell } from './controller-common.js';
+import { celebrate } from './celebration.js';
+import { createGameAudio } from './game-audio.js';
+import {
+  completionPanel, createAudioControls, createConfirmDialog, createSession, element,
+  formatElapsed, makeGameTerminal, prefersReducedMotion, renderReplacementKept, sharedShell,
+} from './controller-common.js';
 
 const same = (left, right) => left?.row === right?.row && left?.column === right?.column;
 const keyFor = ({ row, column }) => `${row}:${column}`;
@@ -132,8 +137,36 @@ export async function renderWordSearch(root, store) {
   const panRail = element('div', { class: 'word-search-pan', role: 'group', 'aria-label': 'Horizontal board navigation' }, panLeft, panRange, panRight);
   const boardColumn = element('div', { class: 'word-search-board-column' }, boardScroll, panRail);
   layout.append(boardColumn, element('section', {}, element('h2', { text: state.definition.theme }), words));
-  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, layout, controls, shell.live);
-  let drag = null, completed = false, suppressClickUntil = 0;
+
+  // `completed` must be declared before any closure that captures it (the
+  // audio-cleanup closure below reads it at dispose time).
+  let drag = null, completed = false, suppressClickUntil = 0, rejectedCells = new Set();
+
+  // Effects-only audio: lazily started on the player's first gesture (a
+  // click/keydown inside dispatch(), or a pointerdown that starts a drag) so
+  // we never call AudioContext.resume() before a user gesture has happened.
+  // Mirrors sudoku-ui.js / crossword-ui.js.
+  const puzzleAudio = createGameAudio({ preferences: store.audio });
+  let audioStarted = false;
+  const ensurePuzzleAudioStarted = () => {
+    if (audioStarted) return;
+    audioStarted = true;
+    void puzzleAudio.start({});
+  };
+  const audioControls = createAudioControls({
+    channels: ['effects'],
+    preferences: store.audio,
+    onChange: (preferences) => {
+      puzzleAudio.setPreferences(preferences);
+      session.setAudio(preferences);
+    },
+  });
+  session.addCleanup(() => {
+    audioControls.dispose();
+    if (!completed) void puzzleAudio.dispose();
+  });
+
+  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, layout, controls, audioControls.element, shell.live);
 
   const maximumScroll = () => Math.max(0, boardScroll.scrollWidth - boardScroll.clientWidth);
   const syncPan = () => {
@@ -200,26 +233,24 @@ export async function renderWordSearch(root, store) {
     document.addEventListener('pointercancel', pointerCancel);
     document.addEventListener('lostpointercapture', pointerCancel);
     state = { ...state, start: coordinate, preview: coordinate };
+    ensurePuzzleAudioStarted();
     session.updatePlay(state); draw();
     event.preventDefault();
   };
   session.addCleanup(() => clearDrag());
 
-  const foundCells = () => state.definition.placements.filter(({ word }) => state.found.includes(word)).flatMap((placement) => cellsOnLine(placement.start, placement.end).map(keyFor));
-  const draw = () => {
-    board.replaceChildren(); words.replaceChildren();
-    const preview = cellsOnLine(state.start, state.preview).map(keyFor);
-    const solved = foundCells();
-    state.definition.grid.forEach((row, rowIndex) => {
-      const rowNode = element('div', { role: 'row', class: 'word-search-row' });
-      row.forEach((letter, columnIndex) => {
+  // Build the grid's cell buttons and the word-list items once. draw() below
+  // only ever patches attributes/classes/content on these same nodes so cell
+  // and list-item identity survives across dispatches (including the
+  // per-pointermove preview updates during a drag) — this is both the
+  // build-once/patch-in-place pattern and the fix for rebuilding all 256
+  // Hard-grid buttons on every pointermove.
+  const cellButtons = new Map();
+  state.definition.grid.forEach((row, rowIndex) => {
+    const rowNode = element('div', { role: 'row', class: 'word-search-row' });
+    row.forEach((letter, columnIndex) => {
       const coordinate = { row: rowIndex, column: columnIndex }, key = keyFor(coordinate);
-      const button = element('button', {
-        type: 'button',
-        'aria-label': `${letter}, row ${rowIndex + 1}, column ${columnIndex + 1}${solved.includes(key) ? ', found' : ''}`,
-        class: `word-search-cell${preview.includes(key) ? ' is-preview' : ''}${solved.includes(key) ? ' is-found' : ''}`,
-        'data-cell': key, tabindex: same(state.focus, coordinate) ? '0' : '-1', text: letter,
-      });
+      const button = element('button', { type: 'button', 'data-cell': key, text: letter });
       button.addEventListener('focus', () => { state = { ...state, focus: coordinate }; });
       button.addEventListener('pointerdown', (event) => pointerStart(event, coordinate));
       button.addEventListener('click', () => {
@@ -227,34 +258,113 @@ export async function renderWordSearch(root, store) {
         state = { ...state, focus: coordinate };
         dispatch({ type: 'select' }, true);
       });
-      button.addEventListener('keydown', keydown);
+      // Deferred reference: keydown is declared later in this function, so
+      // wrap it instead of passing the (not-yet-initialized) binding directly.
+      button.addEventListener('keydown', (event) => keydown(event));
       rowNode.append(element('div', {
         role: 'gridcell', class: 'word-search-gridcell', 'aria-rowindex': rowIndex + 1,
         'aria-colindex': columnIndex + 1,
       }, button));
-      });
-      board.append(rowNode);
+      cellButtons.set(key, button);
     });
-    state.definition.placements.forEach(({ word }) => words.append(element('li', {
-      class: state.found.includes(word) ? 'is-found' : '', text: word,
-    })));
+    board.append(rowNode);
+  });
+  // A rejected (not-a-word) selection marks its cells `.is-rejected`, which
+  // plays a shake; this single delegated listener (bound once, not one per
+  // cell, and with no setTimeout) clears the class — and our tracking set —
+  // the moment that animation ends on whichever cell it fired on.
+  board.addEventListener('animationend', (event) => {
+    const target = event.target;
+    if (!target?.classList?.contains?.('is-rejected')) return;
+    target.classList.remove('is-rejected');
+    const key = target.dataset?.cell;
+    if (key) rejectedCells.delete(key);
+  });
+
+  const listItems = new Map();
+  state.definition.placements.forEach(({ word }) => {
+    const item = element('li', { text: word });
+    listItems.set(word, item);
+    words.append(item);
+  });
+
+  const foundCells = () => state.definition.placements.filter(({ word }) => state.found.includes(word)).flatMap((placement) => cellsOnLine(placement.start, placement.end).map(keyFor));
+  // An attempted line that exactly re-traces an already-found word's placement
+  // (in either direction — sorted key sets are direction-agnostic) is a real
+  // word, just a solved one, so it must not get the "not a word" reject cue.
+  const matchesFoundWord = (lineKeys) => {
+    const attempted = [...lineKeys].sort().join('|');
+    return state.definition.placements.some(({ word, start, end }) => (
+      state.found.includes(word)
+      && cellsOnLine(start, end).map(keyFor).sort().join('|') === attempted
+    ));
+  };
+  const draw = () => {
+    const preview = cellsOnLine(state.start, state.preview).map(keyFor);
+    const solved = foundCells();
+    state.definition.grid.forEach((row, rowIndex) => {
+      row.forEach((letter, columnIndex) => {
+        const coordinate = { row: rowIndex, column: columnIndex }, key = keyFor(coordinate);
+        const isFound = solved.includes(key);
+        const button = cellButtons.get(key);
+        button.className = `word-search-cell${preview.includes(key) ? ' is-preview' : ''}${isFound ? ' is-found' : ''}${rejectedCells.has(key) ? ' is-rejected' : ''}`;
+        button.setAttribute('aria-label', `${letter}, row ${rowIndex + 1}, column ${columnIndex + 1}${isFound ? ', found' : ''}`);
+        button.setAttribute('tabindex', same(state.focus, coordinate) ? '0' : '-1');
+      });
+    });
+    state.definition.placements.forEach(({ word }) => {
+      listItems.get(word).className = state.found.includes(word) ? 'is-found-item' : '';
+    });
     shell.timer.textContent = formatElapsed(session.elapsed());
     if (state.completed && !completed) {
-      completed = true; const result = session.finish(); makeGameTerminal(root);
+      completed = true;
+      puzzleAudio.finish({ outcome: 'completion' });
+      const reducedMotion = prefersReducedMotion();
+      let order = 0;
+      state.definition.grid.forEach((row, rowIndex) => row.forEach((_letter, columnIndex) => {
+        const button = cellButtons.get(keyFor({ row: rowIndex, column: columnIndex }));
+        button.classList.add('is-celebrating');
+        button.style.setProperty('--cell-delay', `${reducedMotion ? 0 : order * 20}ms`);
+        order += 1;
+      }));
+      celebrate({ root });
+      const result = session.finish(); makeGameTerminal(root);
       const completion = completionPanel({ ...result, playAnother: session.playAnother });
       root.append(completion.panel); shell.live.textContent = 'Word Search complete.'; completion.heading.focus();
     }
   };
   const dispatch = (action, focus = false) => {
     if (completed || state.completed || session.finished) return;
-    const before = state.found.length; const next = reduceWordSearch(state, action); if (next === state) return;
+    const before = state.found.length;
+    // A resolving endpoint selection is either a direct 'select-endpoints'
+    // (pointer drag release) or a 'select' that finalizes a pending start
+    // (second click/keydown). Capture the attempted line before reducing:
+    // the reducer clears start/preview on every outcome, so this is the only
+    // point where "what line did the player just try?" is still known. If
+    // the reducer produces no new found word for that attempt, it was
+    // rejected ("not a word here") rather than merely starting a selection.
+    const attemptedLine = action.type === 'select-endpoints' ? cellsOnLine(action.start, action.end).map(keyFor)
+      : action.type === 'select' && state.start ? cellsOnLine(state.start, state.focus).map(keyFor)
+      : null;
+    const next = reduceWordSearch(state, action); if (next === state) return;
     state = next;
+    ensurePuzzleAudioStarted();
     const assistedAction = action.type === 'hint' || action.type === 'check';
     if (assistedAction) { session.assist(); shell.setAssisted(true); }
+    const foundGrew = state.found.length > before;
+    if (foundGrew) puzzleAudio.playEffect('puzzle-found');
+    // No error sound for a rejected guess: 'puzzle-error' elsewhere marks a
+    // scored mistake, but guessing wrong here is normal, frequent play, not
+    // a mistake worth a rate-limited buzz on every miss — visual cue plus the
+    // live-region announcement carry it instead.
+    const alreadyFound = attemptedLine && !foundGrew && matchesFoundWord(attemptedLine);
+    if (attemptedLine && !foundGrew && !alreadyFound) rejectedCells = new Set(attemptedLine);
     session.updatePlay(state); draw();
     if (assistedAction && !state.completed) shell.setAssisted(true, true);
-    else if (state.found.length > before && !state.completed) shell.live.textContent = `${state.lastFound} found.`;
-    if (focus && !state.completed) board.querySelector(`[data-cell="${keyFor(state.focus)}"]`)?.focus();
+    else if (foundGrew && !state.completed) shell.live.textContent = `${state.lastFound} found.`;
+    else if (alreadyFound && !state.completed) shell.live.textContent = 'Already found.';
+    else if (attemptedLine && !foundGrew && !state.completed) shell.live.textContent = 'Not a word here.';
+    if (focus && !state.completed) cellButtons.get(keyFor(state.focus))?.focus();
   };
   const keydown = (event) => {
     const { row, column } = state.focus; const key = event.key;
@@ -267,8 +377,23 @@ export async function renderWordSearch(root, store) {
   };
   hint.addEventListener('click', () => dispatch({ type: 'hint' }));
   check.addEventListener('click', () => { dispatch({ type: 'check' }); shell.live.textContent = `${state.definition.placements.length - state.found.length} words remaining. Assisted run; this time is ineligible for best-time records.`; });
-  shell.toolbar.querySelector('[data-restart]').addEventListener('click', () => { if (window.confirm('Restart this puzzle? Current progress will be cleared.')) void session.restart(); });
-  shell.toolbar.querySelector('[data-new-game]').addEventListener('click', () => { if (!state.found.length || window.confirm('Replace this puzzle?')) void session.playAnother(); });
+  shell.toolbar.querySelector('[data-restart]').addEventListener('click', () => {
+    const dialog = createConfirmDialog(root, {
+      title: 'Restart this puzzle?', body: 'Current progress will be cleared.',
+      confirmLabel: 'Restart', cancelLabel: 'Cancel',
+      onConfirm: () => { void session.restart(); }, onCancel: () => {},
+    });
+    dialog.open();
+  });
+  shell.toolbar.querySelector('[data-new-game]').addEventListener('click', () => {
+    if (!state.found.length) { void session.playAnother(); return; }
+    const dialog = createConfirmDialog(root, {
+      title: 'Replace this puzzle?', body: 'Current progress will be cleared.',
+      confirmLabel: 'New Game', cancelLabel: 'Cancel',
+      onConfirm: () => { void session.playAnother(); }, onCancel: () => {},
+    });
+    dialog.open();
+  });
   shell.select.addEventListener('change', () => { globalThis.location.href = `/games/word-search?difficulty=${shell.select.value}`; });
   draw();
   syncPan();
