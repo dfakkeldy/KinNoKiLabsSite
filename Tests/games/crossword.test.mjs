@@ -1,7 +1,30 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { performance } from 'node:perf_hooks';
 import entries from '../../Resources/games/crossword-content.js';
 import { generateCrossword, validateCrossword } from '../../Resources/games/crossword.js';
+
+// Generation-time assertions below use a RELATIVE budget instead of a fixed
+// wall-clock number: a fixed 250ms bound flaked on loaded machines (438ms
+// observed under full-suite parallel load, though it passed in isolation),
+// because generateCrossword's backtracking has real, machine-speed-dependent
+// variance on top of load noise. Timing a fixed CPU-bound baseline op right
+// before each generation call and requiring generation to stay within a
+// generous multiple of it tracks contention the same way generation does, so
+// the ratio stays far more stable than either measurement alone. This still
+// guards against a genuine runaway-complexity regression (an order-of-
+// magnitude blowup), it just no longer flakes on a busy box.
+const BASELINE_ITERATIONS = 200_000;
+const PER_SEED_BUDGET_MULTIPLIER = 100;
+const TOTAL_BUDGET_MULTIPLIER = 30;
+
+function measureBaselineMs() {
+  const started = performance.now();
+  let acc = 0;
+  for (let i = 0; i < BASELINE_ITERATIONS; i += 1) acc += (i * 2654435761) % 997;
+  if (acc < 0) throw new Error('unreachable'); // keep the loop from being optimized away
+  return performance.now() - started;
+}
 
 function puzzleFromAnswers(size, answers) {
   const cells = Array.from({ length: size }, () => Array(size).fill(null));
@@ -166,11 +189,17 @@ test('60 seeded crosswords meet their exact targets and validate', { timeout: 20
   }
 });
 
-test('hard generation has a short real-time bound and returns a valid puzzle', { timeout: 5000 }, () => {
+test('hard generation has a short real-time bound and returns a valid puzzle', { timeout: 10000 }, () => {
   for (let seed = 1; seed <= 12; seed += 1) {
+    const baseline = measureBaselineMs();
+    const budget = Math.max(50, baseline * PER_SEED_BUDGET_MULTIPLIER);
     const started = performance.now();
     const puzzle = generateCrossword({ difficulty: 'hard', seed, entries });
-    assert.ok(performance.now() - started < 250, `hard seed ${seed} exceeded 250ms`);
+    const duration = performance.now() - started;
+    assert.ok(
+      duration < budget,
+      `hard seed ${seed} took ${duration.toFixed(1)}ms, exceeding ${PER_SEED_BUDGET_MULTIPLIER}x baseline (${budget.toFixed(1)}ms)`,
+    );
     assert.deepEqual(validateCrossword(puzzle), { valid: true, errors: [] });
   }
 });
@@ -240,17 +269,29 @@ test('sparse custom content gets a valid deterministic seed-keyed fallback', () 
   assert.notEqual(signature(fallbacks[0]), signature(fallbacks[1]));
 });
 
-test('all difficulty generators remain individually and collectively bounded', { timeout: 20000 }, () => {
+test('all difficulty generators remain individually and collectively bounded', { timeout: 30000 }, () => {
   const started = performance.now();
+  let baselineTotal = 0;
   for (const difficulty of ['easy', 'medium', 'hard']) {
     for (let seed = 0; seed < 40; seed += 1) {
+      const baseline = measureBaselineMs();
+      baselineTotal += baseline;
+      const budget = Math.max(50, baseline * PER_SEED_BUDGET_MULTIPLIER);
       const seedStarted = performance.now();
       const puzzle = generateCrossword({ difficulty, seed, entries });
       const duration = performance.now() - seedStarted;
-      assert.ok(duration < 250, `${difficulty} seed ${seed} took ${duration.toFixed(1)}ms`);
+      assert.ok(
+        duration < budget,
+        `${difficulty} seed ${seed} took ${duration.toFixed(1)}ms, exceeding ${PER_SEED_BUDGET_MULTIPLIER}x baseline (${budget.toFixed(1)}ms)`,
+      );
       assert.equal(puzzle.answers.length, { easy: 7, medium: 10, hard: 13 }[difficulty]);
       assert.deepEqual(validateCrossword(puzzle), { valid: true, errors: [] });
     }
   }
-  assert.ok(performance.now() - started < 10000);
+  const collectiveBudget = Math.max(2000, baselineTotal * TOTAL_BUDGET_MULTIPLIER);
+  const collectiveDuration = performance.now() - started;
+  assert.ok(
+    collectiveDuration < collectiveBudget,
+    `collective generation took ${collectiveDuration.toFixed(1)}ms, exceeding ${TOTAL_BUDGET_MULTIPLIER}x total baseline (${collectiveBudget.toFixed(1)}ms)`,
+  );
 });
