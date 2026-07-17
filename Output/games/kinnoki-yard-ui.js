@@ -478,9 +478,13 @@ function paintYard(view, state, {
         + '° · allowed ' + piece.allowedRotations.map((value) => value * 90 + '°').join(', ')
         + ' · ' + cargo.pattern + ' pattern' + (placed ? ' · placed' : ''),
     });
+    // The cargo pattern class lives on the thumbnail's cells (cargoThumb's
+    // patternClass), NOT on the button itself — a full-card pattern behind
+    // the thumb drowned the silhouette. data-pattern keeps the identity
+    // hookable for CSS/tests, and the visually-hidden label names it.
     return element('button', {
       type: 'button',
-      class: 'yard-tray-piece cargo-pattern-' + cargo.pattern
+      class: 'yard-tray-piece'
         + (piece.pieceId === state.selectedPieceId ? ' is-selected' : '')
         + (placed ? ' is-placed' : '')
         + (hintPlacement?.pieceId === piece.pieceId ? ' is-hint-flash' : ''),
