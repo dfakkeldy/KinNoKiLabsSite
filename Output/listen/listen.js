@@ -18,7 +18,8 @@
     cover: $('cover'), bookTitle: $('bookTitle'), bookSubtitle: $('bookSubtitle'),
     bookByline: $('bookByline'), chapterCount: $('chapterCount'), chapterList: $('chapterList'),
     chapterNow: $('chapterNow'), captionPanel: $('captionPanel'), captionWords: $('captionWords'),
-    captionText: $('captionText'), status: $('status'), playPause: $('playPause'),
+    captionText: $('captionText'), figurePanel: $('figurePanel'), figureImg: $('figureImg'),
+    figureCaption: $('figureCaption'), status: $('status'), playPause: $('playPause'),
     iconPlay: $('iconPlay'), iconPause: $('iconPause'), back30: $('back30'), fwd30: $('fwd30'),
     speed: $('speed'), scrubber: $('scrubber'), timeNow: $('timeNow'), timeTotal: $('timeTotal'),
     selectedFormats: $('selectedFormats'), emptyState: $('emptyState'),
@@ -37,6 +38,10 @@
   var blocks = [];
   var wordsByBlockId = new Map();
   var currentBlockId = null;
+  var currentFigureBlockId = null;
+  var figurePaths = [];        // interior figures as {blockId, imagePath}, document order
+  var failedFigureSrcs = {};   // per-src error latch; a different figure still tries
+  var lastFigureSrc = null;
   var currentChapterIndex = -1;
   var captionSpans = [];
   var scrubbing = false;
@@ -83,6 +88,14 @@
       ? audio.duration
       : (book ? book.durationSeconds : 0);
   }
+  // Catalog cover dimensions are optional and only usable in pairs, so
+  // every reader gates on this rather than trusting a lone field.
+  function positiveInt(value) {
+    return typeof value === 'number' && isFinite(value) && Math.floor(value) === value && value > 0;
+  }
+  function hasCoverSize(b) {
+    return !!b && positiveInt(b.coverWidth) && positiveInt(b.coverHeight);
+  }
 
   /* ── Rendering: book metadata + library strip ───────── */
   function renderBook() {
@@ -127,15 +140,44 @@
     catalog.books.forEach(function (b) {
       if (book && b.slug === book.slug) return;
       var li = document.createElement('li');
+      if (b.cover) {
+        var thumb = document.createElement('img');
+        thumb.className = 'room-lib-cover';
+        thumb.src = b.cover;
+        thumb.alt = b.coverAlt || ('Cover of ' + b.title);
+        thumb.loading = 'lazy';
+        thumb.decoding = 'async';
+        // Covers keep their natural shape — most are portrait, but the
+        // paired-m4b books ship square art — so the intrinsic ratio comes
+        // from the catalog's own pixel dimensions instead of a hard-coded
+        // one. With both hints the lazy grid reserves the true box and
+        // doesn't reflow as covers arrive; with neither, the browser
+        // measures on load rather than being told a wrong shape.
+        if (hasCoverSize(b)) {
+          thumb.setAttribute('width', String(b.coverWidth));
+          thumb.setAttribute('height', String(b.coverHeight));
+        }
+        li.appendChild(thumb);
+      }
       var title = document.createElement('span');
       title.className = 'room-lib-title';
       title.textContent = b.title;
+      li.appendChild(title);
+      if (b.subtitle) {
+        var subtitle = document.createElement('span');
+        subtitle.className = 'room-lib-subtitle';
+        subtitle.textContent = b.subtitle;
+        li.appendChild(subtitle);
+      }
+      var by = document.createElement('span');
+      by.className = 'room-lib-by';
+      by.textContent = 'Written by ' + b.writtenBy;
+      li.appendChild(by);
       var links = document.createElement('span');
       links.className = 'room-lib-links';
       core.libraryActions(b).forEach(function (action) {
         links.appendChild(actionLink(action));
       });
-      li.appendChild(title);
       li.appendChild(links);
       els.library.appendChild(li);
     });
@@ -180,11 +222,16 @@
       else li.removeAttribute('aria-current');
     });
     if ('mediaSession' in navigator) {
+      // Only claim a `sizes` the catalog actually vouches for: covers are
+      // not all one shape, and an asserted-but-wrong size is worse for the
+      // OS artwork picker than none at all.
+      var artwork = { src: new URL(book.cover, location.href).href, type: 'image/jpeg' };
+      if (hasCoverSize(book)) artwork.sizes = book.coverWidth + 'x' + book.coverHeight;
       navigator.mediaSession.metadata = new MediaMetadata({
         title: chapter.title,
         artist: book.title,
         album: 'Echo Listening Room — KinNoKi Labs',
-        artwork: [{ src: new URL(book.cover, location.href).href, sizes: '480x768', type: 'image/jpeg' }],
+        artwork: [artwork],
       });
     }
   }
@@ -219,6 +266,60 @@
     requestAnimationFrame(function () { els.captionWords.classList.remove('swap'); });
   }
 
+  /* ── Figure stage (slideshow) ───────────────────────── */
+  /* The stage elements are feature-checked so a cached pre-slideshow
+     index.html served alongside this script degrades to captions-only
+     instead of killing the whole player boot. */
+  function hasFigureStage() {
+    return !!(els.figurePanel && els.figureImg && els.figureCaption);
+  }
+
+  function hideFigure() {
+    if (currentFigureBlockId === null && els.figurePanel.hidden) return;
+    currentFigureBlockId = null;
+    els.figurePanel.hidden = true;
+  }
+
+  // Warm the next interior figure so the swap is instant. The lookup keys
+  // off the block id, not the image path: two figure blocks may legitimately
+  // reuse the same file (a recurring diagram), and matching on the path
+  // would find the first block using it and preload the wrong successor.
+  // `Image` is feature-checked because the node test harness runs without
+  // a DOM.
+  function preloadNextFigure(cue) {
+    if (typeof Image === 'undefined') return;
+    var k = -1;
+    for (var i = 0; i < figurePaths.length; i++) {
+      if (figurePaths[i].blockId === cue.blockId) { k = i; break; }
+    }
+    if (k === -1 || k + 1 >= figurePaths.length) return;
+    var next = figurePaths[k + 1].imagePath;
+    if (failedFigureSrcs[next]) return;
+    new Image().src = next;
+  }
+
+  function renderFigure(cue) {
+    if (!hasFigureStage()) return;
+    if (!cue) { hideFigure(); return; }
+    if (cue.blockId === currentFigureBlockId) return;
+    currentFigureBlockId = cue.blockId;
+    if (failedFigureSrcs[cue.imagePath]) {
+      // This src already failed once; keep the stage quiet instead of
+      // re-fetching it on every tick inside the same display window.
+      els.figurePanel.hidden = true;
+      return;
+    }
+    els.figurePanel.classList.add('swap');
+    lastFigureSrc = cue.imagePath; // catalog-relative, same base as book.cover
+    els.figureImg.src = cue.imagePath;
+    els.figureImg.alt = cue.caption || 'Figure from this chapter';
+    els.figureCaption.textContent = cue.caption || '';
+    els.figureCaption.hidden = !cue.caption;
+    els.figurePanel.hidden = false;
+    requestAnimationFrame(function () { els.figurePanel.classList.remove('swap'); });
+    preloadNextFigure(cue);
+  }
+
   function tick(t) {
     updateChapter(t);
     if (!rows.length) return;
@@ -226,8 +327,9 @@
       blocks: blocks, rows: rows, wordsByBlockId: wordsByBlockId,
       time: t, syncPoint: 'midpoint',
     });
-    // v1 books are cover-only, so snapshot.imageCue stays null; figure
-    // rendering lands with the first figure-bearing catalog entry.
+    // Cover-only books resolve imageCue to null on every tick, so the
+    // stage stays hidden and behaves exactly as before the slideshow.
+    renderFigure(snapshot.imageCue);
     var cue = snapshot.subtitleCue;
     if (!cue) {
       if (currentBlockId !== null || !els.captionWords.firstChild) showQuiet('· · ·');
@@ -356,6 +458,16 @@
       setStatus('That’s the whole book. It re-plays from the top whenever you like.');
     });
     audio.addEventListener('error', showAudioError);
+    if (hasFigureStage()) {
+      els.figureImg.addEventListener('error', function () {
+        // A broken figure never interrupts listening: hide the stage and
+        // latch the src so this window doesn't retry it every tick. A
+        // different figure cue still gets its own load attempt.
+        if (lastFigureSrc) failedFigureSrcs[lastFigureSrc] = true;
+        els.figurePanel.hidden = true;
+        console.debug('[listen] figure image failed: ' + lastFigureSrc);
+      });
+    }
     audio.addEventListener('loadedmetadata', function () {
       // Loading a source can reset the media element to 1×. Restore the
       // preference here so the effective rate stays in step with the UI.
@@ -425,6 +537,13 @@
       }),
     ]).then(function (results) {
       blocks = results[0].blocks;
+      // Interior figures only (the cover block has chapterIndex null), in
+      // document order, for next-figure preloading.
+      figurePaths = blocks.filter(function (b) {
+        return b.kind === 'image' && typeof b.imagePath === 'string' && b.imagePath.length > 0 &&
+               b.chapterIndex !== null && b.chapterIndex !== undefined;
+      }).sort(function (a, b) { return a.sequenceIndex - b.sequenceIndex; })
+        .map(function (b) { return { blockId: b.id, imagePath: b.imagePath }; });
       var anchors = results[1];
       var timeline = core.buildTimeline(anchors, blocks, book.durationSeconds);
       rows = timeline.rows;

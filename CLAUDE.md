@@ -21,6 +21,15 @@ make preview           # equivalent: publish run
 # Run the Arcade Hall JavaScript and generated-route tests
 make test-games
 
+# Run the Echo Listening Room tests (player logic, catalog contract)
+make test-listen
+
+# Both JavaScript suites
+make test
+
+# Rebuild the Listening Room catalog from the local book library
+make listen-catalog
+
 # Build the Swift package / clean artifacts
 swift build
 make clean             # equivalent: swift package clean
@@ -38,6 +47,16 @@ make clean             # equivalent: swift package clean
 - **`Resources/`** — Static assets copied verbatim to the output root. `styles.css` (dark-default tokens + light override), `site.js` (theme/font/menu/reveal behavior; also documents the no-flash snippet the theme inlines), brand + app + screenshot art under `images/{brand,apps,screenshots}`, and `OpenDyslexic-Regular.otf`. `logo.png` is kept for the favicon/og:image only.
 - **Arcade Hall** — `/games`, `/games/sudoku`, `/games/crossword`, `/games/word-search`, `/games/kinnoki-stack`, `/games/kinnoki-yard`, and `/games/kinnoki-charts` are generated from matching files under `Content/`. Shared storage, lifecycle, cargo geometry, procedural audio, and win celebration live in `Resources/games/core.js`, `controller-common.js`, `cargo-geometry.js`, `game-audio.js`, and `celebration.js` (reduced-motion-aware win celebration); DOM-free game engines and matching `*-ui.js` controllers remain separate — Kinnoki Charts (nonogram/picture-logic) adds `kinnoki-charts.js`, `kinnoki-charts-content.js` (pictogram catalog), and `kinnoki-charts-ui.js`. Store v2 keeps validated progress, typed records, repeat history, and separate music/effects preferences local to that browser; nothing is uploaded. Run `make test-games` after Arcade Hall changes.
 - **`Tests/games/`** — Node tests cover the pure game engines, DOM controllers, accessibility behavior, and generated routes (`hub-six-games.test.mjs` covers all six Arcade Hall cards). Run them with `make test-games` after game changes; generate the site before running route assertions directly.
+- **Echo Listening Room** — `/listen` is a hand-authored static app (not theme-generated): `Resources/listen/index.html` + `listen.css` + `listen-core.js` (DOM-free ports of Echo's `WordTokenizer`, `WordTimingInterpolator`, and `VisualListeningCueResolver` — keep these in step with the native semantics) + `listen.js` (DOM/audio/MediaSession glue). It streams one book at a time, selected by `?book=<slug>`, and reads the generated `books.json` catalog. Playback position, speed, and theme stay in that browser's `localStorage`; nothing is uploaded. Run `make test-listen` after changes.
+- **`Tests/listen/`** — Node tests cover the pure cue/timing logic, a fake-DOM drive of `listen.js` (including the figure stage and library grid), WCAG contrast of the player tokens, the catalog contract, and the builder's transaction semantics.
+
+### Listening Room catalog contract
+
+- **`Resources/listen/books.json` and everything under `Resources/listen/books/` are GENERATED** — never hand-edit them. `make listen-catalog` (`Tools/build-listen-catalog.sh`) rebuilds both from a local `dfakkeldy/explainer-audiobooks` checkout (`BOOKS_REPO`) plus Echo's `echo-cli export-blocks` (`ECHO_CLI`; `--no-blocks` skips captions for dev). It stages through `Tools/lib/listen-catalog-transaction.sh` (atomic swap + rollback) and fails closed on any validation miss.
+- **Two independent hand-maintained gates live in the builder.** `ALLOW_LIST` controls which public books appear at all; `AUDIO_EXPECTED` is the exact subset approved for playable audio — playable media found on any other book fails the build rather than publishing by accident. Books reclassified private (The Long Route, The Living Knowledge Base) must not return without an explicit decision.
+- **Every catalog entry carries `cover`/`coverAlt` plus `coverWidth`/`coverHeight`** (`books/<slug>/cover.jpg`, staged for all allow-listed books, so the library grid renders artwork for text-only titles too). Covers are **not** all one shape — the two books with paired square art are 768×768 while the rest are 480×768 portraits — so the measured dimensions travel with each entry and the player sizes thumbnails from them rather than assuming a ratio. Playable entries add `durationSeconds`, `audio` (m4b URL pinned to the source commit + `mimeType`), `chapters`, `text.blocks`, `alignment.sidecar`, and `visuals.figures` (count of interior figures).
+- **Figures drive the slideshow.** Image blocks in the staged `blocks.json` carry catalog-relative `imagePath`s: the cover block resolves to `books/<slug>/cover.jpg`, interior figures to `books/<slug>/figures/<basename>` (bytes extracted from the book's EPUB). Cover-only books yield no image cue, so the figure stage stays hidden and captions run alone — the renderer activates automatically for the first figure-bearing book.
+- **`Tools/sync-paired-cover-assets.sh` (`make paired-covers`) runs after the builder** and replaces only receipt-verified artwork, pinned by `Resources/learn/paired-cover-source-manifest.json` to an explainer-audiobooks commit. Bumping that pin requires the source tree to match, and the script re-verifies every hash.
 
 ### Publish Conventions
 

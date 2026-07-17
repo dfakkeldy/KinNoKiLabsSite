@@ -88,8 +88,30 @@ export function createConfirmDialog(root, { title, body, confirmLabel = 'Continu
   const dialog = element('dialog', { class: 'game-dialog' }, heading,
     element('p', { text: body }),
     element('div', { class: 'game-dialog-actions' }, cancel, confirm));
-  confirm.addEventListener('click', () => { close(); onConfirm?.(); });
-  cancel.addEventListener('click', () => { close(); onCancel?.(); });
+  // `settled` guards against double-firing a callback: the button handlers and
+  // the native `close` event (fired by Esc during showModal(), and also by our
+  // own dialog.close() call below) can both observe the same dismissal.
+  let settled = false;
+  confirm.addEventListener('click', () => {
+    if (settled) return;
+    settled = true;
+    close();
+    onConfirm?.();
+  });
+  cancel.addEventListener('click', () => {
+    if (settled) return;
+    settled = true;
+    close();
+    onCancel?.();
+  });
+  // Esc during showModal() closes the dialog natively without going through
+  // either button, which used to leave a dead .game-dialog node in the DOM.
+  dialog.addEventListener('close', () => {
+    if (settled) return;
+    settled = true;
+    dialog.remove();
+    onCancel?.();
+  });
   function open() { root.append(dialog); dialog.showModal?.(); dialog.setAttribute('open', ''); }
   function close() { dialog.close?.(); dialog.remove(); }
   return { open, close, dialog };
@@ -433,7 +455,7 @@ export function createSession(options) {
       if (disposed) return;
       const confirmDialog = createConfirmDialog(root, {
         title: 'Replace saved progress?',
-        body: `You have a ${titleCase(existing.difficulty)} puzzle in progress. Start ${titleCase(difficulty)} and replace it?`,
+        body: `Your ${titleCase(existing.difficulty)} puzzle is in progress. Start ${titleCase(difficulty)} and replace it?`,
         confirmLabel: 'Start new',
         cancelLabel: 'Keep saved puzzle',
         onConfirm: () => {

@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "generated": "2026-07-11T17:59:04Z",
+  "generated": "2026-07-16T18:18:25Z",
   "source": {
     "repo": "dfakkeldy/explainer-audiobooks",
-    "commit": "af322bb652b4e999a3b773986d0ad726f054be97"
+    "commit": "8482eae48becda2ef4be819a09a1afab195641bf"
   },
   "books": [
     {
@@ -12,6 +12,10 @@
       "subtitle": null,
       "curator": "Dan Fakkeldy",
       "writtenBy": "Opus 4.8",
+      "cover": "books/echo-from-the-inside/cover.jpg",
+      "coverAlt": "Cover of Echo, From the Inside",
+      "coverWidth": 480,
+      "coverHeight": 768,
       "audio": {
         "status": "none"
       },
@@ -27,6 +31,10 @@
       "subtitle": null,
       "curator": "Dan Fakkeldy",
       "writtenBy": "Fable 5",
+      "cover": "books/why-it-feels-right/cover.jpg",
+      "coverAlt": "Cover of Why It Feels Right",
+      "coverWidth": 480,
+      "coverHeight": 768,
       "audio": {
         "status": "none"
       },
@@ -42,6 +50,10 @@
       "subtitle": null,
       "curator": "Dan Fakkeldy",
       "writtenBy": "Fable 5",
+      "cover": "books/you-are-the-architect/cover.jpg",
+      "coverAlt": "Cover of You Are the Architect",
+      "coverWidth": 480,
+      "coverHeight": 768,
       "audio": {
         "status": "none"
       },
@@ -57,6 +69,10 @@
       "subtitle": null,
       "curator": "Dan Fakkeldy",
       "writtenBy": "Opus 4.8",
+      "cover": "books/the-bug-is-a-clue/cover.jpg",
+      "coverAlt": "Cover of The Bug Is a Clue",
+      "coverWidth": 480,
+      "coverHeight": 768,
       "audio": {
         "status": "none"
       },
@@ -72,6 +88,10 @@
       "subtitle": null,
       "curator": "Dan Fakkeldy",
       "writtenBy": "Opus 4.8",
+      "cover": "books/tests-first/cover.jpg",
+      "coverAlt": "Cover of Tests First",
+      "coverWidth": 480,
+      "coverHeight": 768,
       "audio": {
         "status": "none"
       },
@@ -87,6 +107,10 @@
       "subtitle": null,
       "curator": "Dan Fakkeldy",
       "writtenBy": "Opus 4.8",
+      "cover": "books/git-happens/cover.jpg",
+      "coverAlt": "Cover of Git Happens",
+      "coverWidth": 480,
+      "coverHeight": 768,
       "audio": {
         "status": "none"
       },
@@ -102,6 +126,10 @@
       "subtitle": null,
       "curator": "Dan Fakkeldy",
       "writtenBy": "Opus 4.8",
+      "cover": "books/findable/cover.jpg",
+      "coverAlt": "Cover of Findable",
+      "coverWidth": 480,
+      "coverHeight": 768,
       "audio": {
         "status": "none"
       },
@@ -117,6 +145,10 @@
       "subtitle": null,
       "curator": "Dan Fakkeldy",
       "writtenBy": "Opus 4.8",
+      "cover": "books/the-voice-in-the-machine/cover.jpg",
+      "coverAlt": "Cover of The Voice in the Machine",
+      "coverWidth": 480,
+      "coverHeight": 768,
       "audio": {
         "status": "none"
       },
@@ -134,10 +166,12 @@
       "writtenBy": "GLM-5.2",
       "cover": "books/chicken-predators/cover.jpg",
       "coverAlt": "Cover of Chicken Predators",
+      "coverWidth": 768,
+      "coverHeight": 768,
       "durationSeconds": 11140.181333,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/af322bb652b4e999a3b773986d0ad726f054be97/books/chicken-predators/chicken-predators.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/8482eae48becda2ef4be819a09a1afab195641bf/books/chicken-predators/chicken-predators.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -225,6 +259,9 @@
       "text": {
         "blocks": "books/chicken-predators/blocks.json"
       },
+      "visuals": {
+        "figures": 0
+      },
       "alignment": {
         "sidecar": "books/chicken-predators/alignment.json",
         "hasWordTimings": false
@@ -245,10 +282,12 @@
       "writtenBy": "GPT-5.6 Sol",
       "cover": "books/rodents-in-the-walls/cover.jpg",
       "coverAlt": "Cover of Rodents in the Walls",
+      "coverWidth": 480,
+      "coverHeight": 768,
       "durationSeconds": 7377.962667,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/af322bb652b4e999a3b773986d0ad726f054be97/books/rodents-in-the-walls/rodents-in-the-walls.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/8482eae48becda2ef4be819a09a1afab195641bf/books/rodents-in-the-walls/rodents-in-the-walls.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -301,6 +340,9 @@
       "text": {
         "blocks": "books/rodents-in-the-walls/blocks.json"
       },
+      "visuals": {
+        "figures": 0
+      },
       "alignment": {
         "sidecar": "books/rodents-in-the-walls/alignment.json",
         "hasWordTimings": false
@@ -319,10 +361,12 @@
       "writtenBy": "GLM-5.2",
       "cover": "books/the-new-deal/cover.jpg",
       "coverAlt": "Cover of The New Deal",
+      "coverWidth": 768,
+      "coverHeight": 768,
       "durationSeconds": 6942.336000,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/af322bb652b4e999a3b773986d0ad726f054be97/books/the-new-deal/the-new-deal.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/8482eae48becda2ef4be819a09a1afab195641bf/books/the-new-deal/the-new-deal.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -374,6 +418,9 @@
       ],
       "text": {
         "blocks": "books/the-new-deal/blocks.json"
+      },
+      "visuals": {
+        "figures": 0
       },
       "alignment": {
         "sidecar": "books/the-new-deal/alignment.json",
