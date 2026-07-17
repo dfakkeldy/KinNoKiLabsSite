@@ -75,6 +75,8 @@ GH_BASE="https://github.com/dfakkeldy/explainer-audiobooks"
 # on 2026-07-09 — explainer-audiobooks PR #11 — and must NOT return here
 # without an explicit decision.)
 ALLOW_LIST="$(cat <<'EOF'
+an-unsettling-conversation|An Unsettling Conversation|J-Space, Working Memory, and the Question of Machine Experience|Codex (GPT-5)
+jspace-inside-the-machine|J-Space: Inside the Machine|Parameters, Working Memory, and the Question of Consciousness|Codex (GPT-5)
 echo-from-the-inside|Echo, From the Inside||Opus 4.8
 why-it-feels-right|Why It Feels Right||Fable 5
 you-are-the-architect|You Are the Architect||Fable 5
@@ -91,11 +93,13 @@ EOF
 
 # Exact playable-audio publication allow-list. Each listed slug must have both
 # an M4B and alignment sidecar; either file on any other public slug is rejected.
-AUDIO_EXPECTED="chicken-predators
+AUDIO_EXPECTED="an-unsettling-conversation
+jspace-inside-the-machine
+chicken-predators
 rodents-in-the-walls
 the-new-deal"
 
-EXPECTED_BOOK_COUNT=11
+EXPECTED_BOOK_COUNT=13
 listen_catalog_transaction_init "$OUT_DIR"
 
 json_contains_absolute_path() {

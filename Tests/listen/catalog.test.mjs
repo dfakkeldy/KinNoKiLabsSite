@@ -6,6 +6,8 @@ const listenRoot = new URL('../../Resources/listen/', import.meta.url);
 const catalog = JSON.parse(readFileSync(new URL('books.json', listenRoot), 'utf8'));
 const builderSource = readFileSync(new URL('../../Tools/build-listen-catalog.sh', import.meta.url), 'utf8');
 const expectedBooks = [
+  'an-unsettling-conversation',
+  'jspace-inside-the-machine',
   'echo-from-the-inside',
   'why-it-feels-right',
   'you-are-the-architect',
@@ -18,17 +20,30 @@ const expectedBooks = [
   'rodents-in-the-walls',
   'the-new-deal',
 ];
-const expectedPlayable = ['chicken-predators', 'rodents-in-the-walls', 'the-new-deal'];
+const expectedPlayable = [
+  'an-unsettling-conversation',
+  'jspace-inside-the-machine',
+  'chicken-predators',
+  'rodents-in-the-walls',
+  'the-new-deal',
+];
 const expectedAnchorCounts = new Map([
+  ['an-unsettling-conversation', 963],
+  ['jspace-inside-the-machine', 755],
   ['chicken-predators', 231],
   ['rodents-in-the-walls', 245],
   ['the-new-deal', 151],
 ]);
-// Covers are NOT all one shape: chicken-predators and the-new-deal are square
+// Covers are NOT all one shape: approved player books with paired art are square
 // because Tools/sync-paired-cover-assets.sh re-derives them from the paired
 // square m4b art after the builder runs. The player sizes thumbnails from the
 // published dimensions, so a wrong pair here crops real artwork.
-const squareCovers = ['chicken-predators', 'the-new-deal'];
+const squareCovers = [
+  'an-unsettling-conversation',
+  'jspace-inside-the-machine',
+  'chicken-predators',
+  'the-new-deal',
+];
 const expectedCoverSizes = new Map(
   expectedBooks.map((slug) => [
     slug,
@@ -153,7 +168,7 @@ test('playable books declare interior figure counts with resolvable catalog-rela
   }
 });
 
-test('catalog publishes exactly the three approved playable books with complete read-along assets', () => {
+test('catalog publishes exactly the five approved playable books with complete read-along assets', () => {
   const playable = catalog.books.filter((book) => book.audio.status === 'available');
   assert.deepEqual(playable.map((book) => book.slug), expectedPlayable);
   assert.match(catalog.source.commit, /^[0-9a-f]{40}$/);

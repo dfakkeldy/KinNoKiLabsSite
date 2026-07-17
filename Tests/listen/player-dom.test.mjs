@@ -376,7 +376,7 @@ test('an all-text catalog hides the player but shows one honest streaming status
   assert.equal(emptyState.textContent, emptyMessage);
   assert.equal(isVisible(player.elements.get('status')), false);
   assert.equal(isVisible(player.cta), true);
-  assert.equal(library.children.length, 11);
+  assert.equal(library.children.length, catalog.books.length);
   assert.equal(libraryLinks.filter((link) => link.textContent === 'Listen').length, 0);
 });
 
@@ -387,7 +387,7 @@ test('the selected playable book stays off the secondary list but keeps its EPUB
 
   assert.equal(player.room.hidden, false);
   assert.equal(player.elements.get('emptyState').hidden, true);
-  assert.equal(library.children.length, 10);
+  assert.equal(library.children.length, publishedCatalog.books.length - 1);
   assert.ok(!libraryTitles.includes('Chicken Predators'));
   assertChickenFallbacks(player);
 });
@@ -651,7 +651,7 @@ test('library entries with covers render visual cards with cover, subtitle, byli
   const player = await bootPlayer({ catalog });
   const library = player.elements.get('library');
 
-  assert.equal(library.children.length, 10);
+  assert.equal(library.children.length, catalog.books.length - 1);
   for (const item of library.children) {
     const cover = item.children[0];
     const title = item.children[1];
@@ -694,7 +694,7 @@ test('library entries with covers render visual cards with cover, subtitle, byli
   assert.deepEqual(textLinks.map((link) => link.textContent), ['EPUB', 'Read']);
 });
 
-/* The two paired-m4b books ship square 768×768 art on purpose, so the grid
+/* The paired-m4b books ship square 768×768 art on purpose, so the grid
    must take its ratio from the catalog rather than assume every cover is a
    480×768 portrait. */
 function sizedCatalog(sizes) {
@@ -737,7 +737,7 @@ test('a cover without catalog dimensions gets neither width nor height', async (
   const player = await bootPlayer({ catalog: sizedCatalog({}) });
   const library = player.elements.get('library');
 
-  assert.equal(library.children.length, 10);
+  assert.equal(library.children.length, publishedCatalog.books.length - 1);
   for (const item of library.children) {
     const cover = item.children[0];
     assert.equal(cover.tagName, 'IMG');
@@ -787,7 +787,7 @@ test('library entries without covers render no img and keep title-first markup a
   const player = await bootPlayer({ catalog });
   const library = player.elements.get('library');
 
-  assert.equal(library.children.length, 10);
+  assert.equal(library.children.length, catalog.books.length - 1);
   assert.equal(descendants(library, (node) => node.tagName === 'IMG').length, 0);
   for (const item of library.children) {
     assert.equal(item.children[0].className, 'room-lib-title');

@@ -9,8 +9,14 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const script = path.join(root, 'Tools/sync-paired-cover-assets.sh');
-const slugs = ['echo-from-the-inside', 'why-it-feels-right', 'findable', 'rodents-in-the-walls', 'chicken-predators', 'the-new-deal'];
+const slugs = [
+  'an-unsettling-conversation', 'jspace-inside-the-machine',
+  'echo-from-the-inside', 'why-it-feels-right', 'findable',
+  'rodents-in-the-walls', 'chicken-predators', 'the-new-deal',
+];
 const candidates = {
+  'an-unsettling-conversation': 'cut-in-the-page',
+  'jspace-inside-the-machine': 'learned-watershed',
   'echo-from-the-inside': 'rooms-inside-the-app',
   'why-it-feels-right': 'impossible-teapot',
   findable: 'exact-phrase',
@@ -35,6 +41,8 @@ function makeFixture() {
   mkdirSync(path.join(output, 'learn'), { recursive: true });
   mkdirSync(path.join(output, 'listen-books', 'chicken-predators'), { recursive: true });
   mkdirSync(path.join(output, 'listen-books', 'the-new-deal'), { recursive: true });
+  mkdirSync(path.join(output, 'listen-books', 'an-unsettling-conversation'), { recursive: true });
+  mkdirSync(path.join(output, 'listen-books', 'jspace-inside-the-machine'), { recursive: true });
   cpSync(path.join(root, 'Resources/listen/books.json'), path.join(output, 'books.json'));
   writeFileSync(path.join(output, 'learn', 'keep.txt'), 'learn-before\n');
   writeFileSync(path.join(output, 'listen-books', 'keep.txt'), 'listen-before\n');

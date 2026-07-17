@@ -2,9 +2,55 @@
   "schemaVersion": 1,
   "source": {
     "repository": "dfakkeldy/explainer-audiobooks",
-    "commit": "8482eae48becda2ef4be819a09a1afab195641bf"
+    "commit": "15cfd56987202fbab4024fd2669f5d7adb3009d9"
   },
   "books": {
+    "an-unsettling-conversation": {
+      "receiptSchemaVersion": 2,
+      "selectionReceiptSha256": "e03af343c74d4ebbf83dcb67610616e3fcae536dc74ed964ef92fd6ea6607839",
+      "portrait": {
+        "sourceSha256": "b3db27921c56791003c33b25859d5dec4134429c8c3337b101ac3e45392a567f",
+        "dimensions": [
+          1600,
+          2560
+        ]
+      },
+      "square": {
+        "sourceSha256": "f85568c4ac4add2583a3f5c367ce1f8c37921e888419f08789f815d32de3dcf4",
+        "derivativeSha256": "167f743aae2128584487190c2239a611e301cd3c90eeeb1706218ef917e83e1a",
+        "sourceDimensions": [
+          2400,
+          2400
+        ],
+        "derivativeDimensions": [
+          768,
+          768
+        ]
+      }
+    },
+    "jspace-inside-the-machine": {
+      "receiptSchemaVersion": 2,
+      "selectionReceiptSha256": "b3d568170fd07dd0c207fbd8d4a5dfca188c1745d6a2493456087d3df60e4fa6",
+      "portrait": {
+        "sourceSha256": "61f6b9a977fd47717f150cf30b382a9e7afcfc924791b3d8daaa02302d8718af",
+        "dimensions": [
+          1600,
+          2560
+        ]
+      },
+      "square": {
+        "sourceSha256": "4f6556f6011d7c61ad2006a1bbc2c1ae3ccd2f52ba7f50b0927a69ebc59b95c2",
+        "derivativeSha256": "3b731538d51557ea405ed6f42ee5e8d37f24cf50502fe97eb495798a7e8214cd",
+        "sourceDimensions": [
+          2400,
+          2400
+        ],
+        "derivativeDimensions": [
+          768,
+          768
+        ]
+      }
+    },
     "echo-from-the-inside": {
       "receiptSchemaVersion": 2,
       "selectionReceiptSha256": "a06939bb93c60335c8179ce5c2c903ea906b21b549a797663f2a73558cba2e1b",
