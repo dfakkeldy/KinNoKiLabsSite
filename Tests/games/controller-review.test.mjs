@@ -127,8 +127,8 @@ test('Crossword arrow navigation sets direction and skips blocks', async () => {
   assert.equal(state.direction, 'down');
 });
 
-test('declining a different-difficulty replacement keeps the saved run without rendering it as requested', async () => {
-  const fixture = createDOMFixture({ search: '?difficulty=medium', confirm: false }); const restore = installDOM(fixture);
+test('a different-difficulty replacement conflict keeps the saved run without rendering it as requested', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=medium' }); const restore = installDOM(fixture);
   try {
     const module = await import('../../Resources/games/sudoku-ui.js');
     const play = module.createSudokuState(sudoku); play.values[sudokuEditable] = 2;

@@ -68,6 +68,12 @@ export class FixtureElement {
     this.scrollWidth = 704;
     this.capturedPointers = new Set();
     this._textContent = '';
+    this._styleProps = new Map();
+    this.style = {
+      setProperty: (name, value) => this._styleProps.set(name, String(value)),
+      getPropertyValue: (name) => this._styleProps.get(name) ?? '',
+      removeProperty: (name) => { const previous = this._styleProps.get(name) ?? ''; this._styleProps.delete(name); return previous; },
+    };
   }
   set id(value) { this.setAttribute('id', value); }
   get id() { return this.getAttribute('id') ?? ''; }
@@ -113,6 +119,12 @@ export class FixtureElement {
     return !event.defaultPrevented;
   }
   click() { this.dispatchEvent(new FixtureEvent('click')); }
+  remove() {
+    if (!this.parentNode) return;
+    if (this.contains(this.ownerDocument.activeElement)) this.ownerDocument.activeElement = null;
+    this.parentNode.children = this.parentNode.children.filter((child) => child !== this);
+    this.parentNode = null;
+  }
   focus() { this.ownerDocument.activeElement = this; this.dispatchEvent(new FixtureEvent('focus', { bubbles: false })); }
   setPointerCapture(pointerId) { this.capturedPointers.add(pointerId); }
   releasePointerCapture(pointerId) { this.capturedPointers.delete(pointerId); }

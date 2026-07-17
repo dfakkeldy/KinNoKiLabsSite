@@ -88,3 +88,44 @@ test('fatal recovery and saved Yard links preserve a usable destination', async 
       'Continue Endless Yard · Hard');
   } finally { restore(); }
 });
+
+test('cargoThumb builds a percentage-positioned thumbnail from cell coordinates', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { cargoThumb } = await import('../../Resources/games/controller-common.js');
+    const thumb = cargoThumb([
+      { row: 0, column: 0 }, { row: 0, column: 1 }, { row: 1, column: 1 },
+    ], { patternClass: 'cargo-pattern-dots', rotation: 1 });
+    assert.equal(thumb.className, 'cargo-thumb');
+    assert.equal(thumb.getAttribute('aria-hidden'), 'true');
+    assert.equal(thumb.getAttribute('data-rotation'), '1');
+    assert.equal(thumb.style.getPropertyValue('--cargo-thumb-columns'), '2');
+    assert.equal(thumb.style.getPropertyValue('--cargo-thumb-rows'), '2');
+    assert.equal(thumb.children.length, 3);
+    const [first, second, third] = thumb.children;
+    assert.equal(first.className, 'cargo-thumb-cell cargo-pattern-dots');
+    assert.equal(first.style.getPropertyValue('--cargo-thumb-cell-column'), '0');
+    assert.equal(first.style.getPropertyValue('--cargo-thumb-cell-row'), '0');
+    assert.equal(second.style.getPropertyValue('--cargo-thumb-cell-column'), '1');
+    assert.equal(second.style.getPropertyValue('--cargo-thumb-cell-row'), '0');
+    assert.equal(third.style.getPropertyValue('--cargo-thumb-cell-column'), '1');
+    assert.equal(third.style.getPropertyValue('--cargo-thumb-cell-row'), '1');
+  } finally { restore(); }
+});
+
+test('cargoThumb rotation metadata defaults to 0 and normalizes out-of-range values', async () => {
+  const fixture = createDOMFixture(); const restore = installDOM(fixture);
+  try {
+    const { cargoThumb } = await import('../../Resources/games/controller-common.js');
+    const plain = cargoThumb([{ row: 0, column: 0 }], { patternClass: 'cargo-pattern-solid' });
+    assert.equal(plain.getAttribute('data-rotation'), '0');
+    const negative = cargoThumb([{ row: 0, column: 0 }], {
+      patternClass: 'cargo-pattern-solid', rotation: -1,
+    });
+    assert.equal(negative.getAttribute('data-rotation'), '3');
+    const large = cargoThumb([{ row: 0, column: 0 }], {
+      patternClass: 'cargo-pattern-solid', rotation: 5,
+    });
+    assert.equal(large.getAttribute('data-rotation'), '1');
+  } finally { restore(); }
+});

@@ -119,7 +119,9 @@ test('Restart keeps the exact definition and seed while resetting play and assis
     const store = storeWith('sudoku', definition, play, { assisted: true });
     store.stats.totalCompleted = 7;
     await module.renderSudoku(fixture.root, store);
-    fixture.root.querySelector('[data-restart]').click(); await Promise.resolve();
+    fixture.root.querySelector('[data-restart]').click();
+    fixture.root.querySelector('dialog.game-dialog [data-dialog-confirm]').click();
+    await Promise.resolve();
     const saved = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2));
     assert.equal(saved.runs.sudoku.seed, 42);
     assert.deepEqual(saved.runs.sudoku.puzzle.definition, definition);

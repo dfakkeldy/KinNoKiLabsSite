@@ -1,8 +1,10 @@
 import {
   abandonRun, chooseFreshDefinition, completeRun, historyKey,
-  markAssisted, saveGameStore, startRun,
+  markAssisted, recordsBrokenBy, saveGameStore, startRun,
 } from './core.js';
-import { CARGO_CATALOG } from './cargo-geometry.js';
+import {
+  CARGO_CATALOG, canPlace, placedCells, removePiece, rotationsFor,
+} from './cargo-geometry.js';
 import {
   createEndlessDefinition, createYardState, generateContract,
   prepareYardForContinue, reduceYard, validateYardState,
@@ -10,10 +12,11 @@ import {
 } from './kinnoki-yard.js';
 import { createGameAudio } from './game-audio.js';
 import {
-  createAudioControls, createEventAnnouncer, createGameLifecycle,
+  cargoThumb, createAudioControls, createEventAnnouncer, createGameLifecycle,
   defaultSeedFactory, element, formatElapsed, makeGameTerminal,
-  renderGameError,
+  prefersReducedMotion, renderGameError,
 } from './controller-common.js';
+import { celebrate } from './celebration.js';
 import { safeLocalStorage } from './hub-ui.js';
 
 const GAME = 'kinnoki-yard';
@@ -36,6 +39,12 @@ const DIFFICULTY_COPY = Object.freeze({
   }),
 });
 const CARGO_BY_ID = new Map(CARGO_CATALOG.map((cargo) => [cargo.id, cargo]));
+const RECORD_LABELS = Object.freeze({
+  time: 'New best time!',
+  moves: 'Fewest moves!',
+  score: 'New best score!',
+  combo: 'Best combo!',
+});
 
 export const defaultYardEngine = Object.freeze({
   createEndlessDefinition,
@@ -114,11 +123,18 @@ function buildYardBoard(definition, focus) {
     type: 'button', 'data-yard-pan-right': '',
     'aria-label': 'Pan yard right', text: 'Pan Right',
   });
-  const scroll = element('div', { class: 'yard-board-scroll' }, grid);
+  // Dedicated absolute layer for Endless dispatch score pops, mirroring Kinnoki
+  // Stack's `.stack-score-pop-layer` inside its dock (Task 8).
+  const scorePopLayer = element('div', {
+    class: 'yard-score-pop-layer', 'aria-hidden': 'true',
+  });
+  const scroll = element('div', { class: 'yard-board-scroll' }, grid, scorePopLayer);
   const pan = element('div', {
     class: 'yard-pan-controls', 'aria-label': 'Yard board pan controls',
   }, panLeft, panRight);
-  return { grid, cells, scroll, pan, panLeft, panRight };
+  return {
+    grid, cells, scroll, pan, panLeft, panRight, scorePopLayer,
+  };
 }
 function buildYardShell(root, model, audioControls) {
   const { mode, difficulty, state, definition } = model;
@@ -260,12 +276,83 @@ function occupiedCargo(state, occupied) {
   return { pieceId, typeId, cargo: cargoFor(typeId) };
 }
 
-function paintYardBoard(view, state, invalidCellKey) {
+// Full-footprint Contract hint: `state.hint` (when solved) carries only
+// `.placement` ({ pieceId, typeId, rotation, row, column }), never a
+// top-level row/column, so deriving the complete footprint requires
+// placedCells/rotationsFor here — mirroring how the engine itself validates
+// a placement, without touching kinnoki-yard.js.
+function contractHintKeys(state) {
+  const placement = state.hint?.status === 'solved' ? state.hint.placement : null;
+  if (!placement) return new Set();
+  const rotated = rotationsFor(placement.typeId).find(
+    (candidate) => candidate.rotation === placement.rotation,
+  );
+  if (!rotated) return new Set();
+  return new Set(
+    placedCells(rotated.cells, placement).map(({ row, column }) => cellKey(row, column)),
+  );
+}
+
+// Endless dispatch: mirrors kinnoki-stack-ui.js's dispatchedCellKeys. The
+// engine's `dispatch` event only carries a dispatched cell *count*, not
+// coordinates, so this resolves the exact cells by matching the event's
+// manifestIds against `previousState.manifests` (the manifest zones as they
+// stood immediately before this transition).
+function dispatchedCellKeys(previousState, dispatchEvent) {
+  const keys = new Set();
+  if (!dispatchEvent) return keys;
+  for (const manifestItem of previousState.manifests) {
+    if (!dispatchEvent.manifestIds.includes(manifestItem.id)) continue;
+    for (const { row, column } of manifestItem.cells) keys.add(cellKey(row, column));
+  }
+  return keys;
+}
+
+function spawnScorePop(view, dispatchEvent) {
+  const pop = element('span', {
+    class: 'game-score-pop',
+    'aria-hidden': 'true',
+    text: '+' + dispatchEvent.scoreAdded + ' ×' + dispatchEvent.combo,
+  });
+  view.scorePopLayer.append(pop);
+}
+
+// Ghost preview: derives the selected tray piece's full rotated footprint at
+// a candidate origin via placedCells/canPlace (cargo-geometry.js), mirroring
+// the exact validity rules reduceContractPlacement/reduceEndlessInternal
+// apply — target-membership + canPlace for contracts (on the board with the
+// piece's own existing cells cleared, so repositioning an already-placed
+// piece previews correctly), canPlace alone for endless. Read-only; the
+// reducer is never touched.
+function yardGhostAt(state, origin) {
+  const piece = selectedPiece(state);
+  if (!piece) return null;
+  const rotationValue = state.kind === 'contracts' ? state.selectedRotation : piece.rotation;
+  const rotated = rotationsFor(piece.typeId, piece.allowedRotations)
+    .find((candidate) => candidate.rotation === rotationValue);
+  if (!rotated) return null;
+  let cells;
+  try {
+    cells = placedCells(rotated.cells, origin);
+  } catch {
+    return null;
+  }
+  let valid;
+  if (state.kind === 'contracts') {
+    const target = contractTargetKeys(state);
+    const cleared = removePiece(state.board, piece.pieceId);
+    valid = cells.every((cell) => target.has(cellKey(cell.row, cell.column)))
+      && canPlace(cleared, rotated.cells, origin);
+  } else {
+    valid = canPlace(state.board, rotated.cells, origin);
+  }
+  return { cells, valid };
+}
+
+function paintYardBoard(view, state, { hintKeys, dispatchedKeys, reducedMotion }) {
   const targetKeys = state.kind === 'contracts'
     ? contractTargetKeys(state) : manifestTargetKeys(state);
   const active = state.status === 'active';
-  const hintKey = state.hint
-    ? cellKey(state.hint.row, state.hint.column) : null;
 
   for (let row = 0; row < state.definition.height; row += 1) {
     for (let column = 0; column < state.definition.width; column += 1) {
@@ -285,8 +372,8 @@ function paintYardBoard(view, state, invalidCellKey) {
       if (state.focus.row === row && state.focus.column === column) {
         node.classList.add('yard-cell-selected');
       }
-      if (key === hintKey) node.classList.add('yard-cell-hint');
-      if (key === invalidCellKey) node.classList.add('yard-cell-invalid');
+      if (hintKeys.has(key)) node.classList.add('is-hint');
+      if (!reducedMotion && dispatchedKeys.has(key)) node.classList.add('cargo-dispatching');
 
       const suffix = ', row ' + (row + 1) + ', column ' + (column + 1)
         + (targetKeys.has(key)
@@ -337,7 +424,8 @@ function selectedPiece(state) {
 }
 
 function paintYard(view, state, {
-  store, elapsedMs, entryKind, invalidCellKey,
+  store, elapsedMs, entryKind, frameEvents = [], previousState = null,
+  reducedMotion = prefersReducedMotion(),
 }) {
   const mode = state.kind;
   const difficulty = state.definition.difficulty;
@@ -363,6 +451,10 @@ function paintYard(view, state, {
     ? state.selectedRotation : selected?.rotation ?? 0;
   view.rotation.textContent = 'Rotation ' + ((selectedRotation % 4) * 90)
     + '° · ' + (selected?.allowedRotations?.length ?? 0) + ' allowed';
+
+  const hintPlacement = state.hint?.status === 'solved' ? state.hint.placement : null;
+  const hintKeys = contractHintKeys(state);
+
   view.tray.replaceChildren(...trayPieces(state).map((piece) => {
     const cargo = cargoFor(piece.typeId);
     const rotation = mode === 'contracts'
@@ -371,22 +463,45 @@ function paintYard(view, state, {
       : piece.rotation;
     const placed = mode === 'contracts'
       && Object.hasOwn(state.placements, String(piece.pieceId));
-    return element('button', {
-      type: 'button',
-      class: 'yard-tray-piece cargo-pattern-' + cargo.pattern
-        + (piece.pieceId === state.selectedPieceId ? ' is-selected' : '')
-        + (placed ? ' is-placed' : ''),
-      'data-yard-piece': piece.pieceId,
-      'data-pattern': cargo.pattern,
-      'aria-pressed': String(piece.pieceId === state.selectedPieceId),
-      disabled: state.status !== 'active',
+    const rotated = rotationsFor(piece.typeId, piece.allowedRotations)
+      .find((candidate) => candidate.rotation === rotation) ?? { cells: cargo.cells ?? [] };
+    // cargoThumb does not rotate cells itself — the caller must pre-rotate
+    // (Task 8's contract). `rotated.cells` already reflects this piece's
+    // current on-screen rotation.
+    const thumb = cargoThumb(rotated.cells, {
+      patternClass: 'cargo-pattern-' + cargo.pattern,
+      rotation,
+    });
+    const label = element('span', {
+      class: 'visually-hidden',
       text: cargo.label + ' · rotation ' + ((rotation % 4) * 90)
         + '° · allowed ' + piece.allowedRotations.map((value) => value * 90 + '°').join(', ')
         + ' · ' + cargo.pattern + ' pattern' + (placed ? ' · placed' : ''),
     });
+    // The cargo pattern class lives on the thumbnail's cells (cargoThumb's
+    // patternClass), NOT on the button itself — a full-card pattern behind
+    // the thumb drowned the silhouette. data-pattern keeps the identity
+    // hookable for CSS/tests, and the visually-hidden label names it.
+    return element('button', {
+      type: 'button',
+      class: 'yard-tray-piece'
+        + (piece.pieceId === state.selectedPieceId ? ' is-selected' : '')
+        + (placed ? ' is-placed' : '')
+        + (hintPlacement?.pieceId === piece.pieceId ? ' is-hint-flash' : ''),
+      'data-yard-piece': piece.pieceId,
+      'data-pattern': cargo.pattern,
+      'aria-pressed': String(piece.pieceId === state.selectedPieceId),
+      disabled: state.status !== 'active',
+    }, thumb, label);
   }));
 
-  paintYardBoard(view, state, invalidCellKey);
+  const dispatchEvent = mode === 'endless'
+    ? frameEvents.find((event) => event.type === 'dispatch') : null;
+  const dispatchedKeys = previousState && dispatchEvent
+    ? dispatchedCellKeys(previousState, dispatchEvent) : new Set();
+
+  paintYardBoard(view, state, { hintKeys, dispatchedKeys, reducedMotion });
+  if (dispatchEvent && !reducedMotion) spawnScorePop(view, dispatchEvent);
   const active = state.status === 'active';
   for (const control of Object.values(view.controls).filter(Boolean)) {
     control.disabled = !active;
@@ -479,6 +594,9 @@ class YardPersistence {
       throw new Error('Yard assistance state is inconsistent at completion.');
     }
     const previous = this.value;
+    // Must read the still-intact previous bests before completeRun folds
+    // this run's records into the stats bucket.
+    const recordsBroken = recordsBrokenBy(previous, { game: GAME, mode, records });
     const completed = completeRun(previous, {
       game: GAME, mode, now: this.wallNow(), records,
     });
@@ -490,6 +608,7 @@ class YardPersistence {
       this.value = previous;
       throw new Error('Yard completion could not be saved.');
     }
+    return recordsBroken;
   }
 
   setAudio(preferences) {
@@ -667,7 +786,9 @@ class YardController {
     this.slot = slot;
     this.passiveCleanups = new Set();
     this.activeApi = null;
-    this.invalidCellKey = null;
+    this.ghostOrigin = null;
+    this.ghostKeys = new Set();
+    this.lastFormattedElapsed = null;
     this.finishing = false;
     this.finished = false;
     this.errorRendered = false;
@@ -713,13 +834,16 @@ class YardController {
     this.view.notice.textContent = message;
   }
 
-  paint() {
+  paint({ frameEvents = [], previousState = null } = {}) {
     paintYard(this.view, this.state, {
       store: this.persistence.store,
       elapsedMs: this.lifecycle.elapsed(),
       entryKind: this.entryKind,
-      invalidCellKey: this.invalidCellKey,
+      frameEvents,
+      previousState,
     });
+    this.lastFormattedElapsed = this.view.timer.textContent;
+    this.refreshGhost();
   }
 }
 
@@ -751,6 +875,17 @@ YardController.prototype.installPassiveHandlers = function installPassiveHandler
   });
   this.listenPassive(this.view.panRight, 'click', () => {
     this.view.scroll.scrollLeft += 176;
+  });
+  // Delegated one-shot cleanup (mirrors kinnoki-stack-ui.js): the invalid-flash
+  // cell class and the endless dispatch flash both self-clear on the very next
+  // full repaint anyway, but this gives them a timely fade instead of waiting
+  // for an unrelated repaint. Score pops are freshly-appended DOM nodes that
+  // must be removed here or they would accumulate indefinitely.
+  this.listenPassive(this.view.scroll, 'animationend', (event) => {
+    const target = event.target;
+    if (!target?.classList) return;
+    target.classList.remove('yard-cell-invalid-flash', 'cargo-dispatching');
+    if (target.classList.contains('game-score-pop')) target.remove();
   });
 };
 YardController.prototype.start = async function start(kind) {
@@ -795,9 +930,54 @@ YardController.prototype.activate = async function activate(kind, api) {
 
 YardController.prototype.frame = function frame() {
   if (this.disposed || this.finished || this.lifecycle.state !== 'active') return;
-  this.view.timer.textContent = formatElapsed(this.lifecycle.elapsed());
+  const formatted = formatElapsed(this.lifecycle.elapsed());
+  if (formatted !== this.lastFormattedElapsed) {
+    this.lastFormattedElapsed = formatted;
+    this.view.timer.textContent = formatted;
+  }
   this.activeApi.requestActiveFrame(() => this.frame());
 };
+YardController.prototype.cellOrigin = function cellOrigin(target) {
+  if (!target?.getAttribute || target.getAttribute('data-yard-cell') == null) return null;
+  return {
+    row: Number(target.getAttribute('data-yard-row')),
+    column: Number(target.getAttribute('data-yard-column')),
+  };
+};
+
+YardController.prototype.setGhostOrigin = function setGhostOrigin(origin) {
+  this.ghostOrigin = origin;
+  this.refreshGhost();
+};
+
+YardController.prototype.refreshGhost = function refreshGhost() {
+  for (const key of this.ghostKeys) {
+    const [row, column] = key.split(':').map(Number);
+    this.view.cells[row]?.[column]?.classList.remove('is-ghost-valid', 'is-ghost-invalid');
+  }
+  this.ghostKeys = new Set();
+  if (!this.ghostOrigin || this.state.status !== 'active') return;
+  const ghost = yardGhostAt(this.state, this.ghostOrigin);
+  if (!ghost) return;
+  for (const cell of ghost.cells) {
+    const node = this.view.cells[cell.row]?.[cell.column];
+    if (!node) continue;
+    node.classList.add(ghost.valid ? 'is-ghost-valid' : 'is-ghost-invalid');
+    this.ghostKeys.add(cellKey(cell.row, cell.column));
+  }
+};
+
+YardController.prototype.flashInvalidCell = function flashInvalidCell(focus) {
+  const node = this.view.cells[focus.row]?.[focus.column];
+  if (!node) return;
+  // Reduced motion: apply the existing static stripe class for one paint
+  // cycle instead (self-clears on the next full repaint); default motion:
+  // a one-shot animated class cleared via the delegated animationend
+  // listener in installPassiveHandlers.
+  if (prefersReducedMotion()) node.classList.add('yard-cell-invalid');
+  else node.classList.add('yard-cell-invalid-flash');
+};
+
 YardController.prototype.registerActiveHandlers = function registerActiveHandlers(api) {
   api.listenActive(this.view.controls.rotate, 'click', () => {
     this.dispatch({ type: 'rotate-piece', quarterTurns: 1 },
@@ -827,6 +1007,20 @@ YardController.prototype.registerActiveHandlers = function registerActiveHandler
       api.listenActive(cell, 'keydown', (event) => this.handleCellKey(event, cell));
     }
   }
+  // Ghost preview: delegated on the board so a fresh selection/rotation
+  // doesn't need per-cell re-binding. focusin bubbles natively; pointerenter
+  // does not, so it is bound in the capture phase (fixture tests dispatch it
+  // with bubbles:true by default, which this also satisfies).
+  api.listenActive(this.view.grid, 'focusin', (event) => {
+    this.setGhostOrigin(this.cellOrigin(event.target));
+  });
+  api.listenActive(this.view.grid, 'focusout', () => this.setGhostOrigin(null));
+  api.listenActive(this.view.grid, 'pointerenter', (event) => {
+    this.setGhostOrigin(this.cellOrigin(event.target));
+  }, { capture: true });
+  api.listenActive(this.view.grid, 'pointerleave', () => this.setGhostOrigin(null), {
+    capture: true,
+  });
   api.listenActive(this.document, 'keydown',
     (event) => this.handleDocumentKey(event));
 };
@@ -934,19 +1128,19 @@ YardController.prototype.accept = function accept(result, focusTarget) {
     this.fail(new Error(fatal.message));
     return;
   }
+  const previousState = this.state;
   const changed = result.state !== this.state;
   this.state = result.state;
   const invalid = result.events.find((event) => event.type === 'invalid');
-  this.invalidCellKey = invalid && focusTarget?.type === 'cell'
-    ? cellKey(focusTarget.focus.row, focusTarget.focus.column) : null;
   if (changed) this.persistence.savePlay(this.state, this.lifecycle.elapsed());
   for (const event of result.events) {
     this.announcer.announce(event);
     const effect = yardEffectForEvent(event);
     if (effect) this.audio.playEffect(effect);
   }
-  this.paint();
+  this.paint({ frameEvents: result.events, previousState });
   this.restoreFocus(focusTarget);
+  if (invalid && focusTarget?.type === 'cell') this.flashInvalidCell(focusTarget.focus);
   if (this.state.status === 'terminal') this.finishTerminal();
 };
 YardController.prototype.snapshot = function snapshot() {
@@ -966,6 +1160,9 @@ YardController.prototype.handlePause = function handlePause(reason) {
   this.persistence.savePlay(this.state, this.lifecycle.elapsed());
   for (const event of result.events) this.announcer.announce(event);
   void this.audio.pause();
+  // A paused game has no meaningful hover/focus target; drop it explicitly
+  // rather than letting a stale origin potentially reappear on resume.
+  this.ghostOrigin = null;
   this.paint();
   this.view.resume.focus();
 };
@@ -1041,6 +1238,7 @@ YardController.prototype.finishTerminal = function finishTerminal() {
   if (this.finishing || this.finished || this.disposed) return;
   this.finishing = true;
   let payload;
+  let recordsBroken = [];
   try {
     const elapsedMs = this.lifecycle.elapsed();
     payload = this.engine.yardCompletionPayload(this.state, elapsedMs);
@@ -1050,7 +1248,7 @@ YardController.prototype.finishTerminal = function finishTerminal() {
     if (!validCompletionPayload(payload, this.state)) {
       throw new Error('Kinnoki Yard ended with an invalid completion payload.');
     }
-    this.persistence.complete(payload.mode, payload.records, this.state);
+    recordsBroken = this.persistence.complete(payload.mode, payload.records, this.state);
     if (!this.lifecycle.finish()) {
       throw new Error('Kinnoki Yard completion lifecycle could not settle.');
     }
@@ -1069,6 +1267,11 @@ YardController.prototype.finishTerminal = function finishTerminal() {
     'data-complete-heading': '', tabindex: '-1',
     text: this.mode === 'contracts' ? 'Contract complete' : 'Yard run complete',
   });
+  const recordLine = recordsBroken.length ? element('p', {
+    class: 'game-complete-record',
+    'data-complete-records': '',
+    text: recordsBroken.map((key) => RECORD_LABELS[key] ?? key).join(' · '),
+  }) : null;
   const text = this.mode === 'contracts'
     ? formatElapsed(payload.summary.elapsedMs) + ' · ' + payload.summary.moves
       + ' moves · ' + payload.summary.piecesPlaced + '/'
@@ -1084,11 +1287,12 @@ YardController.prototype.finishTerminal = function finishTerminal() {
     text: this.mode === 'contracts' ? 'New Puzzle' : 'New Yard',
   });
   this.view.shell.append(element(
-    'section', { class: 'game-complete' }, heading, summary, playAgain,
+    'section', { class: 'game-complete' }, heading, recordLine, summary, playAgain,
   ));
   this.listenPassive(playAgain, 'click', () => {
     void this.replaceWith(this.mode, this.difficulty);
   });
+  if (recordsBroken.length > 0) celebrate({ root: this.root });
   heading.focus();
 };
 

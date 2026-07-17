@@ -49,6 +49,15 @@ export const GAMES = Object.freeze([
     ],
     records: ['time', 'moves', 'score', 'combo'],
   },
+  {
+    id: 'kinnoki-charts',
+    title: 'Kinnoki Charts',
+    eyebrow: 'Picture logic',
+    description: 'Fill quiet row and column tallies until a small harbour chart appears.',
+    symbol: 'C',
+    modes: [{ id: 'default', label: 'New chart' }],
+    records: ['time'],
+  },
 ]);
 
 const DIFFICULTIES = Object.freeze(['easy', 'medium', 'hard']);
@@ -177,7 +186,7 @@ const bestRecord = (bucket, type, strategy) => {
 
 export function statsModel(store) {
   const games = Object.fromEntries(GAMES.map((game) => {
-    if (['sudoku', 'crossword', 'word-search'].includes(game.id)) {
+    if (['sudoku', 'crossword', 'word-search', 'kinnoki-charts'].includes(game.id)) {
       const bucket = modeStats(store, game.id, 'default')
         ?? legacyDefaultStats(store, game.id);
       const completed = nonNegativeInteger(bucket?.completed);
@@ -279,7 +288,7 @@ export function renderHubMarkup(store) {
     <header class="games-hero">
       <p class="eyebrow">KinNoKi Arcade Hall</p>
       <h1 id="games-heading">A quiet place to play.</h1>
-      <p>Five thoughtful games for quick focus or a longer challenge. Choose a difficulty, play at your pace, and come back whenever you like.</p>
+      <p>Six thoughtful games for quick focus or a longer challenge. Choose a difficulty, play at your pace, and come back whenever you like.</p>
     </header>
     <p class="game-storage-notice" role="status" aria-live="polite" hidden>
       Local progress is unavailable in this browser. You can still play, but this visit may not be saved.

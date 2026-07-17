@@ -600,3 +600,260 @@ test('audio receives event effects, intensity, and persisted setting changes', a
     controller.dispose();
   } finally { restore(); }
 });
+
+test('the active piece renders only in the position-driven overlay, never as grid-cell classes', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy' });
+  const restore = installDOM(fixture);
+  try {
+    const { renderKinnokiStack } = await import('../../Resources/games/kinnoki-stack-ui.js');
+    const controller = await renderKinnokiStack(fixture.root, createEmptyGameStore(), {
+      seedFactory: () => 42, audioFactory: silentAudio,
+    });
+    fixture.root.querySelector('[data-start-game]').click();
+    await Promise.resolve();
+    const overlay = fixture.root.querySelector('.stack-active-overlay');
+    assert.ok(overlay, 'an active-piece overlay is mounted in the dock');
+    const play = () => JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2))
+      .runs['kinnoki-stack'].puzzle.play;
+    assert.equal(overlay.style.getPropertyValue('--piece-col'), String(play().active.column));
+    assert.equal(overlay.style.getPropertyValue('--piece-row'), String(play().active.row));
+    assert.ok(overlay.children.length > 0, 'the overlay renders the active piece cells');
+    const activeClassed = fixture.root.querySelectorAll('.stack-cargo-active');
+    assert.ok(activeClassed.length > 0);
+    assert.ok(activeClassed.every((node) => overlay.contains(node)),
+      'stack-cargo-active only ever appears inside the overlay, never directly on a grid cell');
+    assert.equal(fixture.root.querySelectorAll('[data-stack-cell].stack-cargo-active').length, 0);
+
+    fixture.root.querySelector('[data-stack-left]').click();
+    assert.equal(overlay.style.getPropertyValue('--piece-col'), String(play().active.column));
+    controller.dispose();
+  } finally { restore(); }
+});
+
+test('a locked piece paints settled classes on the grid and clears the overlay', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy' });
+  const restore = installDOM(fixture);
+  try {
+    const { renderKinnokiStack } = await import('../../Resources/games/kinnoki-stack-ui.js');
+    const controller = await renderKinnokiStack(fixture.root, createEmptyGameStore(), {
+      seedFactory: () => 42, audioFactory: silentAudio,
+    });
+    fixture.root.querySelector('[data-start-game]').click();
+    await Promise.resolve();
+    fixture.root.querySelector('[data-stack-hard-drop]').click();
+    const play = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2))
+      .runs['kinnoki-stack'].puzzle.play;
+    const [firstFilledRow] = play.board
+      .map((row, index) => (row.some(Boolean) ? index : null))
+      .filter((index) => index !== null);
+    const column = play.board[firstFilledRow].findIndex(Boolean);
+    const settled = fixture.root.querySelector(`[data-stack-cell="${firstFilledRow}:${column}"]`);
+    assert.ok(settled.classList.contains('stack-cargo-settled'));
+    assert.equal(settled.classList.contains('stack-cargo-active'), false);
+    controller.dispose();
+  } finally { restore(); }
+});
+
+test('dispatch flashes cleared cells and pops a floating score that self-removes', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy' });
+  const restore = installDOM(fixture);
+  try {
+    const stack = await import('../../Resources/games/kinnoki-stack.js');
+    const definition = stack.createStackDefinition({ difficulty: 'easy', seed: 42 });
+    const initial = stack.createStackState(definition);
+    const manifest = initial.manifests[0];
+    const engine = {
+      ...stack,
+      reduceStack(state, action) {
+        if (action.type !== 'hard-drop') return stack.reduceStack(state, action);
+        const board = state.board.map((row) => [...row]);
+        for (const { row, column } of manifest.cells) board[row][column] = null;
+        return {
+          state: {
+            ...state, board, manifests: [], score: state.score + 800,
+            combo: 1, bestCombo: 1, dispatchedManifests: 1,
+          },
+          events: [{
+            type: 'dispatch', manifestIds: [manifest.id],
+            cells: manifest.cells.length, combo: 1, scoreAdded: 800,
+          }],
+        };
+      },
+    };
+    const { renderKinnokiStack } = await import('../../Resources/games/kinnoki-stack-ui.js');
+    const controller = await renderKinnokiStack(fixture.root, createEmptyGameStore(), {
+      engine, seedFactory: () => 42, audioFactory: silentAudio,
+    });
+    fixture.root.querySelector('[data-start-game]').click();
+    await Promise.resolve();
+    fixture.root.querySelector('[data-stack-hard-drop]').click();
+    const key = manifest.cells[0].row + ':' + manifest.cells[0].column;
+    const firstDispatched = fixture.root.querySelector(`[data-stack-cell="${key}"]`);
+    assert.ok(firstDispatched.classList.contains('cargo-dispatching'));
+    const pop = fixture.root.querySelector('.game-score-pop');
+    assert.ok(pop, 'a score pop is spawned on dispatch');
+    assert.equal(pop.textContent, '+800 ×1');
+    pop.dispatchEvent(new FixtureEvent('animationend'));
+    assert.equal(fixture.root.querySelector('.game-score-pop'), null,
+      'the score pop removes itself on animationend');
+    firstDispatched.dispatchEvent(new FixtureEvent('animationend'));
+    assert.equal(firstDispatched.classList.contains('cargo-dispatching'), false);
+    controller.dispose();
+  } finally { restore(); }
+});
+
+test('tide warnings set a directional dock edge cue that clears once the tide resolves', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=medium' });
+  const restore = installDOM(fixture);
+  try {
+    const stack = await import('../../Resources/games/kinnoki-stack.js');
+    const engine = {
+      ...stack,
+      reduceStack(state, action) {
+        if (action.type !== 'move') return stack.reduceStack(state, action);
+        if (action.deltaColumn === -1) {
+          return {
+            state, events: [{ type: 'tide-warning', direction: 'left', placementsRemaining: 1 }],
+          };
+        }
+        return {
+          state, events: [{ type: 'tide-shift', direction: 'left', movedComponents: 2 }],
+        };
+      },
+    };
+    const { renderKinnokiStack } = await import('../../Resources/games/kinnoki-stack-ui.js');
+    const controller = await renderKinnokiStack(fixture.root, createEmptyGameStore(), {
+      engine, seedFactory: () => 42, audioFactory: silentAudio,
+    });
+    fixture.root.querySelector('[data-start-game]').click();
+    await Promise.resolve();
+    const dock = fixture.root.querySelector('.stack-dock');
+    fixture.root.querySelector('[data-stack-left]').click();
+    assert.ok(dock.classList.contains('is-tide-left'));
+    assert.equal(dock.classList.contains('is-tide-right'), false);
+    fixture.root.querySelector('[data-stack-right]').click();
+    assert.equal(dock.classList.contains('is-tide-left'), false);
+    assert.equal(dock.classList.contains('is-tide-right'), false);
+    controller.dispose();
+  } finally { restore(); }
+});
+
+test('a same-frame tide-shift followed by a fresh tide-warning re-asserts the edge cue', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=medium' });
+  const restore = installDOM(fixture);
+  try {
+    const stack = await import('../../Resources/games/kinnoki-stack.js');
+    const engine = {
+      ...stack,
+      reduceStack(state, action) {
+        if (action.type !== 'move') return stack.reduceStack(state, action);
+        return {
+          state,
+          events: [
+            { type: 'tide-shift', direction: 'left', movedComponents: 2 },
+            { type: 'tide-warning', direction: 'right', placementsRemaining: 1 },
+          ],
+        };
+      },
+    };
+    const { renderKinnokiStack } = await import('../../Resources/games/kinnoki-stack-ui.js');
+    const controller = await renderKinnokiStack(fixture.root, createEmptyGameStore(), {
+      engine, seedFactory: () => 42, audioFactory: silentAudio,
+    });
+    fixture.root.querySelector('[data-start-game]').click();
+    await Promise.resolve();
+    const dock = fixture.root.querySelector('.stack-dock');
+    fixture.root.querySelector('[data-stack-left]').click();
+    assert.equal(dock.classList.contains('is-tide-left'), false,
+      'the shift clears the previous edge, but the same-frame warning below wins');
+    assert.ok(dock.classList.contains('is-tide-right'),
+      'the fresh tide-warning in the same event batch re-asserts the edge cue');
+    controller.dispose();
+  } finally { restore(); }
+});
+
+test('the hard-drop destination is marked with a dashed ghost cue', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy' });
+  const restore = installDOM(fixture);
+  try {
+    const { renderKinnokiStack } = await import('../../Resources/games/kinnoki-stack-ui.js');
+    const controller = await renderKinnokiStack(fixture.root, createEmptyGameStore(), {
+      seedFactory: () => 42, audioFactory: silentAudio,
+    });
+    fixture.root.querySelector('[data-start-game]').click();
+    await Promise.resolve();
+    const play = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2))
+      .runs['kinnoki-stack'].puzzle.play;
+    const ghosts = fixture.root.querySelectorAll('.stack-cell.is-ghost');
+    assert.ok(ghosts.length > 0, 'the empty board renders a hard-drop ghost preview');
+    const bottomRow = 18 - play.active.bounds.height;
+    const key = bottomRow + ':' + play.active.column;
+    assert.ok(fixture.root.querySelector(`[data-stack-cell="${key}"]`).classList.contains('is-ghost'));
+    controller.dispose();
+  } finally { restore(); }
+});
+
+test('next-cargo previews render thumbnails with a visually-hidden accessible label', async () => {
+  const fixture = createDOMFixture({ search: '?difficulty=easy' });
+  const restore = installDOM(fixture);
+  try {
+    const { renderKinnokiStack } = await import('../../Resources/games/kinnoki-stack-ui.js');
+    const controller = await renderKinnokiStack(fixture.root, createEmptyGameStore(), {
+      audioFactory: silentAudio,
+    });
+    const items = fixture.root.querySelectorAll('[data-next-cargo]');
+    assert.ok(items.length > 0);
+    for (const item of items) {
+      const thumb = item.querySelector('.cargo-thumb');
+      assert.ok(thumb, 'preview item renders a cargo-thumb');
+      const label = item.querySelector('.visually-hidden');
+      assert.ok(label, 'preview item keeps an accessible text label');
+      assert.match(label.textContent, /pattern/);
+    }
+    controller.dispose();
+  } finally { restore(); }
+});
+
+test('a new score record surfaces in the terminal summary and triggers celebration', async () => {
+  const fixture = createDOMFixture();
+  const restore = installDOM(fixture);
+  try {
+    const engine = await terminalEngine({
+      terminalState: {
+        score: 5000, combo: 0, bestCombo: 3, dispatchedManifests: 2,
+      },
+    });
+    const { renderKinnokiStack } = await import('../../Resources/games/kinnoki-stack-ui.js');
+    await renderKinnokiStack(fixture.root, createEmptyGameStore(), {
+      engine, audioFactory: silentAudio,
+    });
+    fixture.root.querySelector('[data-start-game]').click();
+    await Promise.resolve();
+    fixture.root.querySelector('[data-stack-hard-drop]').click();
+    const recordLine = fixture.root.querySelector('[data-complete-records]');
+    assert.ok(recordLine, 'a record line renders when a record is broken');
+    assert.match(recordLine.textContent, /best score/i);
+    assert.ok(fixture.root.querySelector('.game-celebration'),
+      'celebration fires when a new record is set');
+  } finally { restore(); }
+});
+
+test('no celebration or record line renders when the run breaks no records', async () => {
+  const fixture = createDOMFixture();
+  const restore = installDOM(fixture);
+  const store = createEmptyGameStore();
+  store.stats.games['kinnoki-stack'].modes.default.records.score.easy = 10000;
+  store.stats.games['kinnoki-stack'].modes.default.records.combo.easy = 10;
+  try {
+    const engine = await terminalEngine();
+    const { renderKinnokiStack } = await import('../../Resources/games/kinnoki-stack-ui.js');
+    await renderKinnokiStack(fixture.root, store, {
+      engine, audioFactory: silentAudio,
+    });
+    fixture.root.querySelector('[data-start-game]').click();
+    await Promise.resolve();
+    fixture.root.querySelector('[data-stack-hard-drop]').click();
+    assert.equal(fixture.root.querySelector('[data-complete-records]'), null);
+    assert.equal(fixture.root.querySelector('.game-celebration'), null);
+  } finally { restore(); }
+});

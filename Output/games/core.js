@@ -3,7 +3,7 @@ export const STORE_KEYS = Object.freeze({
   v2: 'kinnoki-games:v2',
 });
 export const GAME_IDS = Object.freeze([
-  'sudoku', 'crossword', 'word-search', 'kinnoki-stack', 'kinnoki-yard',
+  'sudoku', 'crossword', 'word-search', 'kinnoki-stack', 'kinnoki-yard', 'kinnoki-charts',
 ]);
 export const DIFFICULTIES = Object.freeze(['easy', 'medium', 'hard']);
 export const AUDIO_DEFAULTS = Object.freeze({
@@ -28,6 +28,7 @@ const MODE_RECORDS = Object.freeze({
   'word-search': { default: ['time'] },
   'kinnoki-stack': { default: ['score', 'combo'] },
   'kinnoki-yard': { contracts: ['time', 'moves'], endless: ['score', 'combo'] },
+  'kinnoki-charts': { default: ['time'] },
 });
 const RECORD_STRATEGY = Object.freeze({
   time: 'min', moves: 'min', score: 'max', combo: 'max',
@@ -401,4 +402,21 @@ export function completeRun(store, request) {
       } },
     },
   };
+}
+export function recordsBrokenBy(store, request) {
+  const { game, mode = 'default', records = {} } = request ?? {};
+  const run = store.runs?.[game];
+  if (!run || run.mode !== mode || run.assisted) return [];
+  const bucket = store.stats?.games?.[game]?.modes?.[mode];
+  if (!bucket) return [];
+  const broken = [];
+  for (const recordType of MODE_RECORDS[game][mode]) {
+    const candidate = optionalSafeInteger(records[recordType]);
+    if (candidate === null) continue;
+    const current = bucket.records[recordType][run.difficulty];
+    const improves = current === null
+      || (RECORD_STRATEGY[recordType] === 'min' ? candidate < current : candidate > current);
+    if (improves) broken.push(recordType);
+  }
+  return broken;
 }

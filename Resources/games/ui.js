@@ -3,6 +3,7 @@ import { renderGameError } from './controller-common.js';
 import { renderHub, safeLocalStorage, showStorageFailureNotice } from './hub-ui.js';
 import { validateStackState } from './kinnoki-stack.js';
 import { validateYardState } from './kinnoki-yard.js';
+import { validateChartsState } from './kinnoki-charts.js';
 
 const root = document.getElementById('games-app');
 const page = document.querySelector('[data-game-page]')?.dataset.gamePage;
@@ -14,6 +15,9 @@ const runValidators = Object.freeze({
   ),
   'kinnoki-yard': (run) => (
     validateYardState(run?.puzzle?.play, run?.difficulty, run?.mode).valid
+  ),
+  'kinnoki-charts': (run) => (
+    validateChartsState(run?.puzzle?.play, run?.difficulty).valid
   ),
 });
 
@@ -33,6 +37,8 @@ async function main() {
       .then(({ renderKinnokiStack }) => renderKinnokiStack(root, store)),
     'kinnoki-yard': () => import('./kinnoki-yard-ui.js')
       .then(({ renderKinnokiYard }) => renderKinnokiYard(root, store)),
+    'kinnoki-charts': () => import('./kinnoki-charts-ui.js')
+      .then(({ renderCharts }) => renderCharts(root, store)),
   };
   const controller = controllers[page];
   if (!controller) throw new Error(`Unknown games page: ${page}`);

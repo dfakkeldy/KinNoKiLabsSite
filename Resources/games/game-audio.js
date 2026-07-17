@@ -9,6 +9,9 @@ const EFFECT_RATE_MS = Object.freeze({
   move: 50, rotate: 70, placement: 90, dispatch: 120,
   'tide-warning': 250, 'tide-shift': 180, invalid: 180,
   completion: 300, terminal: 300,
+  // Check can flag many cells at once; collapse the resulting bursts into one
+  // audible cue at the same magnitude as the other "something's wrong" cue.
+  'puzzle-error': 180,
 });
 
 const clampVolume = (value, fallback) => Number.isFinite(value)
@@ -145,23 +148,30 @@ export function createGameAudio({
     scheduler = setIntervalFn(scheduleMusic, 100);
   };
 
-  const start = async ({ arrangement: requested }) => {
+  const start = async ({ arrangement: requested } = {}) => {
     if (disposed || started) return;
     try {
-      const config = ARRANGEMENTS[requested];
-      if (!config) throw new TypeError('Unknown game-audio arrangement');
+      // Puzzle games (Sudoku, Crossword, Word Search, …) want one-shot
+      // effects only — no music arrangement. Omitting `arrangement` skips
+      // the musicMaster/scheduler setup entirely instead of throwing.
+      const config = requested == null ? null : ARRANGEMENTS[requested];
+      if (requested != null && !config) throw new TypeError('Unknown game-audio arrangement');
       context = audioContextFactory();
-      musicMaster = context.createGain();
       effectsMaster = context.createGain();
-      musicMaster.connect(context.destination);
       effectsMaster.connect(context.destination);
-      arrangement = requested;
-      started = true;
-      musicMaster.gain.value = preferences.musicEnabled ? preferences.musicVolume : 0;
       effectsMaster.gain.value = preferences.effectsEnabled ? preferences.effectsVolume : 0;
+      if (config) {
+        musicMaster = context.createGain();
+        musicMaster.connect(context.destination);
+        arrangement = requested;
+        musicMaster.gain.value = preferences.musicEnabled ? preferences.musicVolume : 0;
+      }
+      started = true;
       await context.resume();
-      nextNoteTime = context.currentTime + 0.05;
-      beginScheduler();
+      if (config) {
+        nextNoteTime = context.currentTime + 0.05;
+        beginScheduler();
+      }
     } catch { silence(); }
   };
   const setPreferences = (value) => {
@@ -210,6 +220,7 @@ export function createGameAudio({
       move: 0, rotate: 3, placement: -5, dispatch: 12,
       'tide-warning': -2, 'tide-shift': -7, invalid: -12,
       completion: 16, terminal: -16,
+      'puzzle-place': -5, 'puzzle-found': 2, 'puzzle-error': -12,
     }[name];
     if (semitone === undefined) return false;
     const voice = scheduleTone({

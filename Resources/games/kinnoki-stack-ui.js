@@ -1,9 +1,9 @@
 import {
   abandonRun, chooseFreshDefinition, completeRun, historyKey,
-  markAssisted, saveGameStore, startRun,
+  markAssisted, recordsBrokenBy, saveGameStore, startRun,
 } from './core.js';
 import {
-  CARGO_CATALOG, placedCells, rotationsFor,
+  CARGO_CATALOG, canPlace, placedCells, rotationsFor,
 } from './cargo-geometry.js';
 import {
   advanceStackTime, createStackDefinition, createStackState, describeStack,
@@ -12,10 +12,11 @@ import {
 } from './kinnoki-stack.js';
 import { createGameAudio } from './game-audio.js';
 import {
-  createAudioControls, createEventAnnouncer, createGameLifecycle,
+  cargoThumb, createAudioControls, createEventAnnouncer, createGameLifecycle,
   defaultSeedFactory, element, formatElapsed, makeGameTerminal,
-  renderGameError,
+  prefersReducedMotion, renderGameError,
 } from './controller-common.js';
+import { celebrate } from './celebration.js';
 import { safeLocalStorage } from './hub-ui.js';
 
 const GAME = 'kinnoki-stack';
@@ -28,6 +29,10 @@ const DIFFICULTY_COPY = Object.freeze({
 });
 const CARGO_BY_ID = new Map(CARGO_CATALOG.map((cargo) => [cargo.id, cargo]));
 const CLOCK_CHECKPOINT_MS = 1000;
+const RECORD_LABELS = Object.freeze({
+  score: 'New best score!',
+  combo: 'Best combo!',
+});
 
 export const defaultStackEngine = Object.freeze({
   advanceStackTime,
@@ -131,10 +136,18 @@ function buildStackShell(root, difficulty, audioControls) {
     cells.push(rowCells);
     grid.append(rowNode);
   }
+  const overlay = element('div', {
+    class: 'stack-active-overlay', 'aria-hidden': 'true', hidden: true,
+  });
+  const scorePopLayer = element('div', {
+    class: 'stack-score-pop-layer', 'aria-hidden': 'true',
+  });
   const dock = element(
     'div',
     { class: 'stack-dock' },
     grid,
+    overlay,
+    scorePopLayer,
     element('div', {
       class: 'stack-crane-line', 'aria-hidden': 'true', text: 'Crane line',
     }),
@@ -206,6 +219,7 @@ function buildStackShell(root, difficulty, audioControls) {
     shell, difficultySelect, timer, score, highScore, assisted, manifest,
     tide, status, notice, eventRegion, difficultyExplanation, preview,
     dockDescription, cells, controls, start, continueGame, resume, restart, newRun,
+    dock, overlay, scorePopLayer,
   };
 }
 
@@ -213,24 +227,111 @@ const stackBestScore = (store, difficulty) => (
   store.stats?.games?.[GAME]?.modes?.default?.records?.score?.[difficulty] ?? null
 );
 
-const activeCells = (state) => {
-  if (!state.active) return new Map();
-  const rotation = rotationsFor(state.active.typeId)
-    .find((candidate) => candidate.rotation === state.active.rotation);
-  if (!rotation) return new Map();
-  return new Map(placedCells(rotation.cells, {
-    row: state.active.row, column: state.active.column,
-  }).map((cell) => [cellKey(cell.row, cell.column), state.active]));
-};
-
 const manifestCellKeys = (state) => new Set(
   state.manifests.flatMap((item) => item.cells.map(
     (cell) => cellKey(cell.row, cell.column),
   )),
 );
 
+// Hard-drop destination, mirroring reduceActiveStack's hard-drop descent loop
+// (kinnoki-stack.js) with the same canPlace geometry check, purely so the UI
+// can preview where the piece will land. The engine itself stays untouched.
+const ghostCellsFor = (state) => {
+  if (!state.active) return [];
+  const rotation = rotationsFor(state.active.typeId)
+    .find((candidate) => candidate.rotation === state.active.rotation);
+  if (!rotation) return [];
+  let row = state.active.row;
+  while (canPlace(state.board, rotation.cells, { row: row + 1, column: state.active.column })) {
+    row += 1;
+  }
+  return placedCells(rotation.cells, { row, column: state.active.column });
+};
+
+// Maps pieceId -> the set of cell keys it currently occupies. Diffing this
+// map before/after a lock is how tide-shifted cells are identified without
+// the engine exposing an intermediate (post-tide, pre-dispatch) board: any
+// pieceId that survives into the new board at a different set of cells must
+// have been carried by the tide (a freshly-placed piece never appears in the
+// "before" map, and a dispatched piece never appears in the "after" map).
+const boardPieceCells = (board) => {
+  const pieces = new Map();
+  for (let row = 0; row < board.length; row += 1) {
+    for (let column = 0; column < board[row].length; column += 1) {
+      const cell = board[row][column];
+      if (!cell) continue;
+      const key = cellKey(row, column);
+      if (!pieces.has(cell.pieceId)) pieces.set(cell.pieceId, new Set());
+      pieces.get(cell.pieceId).add(key);
+    }
+  }
+  return pieces;
+};
+const cellSetSignature = (cells) => [...cells].sort().join(',');
+
+const tideShiftedCellKeys = (previousState, state) => {
+  const before = boardPieceCells(previousState.board);
+  const after = boardPieceCells(state.board);
+  const shifted = new Set();
+  for (const [pieceId, previousCells] of before) {
+    const currentCells = after.get(pieceId);
+    if (!currentCells) continue;
+    if (cellSetSignature(previousCells) !== cellSetSignature(currentCells)) {
+      for (const key of currentCells) shifted.add(key);
+    }
+  }
+  return shifted;
+};
+
+const dispatchedCellKeys = (previousState, dispatchEvent) => {
+  const keys = new Set();
+  if (!dispatchEvent) return keys;
+  for (const manifestItem of previousState.manifests) {
+    if (!dispatchEvent.manifestIds.includes(manifestItem.id)) continue;
+    for (const { row, column } of manifestItem.cells) keys.add(cellKey(row, column));
+  }
+  return keys;
+};
+
+function paintOverlay(view, state, { reducedMotion, tideSliding }) {
+  const overlay = view.overlay;
+  if (!state.active) {
+    overlay.hidden = true;
+    overlay.replaceChildren();
+    overlay.classList.remove('is-transition-enabled', 'is-tide-sliding');
+    return;
+  }
+  const rotation = rotationsFor(state.active.typeId)
+    .find((candidate) => candidate.rotation === state.active.rotation);
+  const cargo = cargoFor(state.active.typeId);
+  overlay.hidden = false;
+  overlay.classList.toggle('is-transition-enabled', !reducedMotion);
+  overlay.classList.toggle('is-tide-sliding', Boolean(tideSliding) && !reducedMotion);
+  overlay.style.setProperty('--piece-col', String(state.active.column));
+  overlay.style.setProperty('--piece-row', String(state.active.row));
+  const cells = rotation ? rotation.cells : [];
+  overlay.replaceChildren(...cells.map((cell) => {
+    const node = element('div', {
+      class: 'stack-overlay-cell stack-cargo-active cargo-pattern-' + cargo.pattern,
+    });
+    node.style.setProperty('--cell-col', String(cell.column));
+    node.style.setProperty('--cell-row', String(cell.row));
+    return node;
+  }));
+}
+
+function spawnScorePop(view, dispatchEvent) {
+  const pop = element('span', {
+    class: 'game-score-pop',
+    'aria-hidden': 'true',
+    text: '+' + dispatchEvent.scoreAdded + ' ×' + dispatchEvent.combo,
+  });
+  view.scorePopLayer.append(pop);
+}
+
 function paintStack(view, state, {
-  store, elapsedMs, entryKind,
+  store, elapsedMs, entryKind, frameEvents = [], previousState = null,
+  reducedMotion = prefersReducedMotion(),
 }) {
   const difficulty = state.definition.difficulty;
   view.difficultySelect.value = difficulty;
@@ -258,49 +359,79 @@ function paintStack(view, state, {
     : titleCase(state.tide.direction) + ' in '
       + state.tide.placementsRemaining + ' placements';
 
-  const active = activeCells(state);
+  const dispatchEvent = frameEvents.find((event) => event.type === 'dispatch');
+  const tideShiftEvent = frameEvents.find((event) => event.type === 'tide-shift');
+  const dispatched = previousState ? dispatchedCellKeys(previousState, dispatchEvent) : new Set();
+  const tideShifted = previousState && tideShiftEvent
+    ? tideShiftedCellKeys(previousState, state) : new Set();
+  const ghostKeys = new Set(
+    (state.status === 'active' ? ghostCellsFor(state) : [])
+      .map(({ row, column }) => cellKey(row, column)),
+  );
+
   const manifestTargets = manifestCellKeys(state);
   for (let row = 0; row < state.height; row += 1) {
     for (let column = 0; column < state.width; column += 1) {
       const node = view.cells[row][column];
       const key = cellKey(row, column);
-      const moving = active.get(key);
-      const settled = state.board[row][column];
-      const cargo = moving ?? settled;
+      const cargo = state.board[row][column];
       node.className = 'stack-cell';
       node.removeAttribute('data-pattern');
       if (manifestTargets.has(key)) node.classList.add('stack-manifest-cell');
+      if (!reducedMotion && dispatched.has(key)) node.classList.add('cargo-dispatching');
+      if (!reducedMotion && tideShifted.has(key)) node.classList.add('cargo-tide-shifting');
       if (cargo) {
         const definition = cargoFor(cargo.typeId);
-        const phase = moving ? 'active' : 'settled';
-        node.classList.add('stack-cargo-' + phase);
+        node.classList.add('stack-cargo-settled');
         node.classList.add('cargo-pattern-' + definition.pattern);
         node.setAttribute('data-pattern', definition.pattern);
         node.setAttribute(
           'aria-label',
-          definition.label + ', ' + phase + ', row ' + (row + 1)
+          definition.label + ', settled, row ' + (row + 1)
             + ', column ' + (column + 1) + ', ' + definition.pattern + ' pattern'
             + (manifestTargets.has(key) ? ', Cargo Manifest target' : ''),
         );
         node.textContent = '■';
       } else {
+        const isGhost = ghostKeys.has(key);
+        if (isGhost) node.classList.add('is-ghost');
         node.setAttribute(
           'aria-label',
           'Empty dock cell, row ' + (row + 1) + ', column ' + (column + 1)
-            + (manifestTargets.has(key) ? ', Cargo Manifest target' : ''),
+            + (manifestTargets.has(key) ? ', Cargo Manifest target' : '')
+            + (isGhost ? ', hard-drop preview' : ''),
         );
         node.textContent = '';
       }
     }
   }
 
+  // Walked in order (not just the last match) because a single lock can
+  // both resolve a tide (clearing the edge cue) and immediately warn of the
+  // next one (re-asserting it) — e.g. tide-shift followed by a same-frame
+  // tide-warning for the freshly-forecast cycle.
+  for (const event of frameEvents) {
+    if (event.type === 'tide-shift') view.dock.classList.remove('is-tide-left', 'is-tide-right');
+    else if (event.type === 'tide-warning') {
+      view.dock.classList.toggle('is-tide-left', event.direction === 'left');
+      view.dock.classList.toggle('is-tide-right', event.direction === 'right');
+    }
+  }
+
+  paintOverlay(view, state, { reducedMotion, tideSliding: Boolean(tideShiftEvent) });
+  if (dispatchEvent && !reducedMotion) spawnScorePop(view, dispatchEvent);
+
   view.preview.replaceChildren(...state.preview.map((piece) => {
     const cargo = cargoFor(piece.typeId);
-    return element('li', {
-      'data-next-cargo': '',
-      class: 'cargo-pattern-' + cargo.pattern,
+    const rotation = rotationsFor(piece.typeId).find((candidate) => candidate.rotation === 0);
+    const thumb = cargoThumb(rotation ? rotation.cells : [], {
+      patternClass: 'cargo-pattern-' + cargo.pattern,
+    });
+    const label = element('span', {
+      class: 'visually-hidden',
       text: cargo.label + ' · ' + cargo.pattern + ' pattern',
     });
+    return element('li', { 'data-next-cargo': '' }, thumb, label);
   }));
 
   const isActive = state.status === 'active';
@@ -404,6 +535,9 @@ class StackPersistence {
       throw new Error('Stack assistance state is inconsistent at completion.');
     }
     const previous = this.value;
+    // Must read the still-intact previous bests before completeRun folds
+    // this run's records into the stats bucket.
+    const recordsBroken = recordsBrokenBy(previous, { game: GAME, mode: MODE, records });
     const completed = completeRun(previous, {
       game: GAME, mode: MODE, now: this.wallNow(), records,
     });
@@ -415,6 +549,7 @@ class StackPersistence {
       this.value = previous;
       throw new Error('Stack completion could not be saved.');
     }
+    return recordsBroken;
   }
 
   setAudio(preferences) {
@@ -658,11 +793,13 @@ class StackController {
     this.view.notice.textContent = message;
   }
 
-  paint() {
+  paint({ frameEvents = [], previousState = null } = {}) {
     paintStack(this.view, this.state, {
       store: this.persistence.store,
       elapsedMs: this.lifecycle.elapsed(),
       entryKind: this.entryKind,
+      frameEvents,
+      previousState,
     });
   }
 
@@ -694,6 +831,17 @@ StackController.prototype.installPassiveHandlers = function installPassiveHandle
   });
   this.listenPassive(this.view.difficultySelect, 'change', () => {
     void this.replaceWithDifficulty(this.view.difficultySelect.value);
+  });
+  // Delegated one-shot cleanup: dispatch flashes and tide nudges are painted
+  // fresh on every full repaint (paintStack resets every cell's className),
+  // so this listener just gives them a timely fade instead of waiting for
+  // the next unrelated repaint. Score pops are freshly-appended DOM nodes
+  // that must be removed here or they would accumulate indefinitely.
+  this.listenPassive(this.view.dock, 'animationend', (event) => {
+    const target = event.target;
+    if (!target?.classList) return;
+    target.classList.remove('cargo-dispatching', 'cargo-tide-shifting');
+    if (target.classList.contains('game-score-pop')) target.remove();
   });
 };
 
@@ -849,6 +997,7 @@ StackController.prototype.accept = function accept(result, focusTarget) {
     return;
   }
 
+  const previousState = this.state;
   const changed = result.state !== this.state;
   this.state = result.state;
   if (changed) {
@@ -864,7 +1013,7 @@ StackController.prototype.accept = function accept(result, focusTarget) {
   }
 
   this.audio.setIntensity(stackIntensity(this.state));
-  this.paint();
+  this.paint({ frameEvents: result.events, previousState });
   if (focusTarget && this.state.status === 'active') focusTarget.focus();
   if (this.state.status === 'terminal') this.finishTerminal();
 };
@@ -951,13 +1100,14 @@ StackController.prototype.finishTerminal = function finishTerminal() {
   if (this.finishing || this.finished || this.disposed) return;
   this.finishing = true;
   let payload;
+  let recordsBroken = [];
   try {
     payload = this.engine.stackCompletionPayload(this.state, this.lifecycle.elapsed());
     if (!payload) throw new Error('Kinnoki Stack ended without a completion payload.');
     if (!validCompletionPayload(payload, this.state)) {
       throw new Error('Kinnoki Stack ended with an invalid completion payload.');
     }
-    this.persistence.complete(payload.records, this.state);
+    recordsBroken = this.persistence.complete(payload.records, this.state);
     if (!this.lifecycle.finish()) {
       throw new Error('Kinnoki Stack completion lifecycle could not settle.');
     }
@@ -976,6 +1126,11 @@ StackController.prototype.finishTerminal = function finishTerminal() {
   const heading = element('h2', {
     'data-complete-heading': '', tabindex: '-1', text: 'Run complete',
   });
+  const recordLine = recordsBroken.length ? element('p', {
+    class: 'game-complete-record',
+    'data-complete-records': '',
+    text: recordsBroken.map((key) => RECORD_LABELS[key] ?? key).join(' · '),
+  }) : null;
   const summary = element('p', {
     text: payload.summary.score.toLocaleString('en-CA') + ' points · '
       + payload.summary.dispatchedManifests + ' manifests · best combo '
@@ -987,12 +1142,13 @@ StackController.prototype.finishTerminal = function finishTerminal() {
     type: 'button', 'data-play-another': '', text: 'Play Again',
   });
   const panel = element(
-    'section', { class: 'game-complete' }, heading, summary, playAgain,
+    'section', { class: 'game-complete' }, heading, recordLine, summary, playAgain,
   );
   this.view.shell.append(panel);
   this.listenPassive(playAgain, 'click', () => {
     void this.replaceWithDifficulty(this.difficulty);
   });
+  if (recordsBroken.length > 0) celebrate({ root: this.root });
   heading.focus();
 };
 

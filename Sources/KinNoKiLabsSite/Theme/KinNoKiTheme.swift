@@ -97,6 +97,9 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
         case "games/kinnoki-yard":
             main = gamesMain(page: "kinnoki-yard")
             active = "/games"
+        case "games/kinnoki-charts":
+            main = gamesMain(page: "kinnoki-charts")
+            active = "/games"
         case "services":          main = servicesMain();                  active = "/services"
         case "learn":             main = learnMain();                     active = ""
         case "about":             main = aboutMain();                     active = "/about"
@@ -389,6 +392,12 @@ private func gamesMain(page: String) -> Node<HTML.BodyContext> {
             .class("games-app"),
             .attribute(named: "id", value: "games-app")
         ),
+        .element(named: "noscript", nodes: [
+            .p(
+                .class("game-storage-notice"),
+                .text("The Arcade Hall needs JavaScript. Everything runs and stays on your device.")
+            )
+        ]),
         .element(named: "script", nodes: [
             .attribute(named: "type", value: "module"),
             .attribute(named: "src", value: "/games/ui.js")
