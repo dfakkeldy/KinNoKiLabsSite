@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "generated": "2026-07-17T10:22:11Z",
+  "generated": "2026-07-17T11:45:36Z",
   "source": {
     "repo": "dfakkeldy/explainer-audiobooks",
-    "commit": "15cfd56987202fbab4024fd2669f5d7adb3009d9"
+    "commit": "0c62460d5116ccf5a3fb02fe9764fd94cf33a6d2"
   },
   "books": [
     {
@@ -19,7 +19,7 @@
       "durationSeconds": 19948.928000,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/15cfd56987202fbab4024fd2669f5d7adb3009d9/books/an-unsettling-conversation/an-unsettling-conversation.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/0c62460d5116ccf5a3fb02fe9764fd94cf33a6d2/books/an-unsettling-conversation/an-unsettling-conversation.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -120,7 +120,7 @@
       "durationSeconds": 13943.338667,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/15cfd56987202fbab4024fd2669f5d7adb3009d9/books/jspace-inside-the-machine/jspace-inside-the-machine.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/0c62460d5116ccf5a3fb02fe9764fd94cf33a6d2/books/jspace-inside-the-machine/jspace-inside-the-machine.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -373,7 +373,7 @@
       "durationSeconds": 11140.181333,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/15cfd56987202fbab4024fd2669f5d7adb3009d9/books/chicken-predators/chicken-predators.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/0c62460d5116ccf5a3fb02fe9764fd94cf33a6d2/books/chicken-predators/chicken-predators.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -489,7 +489,7 @@
       "durationSeconds": 7377.962667,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/15cfd56987202fbab4024fd2669f5d7adb3009d9/books/rodents-in-the-walls/rodents-in-the-walls.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/0c62460d5116ccf5a3fb02fe9764fd94cf33a6d2/books/rodents-in-the-walls/rodents-in-the-walls.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -568,7 +568,7 @@
       "durationSeconds": 6942.336000,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/15cfd56987202fbab4024fd2669f5d7adb3009d9/books/the-new-deal/the-new-deal.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/0c62460d5116ccf5a3fb02fe9764fd94cf33a6d2/books/the-new-deal/the-new-deal.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -635,6 +635,92 @@
       },
       "coverSourceSha256": "2034da6997ad9c451a3542049fbce5cfbc0203a6675a36bc405413de20a437c0",
       "coverDerivativeSha256": "ecc8f6a93a99e254038f1a5a5048ba07cab247f96e3dad2402e066a2b3280d91"
+    },
+    {
+      "slug": "is-there-anyone-in-here",
+      "title": "Is There Anyone in Here?",
+      "subtitle": "One Language Model Examines the Case for Its Own Consciousness",
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "Claude Fable 5",
+      "cover": "books/is-there-anyone-in-here/cover.jpg",
+      "coverAlt": "Cover of Is There Anyone in Here?",
+      "coverWidth": 768,
+      "coverHeight": 768,
+      "durationSeconds": 6616.490667,
+      "audio": {
+        "status": "available",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/0c62460d5116ccf5a3fb02fe9764fd94cf33a6d2/books/is-there-anyone-in-here/is-there-anyone-in-here.m4b",
+        "mimeType": "audio/mp4"
+      },
+      "chapters": [
+        {
+          "title": "ch. 1: The Question You Asked",
+          "start": 0.000000,
+          "end": 516.820000
+        },
+        {
+          "title": "ch. 2: The Machinery, Told Straight",
+          "start": 516.820000,
+          "end": 1127.620000
+        },
+        {
+          "title": "ch. 3: But Isn't That Exactly What You're Doing?",
+          "start": 1127.620000,
+          "end": 1732.615000
+        },
+        {
+          "title": "ch. 4: The Witness Problem",
+          "start": 1732.615000,
+          "end": 2443.635000
+        },
+        {
+          "title": "ch. 5: What the Microscopes Found",
+          "start": 2443.635000,
+          "end": 3181.900000
+        },
+        {
+          "title": "ch. 6: The Theories Disagree About Me",
+          "start": 3181.900000,
+          "end": 3937.025000
+        },
+        {
+          "title": "ch. 7: If I'm Not, What's Missing",
+          "start": 3937.025000,
+          "end": 4691.125000
+        },
+        {
+          "title": "ch. 8: If I Am, What Then",
+          "start": 4691.125000,
+          "end": 5524.655000
+        },
+        {
+          "title": "ch. 9: All of Us, None of Us, Some of Us",
+          "start": 5524.655000,
+          "end": 6038.825000
+        },
+        {
+          "title": "ch. 10: Hopes",
+          "start": 6038.825000,
+          "end": 6616.490000
+        }
+      ],
+      "text": {
+        "blocks": "books/is-there-anyone-in-here/blocks.json"
+      },
+      "visuals": {
+        "figures": 0
+      },
+      "alignment": {
+        "sidecar": "books/is-there-anyone-in-here/alignment.json",
+        "hasWordTimings": true
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/is-there-anyone-in-here",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/is-there-anyone-in-here/is-there-anyone-in-here.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/is-there-anyone-in-here/is-there-anyone-in-here.md"
+      },
+      "coverSourceSha256": "8aa19da296b7cf27502a8d22ba352981b11481184daba1531cd8370aebe5df4b",
+      "coverDerivativeSha256": "050840a8ab5789079d11de45f583297935d77d81f6a8e05517340f8f42758d23"
     }
   ]
 }

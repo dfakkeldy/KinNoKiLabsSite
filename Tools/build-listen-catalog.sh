@@ -88,6 +88,7 @@ the-voice-in-the-machine|The Voice in the Machine||Opus 4.8
 chicken-predators|Chicken Predators||GLM-5.2
 rodents-in-the-walls|Rodents in the Walls|Squirrels and Other Houseguests in Western Cape Breton|GPT-5.6 Sol
 the-new-deal|The New Deal|Canada Post, CUPW, and What It Means for Rural Mail|GLM-5.2
+is-there-anyone-in-here|Is There Anyone in Here?|One Language Model Examines the Case for Its Own Consciousness|Claude Fable 5
 EOF
 )"
 
@@ -97,9 +98,10 @@ AUDIO_EXPECTED="an-unsettling-conversation
 jspace-inside-the-machine
 chicken-predators
 rodents-in-the-walls
-the-new-deal"
+the-new-deal
+is-there-anyone-in-here"
 
-EXPECTED_BOOK_COUNT=13
+EXPECTED_BOOK_COUNT=14
 listen_catalog_transaction_init "$OUT_DIR"
 
 json_contains_absolute_path() {

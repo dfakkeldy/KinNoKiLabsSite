@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceCommit": "15cfd56987202fbab4024fd2669f5d7adb3009d9",
+  "sourceCommit": "0c62460d5116ccf5a3fb02fe9764fd94cf33a6d2",
   "books": {
     "an-unsettling-conversation": {
       "receiptSha256": "e03af343c74d4ebbf83dcb67610616e3fcae536dc74ed964ef92fd6ea6607839",
@@ -49,6 +49,12 @@
       "candidateId": "weight-of-the-mailbag",
       "portrait": { "sha256": "3d6ded0e0af6c9454d6a5712e78fbba84fb8aa4f0dbd72fd5ce7e72768d14a37", "specSha256": "b6f801a44d7b944189c482d9d4836bb0d03d0d81274f75ff57d36abb018113df" },
       "square": { "sha256": "2034da6997ad9c451a3542049fbce5cfbc0203a6675a36bc405413de20a437c0", "specSha256": "be94fee278f98d193e7a809f83f385b5da169bb39c3b3a453209e98d8915ec0d" }
+    },
+    "is-there-anyone-in-here": {
+      "receiptSha256": "4733c3280359f6682aba1a4c862c67a123b1722ef8ed7097c2ae9e43112218b6",
+      "candidateId": "one-lit-aperture",
+      "portrait": { "sha256": "fe7010107364102e7d825e3ce5a2597aaa8a7f84dee794f41c1730da1f7b9f96", "specSha256": "e1fbe94d2e2ed39fc5b3989c65c3e09dc77f881de9ea3b61fb009967475d2848" },
+      "square": { "sha256": "8aa19da296b7cf27502a8d22ba352981b11481184daba1531cd8370aebe5df4b", "specSha256": "87689bb3ce57e9a424f383d983773a65f570f0c614071233b1dad4f99d3da0be" }
     }
   }
 }

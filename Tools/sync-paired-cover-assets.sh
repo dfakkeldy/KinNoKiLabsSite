@@ -25,11 +25,13 @@ why-it-feels-right
 findable
 rodents-in-the-walls
 chicken-predators
-the-new-deal"
+the-new-deal
+is-there-anyone-in-here"
 PLAYER_SLUGS="an-unsettling-conversation
 jspace-inside-the-machine
 chicken-predators
-the-new-deal"
+the-new-deal
+is-there-anyone-in-here"
 
 sha256() { shasum -a 256 "$1" | awk '{print $1}'; }
 dimensions() {
@@ -237,4 +239,4 @@ installing=0
 trap - ERR INT TERM
 rm -rf "$work"
 
-echo "Verified and installed eight portrait covers and four square player derivatives from $expected_commit."
+echo "Verified and installed nine portrait covers and five square player derivatives from $expected_commit."

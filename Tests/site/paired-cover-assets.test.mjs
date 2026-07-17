@@ -20,12 +20,14 @@ const portraitSlugs = [
   'rodents-in-the-walls',
   'chicken-predators',
   'the-new-deal',
+  'is-there-anyone-in-here',
 ];
 const migratedPlayerSlugs = [
   'an-unsettling-conversation',
   'jspace-inside-the-machine',
   'chicken-predators',
   'the-new-deal',
+  'is-there-anyone-in-here',
 ];
 
 function hash(file) {
@@ -40,8 +42,8 @@ function dimensions(file) {
   ];
 }
 
-test('all eight learn covers are verified 1600 by 2560 portraits', () => {
-  assert.equal(sourceManifest.sourceCommit, '15cfd56987202fbab4024fd2669f5d7adb3009d9');
+test('all paired covers are verified 1600 by 2560 portraits', () => {
+  assert.equal(sourceManifest.sourceCommit, '0c62460d5116ccf5a3fb02fe9764fd94cf33a6d2');
   assert.equal(provenance.source.commit, sourceManifest.sourceCommit);
   assert.deepEqual(Object.keys(provenance.books), portraitSlugs);
   for (const slug of portraitSlugs) {
