@@ -31,6 +31,34 @@ const v2StoreWithRun = ({
   return store;
 };
 
+test('a genuinely fresh run (empty store) builds a full grid and persists a flat definition', async () => {
+  // Regression: createSession uses createPuzzle's return value AS the
+  // definition, but the engine's createChartsPuzzle returns { definition }.
+  // Without unwrapping, a fresh run persisted puzzle.definition = { definition:
+  // {...} } (double-nested), definition.size was undefined, and the mount loop
+  // built a zero-cell board. Every other test here pre-seeds the run, so only
+  // this empty-store path exercises begin()'s definition shape.
+  const fixture = createDOMFixture({ search: '?difficulty=easy' });
+  const restore = installDOM(fixture);
+  try {
+    const { renderCharts } = await import('../../Resources/games/kinnoki-charts-ui.js');
+    await renderCharts(fixture.root, createEmptyGameStore());
+    assert.equal(fixture.root.querySelectorAll('button.charts-cell').length, 25,
+      'a fresh easy run renders the full 5×5 grid');
+    const saved = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2));
+    const definition = saved.runs['kinnoki-charts'].puzzle.definition;
+    assert.equal(definition.size, 5, 'the persisted definition has a flat size');
+    assert.equal(typeof definition.id, 'string');
+    assert.equal(typeof definition.title, 'string');
+    assert.equal(definition.solution.length, 25);
+    assert.ok(Array.isArray(definition.clues?.rows) && definition.clues.rows.length === 5);
+    assert.ok(Array.isArray(definition.clues?.columns) && definition.clues.columns.length === 5);
+    assert.equal(definition.definition, undefined, 'no double-nested definition key');
+    assert.equal(saved.runs['kinnoki-charts'].puzzle.play.marks.length, 25,
+      'the fresh play state is sized to the board');
+  } finally { restore(); }
+});
+
 test('mount renders the toolbar, clue strips, and a size×size grid of charts cells', async () => {
   const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' });
   const restore = installDOM(fixture);
@@ -298,6 +326,9 @@ test('New Game skips the confirm dialog with no progress, and prompts once a cel
     await renderCharts(fixture.root, store);
     fixture.root.querySelector('[data-new-game]').click();
     assert.equal(fixture.root.querySelector('dialog.game-dialog'), null, 'no progress means no confirm prompt');
+    for (let flush = 0; flush < 10; flush += 1) await Promise.resolve();
+    assert.equal(fixture.root.querySelectorAll('button.charts-cell').length, size * size,
+      'the replacement puzzle remounts a full grid (fresh begin() path)');
 
     const store2 = v2StoreWithRun({});
     await renderCharts(fixture.root, store2);

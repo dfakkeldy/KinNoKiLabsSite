@@ -58,9 +58,12 @@ const sameRuns = (a, b) => a.length === b.length && a.every((value, index) => va
 
 export async function renderCharts(root, store) {
   let session;
+  // createSession uses this return value directly as the run's definition,
+  // while the engine's createChartsPuzzle returns { definition } — unwrap it
+  // here or a fresh run persists a double-nested, unsized definition.
   const createPuzzleWithHistory = ({ difficulty, seed }) => createChartsPuzzle({
     difficulty, seed, previousSignatures: store.previousSignatures?.[historyKey('kinnoki-charts')] ?? null,
-  });
+  }).definition;
   session = createSession({
     root, game: 'kinnoki-charts', store, createPuzzle: createPuzzleWithHistory, createPlay: createChartsState,
     progressed: (play) => play?.marks?.some((mark) => mark !== 0),

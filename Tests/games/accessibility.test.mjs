@@ -315,11 +315,20 @@ test('board frames carry their boundary with the measured frame token', () => {
 
 const SHARED_CONTROL_SELECTOR = '.game-toolbar button, .game-toolbar select, .game-controls button, '
   + '.sudoku-number-pad button, .word-search-pan button, .stack-controls button, .yard-controls button, '
-  + '.yard-pan-controls button, .yard-tray-piece, .difficulty-links a, .charts-controls button';
+  + '.yard-pan-controls button, .yard-tray-piece, .difficulty-links a, .charts-controls button, '
+  + '.game-audio-controls button';
 
 test('shared control feedback rule declares the transition on every game control', () => {
   const body = ruleBody(SHARED_CONTROL_SELECTOR);
   assert.match(body, /transition:\s*border-color[^;]*,\s*background-color[^;]*,\s*transform[^;]*;/);
+});
+
+test('audio toggle buttons carry the shared control surface styling, not the native default', () => {
+  const body = ruleBody('.game-audio-controls button');
+  assert.match(body, /color:\s*var\(--game-text-primary\)/);
+  assert.match(body, /background:\s*var\(--surface-2\)/);
+  assert.match(body, /border:\s*1px\s+solid\s+var\(--separator\)/);
+  assert.match(body, /border-radius:/);
 });
 
 test('game-mode-actions pins the mode links to the bottom of the card', () => {
