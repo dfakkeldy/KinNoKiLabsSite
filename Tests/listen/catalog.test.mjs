@@ -17,12 +17,19 @@ const expectedBooks = [
   'chicken-predators',
   'rodents-in-the-walls',
   'the-new-deal',
+  'an-unsettling-conversation',
 ];
-const expectedPlayable = ['chicken-predators', 'rodents-in-the-walls', 'the-new-deal'];
+const expectedPlayable = [
+  'chicken-predators',
+  'rodents-in-the-walls',
+  'the-new-deal',
+  'an-unsettling-conversation',
+];
 const expectedAnchorCounts = new Map([
   ['chicken-predators', 231],
   ['rodents-in-the-walls', 245],
   ['the-new-deal', 151],
+  ['an-unsettling-conversation', 963],
 ]);
 // Covers are NOT all one shape: chicken-predators and the-new-deal are square
 // because Tools/sync-paired-cover-assets.sh re-derives them from the paired
@@ -153,7 +160,7 @@ test('playable books declare interior figure counts with resolvable catalog-rela
   }
 });
 
-test('catalog publishes exactly the three approved playable books with complete read-along assets', () => {
+test('catalog publishes exactly the four approved playable books with complete read-along assets', () => {
   const playable = catalog.books.filter((book) => book.audio.status === 'available');
   assert.deepEqual(playable.map((book) => book.slug), expectedPlayable);
   assert.match(catalog.source.commit, /^[0-9a-f]{40}$/);
@@ -174,6 +181,16 @@ test('catalog publishes exactly the three approved playable books with complete 
     assert.ok(anchors.every((anchor) => blockIDs.has(anchor.blockId)), `${book.slug} anchor parity`);
     assert.ok(anchors.every((anchor, index) => index === 0 || anchor.timestamp >= anchors[index - 1].timestamp));
   }
+});
+
+test('An Unsettling Conversation publishes its approved public metadata and word timings', () => {
+  const book = catalog.books.find(({ slug }) => slug === 'an-unsettling-conversation');
+  assert.ok(book, 'An Unsettling Conversation is in the public catalog');
+  assert.equal(book.title, 'An Unsettling Conversation');
+  assert.equal(book.subtitle, 'J-Space, Working Memory, and the Question of Machine Experience');
+  assert.equal(book.writtenBy, 'Codex (GPT-5)');
+  assert.equal(book.chapters.length, 13);
+  assert.equal(book.alignment.hasWordTimings, true);
 });
 
 test('asset tree contains every public book with exactly its expected generated files', () => {

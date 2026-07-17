@@ -86,6 +86,7 @@ the-voice-in-the-machine|The Voice in the Machine||Opus 4.8
 chicken-predators|Chicken Predators||GLM-5.2
 rodents-in-the-walls|Rodents in the Walls|Squirrels and Other Houseguests in Western Cape Breton|GPT-5.6 Sol
 the-new-deal|The New Deal|Canada Post, CUPW, and What It Means for Rural Mail|GLM-5.2
+an-unsettling-conversation|An Unsettling Conversation|J-Space, Working Memory, and the Question of Machine Experience|Codex (GPT-5)
 EOF
 )"
 
@@ -93,9 +94,10 @@ EOF
 # an M4B and alignment sidecar; either file on any other public slug is rejected.
 AUDIO_EXPECTED="chicken-predators
 rodents-in-the-walls
-the-new-deal"
+the-new-deal
+an-unsettling-conversation"
 
-EXPECTED_BOOK_COUNT=11
+EXPECTED_BOOK_COUNT=12
 listen_catalog_transaction_init "$OUT_DIR"
 
 json_contains_absolute_path() {

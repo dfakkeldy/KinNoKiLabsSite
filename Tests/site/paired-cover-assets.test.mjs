@@ -34,7 +34,7 @@ function dimensions(file) {
 }
 
 test('all six learn covers are verified 1600 by 2560 portraits', () => {
-  assert.equal(sourceManifest.sourceCommit, '8482eae48becda2ef4be819a09a1afab195641bf');
+  assert.equal(sourceManifest.sourceCommit, '1259ac44b98ca4cca439e0c3242ef5f246cd37fb');
   assert.equal(provenance.source.commit, sourceManifest.sourceCommit);
   assert.deepEqual(Object.keys(provenance.books), portraitSlugs);
   for (const slug of portraitSlugs) {
