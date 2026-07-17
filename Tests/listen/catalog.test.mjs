@@ -19,6 +19,7 @@ const expectedBooks = [
   'chicken-predators',
   'rodents-in-the-walls',
   'the-new-deal',
+  'is-there-anyone-in-here',
 ];
 const expectedPlayable = [
   'an-unsettling-conversation',
@@ -26,6 +27,7 @@ const expectedPlayable = [
   'chicken-predators',
   'rodents-in-the-walls',
   'the-new-deal',
+  'is-there-anyone-in-here',
 ];
 const expectedAnchorCounts = new Map([
   ['an-unsettling-conversation', 963],
@@ -33,6 +35,7 @@ const expectedAnchorCounts = new Map([
   ['chicken-predators', 231],
   ['rodents-in-the-walls', 245],
   ['the-new-deal', 151],
+  ['is-there-anyone-in-here', 139],
 ]);
 // Covers are NOT all one shape: approved player books with paired art are square
 // because Tools/sync-paired-cover-assets.sh re-derives them from the paired
@@ -43,6 +46,7 @@ const squareCovers = [
   'jspace-inside-the-machine',
   'chicken-predators',
   'the-new-deal',
+  'is-there-anyone-in-here',
 ];
 const expectedCoverSizes = new Map(
   expectedBooks.map((slug) => [
@@ -168,7 +172,7 @@ test('playable books declare interior figure counts with resolvable catalog-rela
   }
 });
 
-test('catalog publishes exactly the five approved playable books with complete read-along assets', () => {
+test('catalog publishes exactly the approved playable books with complete read-along assets', () => {
   const playable = catalog.books.filter((book) => book.audio.status === 'available');
   assert.deepEqual(playable.map((book) => book.slug), expectedPlayable);
   assert.match(catalog.source.commit, /^[0-9a-f]{40}$/);

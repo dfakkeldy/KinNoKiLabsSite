@@ -13,6 +13,7 @@ const slugs = [
   'an-unsettling-conversation', 'jspace-inside-the-machine',
   'echo-from-the-inside', 'why-it-feels-right', 'findable',
   'rodents-in-the-walls', 'chicken-predators', 'the-new-deal',
+  'is-there-anyone-in-here',
 ];
 const candidates = {
   'an-unsettling-conversation': 'cut-in-the-page',
@@ -23,6 +24,7 @@ const candidates = {
   'rodents-in-the-walls': 'c2a-compact-ribbon-editorial-footer',
   'chicken-predators': 'night-at-the-fence',
   'the-new-deal': 'weight-of-the-mailbag',
+  'is-there-anyone-in-here': 'one-lit-aperture',
 };
 
 const hash = (file) => createHash('sha256').update(readFileSync(file)).digest('hex');
@@ -43,6 +45,7 @@ function makeFixture() {
   mkdirSync(path.join(output, 'listen-books', 'the-new-deal'), { recursive: true });
   mkdirSync(path.join(output, 'listen-books', 'an-unsettling-conversation'), { recursive: true });
   mkdirSync(path.join(output, 'listen-books', 'jspace-inside-the-machine'), { recursive: true });
+  mkdirSync(path.join(output, 'listen-books', 'is-there-anyone-in-here'), { recursive: true });
   cpSync(path.join(root, 'Resources/listen/books.json'), path.join(output, 'books.json'));
   writeFileSync(path.join(output, 'learn', 'keep.txt'), 'learn-before\n');
   writeFileSync(path.join(output, 'listen-books', 'keep.txt'), 'listen-before\n');
