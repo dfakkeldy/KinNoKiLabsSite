@@ -188,6 +188,117 @@
      the active block. Cover-only books have no image blocks, so
      imageCue is null and captions still run — the renderer owns the
      cover, exactly as Echo's stage does. */
+  function normalizedCatalogBooks(catalog) {
+    const rawBooks = catalog && Array.isArray(catalog.books) ? catalog.books : [];
+    const seen = new Set();
+    return rawBooks.filter(function (book) {
+      if (!book || typeof book.slug !== 'string' || book.slug.length === 0) return false;
+      if (seen.has(book.slug)) return false;
+      seen.add(book.slug);
+      return true;
+    });
+  }
+
+  /* Normalize only relationships that the published catalog actually names.
+     `plannedVolumeCount` is progress metadata; it never creates placeholder
+     volumes. First valid ownership wins when malformed input repeats a series
+     ID or assigns one book to multiple series. */
+  function normalizedSeriesShelves(catalog, books) {
+    const rawSeries = catalog && Array.isArray(catalog.series) ? catalog.series : [];
+    const publishedBooks = new Set(books.map(function (book) { return book.slug; }));
+    const seenSeriesIds = new Set();
+    const claimedBooks = new Set();
+    const shelves = [];
+
+    rawSeries.forEach(function (series) {
+      if (!series || typeof series.id !== 'string' || series.id.length === 0) return;
+      if (seenSeriesIds.has(series.id) || !Array.isArray(series.volumes)) return;
+
+      const volumes = [];
+      series.volumes.forEach(function (volume) {
+        if (!volume || typeof volume.book !== 'string' || volume.book.length === 0) return;
+        if (!publishedBooks.has(volume.book) || claimedBooks.has(volume.book)) return;
+        volumes.push(volume);
+        claimedBooks.add(volume.book);
+      });
+      if (volumes.length === 0) return;
+
+      seenSeriesIds.add(series.id);
+      shelves.push({ source: series, volumes: volumes });
+    });
+
+    return shelves;
+  }
+
+  function seriesContext(catalog, slug) {
+    if (typeof slug !== 'string' || slug.length === 0) return null;
+    const books = normalizedCatalogBooks(catalog);
+    const shelves = normalizedSeriesShelves(catalog, books);
+
+    for (let i = 0; i < shelves.length; i++) {
+      const shelf = shelves[i];
+      const volumeIndex = shelf.volumes.findIndex(function (volume) {
+        return volume.book === slug;
+      });
+      if (volumeIndex < 0) continue;
+
+      const planned = shelf.source.plannedVolumeCount;
+      return {
+        series: Object.assign({}, shelf.source, { volumes: shelf.volumes.slice() }),
+        volume: shelf.volumes[volumeIndex],
+        availableCount: shelf.volumes.length,
+        plannedCount: Number.isInteger(planned) && planned > 0 ? planned : shelf.volumes.length,
+        previous: volumeIndex > 0 ? shelf.volumes[volumeIndex - 1] : null,
+        next: volumeIndex + 1 < shelf.volumes.length ? shelf.volumes[volumeIndex + 1] : null,
+      };
+    }
+    return null;
+  }
+
+  function defaultBookSlug(catalog) {
+    const books = normalizedCatalogBooks(catalog);
+    const bookBySlug = new Map();
+    books.forEach(function (book) { bookBySlug.set(book.slug, book); });
+
+    const featured = normalizedSeriesShelves(catalog, books).find(function (shelf) {
+      return shelf.source.featured === true;
+    });
+    if (featured) {
+      const volume = featured.volumes.find(function (candidate) {
+        const book = bookBySlug.get(candidate.book);
+        return book && book.audio && book.audio.status === 'available';
+      });
+      if (volume) return volume.book;
+    }
+
+    const playable = books.find(function (book) {
+      return book.audio && book.audio.status === 'available';
+    });
+    return playable ? playable.slug : null;
+  }
+
+  function librarySections(catalog, selectedSlug) {
+    const books = normalizedCatalogBooks(catalog);
+    const shelves = normalizedSeriesShelves(catalog, books);
+    const seriesBooks = new Set();
+    const series = shelves.map(function (shelf) {
+      const slugs = shelf.volumes.map(function (volume) {
+        seriesBooks.add(volume.book);
+        return volume.book;
+      });
+      return { id: shelf.source.id, books: slugs };
+    });
+
+    return {
+      series: series,
+      moreBooks: books
+        .filter(function (book) {
+          return !seriesBooks.has(book.slug) && book.slug !== selectedSlug;
+        })
+        .map(function (book) { return book.slug; }),
+    };
+  }
+
   function libraryActions(book) {
     const actions = [];
     if (book.audio && book.audio.status === 'available') {
@@ -271,6 +382,9 @@
     buildTimeline: buildTimeline,
     activeRowIndex: activeRowIndex,
     wordProgress: wordProgress,
+    seriesContext: seriesContext,
+    defaultBookSlug: defaultBookSlug,
+    librarySections: librarySections,
     libraryActions: libraryActions,
     resolveSnapshot: resolveSnapshot,
   };
