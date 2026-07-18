@@ -96,10 +96,28 @@ test('generatePassphrase validates word counts before attempting random selectio
   }
 });
 
+test('generatePassphrase caps word counts before attempting random selection', () => {
+  const { source, calls } = forbiddenSource();
+
+  assert.throws(
+    () => generatePassphrase({ words: 65, capitalize: true, includeNumber: true }, source, ['alpha']),
+    RangeError,
+  );
+  assert.equal(calls(), 0);
+});
+
 test('generatePassphrase validates malformed wordlists before attempting random selection', () => {
   const oversizedArray = new Proxy(['alpha'], {
     get(target, property, receiver) {
       return property === 'length' ? 0x100000001 : Reflect.get(target, property, receiver);
+    },
+  });
+  const capExceededSparseArray = new Array(65537);
+  const capExceededHostileArray = new Proxy([], {
+    get(target, property, receiver) {
+      if (property === 'length') return 65537;
+      if (/^\d+$/.test(property)) throw new Error('wordlist entries must not be scanned');
+      return Reflect.get(target, property, receiver);
     },
   });
   const cases = [
@@ -109,6 +127,8 @@ test('generatePassphrase validates malformed wordlists before attempting random 
     [[''], TypeError],
     [['alpha', ''], TypeError],
     [oversizedArray, RangeError],
+    [capExceededSparseArray, RangeError],
+    [capExceededHostileArray, RangeError],
   ];
 
   for (const [wordlist, errorType] of cases) {
@@ -151,4 +171,14 @@ test('generateString validates invalid lengths before checking character sets or
     );
     assert.equal(calls(), 0, `source should not run for ${length}`);
   }
+});
+
+test('generateString caps lengths before checking character sets or calling its source', () => {
+  const { source, calls } = forbiddenSource();
+
+  assert.throws(
+    () => generateString({ length: 1025, lower: false, upper: false, digits: false, symbols: false }, source),
+    RangeError,
+  );
+  assert.equal(calls(), 0);
 });

@@ -1,4 +1,7 @@
 const UINT32_RANGE = 0x100000000;
+const MAX_PASSPHRASE_WORDS = 64;
+const MAX_STRING_LENGTH = 1024;
+const MAX_WORDLIST_ENTRIES = 65536;
 
 const requirePositiveInteger = (value, name) => {
   if (!Number.isInteger(value) || value <= 0) {
@@ -11,6 +14,10 @@ const requireRandomBound = (maxExclusive, name) => {
   if (maxExclusive > UINT32_RANGE) {
     throw new RangeError(`${name} must be no greater than ${UINT32_RANGE}`);
   }
+};
+
+const requireMaximum = (value, maximum, name) => {
+  if (value > maximum) throw new RangeError(`${name} must be no greater than ${maximum}`);
 };
 
 export function randomInt(maxExclusive, randomSource) {
@@ -29,6 +36,7 @@ const validateWordlist = (wordlist) => {
   if (!Array.isArray(wordlist)) throw new TypeError('wordlist must be an array');
   if (wordlist.length === 0) throw new RangeError('wordlist must not be empty');
   requireRandomBound(wordlist.length, 'wordlist length');
+  requireMaximum(wordlist.length, MAX_WORDLIST_ENTRIES, 'wordlist length');
   for (let index = 0; index < wordlist.length; index += 1) {
     if (typeof wordlist[index] !== 'string' || wordlist[index].length === 0) {
       throw new TypeError('wordlist entries must be non-empty strings');
@@ -39,6 +47,7 @@ const validateWordlist = (wordlist) => {
 export function generatePassphrase(options, randomSource = defaultSource, wordlist) {
   const { words = 5, separator = '-', capitalize = false, includeNumber = false } = options ?? {};
   requirePositiveInteger(words, 'words');
+  requireMaximum(words, MAX_PASSPHRASE_WORDS, 'words');
   validateWordlist(wordlist);
   const picked = Array.from(
     { length: words },
@@ -66,6 +75,7 @@ const CHARSETS = {
 export function generateString(options, randomSource = defaultSource) {
   const { length = 20, lower = true, upper = true, digits = true, symbols = false } = options ?? {};
   requirePositiveInteger(length, 'length');
+  requireMaximum(length, MAX_STRING_LENGTH, 'length');
   const alphabet = Object.entries({ lower, upper, digits, symbols })
     .filter(([, on]) => on)
     .map(([key]) => CHARSETS[key])
