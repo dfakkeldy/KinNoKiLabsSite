@@ -51,15 +51,7 @@ const expectedAnchorCounts = new Map([
 // because Tools/sync-paired-cover-assets.sh re-derives them from the paired
 // square m4b art after the builder runs. The player sizes thumbnails from the
 // published dimensions, so a wrong pair here crops real artwork.
-const squareCovers = [
-  'an-unsettling-conversation',
-  'jspace-inside-the-machine',
-  'chicken-predators',
-  'the-new-deal',
-  'is-there-anyone-in-here',
-  'claude-platform-01-the-message',
-  'claude-platform-02-thinking-and-reliable-responses',
-];
+const squareCovers = expectedBooks.filter((slug) => slug !== 'rodents-in-the-walls');
 const expectedCoverSizes = new Map(
   expectedBooks.map((slug) => [
     slug,

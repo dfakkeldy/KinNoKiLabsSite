@@ -1,10 +1,29 @@
 {
-  "version": 1,
-  "generated": "2026-07-17T11:45:36Z",
+  "version": 2,
+  "generated": "2026-07-18T22:08:02Z",
   "source": {
     "repo": "dfakkeldy/explainer-audiobooks",
-    "commit": "0c62460d5116ccf5a3fb02fe9764fd94cf33a6d2"
+    "commit": "80a9cb485885e1b7b01d238e3905ea1552a85d58"
   },
+  "series": [
+    {
+      "id": "claude-platform",
+      "title": "Claude Platform Documentation",
+      "description": "A mechanism-first guide to building on the Claude Platform.",
+      "plannedVolumeCount": 9,
+      "featured": true,
+      "volumes": [
+        {
+          "number": 1,
+          "book": "claude-platform-01-the-message"
+        },
+        {
+          "number": 2,
+          "book": "claude-platform-02-thinking-and-reliable-responses"
+        }
+      ]
+    }
+  ],
   "books": [
     {
       "slug": "an-unsettling-conversation",
@@ -19,7 +38,7 @@
       "durationSeconds": 19948.928000,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/0c62460d5116ccf5a3fb02fe9764fd94cf33a6d2/books/an-unsettling-conversation/an-unsettling-conversation.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/80a9cb485885e1b7b01d238e3905ea1552a85d58/books/an-unsettling-conversation/an-unsettling-conversation.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -99,6 +118,7 @@
         "sidecar": "books/an-unsettling-conversation/alignment.json",
         "hasWordTimings": true
       },
+      "edition": null,
       "links": {
         "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/an-unsettling-conversation",
         "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/an-unsettling-conversation/an-unsettling-conversation.epub",
@@ -120,7 +140,7 @@
       "durationSeconds": 13943.338667,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/0c62460d5116ccf5a3fb02fe9764fd94cf33a6d2/books/jspace-inside-the-machine/jspace-inside-the-machine.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/80a9cb485885e1b7b01d238e3905ea1552a85d58/books/jspace-inside-the-machine/jspace-inside-the-machine.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -200,6 +220,7 @@
         "sidecar": "books/jspace-inside-the-machine/alignment.json",
         "hasWordTimings": true
       },
+      "edition": null,
       "links": {
         "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/jspace-inside-the-machine",
         "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/jspace-inside-the-machine/jspace-inside-the-machine.epub",
@@ -216,16 +237,124 @@
       "writtenBy": "Opus 4.8",
       "cover": "books/echo-from-the-inside/cover.jpg",
       "coverAlt": "Cover of Echo, From the Inside",
-      "coverWidth": 480,
+      "coverWidth": 768,
       "coverHeight": 768,
+      "durationSeconds": 21039.530667,
       "audio": {
-        "status": "none"
+        "status": "available",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/80a9cb485885e1b7b01d238e3905ea1552a85d58/books/echo-from-the-inside/echo-from-the-inside.m4b",
+        "mimeType": "audio/mp4"
       },
+      "chapters": [
+        {
+          "title": "Chapter 1",
+          "start": 0.000000,
+          "end": 9.100000
+        },
+        {
+          "title": "Chapter 2",
+          "start": 9.100000,
+          "end": 1006.600000
+        },
+        {
+          "title": "Chapter 3",
+          "start": 1006.600000,
+          "end": 2222.250000
+        },
+        {
+          "title": "Chapter 4",
+          "start": 2222.250000,
+          "end": 3467.600000
+        },
+        {
+          "title": "Chapter 5",
+          "start": 3467.600000,
+          "end": 4652.675000
+        },
+        {
+          "title": "Chapter 6",
+          "start": 4652.675000,
+          "end": 5893.725000
+        },
+        {
+          "title": "Chapter 7",
+          "start": 5893.725000,
+          "end": 7125.425000
+        },
+        {
+          "title": "Chapter 8",
+          "start": 7125.425000,
+          "end": 8363.900000
+        },
+        {
+          "title": "Chapter 9",
+          "start": 8363.900000,
+          "end": 9751.100000
+        },
+        {
+          "title": "Chapter 10",
+          "start": 9751.100000,
+          "end": 11052.100000
+        },
+        {
+          "title": "Chapter 11",
+          "start": 11052.100000,
+          "end": 12232.500000
+        },
+        {
+          "title": "Chapter 12",
+          "start": 12232.500000,
+          "end": 13496.725000
+        },
+        {
+          "title": "Chapter 13",
+          "start": 13496.725000,
+          "end": 14799.575000
+        },
+        {
+          "title": "Chapter 14",
+          "start": 14799.575000,
+          "end": 16065.425000
+        },
+        {
+          "title": "Chapter 15",
+          "start": 16065.425000,
+          "end": 17224.125000
+        },
+        {
+          "title": "Chapter 16",
+          "start": 17224.125000,
+          "end": 18470.300000
+        },
+        {
+          "title": "Chapter 17",
+          "start": 18470.300000,
+          "end": 19794.200000
+        },
+        {
+          "title": "Chapter 18",
+          "start": 19794.200000,
+          "end": 21039.530000
+        }
+      ],
+      "text": {
+        "blocks": "books/echo-from-the-inside/blocks.json"
+      },
+      "visuals": {
+        "figures": 0
+      },
+      "alignment": {
+        "sidecar": "books/echo-from-the-inside/alignment.json",
+        "hasWordTimings": false
+      },
+      "edition": null,
       "links": {
         "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/echo-from-the-inside",
         "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/echo-from-the-inside/echo-from-the-inside.epub",
         "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/echo-from-the-inside/echo-from-the-inside.md"
-      }
+      },
+      "coverSourceSha256": "3fd3c6c167ba13f8080c67d2aeb315851f63a0e2955e970daab0cff77d435ff9",
+      "coverDerivativeSha256": "af79233de7468a74c635fd07c60a9ba17c9f564e2df853a6772bfa30ffb6c8d7"
     },
     {
       "slug": "why-it-feels-right",
@@ -235,16 +364,124 @@
       "writtenBy": "Fable 5",
       "cover": "books/why-it-feels-right/cover.jpg",
       "coverAlt": "Cover of Why It Feels Right",
-      "coverWidth": 480,
+      "coverWidth": 768,
       "coverHeight": 768,
+      "durationSeconds": 19201.792000,
       "audio": {
-        "status": "none"
+        "status": "available",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/80a9cb485885e1b7b01d238e3905ea1552a85d58/books/why-it-feels-right/why-it-feels-right.m4b",
+        "mimeType": "audio/mp4"
       },
+      "chapters": [
+        {
+          "title": "ch. 1: Chapter 0 — Why Apple Sweats the Details",
+          "start": 0.000000,
+          "end": 1052.275000
+        },
+        {
+          "title": "ch. 2: Chapter 1 — Doors, Teapots, and the Psychology of Feels Right",
+          "start": 1052.275000,
+          "end": 2145.600000
+        },
+        {
+          "title": "ch. 3: Chapter 2 — Clarity, Deference, Depth",
+          "start": 2145.600000,
+          "end": 3154.475000
+        },
+        {
+          "title": "ch. 4: Chapter 3 — Speaking SwiftUI",
+          "start": 3154.475000,
+          "end": 4246.150000
+        },
+        {
+          "title": "ch. 5: Chapter 4 — Layout and the Grid You Don't See",
+          "start": 4246.150000,
+          "end": 5340.850000
+        },
+        {
+          "title": "ch. 6: Chapter 5 — Color, Materials, and Liquid Glass",
+          "start": 5340.850000,
+          "end": 6423.975000
+        },
+        {
+          "title": "ch. 7: Chapter 6 — Type That Breathes",
+          "start": 6423.975000,
+          "end": 7468.900000
+        },
+        {
+          "title": "ch. 8: Chapter 7 — A Language of Glyphs",
+          "start": 7468.900000,
+          "end": 8519.850000
+        },
+        {
+          "title": "ch. 9: Chapter 8 — The Icon on the Home Screen",
+          "start": 8519.850000,
+          "end": 9560.050000
+        },
+        {
+          "title": "ch. 10: Chapter 9 — Bars That Frame the Screen",
+          "start": 9560.050000,
+          "end": 10597.225000
+        },
+        {
+          "title": "ch. 11: Chapter 10 — Buttons and Controls",
+          "start": 10597.225000,
+          "end": 11656.300000
+        },
+        {
+          "title": "ch. 12: Chapter 11 — Sheets, Alerts, and Earning the Interruption",
+          "start": 11656.300000,
+          "end": 12715.975000
+        },
+        {
+          "title": "ch. 13: Chapter 12 — Lists, Grids, and Lazy Stacks",
+          "start": 12715.975000,
+          "end": 13810.800000
+        },
+        {
+          "title": "ch. 14: Chapter 13 — Navigation: How People Move",
+          "start": 13810.800000,
+          "end": 14940.400000
+        },
+        {
+          "title": "ch. 15: Chapter 14 — First Run and Feedback",
+          "start": 14940.400000,
+          "end": 16017.400000
+        },
+        {
+          "title": "ch. 16: Chapter 15 — Designing for Everyone",
+          "start": 16017.400000,
+          "end": 17102.325000
+        },
+        {
+          "title": "ch. 17: Chapter 16 — One App, Many Screens",
+          "start": 17102.325000,
+          "end": 18152.600000
+        },
+        {
+          "title": "ch. 18: Chapter 17 — When to Break the Rules",
+          "start": 18152.600000,
+          "end": 19201.792000
+        }
+      ],
+      "text": {
+        "blocks": "books/why-it-feels-right/blocks.json"
+      },
+      "visuals": {
+        "figures": 0
+      },
+      "alignment": {
+        "sidecar": "books/why-it-feels-right/alignment.json",
+        "hasWordTimings": false
+      },
+      "edition": null,
       "links": {
         "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/why-it-feels-right",
         "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/why-it-feels-right/why-it-feels-right.epub",
         "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/why-it-feels-right/why-it-feels-right.md"
-      }
+      },
+      "coverSourceSha256": "060252a5878ee62f05586c5583fd71862d58f35202dd7692c1a48942ccde84d4",
+      "coverDerivativeSha256": "6b96d24ed7abe2e1117f02f76b6235eeebcf8fad198d6699aa53036e6eead4d3"
     },
     {
       "slug": "you-are-the-architect",
@@ -254,16 +491,134 @@
       "writtenBy": "Fable 5",
       "cover": "books/you-are-the-architect/cover.jpg",
       "coverAlt": "Cover of You Are the Architect",
-      "coverWidth": 480,
+      "coverWidth": 768,
       "coverHeight": 768,
+      "durationSeconds": 20296.149333,
       "audio": {
-        "status": "none"
+        "status": "available",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/80a9cb485885e1b7b01d238e3905ea1552a85d58/books/you-are-the-architect/you-are-the-architect.m4b",
+        "mimeType": "audio/mp4"
       },
+      "chapters": [
+        {
+          "title": "ch. 1: Chapter 0 — This Time, With a Map",
+          "start": 0.000000,
+          "end": 1000.075000
+        },
+        {
+          "title": "ch. 2: Chapter 1 — From Syntax to Intent",
+          "start": 1000.075000,
+          "end": 1987.075000
+        },
+        {
+          "title": "ch. 3: Chapter 2 — Anatomy of an Agent",
+          "start": 1987.075000,
+          "end": 2984.775000
+        },
+        {
+          "title": "ch. 4: Chapter 3 — The Word That Ate Itself",
+          "start": 2984.775000,
+          "end": 3998.450000
+        },
+        {
+          "title": "ch. 5: Chapter 4 — The Spectrum",
+          "start": 3998.450000,
+          "end": 5090.300000
+        },
+        {
+          "title": "ch. 6: Chapter 5 — Proof Is the Differentiator",
+          "start": 5090.300000,
+          "end": 6073.850000
+        },
+        {
+          "title": "ch. 7: Chapter 6 — What the Agent Needs to Know",
+          "start": 6073.850000,
+          "end": 7057.900000
+        },
+        {
+          "title": "ch. 8: Chapter 7 — Static, Dynamic, and Skills",
+          "start": 7057.900000,
+          "end": 8088.825000
+        },
+        {
+          "title": "ch. 9: Chapter 8 — The New Life Cycle",
+          "start": 8088.825000,
+          "end": 9111.550000
+        },
+        {
+          "title": "ch. 10: Chapter 9 — Phase by Phase",
+          "start": 9111.550000,
+          "end": 10152.525000
+        },
+        {
+          "title": "ch. 11: Chapter 10 — The Factory Model",
+          "start": 10152.525000,
+          "end": 11171.025000
+        },
+        {
+          "title": "ch. 12: Chapter 11 — The Harness",
+          "start": 11171.025000,
+          "end": 12180.675000
+        },
+        {
+          "title": "ch. 13: Chapter 12 — Conductor and Orchestrator",
+          "start": 12180.675000,
+          "end": 13202.050000
+        },
+        {
+          "title": "ch. 14: Chapter 13 — The Eighty Percent Problem",
+          "start": 13202.050000,
+          "end": 14215.400000
+        },
+        {
+          "title": "ch. 15: Chapter 14 — Three Places Agents Live",
+          "start": 14215.400000,
+          "end": 15254.225000
+        },
+        {
+          "title": "ch. 16: Chapter 15 — When the Agent Is the Product",
+          "start": 15254.225000,
+          "end": 16258.750000
+        },
+        {
+          "title": "ch. 17: Chapter 16 — The Token Economy",
+          "start": 16258.750000,
+          "end": 17308.600000
+        },
+        {
+          "title": "ch. 18: Chapter 17 — Spending the Tokens Wisely",
+          "start": 17308.600000,
+          "end": 18296.100000
+        },
+        {
+          "title": "ch. 19: Chapter 18 — The Monday Playbook",
+          "start": 18296.100000,
+          "end": 19315.475000
+        },
+        {
+          "title": "ch. 20: Chapter 19 — The Craft That Remains",
+          "start": 19315.475000,
+          "end": 20296.149000
+        }
+      ],
+      "text": {
+        "blocks": "books/you-are-the-architect/blocks.json"
+      },
+      "visuals": {
+        "figures": 0
+      },
+      "alignment": {
+        "sidecar": "books/you-are-the-architect/alignment.json",
+        "hasWordTimings": false
+      },
+      "edition": null,
       "links": {
         "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/you-are-the-architect",
         "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/you-are-the-architect/you-are-the-architect.epub",
         "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/you-are-the-architect/you-are-the-architect.md"
-      }
+      },
+      "coverSourceSha256": "6afeba4188e4e138bb0772ad9cd525df6c816703e0ca1f8cb10b3e8be5d6e349",
+      "coverDerivativeSha256": "d6141450dc1f9392b2ff08688125104d42578f3db9f72c9e5080db8a9c93aeac"
     },
     {
       "slug": "the-bug-is-a-clue",
@@ -273,16 +628,119 @@
       "writtenBy": "Opus 4.8",
       "cover": "books/the-bug-is-a-clue/cover.jpg",
       "coverAlt": "Cover of The Bug Is a Clue",
-      "coverWidth": 480,
+      "coverWidth": 768,
       "coverHeight": 768,
+      "durationSeconds": 21571.541333,
       "audio": {
-        "status": "none"
+        "status": "available",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/80a9cb485885e1b7b01d238e3905ea1552a85d58/books/the-bug-is-a-clue/the-bug-is-a-clue.m4b",
+        "mimeType": "audio/mp4"
       },
+      "chapters": [
+        {
+          "title": "ch. 1: Chapter 0 - Why Debugging Is the Real Job",
+          "start": 0.000000,
+          "end": 1103.175000
+        },
+        {
+          "title": "ch. 2: Chapter 1 - The Scientific Method of Debugging",
+          "start": 1103.175000,
+          "end": 2222.250000
+        },
+        {
+          "title": "ch. 3: Chapter 2 - Learning to Listen: the Console and Logging",
+          "start": 2222.250000,
+          "end": 3295.050000
+        },
+        {
+          "title": "ch. 4: Chapter 3 - Breakpoints: Pausing Reality",
+          "start": 3295.050000,
+          "end": 4738.700000
+        },
+        {
+          "title": "ch. 5: Chapter 4 - Frozen in Time: Variables and the Call Stack",
+          "start": 4738.700000,
+          "end": 6188.700000
+        },
+        {
+          "title": "ch. 6: Chapter 5 - LLDB: Talking to a Paused Program",
+          "start": 6188.700000,
+          "end": 7652.425000
+        },
+        {
+          "title": "ch. 7: Chapter 6 - Breakpoints That Think",
+          "start": 7652.425000,
+          "end": 8682.675000
+        },
+        {
+          "title": "ch. 8: Chapter 7 - When the App Dies: Anatomy of a Crash",
+          "start": 8682.675000,
+          "end": 10380.850000
+        },
+        {
+          "title": "ch. 9: Chapter 8 - Crash Logs and Symbolication",
+          "start": 10380.850000,
+          "end": 11499.400000
+        },
+        {
+          "title": "ch. 10: Chapter 9 - The Crash That Isn't Your Fault",
+          "start": 11499.400000,
+          "end": 12627.075000
+        },
+        {
+          "title": "ch. 11: Chapter 10 - Chasing Memory Leaks",
+          "start": 12627.075000,
+          "end": 13726.525000
+        },
+        {
+          "title": "ch. 12: Chapter 11 - Making Corruption Loud: the Sanitizers",
+          "start": 13726.525000,
+          "end": 14851.275000
+        },
+        {
+          "title": "ch. 13: Chapter 12 - The Hardest Bugs: Concurrency and Data Races",
+          "start": 14851.275000,
+          "end": 16022.325000
+        },
+        {
+          "title": "ch. 14: Chapter 13 - Profiling, Not Guessing: the Time Profiler",
+          "start": 16022.325000,
+          "end": 17089.300000
+        },
+        {
+          "title": "ch. 15: Chapter 14 - Memory Under the Microscope",
+          "start": 17089.300000,
+          "end": 18734.375000
+        },
+        {
+          "title": "ch. 16: Chapter 15 - Debugging the Interface",
+          "start": 18734.375000,
+          "end": 20312.975000
+        },
+        {
+          "title": "ch. 17: Chapter 16 - The Debugger's Discipline",
+          "start": 20312.975000,
+          "end": 21571.541000
+        }
+      ],
+      "text": {
+        "blocks": "books/the-bug-is-a-clue/blocks.json"
+      },
+      "visuals": {
+        "figures": 0
+      },
+      "alignment": {
+        "sidecar": "books/the-bug-is-a-clue/alignment.json",
+        "hasWordTimings": false
+      },
+      "edition": null,
       "links": {
         "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/the-bug-is-a-clue",
         "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/the-bug-is-a-clue/the-bug-is-a-clue.epub",
         "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/the-bug-is-a-clue/the-bug-is-a-clue.md"
-      }
+      },
+      "coverSourceSha256": "f40a12d096185513c6328b13de82dd2b66a61b897e95b8d3f4f275633e299530",
+      "coverDerivativeSha256": "6d96ac0fa8b04a7ed2a4b89dfbcaca965b75ba3f4cc7c487fe2a09d4ff716658"
     },
     {
       "slug": "tests-first",
@@ -292,16 +750,84 @@
       "writtenBy": "Opus 4.8",
       "cover": "books/tests-first/cover.jpg",
       "coverAlt": "Cover of Tests First",
-      "coverWidth": 480,
+      "coverWidth": 768,
       "coverHeight": 768,
+      "durationSeconds": 9751.168000,
       "audio": {
-        "status": "none"
+        "status": "available",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/80a9cb485885e1b7b01d238e3905ea1552a85d58/books/tests-first/tests-first.m4b",
+        "mimeType": "audio/mp4"
       },
+      "chapters": [
+        {
+          "title": "Chapter 1",
+          "start": 0.000000,
+          "end": 8.675000
+        },
+        {
+          "title": "Chapter 2",
+          "start": 8.675000,
+          "end": 1067.775000
+        },
+        {
+          "title": "Chapter 3",
+          "start": 1067.775000,
+          "end": 2101.600000
+        },
+        {
+          "title": "Chapter 4",
+          "start": 2101.600000,
+          "end": 3143.600000
+        },
+        {
+          "title": "Chapter 5",
+          "start": 3143.600000,
+          "end": 4275.400000
+        },
+        {
+          "title": "Chapter 6",
+          "start": 4275.400000,
+          "end": 5453.750000
+        },
+        {
+          "title": "Chapter 7",
+          "start": 5453.750000,
+          "end": 6527.550000
+        },
+        {
+          "title": "Chapter 8",
+          "start": 6527.550000,
+          "end": 7603.675000
+        },
+        {
+          "title": "Chapter 9",
+          "start": 7603.675000,
+          "end": 8697.250000
+        },
+        {
+          "title": "Chapter 10",
+          "start": 8697.250000,
+          "end": 9751.168000
+        }
+      ],
+      "text": {
+        "blocks": "books/tests-first/blocks.json"
+      },
+      "visuals": {
+        "figures": 0
+      },
+      "alignment": {
+        "sidecar": "books/tests-first/alignment.json",
+        "hasWordTimings": false
+      },
+      "edition": null,
       "links": {
         "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/tests-first",
         "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/tests-first/tests-first.epub",
         "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/tests-first/tests-first.md"
-      }
+      },
+      "coverSourceSha256": "ce0be55768b0ce57aadf9d663966720fdf8b86652142b4f917c0886a55363e67",
+      "coverDerivativeSha256": "2603ab3716c0979bc58d9d74eda34dad5b7943aa0558a14521ca88caa9fdbded"
     },
     {
       "slug": "git-happens",
@@ -311,16 +837,119 @@
       "writtenBy": "Opus 4.8",
       "cover": "books/git-happens/cover.jpg",
       "coverAlt": "Cover of Git Happens",
-      "coverWidth": 480,
+      "coverWidth": 768,
       "coverHeight": 768,
+      "durationSeconds": 17941.077333,
       "audio": {
-        "status": "none"
+        "status": "available",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/80a9cb485885e1b7b01d238e3905ea1552a85d58/books/git-happens/git-happens.m4b",
+        "mimeType": "audio/mp4"
       },
+      "chapters": [
+        {
+          "title": "Chapter 1",
+          "start": 0.000000,
+          "end": 7.425000
+        },
+        {
+          "title": "Chapter 2",
+          "start": 7.425000,
+          "end": 1046.950000
+        },
+        {
+          "title": "Chapter 3",
+          "start": 1046.950000,
+          "end": 2085.375000
+        },
+        {
+          "title": "Chapter 4",
+          "start": 2085.375000,
+          "end": 3158.450000
+        },
+        {
+          "title": "Chapter 5",
+          "start": 3158.450000,
+          "end": 4259.050000
+        },
+        {
+          "title": "Chapter 6",
+          "start": 4259.050000,
+          "end": 5329.125000
+        },
+        {
+          "title": "Chapter 7",
+          "start": 5329.125000,
+          "end": 6399.200000
+        },
+        {
+          "title": "Chapter 8",
+          "start": 6399.200000,
+          "end": 7560.575000
+        },
+        {
+          "title": "Chapter 9",
+          "start": 7560.575000,
+          "end": 8647.925000
+        },
+        {
+          "title": "Chapter 10",
+          "start": 8647.925000,
+          "end": 9893.175000
+        },
+        {
+          "title": "Chapter 11",
+          "start": 9893.175000,
+          "end": 11018.000000
+        },
+        {
+          "title": "Chapter 12",
+          "start": 11018.000000,
+          "end": 12105.975000
+        },
+        {
+          "title": "Chapter 13",
+          "start": 12105.975000,
+          "end": 13278.275000
+        },
+        {
+          "title": "Chapter 14",
+          "start": 13278.275000,
+          "end": 14469.975000
+        },
+        {
+          "title": "Chapter 15",
+          "start": 14469.975000,
+          "end": 15681.250000
+        },
+        {
+          "title": "Chapter 16",
+          "start": 15681.250000,
+          "end": 16900.875000
+        },
+        {
+          "title": "Chapter 17",
+          "start": 16900.875000,
+          "end": 17941.077000
+        }
+      ],
+      "text": {
+        "blocks": "books/git-happens/blocks.json"
+      },
+      "visuals": {
+        "figures": 0
+      },
+      "alignment": {
+        "sidecar": "books/git-happens/alignment.json",
+        "hasWordTimings": false
+      },
+      "edition": null,
       "links": {
         "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/git-happens",
         "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/git-happens/git-happens.epub",
         "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/git-happens/git-happens.md"
-      }
+      },
+      "coverSourceSha256": "84dca530115178a5969245e180997d245d8343b958134930e39edaa63a9e892f",
+      "coverDerivativeSha256": "92b973897a1efa12f65ec64fc99de757e4da7aa43b3ab573a513cf95543b6168"
     },
     {
       "slug": "findable",
@@ -330,16 +959,79 @@
       "writtenBy": "Opus 4.8",
       "cover": "books/findable/cover.jpg",
       "coverAlt": "Cover of Findable",
-      "coverWidth": 480,
+      "coverWidth": 768,
       "coverHeight": 768,
+      "durationSeconds": 11561.088000,
       "audio": {
-        "status": "none"
+        "status": "available",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/80a9cb485885e1b7b01d238e3905ea1552a85d58/books/findable/findable.m4b",
+        "mimeType": "audio/mp4"
       },
+      "chapters": [
+        {
+          "title": "Chapter 1",
+          "start": 0.000000,
+          "end": 7.225000
+        },
+        {
+          "title": "Chapter 2",
+          "start": 7.225000,
+          "end": 1254.200000
+        },
+        {
+          "title": "Chapter 3",
+          "start": 1254.200000,
+          "end": 2791.250000
+        },
+        {
+          "title": "Chapter 4",
+          "start": 2791.250000,
+          "end": 4045.275000
+        },
+        {
+          "title": "Chapter 5",
+          "start": 4045.275000,
+          "end": 5386.725000
+        },
+        {
+          "title": "Chapter 6",
+          "start": 5386.725000,
+          "end": 6730.950000
+        },
+        {
+          "title": "Chapter 7",
+          "start": 6730.950000,
+          "end": 8500.925000
+        },
+        {
+          "title": "Chapter 8",
+          "start": 8500.925000,
+          "end": 10115.925000
+        },
+        {
+          "title": "Chapter 9",
+          "start": 10115.925000,
+          "end": 11561.088000
+        }
+      ],
+      "text": {
+        "blocks": "books/findable/blocks.json"
+      },
+      "visuals": {
+        "figures": 0
+      },
+      "alignment": {
+        "sidecar": "books/findable/alignment.json",
+        "hasWordTimings": false
+      },
+      "edition": null,
       "links": {
         "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/findable",
         "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/findable/findable.epub",
         "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/findable/findable.md"
-      }
+      },
+      "coverSourceSha256": "b56aec2a60d6a609bf416935791f03d3a612d9eb2837fd568c7a61815720b3e4",
+      "coverDerivativeSha256": "0d8c00ef6bb63224400abac3eaf50197b84e1e2a70168e76377bd93971e95e6c"
     },
     {
       "slug": "the-voice-in-the-machine",
@@ -349,16 +1041,89 @@
       "writtenBy": "Opus 4.8",
       "cover": "books/the-voice-in-the-machine/cover.jpg",
       "coverAlt": "Cover of The Voice in the Machine",
-      "coverWidth": 480,
+      "coverWidth": 768,
       "coverHeight": 768,
+      "durationSeconds": 13378.645333,
       "audio": {
-        "status": "none"
+        "status": "available",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/80a9cb485885e1b7b01d238e3905ea1552a85d58/books/the-voice-in-the-machine/the-voice-in-the-machine.m4b",
+        "mimeType": "audio/mp4"
       },
+      "chapters": [
+        {
+          "title": "Chapter 1 - The Dream of a Book That Reads Itself",
+          "start": 0.000000,
+          "end": 1188.450000
+        },
+        {
+          "title": "Chapter 2 - From Robot to Human",
+          "start": 1188.450000,
+          "end": 2400.500000
+        },
+        {
+          "title": "Chapter 3 - Cleaning the Page Before You Read It",
+          "start": 2400.500000,
+          "end": 3657.550000
+        },
+        {
+          "title": "Chapter 4 - Spelling With Sound",
+          "start": 3657.550000,
+          "end": 4879.200000
+        },
+        {
+          "title": "Chapter 5 - Teaching the Machine a New Word",
+          "start": 4879.200000,
+          "end": 6056.175000
+        },
+        {
+          "title": "Chapter 6 - Inside the Voice",
+          "start": 6056.175000,
+          "end": 7359.475000
+        },
+        {
+          "title": "Chapter 7 - The Chip That Thinks, and the Crash",
+          "start": 7359.475000,
+          "end": 8588.675000
+        },
+        {
+          "title": "Chapter 8 - The Fix That Wasn't",
+          "start": 8588.675000,
+          "end": 9816.050000
+        },
+        {
+          "title": "Chapter 9 - The Runtime That Just Worked",
+          "start": 9816.050000,
+          "end": 11073.475000
+        },
+        {
+          "title": "Chapter 10 - Slicing, Streaming, and Stitching the Sound",
+          "start": 11073.475000,
+          "end": 12250.500000
+        },
+        {
+          "title": "Chapter 11 - Follow the Bouncing Word",
+          "start": 12250.500000,
+          "end": 13378.645000
+        }
+      ],
+      "text": {
+        "blocks": "books/the-voice-in-the-machine/blocks.json"
+      },
+      "visuals": {
+        "figures": 0
+      },
+      "alignment": {
+        "sidecar": "books/the-voice-in-the-machine/alignment.json",
+        "hasWordTimings": false
+      },
+      "edition": null,
       "links": {
         "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/the-voice-in-the-machine",
         "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/the-voice-in-the-machine/the-voice-in-the-machine.epub",
         "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/the-voice-in-the-machine/the-voice-in-the-machine.md"
-      }
+      },
+      "coverSourceSha256": "d5cf8b8613ee544612725376fd7a2e0d607319363f5e86ea1d4c0c0c3ae2d4a6",
+      "coverDerivativeSha256": "9e3eb24903b74a3ea53c3cea35808e79e9023e14f17ee10a93acef667382655f"
     },
     {
       "slug": "chicken-predators",
@@ -373,7 +1138,7 @@
       "durationSeconds": 11140.181333,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/0c62460d5116ccf5a3fb02fe9764fd94cf33a6d2/books/chicken-predators/chicken-predators.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/80a9cb485885e1b7b01d238e3905ea1552a85d58/books/chicken-predators/chicken-predators.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -468,6 +1233,7 @@
         "sidecar": "books/chicken-predators/alignment.json",
         "hasWordTimings": false
       },
+      "edition": null,
       "links": {
         "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/chicken-predators",
         "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/chicken-predators/chicken-predators.epub",
@@ -489,7 +1255,7 @@
       "durationSeconds": 7377.962667,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/0c62460d5116ccf5a3fb02fe9764fd94cf33a6d2/books/rodents-in-the-walls/rodents-in-the-walls.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/80a9cb485885e1b7b01d238e3905ea1552a85d58/books/rodents-in-the-walls/rodents-in-the-walls.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -549,6 +1315,7 @@
         "sidecar": "books/rodents-in-the-walls/alignment.json",
         "hasWordTimings": false
       },
+      "edition": null,
       "links": {
         "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/rodents-in-the-walls",
         "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/rodents-in-the-walls/rodents-in-the-walls.epub",
@@ -568,7 +1335,7 @@
       "durationSeconds": 6942.336000,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/0c62460d5116ccf5a3fb02fe9764fd94cf33a6d2/books/the-new-deal/the-new-deal.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/80a9cb485885e1b7b01d238e3905ea1552a85d58/books/the-new-deal/the-new-deal.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -628,6 +1395,7 @@
         "sidecar": "books/the-new-deal/alignment.json",
         "hasWordTimings": false
       },
+      "edition": null,
       "links": {
         "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/the-new-deal",
         "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/the-new-deal/the-new-deal.epub",
@@ -649,7 +1417,7 @@
       "durationSeconds": 6616.490667,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/0c62460d5116ccf5a3fb02fe9764fd94cf33a6d2/books/is-there-anyone-in-here/is-there-anyone-in-here.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/80a9cb485885e1b7b01d238e3905ea1552a85d58/books/is-there-anyone-in-here/is-there-anyone-in-here.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -714,6 +1482,7 @@
         "sidecar": "books/is-there-anyone-in-here/alignment.json",
         "hasWordTimings": true
       },
+      "edition": null,
       "links": {
         "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/is-there-anyone-in-here",
         "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/is-there-anyone-in-here/is-there-anyone-in-here.epub",
@@ -721,6 +1490,213 @@
       },
       "coverSourceSha256": "8aa19da296b7cf27502a8d22ba352981b11481184daba1531cd8370aebe5df4b",
       "coverDerivativeSha256": "050840a8ab5789079d11de45f583297935d77d81f6a8e05517340f8f42758d23"
+    },
+    {
+      "slug": "claude-platform-01-the-message",
+      "title": "The Message",
+      "subtitle": "Conversations, Content Blocks, and the Messages API",
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "Codex (GPT-5)",
+      "cover": "books/claude-platform-01-the-message/cover.jpg",
+      "coverAlt": "Cover of The Message",
+      "coverWidth": 768,
+      "coverHeight": 768,
+      "durationSeconds": 7409.450667,
+      "audio": {
+        "status": "available",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/80a9cb485885e1b7b01d238e3905ea1552a85d58/books/claude-platform-01-the-message/claude-platform-01-the-message.m4b",
+        "mimeType": "audio/mp4"
+      },
+      "chapters": [
+        {
+          "title": "ch. 1: The Crossing",
+          "start": 0.000000,
+          "end": 838.240000
+        },
+        {
+          "title": "ch. 2: When the Conversation Was One String",
+          "start": 838.240000,
+          "end": 1657.075000
+        },
+        {
+          "title": "ch. 3: The Smallest Complete Trip",
+          "start": 1657.075000,
+          "end": 2457.125000
+        },
+        {
+          "title": "ch. 4: The Clerk Who Carries the Case File",
+          "start": 2457.125000,
+          "end": 3270.510000
+        },
+        {
+          "title": "ch. 5: The Conversation and the Office Policy",
+          "start": 3270.510000,
+          "end": 3787.365000
+        },
+        {
+          "title": "ch. 6: What One Message Can Carry",
+          "start": 3787.365000,
+          "end": 4433.810000
+        },
+        {
+          "title": "ch. 7: Reading the Arrival Record",
+          "start": 4433.810000,
+          "end": 4978.870000
+        },
+        {
+          "title": "ch. 8: Classify Before You Act",
+          "start": 4978.870000,
+          "end": 5398.070000
+        },
+        {
+          "title": "ch. 9: The Alternate Route With One Job",
+          "start": 5398.070000,
+          "end": 5747.915000
+        },
+        {
+          "title": "ch. 10: The Model That Earned the Route",
+          "start": 5747.915000,
+          "end": 6171.440000
+        },
+        {
+          "title": "ch. 11: Three Token Numbers, Three Questions",
+          "start": 6171.440000,
+          "end": 6664.380000
+        },
+        {
+          "title": "ch. 12: A New Desk, the Same Route",
+          "start": 6664.380000,
+          "end": 7409.450000
+        }
+      ],
+      "text": {
+        "blocks": "books/claude-platform-01-the-message/blocks.json"
+      },
+      "visuals": {
+        "figures": 0
+      },
+      "alignment": {
+        "sidecar": "books/claude-platform-01-the-message/alignment.json",
+        "hasWordTimings": true
+      },
+      "edition": {
+        "status": "public-first-listen",
+        "humanListeningStatus": "pending",
+        "disclosure": "This edition has passed package and audio checks. The creator's full listening review is still underway."
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/claude-platform-01-the-message",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/claude-platform-01-the-message/claude-platform-01-the-message.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/claude-platform-01-the-message/claude-platform-01-the-message.md"
+      },
+      "coverSourceSha256": "e68c9a631252ec1353df8290495cf3da1d01efa399f92056fcd39a67f85b3c32",
+      "coverDerivativeSha256": "279337e163082f9ecc91f00a72807a7f739d12b94416ac49f5c84ab372126f91"
+    },
+    {
+      "slug": "claude-platform-02-thinking-and-reliable-responses",
+      "title": "Making Claude Think and Respond Reliably",
+      "subtitle": "Reasoning, Multimodal Inputs, Structured Output, and Streaming",
+      "curator": "Dan Fakkeldy",
+      "writtenBy": "Codex (GPT-5)",
+      "cover": "books/claude-platform-02-thinking-and-reliable-responses/cover.jpg",
+      "coverAlt": "Cover of Making Claude Think and Respond Reliably",
+      "coverWidth": 768,
+      "coverHeight": 768,
+      "durationSeconds": 5316.266667,
+      "audio": {
+        "status": "available",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/80a9cb485885e1b7b01d238e3905ea1552a85d58/books/claude-platform-02-thinking-and-reliable-responses/claude-platform-02-thinking-and-reliable-responses.m4b",
+        "mimeType": "audio/mp4"
+      },
+      "chapters": [
+        {
+          "title": "ch. 1: Capability Is a Request-Time Decision",
+          "start": 0.000000,
+          "end": 951.445000
+        },
+        {
+          "title": "ch. 2: Extended Thinking",
+          "start": 951.445000,
+          "end": 1362.720000
+        },
+        {
+          "title": "ch. 3: Adaptive Thinking and Effort",
+          "start": 1362.720000,
+          "end": 1750.085000
+        },
+        {
+          "title": "ch. 4: Task Budgets and Fast Mode",
+          "start": 1750.085000,
+          "end": 2136.940000
+        },
+        {
+          "title": "ch. 5: Structured Outputs",
+          "start": 2136.940000,
+          "end": 2507.475000
+        },
+        {
+          "title": "ch. 6: Claude Looks at an Image",
+          "start": 2507.475000,
+          "end": 2863.000000
+        },
+        {
+          "title": "ch. 7: Documents and PDFs",
+          "start": 2863.000000,
+          "end": 3227.725000
+        },
+        {
+          "title": "ch. 8: Citations and Search-Result Content",
+          "start": 3227.725000,
+          "end": 3570.880000
+        },
+        {
+          "title": "ch. 9: Streaming Is an Event Sequence",
+          "start": 3570.880000,
+          "end": 3911.860000
+        },
+        {
+          "title": "ch. 10: Streaming Thinking, Refusals, and Errors",
+          "start": 3911.860000,
+          "end": 4249.485000
+        },
+        {
+          "title": "ch. 11: Batch Processing",
+          "start": 4249.485000,
+          "end": 4574.020000
+        },
+        {
+          "title": "ch. 12: Languages, Embeddings, and Capability Boundaries",
+          "start": 4574.020000,
+          "end": 4906.495000
+        },
+        {
+          "title": "ch. 13: Project Desk Becomes Responsive",
+          "start": 4906.495000,
+          "end": 5316.266000
+        }
+      ],
+      "text": {
+        "blocks": "books/claude-platform-02-thinking-and-reliable-responses/blocks.json"
+      },
+      "visuals": {
+        "figures": 0
+      },
+      "alignment": {
+        "sidecar": "books/claude-platform-02-thinking-and-reliable-responses/alignment.json",
+        "hasWordTimings": true
+      },
+      "edition": {
+        "status": "public-first-listen",
+        "humanListeningStatus": "pending",
+        "disclosure": "This edition has passed package and audio checks. The creator's full listening review is still underway."
+      },
+      "links": {
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/claude-platform-02-thinking-and-reliable-responses",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/claude-platform-02-thinking-and-reliable-responses/claude-platform-02-thinking-and-reliable-responses.epub",
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/claude-platform-02-thinking-and-reliable-responses/claude-platform-02-thinking-and-reliable-responses.md"
+      },
+      "coverSourceSha256": "f47d53aa8ed60e69e291b595eea2826a326682bfa21660277e84a42ae3b220d1",
+      "coverDerivativeSha256": "4855629dacdbca32164580c1b281c43db7ccdce512230b27cb143c65477cb6e1"
     }
   ]
 }

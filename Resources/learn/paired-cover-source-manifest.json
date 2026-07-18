@@ -1,60 +1,86 @@
 {
-  "schemaVersion": 1,
-  "sourceCommit": "0c62460d5116ccf5a3fb02fe9764fd94cf33a6d2",
+  "schemaVersion": 2,
+  "sourceCommit": "80a9cb485885e1b7b01d238e3905ea1552a85d58",
   "books": {
     "an-unsettling-conversation": {
-      "receiptSha256": "e03af343c74d4ebbf83dcb67610616e3fcae536dc74ed964ef92fd6ea6607839",
-      "candidateId": "cut-in-the-page",
+      "receiptKind": "cover-selection-v2", "receiptPath": "cover-selection.json", "receiptSha256": "e03af343c74d4ebbf83dcb67610616e3fcae536dc74ed964ef92fd6ea6607839", "candidateId": "cut-in-the-page",
       "portrait": { "sha256": "b3db27921c56791003c33b25859d5dec4134429c8c3337b101ac3e45392a567f", "specSha256": "625af5242a2284fb2b324aa5372deaff625453e7f2805cd186a6dbbf896d2e63", "receiptSpecSha256": "2dea9f95b9f9fb370b5cf2ced5c6c6e267c5c800f089afad71534c0c0756173e" },
       "square": { "sha256": "f85568c4ac4add2583a3f5c367ce1f8c37921e888419f08789f815d32de3dcf4", "specSha256": "15c4a9996e6ce2d757911c9869f09c8a0c18476d508e54c78982952bc6688cda", "receiptSpecSha256": "186c4d34308b24ac0e5e73a25ff044e7911be750c943fd7700d50dba8315ba05" }
     },
     "jspace-inside-the-machine": {
-      "receiptSha256": "b3d568170fd07dd0c207fbd8d4a5dfca188c1745d6a2493456087d3df60e4fa6",
-      "candidateId": "learned-watershed",
+      "receiptKind": "cover-selection-v2", "receiptPath": "cover-selection.json", "receiptSha256": "b3d568170fd07dd0c207fbd8d4a5dfca188c1745d6a2493456087d3df60e4fa6", "candidateId": "learned-watershed",
       "portrait": { "sha256": "61f6b9a977fd47717f150cf30b382a9e7afcfc924791b3d8daaa02302d8718af", "specSha256": "8ce5a5c7a0538156dc3e74df0f720ef91814975609b4d3daf08e21d0936bc1f6", "receiptSpecSha256": "9360336f2b5d64c7526cccb1c6de1aec3a4191d79c43fddc35b39991d91e55d0" },
       "square": { "sha256": "4f6556f6011d7c61ad2006a1bbc2c1ae3ccd2f52ba7f50b0927a69ebc59b95c2", "specSha256": "6acb24e480c5dfb96b9916481baa100247a50effc0ab8d45d318f0fd58d20e25", "receiptSpecSha256": "06e883765057c0b0378515901be3c9f51895e8b47d147f5174097af3eb2cc1a4" }
     },
     "echo-from-the-inside": {
-      "receiptSha256": "a06939bb93c60335c8179ce5c2c903ea906b21b549a797663f2a73558cba2e1b",
-      "candidateId": "rooms-inside-the-app",
-      "portrait": { "sha256": "0fe641954a1f20016613596afbaa8a95dc218611077c276bb13aa8cc191c40d1", "specSha256": "c222305af7fbce14a0705f37c3a74cd72f934632a3b6b7b2d4529a10f4ac5639" },
-      "square": { "sha256": "3fd3c6c167ba13f8080c67d2aeb315851f63a0e2955e970daab0cff77d435ff9", "specSha256": "fd273d99771580fcd7d5457141c5206f14d18c22eae9a330bd699a3398b20cc3" }
+      "receiptKind": "cover-selection-v2", "receiptPath": "cover-selection.json", "receiptSha256": "a06939bb93c60335c8179ce5c2c903ea906b21b549a797663f2a73558cba2e1b", "candidateId": "rooms-inside-the-app",
+      "portrait": { "sha256": "0fe641954a1f20016613596afbaa8a95dc218611077c276bb13aa8cc191c40d1", "specSha256": "c222305af7fbce14a0705f37c3a74cd72f934632a3b6b7b2d4529a10f4ac5639", "receiptSpecSha256": "c222305af7fbce14a0705f37c3a74cd72f934632a3b6b7b2d4529a10f4ac5639" },
+      "square": { "sha256": "3fd3c6c167ba13f8080c67d2aeb315851f63a0e2955e970daab0cff77d435ff9", "specSha256": "fd273d99771580fcd7d5457141c5206f14d18c22eae9a330bd699a3398b20cc3", "receiptSpecSha256": "fd273d99771580fcd7d5457141c5206f14d18c22eae9a330bd699a3398b20cc3" }
     },
     "why-it-feels-right": {
-      "receiptSha256": "e1a287ae9a78197f3b113c61d20c722cde7ce7fdf9c85d8da0cb9018d4cc96ba",
-      "candidateId": "impossible-teapot",
-      "portrait": { "sha256": "3fbc32510e611766c150c6280dc0059b634d1c6d4f0923beec84291fb0e819b3", "specSha256": "61c356e384e430fc579e0ee002224110895db47d7b2249ae6b317942389aad63" },
-      "square": { "sha256": "060252a5878ee62f05586c5583fd71862d58f35202dd7692c1a48942ccde84d4", "specSha256": "81457474f25eda8986b1584655dfb842daee7871d401e9f720eeb335b591787a" }
+      "receiptKind": "cover-selection-v2", "receiptPath": "cover-selection.json", "receiptSha256": "e1a287ae9a78197f3b113c61d20c722cde7ce7fdf9c85d8da0cb9018d4cc96ba", "candidateId": "impossible-teapot",
+      "portrait": { "sha256": "3fbc32510e611766c150c6280dc0059b634d1c6d4f0923beec84291fb0e819b3", "specSha256": "61c356e384e430fc579e0ee002224110895db47d7b2249ae6b317942389aad63", "receiptSpecSha256": "61c356e384e430fc579e0ee002224110895db47d7b2249ae6b317942389aad63" },
+      "square": { "sha256": "060252a5878ee62f05586c5583fd71862d58f35202dd7692c1a48942ccde84d4", "specSha256": "81457474f25eda8986b1584655dfb842daee7871d401e9f720eeb335b591787a", "receiptSpecSha256": "81457474f25eda8986b1584655dfb842daee7871d401e9f720eeb335b591787a" }
+    },
+    "you-are-the-architect": {
+      "receiptKind": "legacy-cover-pair-v1", "receiptPath": "legacy-cover-pair.json", "receiptSha256": "f568679357ada2d6b81cf93f02bccc31235bd391a9eb4bb1d9115461824332f5", "candidateId": "directed-construction",
+      "portrait": { "sha256": "c3fb6b82f0fa1de9a957f92eacfe9051afbfaf2dde4a55ffe92e1a270e7fe214", "epubSha256": "ab9def0aa470486a4fbdb6f8704de3b922d287a92ad05b940a5c0fc5bd201263", "epubMember": "OEBPS/cover.png", "epubCoverSha256": "c3fb6b82f0fa1de9a957f92eacfe9051afbfaf2dde4a55ffe92e1a270e7fe214" },
+      "square": { "sha256": "6afeba4188e4e138bb0772ad9cd525df6c816703e0ca1f8cb10b3e8be5d6e349", "specSha256": "1fe7625b3a3471a85fc87c80d4397bb02b0a0396774b1fcad0f18aa755851f2e", "renderSha256": "e2a800efb3f77fe8265bba2571efbe6fa985e77d2b79a6c63f9e8b94d32c4b17" }
+    },
+    "the-bug-is-a-clue": {
+      "receiptKind": "legacy-cover-pair-v1", "receiptPath": "legacy-cover-pair.json", "receiptSha256": "467aa3d8ad602090a965be1f6f9b5a3b85eee895ef3b6c535d88a45a03791eb1", "candidateId": "revealing-shadow",
+      "portrait": { "sha256": "a941979e3e22299fe8c552060803feb8759d43accd3962c95ca0bff09c6da417", "epubSha256": "52e774ad8305b7cea7e32dba5e2651f46b1da1a28b69a396f0faaff3a03183f4", "epubMember": "OEBPS/cover.png", "epubCoverSha256": "a941979e3e22299fe8c552060803feb8759d43accd3962c95ca0bff09c6da417" },
+      "square": { "sha256": "f40a12d096185513c6328b13de82dd2b66a61b897e95b8d3f4f275633e299530", "specSha256": "372aeec8a5bfa3a35e503e9e4faae3ee6ed272871a29a2c05884191a14778694", "renderSha256": "383a6a27095510267794691ed98acc1a1c8a24485eff8abb8c165232ee96b5ef" }
+    },
+    "tests-first": {
+      "receiptKind": "legacy-cover-pair-v1", "receiptPath": "legacy-cover-pair.json", "receiptSha256": "27e74d2ad119cbab14e484a32e806f223481424fbf584113a6bc65884989e31a", "candidateId": "safety-block",
+      "portrait": { "sha256": "5f16eca3d70db64c9c55424f4be6bc069881aa9853ba950a08d4b11aabf30c99", "epubSha256": "58410d32b0aeebee2147cd421af11c71648117a6cae34778c9b258bd74089fbc", "epubMember": "OEBPS/cover.png", "epubCoverSha256": "5f16eca3d70db64c9c55424f4be6bc069881aa9853ba950a08d4b11aabf30c99" },
+      "square": { "sha256": "ce0be55768b0ce57aadf9d663966720fdf8b86652142b4f917c0886a55363e67", "specSha256": "60cefbee37af74d94126b92536016ad22400da2197834192f9dbb51485c1c8d3", "renderSha256": "1ff7717ffaff1cb87aac73f98c6b723f4701e3c40e7ad70cc195ec489d19c336" }
+    },
+    "git-happens": {
+      "receiptKind": "legacy-cover-pair-v1", "receiptPath": "legacy-cover-pair.json", "receiptSha256": "fc7d727dff5271c2d3ebdff7b11357791779c9245dd0efa5b8726ed1213d39b1", "candidateId": "the-deliberate-knot",
+      "portrait": { "sha256": "fc12ad8dee431de5af930b2eaba8407798a45d41c376bd000cc87a72f543b546", "epubSha256": "b9cc5bdff4555795894d49b7c476351788ea71ab27fe6bad738747dead94d100", "epubMember": "OEBPS/cover.png", "epubCoverSha256": "fc12ad8dee431de5af930b2eaba8407798a45d41c376bd000cc87a72f543b546" },
+      "square": { "sha256": "84dca530115178a5969245e180997d245d8343b958134930e39edaa63a9e892f", "specSha256": "d1f0d556cb9ac6061817f4fdab2651c8659e4279e8a5fe96a62c9f44326ee307", "renderSha256": "65bc9188e97729c1e29e5122fc441b9ab006164c8f1c9ba821ef9cd48b40a548" }
     },
     "findable": {
-      "receiptSha256": "740492733ee69bc9ff62f3d8d1dbfc25aba60a93b01a779ae5d1033a8f42988f",
-      "candidateId": "exact-phrase",
-      "portrait": { "sha256": "4b0ca55fb5e4f4edca32102c0fd3b49b67db1ed67399578ac8d241735501fe19", "specSha256": "c251c17e74553aeb140103d4da6798d8c0cec84e814fbeea1872cbae12289fdf" },
-      "square": { "sha256": "b56aec2a60d6a609bf416935791f03d3a612d9eb2837fd568c7a61815720b3e4", "specSha256": "f24070f6af4904bf7f14516d8b63787c267b61292ce7bf5f35eb4ad7723c92ee" }
+      "receiptKind": "cover-selection-v2", "receiptPath": "cover-selection.json", "receiptSha256": "740492733ee69bc9ff62f3d8d1dbfc25aba60a93b01a779ae5d1033a8f42988f", "candidateId": "exact-phrase",
+      "portrait": { "sha256": "4b0ca55fb5e4f4edca32102c0fd3b49b67db1ed67399578ac8d241735501fe19", "specSha256": "c251c17e74553aeb140103d4da6798d8c0cec84e814fbeea1872cbae12289fdf", "receiptSpecSha256": "c251c17e74553aeb140103d4da6798d8c0cec84e814fbeea1872cbae12289fdf" },
+      "square": { "sha256": "b56aec2a60d6a609bf416935791f03d3a612d9eb2837fd568c7a61815720b3e4", "specSha256": "f24070f6af4904bf7f14516d8b63787c267b61292ce7bf5f35eb4ad7723c92ee", "receiptSpecSha256": "f24070f6af4904bf7f14516d8b63787c267b61292ce7bf5f35eb4ad7723c92ee" }
+    },
+    "the-voice-in-the-machine": {
+      "receiptKind": "legacy-cover-pair-v1", "receiptPath": "legacy-cover-pair.json", "receiptSha256": "9cfb6ef3085abcabcf76f231d8eaa016f0a5dd52d962a8744e22f91ef825c174", "candidateId": "sentence-to-sound",
+      "portrait": { "sha256": "9ecdf6c46c44b5c906855f69a76f036af4cc8a5088a15ce21483eb316d7d0f17", "epubSha256": "852938ee1e95630d9cd3b77bc350f536c3f4beb7dfc849d121f3303ae4674734", "epubMember": "OEBPS/cover.png", "epubCoverSha256": "9ecdf6c46c44b5c906855f69a76f036af4cc8a5088a15ce21483eb316d7d0f17" },
+      "square": { "sha256": "d5cf8b8613ee544612725376fd7a2e0d607319363f5e86ea1d4c0c0c3ae2d4a6", "specSha256": "0359d473bbec86f3c75db7e566c21acefc9a25cfe2b67851c94e6daf18ef7a1a", "renderSha256": "05ed6d5cbd022b8878650c629edd21ecb52855f149462d27f4ad084a6e8641d8" }
     },
     "rodents-in-the-walls": {
-      "receiptSha256": "d1c87d54233960540be9baa5e82c7a816718c212d332ae8f8b3364b3b6643ea9",
-      "candidateId": "c2a-compact-ribbon-editorial-footer",
+      "receiptKind": "legacy-selection-v1", "receiptPath": "cover-selection.json", "receiptSha256": "d1c87d54233960540be9baa5e82c7a816718c212d332ae8f8b3364b3b6643ea9", "candidateId": "c2a-compact-ribbon-editorial-footer",
       "portrait": { "sha256": "e1afe1fbcbd440927c8d4d62de475af3230afe0d8edbbb6a886c498fc21af2a2", "specSha256": "917f7f7b6866e668c3da8b144609ecf093d111112c0177d2d92a179678fc53e3" },
       "square": null
     },
     "chicken-predators": {
-      "receiptSha256": "d13eb40de8a1d67fb3a9e1d55f12aa7fe2898ba6a25ca2d987f2c8ee4b44b225",
-      "candidateId": "night-at-the-fence",
-      "portrait": { "sha256": "1745b28342f6e70061f5333f9c7f29e1e5adcbe726e111432f88563648b87210", "specSha256": "89d3b59a714aefe45e3d7c88f26dd3e5b8f78a004e2b38d598f3d302b70086f3" },
-      "square": { "sha256": "18c6520b20c4ba39346d03e84a856eb1785968327cce69bdb58ce234f031d59d", "specSha256": "404a3b69dabcdc2b20e8ad83de179a8fefdd3bc13faa2035f6e09a35a3a833ea" }
+      "receiptKind": "cover-selection-v2", "receiptPath": "cover-selection.json", "receiptSha256": "d13eb40de8a1d67fb3a9e1d55f12aa7fe2898ba6a25ca2d987f2c8ee4b44b225", "candidateId": "night-at-the-fence",
+      "portrait": { "sha256": "1745b28342f6e70061f5333f9c7f29e1e5adcbe726e111432f88563648b87210", "specSha256": "89d3b59a714aefe45e3d7c88f26dd3e5b8f78a004e2b38d598f3d302b70086f3", "receiptSpecSha256": "89d3b59a714aefe45e3d7c88f26dd3e5b8f78a004e2b38d598f3d302b70086f3" },
+      "square": { "sha256": "18c6520b20c4ba39346d03e84a856eb1785968327cce69bdb58ce234f031d59d", "specSha256": "404a3b69dabcdc2b20e8ad83de179a8fefdd3bc13faa2035f6e09a35a3a833ea", "receiptSpecSha256": "404a3b69dabcdc2b20e8ad83de179a8fefdd3bc13faa2035f6e09a35a3a833ea" }
     },
     "the-new-deal": {
-      "receiptSha256": "87f1a12509bd14ab95bde7aec45b65604e5e4db1b2d2db2f960cea6940754ed0",
-      "candidateId": "weight-of-the-mailbag",
-      "portrait": { "sha256": "3d6ded0e0af6c9454d6a5712e78fbba84fb8aa4f0dbd72fd5ce7e72768d14a37", "specSha256": "b6f801a44d7b944189c482d9d4836bb0d03d0d81274f75ff57d36abb018113df" },
-      "square": { "sha256": "2034da6997ad9c451a3542049fbce5cfbc0203a6675a36bc405413de20a437c0", "specSha256": "be94fee278f98d193e7a809f83f385b5da169bb39c3b3a453209e98d8915ec0d" }
+      "receiptKind": "cover-selection-v2", "receiptPath": "cover-selection.json", "receiptSha256": "87f1a12509bd14ab95bde7aec45b65604e5e4db1b2d2db2f960cea6940754ed0", "candidateId": "weight-of-the-mailbag",
+      "portrait": { "sha256": "3d6ded0e0af6c9454d6a5712e78fbba84fb8aa4f0dbd72fd5ce7e72768d14a37", "specSha256": "b6f801a44d7b944189c482d9d4836bb0d03d0d81274f75ff57d36abb018113df", "receiptSpecSha256": "b6f801a44d7b944189c482d9d4836bb0d03d0d81274f75ff57d36abb018113df" },
+      "square": { "sha256": "2034da6997ad9c451a3542049fbce5cfbc0203a6675a36bc405413de20a437c0", "specSha256": "be94fee278f98d193e7a809f83f385b5da169bb39c3b3a453209e98d8915ec0d", "receiptSpecSha256": "be94fee278f98d193e7a809f83f385b5da169bb39c3b3a453209e98d8915ec0d" }
     },
     "is-there-anyone-in-here": {
-      "receiptSha256": "4733c3280359f6682aba1a4c862c67a123b1722ef8ed7097c2ae9e43112218b6",
-      "candidateId": "one-lit-aperture",
-      "portrait": { "sha256": "fe7010107364102e7d825e3ce5a2597aaa8a7f84dee794f41c1730da1f7b9f96", "specSha256": "e1fbe94d2e2ed39fc5b3989c65c3e09dc77f881de9ea3b61fb009967475d2848" },
-      "square": { "sha256": "8aa19da296b7cf27502a8d22ba352981b11481184daba1531cd8370aebe5df4b", "specSha256": "87689bb3ce57e9a424f383d983773a65f570f0c614071233b1dad4f99d3da0be" }
+      "receiptKind": "cover-selection-v2", "receiptPath": "cover-selection.json", "receiptSha256": "4733c3280359f6682aba1a4c862c67a123b1722ef8ed7097c2ae9e43112218b6", "candidateId": "one-lit-aperture",
+      "portrait": { "sha256": "fe7010107364102e7d825e3ce5a2597aaa8a7f84dee794f41c1730da1f7b9f96", "specSha256": "e1fbe94d2e2ed39fc5b3989c65c3e09dc77f881de9ea3b61fb009967475d2848", "receiptSpecSha256": "e1fbe94d2e2ed39fc5b3989c65c3e09dc77f881de9ea3b61fb009967475d2848" },
+      "square": { "sha256": "8aa19da296b7cf27502a8d22ba352981b11481184daba1531cd8370aebe5df4b", "specSha256": "87689bb3ce57e9a424f383d983773a65f570f0c614071233b1dad4f99d3da0be", "receiptSpecSha256": "87689bb3ce57e9a424f383d983773a65f570f0c614071233b1dad4f99d3da0be" }
+    },
+    "claude-platform-01-the-message": {
+      "receiptKind": "cover-selection-v2", "receiptPath": "cover-selection.json", "receiptSha256": "5a8ca947c8889a94be14392bc02d9a96489965e8dcc9f66e005062eed8b41e23", "candidateId": "route-and-return",
+      "portrait": { "sha256": "f60f0ef725bcc9a44a8800f49735421959bab8c8bb611ed9f47d529e5aebf44d", "specSha256": "bf35ff26035ec1bdd6f686edb88d8f344318a1fae16bc50d38d234769e6c5648", "receiptSpecSha256": "71556ccf218c6159c7a28ff78d75e96c50eb5d8e96d259c0bee89345623318a0" },
+      "square": { "sha256": "e68c9a631252ec1353df8290495cf3da1d01efa399f92056fcd39a67f85b3c32", "specSha256": "fd9ac2d6d5168e53e026c35e7d2448799f0402b808eed8d935ac88d1312b3ef1", "receiptSpecSha256": "b237e751ca4261b803d9a79da99246e0ff07e271fa376d3b30b464ff1a75bb6f" }
+    },
+    "claude-platform-02-thinking-and-reliable-responses": {
+      "receiptKind": "cover-selection-v2", "receiptPath": "cover-selection.json", "receiptSha256": "0daa0937f344104b56a294a7cf89929db0296f303bd9df7585461a42fc6de278", "candidateId": "event-by-event",
+      "portrait": { "sha256": "1b7ca031550cde82c3f7ac8b1ee234b4884befad32cca1c96f5c3d5d2659493a", "specSha256": "2cb9097478ce4ccb3cbed8283e47fc6acfb664707c07e8837a58dac4e11783a2", "receiptSpecSha256": "01b752444f528f8877822bd1044c2dbf37beb5f35c0762e1a6c13945e9467b6a" },
+      "square": { "sha256": "f47d53aa8ed60e69e291b595eea2826a326682bfa21660277e84a42ae3b220d1", "specSha256": "c0fe4c9f0dca850765fb283f500449a96ae7c7c356058b245ba42772f4c8b422", "receiptSpecSha256": "9bfd7d67a100344ff7aff8c6e2519c353be873e63cb20938a065f0ec969d9155" }
     }
   }
 }

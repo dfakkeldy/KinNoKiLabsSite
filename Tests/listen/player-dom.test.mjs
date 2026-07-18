@@ -560,14 +560,15 @@ test('an all-text catalog hides the player but shows one honest streaming status
   const player = await bootPlayer({ catalog });
   const emptyState = player.elements.get('emptyState');
   const library = player.elements.get('library');
-  const libraryLinks = descendants(library, (node) => node.tagName === 'A');
+  const libraryCards = allLibraryCards(player);
+  const libraryLinks = libraryCards.flatMap((card) => descendants(card, (node) => node.tagName === 'A'));
 
   assert.equal(player.room.hidden, true);
   assert.equal(isVisible(emptyState), true);
   assert.equal(emptyState.textContent, emptyMessage);
   assert.equal(isVisible(player.elements.get('status')), false);
   assert.equal(isVisible(player.cta), true);
-  assert.equal(library.children.length, catalog.books.length);
+  assert.equal(libraryCards.length, catalog.books.length);
   assert.equal(libraryLinks.filter((link) => link.textContent === 'Listen').length, 0);
 });
 
@@ -578,7 +579,7 @@ test('the selected playable standalone stays in the complete secondary list and 
 
   assert.equal(player.room.hidden, false);
   assert.equal(player.elements.get('emptyState').hidden, true);
-  assert.equal(library.children.length, publishedCatalog.books.length);
+  assert.equal(allLibraryCards(player).length, publishedCatalog.books.length);
   assert.equal(selected.getAttribute('aria-current'), 'page');
   assert.deepEqual(descendants(selected, (node) => node.tagName === 'A').map((link) => link.textContent), ['EPUB', 'Read']);
   assertChickenFallbacks(player);
@@ -831,6 +832,13 @@ test('a figure image reused by a later block still preloads its own successor', 
 
 /* ── Library grid ──────────────────────────────────────── */
 
+function allLibraryCards(player) {
+  return [
+    ...descendants(player.elements.get('seriesLibrary'), (node) => node.tagName === 'LI'),
+    ...player.elements.get('library').children,
+  ];
+}
+
 test('library entries with covers render visual cards with cover, subtitle, byline, and unchanged actions', async () => {
   const catalog = cloneCatalog((book) => ({
     ...book,
@@ -842,13 +850,15 @@ test('library entries with covers render visual cards with cover, subtitle, byli
   }));
   const player = await bootPlayer({ catalog });
   const library = player.elements.get('library');
+  const libraryCards = allLibraryCards(player);
 
-  assert.equal(library.children.length, catalog.books.length);
-  for (const item of library.children) {
+  assert.equal(libraryCards.length, catalog.books.length);
+  for (const item of libraryCards) {
     const cover = item.children[0];
-    const title = item.children[1];
+    const title = item.children.find((child) => child.classList.values.has('room-lib-title'));
     assert.equal(cover.tagName, 'IMG');
     assert.ok(cover.classList.values.has('room-lib-cover'));
+    assert.ok(title, 'card has a title after optional volume metadata');
     assert.equal(title.className, 'room-lib-title');
     assert.equal(cover.alt, `Cover of ${title.textContent}`);
     assert.match(cover.src, /^books\/[a-z0-9-]+\/cover\.jpg$/);
@@ -862,16 +872,17 @@ test('library entries with covers render visual cards with cover, subtitle, byli
     assert.match(byline[0].textContent, /^Written by .+$/);
   }
 
-  const withSubtitle = library.children.find((item) => item.children[1].textContent === 'Why It Feels Right');
+  const withSubtitle = libraryCards.find((item) => item.children[1].textContent === 'Why It Feels Right');
   const subtitle = descendants(withSubtitle, (node) => node.classList.values.has('room-lib-subtitle'));
   assert.equal(subtitle.length, 1);
   assert.equal(subtitle[0].textContent, 'How intuition works');
 
-  const withoutSubtitle = library.children.find((item) => item.children[1].textContent === 'Tests First');
+  const withoutSubtitle = libraryCards.find((item) => item.children[1].textContent === 'Tests First');
   assert.equal(descendants(withoutSubtitle, (node) => node.classList.values.has('room-lib-subtitle')).length, 0);
 
-  // Actions are untouched: playable books keep Listen → EPUB → Read, text books EPUB → Read.
-  const rodents = library.children.find((item) => item.children[1].textContent === 'Rodents in the Walls');
+  // Actions are untouched: every recovered public book is now playable and
+  // therefore keeps Listen → EPUB → Read unless it is the selected book.
+  const rodents = libraryCards.find((item) => item.children[1].textContent === 'Rodents in the Walls');
   const rodentsBook = publishedCatalog.books.find((book) => book.slug === 'rodents-in-the-walls');
   const rodentsLinks = descendants(rodents, (node) => node.tagName === 'A');
   assert.deepEqual(rodentsLinks.map((link) => link.textContent), ['Listen', 'EPUB', 'Read']);
@@ -883,7 +894,7 @@ test('library entries with covers render visual cards with cover, subtitle, byli
   assert.equal(rodentsLinks[2].rel, 'noopener');
 
   const textLinks = descendants(withoutSubtitle, (node) => node.tagName === 'A');
-  assert.deepEqual(textLinks.map((link) => link.textContent), ['EPUB', 'Read']);
+  assert.deepEqual(textLinks.map((link) => link.textContent), ['Listen', 'EPUB', 'Read']);
 });
 
 /* The paired-m4b books ship square 768×768 art on purpose, so the grid
@@ -927,10 +938,10 @@ test('a square cover keeps its own dimensions instead of a forced portrait ratio
 
 test('a cover without catalog dimensions gets neither width nor height', async () => {
   const player = await bootPlayer({ catalog: sizedCatalog({}) });
-  const library = player.elements.get('library');
+  const libraryCards = allLibraryCards(player);
 
-  assert.equal(library.children.length, publishedCatalog.books.length);
-  for (const item of library.children) {
+  assert.equal(libraryCards.length, publishedCatalog.books.length);
+  for (const item of libraryCards) {
     const cover = item.children[0];
     assert.equal(cover.tagName, 'IMG');
     assert.equal(cover.getAttribute('width'), null);
@@ -977,13 +988,14 @@ test('library entries without covers render no img and keep title-first markup a
     return rest;
   });
   const player = await bootPlayer({ catalog });
-  const library = player.elements.get('library');
+  const libraryCards = allLibraryCards(player);
 
-  assert.equal(library.children.length, catalog.books.length);
-  assert.equal(descendants(library, (node) => node.tagName === 'IMG').length, 0);
-  for (const item of library.children) {
-    assert.equal(item.children[0].className, 'room-lib-title');
-    assert.ok(item.children[0].textContent.length > 0);
+  assert.equal(libraryCards.length, catalog.books.length);
+  assert.equal(libraryCards.flatMap((card) => descendants(card, (node) => node.tagName === 'IMG')).length, 0);
+  for (const item of libraryCards) {
+    const title = item.children.find((child) => child.classList.values.has('room-lib-title'));
+    assert.ok(title, 'card keeps its title after optional volume metadata');
+    assert.ok(title.textContent.length > 0);
     const links = descendants(item, (node) => node.tagName === 'A');
     assert.ok(links.length >= 2);
     assert.deepEqual(links.slice(-2).map((link) => link.textContent), ['EPUB', 'Read']);
