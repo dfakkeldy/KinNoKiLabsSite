@@ -46,13 +46,14 @@ for arg in "$@"; do
   esac
 done
 
-for tool in jq ffprobe sips git unzip; do
+for tool in jq ffprobe sips git unzip python3; do
   command -v "$tool" >/dev/null 2>&1 || { echo "error: missing tool: $tool" >&2; exit 1; }
 done
 [ -d "$BOOKS_REPO/books" ] || { echo "error: BOOKS_REPO not found: $BOOKS_REPO" >&2; exit 1; }
 
 SITE_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT_DIR="$SITE_ROOT/Resources/listen"
+SERIES_SOURCE="$SITE_ROOT/Tools/listen-series.json"
 # shellcheck source=Tools/lib/listen-catalog-transaction.sh
 source "$SITE_ROOT/Tools/lib/listen-catalog-transaction.sh"
 listen_catalog_install_cleanup_traps
@@ -89,6 +90,8 @@ chicken-predators|Chicken Predators||GLM-5.2
 rodents-in-the-walls|Rodents in the Walls|Squirrels and Other Houseguests in Western Cape Breton|GPT-5.6 Sol
 the-new-deal|The New Deal|Canada Post, CUPW, and What It Means for Rural Mail|GLM-5.2
 is-there-anyone-in-here|Is There Anyone in Here?|One Language Model Examines the Case for Its Own Consciousness|Claude Fable 5
+claude-platform-01-the-message|The Message|Conversations, Content Blocks, and the Messages API|Codex (GPT-5)
+claude-platform-02-thinking-and-reliable-responses|Making Claude Think and Respond Reliably|Reasoning, Multimodal Inputs, Structured Output, and Streaming|Codex (GPT-5)
 EOF
 )"
 
@@ -96,17 +99,97 @@ EOF
 # an M4B and alignment sidecar; either file on any other public slug is rejected.
 AUDIO_EXPECTED="an-unsettling-conversation
 jspace-inside-the-machine
+echo-from-the-inside
+why-it-feels-right
+you-are-the-architect
+the-bug-is-a-clue
+tests-first
+git-happens
+findable
+the-voice-in-the-machine
 chicken-predators
 rodents-in-the-walls
 the-new-deal
-is-there-anyone-in-here"
+is-there-anyone-in-here
+claude-platform-01-the-message
+claude-platform-02-thinking-and-reliable-responses"
 
-EXPECTED_BOOK_COUNT=14
+# These editions were authorized under the public-first-listen contract. Their
+# publication receipts are mandatory and must pass the verifier shipped in the
+# exact BOOKS_REPO checkout before any of their assets enter the staging tree.
+PUBLICATION_REQUIRED="claude-platform-01-the-message
+claude-platform-02-thinking-and-reliable-responses"
+
+EXPECTED_BOOK_COUNT=16
 listen_catalog_transaction_init "$OUT_DIR"
 
+# BEGIN VALIDATE_SERIES
 json_contains_absolute_path() {
-  jq -e '.. | strings | select(startswith("/") or startswith("file://") or test("^[A-Za-z]:[\\\\/]"))' "$1" >/dev/null
+  jq -e '.. | strings | select(startswith("/") or (ascii_downcase | startswith("file://")) or test("^[A-Za-z]:[\\\\/]"))' "$1" >/dev/null
 }
+
+validate_series() {
+  local series_file="$1"
+  local catalog_file="$2"
+
+  jq -e . "$series_file" >/dev/null || {
+    echo "error: series source is not valid JSON" >&2
+    return 1
+  }
+  if json_contains_absolute_path "$series_file"; then
+    echo "error: series source contains an absolute filesystem path" >&2
+    return 1
+  fi
+  if json_contains_absolute_path "$catalog_file"; then
+    echo "error: staged catalog contains an absolute filesystem path" >&2
+    return 1
+  fi
+
+  jq -e --slurpfile catalog "$catalog_file" '
+    def nonblank:
+      type == "string" and (gsub("\\s"; "") | length) > 0;
+    def kebab:
+      type == "string" and test("^[a-z0-9]+(?:-[a-z0-9]+)*$");
+
+    (.series | type == "array" and length > 0) and
+    ($catalog | length == 1) and
+    ($catalog[0].version == 2) and
+    ($catalog[0].series == .series) and
+    ([.series[].id] as $ids | ($ids | length) == ($ids | unique | length)) and
+    (all(.series[];
+      .plannedVolumeCount as $planned |
+      (.id | kebab) and
+      (.title | nonblank) and
+      (.description | nonblank) and
+      (.featured | type == "boolean") and
+      (.plannedVolumeCount | type == "number" and . > 0 and . == floor) and
+      (.volumes | type == "array" and length > 0) and
+      (all(.volumes[];
+        (.number | type == "number" and . > 0 and . == floor) and
+        (.number <= $planned) and
+        (.book | kebab)
+      )) and
+      ([.volumes[].number] as $numbers |
+        $numbers == ($numbers | sort) and
+        ($numbers | length) == ($numbers | unique | length))
+    )) and
+    ([.series[] | select(.featured == true)] | length == 1) and
+    ([.series[].volumes[].book] as $memberships |
+      ($memberships | length) == ($memberships | unique | length)) and
+    (all(.series[].volumes[].book;
+      . as $book |
+      ([$catalog[0].books[] | select(.slug == $book)] | length) == 1
+    )) and
+    ([.series[] | select(.featured == true)][0].volumes[0].book as $first |
+      any($catalog[0].books[];
+        .slug == $first and .audio.status == "available"
+      ))
+  ' "$series_file" >/dev/null || {
+    echo "error: series source or staged catalog violates the version 2 series contract" >&2
+    return 1
+  }
+}
+# END VALIDATE_SERIES
 
 # Real pixel dimensions of a staged cover. The player sizes library thumbnails
 # from the published coverWidth/coverHeight rather than assuming one aspect
@@ -347,6 +430,21 @@ while IFS='|' read -r slug title subtitle written_by; do
 
   m4b="$book_dir/$slug.m4b"
   sidecar="$book_dir/$slug.alignment.json"
+  publication="$book_dir/publication.json"
+  edition_json='null'
+  if grep -Fxq "$slug" <<<"$PUBLICATION_REQUIRED"; then
+    [ -f "$publication" ] || { echo "error: required publication.json missing: $slug" >&2; exit 1; }
+  fi
+  if [ -f "$publication" ]; then
+    publication_verifier="$BOOKS_REPO/skill/scripts/verify_public_first_listen.py"
+    [ -f "$publication_verifier" ] || { echo "error: public first-listen verifier missing from BOOKS_REPO" >&2; exit 1; }
+    python3 "$publication_verifier" "$book_dir"
+    edition_json="$(jq '{
+      status: .publicationStatus,
+      humanListeningStatus: .humanListeningStatus,
+      disclosure: .disclosure
+    }' "$publication")"
+  fi
   links="$(jq -n \
     --arg folder "$GH_BASE/tree/main/books/$slug" \
     --arg epub "$GH_BASE/raw/main/books/$slug/$slug.epub" \
@@ -460,6 +558,7 @@ while IFS='|' read -r slug title subtitle written_by; do
       --arg sidecarPath "books/$slug/alignment.json" \
       --argjson hasWords "$has_words" \
       --argjson visuals "$visuals_json" \
+      --argjson edition "$edition_json" \
       --argjson links "$links" \
       '{
         slug: $slug, title: $title,
@@ -473,6 +572,7 @@ while IFS='|' read -r slug title subtitle written_by; do
         text: $text,
         visuals: $visuals,
         alignment: { sidecar: $sidecarPath, hasWordTimings: $hasWords },
+        edition: $edition,
         links: $links
       }' > "$WORK_ROOT/$slug.book.json"
   else
@@ -493,6 +593,7 @@ while IFS='|' read -r slug title subtitle written_by; do
       --arg writtenBy "$written_by" --arg curator "Dan Fakkeldy" \
       --arg cover "books/$slug/cover.jpg" --arg coverAlt "Cover of $title" \
       --argjson coverWidth "$cover_width" --argjson coverHeight "$cover_height" \
+      --argjson edition "$edition_json" \
       --argjson links "$links" \
       '{
         slug: $slug, title: $title,
@@ -501,6 +602,7 @@ while IFS='|' read -r slug title subtitle written_by; do
         cover: $cover, coverAlt: $coverAlt,
         coverWidth: $coverWidth, coverHeight: $coverHeight,
         audio: { status: "none" },
+        edition: $edition,
         links: $links
       }' > "$WORK_ROOT/$slug.book.json"
   fi
@@ -510,14 +612,17 @@ done <<<"$ALLOW_LIST"
 jq -s \
   --arg generated "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   --arg commit "$SHA" \
-  '{
-    version: 1,
+  --slurpfile series "$SERIES_SOURCE" \
+  '. as $books | {
+    version: 2,
     generated: $generated,
     source: { repo: "dfakkeldy/explainer-audiobooks", commit: $commit },
-    books: .
+    series: $series[0].series,
+    books: $books
   }' "${BOOK_JSONS[@]}" > "$STAGED_CATALOG"
 
 validate_staged_bundle
+validate_series "$SERIES_SOURCE" "$STAGED_CATALOG"
 listen_catalog_publish_staged_bundle
 
 # The catalog builder owns audio/text synchronization; the paired-cover helper

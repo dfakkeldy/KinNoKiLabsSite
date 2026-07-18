@@ -11,7 +11,7 @@ CATALOG_PATH="${CATALOG_PATH:-$SITE_ROOT/Resources/listen/books.json}"
 LISTEN_BOOKS_ROOT="${LISTEN_BOOKS_ROOT:-$SITE_ROOT/Resources/listen/books}"
 
 [ "$#" -eq 0 ] || { echo "error: unknown argument: $1" >&2; exit 2; }
-for tool in jq shasum sips git; do
+for tool in jq shasum sips git unzip; do
   command -v "$tool" >/dev/null 2>&1 || { echo "error: missing tool: $tool" >&2; exit 1; }
 done
 [ -d "$BOOKS_REPO/books" ] || { echo "error: BOOKS_REPO not found: $BOOKS_REPO" >&2; exit 1; }
@@ -22,16 +22,33 @@ PORTRAIT_SLUGS="an-unsettling-conversation
 jspace-inside-the-machine
 echo-from-the-inside
 why-it-feels-right
+you-are-the-architect
+the-bug-is-a-clue
+tests-first
+git-happens
 findable
+the-voice-in-the-machine
 rodents-in-the-walls
 chicken-predators
 the-new-deal
-is-there-anyone-in-here"
+is-there-anyone-in-here
+claude-platform-01-the-message
+claude-platform-02-thinking-and-reliable-responses"
 PLAYER_SLUGS="an-unsettling-conversation
 jspace-inside-the-machine
+echo-from-the-inside
+why-it-feels-right
+you-are-the-architect
+the-bug-is-a-clue
+tests-first
+git-happens
+findable
+the-voice-in-the-machine
 chicken-predators
 the-new-deal
-is-there-anyone-in-here"
+is-there-anyone-in-here
+claude-platform-01-the-message
+claude-platform-02-thinking-and-reliable-responses"
 
 sha256() { shasum -a 256 "$1" | awk '{print $1}'; }
 dimensions() {
@@ -49,7 +66,7 @@ verify_hash() {
   }
 }
 
-jq -e '.schemaVersion == 1 and (.books | type == "object")' "$SOURCE_MANIFEST_PATH" >/dev/null || {
+jq -e '.schemaVersion == 2 and (.books | type == "object")' "$SOURCE_MANIFEST_PATH" >/dev/null || {
   echo "error: unsupported source manifest" >&2; exit 1;
 }
 expected_slugs="$(printf '%s\n' "$PORTRAIT_SLUGS" | LC_ALL=C sort)"
@@ -65,10 +82,24 @@ actual_commit="$(git -C "$BOOKS_REPO" rev-parse HEAD)"
 relevant_paths=()
 while IFS= read -r slug; do
   [ -n "$slug" ] || continue
-  relevant_paths+=("books/$slug/cover-selection.json" "books/$slug/cover.png" "books/$slug/cover-spec.json")
-  if [ "$slug" != "rodents-in-the-walls" ]; then
-    relevant_paths+=("books/$slug/m4b-cover.png" "books/$slug/m4b-cover-spec.json")
-  fi
+  receipt_kind="$(jq -r --arg slug "$slug" '.books[$slug].receiptKind' "$SOURCE_MANIFEST_PATH")"
+  case "$receipt_kind" in
+    cover-selection-v2)
+      relevant_paths+=("books/$slug/cover-selection.json" "books/$slug/cover.png" "books/$slug/cover-spec.json")
+      relevant_paths+=("books/$slug/m4b-cover.png" "books/$slug/m4b-cover-spec.json")
+      ;;
+    legacy-cover-pair-v1)
+      relevant_paths+=("books/$slug/legacy-cover-pair.json" "books/$slug/cover.png" "books/$slug/$slug.epub")
+      relevant_paths+=("books/$slug/m4b-cover.png" "books/$slug/m4b-cover-spec.json" "books/$slug/m4b-cover.render.json")
+      ;;
+    legacy-selection-v1)
+      relevant_paths+=("books/$slug/cover-selection.json" "books/$slug/cover.png" "books/$slug/cover-spec.json")
+      ;;
+    *)
+      echo "error: unsupported receipt kind for $slug: $receipt_kind" >&2
+      exit 1
+      ;;
+  esac
 done <<<"$PORTRAIT_SLUGS"
 for relative in "${relevant_paths[@]}"; do
   git -C "$BOOKS_REPO" ls-files --error-unmatch "$relative" >/dev/null 2>&1 || {
@@ -113,68 +144,106 @@ entries="$work/provenance.ndjson"
 while IFS= read -r slug; do
   [ -n "$slug" ] || continue
   book_dir="$BOOKS_REPO/books/$slug"
-  receipt="$book_dir/cover-selection.json"
   portrait="$book_dir/cover.png"
-  portrait_spec="$book_dir/cover-spec.json"
   manifest_query=".books[\"$slug\"]"
+  receipt_kind="$(jq -r "$manifest_query.receiptKind" "$SOURCE_MANIFEST_PATH")"
+  receipt_path="$(jq -r "$manifest_query.receiptPath" "$SOURCE_MANIFEST_PATH")"
+  receipt="$book_dir/$receipt_path"
   schema="$(jq -r '.schema_version' "$receipt")"
 
   verify_hash "receipt" "$receipt" "$(jq -r "$manifest_query.receiptSha256" "$SOURCE_MANIFEST_PATH")"
   [ "$(jq -r '.book_slug' "$receipt")" = "$slug" ] || { echo "error: receipt slug mismatch for $slug" >&2; exit 1; }
   verify_hash "portrait" "$portrait" "$(jq -r "$manifest_query.portrait.sha256" "$SOURCE_MANIFEST_PATH")"
-  verify_hash "portrait spec" "$portrait_spec" "$(jq -r "$manifest_query.portrait.specSha256" "$SOURCE_MANIFEST_PATH")"
   [ "$(dimensions "$portrait")" = "1600 2560" ] || { echo "error: wrong portrait dimensions for $slug" >&2; exit 1; }
 
-  if [ "$slug" = "rodents-in-the-walls" ]; then
-    [ "$schema" = "1" ] || { echo "error: Rodents must retain its legacy approved receipt" >&2; exit 1; }
-    jq -e '.privacy.classification == "public-safe" and .privacy.permission_to_publish == "granted"' "$receipt" >/dev/null || {
-      echo "error: Rodents legacy privacy does not grant public publication" >&2; exit 1;
-    }
-    candidate="$(jq -r '.selected_candidate' "$receipt")"
-    [ "$(jq -r '.rendered_cover_sha256' "$receipt")" = "$(jq -r "$manifest_query.portrait.sha256" "$SOURCE_MANIFEST_PATH")" ] || {
-      echo "error: Rodents receipt portrait hash mismatch" >&2; exit 1;
-    }
-    [ "$(jq -r '.spec_sha256' "$receipt")" = "$(jq -r "$manifest_query.portrait.specSha256" "$SOURCE_MANIFEST_PATH")" ] || {
-      echo "error: Rodents receipt spec hash mismatch" >&2; exit 1;
-    }
-    square_json='null'
-  else
-    [ "$schema" = "2" ] || { echo "error: paired receipt required for $slug" >&2; exit 1; }
-    jq -e '.privacy.classification == "public-safe" and .privacy.permission_to_publish == true' "$receipt" >/dev/null || {
-      echo "error: $slug is not approved for public publication" >&2; exit 1;
-    }
-    candidate="$(jq -r '.candidate.id' "$receipt")"
-    square="$book_dir/m4b-cover.png"
-    square_spec="$book_dir/m4b-cover-spec.json"
-    square_hash="$(jq -r "$manifest_query.square.sha256" "$SOURCE_MANIFEST_PATH")"
-    portrait_receipt_spec_hash="$(jq -r "($manifest_query.portrait.receiptSpecSha256 // $manifest_query.portrait.specSha256)" "$SOURCE_MANIFEST_PATH")"
-    square_receipt_spec_hash="$(jq -r "($manifest_query.square.receiptSpecSha256 // $manifest_query.square.specSha256)" "$SOURCE_MANIFEST_PATH")"
-    verify_hash "square" "$square" "$square_hash"
-    verify_hash "square spec" "$square_spec" "$(jq -r "$manifest_query.square.specSha256" "$SOURCE_MANIFEST_PATH")"
-    [ "$(dimensions "$square")" = "2400 2400" ] || { echo "error: wrong square dimensions for $slug" >&2; exit 1; }
-    jq -e --arg portrait "$(jq -r "$manifest_query.portrait.sha256" "$SOURCE_MANIFEST_PATH")" \
-      --arg portraitSpec "$portrait_receipt_spec_hash" \
-      --arg square "$square_hash" --arg squareSpec "$square_receipt_spec_hash" \
-      '.variants.portrait.cover_sha256 == $portrait and .variants.portrait.specification_sha256 == $portraitSpec and
-       .variants.square.cover_sha256 == $square and .variants.square.specification_sha256 == $squareSpec' "$receipt" >/dev/null || {
-      echo "error: receipt variant hashes mismatch for $slug" >&2; exit 1;
-    }
-    square_json='null'
-    if grep -Fxq "$slug" <<<"$PLAYER_SLUGS"; then
-      sips -s format jpeg -s formatOptions 86 -z 768 768 "$square" --out "$work/player/$slug.jpg" >/dev/null
-      # Measure the derivative rather than restating the requested size: the
-      # recorded dimensions also become the catalog's coverWidth/coverHeight,
-      # which the player trusts for each thumbnail's aspect ratio.
-      derivative_dims="$(dimensions "$work/player/$slug.jpg")"
-      [ "$derivative_dims" = "768 768" ] || {
-        echo "error: wrong player derivative dimensions for $slug: $derivative_dims" >&2; exit 1;
+  square_json='null'
+  case "$receipt_kind" in
+    cover-selection-v2)
+      [ "$receipt_path" = "cover-selection.json" ] || { echo "error: wrong receipt path for $slug" >&2; exit 1; }
+      [ "$schema" = "2" ] || { echo "error: schema-v2 paired receipt required for $slug" >&2; exit 1; }
+      jq -e '.privacy.classification == "public-safe" and .privacy.permission_to_publish == true' "$receipt" >/dev/null || {
+        echo "error: $slug is not approved for public publication" >&2; exit 1;
       }
-      read -r derivative_width derivative_height <<<"$derivative_dims"
-      derivative_hash="$(sha256 "$work/player/$slug.jpg")"
-      square_json="$(jq -n --arg source "$square_hash" --arg derivative "$derivative_hash" \
-        --argjson width "$derivative_width" --argjson height "$derivative_height" \
-        '{sourceSha256:$source,derivativeSha256:$derivative,sourceDimensions:[2400,2400],derivativeDimensions:[$width,$height]}')"
-    fi
+      candidate="$(jq -r '.candidate.id' "$receipt")"
+      portrait_spec="$book_dir/cover-spec.json"
+      square="$book_dir/m4b-cover.png"
+      square_spec="$book_dir/m4b-cover-spec.json"
+      square_hash="$(jq -r "$manifest_query.square.sha256" "$SOURCE_MANIFEST_PATH")"
+      verify_hash "portrait spec" "$portrait_spec" "$(jq -r "$manifest_query.portrait.specSha256" "$SOURCE_MANIFEST_PATH")"
+      verify_hash "square" "$square" "$square_hash"
+      verify_hash "square spec" "$square_spec" "$(jq -r "$manifest_query.square.specSha256" "$SOURCE_MANIFEST_PATH")"
+      [ "$(dimensions "$square")" = "2400 2400" ] || { echo "error: wrong square dimensions for $slug" >&2; exit 1; }
+      jq -e --arg portrait "$(jq -r "$manifest_query.portrait.sha256" "$SOURCE_MANIFEST_PATH")" \
+        --arg portraitSpec "$(jq -r "$manifest_query.portrait.receiptSpecSha256" "$SOURCE_MANIFEST_PATH")" \
+        --arg square "$square_hash" --arg squareSpec "$(jq -r "$manifest_query.square.receiptSpecSha256" "$SOURCE_MANIFEST_PATH")" \
+        '.variants.portrait.cover_sha256 == $portrait and .variants.portrait.specification_sha256 == $portraitSpec and
+         .variants.square.cover_sha256 == $square and .variants.square.specification_sha256 == $squareSpec' "$receipt" >/dev/null || {
+        echo "error: receipt variant hashes mismatch for $slug" >&2; exit 1;
+      }
+      ;;
+    legacy-cover-pair-v1)
+      [ "$receipt_path" = "legacy-cover-pair.json" ] || { echo "error: wrong recovery receipt path for $slug" >&2; exit 1; }
+      [ "$schema" = "1" ] || { echo "error: legacy cover-pair receipt required for $slug" >&2; exit 1; }
+      jq -e '.privacy.classification == "public-safe" and .privacy.permission_to_publish == true' "$receipt" >/dev/null || {
+        echo "error: $slug recovery receipt is not approved for public publication" >&2; exit 1;
+      }
+      candidate="$(jq -r '.candidate_id' "$receipt")"
+      square="$book_dir/m4b-cover.png"
+      square_spec="$book_dir/m4b-cover-spec.json"
+      square_render="$book_dir/m4b-cover.render.json"
+      square_hash="$(jq -r "$manifest_query.square.sha256" "$SOURCE_MANIFEST_PATH")"
+      verify_hash "square" "$square" "$square_hash"
+      verify_hash "square spec" "$square_spec" "$(jq -r "$manifest_query.square.specSha256" "$SOURCE_MANIFEST_PATH")"
+      verify_hash "square render receipt" "$square_render" "$(jq -r "$manifest_query.square.renderSha256" "$SOURCE_MANIFEST_PATH")"
+      [ "$(dimensions "$square")" = "2400 2400" ] || { echo "error: wrong square dimensions for $slug" >&2; exit 1; }
+      jq -e --arg portrait "$(jq -r "$manifest_query.portrait.sha256" "$SOURCE_MANIFEST_PATH")" \
+        --arg epubSha "$(jq -r "$manifest_query.portrait.epubSha256" "$SOURCE_MANIFEST_PATH")" \
+        --arg square "$square_hash" --arg squareSpec "$(jq -r "$manifest_query.square.specSha256" "$SOURCE_MANIFEST_PATH")" \
+        --arg squareRender "$(jq -r "$manifest_query.square.renderSha256" "$SOURCE_MANIFEST_PATH")" \
+        '.portrait.path == "cover.png" and .portrait.dimensions == [1600,2560] and .portrait.sha256 == $portrait and
+         .portrait.epub_sha256 == $epubSha and .portrait.epub_cover_sha256 == $portrait and .square.path == "m4b-cover.png" and
+         .square.dimensions == [2400,2400] and .square.sha256 == $square and
+         .square.spec_path == "m4b-cover-spec.json" and .square.spec_sha256 == $squareSpec and
+         .square.render_path == "m4b-cover.render.json" and .square.render_sha256 == $squareRender' "$receipt" >/dev/null || {
+        echo "error: recovery receipt cover hashes mismatch for $slug" >&2; exit 1;
+      }
+      epub="$book_dir/$slug.epub"
+      epub_member="$(jq -r "$manifest_query.portrait.epubMember" "$SOURCE_MANIFEST_PATH")"
+      verify_hash "recovery EPUB" "$epub" "$(jq -r "$manifest_query.portrait.epubSha256" "$SOURCE_MANIFEST_PATH")"
+      [ "$(jq -r '.portrait.epub_path' "$receipt")" = "$slug.epub" ] || { echo "error: recovery EPUB path mismatch for $slug" >&2; exit 1; }
+      [ "$(jq -r '.portrait.epub_cover_member' "$receipt")" = "$epub_member" ] || { echo "error: recovery EPUB cover member mismatch for $slug" >&2; exit 1; }
+      unzip -p "$epub" "$epub_member" > "$work/epub-cover-$slug.png"
+      verify_hash "recovery EPUB cover" "$work/epub-cover-$slug.png" "$(jq -r "$manifest_query.portrait.epubCoverSha256" "$SOURCE_MANIFEST_PATH")"
+      ;;
+    legacy-selection-v1)
+      [ "$receipt_path" = "cover-selection.json" ] || { echo "error: wrong legacy selection path for $slug" >&2; exit 1; }
+      [ "$schema" = "1" ] || { echo "error: legacy selection receipt required for $slug" >&2; exit 1; }
+      jq -e '.privacy.classification == "public-safe" and .privacy.permission_to_publish == "granted"' "$receipt" >/dev/null || {
+        echo "error: $slug legacy privacy does not grant public publication" >&2; exit 1;
+      }
+      candidate="$(jq -r '.selected_candidate' "$receipt")"
+      portrait_spec="$book_dir/cover-spec.json"
+      verify_hash "portrait spec" "$portrait_spec" "$(jq -r "$manifest_query.portrait.specSha256" "$SOURCE_MANIFEST_PATH")"
+      [ "$(jq -r '.rendered_cover_sha256' "$receipt")" = "$(jq -r "$manifest_query.portrait.sha256" "$SOURCE_MANIFEST_PATH")" ] || {
+        echo "error: legacy receipt portrait hash mismatch for $slug" >&2; exit 1;
+      }
+      [ "$(jq -r '.spec_sha256' "$receipt")" = "$(jq -r "$manifest_query.portrait.specSha256" "$SOURCE_MANIFEST_PATH")" ] || {
+        echo "error: legacy receipt spec hash mismatch for $slug" >&2; exit 1;
+      }
+      ;;
+  esac
+
+  if grep -Fxq "$slug" <<<"$PLAYER_SLUGS"; then
+    sips -s format jpeg -s formatOptions 86 -z 768 768 "$square" --out "$work/player/$slug.jpg" >/dev/null
+    derivative_dims="$(dimensions "$work/player/$slug.jpg")"
+    [ "$derivative_dims" = "768 768" ] || {
+      echo "error: wrong player derivative dimensions for $slug: $derivative_dims" >&2; exit 1;
+    }
+    read -r derivative_width derivative_height <<<"$derivative_dims"
+    derivative_hash="$(sha256 "$work/player/$slug.jpg")"
+    square_json="$(jq -n --arg source "$square_hash" --arg derivative "$derivative_hash" \
+      --argjson width "$derivative_width" --argjson height "$derivative_height" \
+      '{sourceSha256:$source,derivativeSha256:$derivative,sourceDimensions:[2400,2400],derivativeDimensions:[$width,$height]}')"
   fi
 
   expected_candidate="$(jq -r "$manifest_query.candidateId" "$SOURCE_MANIFEST_PATH")"
@@ -182,9 +251,9 @@ while IFS= read -r slug; do
     echo "error: candidate ID mismatch for $slug: expected $expected_candidate, got $candidate" >&2; exit 1;
   }
   cp "$portrait" "$work/covers/$slug.png"
-  jq -cn --arg slug "$slug" --argjson schema "$schema" \
+  jq -cn --arg slug "$slug" --arg receiptKind "$receipt_kind" --argjson schema "$schema" \
     --arg selection "$(sha256 "$receipt")" --arg portrait "$(sha256 "$portrait")" --argjson square "$square_json" \
-    '{key:$slug,value:{receiptSchemaVersion:$schema,selectionReceiptSha256:$selection,portrait:{sourceSha256:$portrait,dimensions:[1600,2560]},square:$square}}' >> "$entries"
+    '{key:$slug,value:{receiptKind:$receiptKind,receiptSchemaVersion:$schema,selectionReceiptSha256:$selection,portrait:{sourceSha256:$portrait,dimensions:[1600,2560]},square:$square}}' >> "$entries"
 done <<<"$PORTRAIT_SLUGS"
 
 jq -s --arg commit "$expected_commit" \
@@ -239,4 +308,6 @@ installing=0
 trap - ERR INT TERM
 rm -rf "$work"
 
-echo "Verified and installed nine portrait covers and five square player derivatives from $expected_commit."
+portrait_count="$(printf '%s\n' "$PORTRAIT_SLUGS" | grep -c .)"
+player_count="$(printf '%s\n' "$PLAYER_SLUGS" | grep -c .)"
+echo "Verified and installed $portrait_count portrait covers and $player_count square player derivatives from $expected_commit."

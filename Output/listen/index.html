@@ -54,6 +54,13 @@
           <img id="cover" alt="" width="480" height="768">
         </figure>
         <div class="room-meta">
+          <p id="bookSeries" class="book-series" hidden></p>
+          <p id="seriesProgress" class="series-progress" hidden></p>
+          <nav class="series-navigation" aria-label="Published volumes in this series" hidden>
+            <a id="seriesPrevious" class="series-link" hidden></a>
+            <a id="seriesNext" class="series-link" hidden></a>
+          </nav>
+          <p id="editionStatus" class="edition-status" hidden></p>
           <h1 id="bookTitle">&nbsp;</h1>
           <p id="bookSubtitle" class="room-subtitle" hidden></p>
           <p id="bookByline" class="room-byline"></p>
@@ -128,8 +135,13 @@
       <a class="btn btn-gold" href="/echo-beta">Join the TestFlight beta</a>
     </section>
 
-    <section class="room-library reveal" aria-label="More books in the library">
-      <h2 class="room-library-title">Also in the library</h2>
+    <section id="seriesShelves" class="room-library" aria-labelledby="seriesLibraryTitle" hidden>
+      <h2 id="seriesLibraryTitle">Series</h2>
+      <div id="seriesLibrary"></div>
+    </section>
+
+    <section id="moreBooksShelf" class="room-library" aria-labelledby="moreBooksTitle">
+      <h2 id="moreBooksTitle">More books</h2>
       <p class="room-library-sub">Choose another narrated book, or open any title as an EPUB or readable Markdown.</p>
       <ul id="library"></ul>
     </section>

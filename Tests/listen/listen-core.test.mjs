@@ -178,3 +178,150 @@ test('library actions expose Listen first only for playable books', () => {
     { label: 'Read', href: 'book.md', external: true, className: '' },
   ]);
 });
+
+function seriesCatalog() {
+  return {
+    version: 2,
+    series: [
+      {
+        id: 'claude-platform',
+        title: 'Claude Platform Documentation',
+        description: 'A mechanism-first guide.',
+        plannedVolumeCount: 9,
+        featured: true,
+        volumes: [
+          { number: 1, book: 'claude-platform-01-the-message' },
+          { number: 2, book: 'claude-platform-02-thinking-and-reliable-responses' },
+        ],
+      },
+    ],
+    books: [
+      { slug: 'standalone-book', audio: { status: 'available' } },
+      { slug: 'claude-platform-01-the-message', audio: { status: 'available' } },
+      { slug: 'claude-platform-02-thinking-and-reliable-responses', audio: { status: 'available' } },
+    ],
+  };
+}
+
+test('series context resolves adjacent published volumes without synthesizing planned ones', () => {
+  const context = core.seriesContext(
+    seriesCatalog(),
+    'claude-platform-02-thinking-and-reliable-responses',
+  );
+
+  assert.equal(context.series.id, 'claude-platform');
+  assert.equal(context.volume.number, 2);
+  assert.equal(context.availableCount, 2);
+  assert.equal(context.plannedCount, 9);
+  assert.equal(context.previous.book, 'claude-platform-01-the-message');
+  assert.equal(context.next, null);
+  assert.deepEqual(
+    context.series.volumes.map((volume) => volume.book),
+    [
+      'claude-platform-01-the-message',
+      'claude-platform-02-thinking-and-reliable-responses',
+    ],
+  );
+});
+
+test('standalone books have no series context', () => {
+  assert.equal(core.seriesContext(seriesCatalog(), 'standalone-book'), null);
+});
+
+test('default book is the first playable published volume of the featured series', () => {
+  assert.equal(core.defaultBookSlug(seriesCatalog()), 'claude-platform-01-the-message');
+
+  const catalog = seriesCatalog();
+  catalog.books.find((book) => book.slug === 'claude-platform-01-the-message').audio.status = 'none';
+  assert.equal(
+    core.defaultBookSlug(catalog),
+    'claude-platform-02-thinking-and-reliable-responses',
+  );
+});
+
+test('default book falls back to the first playable catalog book', () => {
+  const catalog = seriesCatalog();
+  catalog.series[0].volumes = [
+    { number: 1, book: 'missing-book' },
+    { number: 2, book: 'not-playable' },
+  ];
+  catalog.books.push({ slug: 'not-playable', audio: { status: 'none' } });
+
+  assert.equal(core.defaultBookSlug(catalog), 'standalone-book');
+});
+
+test('library sections preserve published series order and separate standalone books', () => {
+  assert.deepEqual(core.librarySections(seriesCatalog(), 'claude-platform-01-the-message'), {
+    series: [{
+      id: 'claude-platform',
+      books: [
+        'claude-platform-01-the-message',
+        'claude-platform-02-thinking-and-reliable-responses',
+      ],
+    }],
+    moreBooks: ['standalone-book'],
+  });
+});
+
+test('library sections retain active books in their structural shelf', () => {
+  assert.deepEqual(core.librarySections(seriesCatalog(), 'standalone-book'), {
+    series: [{
+      id: 'claude-platform',
+      books: [
+        'claude-platform-01-the-message',
+        'claude-platform-02-thinking-and-reliable-responses',
+      ],
+    }],
+    moreBooks: ['standalone-book'],
+  });
+});
+
+test('series helpers tolerate malformed input and duplicate references', () => {
+  assert.equal(core.seriesContext(null, 'anything'), null);
+  assert.equal(core.seriesContext({ books: null, series: {} }, 'anything'), null);
+  assert.equal(core.defaultBookSlug(undefined), null);
+  assert.equal(core.defaultBookSlug({ books: [null, {}, { slug: 'silent' }] }), null);
+  assert.deepEqual(core.librarySections(null, 'anything'), { series: [], moreBooks: [] });
+
+  const catalog = {
+    books: [
+      null,
+      { slug: 'one', audio: { status: 'available' } },
+      { slug: 'two', audio: { status: 'available' } },
+      { slug: 'solo', audio: { status: 'none' } },
+      { slug: 'one', audio: { status: 'available' } },
+    ],
+    series: [
+      null,
+      {
+        id: 'first',
+        volumes: [
+          null,
+          { number: 1, book: 'one' },
+          { number: 2, book: 'one' },
+          { number: 3, book: 'missing' },
+          { number: 4 },
+        ],
+      },
+      {
+        id: 'second',
+        volumes: [
+          { number: 1, book: 'one' },
+          { number: 2, book: 'two' },
+        ],
+      },
+      { id: 'first', volumes: [{ number: 5, book: 'two' }] },
+      { id: '', volumes: [{ number: 1, book: 'solo' }] },
+    ],
+  };
+
+  assert.deepEqual(core.librarySections(catalog, 'one'), {
+    series: [
+      { id: 'first', books: ['one'] },
+      { id: 'second', books: ['two'] },
+    ],
+    moreBooks: ['solo'],
+  });
+  assert.equal(core.seriesContext(catalog, 'one').series.id, 'first');
+  assert.equal(core.seriesContext(catalog, 'two').series.id, 'second');
+});

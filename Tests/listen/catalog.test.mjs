@@ -5,6 +5,11 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 const listenRoot = new URL('../../Resources/listen/', import.meta.url);
 const catalog = JSON.parse(readFileSync(new URL('books.json', listenRoot), 'utf8'));
 const builderSource = readFileSync(new URL('../../Tools/build-listen-catalog.sh', import.meta.url), 'utf8');
+const seriesSource = JSON.parse(
+  readFileSync(new URL('../../Tools/listen-series.json', import.meta.url), 'utf8'),
+);
+const FIRST_LISTEN_DISCLOSURE =
+  "This edition has passed package and audio checks. The creator's full listening review is still underway.";
 const expectedBooks = [
   'an-unsettling-conversation',
   'jspace-inside-the-machine',
@@ -20,34 +25,33 @@ const expectedBooks = [
   'rodents-in-the-walls',
   'the-new-deal',
   'is-there-anyone-in-here',
+  'claude-platform-01-the-message',
+  'claude-platform-02-thinking-and-reliable-responses',
 ];
-const expectedPlayable = [
-  'an-unsettling-conversation',
-  'jspace-inside-the-machine',
-  'chicken-predators',
-  'rodents-in-the-walls',
-  'the-new-deal',
-  'is-there-anyone-in-here',
-];
+const expectedPlayable = [...expectedBooks];
 const expectedAnchorCounts = new Map([
   ['an-unsettling-conversation', 963],
   ['jspace-inside-the-machine', 755],
+  ['echo-from-the-inside', 547],
+  ['why-it-feels-right', 400],
+  ['you-are-the-architect', 444],
+  ['the-bug-is-a-clue', 525],
+  ['tests-first', 223],
+  ['git-happens', 461],
+  ['findable', 263],
+  ['the-voice-in-the-machine', 369],
   ['chicken-predators', 231],
   ['rodents-in-the-walls', 245],
   ['the-new-deal', 151],
   ['is-there-anyone-in-here', 139],
+  ['claude-platform-01-the-message', 571],
+  ['claude-platform-02-thinking-and-reliable-responses', 346],
 ]);
 // Covers are NOT all one shape: approved player books with paired art are square
 // because Tools/sync-paired-cover-assets.sh re-derives them from the paired
 // square m4b art after the builder runs. The player sizes thumbnails from the
 // published dimensions, so a wrong pair here crops real artwork.
-const squareCovers = [
-  'an-unsettling-conversation',
-  'jspace-inside-the-machine',
-  'chicken-predators',
-  'the-new-deal',
-  'is-there-anyone-in-here',
-];
+const squareCovers = expectedBooks.filter((slug) => slug !== 'rodents-in-the-walls');
 const expectedCoverSizes = new Map(
   expectedBooks.map((slug) => [
     slug,
@@ -97,6 +101,35 @@ function assertNoAbsolutePaths(value, location = 'JSON') {
 
 test('catalog publishes the exact approved public library in order', () => {
   assert.deepEqual(catalog.books.map((book) => book.slug), expectedBooks);
+});
+
+test('catalog publishes the curated version 2 series exactly', () => {
+  assert.equal(catalog.version, 2);
+  assert.deepEqual(catalog.series, seriesSource.series);
+  assert.equal(catalog.series.filter((series) => series.featured).length, 1);
+  assert.equal(catalog.series[0].plannedVolumeCount, 9);
+  assert.deepEqual(
+    catalog.series[0].volumes.map((volume) => volume.book),
+    ['claude-platform-01-the-message', 'claude-platform-02-thinking-and-reliable-responses'],
+  );
+});
+
+test('public-first-listen books disclose their edition while legacy books remain unclassified', () => {
+  const firstListenSlugs = new Set([
+    'claude-platform-01-the-message',
+    'claude-platform-02-thinking-and-reliable-responses',
+  ]);
+  for (const book of catalog.books) {
+    if (firstListenSlugs.has(book.slug)) {
+      assert.deepEqual(book.edition, {
+        status: 'public-first-listen',
+        humanListeningStatus: 'pending',
+        disclosure: FIRST_LISTEN_DISCLOSURE,
+      });
+    } else {
+      assert.equal(book.edition, null, `${book.slug} legacy edition`);
+    }
+  }
 });
 
 test('every public book carries a staged cover with alt text', () => {
@@ -252,6 +285,25 @@ test('builder requires exact playable approval and rejects unapproved media', ()
   assert.match(builderSource, /approved playable book missing M4B: \$slug/);
   assert.match(builderSource, /approved playable book missing alignment sidecar: \$slug/);
   assert.match(builderSource, /unexpected playable media for non-audio-approved book: \$slug/);
+});
+
+test('builder verifies required public-first-listen receipts before staging', () => {
+  assert.match(builderSource, /PUBLICATION_REQUIRED=/);
+  assert.match(builderSource, /publication\.json/);
+  assert.match(builderSource, /verify_public_first_listen\.py/);
+  assert.match(builderSource, /publicationStatus/);
+  assert.match(builderSource, /humanListeningStatus/);
+  assert.match(builderSource, /disclosure/);
+});
+
+test('builder validates curated series before publishing the transaction', () => {
+  assert.match(builderSource, /validate_series\(\)/);
+  assert.match(builderSource, /# BEGIN VALIDATE_SERIES/);
+  assert.match(builderSource, /# END VALIDATE_SERIES/);
+  assert.match(builderSource, /validate_series "\$SERIES_SOURCE" "\$STAGED_CATALOG"/);
+  assert.match(builderSource, /version: 2/);
+  assert.match(builderSource, /series: \$series\[0\]\.series/);
+  assert.match(builderSource, /books: \$books/);
 });
 
 test('builder validates full and no-blocks staged contracts independently', () => {

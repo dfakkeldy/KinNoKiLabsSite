@@ -1,0 +1,21 @@
+{
+  "series": [
+    {
+      "id": "claude-platform",
+      "title": "Claude Platform Documentation",
+      "description": "A mechanism-first guide to building on the Claude Platform.",
+      "plannedVolumeCount": 9,
+      "featured": true,
+      "volumes": [
+        {
+          "number": 1,
+          "book": "claude-platform-01-the-message"
+        },
+        {
+          "number": 2,
+          "book": "claude-platform-02-thinking-and-reliable-responses"
+        }
+      ]
+    }
+  ]
+}

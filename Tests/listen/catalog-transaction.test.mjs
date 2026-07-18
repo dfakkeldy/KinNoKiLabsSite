@@ -18,6 +18,16 @@ import { fileURLToPath } from 'node:url';
 const transactionLibrary = fileURLToPath(
   new URL('../../Tools/lib/listen-catalog-transaction.sh', import.meta.url),
 );
+const builderPath = fileURLToPath(new URL('../../Tools/build-listen-catalog.sh', import.meta.url));
+const builderSource = readFileSync(builderPath, 'utf8');
+
+function validationFunctionSource() {
+  const begin = builderSource.indexOf('# BEGIN VALIDATE_SERIES');
+  const end = builderSource.indexOf('# END VALIDATE_SERIES');
+  assert.notEqual(begin, -1, 'builder exposes the real series validator to transaction tests');
+  assert.notEqual(end, -1, 'builder terminates the real series validator marker');
+  return builderSource.slice(begin, end + '# END VALIDATE_SERIES'.length);
+}
 
 const fixtureScript = String.raw`
 set -euo pipefail
@@ -36,6 +46,26 @@ if [ "$EXISTING_FINALS" -eq 1 ]; then
   printf '{"bundle":"old"}\n' > "$FINAL_CATALOG"
 fi
 
+listen_catalog_publish_staged_bundle
+`;
+
+const seriesFixtureScript = String.raw`
+set -euo pipefail
+source "$TRANSACTION_LIBRARY"
+listen_catalog_install_cleanup_traps
+listen_catalog_transaction_init "$OUT_DIR"
+
+mkdir -p "$STAGED_BOOKS/claude-platform-01-the-message" "$STAGED_BOOKS/claude-platform-02-thinking-and-reliable-responses"
+printf 'new volume one\n' > "$STAGED_BOOKS/claude-platform-01-the-message/marker.txt"
+printf 'new volume two\n' > "$STAGED_BOOKS/claude-platform-02-thinking-and-reliable-responses/marker.txt"
+cp "$STAGED_INPUT_CATALOG" "$STAGED_CATALOG"
+
+mkdir -p "$FINAL_BOOKS/installed-book"
+printf 'old asset\n' > "$FINAL_BOOKS/installed-book/marker.txt"
+printf '{"bundle":"old"}\n' > "$FINAL_CATALOG"
+
+eval "$VALIDATE_SERIES_FUNCTION"
+validate_series "$SERIES_SOURCE" "$STAGED_CATALOG"
 listen_catalog_publish_staged_bundle
 `;
 
@@ -128,6 +158,75 @@ function assertOldBundleRestored(out) {
   assertNoBuildRoots(out);
 }
 
+function validSeries() {
+  return {
+    series: [
+      {
+        id: 'claude-platform',
+        title: 'Claude Platform Documentation',
+        description: 'A mechanism-first guide to building on the Claude Platform.',
+        plannedVolumeCount: 9,
+        featured: true,
+        volumes: [
+          { number: 1, book: 'claude-platform-01-the-message' },
+          { number: 2, book: 'claude-platform-02-thinking-and-reliable-responses' },
+        ],
+      },
+    ],
+  };
+}
+
+function runSeriesFixture(t, mutateSeries) {
+  const { root, out } = makeFixture(t);
+  const series = validSeries();
+  mutateSeries(series);
+  const seriesPath = join(root, 'listen-series.json');
+  const catalogPath = join(root, 'staged-books.json');
+  writeFileSync(seriesPath, `${JSON.stringify(series)}\n`);
+  writeFileSync(catalogPath, `${JSON.stringify({
+    version: 2,
+    series: series.series,
+    books: [
+      { slug: 'claude-platform-01-the-message', audio: { status: 'available' } },
+      { slug: 'claude-platform-02-thinking-and-reliable-responses', audio: { status: 'available' } },
+    ],
+  })}\n`);
+  const result = spawnSync('/bin/bash', ['-c', seriesFixtureScript], {
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      TRANSACTION_LIBRARY: transactionLibrary,
+      OUT_DIR: out,
+      SERIES_SOURCE: seriesPath,
+      STAGED_INPUT_CATALOG: catalogPath,
+      VALIDATE_SERIES_FUNCTION: validationFunctionSource(),
+    },
+  });
+  return { out, result };
+}
+
+function assertSeriesValidationPreservesInstalledBundle(out, result) {
+  assert.notEqual(result.status, 0, diagnostic(result));
+  assert.equal(readFileSync(join(out, 'books.json'), 'utf8'), '{"bundle":"old"}\n');
+  assert.equal(readFileSync(join(out, 'books/installed-book/marker.txt'), 'utf8'), 'old asset\n');
+  assert.equal(existsSync(join(out, 'books/claude-platform-01-the-message')), false);
+  assertNoBuildRoots(out);
+}
+
+test('valid series metadata passes validation and installs the complete staged bundle', (t) => {
+  const { out, result } = runSeriesFixture(t, () => {});
+  assert.equal(result.status, 0, diagnostic(result));
+  const installed = JSON.parse(readFileSync(join(out, 'books.json'), 'utf8'));
+  assert.equal(installed.version, 2);
+  assert.deepEqual(installed.series, validSeries().series);
+  assert.deepEqual(readdirSync(join(out, 'books')).sort(), [
+    'claude-platform-01-the-message',
+    'claude-platform-02-thinking-and-reliable-responses',
+  ]);
+  assert.equal(existsSync(join(out, 'books/installed-book')), false);
+  assertNoBuildRoots(out);
+});
+
 test('successful transaction swaps the complete bundle and prunes stale directories', (t) => {
   const { out, result } = runFixture(t);
   assert.equal(result.status, 0, diagnostic(result));
@@ -207,3 +306,26 @@ test('initialization failure cleans an already-created build root and preserves 
   assert.equal(result.status, 88, diagnostic(result));
   assertNoBuildRoots(out);
 });
+
+const invalidSeriesFixtures = [
+  ['duplicate ID', (source) => source.series.push({ ...source.series[0] })],
+  ['unsorted volume numbers', (source) => source.series[0].volumes.reverse()],
+  ['missing book', (source) => { source.series[0].volumes[1].book = 'missing-book'; }],
+  ['duplicate membership', (source) => source.series.push({
+    id: 'second-series',
+    title: 'Second Series',
+    description: 'A second valid-looking series.',
+    plannedVolumeCount: 1,
+    featured: false,
+    volumes: [{ number: 1, book: 'claude-platform-01-the-message' }],
+  })],
+  ['absolute path', (source) => { source.series[0].description = '/Users/example/private'; }],
+  ['mixed-case file URL', (source) => { source.series[0].description = 'FILE:///Users/private'; }],
+];
+
+for (const [name, mutate] of invalidSeriesFixtures) {
+  test(`invalid series ${name} fails before install and preserves the existing bundle`, (t) => {
+    const { out, result } = runSeriesFixture(t, mutate);
+    assertSeriesValidationPreservesInstalledBundle(out, result);
+  });
+}

@@ -11,21 +11,35 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const script = path.join(root, 'Tools/sync-paired-cover-assets.sh');
 const slugs = [
   'an-unsettling-conversation', 'jspace-inside-the-machine',
-  'echo-from-the-inside', 'why-it-feels-right', 'findable',
+  'echo-from-the-inside', 'why-it-feels-right',
+  'you-are-the-architect', 'the-bug-is-a-clue', 'tests-first',
+  'git-happens', 'findable', 'the-voice-in-the-machine',
   'rodents-in-the-walls', 'chicken-predators', 'the-new-deal',
-  'is-there-anyone-in-here',
+  'is-there-anyone-in-here', 'claude-platform-01-the-message',
+  'claude-platform-02-thinking-and-reliable-responses',
 ];
 const candidates = {
   'an-unsettling-conversation': 'cut-in-the-page',
   'jspace-inside-the-machine': 'learned-watershed',
   'echo-from-the-inside': 'rooms-inside-the-app',
   'why-it-feels-right': 'impossible-teapot',
+  'you-are-the-architect': 'directed-construction',
+  'the-bug-is-a-clue': 'revealing-shadow',
+  'tests-first': 'safety-block',
+  'git-happens': 'the-deliberate-knot',
   findable: 'exact-phrase',
+  'the-voice-in-the-machine': 'sentence-to-sound',
   'rodents-in-the-walls': 'c2a-compact-ribbon-editorial-footer',
   'chicken-predators': 'night-at-the-fence',
   'the-new-deal': 'weight-of-the-mailbag',
   'is-there-anyone-in-here': 'one-lit-aperture',
+  'claude-platform-01-the-message': 'route-and-return',
+  'claude-platform-02-thinking-and-reliable-responses': 'event-by-event',
 };
+const recoverySlugs = new Set([
+  'you-are-the-architect', 'the-bug-is-a-clue', 'tests-first',
+  'git-happens', 'the-voice-in-the-machine',
+]);
 
 const hash = (file) => createHash('sha256').update(readFileSync(file)).digest('hex');
 const run = (command, args, cwd) => execFileSync(command, args, { cwd, encoding: 'utf8' }).trim();
@@ -38,15 +52,17 @@ function makeFixture() {
   const base = mkdtempSync(path.join(os.tmpdir(), 'paired-cover-sync-test.'));
   const booksRepo = path.join(base, 'books-repo');
   const output = path.join(base, 'output');
-  const manifest = { schemaVersion: 1, sourceCommit: '', books: {} };
+  const squareTemplate = path.join(base, 'square.png');
+  const manifest = { schemaVersion: 2, sourceCommit: '', books: {} };
   mkdirSync(path.join(booksRepo, 'books'), { recursive: true });
   mkdirSync(path.join(output, 'learn'), { recursive: true });
-  mkdirSync(path.join(output, 'listen-books', 'chicken-predators'), { recursive: true });
-  mkdirSync(path.join(output, 'listen-books', 'the-new-deal'), { recursive: true });
-  mkdirSync(path.join(output, 'listen-books', 'an-unsettling-conversation'), { recursive: true });
-  mkdirSync(path.join(output, 'listen-books', 'jspace-inside-the-machine'), { recursive: true });
-  mkdirSync(path.join(output, 'listen-books', 'is-there-anyone-in-here'), { recursive: true });
+  mkdirSync(path.join(output, 'listen-books'), { recursive: true });
   cpSync(path.join(root, 'Resources/listen/books.json'), path.join(output, 'books.json'));
+  execFileSync('sips', [
+    '-s', 'format', 'png', '-z', '2400', '2400',
+    path.join(root, 'Resources/learn/covers/an-unsettling-conversation.png'),
+    '--out', squareTemplate,
+  ], { stdio: 'ignore' });
   writeFileSync(path.join(output, 'learn', 'keep.txt'), 'learn-before\n');
   writeFileSync(path.join(output, 'listen-books', 'keep.txt'), 'listen-before\n');
 
@@ -57,34 +73,89 @@ function makeFixture() {
     const square = path.join(dir, 'm4b-cover.png');
     const portraitSpec = path.join(dir, 'cover-spec.json');
     const squareSpec = path.join(dir, 'm4b-cover-spec.json');
-    const receipt = path.join(dir, 'cover-selection.json');
     cpSync(path.join(root, 'Resources/learn/covers', `${slug}.png`), portrait);
-    execFileSync('sips', ['-s', 'format', 'png', '-z', '2400', '2400', portrait, '--out', square], { stdio: 'ignore' });
     writeJSON(portraitSpec, { fixture: slug, variant: 'portrait' });
-    writeJSON(squareSpec, { fixture: slug, variant: 'square' });
-    const entry = {
-      receiptSha256: '', candidateId: candidates[slug],
-      portrait: { sha256: hash(portrait), specSha256: hash(portraitSpec) },
-      square: slug === 'rodents-in-the-walls' ? null : { sha256: hash(square), specSha256: hash(squareSpec) },
-    };
+    const portraitHash = hash(portrait);
+
     if (slug === 'rodents-in-the-walls') {
+      const receipt = path.join(dir, 'cover-selection.json');
       writeJSON(receipt, {
         schema_version: 1, book_slug: slug, selected_candidate: candidates[slug],
-        rendered_cover_sha256: entry.portrait.sha256, spec_sha256: entry.portrait.specSha256,
+        rendered_cover_sha256: portraitHash, spec_sha256: hash(portraitSpec),
         privacy: { classification: 'public-safe', permission_to_publish: 'granted' },
       });
+      manifest.books[slug] = {
+        receiptKind: 'legacy-selection-v1', receiptPath: 'cover-selection.json',
+        receiptSha256: hash(receipt), candidateId: candidates[slug],
+        portrait: { sha256: portraitHash, specSha256: hash(portraitSpec) },
+        square: null,
+      };
+    } else if (recoverySlugs.has(slug)) {
+      const receipt = path.join(dir, 'legacy-cover-pair.json');
+      const renderReceipt = path.join(dir, 'm4b-cover.render.json');
+      const epub = path.join(dir, `${slug}.epub`);
+      const epubMember = 'OEBPS/cover.png';
+      const epubRoot = path.join(dir, 'OEBPS');
+      mkdirSync(epubRoot);
+      cpSync(portrait, path.join(epubRoot, 'cover.png'));
+      execFileSync('zip', ['-q', epub, epubMember], { cwd: dir });
+      rmSync(epubRoot, { recursive: true });
+      cpSync(squareTemplate, square);
+      writeJSON(squareSpec, { fixture: slug, variant: 'square' });
+      writeJSON(renderReceipt, { fixture: slug, renderer: 'paired-cover-sync-test' });
+      writeJSON(receipt, {
+        schema_version: 1,
+        book_slug: slug,
+        candidate_id: candidates[slug],
+        privacy: { classification: 'public-safe', permission_to_publish: true },
+        portrait: {
+          path: 'cover.png', dimensions: [1600, 2560], sha256: portraitHash,
+          epub_path: `${slug}.epub`, epub_sha256: hash(epub),
+          epub_cover_member: epubMember, epub_cover_sha256: portraitHash,
+        },
+        square: {
+          path: 'm4b-cover.png', dimensions: [2400, 2400], sha256: hash(square),
+          spec_path: 'm4b-cover-spec.json', spec_sha256: hash(squareSpec),
+          render_path: 'm4b-cover.render.json', render_sha256: hash(renderReceipt),
+        },
+      });
+      manifest.books[slug] = {
+        receiptKind: 'legacy-cover-pair-v1', receiptPath: 'legacy-cover-pair.json',
+        receiptSha256: hash(receipt), candidateId: candidates[slug],
+        portrait: {
+          sha256: portraitHash, epubSha256: hash(epub), epubMember,
+          epubCoverSha256: portraitHash,
+        },
+        square: {
+          sha256: hash(square), specSha256: hash(squareSpec),
+          renderSha256: hash(renderReceipt),
+        },
+      };
     } else {
+      const receipt = path.join(dir, 'cover-selection.json');
+      cpSync(squareTemplate, square);
+      writeJSON(squareSpec, { fixture: slug, variant: 'square' });
       writeJSON(receipt, {
         schema_version: 2, book_slug: slug, candidate: { id: candidates[slug] },
         privacy: { classification: 'public-safe', permission_to_publish: true },
         variants: {
-          portrait: { cover_sha256: entry.portrait.sha256, specification_sha256: entry.portrait.specSha256 },
-          square: { cover_sha256: entry.square.sha256, specification_sha256: entry.square.specSha256 },
+          portrait: { cover_sha256: portraitHash, specification_sha256: hash(portraitSpec) },
+          square: { cover_sha256: hash(square), specification_sha256: hash(squareSpec) },
         },
       });
+      manifest.books[slug] = {
+        receiptKind: 'cover-selection-v2', receiptPath: 'cover-selection.json',
+        receiptSha256: hash(receipt), candidateId: candidates[slug],
+        portrait: {
+          sha256: portraitHash, specSha256: hash(portraitSpec),
+          receiptSpecSha256: hash(portraitSpec),
+        },
+        square: {
+          sha256: hash(square), specSha256: hash(squareSpec),
+          receiptSpecSha256: hash(squareSpec),
+        },
+      };
     }
-    entry.receiptSha256 = hash(receipt);
-    manifest.books[slug] = entry;
   }
 
   run('git', ['init', '-q'], booksRepo);
@@ -133,6 +204,39 @@ function treeHash(directory) {
 }
 
 test('paired cover sync fails closed for every reviewed negative contract', async (t) => {
+  await t.test('installs every receipt family and is byte-identical when repeated', () => {
+    const f = makeFixture();
+    try {
+      const first = invoke(f);
+      assert.equal(first.status, 0, first.stderr);
+      assert.match(first.stdout, /16 portrait covers and 15 square player derivatives/);
+      const provenance = JSON.parse(readFileSync(path.join(f.output, 'learn/paired-cover-provenance.json')));
+      assert.equal(provenance.books['an-unsettling-conversation'].receiptKind, 'cover-selection-v2');
+      assert.equal(provenance.books['you-are-the-architect'].receiptKind, 'legacy-cover-pair-v1');
+      assert.equal(provenance.books['rodents-in-the-walls'].receiptKind, 'legacy-selection-v1');
+      const afterFirst = treeHash(f.output);
+      const second = invoke(f);
+      assert.equal(second.status, 0, second.stderr);
+      assert.equal(treeHash(f.output), afterFirst);
+    } finally { rmSync(f.base, { recursive: true, force: true }); }
+  });
+
+  await t.test('rejects a recovery receipt with the wrong EPUB member', () => {
+    const f = makeFixture();
+    try {
+      const slug = 'you-are-the-architect';
+      const receipt = path.join(f.booksRepo, `books/${slug}/legacy-cover-pair.json`);
+      const value = JSON.parse(readFileSync(receipt));
+      value.portrait.epub_cover_member = 'OEBPS/wrong-cover.png';
+      writeJSON(receipt, value);
+      f.manifest.books[slug].receiptSha256 = hash(receipt);
+      commitFixture(f);
+      const result = invoke(f);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /recovery EPUB cover member mismatch/i);
+    } finally { rmSync(f.base, { recursive: true, force: true }); }
+  });
+
   await t.test('rejects a legacy Rodents privacy refusal', () => {
     const f = makeFixture();
     try {

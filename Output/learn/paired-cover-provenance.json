@@ -2,10 +2,11 @@
   "schemaVersion": 1,
   "source": {
     "repository": "dfakkeldy/explainer-audiobooks",
-    "commit": "0c62460d5116ccf5a3fb02fe9764fd94cf33a6d2"
+    "commit": "80a9cb485885e1b7b01d238e3905ea1552a85d58"
   },
   "books": {
     "an-unsettling-conversation": {
+      "receiptKind": "cover-selection-v2",
       "receiptSchemaVersion": 2,
       "selectionReceiptSha256": "e03af343c74d4ebbf83dcb67610616e3fcae536dc74ed964ef92fd6ea6607839",
       "portrait": {
@@ -29,6 +30,7 @@
       }
     },
     "jspace-inside-the-machine": {
+      "receiptKind": "cover-selection-v2",
       "receiptSchemaVersion": 2,
       "selectionReceiptSha256": "b3d568170fd07dd0c207fbd8d4a5dfca188c1745d6a2493456087d3df60e4fa6",
       "portrait": {
@@ -52,6 +54,7 @@
       }
     },
     "echo-from-the-inside": {
+      "receiptKind": "cover-selection-v2",
       "receiptSchemaVersion": 2,
       "selectionReceiptSha256": "a06939bb93c60335c8179ce5c2c903ea906b21b549a797663f2a73558cba2e1b",
       "portrait": {
@@ -61,9 +64,21 @@
           2560
         ]
       },
-      "square": null
+      "square": {
+        "sourceSha256": "3fd3c6c167ba13f8080c67d2aeb315851f63a0e2955e970daab0cff77d435ff9",
+        "derivativeSha256": "af79233de7468a74c635fd07c60a9ba17c9f564e2df853a6772bfa30ffb6c8d7",
+        "sourceDimensions": [
+          2400,
+          2400
+        ],
+        "derivativeDimensions": [
+          768,
+          768
+        ]
+      }
     },
     "why-it-feels-right": {
+      "receiptKind": "cover-selection-v2",
       "receiptSchemaVersion": 2,
       "selectionReceiptSha256": "e1a287ae9a78197f3b113c61d20c722cde7ce7fdf9c85d8da0cb9018d4cc96ba",
       "portrait": {
@@ -73,9 +88,117 @@
           2560
         ]
       },
-      "square": null
+      "square": {
+        "sourceSha256": "060252a5878ee62f05586c5583fd71862d58f35202dd7692c1a48942ccde84d4",
+        "derivativeSha256": "6b96d24ed7abe2e1117f02f76b6235eeebcf8fad198d6699aa53036e6eead4d3",
+        "sourceDimensions": [
+          2400,
+          2400
+        ],
+        "derivativeDimensions": [
+          768,
+          768
+        ]
+      }
+    },
+    "you-are-the-architect": {
+      "receiptKind": "legacy-cover-pair-v1",
+      "receiptSchemaVersion": 1,
+      "selectionReceiptSha256": "f568679357ada2d6b81cf93f02bccc31235bd391a9eb4bb1d9115461824332f5",
+      "portrait": {
+        "sourceSha256": "c3fb6b82f0fa1de9a957f92eacfe9051afbfaf2dde4a55ffe92e1a270e7fe214",
+        "dimensions": [
+          1600,
+          2560
+        ]
+      },
+      "square": {
+        "sourceSha256": "6afeba4188e4e138bb0772ad9cd525df6c816703e0ca1f8cb10b3e8be5d6e349",
+        "derivativeSha256": "d6141450dc1f9392b2ff08688125104d42578f3db9f72c9e5080db8a9c93aeac",
+        "sourceDimensions": [
+          2400,
+          2400
+        ],
+        "derivativeDimensions": [
+          768,
+          768
+        ]
+      }
+    },
+    "the-bug-is-a-clue": {
+      "receiptKind": "legacy-cover-pair-v1",
+      "receiptSchemaVersion": 1,
+      "selectionReceiptSha256": "467aa3d8ad602090a965be1f6f9b5a3b85eee895ef3b6c535d88a45a03791eb1",
+      "portrait": {
+        "sourceSha256": "a941979e3e22299fe8c552060803feb8759d43accd3962c95ca0bff09c6da417",
+        "dimensions": [
+          1600,
+          2560
+        ]
+      },
+      "square": {
+        "sourceSha256": "f40a12d096185513c6328b13de82dd2b66a61b897e95b8d3f4f275633e299530",
+        "derivativeSha256": "6d96ac0fa8b04a7ed2a4b89dfbcaca965b75ba3f4cc7c487fe2a09d4ff716658",
+        "sourceDimensions": [
+          2400,
+          2400
+        ],
+        "derivativeDimensions": [
+          768,
+          768
+        ]
+      }
+    },
+    "tests-first": {
+      "receiptKind": "legacy-cover-pair-v1",
+      "receiptSchemaVersion": 1,
+      "selectionReceiptSha256": "27e74d2ad119cbab14e484a32e806f223481424fbf584113a6bc65884989e31a",
+      "portrait": {
+        "sourceSha256": "5f16eca3d70db64c9c55424f4be6bc069881aa9853ba950a08d4b11aabf30c99",
+        "dimensions": [
+          1600,
+          2560
+        ]
+      },
+      "square": {
+        "sourceSha256": "ce0be55768b0ce57aadf9d663966720fdf8b86652142b4f917c0886a55363e67",
+        "derivativeSha256": "2603ab3716c0979bc58d9d74eda34dad5b7943aa0558a14521ca88caa9fdbded",
+        "sourceDimensions": [
+          2400,
+          2400
+        ],
+        "derivativeDimensions": [
+          768,
+          768
+        ]
+      }
+    },
+    "git-happens": {
+      "receiptKind": "legacy-cover-pair-v1",
+      "receiptSchemaVersion": 1,
+      "selectionReceiptSha256": "fc7d727dff5271c2d3ebdff7b11357791779c9245dd0efa5b8726ed1213d39b1",
+      "portrait": {
+        "sourceSha256": "fc12ad8dee431de5af930b2eaba8407798a45d41c376bd000cc87a72f543b546",
+        "dimensions": [
+          1600,
+          2560
+        ]
+      },
+      "square": {
+        "sourceSha256": "84dca530115178a5969245e180997d245d8343b958134930e39edaa63a9e892f",
+        "derivativeSha256": "92b973897a1efa12f65ec64fc99de757e4da7aa43b3ab573a513cf95543b6168",
+        "sourceDimensions": [
+          2400,
+          2400
+        ],
+        "derivativeDimensions": [
+          768,
+          768
+        ]
+      }
     },
     "findable": {
+      "receiptKind": "cover-selection-v2",
       "receiptSchemaVersion": 2,
       "selectionReceiptSha256": "740492733ee69bc9ff62f3d8d1dbfc25aba60a93b01a779ae5d1033a8f42988f",
       "portrait": {
@@ -85,9 +208,45 @@
           2560
         ]
       },
-      "square": null
+      "square": {
+        "sourceSha256": "b56aec2a60d6a609bf416935791f03d3a612d9eb2837fd568c7a61815720b3e4",
+        "derivativeSha256": "0d8c00ef6bb63224400abac3eaf50197b84e1e2a70168e76377bd93971e95e6c",
+        "sourceDimensions": [
+          2400,
+          2400
+        ],
+        "derivativeDimensions": [
+          768,
+          768
+        ]
+      }
+    },
+    "the-voice-in-the-machine": {
+      "receiptKind": "legacy-cover-pair-v1",
+      "receiptSchemaVersion": 1,
+      "selectionReceiptSha256": "9cfb6ef3085abcabcf76f231d8eaa016f0a5dd52d962a8744e22f91ef825c174",
+      "portrait": {
+        "sourceSha256": "9ecdf6c46c44b5c906855f69a76f036af4cc8a5088a15ce21483eb316d7d0f17",
+        "dimensions": [
+          1600,
+          2560
+        ]
+      },
+      "square": {
+        "sourceSha256": "d5cf8b8613ee544612725376fd7a2e0d607319363f5e86ea1d4c0c0c3ae2d4a6",
+        "derivativeSha256": "9e3eb24903b74a3ea53c3cea35808e79e9023e14f17ee10a93acef667382655f",
+        "sourceDimensions": [
+          2400,
+          2400
+        ],
+        "derivativeDimensions": [
+          768,
+          768
+        ]
+      }
     },
     "rodents-in-the-walls": {
+      "receiptKind": "legacy-selection-v1",
       "receiptSchemaVersion": 1,
       "selectionReceiptSha256": "d1c87d54233960540be9baa5e82c7a816718c212d332ae8f8b3364b3b6643ea9",
       "portrait": {
@@ -100,6 +259,7 @@
       "square": null
     },
     "chicken-predators": {
+      "receiptKind": "cover-selection-v2",
       "receiptSchemaVersion": 2,
       "selectionReceiptSha256": "d13eb40de8a1d67fb3a9e1d55f12aa7fe2898ba6a25ca2d987f2c8ee4b44b225",
       "portrait": {
@@ -123,6 +283,7 @@
       }
     },
     "the-new-deal": {
+      "receiptKind": "cover-selection-v2",
       "receiptSchemaVersion": 2,
       "selectionReceiptSha256": "87f1a12509bd14ab95bde7aec45b65604e5e4db1b2d2db2f960cea6940754ed0",
       "portrait": {
@@ -146,6 +307,7 @@
       }
     },
     "is-there-anyone-in-here": {
+      "receiptKind": "cover-selection-v2",
       "receiptSchemaVersion": 2,
       "selectionReceiptSha256": "4733c3280359f6682aba1a4c862c67a123b1722ef8ed7097c2ae9e43112218b6",
       "portrait": {
@@ -158,6 +320,54 @@
       "square": {
         "sourceSha256": "8aa19da296b7cf27502a8d22ba352981b11481184daba1531cd8370aebe5df4b",
         "derivativeSha256": "050840a8ab5789079d11de45f583297935d77d81f6a8e05517340f8f42758d23",
+        "sourceDimensions": [
+          2400,
+          2400
+        ],
+        "derivativeDimensions": [
+          768,
+          768
+        ]
+      }
+    },
+    "claude-platform-01-the-message": {
+      "receiptKind": "cover-selection-v2",
+      "receiptSchemaVersion": 2,
+      "selectionReceiptSha256": "5a8ca947c8889a94be14392bc02d9a96489965e8dcc9f66e005062eed8b41e23",
+      "portrait": {
+        "sourceSha256": "f60f0ef725bcc9a44a8800f49735421959bab8c8bb611ed9f47d529e5aebf44d",
+        "dimensions": [
+          1600,
+          2560
+        ]
+      },
+      "square": {
+        "sourceSha256": "e68c9a631252ec1353df8290495cf3da1d01efa399f92056fcd39a67f85b3c32",
+        "derivativeSha256": "279337e163082f9ecc91f00a72807a7f739d12b94416ac49f5c84ab372126f91",
+        "sourceDimensions": [
+          2400,
+          2400
+        ],
+        "derivativeDimensions": [
+          768,
+          768
+        ]
+      }
+    },
+    "claude-platform-02-thinking-and-reliable-responses": {
+      "receiptKind": "cover-selection-v2",
+      "receiptSchemaVersion": 2,
+      "selectionReceiptSha256": "0daa0937f344104b56a294a7cf89929db0296f303bd9df7585461a42fc6de278",
+      "portrait": {
+        "sourceSha256": "1b7ca031550cde82c3f7ac8b1ee234b4884befad32cca1c96f5c3d5d2659493a",
+        "dimensions": [
+          1600,
+          2560
+        ]
+      },
+      "square": {
+        "sourceSha256": "f47d53aa8ed60e69e291b595eea2826a326682bfa21660277e84a42ae3b220d1",
+        "derivativeSha256": "4855629dacdbca32164580c1b281c43db7ccdce512230b27cb143c65477cb6e1",
         "sourceDimensions": [
           2400,
           2400
