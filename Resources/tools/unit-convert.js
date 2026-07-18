@@ -76,6 +76,9 @@ export function convert(value, categoryId, fromId, toId) {
   const from = findUnit(category, fromId);
   const to = findUnit(category, toId);
   if (!from || !to) return null;
-  if (category.id === 'temperature') return to.fromBase(from.toBase(value));
-  return (value * from.factor) / to.factor;
+  if (fromId === toId) return value;
+  const converted = category.id === 'temperature'
+    ? to.fromBase(from.toBase(value))
+    : (value * from.factor) / to.factor;
+  return Number.isFinite(converted) ? converted : null;
 }

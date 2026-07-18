@@ -92,3 +92,21 @@ test('restores the saved category and units from the unit-converter preference b
     assert.deepEqual(field(fixture.root, 'from').querySelectorAll('option').map((option) => option.value), ['c', 'f', 'k']);
   }, { storage });
 });
+
+test('clears a stale conversion and announces an out-of-range value instead of presenting infinity', () => withTool(({ fixture, announcements }) => {
+  change(fixture.root, 'from', 'km');
+  change(fixture.root, 'to', 'mm');
+  input(fixture.root, 'fromValue', '1');
+  assert.equal(fixture.root.querySelector('.tool-result-strong').textContent, '1 km = 1000000 mm');
+
+  input(fixture.root, 'fromValue', '9'.repeat(307));
+  assert.equal(field(fixture.root, 'toValue').value, '');
+  const error = fixture.root.querySelector('.tool-error');
+  assert.ok(error);
+  assert.match(error.textContent, /out of range/i);
+  assert.equal(fixture.root.querySelector('.tool-result-strong'), null);
+  assert.equal(fixture.root.textContent.includes('Infinity'), false);
+  assert.equal(fixture.root.textContent.includes('NaN'), false);
+  assert.equal(fixture.root.textContent.includes('—'), false);
+  assert.equal(announcements.at(-1), error.textContent);
+}));

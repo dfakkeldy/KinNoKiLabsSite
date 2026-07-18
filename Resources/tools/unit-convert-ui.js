@@ -78,13 +78,20 @@ export function renderUnitTool(root, deps = {}) {
     const sourceInput = source === 'from' ? fromInput : toInput;
     const targetInput = source === 'from' ? toInput : fromInput;
     const sourceValue = parseDecimal(sourceInput.value);
+    if (sourceValue === null) {
+      targetInput.value = '';
+      result.setAttribute('class', 'tool-error');
+      result.replaceChildren('Enter a valid number to convert.');
+      if (shouldAnnounce) announce(result.textContent);
+      return;
+    }
     const converted = source === 'from'
       ? convert(sourceValue, category.id, fromId, toId)
       : convert(sourceValue, category.id, toId, fromId);
     if (converted === null) {
       targetInput.value = '';
       result.setAttribute('class', 'tool-error');
-      result.replaceChildren('Enter a valid number to convert.');
+      result.replaceChildren('That conversion is out of range. Try a smaller value.');
       if (shouldAnnounce) announce(result.textContent);
       return;
     }

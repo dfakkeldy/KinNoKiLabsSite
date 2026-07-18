@@ -55,3 +55,11 @@ test('returns null for unknown ids and non-finite values', () => {
   assert.equal(convert(1, 'length', 'missing', 'km'), null);
   assert.equal(convert(1, 'length', 'm', 'missing'), null);
 });
+
+test('rejects overflowing linear and affine conversions while preserving finite same-unit values', () => {
+  const largestFinite = Number.MAX_VALUE;
+  assert.equal(convert(largestFinite, 'length', 'km', 'mm'), null);
+  assert.equal(convert(largestFinite, 'temperature', 'c', 'f'), null);
+  assert.equal(convert(largestFinite, 'length', 'km', 'km'), largestFinite);
+  assert.equal(convert(largestFinite, 'temperature', 'c', 'c'), largestFinite);
+});
