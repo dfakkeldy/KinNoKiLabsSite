@@ -1,0 +1,4609 @@
+{
+  "blocks": [
+    {
+      "chapterIndex": null,
+      "id": "s0-b0",
+      "imagePath": "books/claude-platform-01-the-message/cover.jpg",
+      "kind": "image",
+      "sequenceIndex": 0,
+      "text": "",
+      "wordCount": 1
+    },
+    {
+      "chapterIndex": null,
+      "id": "s1-b0",
+      "kind": "heading",
+      "sequenceIndex": 1,
+      "text": "The Message",
+      "wordCount": 2
+    },
+    {
+      "chapterIndex": null,
+      "id": "s1-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 2,
+      "text": "by Dan Fakkeldy",
+      "wordCount": 3
+    },
+    {
+      "chapterIndex": null,
+      "id": "s1-b2",
+      "kind": "paragraph",
+      "sequenceIndex": 3,
+      "text": "Conversations, Content Blocks, and the Messages API",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b0",
+      "kind": "heading",
+      "sequenceIndex": 4,
+      "text": "Chapter 1 — The Crossing",
+      "wordCount": 5
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 5,
+      "text": "A request arrives at Project Desk on an ordinary Tuesday morning. A customer has written three paragraphs about a damaged shipment. The useful facts are scattered through frustration, dates, and a long description of the box. You want Claude to draft a calm reply that acknowledges the problem and asks for the missing information.",
+      "wordCount": 54
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b2",
+      "kind": "paragraph",
+      "sequenceIndex": 6,
+      "text": "Nothing has crossed into Claude yet.",
+      "wordCount": 6
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b3",
+      "kind": "paragraph",
+      "sequenceIndex": 7,
+      "text": "The customer's words are sitting inside your application. Project Desk may show them on a screen. It may have stored them in a database. It may have trimmed an email signature or attached the customer's account number. All of that work is happening on your side of a line.",
+      "wordCount": 49
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b4",
+      "kind": "paragraph",
+      "sequenceIndex": 8,
+      "text": "Then your Python program makes a call.",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b5",
+      "kind": "paragraph",
+      "sequenceIndex": 9,
+      "text": "That line between Project Desk and the Claude service is our first useful term: the API boundary. An API is an agreed way for one piece of software to ask another piece of software to do something. The boundary is where responsibility changes hands. Project Desk decides what to send. Claude generates a response from what it receives. Project Desk then decides what to do with the result.",
+      "wordCount": 68
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b6",
+      "kind": "paragraph",
+      "sequenceIndex": 10,
+      "text": "The official route has a mechanical name: post, slash v one, slash messages. In Python, the corresponding SDK method is called messages dot create. You do not need to memorize either spelling during this drive. Their job matters more: they send a structured request to the direct Messages API and ask Claude to generate the next assistant contribution.",
+      "wordCount": 58
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b7",
+      "kind": "paragraph",
+      "sequenceIndex": 11,
+      "text": "That last phrase needs care. Project Desk is not mailing a loose sentence across the boundary and waiting for another loose sentence to float back. It sends a message.",
+      "wordCount": 29
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b8",
+      "kind": "paragraph",
+      "sequenceIndex": 12,
+      "text": "A message is a structured unit in a conversation. For now, picture it as one contribution with two basic facts attached. First, who contributed it. Second, what that contribution contains. The customer's request becomes a user message because it carries the user's side of the exchange. Claude's reply comes back as an assistant message because it carries the assistant's next contribution.",
+      "wordCount": 61
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b9",
+      "kind": "paragraph",
+      "sequenceIndex": 13,
+      "text": "Project Desk still owns the surrounding job. It chose the customer's text. It chose the instruction to draft a calm reply. It chose which Claude model to call and how much output to permit. Those choices travel in one request, but they are not all the same thing. The message carries the conversational contribution. Other request settings tell the service how this call should run.",
+      "wordCount": 65
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b10",
+      "kind": "paragraph",
+      "sequenceIndex": 14,
+      "text": "You can hear the division of labour in one sentence: Project Desk constructs the request; Claude generates the next message.",
+      "wordCount": 20
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b11",
+      "kind": "paragraph",
+      "sequenceIndex": 15,
+      "text": "The distinction may sound fussy until something goes wrong. Suppose Project Desk accidentally sends only the words, “Please help with this.” The customer's three paragraphs remain in your database, but Claude never receives them. Claude cannot reach backward across the API boundary and inspect whatever Project Desk forgot to include. It can only work from the request that actually crossed.",
+      "wordCount": 60
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b12",
+      "kind": "paragraph",
+      "sequenceIndex": 16,
+      "text": "The failure belongs to the application. Claude may produce a perfectly fluent answer to the thin request it received. Fluency does not restore the missing shipment details.",
+      "wordCount": 27
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b13",
+      "kind": "paragraph",
+      "sequenceIndex": 17,
+      "text": "Now let the complete request cross. It names the model. It sets a maximum possible output. It includes a user message containing the customer's account of the damaged shipment. Claude processes that request and sends back an assistant message.",
+      "wordCount": 39
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b14",
+      "kind": "paragraph",
+      "sequenceIndex": 18,
+      "text": "If Project Desk were a toy script, it could print the answer text and stop. A dependable application needs to inspect more than the paragraph the customer might eventually read. What came back is our third term: a structured response.",
+      "wordCount": 40
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b15",
+      "kind": "paragraph",
+      "sequenceIndex": 19,
+      "text": "A structured response is the full result object returned by the API. It contains Claude's generated content, but it also carries operational evidence about the event. It identifies the assistant role. It identifies the model that answered. It reports why generation stopped. It records usage information. Later chapters will give each of those fields its own job. For the moment, the useful distinction is smaller: the response contains the answer, but it is not merely the answer.",
+      "wordCount": 77
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b16",
+      "kind": "paragraph",
+      "sequenceIndex": 20,
+      "text": "Imagine that Claude returns a thoughtful draft ending with, “Please send a photograph of the shipping label.” The text looks complete. Project Desk checks the rest of the response and learns that generation stopped because it reached the maximum output allowed by the request. The final sentence may happen to end with a period, but the stop evidence says the generation was cut off by a limit. A program that reads only the prose could mistake a tidy-looking fragment for a finished reply.",
+      "wordCount": 83
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b17",
+      "kind": "paragraph",
+      "sequenceIndex": 21,
+      "text": "Now imagine the same draft with a stop reason indicating that Claude ended the turn naturally. The visible paragraph might be identical. The application decision can still differ because the structured response tells Project Desk how the generation ended.",
+      "wordCount": 39
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b18",
+      "kind": "paragraph",
+      "sequenceIndex": 22,
+      "text": "This is why response handling is application work. Claude generates. Project Desk interprets.",
+      "wordCount": 13
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b19",
+      "kind": "paragraph",
+      "sequenceIndex": 23,
+      "text": "There is another boundary worth placing now. Anthropic also offers Claude Managed Agents. Managed Agents supplies a pre-built harness for longer-running, asynchronous work. The Messages API is the more direct route: your application controls the loop and the details around each model call. Project Desk is using that direct route because we want to understand the pieces it owns. Later in the series, when managed infrastructure becomes the subject, this contrast will return with more consequences.",
+      "wordCount": 76
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b20",
+      "kind": "paragraph",
+      "sequenceIndex": 24,
+      "text": "For this request, Project Desk now has two useful objects on its side of the boundary. It has the user message it sent, and it has the assistant response it received. If the draft passes the application's checks, Project Desk can show it to a person, store it with the case, or ask Claude for another turn. Claude does not make those product decisions merely because it wrote the paragraph.",
+      "wordCount": 70
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b21",
+      "kind": "paragraph",
+      "sequenceIndex": 25,
+      "text": "The shape repeats outside customer support.",
+      "wordCount": 6
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b22",
+      "kind": "paragraph",
+      "sequenceIndex": 26,
+      "text": "Suppose Project Desk is replaced by a document-extraction service. A person uploads an invoice and asks for the supplier name, invoice date, and total. The application prepares the material and sends a user message through the same API boundary. Claude returns an assistant response containing the extraction result and the operational evidence around it.",
+      "wordCount": 54
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b23",
+      "kind": "paragraph",
+      "sequenceIndex": 27,
+      "text": "Which side owns the uploaded file before the call? The application side.",
+      "wordCount": 12
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b24",
+      "kind": "paragraph",
+      "sequenceIndex": 28,
+      "text": "Which object carries the person's contribution across the boundary? The user message.",
+      "wordCount": 12
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b25",
+      "kind": "paragraph",
+      "sequenceIndex": 29,
+      "text": "Which object returns with both generated content and evidence about the generation? The structured response.",
+      "wordCount": 15
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b26",
+      "kind": "paragraph",
+      "sequenceIndex": 30,
+      "text": "The business purpose changed from drafting a reply to extracting fields. The crossing did not. One application prepares a request. One message carries the user's contribution. One structured response returns. The application decides what the result means for the product.",
+      "wordCount": 40
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b27",
+      "kind": "paragraph",
+      "sequenceIndex": 31,
+      "text": "That repeated shape is the route we will follow through this book. We will open it piece by piece without losing sight of the whole exchange. The next useful question comes from the message itself. If software once sent Claude one specially formatted prompt string, why does the modern API bother separating conversations into structured messages at all?",
+      "wordCount": 58
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b28",
+      "kind": "paragraph",
+      "sequenceIndex": 32,
+      "text": "Before we answer that, let us replay the crossing slowly enough to notice what Project Desk can control.",
+      "wordCount": 18
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b29",
+      "kind": "paragraph",
+      "sequenceIndex": 33,
+      "text": "On the application side, the damaged-shipment request is still ordinary data. Project Desk can remove a repeated email footer. It can reject an empty case. It can add the order number that the customer supplied through a separate form. It can also decide that a photograph is sensitive and should not be included in this request. None of those choices are Claude's choices. They happen before the API boundary.",
+      "wordCount": 69
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b30",
+      "kind": "paragraph",
+      "sequenceIndex": 34,
+      "text": "Project Desk then assembles the message. The message needs to carry enough of the customer's contribution for Claude to do the requested work. If Project Desk includes the complaint but leaves out the order number, Claude does not possess an invisible copy of the order record. If Project Desk includes yesterday's complaint by mistake, Claude may answer the wrong case with complete confidence. The boundary is unforgiving in a useful way: it gives us a precise place to ask what was actually sent.",
+      "wordCount": 83
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b31",
+      "kind": "paragraph",
+      "sequenceIndex": 35,
+      "text": "After the call, Project Desk receives the structured response. This is another moment for deliberate application work. The program can preserve the response beside the case. It can check that the generation ended in an expected way. It can choose the generated text intended for the customer while retaining the other evidence for monitoring. It can send the draft to a staff member instead of sending it directly. Once again, Claude supplies a contribution; the application owns the consequence.",
+      "wordCount": 79
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b32",
+      "kind": "paragraph",
+      "sequenceIndex": 36,
+      "text": "Think of a restaurant pass. A server writes an order, the kitchen prepares a plate, and the server checks the plate before it reaches the table. The pass is not a perfect copy of the API boundary, because software does not have a physical kitchen. The comparison is useful for one narrow point: responsibility changes at a known handoff, and the receiving side still has work to do. A finished-looking plate is not proof that it belongs to table twelve. A polished paragraph is not proof that it belongs in this customer's case.",
+      "wordCount": 93
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b33",
+      "kind": "paragraph",
+      "sequenceIndex": 37,
+      "text": "Now change the application again. A teacher has fifty short reflections from students and wants help grouping them by recurring concern. The application sends one student's reflection as a user message and asks for a compact classification. Claude returns a structured response. The application checks the result, stores the selected category, and moves to the next reflection.",
+      "wordCount": 57
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b34",
+      "kind": "paragraph",
+      "sequenceIndex": 38,
+      "text": "Consider the fresh question. The returned text says, “The student is mainly concerned about time management.” Where should the student identifier live while the call is being prepared: only in Claude's generated prose, or in the application that already knows which record it is processing?",
+      "wordCount": 45
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b35",
+      "kind": "paragraph",
+      "sequenceIndex": 39,
+      "text": "It belongs in the application. Project Desk's cousin in this example already owns the student record. Asking Claude to reproduce the identifier does not transfer ownership of that fact. The message should contain the material Claude needs. The application should keep the reliable link between the response and the record that produced the request.",
+      "wordCount": 54
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b36",
+      "kind": "paragraph",
+      "sequenceIndex": 40,
+      "text": "That separation prevents a subtle mistake. If the generated prose misspells a name or invents an identifier, the application can still attach the response to the correct source record because it never surrendered that relationship. The structured response is evidence from one generation event. It is not a replacement for the application's own records.",
+      "wordCount": 54
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b37",
+      "kind": "paragraph",
+      "sequenceIndex": 41,
+      "text": "So, across three jobs—customer support, invoice extraction, and reflection grouping—the same mental route holds.",
+      "wordCount": 14
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b38",
+      "kind": "paragraph",
+      "sequenceIndex": 42,
+      "text": "Before the crossing, ask: what does the application know, and what must the message carry?",
+      "wordCount": 15
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b39",
+      "kind": "paragraph",
+      "sequenceIndex": 43,
+      "text": "At the crossing, ask: what request did the application actually send?",
+      "wordCount": 11
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b40",
+      "kind": "paragraph",
+      "sequenceIndex": 44,
+      "text": "After the crossing, ask: what does the structured response say happened, and what should the application do next?",
+      "wordCount": 18
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b41",
+      "kind": "paragraph",
+      "sequenceIndex": 45,
+      "text": "If those questions feel almost too simple, that is a strength. They remain useful when the request becomes more elaborate. Later, the message may contain several kinds of material. The response may contain several pieces of generated content. Project Desk may make another call based on the first one. The crossing gains detail, but responsibility does not become mysterious.",
+      "wordCount": 59
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b42",
+      "kind": "paragraph",
+      "sequenceIndex": 46,
+      "text": "Try the route once without the story. Your Python program prepares a message. The message crosses the API boundary in a request. Claude generates the assistant contribution. A structured response crosses back. Your program inspects that response and decides the next action.",
+      "wordCount": 42
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b43",
+      "kind": "paragraph",
+      "sequenceIndex": 47,
+      "text": "The central idea is not that Claude sits inside Project Desk. It is that Project Desk and Claude exchange structured objects across a defined boundary. Project Desk owns the conversation around each call because Project Desk decides what history to send, what result to trust, and whether another call should happen.",
+      "wordCount": 51
+    },
+    {
+      "chapterIndex": 0,
+      "id": "s2-b44",
+      "kind": "paragraph",
+      "sequenceIndex": 48,
+      "text": "Keep that route in mind as we move forward. It will let us explain why modern messages are separated, how a conversation continues, and why a dependable Claude application is built from more than a clever prompt.",
+      "wordCount": 37
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b0",
+      "kind": "heading",
+      "sequenceIndex": 49,
+      "text": "Chapter 2 — When the Conversation Was One String",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 50,
+      "text": "Project Desk has crossed the boundary once. It sent a structured user message and received a structured assistant response. That arrangement may already feel natural. A person contributes something. An assistant contributes something. The application can tell which is which.",
+      "wordCount": 40
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b2",
+      "kind": "paragraph",
+      "sequenceIndex": 51,
+      "text": "But software did not have to be designed that way.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b3",
+      "kind": "paragraph",
+      "sequenceIndex": 52,
+      "text": "Imagine building an earlier version of Project Desk around a simpler bargain. Instead of sending an explicit series of conversational contributions, the application sends one long piece of text and asks the model to continue it.",
+      "wordCount": 36
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b4",
+      "kind": "paragraph",
+      "sequenceIndex": 53,
+      "text": "The customer speaks first, so Project Desk writes the customer's words into that text. The assistant is supposed to speak next, so Project Desk adds a marker that means the assistant's contribution should begin here. If the customer and assistant have already exchanged several turns, Project Desk places those earlier turns into the same string in the right order. It also places any instructions where its chosen formatting convention expects them.",
+      "wordCount": 71
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b5",
+      "kind": "paragraph",
+      "sequenceIndex": 54,
+      "text": "The model sees text to continue. Project Desk sees a conversation only because Project Desk built the text to resemble one.",
+      "wordCount": 21
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b6",
+      "kind": "paragraph",
+      "sequenceIndex": 55,
+      "text": "That older contract is called Text Completions. The name is useful because it describes the mechanism directly. The application supplies text; the model produces a completion of that text.",
+      "wordCount": 29
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b7",
+      "kind": "paragraph",
+      "sequenceIndex": 56,
+      "text": "Text Completions is now a legacy API. Anthropic directs future models and features toward the Messages API. We are not learning the legacy route so you can start a new project with it. We are looking backward because the older shape exposes a problem that modern structure solves.",
+      "wordCount": 48
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b8",
+      "kind": "paragraph",
+      "sequenceIndex": 57,
+      "text": "Suppose Project Desk has this exchange in its case file.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b9",
+      "kind": "paragraph",
+      "sequenceIndex": 58,
+      "text": "The customer says the replacement parcel arrived, but one item is still missing.",
+      "wordCount": 13
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b10",
+      "kind": "paragraph",
+      "sequenceIndex": 59,
+      "text": "The assistant previously asked for the name of the missing item.",
+      "wordCount": 11
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b11",
+      "kind": "paragraph",
+      "sequenceIndex": 60,
+      "text": "The customer answers, “The blue travel mug.”",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b12",
+      "kind": "paragraph",
+      "sequenceIndex": 61,
+      "text": "With the legacy approach, Project Desk turns those three contributions into one formatted prompt string. The application must preserve the speaker changes through formatting. It must make the boundary between the earlier assistant text and the new customer text unambiguous. It must end the prompt at exactly the place where a new assistant completion belongs.",
+      "wordCount": 55
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b13",
+      "kind": "paragraph",
+      "sequenceIndex": 62,
+      "text": "The conversation is real to the people involved. Inside the request, however, its structure is encoded by a convention inside text.",
+      "wordCount": 21
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b14",
+      "kind": "paragraph",
+      "sequenceIndex": 63,
+      "text": "Conventions can work. Software has always used agreed formatting to make one thing stand for another. The weakness is not that the string is fake or useless. The weakness is that the application and the model must infer the conversational structure from the same packed representation.",
+      "wordCount": 46
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b15",
+      "kind": "paragraph",
+      "sequenceIndex": 64,
+      "text": "Project Desk knows there were three contributions because it assembled them. The receiving API gets one prompt. If a separator is missing, a speaker marker is malformed, or an instruction lands in the wrong place, the string still remains a string. The application may have damaged the conversational meaning without producing an obviously invalid request.",
+      "wordCount": 55
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b16",
+      "kind": "paragraph",
+      "sequenceIndex": 65,
+      "text": "This is bookkeeping hidden inside prose.",
+      "wordCount": 6
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b17",
+      "kind": "paragraph",
+      "sequenceIndex": 66,
+      "text": "The modern Messages request changes the bargain. Project Desk does not merely make text look conversational. It sends a list of messages whose structure is explicit. Each input message identifies which side contributed it and carries its content. The order of the messages supplies the order of the exchange.",
+      "wordCount": 49
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b18",
+      "kind": "paragraph",
+      "sequenceIndex": 67,
+      "text": "Take the same missing-item case. Project Desk can prepare the earlier customer's report as one user contribution, the earlier assistant question as one assistant contribution, and “The blue travel mug” as the next user contribution. The application no longer needs one giant prompt string whose punctuation secretly performs all three speaker changes.",
+      "wordCount": 52
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b19",
+      "kind": "paragraph",
+      "sequenceIndex": 68,
+      "text": "The text still matters. Claude cannot answer without the actual words. What changed is where the conversational bookkeeping lives. Speaker and content boundaries moved out of an application-invented text convention and into the request's explicit structure.",
+      "wordCount": 36
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b20",
+      "kind": "paragraph",
+      "sequenceIndex": 69,
+      "text": "That shift gives Project Desk a cleaner place to reason.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b21",
+      "kind": "paragraph",
+      "sequenceIndex": 70,
+      "text": "If the latest contribution is accidentally labelled as coming from the assistant side, the defect is attached to a specific message. If an earlier contribution is omitted, the history list shows the omission. If the application wants to remove one irrelevant exchange before the call, it can remove that message rather than cut a fragile substring out of one growing prompt.",
+      "wordCount": 61
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b22",
+      "kind": "paragraph",
+      "sequenceIndex": 71,
+      "text": "The application still has to make correct choices. Structured messages do not rescue bad data. Project Desk can attach the wrong customer case, reverse two contributions, or send too little context. The improvement is that the request represents the choices in parts the application can inspect.",
+      "wordCount": 46
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b23",
+      "kind": "paragraph",
+      "sequenceIndex": 72,
+      "text": "Think of the difference between writing an entire mailing address as an unlabelled line and keeping separate fields for recipient, street, community, province, and postal code. Both forms eventually produce visible text on an envelope. The separated form gives software named places to validate, replace, and compare.",
+      "wordCount": 47
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b24",
+      "kind": "paragraph",
+      "sequenceIndex": 73,
+      "text": "The comparison has a limit. A conversation is not a mailing address, and messages can contain richer material than address fields. Keep only the useful relationship: explicit structure gives the application handles for information that would otherwise be encoded by position and punctuation inside one string.",
+      "wordCount": 46
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b25",
+      "kind": "paragraph",
+      "sequenceIndex": 74,
+      "text": "This matters when Project Desk grows beyond one developer and one experiment.",
+      "wordCount": 12
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b26",
+      "kind": "paragraph",
+      "sequenceIndex": 75,
+      "text": "An early script may build a prompt in five lines and print the result. Months later, a production application may need to store selected history, redact private material, audit what a person contributed, test alternative instructions, and route the response into another system. When everything is packed into one text value, each of those jobs begins by reconstructing the meaning that the application previously flattened.",
+      "wordCount": 65
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b27",
+      "kind": "paragraph",
+      "sequenceIndex": 76,
+      "text": "With messages, Project Desk can retain the distinction throughout its own code. Customer text remains a customer contribution. Earlier assistant text remains an assistant contribution. The request builder chooses which contributions cross the API boundary this time.",
+      "wordCount": 37
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b28",
+      "kind": "paragraph",
+      "sequenceIndex": 77,
+      "text": "That last phrase is important. Messages make structure explicit, but they do not create memory inside the service for Project Desk. The application still selects and sends the history it wants Claude to receive. Chapter 4 will make that stateless arrangement concrete. For now, the historical lesson is smaller: a structured conversation is assembled from explicit contributions rather than smuggled through one specially formatted prompt.",
+      "wordCount": 65
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b29",
+      "kind": "paragraph",
+      "sequenceIndex": 78,
+      "text": "The same improvement appears outside support work.",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b30",
+      "kind": "paragraph",
+      "sequenceIndex": 79,
+      "text": "Consider an internal coding assistant. A developer asks why a test is failing. The assistant suggests checking a date conversion. The developer replies that the conversion is already covered and provides the failing assertion.",
+      "wordCount": 34
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b31",
+      "kind": "paragraph",
+      "sequenceIndex": 80,
+      "text": "Packed as one legacy completion string, the application must format the developer, assistant, and developer contributions into a single piece of text and signal where the next answer should begin.",
+      "wordCount": 30
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b32",
+      "kind": "paragraph",
+      "sequenceIndex": 81,
+      "text": "Represented as messages, the application carries three ordered contributions. It can inspect the last user contribution before sending. It can preserve the earlier assistant suggestion as history without pretending that the developer wrote it. It can test what happens when that suggestion is omitted. The conversational units already match the units the product cares about.",
+      "wordCount": 55
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b33",
+      "kind": "paragraph",
+      "sequenceIndex": 82,
+      "text": "Now consider a summarization job with no apparent conversation at all. A user gives Project Desk a long incident report and asks for a five-line summary. Even there, a message remains useful. It says, in effect, this is the user's contribution to this exchange. Claude's result returns as the assistant contribution. The structure does not require a chatty interface. It supplies a consistent contract for a one-turn job and a multi-turn conversation.",
+      "wordCount": 72
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b34",
+      "kind": "paragraph",
+      "sequenceIndex": 83,
+      "text": "This is one reason the Messages API is the forward path for models and features. A model service can support richer conversational inputs when the request exposes meaningful parts instead of requiring every application to invent and maintain its own prompt-string convention. The API can evolve around explicit messages while a Text Completions call remains tied to the older continue-this-text bargain.",
+      "wordCount": 61
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b35",
+      "kind": "paragraph",
+      "sequenceIndex": 84,
+      "text": "There is a practical migration lesson here. Moving an old integration to Messages is not just changing the endpoint name. Project Desk must identify what the old prompt string was doing.",
+      "wordCount": 31
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b36",
+      "kind": "paragraph",
+      "sequenceIndex": 85,
+      "text": "Which pieces were the person's actual contributions?",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b37",
+      "kind": "paragraph",
+      "sequenceIndex": 86,
+      "text": "Which pieces were earlier assistant contributions?",
+      "wordCount": 6
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b38",
+      "kind": "paragraph",
+      "sequenceIndex": 87,
+      "text": "Which pieces were instructions added by the application?",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b39",
+      "kind": "paragraph",
+      "sequenceIndex": 88,
+      "text": "Which punctuation or labels existed only to make the old completion format work?",
+      "wordCount": 13
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b40",
+      "kind": "paragraph",
+      "sequenceIndex": 89,
+      "text": "The modern request gives those responsibilities different homes. The conversation becomes a message list. Starting instructions receive their own request-level treatment, which we will examine in Chapter 5. Formatting that existed only as scaffolding for the legacy prompt can disappear.",
+      "wordCount": 40
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b41",
+      "kind": "paragraph",
+      "sequenceIndex": 90,
+      "text": "A careless migration might place the entire old prompt string inside one user message. The new endpoint would accept a structured message, but the application would still be hiding all of its old conversational bookkeeping inside that message's text. The outside container would be modern while the inside remained one legacy bundle.",
+      "wordCount": 52
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b42",
+      "kind": "paragraph",
+      "sequenceIndex": 91,
+      "text": "That can be a temporary bridge, but it misses the main benefit. The useful migration decomposes the old prompt according to meaning.",
+      "wordCount": 22
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b43",
+      "kind": "paragraph",
+      "sequenceIndex": 92,
+      "text": "Return to the missing travel mug. Project Desk has an earlier user report, an earlier assistant question, and a new user answer. Those contributions become three messages in order. The application can now ask ordinary product questions about them.",
+      "wordCount": 39
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b44",
+      "kind": "paragraph",
+      "sequenceIndex": 93,
+      "text": "Should the earlier shipping discussion be included?",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b45",
+      "kind": "paragraph",
+      "sequenceIndex": 94,
+      "text": "Does the assistant need the customer's account number, or should that remain in Project Desk's own record?",
+      "wordCount": 17
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b46",
+      "kind": "paragraph",
+      "sequenceIndex": 95,
+      "text": "Is the new answer meaningful without the earlier question?",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b47",
+      "kind": "paragraph",
+      "sequenceIndex": 96,
+      "text": "Those are decisions about conversation and product responsibility. They are easier to see when the request is not one uninterrupted block of formatted prose.",
+      "wordCount": 24
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b48",
+      "kind": "paragraph",
+      "sequenceIndex": 97,
+      "text": "Structured messages also give tests a better target. A test can verify that Project Desk sends three contributions in the intended order. It can check that the latest contribution belongs to the user side. It can confirm that a private internal note never enters any message. The test does not have to prove these facts by searching a long assembled string and hoping the same words do not appear elsewhere.",
+      "wordCount": 70
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b49",
+      "kind": "paragraph",
+      "sequenceIndex": 98,
+      "text": "The structure does not make the application dependable by itself. It makes dependable behavior easier to specify and inspect.",
+      "wordCount": 19
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b50",
+      "kind": "paragraph",
+      "sequenceIndex": 99,
+      "text": "We can now answer the question that ended the crossing in Chapter 1. Why does the modern API bother separating a conversation into structured messages?",
+      "wordCount": 25
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b51",
+      "kind": "paragraph",
+      "sequenceIndex": 100,
+      "text": "Because a conversation has parts that matter independently. Who contributed something matters. What they contributed matters. The order matters. Project Desk needs to select, test, store, remove, and resend those parts without repeatedly decoding its own prompt formatting.",
+      "wordCount": 38
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b52",
+      "kind": "paragraph",
+      "sequenceIndex": 101,
+      "text": "Text Completions asked the application to represent those parts inside one string. Messages gives them an explicit shape.",
+      "wordCount": 18
+    },
+    {
+      "chapterIndex": 1,
+      "id": "s3-b53",
+      "kind": "paragraph",
+      "sequenceIndex": 102,
+      "text": "Project Desk has stopped treating the conversation as one ever-growing piece of prose. The next step is to look closely at the smallest complete Python call: what the request must name, what crosses the boundary, and what evidence the response brings back.",
+      "wordCount": 42
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b0",
+      "kind": "heading",
+      "sequenceIndex": 103,
+      "text": "Chapter 3 — The Smallest Complete Trip",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 104,
+      "text": "Project Desk now has a better way to represent a conversation. It can keep the person's contribution as a user message instead of packing the whole exchange into one specially formatted string.",
+      "wordCount": 32
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b2",
+      "kind": "paragraph",
+      "sequenceIndex": 105,
+      "text": "That leaves a practical question. What does the smallest useful Python call actually have to say?",
+      "wordCount": 16
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b3",
+      "kind": "paragraph",
+      "sequenceIndex": 106,
+      "text": "Return to the damaged-shipment case. The customer's words are ready. Project Desk wants Claude to draft a reply. Before the call can cross the API boundary, the application has to answer three questions.",
+      "wordCount": 33
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b4",
+      "kind": "paragraph",
+      "sequenceIndex": 107,
+      "text": "What model should do the work?",
+      "wordCount": 6
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b5",
+      "kind": "paragraph",
+      "sequenceIndex": 108,
+      "text": "How much output may this call produce at most?",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b6",
+      "kind": "paragraph",
+      "sequenceIndex": 109,
+      "text": "What conversation should Claude receive?",
+      "wordCount": 5
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b7",
+      "kind": "paragraph",
+      "sequenceIndex": 110,
+      "text": "Those three decisions become three parts of the request: the model, the maximum-output setting called max tokens, and the messages list. The official Python SDK places them inside a call to messages dot create.",
+      "wordCount": 34
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b8",
+      "kind": "paragraph",
+      "sequenceIndex": 111,
+      "text": "You can understand that call without holding a screenful of punctuation in your head. Project Desk creates an Anthropic client. It asks that client's messages service to create the next assistant message. In the request, it supplies a model identifier, a max-tokens value, and a list containing the user's message.",
+      "wordCount": 50
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b9",
+      "kind": "paragraph",
+      "sequenceIndex": 112,
+      "text": "That bounded collection is the request envelope. An envelope, in this sense, is the complete set of information sent for one API operation. It is not only the customer's prose. It includes the settings and structured input that tell the service what this particular call is asking for.",
+      "wordCount": 48
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b10",
+      "kind": "paragraph",
+      "sequenceIndex": 113,
+      "text": "The envelope comparison has a limit. A paper envelope does not control how a recipient writes back, and an API request is not literally mail. Keep only the useful relationship: Project Desk gathers the material for one trip, closes the boundary around it, and sends that exact package. Anything left outside does not silently accompany it.",
+      "wordCount": 56
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b11",
+      "kind": "paragraph",
+      "sequenceIndex": 114,
+      "text": "The model field answers the first question. It names the model Project Desk wants the service to use. This is an application choice, not a fact hidden in the user's message. Two requests can carry the same customer text while naming different models. The wording of the support case has not changed, but an operational dependency of the application has.",
+      "wordCount": 60
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b12",
+      "kind": "paragraph",
+      "sequenceIndex": 115,
+      "text": "Later, we will treat that model name as a versioned dependency and discuss what to store when the returned model identity differs from a vague product label. For this trip, its role is simple. The request has to identify the model being asked to generate the assistant contribution.",
+      "wordCount": 48
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b13",
+      "kind": "paragraph",
+      "sequenceIndex": 116,
+      "text": "The messages list answers the third question. It carries the conversation Project Desk has chosen to send. In the smallest one-turn call, that list contains one user message: the customer's request for help with the damaged shipment.",
+      "wordCount": 37
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b14",
+      "kind": "paragraph",
+      "sequenceIndex": 117,
+      "text": "Project Desk may have much more information in its own records. It may know the customer's account tier, the courier tracking number, the warehouse involved, and the private note left by a supervisor. None of that becomes model input merely because the application knows it. Only information placed into the request envelope crosses the API boundary.",
+      "wordCount": 56
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b15",
+      "kind": "paragraph",
+      "sequenceIndex": 118,
+      "text": "This is the same responsibility we met in Chapter 1, now attached to a concrete Python call. The client library can transmit the envelope Project Desk builds. It cannot repair an envelope that omitted the facts needed for a good answer.",
+      "wordCount": 41
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b16",
+      "kind": "paragraph",
+      "sequenceIndex": 119,
+      "text": "The middle question, how much output may this call produce at most, needs a more careful name. Max tokens establishes an output ceiling.",
+      "wordCount": 23
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b17",
+      "kind": "paragraph",
+      "sequenceIndex": 120,
+      "text": "An output ceiling is a hard upper bound on how many tokens Claude may generate for that response. Tokens are the units the model processes and produces. Ordinary words may be one token, several tokens, or part of a token depending on the text. We do not need token arithmetic yet. The important point is the direction of the limit: Claude may generate up to the ceiling.",
+      "wordCount": 67
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b18",
+      "kind": "paragraph",
+      "sequenceIndex": 121,
+      "text": "The ceiling is not a target.",
+      "wordCount": 6
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b19",
+      "kind": "paragraph",
+      "sequenceIndex": 122,
+      "text": "If Project Desk permits a generous response, Claude does not have to fill the entire allowance. A reply that naturally finishes well below the limit can stop there. Setting a higher maximum does not mean asking for padding, repetition, or a response of exactly that size.",
+      "wordCount": 46
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b20",
+      "kind": "paragraph",
+      "sequenceIndex": 123,
+      "text": "Think of the height limit inside a delivery van. A parcel must fit below it, but every parcel is not expected to touch the roof. The limit describes what cannot be exceeded. It does not predict the size of the next parcel.",
+      "wordCount": 42
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b21",
+      "kind": "paragraph",
+      "sequenceIndex": 124,
+      "text": "That distinction protects the application from a common mistaken assumption. Suppose Project Desk allows enough output for a detailed customer reply. Claude returns a concise, complete draft. The difference between the allowance and the actual response is not missing content that the service owes Project Desk. The allowance was capacity, not a reservation.",
+      "wordCount": 53
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b22",
+      "kind": "paragraph",
+      "sequenceIndex": 125,
+      "text": "The opposite case matters too. If the ceiling is too low for the requested job, generation may reach that limit before the answer is complete. The response carries a stop reason that lets Project Desk distinguish that outcome from a natural ending. Chapter 8 will turn stop reasons into application branches. Here, the max-tokens field has one job: it bounds possible generated output for this call.",
+      "wordCount": 66
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b23",
+      "kind": "paragraph",
+      "sequenceIndex": 126,
+      "text": "We can now narrate the whole outgoing side.",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b24",
+      "kind": "paragraph",
+      "sequenceIndex": 127,
+      "text": "Project Desk calls messages dot create. It names the model. It establishes an output ceiling. It supplies the selected conversation as messages.",
+      "wordCount": 22
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b25",
+      "kind": "paragraph",
+      "sequenceIndex": 128,
+      "text": "Model, possible output, conversation.",
+      "wordCount": 4
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b26",
+      "kind": "paragraph",
+      "sequenceIndex": 129,
+      "text": "That is the smallest practical mental model for the request envelope.",
+      "wordCount": 11
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b27",
+      "kind": "paragraph",
+      "sequenceIndex": 130,
+      "text": "The Python SDK handles the network mechanics around the call. It turns the application-level arguments into the service request, sends it to the Messages API, and gives Project Desk a result or an error. The client library saves the developer from manually constructing the raw web request, but it does not erase the contract. Project Desk still chose every meaningful part of the envelope.",
+      "wordCount": 64
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b28",
+      "kind": "paragraph",
+      "sequenceIndex": 131,
+      "text": "Now follow the call across the boundary.",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b29",
+      "kind": "paragraph",
+      "sequenceIndex": 132,
+      "text": "Claude receives the request and generates the next assistant contribution. When the call succeeds, Project Desk does not receive a bare string. The SDK returns a structured assistant Message object.",
+      "wordCount": 30
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b30",
+      "kind": "paragraph",
+      "sequenceIndex": 133,
+      "text": "The generated prose is inside that response, stored as content. In the simple support example, the first content item contains text: the proposed reply to the customer. Project Desk can extract that text for display, editing, or storage.",
+      "wordCount": 38
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b31",
+      "kind": "paragraph",
+      "sequenceIndex": 134,
+      "text": "But printing the first text item is not the same as understanding the complete result.",
+      "wordCount": 15
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b32",
+      "kind": "paragraph",
+      "sequenceIndex": 135,
+      "text": "The response also identifies the message. It says that the contribution belongs to the assistant side. It reports the model associated with the result. It contains an ordered collection of content items. It reports why generation stopped, includes a stop sequence when one applies, and records usage counts.",
+      "wordCount": 48
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b33",
+      "kind": "paragraph",
+      "sequenceIndex": 136,
+      "text": "Together, those fields make up the complete returned assistant Message object. In this book, response envelope is our short name for that complete object. It is not a second wrapper around the message.",
+      "wordCount": 33
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b34",
+      "kind": "paragraph",
+      "sequenceIndex": 137,
+      "text": "Chapter 1 called it a structured response. Response envelope gives us a paired way to reason about the trip. The request envelope records what Project Desk sent for one operation. The response envelope is the returned assistant Message object with all of its fields.",
+      "wordCount": 44
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b35",
+      "kind": "paragraph",
+      "sequenceIndex": 138,
+      "text": "The visible answer is one part of the return package.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b36",
+      "kind": "paragraph",
+      "sequenceIndex": 139,
+      "text": "This separation matters even in a tiny script. Imagine that a developer runs the official-style example and prints the response object. The screen shows more than the support reply. It shows a message identifier, the assistant role, a content collection, a model identity, stop information, and usage information.",
+      "wordCount": 48
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b37",
+      "kind": "paragraph",
+      "sequenceIndex": 140,
+      "text": "The extra fields are not clutter added around the real answer. They are the application's evidence about the generation event.",
+      "wordCount": 20
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b38",
+      "kind": "paragraph",
+      "sequenceIndex": 141,
+      "text": "Project Desk may eventually store different parts for different reasons. It can store the generated customer-facing text with the case. It can store the message identifier and returned model with an operational record. It can use the stop reason immediately to decide whether the text is acceptable. It can send usage information to cost and capacity tracking.",
+      "wordCount": 57
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b39",
+      "kind": "paragraph",
+      "sequenceIndex": 142,
+      "text": "Those product decisions belong to later chapters, but the shape comes first. A dependable integration does not pretend the response is only whatever prose a person will read.",
+      "wordCount": 28
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b40",
+      "kind": "paragraph",
+      "sequenceIndex": 143,
+      "text": "Consider a second application: a meeting-notes assistant. A manager pastes rough notes and asks for three decisions and three action items. The Python request still answers the same three questions. It names a model, sets an output ceiling, and supplies the user's contribution in the messages list.",
+      "wordCount": 47
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b41",
+      "kind": "paragraph",
+      "sequenceIndex": 144,
+      "text": "Claude may return six clean bullet points. The meeting app can display those points, but the full response tells it more. The assistant role identifies the contribution. The returned model records which model handled the call. The stop reason describes how generation ended. The usage fields describe the input and output processed.",
+      "wordCount": 52
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b42",
+      "kind": "paragraph",
+      "sequenceIndex": 145,
+      "text": "The support draft and the meeting summary have different business purposes. Their request and response envelopes use the same route.",
+      "wordCount": 20
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b43",
+      "kind": "paragraph",
+      "sequenceIndex": 146,
+      "text": "This regular shape makes small experiments easier to grow into real applications. A first Python file may do only two visible things: send a user message and print the resulting text. That is a reasonable way to prove the connection works. The risk comes when the shortcut hardens into the application's complete model of the API.",
+      "wordCount": 56
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b44",
+      "kind": "paragraph",
+      "sequenceIndex": 147,
+      "text": "If the program keeps only the text, later code has no stop evidence to inspect. If it records only the model requested and ignores the model returned, it loses part of the event record. If it treats the output ceiling as an expected length, it may flag concise answers as failures or budget incorrectly. If it assumes all useful content will forever be one plain text value, richer response content will surprise it.",
+      "wordCount": 73
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b45",
+      "kind": "paragraph",
+      "sequenceIndex": 148,
+      "text": "A better first integration can remain small while preserving the boundary between two jobs. One part of the code makes the request. Another part handles the returned message.",
+      "wordCount": 28
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b46",
+      "kind": "paragraph",
+      "sequenceIndex": 149,
+      "text": "The request-making part knows what Project Desk intended to send: model, output ceiling, messages.",
+      "wordCount": 14
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b47",
+      "kind": "paragraph",
+      "sequenceIndex": 150,
+      "text": "The response-handling part knows what actually came back: identity, assistant role, ordered content, returned model, stop information, and usage.",
+      "wordCount": 19
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b48",
+      "kind": "paragraph",
+      "sequenceIndex": 151,
+      "text": "This does not require building a large framework before the first call. It requires keeping the complete response available long enough for the application to make deliberate choices.",
+      "wordCount": 28
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b49",
+      "kind": "paragraph",
+      "sequenceIndex": 152,
+      "text": "Return once more to the three questions on the outgoing side.",
+      "wordCount": 11
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b50",
+      "kind": "paragraph",
+      "sequenceIndex": 153,
+      "text": "What model?",
+      "wordCount": 2
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b51",
+      "kind": "paragraph",
+      "sequenceIndex": 154,
+      "text": "How much possible output?",
+      "wordCount": 4
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b52",
+      "kind": "paragraph",
+      "sequenceIndex": 155,
+      "text": "What conversation?",
+      "wordCount": 2
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b53",
+      "kind": "paragraph",
+      "sequenceIndex": 156,
+      "text": "Project Desk answers them in the request envelope. Claude's service returns the response envelope: the complete assistant Message object. The answer text is available for the customer, while the object's other fields remain available for the software.",
+      "wordCount": 37
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b54",
+      "kind": "paragraph",
+      "sequenceIndex": 157,
+      "text": "At this point, Project Desk has enough information to store the first assistant result responsibly. It knows what it asked for and it has the complete return object from that call.",
+      "wordCount": 31
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b55",
+      "kind": "paragraph",
+      "sequenceIndex": 158,
+      "text": "It does not yet have a continuing conversation.",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 2,
+      "id": "s4-b56",
+      "kind": "paragraph",
+      "sequenceIndex": 159,
+      "text": "The API has returned one assistant contribution, but nothing in this single trip guarantees that a later call will remember it. If the customer replies, Project Desk has to decide what history crosses the boundary next. That is the route ahead: how a stateless API produces an experience that can still feel conversational.",
+      "wordCount": 53
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b0",
+      "kind": "heading",
+      "sequenceIndex": 160,
+      "text": "Chapter 4 — The Clerk Who Carries the Case File",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 161,
+      "text": "The first support draft is complete. Project Desk sent the damaged-shipment request, Claude returned an assistant message, and the application stored the result with the case.",
+      "wordCount": 26
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b2",
+      "kind": "paragraph",
+      "sequenceIndex": 162,
+      "text": "The next morning, the customer replies with one sentence: “Yes, please make it more apologetic and mention the replacement.”",
+      "wordCount": 19
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b3",
+      "kind": "paragraph",
+      "sequenceIndex": 163,
+      "text": "Project Desk makes another Messages call. It sends only that new sentence as a user message.",
+      "wordCount": 16
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b4",
+      "kind": "paragraph",
+      "sequenceIndex": 164,
+      "text": "What does Claude know about the draft from yesterday?",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b5",
+      "kind": "paragraph",
+      "sequenceIndex": 165,
+      "text": "Nothing from the earlier call has been supplied here. Claude receives a request to make something more apologetic and mention a replacement, but the thing to revise is absent. The service cannot tell which draft the customer means, what happened to the shipment, or which replacement was discussed.",
+      "wordCount": 48
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b6",
+      "kind": "paragraph",
+      "sequenceIndex": 166,
+      "text": "Project Desk has the missing material in its case record. The Messages API does not reach into that record. A new call receives the input attached to that call.",
+      "wordCount": 29
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b7",
+      "kind": "paragraph",
+      "sequenceIndex": 167,
+      "text": "This is what stateless means. The API does not retain Project Desk's conversational state between these requests and automatically restore it for the next one. Each call must contain the conversational context Claude needs for that operation.",
+      "wordCount": 37
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b8",
+      "kind": "paragraph",
+      "sequenceIndex": 168,
+      "text": "Stateless does not mean Claude cannot participate in a multi-turn conversation. It means the continuity is assembled by the application.",
+      "wordCount": 20
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b9",
+      "kind": "paragraph",
+      "sequenceIndex": 169,
+      "text": "Project Desk tries the follow-up again. This time, its messages list contains three contributions in order.",
+      "wordCount": 16
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b10",
+      "kind": "paragraph",
+      "sequenceIndex": 170,
+      "text": "First comes the customer's original description of the damaged shipment.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b11",
+      "kind": "paragraph",
+      "sequenceIndex": 171,
+      "text": "Second comes the assistant draft returned yesterday.",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b12",
+      "kind": "paragraph",
+      "sequenceIndex": 172,
+      "text": "Third comes the customer's new request to make the reply more apologetic and mention the replacement.",
+      "wordCount": 16
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b13",
+      "kind": "paragraph",
+      "sequenceIndex": 173,
+      "text": "Now Claude can generate the next assistant contribution from the exchange Project Desk supplied. The response may feel like the continuation of one conversation because the request contains the relevant conversation so far.",
+      "wordCount": 33
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b14",
+      "kind": "paragraph",
+      "sequenceIndex": 174,
+      "text": "The memory is in the request.",
+      "wordCount": 6
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b15",
+      "kind": "paragraph",
+      "sequenceIndex": 175,
+      "text": "More precisely, Project Desk stored earlier contributions, selected the ones that mattered, and sent them again. Claude did not retrieve yesterday's exchange by recognizing the customer. The application carried the case file across the boundary.",
+      "wordCount": 35
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b16",
+      "kind": "paragraph",
+      "sequenceIndex": 176,
+      "text": "That record of selected earlier contributions is conversation history. History is not a magical transcript floating beside the API. It is data owned by the application: user messages, assistant messages, and whatever product metadata Project Desk keeps around them.",
+      "wordCount": 39
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b17",
+      "kind": "paragraph",
+      "sequenceIndex": 177,
+      "text": "The product metadata and the model-visible history are not necessarily the same thing. Project Desk might store a timestamp, a database identifier, an approval state, and the employee who edited a draft. Those facts can remain application records. The messages list contains the conversational material chosen for Claude to receive.",
+      "wordCount": 50
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b18",
+      "kind": "paragraph",
+      "sequenceIndex": 178,
+      "text": "This distinction gives Project Desk control, but it also gives Project Desk responsibility.",
+      "wordCount": 13
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b19",
+      "kind": "paragraph",
+      "sequenceIndex": 179,
+      "text": "If the application omits a necessary earlier turn, Claude lacks it.",
+      "wordCount": 11
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b20",
+      "kind": "paragraph",
+      "sequenceIndex": 180,
+      "text": "If the application includes an irrelevant turn, Claude receives it.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b21",
+      "kind": "paragraph",
+      "sequenceIndex": 181,
+      "text": "If the application sends history from the wrong customer case, Claude may answer from that incorrect context.",
+      "wordCount": 17
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b22",
+      "kind": "paragraph",
+      "sequenceIndex": 182,
+      "text": "The service sees the assembled conversation, not the database query that assembled it.",
+      "wordCount": 13
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b23",
+      "kind": "paragraph",
+      "sequenceIndex": 183,
+      "text": "Compare the two versions of the follow-up. “Make it more apologetic and mention the replacement” is ambiguous when it travels alone. Attached to the original user request and the earlier assistant draft, it becomes a precise revision instruction.",
+      "wordCount": 38
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b24",
+      "kind": "paragraph",
+      "sequenceIndex": 184,
+      "text": "The new message did not change. The history changed what the message meant in context.",
+      "wordCount": 15
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b25",
+      "kind": "paragraph",
+      "sequenceIndex": 185,
+      "text": "This is why a working chat interface can create a misleading intuition. On screen, a person sees a continuous column of bubbles. The earlier exchange remains visible while the newest answer appears underneath it. The interface looks like one persistent conversation.",
+      "wordCount": 41
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b26",
+      "kind": "paragraph",
+      "sequenceIndex": 186,
+      "text": "Underneath, Project Desk may be making a fresh API request for every new assistant turn. For each request, it assembles the history it wants Claude to consider. The visual continuity belongs to the product. The model input continuity belongs to the request.",
+      "wordCount": 42
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b27",
+      "kind": "paragraph",
+      "sequenceIndex": 187,
+      "text": "Think of Project Desk as a clerk carrying a case file into a new consultation. The specialist can reason from the pages placed on the desk. When the consultation ends, the clerk takes the updated file back, records the new material, and later decides what pages to bring to the next consultation.",
+      "wordCount": 52
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b28",
+      "kind": "paragraph",
+      "sequenceIndex": 188,
+      "text": "The comparison breaks down if it suggests that Claude is a person who remembers other cases between appointments. It does not. Keep the operational relationship: the application maintains the file and presents relevant material for each separate call.",
+      "wordCount": 38
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b29",
+      "kind": "paragraph",
+      "sequenceIndex": 189,
+      "text": "That gives us a concrete reset for any multi-turn design. Compare a follow-up with its case file attached and the same follow-up alone.",
+      "wordCount": 23
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b30",
+      "kind": "paragraph",
+      "sequenceIndex": 190,
+      "text": "If the follow-up works only with earlier material, Project Desk must include that material or replace it with a faithful form that still supplies what Claude needs.",
+      "wordCount": 27
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b31",
+      "kind": "paragraph",
+      "sequenceIndex": 191,
+      "text": "The first version of Project Desk might resend the complete conversation every time. That is often the clearest way to learn the mechanism. The customer contributes, the assistant responds, the customer contributes again, and the application sends those contributions in order when it asks for the next assistant message.",
+      "wordCount": 49
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b32",
+      "kind": "paragraph",
+      "sequenceIndex": 192,
+      "text": "As the case grows, complete replay becomes a product decision rather than an automatic rule. An exchange may contain forty turns, repeated signatures, abandoned ideas, sensitive details, or long attachments that no longer matter. Sending everything can waste input capacity and place distracting material in front of the model.",
+      "wordCount": 49
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b33",
+      "kind": "paragraph",
+      "sequenceIndex": 193,
+      "text": "Sending too little creates the opposite problem. A customer writes, “The second option works for me,” but Project Desk omits the earlier assistant message that listed the options. Claude sees a reference with no referent. A concise follow-up becomes unusable because its meaning depended on a turn the application left behind.",
+      "wordCount": 51
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b34",
+      "kind": "paragraph",
+      "sequenceIndex": 194,
+      "text": "The job is selective resend: preserve enough history for the current contribution to make sense and for the requested work to be done, while excluding material that should not cross this time.",
+      "wordCount": 32
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b35",
+      "kind": "paragraph",
+      "sequenceIndex": 195,
+      "text": "This is application design, not merely an optimization.",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b36",
+      "kind": "paragraph",
+      "sequenceIndex": 196,
+      "text": "Suppose the damaged-shipment case includes an internal employee note: “Customer has complained three times; do not promise a refund until a supervisor approves.” Project Desk may need that fact for its workflow. Whether any part of it should be model input is a deliberate policy choice. The note does not belong in conversation history merely because it sits beside the messages in the same database row.",
+      "wordCount": 66
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b37",
+      "kind": "paragraph",
+      "sequenceIndex": 197,
+      "text": "Or suppose the customer pasted a credit-card number in an early message. Project Desk may redact that value before storing or resending model-visible history. A chat transcript shown to staff, an audit record retained for compliance, and the exact messages sent to Claude can be related records without being identical copies.",
+      "wordCount": 51
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b38",
+      "kind": "paragraph",
+      "sequenceIndex": 198,
+      "text": "Statelessness makes these boundaries visible. The application cannot assume a hidden service-side conversation will remember the right facts and forget the wrong ones. Project Desk constructs the input anew.",
+      "wordCount": 29
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b39",
+      "kind": "paragraph",
+      "sequenceIndex": 199,
+      "text": "There is another useful consequence. Earlier assistant contributions in the messages list do not have to be text that Claude generated in a previous API call. The application can supply an assistant message as part of the history it wants the next generation to continue from.",
+      "wordCount": 46
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b40",
+      "kind": "paragraph",
+      "sequenceIndex": 200,
+      "text": "That ability can support testing, migration, or a product workflow in which a human edited the earlier draft. If an employee changes yesterday's assistant reply before it is sent to the customer, Project Desk can store the approved version and include that version in later history. Claude then receives the conversation that actually matters to the product, rather than an invisible claim that only untouched model output counts as history.",
+      "wordCount": 70
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b41",
+      "kind": "paragraph",
+      "sequenceIndex": 201,
+      "text": "This does not give the application permission to mislabel arbitrary instructions carelessly. Roles shape the conversational record, and Chapter 5 will separate user and assistant contributions from starting system instructions. The point here is narrower: conversation history is an application-assembled sequence. An earlier assistant turn can represent the assistant side of that sequence whether it was originally generated, edited, imported, or created for a test.",
+      "wordCount": 65
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b42",
+      "kind": "paragraph",
+      "sequenceIndex": 202,
+      "text": "That makes testing stateless behavior straightforward.",
+      "wordCount": 6
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b43",
+      "kind": "paragraph",
+      "sequenceIndex": 203,
+      "text": "A Project Desk test can build a follow-up request with the prior draft included and confirm that the outgoing messages contain all three expected contributions in order. A second test can intentionally omit the prior draft and verify that the request builder detects the dangling phrase “make it more apologetic.” A privacy test can confirm that the internal supervisor note never enters the messages list.",
+      "wordCount": 65
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b44",
+      "kind": "paragraph",
+      "sequenceIndex": 204,
+      "text": "The tests do not prove what Claude will say word for word. They prove what Project Desk owns: the history selected for the call.",
+      "wordCount": 24
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b45",
+      "kind": "paragraph",
+      "sequenceIndex": 205,
+      "text": "The same mechanism appears in a coding assistant. A developer asks for help with a failing test. Claude suggests inspecting a date conversion. The developer then writes, “I checked that; the parsed date is correct.”",
+      "wordCount": 35
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b46",
+      "kind": "paragraph",
+      "sequenceIndex": 206,
+      "text": "Sent alone, the new message does not identify what “that” means. Sent after the earlier developer question and assistant suggestion, it becomes the next step in a specific investigation. The coding application carries the working context forward by resending the selected exchange.",
+      "wordCount": 42
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b47",
+      "kind": "paragraph",
+      "sequenceIndex": 207,
+      "text": "It also decides when not to carry context forward. If the developer opens a new repository and starts a fresh debugging session, the assistant should not automatically receive messages from the previous company's codebase. A new visible conversation should correspond to a new history policy in the application.",
+      "wordCount": 48
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b48",
+      "kind": "paragraph",
+      "sequenceIndex": 208,
+      "text": "This is one reason conversation identifiers inside a product should not be mistaken for model memory. A Project Desk case number helps the application locate stored records. The identifier does not, by itself, cause the Messages API to retrieve those records. Project Desk still has to load the right material and place it into the new request.",
+      "wordCount": 57
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b49",
+      "kind": "paragraph",
+      "sequenceIndex": 209,
+      "text": "The boundary is now operational rather than abstract.",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b50",
+      "kind": "paragraph",
+      "sequenceIndex": 210,
+      "text": "Before the call, Project Desk owns the stored history.",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b51",
+      "kind": "paragraph",
+      "sequenceIndex": 211,
+      "text": "For the call, Project Desk selects and sends the relevant contributions.",
+      "wordCount": 11
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b52",
+      "kind": "paragraph",
+      "sequenceIndex": 212,
+      "text": "After the call, Project Desk receives a new assistant message and decides whether to add it to the case history.",
+      "wordCount": 20
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b53",
+      "kind": "paragraph",
+      "sequenceIndex": 213,
+      "text": "Then the cycle can repeat.",
+      "wordCount": 5
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b54",
+      "kind": "paragraph",
+      "sequenceIndex": 214,
+      "text": "The Messages API remains stateless through every cycle. The application creates the continuity.",
+      "wordCount": 13
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b55",
+      "kind": "paragraph",
+      "sequenceIndex": 215,
+      "text": "Return to the customer who asked for a more apologetic reply. The successful request included the original user message, the earlier assistant draft, and the new user instruction. Claude returns a revised assistant message. Project Desk can show that revision to an employee, store the approved text, and prepare for a possible next turn.",
+      "wordCount": 54
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b56",
+      "kind": "paragraph",
+      "sequenceIndex": 216,
+      "text": "The product now feels conversational because the clerk carried the right case file.",
+      "wordCount": 13
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b57",
+      "kind": "paragraph",
+      "sequenceIndex": 217,
+      "text": "One part of that file still needs a sharper boundary. Project Desk may want every support reply to be calm, concise, and forbidden from promising refunds. Those are not quotations from the customer, and they are not earlier assistant contributions. They are starting instructions supplied by the application.",
+      "wordCount": 48
+    },
+    {
+      "chapterIndex": 3,
+      "id": "s5-b58",
+      "kind": "paragraph",
+      "sequenceIndex": 218,
+      "text": "The next chapter separates those instructions from the user and assistant roles, so the conversation can carry both its history and its governing rules without pretending they are the same kind of message.",
+      "wordCount": 33
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b0",
+      "kind": "heading",
+      "sequenceIndex": 219,
+      "text": "Chapter 5 — The Conversation and the Office Policy",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 220,
+      "text": "Project Desk can now carry a support conversation from one call to the next. It stores the customer's contributions, stores the assistant's contributions, and resends the history needed for the current task.",
+      "wordCount": 32
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b2",
+      "kind": "paragraph",
+      "sequenceIndex": 221,
+      "text": "But the application also has rules of its own.",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b3",
+      "kind": "paragraph",
+      "sequenceIndex": 222,
+      "text": "Every proposed reply should be calm. It should be concise. It should never promise a refund without approval. Those rules are not words the customer contributed. They are not an earlier reply from the assistant. They are instructions from Project Desk about how Claude should handle the exchange.",
+      "wordCount": 48
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b4",
+      "kind": "paragraph",
+      "sequenceIndex": 223,
+      "text": "If the application hides those instructions inside the customer's message, the request blurs two different facts: what the person said and how the application wants Claude to respond.",
+      "wordCount": 28
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b5",
+      "kind": "paragraph",
+      "sequenceIndex": 224,
+      "text": "The Messages API gives those facts different places.",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b6",
+      "kind": "paragraph",
+      "sequenceIndex": 225,
+      "text": "Inside the conversation, a role says which side contributed a message. The user role marks a contribution from the user side of the exchange. The assistant role marks a contribution from the assistant side.",
+      "wordCount": 34
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b7",
+      "kind": "paragraph",
+      "sequenceIndex": 226,
+      "text": "Role does not mean job title. A user message may have been assembled by Project Desk from a form rather than typed into a chat box. An assistant message in the history may have been edited by an employee. The role identifies the contribution's place in the modeled conversation: user side or assistant side.",
+      "wordCount": 54
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b8",
+      "kind": "paragraph",
+      "sequenceIndex": 227,
+      "text": "That is why the customer's damaged-shipment report belongs in a user message. The earlier draft belongs in an assistant message. The customer's follow-up belongs in the next user message.",
+      "wordCount": 29
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b9",
+      "kind": "paragraph",
+      "sequenceIndex": 228,
+      "text": "The office policy belongs somewhere else.",
+      "wordCount": 6
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b10",
+      "kind": "paragraph",
+      "sequenceIndex": 229,
+      "text": "A system instruction is application-supplied guidance that governs Claude's behavior for the request. When a rule should apply from the beginning, the normal home is the top-level system field in the request.",
+      "wordCount": 32
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b11",
+      "kind": "paragraph",
+      "sequenceIndex": 230,
+      "text": "Top-level means it sits alongside the model, maximum-output setting, and messages list. It is not the first conversational message. Project Desk can therefore say, in effect, “Write calm, concise support replies and do not promise refunds,” without pretending the customer said those words.",
+      "wordCount": 43
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b12",
+      "kind": "paragraph",
+      "sequenceIndex": 231,
+      "text": "The separation improves the request's honesty and its maintainability.",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b13",
+      "kind": "paragraph",
+      "sequenceIndex": 232,
+      "text": "The messages record the exchange.",
+      "wordCount": 5
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b14",
+      "kind": "paragraph",
+      "sequenceIndex": 233,
+      "text": "The system field records the governing instruction.",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b15",
+      "kind": "paragraph",
+      "sequenceIndex": 234,
+      "text": "Project Desk can change an office policy without rewriting the customer contribution. It can test two instruction versions against the same conversation. It can log which policy was active for a generation. It can prevent the policy text from appearing as though it were part of the customer's complaint.",
+      "wordCount": 49
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b16",
+      "kind": "paragraph",
+      "sequenceIndex": 235,
+      "text": "Return to one rule that applies before the first user turn and one that becomes relevant later.",
+      "wordCount": 17
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b17",
+      "kind": "paragraph",
+      "sequenceIndex": 236,
+      "text": "The starting rule is simple: every support reply should be calm and concise. Project Desk knows that rule before the customer says anything. It belongs in the top-level system field from the first call.",
+      "wordCount": 34
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b18",
+      "kind": "paragraph",
+      "sequenceIndex": 237,
+      "text": "The later rule appears only if the case is escalated: include a short handoff summary for the supervisor and stop offering self-service steps.",
+      "wordCount": 23
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b19",
+      "kind": "paragraph",
+      "sequenceIndex": 238,
+      "text": "The starting rule and the later rule are both application instructions, but they become relevant at different times. The ordinary, widely applicable design is still straightforward. Project Desk can construct the system instruction needed for the current call and place it in the top-level system field. On the escalated call, that field can include both the durable support policy and the new escalation guidance.",
+      "wordCount": 64
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b20",
+      "kind": "paragraph",
+      "sequenceIndex": 239,
+      "text": "This approach works with the stable request shape we have already learned. The application owns the instruction just as it owns the history. For each call, it builds the governing system text and the conversational messages deliberately.",
+      "wordCount": 37
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b21",
+      "kind": "paragraph",
+      "sequenceIndex": 240,
+      "text": "The durable rule is now complete: conversational contributions use user and assistant roles; instructions that govern the exchange from the start use the top-level system field.",
+      "wordCount": 26
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b22",
+      "kind": "paragraph",
+      "sequenceIndex": 241,
+      "text": "Now consider how these distinctions improve a support audit.",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b23",
+      "kind": "paragraph",
+      "sequenceIndex": 242,
+      "text": "A reviewer opens a case and asks why Claude wrote a short escalation summary instead of another troubleshooting reply. Project Desk can show four separate pieces of evidence.",
+      "wordCount": 28
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b24",
+      "kind": "paragraph",
+      "sequenceIndex": 243,
+      "text": "The customer message triggered escalation.",
+      "wordCount": 5
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b25",
+      "kind": "paragraph",
+      "sequenceIndex": 244,
+      "text": "The earlier assistant messages show what had already been tried.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b26",
+      "kind": "paragraph",
+      "sequenceIndex": 245,
+      "text": "The governing instruction says how escalated cases should be handled.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b27",
+      "kind": "paragraph",
+      "sequenceIndex": 246,
+      "text": "The model record says which placement behavior the request relied on.",
+      "wordCount": 11
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b28",
+      "kind": "paragraph",
+      "sequenceIndex": 247,
+      "text": "If all of that material had been flattened into one user message, the audit would begin by guessing which sentences came from the customer and which were application policy. Explicit roles and a distinct system instruction preserve the provenance of the request.",
+      "wordCount": 42
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b29",
+      "kind": "paragraph",
+      "sequenceIndex": 248,
+      "text": "The same boundary matters in a coding assistant. A developer's message might say, “Refactor this function.” The application instruction might say, “Preserve the current public API and explain any behavior change.” Both influence the answer, but they come from different authorities. The developer supplied the task. The application supplied the operating rule.",
+      "wordCount": 52
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b30",
+      "kind": "paragraph",
+      "sequenceIndex": 249,
+      "text": "Mixing them into one user contribution can still produce useful output. The problem is not that Claude becomes unable to read the text. The problem is that Project Desk loses a clean representation of who supplied what and where durable policy belongs.",
+      "wordCount": 42
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b31",
+      "kind": "paragraph",
+      "sequenceIndex": 250,
+      "text": "The distinction also helps when instructions change. Suppose the coding product begins in review mode, where Claude should identify risks without editing. Later, the user explicitly switches to implementation mode. On a model and request path that supports a mid-conversation system instruction, the application may add the new operating guidance at the permitted point. On the general path, it can rebuild the top-level system instruction for the next stateless call.",
+      "wordCount": 70
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b32",
+      "kind": "paragraph",
+      "sequenceIndex": 251,
+      "text": "Either way, the application makes the mode transition explicit. It does not rewrite the user's earlier words to manufacture the new policy.",
+      "wordCount": 22
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b33",
+      "kind": "paragraph",
+      "sequenceIndex": 252,
+      "text": "We can now sort the Project Desk case without ambiguity.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b34",
+      "kind": "paragraph",
+      "sequenceIndex": 253,
+      "text": "“My parcel arrived damaged” is a user contribution.",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b35",
+      "kind": "paragraph",
+      "sequenceIndex": 254,
+      "text": "The proposed reply is an assistant contribution.",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b36",
+      "kind": "paragraph",
+      "sequenceIndex": 255,
+      "text": "“Make it more apologetic” is the next user contribution.",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b37",
+      "kind": "paragraph",
+      "sequenceIndex": 256,
+      "text": "“Remain calm, concise, and do not promise a refund” is a starting system instruction.",
+      "wordCount": 14
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b38",
+      "kind": "paragraph",
+      "sequenceIndex": 257,
+      "text": "“This case is now escalated; provide a supervisor handoff” is a later instruction. The general implementation can place the current combined guidance in the top-level system field.",
+      "wordCount": 27
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b39",
+      "kind": "paragraph",
+      "sequenceIndex": 258,
+      "text": "One production note qualifies that general path. Current Opus 4.8 documentation allows a system-role message after a user turn, subject to placement rules; it cannot be the first message. Use that model-specific branch only with a measured reason and tests. Otherwise, rebuild the top-level system guidance for the next call.",
+      "wordCount": 50
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b40",
+      "kind": "paragraph",
+      "sequenceIndex": 259,
+      "text": "Roles tell us where conversational contributions belong. System instructions tell Claude how to handle them.",
+      "wordCount": 15
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b41",
+      "kind": "paragraph",
+      "sequenceIndex": 260,
+      "text": "Project Desk now has both a case file and an office policy, without pretending they are the same document.",
+      "wordCount": 19
+    },
+    {
+      "chapterIndex": 4,
+      "id": "s6-b42",
+      "kind": "paragraph",
+      "sequenceIndex": 261,
+      "text": "So far, we have spoken about each message's content as though it were simply text. That shorthand works for the examples we have used, but the actual content field can carry an ordered collection of typed blocks. The next chapter opens that collection and shows why content is built from parts rather than guaranteed to be one string.",
+      "wordCount": 58
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b0",
+      "kind": "heading",
+      "sequenceIndex": 262,
+      "text": "Chapter 6 — What One Message Can Carry",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 263,
+      "text": "Until now, the content of a message has sounded like one piece of text. The customer writes a complaint. Project Desk places that text in a user message. Claude returns reply text in an assistant message.",
+      "wordCount": 36
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b2",
+      "kind": "paragraph",
+      "sequenceIndex": 264,
+      "text": "That simple form is real, but it is shorthand.",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b3",
+      "kind": "paragraph",
+      "sequenceIndex": 265,
+      "text": "A message's content can be an ordered collection of typed content blocks. When Project Desk supplies an ordinary string instead, the API treats it as the convenient form of one text block.",
+      "wordCount": 32
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b4",
+      "kind": "paragraph",
+      "sequenceIndex": 266,
+      "text": "The shortcut lets a first Python call remain small. The fuller structure lets the same Messages API carry richer material without pretending that every input is one undifferentiated paragraph.",
+      "wordCount": 29
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b5",
+      "kind": "paragraph",
+      "sequenceIndex": 267,
+      "text": "The need becomes clear when Project Desk takes on a document-extraction job.",
+      "wordCount": 12
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b6",
+      "kind": "paragraph",
+      "sequenceIndex": 268,
+      "text": "A person uploads a PDF invoice and asks for the supplier, invoice date, purchase-order number, and total. One user contribution now contains at least two meaningful pieces: the PDF document to inspect and the text instruction describing what to extract.",
+      "wordCount": 40
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b7",
+      "kind": "paragraph",
+      "sequenceIndex": 269,
+      "text": "Project Desk could try to flatten everything into one string. It might copy any readable document text, paste the instruction underneath, and invent separators between them. That can work for a narrow experiment. It also throws away a fact the request already knows: one piece is the source document, and another piece is the person's instruction about that document.",
+      "wordCount": 59
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b8",
+      "kind": "paragraph",
+      "sequenceIndex": 270,
+      "text": "A content block preserves one meaningful piece inside the message. Each block carries a type that tells the API what kind of piece it is. Text is one type. Other supported material can use other types rather than masquerading as text.",
+      "wordCount": 41
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b9",
+      "kind": "paragraph",
+      "sequenceIndex": 271,
+      "text": "Type is our second term. A type is an explicit label for how a piece of data should be interpreted. It helps the request distinguish text from an image, a PDF document, or another supported kind of content.",
+      "wordCount": 38
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b10",
+      "kind": "paragraph",
+      "sequenceIndex": 272,
+      "text": "The type does not explain the business purpose by itself. A text block might contain a question, a caption, an instruction, or quoted source material. It says that the block is text. The words and their position supply the more specific meaning.",
+      "wordCount": 42
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b11",
+      "kind": "paragraph",
+      "sequenceIndex": 273,
+      "text": "Return to the invoice. Project Desk constructs one user message. Inside its content collection, the document comes first. The extraction instruction comes second.",
+      "wordCount": 23
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b12",
+      "kind": "paragraph",
+      "sequenceIndex": 274,
+      "text": "Those blocks belong to one message because they form one user contribution: here is the material, and here is what I want done with it.",
+      "wordCount": 25
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b13",
+      "kind": "paragraph",
+      "sequenceIndex": 275,
+      "text": "They remain separate blocks because their kinds and functions differ.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b14",
+      "kind": "paragraph",
+      "sequenceIndex": 276,
+      "text": "Their order is also part of the input. Content is not a bag whose pieces may be rearranged without consequence. It is an ordered collection. Project Desk sends one block, then the next, in the sequence it intends Claude to receive them.",
+      "wordCount": 42
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b15",
+      "kind": "paragraph",
+      "sequenceIndex": 277,
+      "text": "For the invoice case, document first and instruction second creates a natural reading: inspect this; then perform this extraction. Another application may choose text before an image, perhaps introducing what the image represents before supplying it. The point is not that one universal order always wins. The point is that the application owns the order and should treat it as meaningful.",
+      "wordCount": 61
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b16",
+      "kind": "paragraph",
+      "sequenceIndex": 278,
+      "text": "This gives us a useful four-part distinction.",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b17",
+      "kind": "paragraph",
+      "sequenceIndex": 279,
+      "text": "A role identifies the user or assistant side. A turn is one side's stretch of the back-and-forth.",
+      "wordCount": 17
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b18",
+      "kind": "paragraph",
+      "sequenceIndex": 280,
+      "text": "Each message is one structured contribution supplied by the application.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b19",
+      "kind": "paragraph",
+      "sequenceIndex": 281,
+      "text": "The block separates the meaningful pieces inside that contribution.",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b20",
+      "kind": "paragraph",
+      "sequenceIndex": 282,
+      "text": "The type identifies how each piece should be interpreted.",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b21",
+      "kind": "paragraph",
+      "sequenceIndex": 283,
+      "text": "For example, Project Desk could send two consecutive user messages: first the document, then a correction about the document. Those are two message objects, but together they form one user turn. The assistant's reply begins the next turn.",
+      "wordCount": 38
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b22",
+      "kind": "paragraph",
+      "sequenceIndex": 284,
+      "text": "Side, turn, message, blocks. The role names the side. The turn marks that side's stretch. A message carries one structured contribution. Its blocks carry the ordered pieces.",
+      "wordCount": 27
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b23",
+      "kind": "paragraph",
+      "sequenceIndex": 285,
+      "text": "The distinction helps Project Desk avoid two opposite modeling errors.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b24",
+      "kind": "paragraph",
+      "sequenceIndex": 286,
+      "text": "The first error is making a separate message for every fragment merely because multiple blocks exist. The invoice and the request to extract its fields can belong to one user turn. Separate blocks do not automatically mean separate speakers or separate conversational turns.",
+      "wordCount": 43
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b25",
+      "kind": "paragraph",
+      "sequenceIndex": 287,
+      "text": "The second error is forcing several unlike pieces into one text value merely because they belong to one turn. One message can contain several blocks. Conversational unity does not require data flattening.",
+      "wordCount": 32
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b26",
+      "kind": "paragraph",
+      "sequenceIndex": 288,
+      "text": "Think of a message as a tray prepared for one recipient, with several labelled items arranged on it. The tray keeps the contribution together. The labels distinguish the items. Their left-to-right order preserves how they were arranged.",
+      "wordCount": 37
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b27",
+      "kind": "paragraph",
+      "sequenceIndex": 289,
+      "text": "The comparison stops before it becomes literal. Content blocks are structured data, not physical objects, and different block types have their own required fields. Keep the useful relationship: grouping, labelling, and order can all matter at once.",
+      "wordCount": 37
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b28",
+      "kind": "paragraph",
+      "sequenceIndex": 290,
+      "text": "The plain-string shortcut now fits into the same model. Suppose the user says only, “Draft a polite shipping-delay apology.” Project Desk can supply that sentence directly as the message content. Conceptually, it is still one text block. The SDK accepts the shorter form because there is only one text piece to represent.",
+      "wordCount": 52
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b29",
+      "kind": "paragraph",
+      "sequenceIndex": 291,
+      "text": "This means the application does not have to build a block collection manually for every simple request. It also means developers should not mistake the convenient syntax for the complete data model.",
+      "wordCount": 32
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b30",
+      "kind": "paragraph",
+      "sequenceIndex": 292,
+      "text": "If Project Desk later adds an image of the damaged parcel, the message content can grow from one text block into an ordered collection containing the image material and the text question. The user contribution remains one message while its content becomes richer.",
+      "wordCount": 43
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b31",
+      "kind": "paragraph",
+      "sequenceIndex": 293,
+      "text": "The same structure appears on the returned side. In Chapter 3, the response envelope contained an ordered content collection. A simple reply may contain one text block, which makes extracting the visible answer feel like reading a single string. The complete response model still treats content as blocks.",
+      "wordCount": 48
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b32",
+      "kind": "paragraph",
+      "sequenceIndex": 294,
+      "text": "That matters because response handling should inspect what was returned rather than assume every content item is plain text forever. Project Desk may want to collect text blocks for display while preserving other supported block types for their own handlers. The exact response possibilities belong to later feature chapters. The durable lesson is that content has structure inside the message.",
+      "wordCount": 60
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b33",
+      "kind": "paragraph",
+      "sequenceIndex": 295,
+      "text": "Consider a maintenance-inspection assistant. A technician submits a photograph of a corroded fitting and adds, “Describe only visible conditions. Do not diagnose the cause.” The photograph and text belong to the same user contribution. Their types differ. Their order gives Claude the material and the instruction as an intentional sequence.",
+      "wordCount": 50
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b34",
+      "kind": "paragraph",
+      "sequenceIndex": 296,
+      "text": "Project Desk can test that structure directly. A request-builder test can confirm that the first block carries the inspection image and the second carries the limiting instruction. It can confirm that both blocks remain inside one user message. It does not have to search a giant encoded string for a separator invented by the application.",
+      "wordCount": 55
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b35",
+      "kind": "paragraph",
+      "sequenceIndex": 297,
+      "text": "The block model also improves transformations. If Project Desk must remove an image before sending a text-only fallback request, it can remove or replace the image block. If it needs to change the extraction instruction, it can update the text block without rebuilding the source document. If it wants to preserve the original order for an audit, that order is available as data.",
+      "wordCount": 63
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b36",
+      "kind": "paragraph",
+      "sequenceIndex": 298,
+      "text": "Explicit structure does not eliminate judgment. Project Desk can still put the wrong document beside the instruction, reverse a sequence that should remain stable, or attach a vague question. Blocks make those choices inspectable. They do not make the choices correct on the application's behalf.",
+      "wordCount": 45
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b37",
+      "kind": "paragraph",
+      "sequenceIndex": 299,
+      "text": "The invoice example now gives us a boundary for deciding what belongs together.",
+      "wordCount": 13
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b38",
+      "kind": "paragraph",
+      "sequenceIndex": 300,
+      "text": "The uploaded invoice and the request to extract four fields participate in one user turn, so they belong in one message.",
+      "wordCount": 21
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b39",
+      "kind": "paragraph",
+      "sequenceIndex": 301,
+      "text": "The document and the instruction are different meaningful pieces, so they belong in separate blocks.",
+      "wordCount": 15
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b40",
+      "kind": "paragraph",
+      "sequenceIndex": 302,
+      "text": "Their types tell the API how to interpret each piece.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b41",
+      "kind": "paragraph",
+      "sequenceIndex": 303,
+      "text": "Their order records the sequence Project Desk chose.",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b42",
+      "kind": "paragraph",
+      "sequenceIndex": 304,
+      "text": "The customer's account metadata still may not belong in the message at all. Content blocks are not a reason to send every available record. The API boundary remains selective.",
+      "wordCount": 29
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b43",
+      "kind": "paragraph",
+      "sequenceIndex": 305,
+      "text": "This structure scales without requiring the listener to memorize the complete catalog of block types. Supported features add their own block shapes and requirements. The common mechanism remains the same: a message carries ordered content; blocks divide that content into typed pieces; a plain string is shorthand for one text block.",
+      "wordCount": 51
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b44",
+      "kind": "paragraph",
+      "sequenceIndex": 306,
+      "text": "Claude returns the next assistant message using the same broad content idea, surrounded by the operational fields in the response envelope.",
+      "wordCount": 21
+    },
+    {
+      "chapterIndex": 5,
+      "id": "s7-b45",
+      "kind": "paragraph",
+      "sequenceIndex": 307,
+      "text": "We have named those fields but not yet walked through them as one complete arrival record. The next chapter follows the response from its message identifier through content, model, stop information, and usage, so Project Desk can store more than the visible answer without confusing evidence with prose.",
+      "wordCount": 48
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b0",
+      "kind": "heading",
+      "sequenceIndex": 308,
+      "text": "Chapter 7 — Reading the Arrival Record",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 309,
+      "text": "Claude has returned a support draft. The first text block contains exactly what Project Desk hoped to see: a calm apology, an acknowledgement of the damaged shipment, and a request for the photograph needed to continue the claim.",
+      "wordCount": 38
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b2",
+      "kind": "paragraph",
+      "sequenceIndex": 310,
+      "text": "The prose is the part an employee may edit and a customer may eventually read. It is not the whole event.",
+      "wordCount": 21
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b3",
+      "kind": "paragraph",
+      "sequenceIndex": 311,
+      "text": "The response envelope records several different facts about what happened. Project Desk can keep them straight by asking six short questions.",
+      "wordCount": 21
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b4",
+      "kind": "paragraph",
+      "sequenceIndex": 312,
+      "text": "What was said?",
+      "wordCount": 3
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b5",
+      "kind": "paragraph",
+      "sequenceIndex": 313,
+      "text": "Which side contributed it?",
+      "wordCount": 4
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b6",
+      "kind": "paragraph",
+      "sequenceIndex": 314,
+      "text": "Which returned message is this?",
+      "wordCount": 5
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b7",
+      "kind": "paragraph",
+      "sequenceIndex": 315,
+      "text": "Which model served it?",
+      "wordCount": 4
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b8",
+      "kind": "paragraph",
+      "sequenceIndex": 316,
+      "text": "Why did generation stop?",
+      "wordCount": 4
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b9",
+      "kind": "paragraph",
+      "sequenceIndex": 317,
+      "text": "What did the call use?",
+      "wordCount": 5
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b10",
+      "kind": "paragraph",
+      "sequenceIndex": 318,
+      "text": "The content blocks answer the first question. In this case, a text block carries the proposed reply. Project Desk can select the text for display while preserving the full content collection in its operational record.",
+      "wordCount": 35
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b11",
+      "kind": "paragraph",
+      "sequenceIndex": 319,
+      "text": "The role marks this as the assistant contribution. The message identifier distinguishes this response instance from other returned messages. The model field reports which model served the response. These are three identity questions, not three spellings of the same fact.",
+      "wordCount": 40
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b12",
+      "kind": "paragraph",
+      "sequenceIndex": 320,
+      "text": "That response field is the returned model. It is evidence about the dependency that produced the result, not merely a copy of the product name shown to the user.",
+      "wordCount": 29
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b13",
+      "kind": "paragraph",
+      "sequenceIndex": 321,
+      "text": "Project Desk also knows which model it requested. The request records intention; the returned response records the result supplied by the service. A dependable event log can retain both rather than treating one as a substitute for the other.",
+      "wordCount": 39
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b14",
+      "kind": "paragraph",
+      "sequenceIndex": 322,
+      "text": "Chapter 10 will examine model identifiers as versioned dependencies. Here, the returned model answers a smaller operational question: which model does this response say answered?",
+      "wordCount": 25
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b15",
+      "kind": "paragraph",
+      "sequenceIndex": 323,
+      "text": "The stop information answers why generation ended. The stop reason records the cause. An optional stop sequence identifies a matching sequence when that kind of stop applies.",
+      "wordCount": 27
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b16",
+      "kind": "paragraph",
+      "sequenceIndex": 324,
+      "text": "Stop information is completion metadata: structured evidence about how generation concluded. It is separate from the semantic quality of the prose.",
+      "wordCount": 21
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b17",
+      "kind": "paragraph",
+      "sequenceIndex": 325,
+      "text": "That separation matters because text can look finished when generation was cut off. A sentence may happen to end with a period just as the output ceiling is reached. Another response may contain awkward prose even though Claude ended the turn naturally. Punctuation and writing quality do not replace stop metadata.",
+      "wordCount": 51
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b18",
+      "kind": "paragraph",
+      "sequenceIndex": 326,
+      "text": "The usage object answers what the call used. Usage records input and output token counts associated with the completed call. It describes what the operation used, not what Project Desk guessed beforehand and not the maximum output that the application permitted.",
+      "wordCount": 41
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b19",
+      "kind": "paragraph",
+      "sequenceIndex": 327,
+      "text": "This gives us another useful distinction.",
+      "wordCount": 6
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b20",
+      "kind": "paragraph",
+      "sequenceIndex": 328,
+      "text": "The output ceiling belongs to the request. It limits what may be generated.",
+      "wordCount": 13
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b21",
+      "kind": "paragraph",
+      "sequenceIndex": 329,
+      "text": "Usage belongs to the response. It reports what the completed operation processed and produced.",
+      "wordCount": 14
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b22",
+      "kind": "paragraph",
+      "sequenceIndex": 330,
+      "text": "A large ceiling and a concise answer can coexist without contradiction. Capacity was available; actual usage remained lower.",
+      "wordCount": 18
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b23",
+      "kind": "paragraph",
+      "sequenceIndex": 331,
+      "text": "Return to the six response questions.",
+      "wordCount": 6
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b24",
+      "kind": "paragraph",
+      "sequenceIndex": 332,
+      "text": "What was said? Read the content.",
+      "wordCount": 6
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b25",
+      "kind": "paragraph",
+      "sequenceIndex": 333,
+      "text": "Which side contributed it? Read the role.",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b26",
+      "kind": "paragraph",
+      "sequenceIndex": 334,
+      "text": "Which returned message is this? Read the message identifier.",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b27",
+      "kind": "paragraph",
+      "sequenceIndex": 335,
+      "text": "Which model served it? Read the returned model.",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b28",
+      "kind": "paragraph",
+      "sequenceIndex": 336,
+      "text": "Why did it stop? Read the stop metadata.",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b29",
+      "kind": "paragraph",
+      "sequenceIndex": 337,
+      "text": "What did it use? Read the usage counts.",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b30",
+      "kind": "paragraph",
+      "sequenceIndex": 338,
+      "text": "Each field supports a different application observation. None should be asked to prove what another field proves.",
+      "wordCount": 17
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b31",
+      "kind": "paragraph",
+      "sequenceIndex": 339,
+      "text": "Consider two support drafts that end with the same pleasant sentence: “Once we receive the photograph, we can arrange the next step.”",
+      "wordCount": 22
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b32",
+      "kind": "paragraph",
+      "sequenceIndex": 340,
+      "text": "The first response reports that Claude ended the turn normally. The second reports that generation reached the output limit.",
+      "wordCount": 19
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b33",
+      "kind": "paragraph",
+      "sequenceIndex": 341,
+      "text": "To an employee scanning only the visible prose, both drafts may appear complete. To Project Desk, they are not the same operational result. The second response carries evidence that the generation was bounded by the ceiling. The application should not discard that evidence merely because the final words look tidy.",
+      "wordCount": 50
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b34",
+      "kind": "paragraph",
+      "sequenceIndex": 342,
+      "text": "Chapter 8 will turn that difference into explicit branches. For now, the comparison establishes the rule: response text describes the proposed answer; response metadata describes the generation event.",
+      "wordCount": 28
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b35",
+      "kind": "paragraph",
+      "sequenceIndex": 343,
+      "text": "The same distinction helps when the prose is poor. Suppose Claude ends naturally but produces a reply that violates Project Desk's support policy. A normal stop reason does not certify the answer as correct, safe, or useful. It says how generation stopped. Product validation still belongs to the application and the people reviewing the reply.",
+      "wordCount": 55
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b36",
+      "kind": "paragraph",
+      "sequenceIndex": 344,
+      "text": "Operational metadata is evidence with a limited job.",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b37",
+      "kind": "paragraph",
+      "sequenceIndex": 345,
+      "text": "The message identifier does not prove the answer is good.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b38",
+      "kind": "paragraph",
+      "sequenceIndex": 346,
+      "text": "The returned model does not prove the prompt was complete.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b39",
+      "kind": "paragraph",
+      "sequenceIndex": 347,
+      "text": "The stop reason does not prove the facts are accurate.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b40",
+      "kind": "paragraph",
+      "sequenceIndex": 348,
+      "text": "Usage does not prove the tokens were well spent.",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b41",
+      "kind": "paragraph",
+      "sequenceIndex": 349,
+      "text": "Clear boundaries make the fields more useful, not less. Project Desk can log what each one actually establishes and add separate checks for policy, factuality, formatting, and human approval.",
+      "wordCount": 29
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b42",
+      "kind": "paragraph",
+      "sequenceIndex": 350,
+      "text": "Consider an internal research assistant. An employee asks for a comparison of three supplier proposals. The visible answer is a table-like summary. The operational log records the response identifier, returned model, stop reason, and usage. The product may retain the source documents and request separately.",
+      "wordCount": 45
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b43",
+      "kind": "paragraph",
+      "sequenceIndex": 351,
+      "text": "If someone later asks why the comparison ends after the second supplier, Project Desk has more than a fragment of prose. It can inspect whether generation hit the output ceiling, whether the request omitted the third document, and which model handled the call. Different evidence points to different failure paths.",
+      "wordCount": 50
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b44",
+      "kind": "paragraph",
+      "sequenceIndex": 352,
+      "text": "That is the practical value of a complete response envelope. It preserves clues the answer text cannot supply by itself.",
+      "wordCount": 20
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b45",
+      "kind": "paragraph",
+      "sequenceIndex": 353,
+      "text": "Project Desk does not have to expose all of those clues to the customer. The person awaiting a replacement may see only the approved support reply. An internal support employee may see the draft plus a warning if generation ended at a limit. An observability system may receive identifiers, model information, stop metadata, and usage.",
+      "wordCount": 55
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b46",
+      "kind": "paragraph",
+      "sequenceIndex": 354,
+      "text": "One response can feed several product layers because its fields retain their distinct meanings.",
+      "wordCount": 14
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b47",
+      "kind": "paragraph",
+      "sequenceIndex": 355,
+      "text": "The arrival-record comparison is useful here. Opening a parcel reveals its contents. A delivery record identifies the shipment and describes its arrival. The record does not tell whether the contents are beautiful or correct, but discarding it would remove evidence about the trip.",
+      "wordCount": 43
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b48",
+      "kind": "paragraph",
+      "sequenceIndex": 356,
+      "text": "The response envelope works the same way up to that boundary. Content is what Claude produced. The surrounding fields help Project Desk identify and interpret the operation that produced it.",
+      "wordCount": 30
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b49",
+      "kind": "paragraph",
+      "sequenceIndex": 357,
+      "text": "We can now state the complete arrival in one pass.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b50",
+      "kind": "paragraph",
+      "sequenceIndex": 358,
+      "text": "Claude returns an assistant message with an identifier. Its ordered content blocks carry the generated material. Its model field records the returned model. Its stop fields describe why generation ended. Its usage fields report token counts for the call.",
+      "wordCount": 39
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b51",
+      "kind": "paragraph",
+      "sequenceIndex": 359,
+      "text": "Project Desk reads the text and keeps the evidence.",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b52",
+      "kind": "paragraph",
+      "sequenceIndex": 360,
+      "text": "The next decision begins with the stop reason. A natural ending, an output limit, a tool request, a refusal, and an invalid request do not all lead to the same application action. Some belong to successful response handling; one belongs to request error handling; each needs its own branch.",
+      "wordCount": 49
+    },
+    {
+      "chapterIndex": 6,
+      "id": "s8-b53",
+      "kind": "paragraph",
+      "sequenceIndex": 361,
+      "text": "Chapter 8 turns the arrival record into a control point: accept, continue, run a tool, fall back, or repair the request.",
+      "wordCount": 21
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b0",
+      "kind": "heading",
+      "sequenceIndex": 362,
+      "text": "Chapter 8 — Classify Before You Act",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 363,
+      "text": "Project Desk receives an assistant message with polished text. Before displaying, retrying, or continuing anything, the application reads the stop reason.",
+      "wordCount": 21
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b2",
+      "kind": "paragraph",
+      "sequenceIndex": 364,
+      "text": "This order matters. Classify the event before choosing the next action.",
+      "wordCount": 11
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b3",
+      "kind": "paragraph",
+      "sequenceIndex": 365,
+      "text": "A stop reason is the response field that says why Claude stopped generating. It belongs to every successful Messages response. Successful here means the API processed the request and returned a structured response; it does not mean the answer is automatically suitable for the product.",
+      "wordCount": 45
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b4",
+      "kind": "paragraph",
+      "sequenceIndex": 366,
+      "text": "The stop values are easier to retain as action families than as a catalog.",
+      "wordCount": 14
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b5",
+      "kind": "paragraph",
+      "sequenceIndex": 367,
+      "text": "The finished family contains a natural end of turn. Claude finished generating, so Project Desk can move on to product checks such as policy, completeness, factual review, or human approval.",
+      "wordCount": 30
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b6",
+      "kind": "paragraph",
+      "sequenceIndex": 368,
+      "text": "The truncated family contains an output-limit stop and a model-context-window stop. The limiting resource differs, but the immediate handling agrees: do not present the result as complete. Project Desk may continue under an appropriate policy or make a new request with different bounds.",
+      "wordCount": 43
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b7",
+      "kind": "paragraph",
+      "sequenceIndex": 369,
+      "text": "The configured-boundary family contains a custom stop sequence. Project Desk checks which sequence fired and handles the boundary it deliberately created.",
+      "wordCount": 21
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b8",
+      "kind": "paragraph",
+      "sequenceIndex": 370,
+      "text": "The continuation family contains tool use and pause turn. Both mean that Project Desk should not display the response as a finished answer. Their mechanics belong to later volumes.",
+      "wordCount": 29
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b9",
+      "kind": "paragraph",
+      "sequenceIndex": 371,
+      "text": "The declined family contains refusal. Claude processed the request but declined to answer, so Project Desk enters its refusal policy.",
+      "wordCount": 20
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b10",
+      "kind": "paragraph",
+      "sequenceIndex": 372,
+      "text": "An unfamiliar future value enters a safe unknown branch. The application should not convert a stop reason it does not understand into a natural ending.",
+      "wordCount": 25
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b11",
+      "kind": "paragraph",
+      "sequenceIndex": 373,
+      "text": "Finished, truncated, configured boundary, continuation, refusal, or unknown: the action family comes first. The exact stop value then selects the detailed handler.",
+      "wordCount": 22
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b12",
+      "kind": "paragraph",
+      "sequenceIndex": 374,
+      "text": "Now contrast all of those with a request error.",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b13",
+      "kind": "paragraph",
+      "sequenceIndex": 375,
+      "text": "A request error means the service did not return a successful assistant response for Project Desk to classify in the same way. The request may be invalid. Authentication may fail. The application may be rate limited. The service may be overloaded or encounter another processing failure. These cases arrive through HTTP error handling rather than as a successful response carrying a stop reason.",
+      "wordCount": 63
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b14",
+      "kind": "paragraph",
+      "sequenceIndex": 376,
+      "text": "The difference is structural.",
+      "wordCount": 4
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b15",
+      "kind": "paragraph",
+      "sequenceIndex": 377,
+      "text": "With a stop reason, Project Desk has a successful response envelope and evidence about how generation ended.",
+      "wordCount": 17
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b16",
+      "kind": "paragraph",
+      "sequenceIndex": 378,
+      "text": "With a request error, that successful response does not exist. Project Desk handles the error status and error body instead.",
+      "wordCount": 20
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b17",
+      "kind": "paragraph",
+      "sequenceIndex": 379,
+      "text": "This prevents a common retry mistake. Suppose Project Desk receives a rate-limit error. There is no assistant message whose stop reason says rate limit. The application should follow its rate-limit policy, such as respecting retry guidance and controlling request pace. It should not search for useful prose inside a response that was never generated.",
+      "wordCount": 54
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b18",
+      "kind": "paragraph",
+      "sequenceIndex": 380,
+      "text": "Now suppose a successful response carries a refusal stop reason. Project Desk has a structured assistant response, but Claude declined the request. The application should enter its refusal policy, not report a networking failure.",
+      "wordCount": 34
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b19",
+      "kind": "paragraph",
+      "sequenceIndex": 381,
+      "text": "That policy may return the refusal to the user, reframe a legitimate request, or use an eligible fallback path. It must not treat fallback as permission to evade safety policy. Chapter 9 will set that boundary carefully.",
+      "wordCount": 37
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b20",
+      "kind": "paragraph",
+      "sequenceIndex": 382,
+      "text": "The model qualification matters again. The documented classifier-refusal form described here is associated with a current model and policy path. Project Desk records the model and checks the actual response rather than inventing one universal refusal shape from memory.",
+      "wordCount": 39
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b21",
+      "kind": "paragraph",
+      "sequenceIndex": 383,
+      "text": "Consider three Project Desk events.",
+      "wordCount": 5
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b22",
+      "kind": "paragraph",
+      "sequenceIndex": 384,
+      "text": "In the first, Claude returns a complete support reply with a natural end-of-turn reason. Project Desk runs its normal review.",
+      "wordCount": 20
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b23",
+      "kind": "paragraph",
+      "sequenceIndex": 385,
+      "text": "In the second, Claude returns half a reply and reports that the output ceiling was reached. Project Desk continues or retries under its truncation policy.",
+      "wordCount": 25
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b24",
+      "kind": "paragraph",
+      "sequenceIndex": 386,
+      "text": "In the third, the API returns a rate-limit error. Project Desk slows or schedules the request according to its HTTP retry policy.",
+      "wordCount": 22
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b25",
+      "kind": "paragraph",
+      "sequenceIndex": 387,
+      "text": "The visible business task is the same in all three cases: draft a support reply. The control paths differ because the operational events differ.",
+      "wordCount": 24
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b26",
+      "kind": "paragraph",
+      "sequenceIndex": 388,
+      "text": "Add a fourth event. Claude returns a refusal response. Project Desk reads the refusal details and applies its refusal-specific policy. It does not route that event through ordinary rate-limit handling, and it does not claim the requested draft was completed.",
+      "wordCount": 40
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b27",
+      "kind": "paragraph",
+      "sequenceIndex": 389,
+      "text": "This is evidence-driven branching. The application chooses its next action from structured evidence rather than from a guess about the prose.",
+      "wordCount": 21
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b28",
+      "kind": "paragraph",
+      "sequenceIndex": 390,
+      "text": "The code can remain conceptually simple even when the production details grow. First, separate successful responses from request errors. Second, within a successful response, branch on the stop reason. Third, validate the content for the product.",
+      "wordCount": 36
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b29",
+      "kind": "paragraph",
+      "sequenceIndex": 391,
+      "text": "Transport outcome, generation outcome, product outcome.",
+      "wordCount": 6
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b30",
+      "kind": "paragraph",
+      "sequenceIndex": 392,
+      "text": "Those are three different questions.",
+      "wordCount": 5
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b31",
+      "kind": "paragraph",
+      "sequenceIndex": 393,
+      "text": "Did the request produce a successful response?",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b32",
+      "kind": "paragraph",
+      "sequenceIndex": 394,
+      "text": "Why did generation stop?",
+      "wordCount": 4
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b33",
+      "kind": "paragraph",
+      "sequenceIndex": 395,
+      "text": "Is the returned content suitable for this use?",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b34",
+      "kind": "paragraph",
+      "sequenceIndex": 396,
+      "text": "Project Desk becomes more reliable when it refuses to collapse them into one boolean called success.",
+      "wordCount": 16
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b35",
+      "kind": "paragraph",
+      "sequenceIndex": 397,
+      "text": "The refusal branch now deserves its own inspection. Anthropic documents fallback mechanisms for qualifying refusals, including a dated fallback-credit feature. Those mechanisms are narrow. They do not replace ordinary retry logic, and they do not apply to every model or every refusal.",
+      "wordCount": 42
+    },
+    {
+      "chapterIndex": 7,
+      "id": "s9-b36",
+      "kind": "paragraph",
+      "sequenceIndex": 398,
+      "text": "The next chapter compares one refusal with one rate limit, then chooses different handling for each.",
+      "wordCount": 16
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b0",
+      "kind": "heading",
+      "sequenceIndex": 399,
+      "text": "Chapter 9 — The Alternate Route With One Job",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 400,
+      "text": "Project Desk sends a legitimate support-classification request to Claude Fable 5. The request is valid. The service processes it. Instead of a classification, the response carries a refusal stop reason.",
+      "wordCount": 30
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b2",
+      "kind": "paragraph",
+      "sequenceIndex": 401,
+      "text": "The application has reached a particular kind of blockage. Another permitted Claude model may be able to serve the request, so Project Desk can choose an alternate route.",
+      "wordCount": 28
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b3",
+      "kind": "paragraph",
+      "sequenceIndex": 402,
+      "text": "That route is fallback. Fallback means retrying a qualifying refused request on another model that is allowed to receive it.",
+      "wordCount": 20
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b4",
+      "kind": "paragraph",
+      "sequenceIndex": 403,
+      "text": "The qualification does most of the work in that definition.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b5",
+      "kind": "paragraph",
+      "sequenceIndex": 404,
+      "text": "Fallback is not a second attempt at every failed call. It is not the response to a rate limit, an overloaded service, a server error, or malformed input. Current server-side fallback runs when the requested model's safety classifier declines. Those other failures return to the application unchanged.",
+      "wordCount": 47
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b6",
+      "kind": "paragraph",
+      "sequenceIndex": 405,
+      "text": "Compare two events.",
+      "wordCount": 3
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b7",
+      "kind": "paragraph",
+      "sequenceIndex": 406,
+      "text": "In the first, Claude Fable 5 returns a successful response envelope with the refusal stop reason. Project Desk can inspect the refusal and decide whether an eligible fallback model should receive the same request.",
+      "wordCount": 34
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b8",
+      "kind": "paragraph",
+      "sequenceIndex": 407,
+      "text": "In the second, the service returns an HTTP rate-limit error. No successful assistant response exists. Project Desk follows its rate-limit policy: control the request pace, respect retry guidance, and try later when appropriate.",
+      "wordCount": 33
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b9",
+      "kind": "paragraph",
+      "sequenceIndex": 408,
+      "text": "The alternate model does not create more capacity on the rate-limited route. Refusal fallback solves the first event, not the second.",
+      "wordCount": 21
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b10",
+      "kind": "paragraph",
+      "sequenceIndex": 409,
+      "text": "The same boundary applies to safety policy. Fallback is a documented way to handle classifier differences between permitted models. It is not permission to rewrite a harmful request until some model accepts it. Project Desk still applies the product's safety policy and the platform's usage rules. If the request itself should not be served, another route does not make it suitable.",
+      "wordCount": 61
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b11",
+      "kind": "paragraph",
+      "sequenceIndex": 410,
+      "text": "Current Claude Platform documentation offers managed and manual arrangements. The API or SDK can manage the alternate route, or Project Desk can write the refusal retry when the product needs custom control. In each case, Fable refuses, a permitted alternate model is tried, and the returned-model field says which model served the result.",
+      "wordCount": 53
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b12",
+      "kind": "paragraph",
+      "sequenceIndex": 411,
+      "text": "All three arrangements begin with the same decision: a qualifying refusal occurred, and another permitted model should be tried. They differ only in who owns the retry machinery. The final response's returned-model field identifies which model actually produced the message.",
+      "wordCount": 40
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b13",
+      "kind": "paragraph",
+      "sequenceIndex": 412,
+      "text": "One billing note is enough for now. For a manual retry of a cached prompt, the current beta fallback credit can avoid duplicate cache-creation cost; managed API and SDK paths apply it automatically. It changes billing, not eligibility, and does not make fallback processing free.",
+      "wordCount": 45
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b14",
+      "kind": "paragraph",
+      "sequenceIndex": 413,
+      "text": "None of these arrangements changes eligibility. The retry target must be permitted, the request must work on that target, and the trigger must be the qualifying refusal path.",
+      "wordCount": 28
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b15",
+      "kind": "paragraph",
+      "sequenceIndex": 414,
+      "text": "Suppose Project Desk configures a chain of two fallback models. The first model refuses. The next model also refuses. A final model returns an answer.",
+      "wordCount": 25
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b16",
+      "kind": "paragraph",
+      "sequenceIndex": 415,
+      "text": "Project Desk receives the final response and records the model that actually served it. It also records that fallback occurred. If every permitted model declines, the final result remains a refusal. A chain is not a guarantee that some answer will emerge.",
+      "wordCount": 42
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b17",
+      "kind": "paragraph",
+      "sequenceIndex": 416,
+      "text": "This is another place where the visible prose cannot tell the whole story. A successful fallback answer may look ordinary. The response metadata reveals that the requested model declined and another model served the turn. That fact matters for evaluation, cost tracking, consistency, and later model decisions.",
+      "wordCount": 47
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b18",
+      "kind": "paragraph",
+      "sequenceIndex": 417,
+      "text": "The application also needs an explicit no-fallback outcome. If a refusal has no permitted target or no product-approved alternate model, Project Desk returns or handles the refusal. Missing fallback credit changes the billing path for a manual retry; it does not make an otherwise eligible fallback impossible.",
+      "wordCount": 47
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b19",
+      "kind": "paragraph",
+      "sequenceIndex": 418,
+      "text": "Now return to the rate-limit comparison.",
+      "wordCount": 6
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b20",
+      "kind": "paragraph",
+      "sequenceIndex": 419,
+      "text": "One response says refusal. Project Desk may choose a permitted alternate model.",
+      "wordCount": 12
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b21",
+      "kind": "paragraph",
+      "sequenceIndex": 420,
+      "text": "One HTTP error says too many requests. Project Desk manages request timing.",
+      "wordCount": 12
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b22",
+      "kind": "paragraph",
+      "sequenceIndex": 421,
+      "text": "The business task may be identical. The evidence selects different machinery.",
+      "wordCount": 11
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b23",
+      "kind": "paragraph",
+      "sequenceIndex": 422,
+      "text": "That is the useful boundary around fallback: one alternate route, designed for one class of blockage.",
+      "wordCount": 16
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b24",
+      "kind": "paragraph",
+      "sequenceIndex": 423,
+      "text": "Choosing the alternate model raises the next question. Project Desk now has a primary model, perhaps one or more fallback models, and behavior that can differ by model version. Those names are production dependencies, not decorative labels.",
+      "wordCount": 37
+    },
+    {
+      "chapterIndex": 8,
+      "id": "s10-b25",
+      "kind": "paragraph",
+      "sequenceIndex": 424,
+      "text": "Chapter 10 builds the selection from real support prompts and records the exact model ID that earned the route.",
+      "wordCount": 19
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b0",
+      "kind": "heading",
+      "sequenceIndex": 425,
+      "text": "Chapter 10 — The Model That Earned the Route",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 426,
+      "text": "Project Desk needs a primary model for support work and perhaps another model for eligible fallback. A model comparison page can narrow the candidates. It cannot tell Project Desk which one handles Project Desk's work best.",
+      "wordCount": 36
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b2",
+      "kind": "paragraph",
+      "sequenceIndex": 427,
+      "text": "The application has its own mix of jobs. Some customer messages are short and routine. Others contain contradictory dates, indirect requests, or several problems tangled together. Some require a fast draft while an employee waits. Others can take longer if the answer is more dependable.",
+      "wordCount": 45
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b3",
+      "kind": "paragraph",
+      "sequenceIndex": 428,
+      "text": "Model selection begins with those requirements.",
+      "wordCount": 6
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b4",
+      "kind": "paragraph",
+      "sequenceIndex": 429,
+      "text": "Anthropic's current guidance frames the choice around capability, speed, cost, and effort. Project Desk turns those broad criteria into observable questions.",
+      "wordCount": 21
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b5",
+      "kind": "paragraph",
+      "sequenceIndex": 430,
+      "text": "Does the model identify the actual customer request?",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b6",
+      "kind": "paragraph",
+      "sequenceIndex": 431,
+      "text": "Does it preserve dates, order numbers, and policy boundaries?",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b7",
+      "kind": "paragraph",
+      "sequenceIndex": 432,
+      "text": "Does it follow the required reply style?",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b8",
+      "kind": "paragraph",
+      "sequenceIndex": 433,
+      "text": "How quickly does it return a usable draft?",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b9",
+      "kind": "paragraph",
+      "sequenceIndex": 434,
+      "text": "What does the workload consume at production volume?",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b10",
+      "kind": "paragraph",
+      "sequenceIndex": 435,
+      "text": "The answers come from testing the application, not from choosing the most impressive product description.",
+      "wordCount": 15
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b11",
+      "kind": "paragraph",
+      "sequenceIndex": 436,
+      "text": "An evaluation set is a repeatable collection of real or representative inputs, expected qualities, and edge cases used to compare model behavior for one workload.",
+      "wordCount": 25
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b12",
+      "kind": "paragraph",
+      "sequenceIndex": 437,
+      "text": "Project Desk might include ordinary damaged-parcel reports, vague follow-ups whose meaning depends on history, a complaint containing two separate orders, an internal note that must never enter the reply, and an escalation that forbids a refund promise. The set should include the cases where a plausible-looking answer can still be operationally wrong.",
+      "wordCount": 52
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b13",
+      "kind": "paragraph",
+      "sequenceIndex": 438,
+      "text": "The same prompts run against candidate models. Project Desk records response quality, accuracy, instruction following, latency, usage, and the frequency of unacceptable failures. Human review remains necessary for qualities that a simple automated score cannot judge.",
+      "wordCount": 36
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b14",
+      "kind": "paragraph",
+      "sequenceIndex": 439,
+      "text": "This does not require a giant research program before the first prototype. A small, representative set is more useful than a large pile of easy examples. The set can grow whenever production reveals a new failure mode.",
+      "wordCount": 37
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b15",
+      "kind": "paragraph",
+      "sequenceIndex": 440,
+      "text": "The evaluation set gives model migration a stable question. Has another model improved Project Desk's actual workload enough to justify a change?",
+      "wordCount": 22
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b16",
+      "kind": "paragraph",
+      "sequenceIndex": 441,
+      "text": "Without that set, migration can become a reaction to a launch announcement or one striking demonstration. With it, Project Desk can compare the new candidate against the same support cases and the same acceptance boundaries.",
+      "wordCount": 35
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b17",
+      "kind": "paragraph",
+      "sequenceIndex": 442,
+      "text": "Once a model earns the route, the request records its model ID.",
+      "wordCount": 12
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b18",
+      "kind": "paragraph",
+      "sequenceIndex": 443,
+      "text": "A model ID is the API name for a specific pinned model version. Anthropic's current versioning contract says each model ID identifies a fixed model version for the lifetime of that ID.",
+      "wordCount": 32
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b19",
+      "kind": "paragraph",
+      "sequenceIndex": 444,
+      "text": "The spelling changed at the Claude 4.6 generation, so Project Desk keeps a compact worked record.",
+      "wordCount": 16
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b20",
+      "kind": "paragraph",
+      "sequenceIndex": 445,
+      "text": "For an earlier line, the application might request the short Sonnet 4.5 name. That name is a convenience alias, so Project Desk also stores the dated model value returned with the response.",
+      "wordCount": 32
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b21",
+      "kind": "paragraph",
+      "sequenceIndex": 446,
+      "text": "For the current line, the application can request the Sonnet 4.6 dateless model ID. Under the current contract, that name already identifies one pinned release, so the returned value names the same release.",
+      "wordCount": 33
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b22",
+      "kind": "paragraph",
+      "sequenceIndex": 447,
+      "text": "The stable rule is smaller than the naming history: store what the application requested and the model value the response returned. That pair gives Project Desk evidence for investigating a later behavior change without assuming that every returned value has been normalized into a different spelling.",
+      "wordCount": 46
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b23",
+      "kind": "paragraph",
+      "sequenceIndex": 448,
+      "text": "Pinned does not mean permanent availability. Each model ID has its own deprecation and retirement schedule. Project Desk needs both reproducibility and a migration path: know what was tested, and know what evidence would justify moving.",
+      "wordCount": 36
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b24",
+      "kind": "paragraph",
+      "sequenceIndex": 449,
+      "text": "The evaluation record can stay compact.",
+      "wordCount": 6
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b25",
+      "kind": "paragraph",
+      "sequenceIndex": 450,
+      "text": "It names the model ID.",
+      "wordCount": 5
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b26",
+      "kind": "paragraph",
+      "sequenceIndex": 451,
+      "text": "It names the evaluation-set version.",
+      "wordCount": 5
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b27",
+      "kind": "paragraph",
+      "sequenceIndex": 452,
+      "text": "It records the test date and relevant settings.",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b28",
+      "kind": "paragraph",
+      "sequenceIndex": 453,
+      "text": "It summarizes the criteria and unacceptable failures.",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b29",
+      "kind": "paragraph",
+      "sequenceIndex": 454,
+      "text": "It records why this model was selected for the primary route or fallback route.",
+      "wordCount": 14
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b30",
+      "kind": "paragraph",
+      "sequenceIndex": 455,
+      "text": "The prose of a particular answer remains in the detailed test record. The decision note explains why the dependency entered production.",
+      "wordCount": 21
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b31",
+      "kind": "paragraph",
+      "sequenceIndex": 456,
+      "text": "When a new model arrives, Project Desk does not replace the ID immediately. It runs the evaluation set, compares the results, checks new failures, and decides whether the gain is worth migration. If the new model wins, the application changes the request field deliberately and records a new decision.",
+      "wordCount": 49
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b32",
+      "kind": "paragraph",
+      "sequenceIndex": 457,
+      "text": "The same discipline applies to fallback. The alternate model should not be chosen merely because it is different from the primary model. It needs to be a permitted target, support the request features Project Desk uses, and perform acceptably on the workload it may inherit.",
+      "wordCount": 45
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b33",
+      "kind": "paragraph",
+      "sequenceIndex": 458,
+      "text": "One tested support prompt, one edge case, and the identifier that produced each result: that is the smallest useful reset.",
+      "wordCount": 20
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b34",
+      "kind": "paragraph",
+      "sequenceIndex": 459,
+      "text": "The ordinary prompt shows whether the model handles the common route. The edge case shows whether it respects a boundary under pressure. The model ID connects the behavior to a versioned dependency.",
+      "wordCount": 32
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b35",
+      "kind": "paragraph",
+      "sequenceIndex": 460,
+      "text": "Project Desk can now explain its model choice without reciting the current product lineup. It selected a model because that model met the workload's capability, speed, cost, and effort requirements on a named evaluation set. It stored the canonical ID that produced the result. It defined the failure or improvement that would trigger another comparison.",
+      "wordCount": 55
+    },
+    {
+      "chapterIndex": 9,
+      "id": "s11-b36",
+      "kind": "paragraph",
+      "sequenceIndex": 461,
+      "text": "The next measurement happens before and after every call. Project Desk can estimate how many input tokens a structured request may use, constrain possible output with max tokens, and read final usage from the response. Those three numbers answer different questions, especially when the selected model changes.",
+      "wordCount": 47
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b0",
+      "kind": "heading",
+      "sequenceIndex": 462,
+      "text": "Chapter 11 — Three Token Numbers, Three Questions",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 463,
+      "text": "Project Desk is preparing a support request with several earlier messages and a long customer attachment. The application wants to know whether the input is a sensible size before sending it. It also wants to limit the possible reply. After the call, it needs a record of what the operation actually used.",
+      "wordCount": 52
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b2",
+      "kind": "paragraph",
+      "sequenceIndex": 464,
+      "text": "One token number cannot answer all three questions.",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b3",
+      "kind": "paragraph",
+      "sequenceIndex": 465,
+      "text": "Before the call, Project Desk can use the Token Counting API. It sends the same structured inputs it plans to use for message creation and names the intended model. The counting response estimates the number of input tokens.",
+      "wordCount": 38
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b4",
+      "kind": "paragraph",
+      "sequenceIndex": 466,
+      "text": "A token estimate is a preflight approximation of input size for a particular structured request and model. It helps Project Desk reason about capacity, rate limits, cost planning, and routing before committing the generation call.",
+      "wordCount": 35
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b5",
+      "kind": "paragraph",
+      "sequenceIndex": 467,
+      "text": "The word estimate matters. Anthropic documents that the preflight count may differ slightly from the actual input usage reported when the message is created. The count is useful evidence before departure, not a promise about the final record.",
+      "wordCount": 38
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b6",
+      "kind": "paragraph",
+      "sequenceIndex": 468,
+      "text": "The estimate is also model-specific. Different models can use different tokenizers. A tokenizer is the mechanism that divides input into the token units the model processes. The same words and content blocks can therefore produce different counts when Project Desk changes the model named in the counting request.",
+      "wordCount": 48
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b7",
+      "kind": "paragraph",
+      "sequenceIndex": 469,
+      "text": "This is why a model migration requires a recount. Project Desk should not take the count measured for yesterday's model and relabel it for today's model. It sends the same structured request to the counting endpoint with the new model ID and measures again.",
+      "wordCount": 44
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b8",
+      "kind": "paragraph",
+      "sequenceIndex": 470,
+      "text": "The second number belongs to the actual message request. Max tokens sets the output ceiling we met in Chapter 3. It limits the number of tokens Claude may generate for the response.",
+      "wordCount": 32
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b9",
+      "kind": "paragraph",
+      "sequenceIndex": 471,
+      "text": "The ceiling does not estimate input. It does not predict output. It does not report cost already incurred. It is a control chosen by Project Desk before generation.",
+      "wordCount": 28
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b10",
+      "kind": "paragraph",
+      "sequenceIndex": 472,
+      "text": "The third number arrives in the response usage record. Final usage reports what the completed call actually processed and generated. It is the after-the-event evidence Project Desk uses for accounting and monitoring.",
+      "wordCount": 32
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b11",
+      "kind": "paragraph",
+      "sequenceIndex": 473,
+      "text": "Estimate before sending. Ceiling in the request. Usage after completion.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b12",
+      "kind": "paragraph",
+      "sequenceIndex": 474,
+      "text": "Work through one small Project Desk call. The token counter estimates five thousand input tokens. Project Desk permits up to one thousand output tokens. Claude finishes with four hundred twenty output tokens reported in final usage.",
+      "wordCount": 36
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b13",
+      "kind": "paragraph",
+      "sequenceIndex": 475,
+      "text": "Three values are enough.",
+      "wordCount": 4
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b14",
+      "kind": "paragraph",
+      "sequenceIndex": 476,
+      "text": "Five thousand answers, approximately, how large is this planned input for the selected model?",
+      "wordCount": 14
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b15",
+      "kind": "paragraph",
+      "sequenceIndex": 477,
+      "text": "One thousand answers, what is the most output this request permits?",
+      "wordCount": 11
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b16",
+      "kind": "paragraph",
+      "sequenceIndex": 478,
+      "text": "Four hundred twenty answers, how much output did the completed call report?",
+      "wordCount": 12
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b17",
+      "kind": "paragraph",
+      "sequenceIndex": 479,
+      "text": "The unused space between one thousand and four hundred twenty is not missing work. The ceiling was permission, not a target.",
+      "wordCount": 21
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b18",
+      "kind": "paragraph",
+      "sequenceIndex": 480,
+      "text": "The final input usage may also differ slightly from the five-thousand-token estimate. Project Desk stores the final response usage as the completed event record rather than rewriting history to make the preflight estimate look exact.",
+      "wordCount": 35
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b19",
+      "kind": "paragraph",
+      "sequenceIndex": 481,
+      "text": "Think of a delivery route estimate and the end-of-day mileage log. The estimate helps dispatch decide whether the route fits the day. A maximum permitted detour constrains what the driver may add. The final mileage records what happened.",
+      "wordCount": 38
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b20",
+      "kind": "paragraph",
+      "sequenceIndex": 482,
+      "text": "The comparison stops at the mechanism. Tokens are not kilometres, and token use depends on the structured model request. Keep the relationship: planning evidence, a chosen bound, and final evidence serve different decisions.",
+      "wordCount": 33
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b21",
+      "kind": "paragraph",
+      "sequenceIndex": 483,
+      "text": "This separation prevents several production mistakes.",
+      "wordCount": 6
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b22",
+      "kind": "paragraph",
+      "sequenceIndex": 484,
+      "text": "If Project Desk treats the token estimate as final billing, small differences appear to be accounting defects when they are ordinary estimate variance.",
+      "wordCount": 23
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b23",
+      "kind": "paragraph",
+      "sequenceIndex": 485,
+      "text": "If it treats max tokens as expected output, concise answers appear incomplete merely because they did not fill the allowance.",
+      "wordCount": 20
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b24",
+      "kind": "paragraph",
+      "sequenceIndex": 486,
+      "text": "If it uses final output usage to judge whether the next input will fit, it asks an after-the-event output number to solve a preflight input problem.",
+      "wordCount": 26
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b25",
+      "kind": "paragraph",
+      "sequenceIndex": 487,
+      "text": "Each mistake comes from moving a number into the wrong question.",
+      "wordCount": 11
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b26",
+      "kind": "paragraph",
+      "sequenceIndex": 488,
+      "text": "The Token Counting API accepts the same broad structured input shape as message creation, including system guidance, messages, tools, images, and PDF documents when those features are used. Project Desk therefore counts the request it plans to send, not only the visible customer sentence.",
+      "wordCount": 44
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b27",
+      "kind": "paragraph",
+      "sequenceIndex": 489,
+      "text": "That distinction matters for a long conversation. The newest user message might contain twelve words, while the selected history, system instruction, PDF document, and tool definitions make the complete request much larger. Counting only the latest sentence would measure the wrong object.",
+      "wordCount": 42
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b28",
+      "kind": "paragraph",
+      "sequenceIndex": 490,
+      "text": "The request envelope is the unit of preflight.",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b29",
+      "kind": "paragraph",
+      "sequenceIndex": 491,
+      "text": "Project Desk can use the estimate to decide whether to send the selected history as-is, remove irrelevant turns, summarize material under a deliberate policy, route to a suitable model, or reject an oversized operation. Those are application decisions made before generation.",
+      "wordCount": 41
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b30",
+      "kind": "paragraph",
+      "sequenceIndex": 492,
+      "text": "It then sets the output ceiling according to the job. A short classification needs less possible output than a detailed support draft. The application leaves enough room for a complete answer without treating capacity as a quota.",
+      "wordCount": 37
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b31",
+      "kind": "paragraph",
+      "sequenceIndex": 493,
+      "text": "After the response returns, Project Desk records final usage beside the message identifier, returned model, and stop reason. If the stop reason says the output ceiling was reached, the application has both the ending evidence and the usage record needed to understand the truncation.",
+      "wordCount": 44
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b32",
+      "kind": "paragraph",
+      "sequenceIndex": 494,
+      "text": "Now imagine Project Desk changes its selected model after the evaluation in Chapter 10. The conversation text remains identical. The correct workflow still repeats the count against the new model, chooses an appropriate output ceiling for that model and task, sends the request, and records the new response usage.",
+      "wordCount": 49
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b33",
+      "kind": "paragraph",
+      "sequenceIndex": 495,
+      "text": "The estimate belongs to the model named at preflight. The final usage belongs to the model that served the completed call. In a fallback path, those identities may differ, which is another reason to retain the returned-model evidence.",
+      "wordCount": 38
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b34",
+      "kind": "paragraph",
+      "sequenceIndex": 496,
+      "text": "The three token numbers now sit in their proper places.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b35",
+      "kind": "paragraph",
+      "sequenceIndex": 497,
+      "text": "The preflight estimate supports a before-call decision.",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b36",
+      "kind": "paragraph",
+      "sequenceIndex": 498,
+      "text": "Max tokens constrains possible generated output.",
+      "wordCount": 6
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b37",
+      "kind": "paragraph",
+      "sequenceIndex": 499,
+      "text": "Final usage records the completed operation.",
+      "wordCount": 6
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b38",
+      "kind": "paragraph",
+      "sequenceIndex": 500,
+      "text": "Project Desk no longer asks one number to stand for capacity, output control, and accounting at once.",
+      "wordCount": 17
+    },
+    {
+      "chapterIndex": 10,
+      "id": "s12-b39",
+      "kind": "paragraph",
+      "sequenceIndex": 501,
+      "text": "The final chapter moves this mechanism into a different product. A PDF-review assistant will build selected history, count and send a versioned request, inspect the complete response, and branch on evidence. The names remain familiar, but Project Desk will no longer be there to carry the explanation.",
+      "wordCount": 47
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b0",
+      "kind": "heading",
+      "sequenceIndex": 502,
+      "text": "Chapter 12 — A New Desk, the Same Route",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b1",
+      "kind": "paragraph",
+      "sequenceIndex": 503,
+      "text": "Project Desk steps out of the story. In its place is Review Room, an internal application that helps a team examine policy PDFs.",
+      "wordCount": 23
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b2",
+      "kind": "paragraph",
+      "sequenceIndex": 504,
+      "text": "A user uploads a proposed remote-work policy and asks for three things: the decisions the policy makes, the questions it leaves unanswered, and any dates or responsibilities that appear inconsistent.",
+      "wordCount": 30
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b3",
+      "kind": "paragraph",
+      "sequenceIndex": 505,
+      "text": "Review Room will use the direct Messages API. The product is new, but the application responsibilities are already familiar.",
+      "wordCount": 19
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b4",
+      "kind": "paragraph",
+      "sequenceIndex": 506,
+      "text": "Before anything crosses the API boundary, Review Room owns the PDF, the user request, the review policy, the selected model, and any earlier conversation it may choose to include. Claude cannot inspect the application's file store or recover omitted history on its own.",
+      "wordCount": 43
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b5",
+      "kind": "paragraph",
+      "sequenceIndex": 507,
+      "text": "Classify the opening input before Review Room builds it. Do the policy PDF and the instruction form one user turn or two? Do they require separate messages? Where should the standing review rule go?",
+      "wordCount": 34
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b6",
+      "kind": "paragraph",
+      "sequenceIndex": 508,
+      "text": "They form one user turn: one stretch contributed from the user side. Review Room supplies one user-role message for that turn. Inside the message, the policy PDF is one typed content block and the review instruction is a text block after it. The role names the side, the turn groups the contribution, the message carries it, and the blocks carry its ordered pieces.",
+      "wordCount": 63
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b7",
+      "kind": "paragraph",
+      "sequenceIndex": 509,
+      "text": "The standing rule belongs outside that conversational contribution. The assistant should quote policy language only when needed, distinguish explicit statements from inferences, and never invent a missing decision. Because that guidance applies from the first turn, Review Room places it in the top-level system field.",
+      "wordCount": 45
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b8",
+      "kind": "paragraph",
+      "sequenceIndex": 510,
+      "text": "Now ask the three request questions from Chapter 3.",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b9",
+      "kind": "paragraph",
+      "sequenceIndex": 511,
+      "text": "What model?",
+      "wordCount": 2
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b10",
+      "kind": "paragraph",
+      "sequenceIndex": 512,
+      "text": "How much possible output?",
+      "wordCount": 4
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b11",
+      "kind": "paragraph",
+      "sequenceIndex": 513,
+      "text": "What conversation?",
+      "wordCount": 2
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b12",
+      "kind": "paragraph",
+      "sequenceIndex": 514,
+      "text": "Review Room names the canonical model ID that passed its document-review evaluation set. It chooses an output ceiling large enough for the requested analysis. It supplies the user message with the document and instruction, plus the system guidance that governs the call.",
+      "wordCount": 42
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b13",
+      "kind": "paragraph",
+      "sequenceIndex": 515,
+      "text": "Before sending, the application counts the full structured input against that selected model. The document, instruction, and system guidance all contribute to the estimate. Counting only the sentence “Review this policy” would measure the wrong request.",
+      "wordCount": 36
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b14",
+      "kind": "paragraph",
+      "sequenceIndex": 516,
+      "text": "The estimate supports the preflight decision. The max-tokens value constrains possible output. Neither one predicts final usage.",
+      "wordCount": 17
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b15",
+      "kind": "paragraph",
+      "sequenceIndex": 517,
+      "text": "Review Room calls messages dot create. The request crosses.",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b16",
+      "kind": "paragraph",
+      "sequenceIndex": 518,
+      "text": "Claude returns an assistant Message object: the complete response envelope. The application reads it before deciding that the review succeeded.",
+      "wordCount": 20
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b17",
+      "kind": "paragraph",
+      "sequenceIndex": 519,
+      "text": "The content blocks contain the generated analysis. The message identifier distinguishes this result. The returned model records which model served it. The stop reason explains why generation ended. Usage records the completed operation.",
+      "wordCount": 33
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b18",
+      "kind": "paragraph",
+      "sequenceIndex": 520,
+      "text": "Review Room then separates three outcomes that a weak integration might collapse into one word.",
+      "wordCount": 15
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b19",
+      "kind": "paragraph",
+      "sequenceIndex": 521,
+      "text": "The request produced a successful response.",
+      "wordCount": 6
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b20",
+      "kind": "paragraph",
+      "sequenceIndex": 522,
+      "text": "Generation ended for a recorded reason.",
+      "wordCount": 6
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b21",
+      "kind": "paragraph",
+      "sequenceIndex": 523,
+      "text": "The content either passes or fails the product's review checks.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b22",
+      "kind": "paragraph",
+      "sequenceIndex": 524,
+      "text": "A natural end of turn clears only the middle question. Review Room still checks that the response identifies decisions, open questions, and inconsistencies without turning speculation into policy fact.",
+      "wordCount": 29
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b23",
+      "kind": "paragraph",
+      "sequenceIndex": 525,
+      "text": "Suppose the review passes. The application stores the assistant contribution with the document case. It also stores the operational evidence needed to explain the event. A person sees the useful analysis. The software keeps the arrival record.",
+      "wordCount": 37
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b24",
+      "kind": "paragraph",
+      "sequenceIndex": 526,
+      "text": "The user now asks a follow-up: “Which of those open questions should legal review first?”",
+      "wordCount": 15
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b25",
+      "kind": "paragraph",
+      "sequenceIndex": 527,
+      "text": "Sent alone, the phrase “those open questions” has no supplied referent. The API is stateless. Review Room must carry the relevant case file into the new call.",
+      "wordCount": 27
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b26",
+      "kind": "paragraph",
+      "sequenceIndex": 528,
+      "text": "The application selects the original user contribution, the approved assistant analysis, and the new follow-up. It sends those messages in order. The system guidance remains application policy rather than a conversational quotation.",
+      "wordCount": 32
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b27",
+      "kind": "paragraph",
+      "sequenceIndex": 529,
+      "text": "Claude can now answer from the history Review Room provided. The apparent memory belongs to the application's stored and resent conversation.",
+      "wordCount": 21
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b28",
+      "kind": "paragraph",
+      "sequenceIndex": 530,
+      "text": "That completes the ordinary loop.",
+      "wordCount": 5
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b29",
+      "kind": "paragraph",
+      "sequenceIndex": 531,
+      "text": "Store selected history.",
+      "wordCount": 3
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b30",
+      "kind": "paragraph",
+      "sequenceIndex": 532,
+      "text": "Construct a versioned request.",
+      "wordCount": 4
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b31",
+      "kind": "paragraph",
+      "sequenceIndex": 533,
+      "text": "Count the planned input and set the output ceiling.",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b32",
+      "kind": "paragraph",
+      "sequenceIndex": 534,
+      "text": "Send the request.",
+      "wordCount": 3
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b33",
+      "kind": "paragraph",
+      "sequenceIndex": 535,
+      "text": "Inspect the complete response.",
+      "wordCount": 4
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b34",
+      "kind": "paragraph",
+      "sequenceIndex": 536,
+      "text": "Branch on the stop reason and product evidence.",
+      "wordCount": 8
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b35",
+      "kind": "paragraph",
+      "sequenceIndex": 537,
+      "text": "Store the accepted assistant contribution for a possible next turn.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b36",
+      "kind": "paragraph",
+      "sequenceIndex": 538,
+      "text": "The sequence is useful because each step has an owner. It is not a framework Claude performs invisibly for Review Room.",
+      "wordCount": 21
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b37",
+      "kind": "paragraph",
+      "sequenceIndex": 539,
+      "text": "Three failure tests show whether the product really owns the route.",
+      "wordCount": 11
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b38",
+      "kind": "paragraph",
+      "sequenceIndex": 540,
+      "text": "The first test removes necessary history. Review Room sends “Which of those open questions should legal review first?” without the earlier analysis. What is missing, and which side must repair it?",
+      "wordCount": 31
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b39",
+      "kind": "paragraph",
+      "sequenceIndex": 541,
+      "text": "The referent for “those open questions” is missing. Review Room must catch the dangling reference or supply the relevant earlier analysis. The test proves that conversation continuity comes from selected resend, not hidden service memory.",
+      "wordCount": 35
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b40",
+      "kind": "paragraph",
+      "sequenceIndex": 542,
+      "text": "The second test makes the output ceiling too low for the three-part policy review. Claude returns polished text and a max-tokens stop reason. Should Review Room accept the punctuation as proof of completion?",
+      "wordCount": 33
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b41",
+      "kind": "paragraph",
+      "sequenceIndex": 543,
+      "text": "No. The stop reason places the response in the truncated action family. The test proves that visible prose does not override completion metadata.",
+      "wordCount": 23
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b42",
+      "kind": "paragraph",
+      "sequenceIndex": 544,
+      "text": "The third test produces an HTTP rate-limit error. Does Review Room look for a stop reason, enter refusal fallback, or use request-error handling?",
+      "wordCount": 23
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b43",
+      "kind": "paragraph",
+      "sequenceIndex": 545,
+      "text": "No successful assistant response exists, so Review Room uses its HTTP request-error policy. The test proves that transport failure and generation outcome are different control surfaces.",
+      "wordCount": 26
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b44",
+      "kind": "paragraph",
+      "sequenceIndex": 546,
+      "text": "Those three tests cover omission, truncation, and misclassification. They exercise the application's responsibilities without requiring one exact generated answer.",
+      "wordCount": 19
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b45",
+      "kind": "paragraph",
+      "sequenceIndex": 547,
+      "text": "Review Room can add another test when it uses a fallback model. A qualifying refusal may route the request to a permitted alternate model. The returned response must identify the model that actually served the analysis, and the application's event record must preserve that fact. A rate limit still follows the ordinary error path.",
+      "wordCount": 54
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b46",
+      "kind": "paragraph",
+      "sequenceIndex": 548,
+      "text": "Model migration gets its own test lane. When a new candidate appears, Review Room runs the same policy documents, ordinary questions, and edge cases from its evaluation set. It does not switch because the new model has a newer name. It switches when the workload evidence supports the change.",
+      "wordCount": 49
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b47",
+      "kind": "paragraph",
+      "sequenceIndex": 549,
+      "text": "If the model changes, Review Room recounts its representative requests against the new model. The old token estimate belonged to the old model. The application then chooses its output ceilings, observes final usage, and updates capacity planning from the new evidence.",
+      "wordCount": 41
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b48",
+      "kind": "paragraph",
+      "sequenceIndex": 550,
+      "text": "The new product now gives us a retrieval without Project Desk. In Review Room's opening input, name the role, turn, message, and blocks before reading on.",
+      "wordCount": 26
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b49",
+      "kind": "paragraph",
+      "sequenceIndex": 551,
+      "text": "The role is user. The document and instruction form one user turn. Review Room supplies one message for that turn. The message contains two ordered blocks: document first, instruction second.",
+      "wordCount": 30
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b50",
+      "kind": "paragraph",
+      "sequenceIndex": 552,
+      "text": "The standing review policy belongs in the top-level system field, outside the user's conversational contribution.",
+      "wordCount": 15
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b51",
+      "kind": "paragraph",
+      "sequenceIndex": 553,
+      "text": "Earlier user and assistant contributions return only when Review Room selects and resends them.",
+      "wordCount": 14
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b52",
+      "kind": "paragraph",
+      "sequenceIndex": 554,
+      "text": "The model ID records the versioned dependency chosen through evaluation.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b53",
+      "kind": "paragraph",
+      "sequenceIndex": 555,
+      "text": "The token estimate informs the call before departure. Max tokens bounds possible output. Final usage describes the completed call.",
+      "wordCount": 19
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b54",
+      "kind": "paragraph",
+      "sequenceIndex": 556,
+      "text": "The response content carries the analysis. The surrounding envelope carries identity, model, stop, and usage evidence.",
+      "wordCount": 16
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b55",
+      "kind": "paragraph",
+      "sequenceIndex": 557,
+      "text": "The stop reason selects a successful-response branch. An HTTP error selects request-error handling. Product checks decide whether the analysis is fit for use.",
+      "wordCount": 23
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b56",
+      "kind": "paragraph",
+      "sequenceIndex": 558,
+      "text": "These are not independent facts to memorize. They are one conversation core: the smallest application loop that keeps ownership visible from input selection through the next action.",
+      "wordCount": 27
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b57",
+      "kind": "paragraph",
+      "sequenceIndex": 559,
+      "text": "The word core sets a boundary. A production assistant may add streaming, tools, prompt caching, batches, files, citations, structured outputs, observability, retries, permissions, and user-interface state. Those features deepen or extend the route. They do not remove the need to explain what the application sent, what returned, and why it acted next.",
+      "wordCount": 52
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b58",
+      "kind": "paragraph",
+      "sequenceIndex": 560,
+      "text": "That explanation is also a debugging method.",
+      "wordCount": 7
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b59",
+      "kind": "paragraph",
+      "sequenceIndex": 561,
+      "text": "When Claude appears to forget, inspect the selected history.",
+      "wordCount": 9
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b60",
+      "kind": "paragraph",
+      "sequenceIndex": 562,
+      "text": "When an answer looks cut off, inspect the stop reason and output ceiling.",
+      "wordCount": 13
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b61",
+      "kind": "paragraph",
+      "sequenceIndex": 563,
+      "text": "When usage surprises the team, compare the model-specific estimate with final usage rather than treating them as identical.",
+      "wordCount": 18
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b62",
+      "kind": "paragraph",
+      "sequenceIndex": 564,
+      "text": "When behavior changes after migration, inspect the model IDs and rerun the evaluation set.",
+      "wordCount": 14
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b63",
+      "kind": "paragraph",
+      "sequenceIndex": 565,
+      "text": "When a retry behaves strangely, identify whether the event was a refusal, an HTTP error, or another stop outcome before choosing the mechanism.",
+      "wordCount": 23
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b64",
+      "kind": "paragraph",
+      "sequenceIndex": 566,
+      "text": "The questions lead back to structured evidence instead of guesswork about the prose.",
+      "wordCount": 13
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b65",
+      "kind": "paragraph",
+      "sequenceIndex": 567,
+      "text": "Review Room stores its accepted first analysis and waits for the next user contribution. If one arrives, the application will select the history again and construct another stateless request. The service will generate another assistant message. The application will inspect the result and decide what happens next.",
+      "wordCount": 47
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b66",
+      "kind": "paragraph",
+      "sequenceIndex": 568,
+      "text": "One trip at a time, the product creates a conversation.",
+      "wordCount": 10
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b67",
+      "kind": "paragraph",
+      "sequenceIndex": 569,
+      "text": "Volume 1 has stayed close to that loop because later Claude Platform volumes will take it into tools, streaming, prompt caching, structured outputs, and managed agents.",
+      "wordCount": 26
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b68",
+      "kind": "paragraph",
+      "sequenceIndex": 570,
+      "text": "Each feature changes part of the machinery. The boundary questions remain available.",
+      "wordCount": 12
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b69",
+      "kind": "paragraph",
+      "sequenceIndex": 571,
+      "text": "What did the application send?",
+      "wordCount": 5
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b70",
+      "kind": "paragraph",
+      "sequenceIndex": 572,
+      "text": "What did the service return?",
+      "wordCount": 5
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b71",
+      "kind": "paragraph",
+      "sequenceIndex": 573,
+      "text": "What evidence determined the next action?",
+      "wordCount": 6
+    },
+    {
+      "chapterIndex": 11,
+      "id": "s13-b72",
+      "kind": "paragraph",
+      "sequenceIndex": 574,
+      "text": "Review Room can answer all three. That is enough to begin building directly with Claude without mistaking a fluent answer for the complete application contract.",
+      "wordCount": 25
+    }
+  ],
+  "source": {
+    "epub": "claude-platform-01-the-message.epub"
+  },
+  "version": 1
+}

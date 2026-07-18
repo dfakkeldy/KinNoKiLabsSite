@@ -103,6 +103,50 @@ body.font-opendyslexic .room-bar .font-toggle {
   box-shadow: 0 14px 44px color-mix(in srgb, var(--gold-500) 16%, transparent), 0 2px 10px rgba(0, 0, 0, 0.4);
 }
 .room-cover-frame img { display: block; width: 100%; height: auto; }
+.book-series {
+  margin: 0 0 3px;
+  color: var(--room-text-accent);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+.series-progress {
+  margin: 0 0 10px;
+  color: var(--room-text-secondary);
+  font-size: 12.5px;
+}
+.series-navigation {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding-left: 10px;
+  border-left: 2px solid var(--room-text-accent);
+}
+.book-series[hidden], .series-progress[hidden], .series-navigation[hidden],
+.series-link[hidden], .edition-status[hidden], .room-library[hidden] { display: none; }
+.series-link {
+  color: var(--room-text-secondary);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-underline-offset: 3px;
+}
+.series-link:hover { color: var(--room-text-accent); }
+.series-link:focus-visible {
+  outline: 2px solid var(--room-text-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.edition-status {
+  margin: 0 0 12px;
+  padding: 9px 10px;
+  border: 1px solid var(--separator);
+  border-radius: 8px;
+  color: var(--room-text-secondary);
+  background: var(--fill-2);
+  font-size: 12px;
+  line-height: 1.5;
+}
 .room-meta h1 { font-size: clamp(22px, 3vw, 27px); line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 6px; }
 .room-subtitle { color: var(--room-text-secondary); font-size: 14.5px; line-height: 1.5; margin: 0 0 8px; }
 .room-byline { color: var(--room-text-tertiary); font-size: 13px; margin: 0; }
@@ -385,9 +429,24 @@ body.font-opendyslexic .room-bar .font-toggle {
 .room-cta .btn-gold:hover { color: var(--room-action-text); }
 
 .room-library { margin-top: clamp(36px, 6vw, 56px); }
+.room-library > h2 { font-size: 17px; letter-spacing: -0.01em; margin: 0 0 14px; }
 .room-library-title { font-size: 17px; letter-spacing: -0.01em; margin: 0 0 4px; }
 .room-library-sub { color: var(--room-text-secondary); font-size: 13.5px; margin: 0 0 14px; }
-.room-library ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr)); gap: 10px; }
+.room-library ul, .room-library ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr)); gap: 10px; }
+.series-shelf {
+  padding: 18px;
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+.series-shelf h3 { margin: 0 0 4px; color: var(--text); font-size: 18px; letter-spacing: -0.01em; }
+.series-shelf-description { margin: 0; color: var(--room-text-secondary); font-size: 13.5px; line-height: 1.55; }
+.series-shelf-availability {
+  margin: 5px 0 14px;
+  color: var(--room-text-accent);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+}
 /* Visual card: an optional cover thumbnail in column one spanning the
    text rows (title / subtitle / byline / actions) beside it. Cover-less
    entries collapse to a single text column, so nothing breaks while a
@@ -402,6 +461,10 @@ body.font-opendyslexic .room-bar .font-toggle {
   border-radius: 12px;
   padding: 12px 14px;
   font-size: 13.5px;
+}
+.room-library li[aria-current="page"] {
+  border-color: var(--room-text-accent);
+  background: var(--fill-2);
 }
 .room-library li:has(> .room-lib-cover) {
   grid-template-columns: auto minmax(0, 1fr);
@@ -424,6 +487,8 @@ body.font-opendyslexic .room-bar .font-toggle {
   border-radius: 8px;
   background: var(--fill-2);
 }
+.room-library li:has(> .room-lib-volume) .room-lib-cover { grid-row-end: span 5; }
+.room-library li .room-lib-volume { color: var(--room-text-accent); font-family: var(--font-mono); font-size: 11px; }
 .room-library li .room-lib-title { color: var(--text); font-weight: 500; min-width: 0; }
 .room-library li .room-lib-subtitle { color: var(--room-text-secondary); font-size: 12.5px; line-height: 1.45; }
 .room-library li .room-lib-by { color: var(--room-text-tertiary); font-size: 12px; }
@@ -466,4 +531,10 @@ body.font-opendyslexic .room-bar .font-toggle {
   .room-chapters { width: 100%; order: 3; }
   .room-captions { min-height: 9.5em; }
   .room-captions p[aria-hidden] { font-size: 17.5px; }
+}
+
+@media (max-width: 420px) {
+  .series-navigation { flex-direction: column; align-items: flex-start; }
+  .series-shelf { padding: 14px; }
+  .room-library ul, .room-library ol { grid-template-columns: 1fr; }
 }
