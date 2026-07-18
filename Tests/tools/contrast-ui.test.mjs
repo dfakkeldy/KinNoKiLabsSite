@@ -111,6 +111,26 @@ test('offers a chosen-target fix only while failing, applies it, and persists th
   });
 }));
 
+test('announces a clear error when the selected contrast target has no reachable suggestion', () => withTool(({ fixture, announcements }) => {
+  setInput(fixture.root, 'foreground', '#777777');
+  setInput(fixture.root, 'background', '#888888');
+
+  let target = fieldInput(fixture.root, 'suggestionTarget');
+  target.value = '7';
+  target.dispatchEvent(new Event('change'));
+  assert.equal(suggestPassing('#777777', '#888888', 7), null);
+  fixture.root.querySelector('.contrast-suggestion button').click();
+
+  const error = fixture.root.querySelector('.tool-error');
+  assert.ok(error);
+  assert.match(error.textContent, /no suggestion available/i);
+  assert.equal(announcements.at(-1), error.textContent);
+  assert.equal(fieldInput(fixture.root, 'foreground').value, '#777777');
+  assert.equal(fieldInput(fixture.root, 'background').value, '#888888');
+  target = fieldInput(fixture.root, 'suggestionTarget');
+  assert.equal(target.value, '7');
+}));
+
 test('restores the persisted pair and does not offer a suggestion for a passing target', () => {
   const storage = createStorage();
   storage.setItem('kinnoki-tools:v1', JSON.stringify({

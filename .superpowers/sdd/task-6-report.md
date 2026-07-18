@@ -84,3 +84,47 @@ git diff --check
 ## Concerns
 
 None.
+
+## Unreachable suggestion follow-up (2026-07-18)
+
+### RED
+
+Added a controller regression for `#777777` on `#888888` at a 7:1 target,
+where the existing pure engine correctly returns `null`. Before the fix, the
+visible button silently returned without updating the result or announcement:
+
+```text
+$ node --test Tests/tools/contrast-ui.test.mjs
+not ok 4 - announces a clear error when the selected contrast target has no reachable suggestion
+error: The expression evaluated to a falsy value: assert.ok(error)
+# tests 5
+# pass 4
+# fail 1
+```
+
+### GREEN
+
+The suggestion button now appends a visible `.tool-error` reading `No
+suggestion available for this pair and target.` and announces that exact text.
+It leaves the foreground/background inputs and selected 7:1 target untouched;
+the existing reachable-suggestion regression remains green.
+
+```text
+$ node --test Tests/tools/contrast-ui.test.mjs
+# tests 5
+# pass 5
+# fail 0
+
+$ make test-tools
+# tests 45
+# pass 45
+# fail 0
+```
+
+### Self-review
+
+- The error is created with the existing DOM helper and injected announcer; no
+  silent path remains when `suggestPassing` returns `null`.
+- The normal successful suggestion path is unchanged and still covered.
+- The fix is scoped to the Task 6 controller, focused test, and this receipt.
+- `git diff --check` passed; no generated output or task ledger changed.

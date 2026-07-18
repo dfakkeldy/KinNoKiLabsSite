@@ -167,7 +167,14 @@ export function renderContrastTool(root, deps = {}) {
       const button = element('button', { type: 'button', text: 'Suggest a fix', ownerDocument: doc });
       button.addEventListener('click', () => {
         const next = suggestPassing(foregroundHex, backgroundHex, target);
-        if (!next) return;
+        if (!next) {
+          const error = element('p', {
+            class: 'tool-error', text: 'No suggestion available for this pair and target.', ownerDocument: doc,
+          });
+          suggestion.append(error);
+          announce(error.textContent);
+          return;
+        }
         values.foreground = next;
         foreground.text.value = next;
         foreground.colour.value = next;
