@@ -119,12 +119,15 @@ test('announces a clear error when the selected contrast target has no reachable
   target.value = '7';
   target.dispatchEvent(new Event('change'));
   assert.equal(suggestPassing('#777777', '#888888', 7), null);
-  fixture.root.querySelector('.contrast-suggestion button').click();
+  const button = fixture.root.querySelector('.contrast-suggestion button');
+  button.click();
+  button.click();
 
   const error = fixture.root.querySelector('.tool-error');
   assert.ok(error);
   assert.match(error.textContent, /no suggestion available/i);
-  assert.equal(announcements.at(-1), error.textContent);
+  assert.equal(fixture.root.querySelectorAll('.tool-error').length, 1);
+  assert.deepEqual(announcements.slice(-2), [error.textContent, error.textContent]);
   assert.equal(fieldInput(fixture.root, 'foreground').value, '#777777');
   assert.equal(fieldInput(fixture.root, 'background').value, '#888888');
   target = fieldInput(fixture.root, 'suggestionTarget');

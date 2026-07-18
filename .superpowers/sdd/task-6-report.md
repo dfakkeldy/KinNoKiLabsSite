@@ -128,3 +128,47 @@ $ make test-tools
 - The normal successful suggestion path is unchanged and still covered.
 - The fix is scoped to the Task 6 controller, focused test, and this receipt.
 - `git diff --check` passed; no generated output or task ledger changed.
+
+## Repeated unreachable suggestion follow-up (2026-07-18)
+
+### RED
+
+Extended the unreachable 7:1 regression to click `Suggest a fix` twice and
+require exactly one `.tool-error` plus a meaningful announcement for each
+attempt. The pre-fix controller appended another paragraph each time:
+
+```text
+$ node --test Tests/tools/contrast-ui.test.mjs
+not ok 4 - announces a clear error when the selected contrast target has no reachable suggestion
+error: Expected values to be strictly equal: 2 !== 1
+# tests 5
+# pass 4
+# fail 1
+```
+
+### GREEN
+
+Before appending an unavailable-suggestion error, the button handler removes
+the prior `.tool-error` in its own suggestion row. Each click still announces
+the clear error; the colour pair, selected 7:1 target, and reachable-suggestion
+path remain unchanged.
+
+```text
+$ node --test Tests/tools/contrast-ui.test.mjs
+# tests 5
+# pass 5
+# fail 0
+
+$ make test-tools
+# tests 45
+# pass 45
+# fail 0
+```
+
+### Self-review
+
+- The replacement is scoped to the suggestion row, so no unrelated validation
+  result can be removed.
+- Reusing/removing the prior error keeps the DOM and visual output idempotent
+  while preserving a live announcement on every attempted action.
+- `git diff --check` passed; no generated output or task ledger changed.

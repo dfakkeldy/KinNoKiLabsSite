@@ -168,6 +168,7 @@ export function renderContrastTool(root, deps = {}) {
       button.addEventListener('click', () => {
         const next = suggestPassing(foregroundHex, backgroundHex, target);
         if (!next) {
+          suggestion.querySelector('.tool-error')?.remove();
           const error = element('p', {
             class: 'tool-error', text: 'No suggestion available for this pair and target.', ownerDocument: doc,
           });
