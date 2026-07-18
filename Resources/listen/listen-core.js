@@ -289,12 +289,12 @@
       return { id: shelf.source.id, books: slugs };
     });
 
+    /* Selection affects rendering, not structural library membership. */
+    void selectedSlug;
     return {
       series: series,
       moreBooks: books
-        .filter(function (book) {
-          return !seriesBooks.has(book.slug) && book.slug !== selectedSlug;
-        })
+        .filter(function (book) { return !seriesBooks.has(book.slug); })
         .map(function (book) { return book.slug; }),
     };
   }

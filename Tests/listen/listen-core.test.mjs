@@ -263,7 +263,7 @@ test('library sections preserve published series order and separate standalone b
   });
 });
 
-test('library sections omit a selected standalone book but retain a selected series volume', () => {
+test('library sections retain active books in their structural shelf', () => {
   assert.deepEqual(core.librarySections(seriesCatalog(), 'standalone-book'), {
     series: [{
       id: 'claude-platform',
@@ -272,7 +272,7 @@ test('library sections omit a selected standalone book but retain a selected ser
         'claude-platform-02-thinking-and-reliable-responses',
       ],
     }],
-    moreBooks: [],
+    moreBooks: ['standalone-book'],
   });
 });
 
