@@ -85,9 +85,15 @@ const createFunctionPatterns = (version) => {
   }
 
   const alignmentCenters = alignmentPositions(version);
-  for (const centerColumn of alignmentCenters) {
-    for (const centerRow of alignmentCenters) {
-      if (reserved[indexOf(size, centerColumn, centerRow)] !== 0) continue;
+  const lastAlignmentIndex = alignmentCenters.length - 1;
+  alignmentCenters.forEach((centerColumn, columnIndex) => {
+    alignmentCenters.forEach((centerRow, rowIndex) => {
+      const overlapsFinder = (
+        (columnIndex === 0 && rowIndex === 0)
+        || (columnIndex === 0 && rowIndex === lastAlignmentIndex)
+        || (columnIndex === lastAlignmentIndex && rowIndex === 0)
+      );
+      if (overlapsFinder) return;
       for (let deltaRow = -2; deltaRow <= 2; deltaRow += 1) {
         for (let deltaColumn = -2; deltaColumn <= 2; deltaColumn += 1) {
           const radius = Math.max(Math.abs(deltaColumn), Math.abs(deltaRow));
@@ -98,8 +104,8 @@ const createFunctionPatterns = (version) => {
           );
         }
       }
-    }
-  }
+    });
+  });
 
   const formatCoordinates = [
     [8, 0], [8, 1], [8, 2], [8, 3], [8, 4], [8, 5], [8, 7], [8, 8],
