@@ -53,6 +53,7 @@ function buildZip(entries, { comment = new Uint8Array() } = {}) {
     const localExtra = asBytes(description.localExtra ?? []);
     const centralExtra = asBytes(description.centralExtra ?? []);
     const centralComment = asBytes(description.centralComment ?? []);
+    const dataDescriptor = asBytes(description.dataDescriptor ?? []);
     const plain = asBytes(description.data ?? []);
     const method = description.method ?? 0;
     const flags = description.flags ?? 0;
@@ -66,13 +67,27 @@ function buildZip(entries, { comment = new Uint8Array() } = {}) {
       view.setUint16(4, 20, true);
       view.setUint16(6, flags, true);
       view.setUint16(8, method, true);
-      view.setUint32(14, checksum, true);
-      view.setUint32(18, compressed.length, true);
-      view.setUint32(22, plain.length, true);
+      view.setUint32(14, description.localCrc ?? checksum, true);
+      view.setUint32(
+        18,
+        description.localCompressedSize ?? compressed.length,
+        true,
+      );
+      view.setUint32(
+        22,
+        description.localUncompressedSize ?? plain.length,
+        true,
+      );
       view.setUint16(26, localName.length, true);
       view.setUint16(28, localExtra.length, true);
     });
-    const localRecord = joinBytes(localHeader, localName, localExtra, compressed);
+    const localRecord = joinBytes(
+      localHeader,
+      localName,
+      localExtra,
+      compressed,
+      dataDescriptor,
+    );
     localParts.push(localRecord);
 
     const centralHeader = record(46, (view) => {
@@ -223,6 +238,78 @@ test('native deflate-raw inflation works when the runtime advertises support', a
   assert.deepEqual(await epubZip.readEntry(fixture.buffer, entry), expected);
 });
 
+test('native inflation cancels its stream as soon as declared output is exceeded', async () => {
+  let cancelled = false;
+  let copied = false;
+  class OversizedChunk extends Uint8Array {
+    *[Symbol.iterator]() {
+      copied = true;
+      yield* super[Symbol.iterator]();
+    }
+  }
+  class OverrunDecompressionStream {
+    constructor() {
+      this.readable = new ReadableStream({
+        start(controller) {
+          controller.enqueue(new OversizedChunk(9));
+          controller.enqueue(new Uint8Array(9));
+          controller.close();
+        },
+        cancel() {
+          cancelled = true;
+        },
+      });
+      this.writable = new WritableStream();
+    }
+  }
+
+  await assert.rejects(
+    epubZip.inflateWithDecompressionStream(
+      Uint8Array.of(1),
+      8,
+      OverrunDecompressionStream,
+    ),
+    assertCode('bad-entry'),
+  );
+  assert.equal(cancelled, true);
+  assert.equal(copied, false);
+});
+
+test('readEntry passes the declared output size to an injected inflater', async () => {
+  const expected = encoder.encode('declared output');
+  const fixture = buildZip([{ name: 'chapter.xhtml', data: expected, method: 8 }]);
+  const entry = epubZip.parseZip(fixture.buffer).entries.get('chapter.xhtml');
+  let declaredSize;
+
+  const output = await epubZip.readEntry(
+    fixture.buffer,
+    entry,
+    async (bytes, expectedSize) => {
+      declaredSize = expectedSize;
+      return inflateWithNode(bytes);
+    },
+  );
+
+  assert.deepEqual(output, expected);
+  assert.equal(declaredSize, expected.length);
+});
+
+test('readEntry rejects an oversized declared output before invoking inflate', async () => {
+  const fixture = buildZip([{ name: 'chapter.xhtml', data: 'small', method: 8 }]);
+  const entry = epubZip.parseZip(fixture.buffer).entries.get('chapter.xhtml');
+  entry.uncompressedSize = 0xfffffffe;
+  let called = false;
+
+  await assert.rejects(
+    epubZip.readEntry(fixture.buffer, entry, async () => {
+      called = true;
+      return new Uint8Array();
+    }),
+    assertCode('bad-entry'),
+  );
+  assert.equal(called, false);
+});
+
 test('readEntry uses the local header name and extra lengths', async () => {
   const expected = encoder.encode('local header lengths select these exact bytes');
   const fixture = buildZip([{
@@ -233,6 +320,64 @@ test('readEntry uses the local header name and extra lengths', async () => {
     data: expected,
   }]);
   const entry = epubZip.parseZip(fixture.buffer).entries.get('OEBPS/chapter.xhtml');
+
+  assert.deepEqual(await epubZip.readEntry(fixture.buffer, entry), expected);
+});
+
+test('readEntry requires local and central sizes to agree without a descriptor', async () => {
+  const fixture = cloneFixture(buildZip([{ name: 'chapter.txt', data: 'abcdef' }]));
+  const view = viewOf(fixture);
+  view.setUint32(fixture.centralOffset + 20, 4, true);
+  view.setUint32(fixture.centralOffset + 24, 4, true);
+  const entry = epubZip.parseZip(fixture.buffer).entries.get('chapter.txt');
+
+  await assert.rejects(
+    epubZip.readEntry(fixture.buffer, entry),
+    assertCode('bad-entry'),
+  );
+});
+
+test('readEntry never consumes compressed bytes from the next local record', async () => {
+  const fixture = cloneFixture(buildZip([
+    {
+      name: 'first.bin',
+      data: 'A',
+      flags: 8,
+      localCrc: 0,
+      localCompressedSize: 0,
+      localUncompressedSize: 0,
+    },
+    { name: 'second.bin', data: 'second' },
+  ]));
+  const view = viewOf(fixture);
+  view.setUint32(fixture.centralOffset + 20, 10, true);
+  view.setUint32(fixture.centralOffset + 24, 10, true);
+  const entry = epubZip.parseZip(fixture.buffer).entries.get('first.bin');
+
+  await assert.rejects(
+    epubZip.readEntry(fixture.buffer, entry),
+    assertCode('bad-entry'),
+  );
+});
+
+test('readEntry accepts central sizes when bit 3 moves sizes to a data descriptor', async () => {
+  const expected = encoder.encode('descriptor-backed chapter');
+  const descriptor = record(16, (view) => {
+    view.setUint32(0, 0x08074b50, true);
+    view.setUint32(4, crc32(expected), true);
+    view.setUint32(8, expected.length, true);
+    view.setUint32(12, expected.length, true);
+  });
+  const fixture = buildZip([{
+    name: 'chapter.txt',
+    data: expected,
+    flags: 8,
+    localCrc: 0,
+    localCompressedSize: 0,
+    localUncompressedSize: 0,
+    dataDescriptor: descriptor,
+  }]);
+  const entry = epubZip.parseZip(fixture.buffer).entries.get('chapter.txt');
 
   assert.deepEqual(await epubZip.readEntry(fixture.buffer, entry), expected);
 });
@@ -286,6 +431,45 @@ test('EOCD scanning ignores a structurally invalid signature inside the comment'
   );
 
   assert.equal(epubZip.parseZip(fixture.buffer).entries.size, 1);
+});
+
+test('EOCD scanning fails closed when a comment ends in a valid fake empty EOCD', () => {
+  const prefix = encoder.encode('legal archive comment');
+  const initial = buildZip([{ name: 'mimetype', data: 'application/epub+zip' }]);
+  const fakeOffset = initial.bytes.length + prefix.length;
+  const fakeEocd = record(22, (view) => {
+    view.setUint32(0, 0x06054b50, true);
+    view.setUint32(16, fakeOffset, true);
+  });
+  const fixture = buildZip(
+    [{ name: 'mimetype', data: 'application/epub+zip' }],
+    { comment: joinBytes(prefix, fakeEocd) },
+  );
+
+  assert.throws(
+    () => epubZip.parseZip(fixture.buffer),
+    assertCode('not-a-zip'),
+  );
+});
+
+test('a fake classic EOCD cannot mask a ZIP64 EOCD earlier in the archive', () => {
+  const prefix = encoder.encode('legal archive comment');
+  const initial = buildZip([{ name: 'mimetype', data: 'application/epub+zip' }]);
+  const fakeOffset = initial.bytes.length + prefix.length;
+  const fakeEocd = record(22, (view) => {
+    view.setUint32(0, 0x06054b50, true);
+    view.setUint32(16, fakeOffset, true);
+  });
+  const fixture = cloneFixture(buildZip(
+    [{ name: 'mimetype', data: 'application/epub+zip' }],
+    { comment: joinBytes(prefix, fakeEocd) },
+  ));
+  viewOf(fixture).setUint16(fixture.eocdOffset + 10, 0xffff, true);
+
+  assert.throws(
+    () => epubZip.parseZip(fixture.buffer),
+    assertCode('zip64-unsupported'),
+  );
 });
 
 test('EOCD signatures farther back than the maximum comment window are ignored', () => {
@@ -372,6 +556,28 @@ test('parseZip validates central-directory offsets, sizes, signatures, and recor
       label,
     );
   }
+});
+
+test('parseZip rejects malformed UTF-8 entry names', () => {
+  const fixture = cloneFixture(buildZip([{ name: 'ab', data: 'content' }]));
+  fixture.bytes.set([0xc3, 0x28], fixture.centralOffset + 46);
+
+  assert.throws(
+    () => epubZip.parseZip(fixture.buffer),
+    assertCode('not-a-zip'),
+  );
+});
+
+test('parseZip rejects duplicate decoded entry names', () => {
+  const fixture = buildZip([
+    { name: 'same.xhtml', data: 'first' },
+    { name: 'same.xhtml', data: 'second' },
+  ]);
+
+  assert.throws(
+    () => epubZip.parseZip(fixture.buffer),
+    assertCode('not-a-zip'),
+  );
 });
 
 test('readEntry rejects bad local signatures, truncated headers, and out-of-bounds data', async () => {

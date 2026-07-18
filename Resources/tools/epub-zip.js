@@ -3,8 +3,10 @@ const CENTRAL_SIGNATURE = 0x02014b50;
 const EOCD_SIGNATURE = 0x06054b50;
 const EOCD_LENGTH = 22;
 const MAX_COMMENT_LENGTH = 0xffff;
+const MAX_ENTRY_BYTES = 64 * 1024 * 1024;
 const ZIP64_U16 = 0xffff;
 const ZIP64_U32 = 0xffffffff;
+const entryMetadata = new WeakMap();
 
 function zipError(code) {
   return Object.assign(new Error(code), { code });
@@ -53,8 +55,9 @@ function readCentralDirectory(bytes, eocdOffset, view) {
   const centralEnd = centralOffset + centralSize;
   if (centralEnd !== eocdOffset) throw zipError('not-a-zip');
 
-  const decoder = new TextDecoder('utf-8');
+  const decoder = new TextDecoder('utf-8', { fatal: true });
   const entries = new Map();
+  const parsedEntries = [];
   let cursor = centralOffset;
 
   for (let index = 0; index < entryCount; index += 1) {
@@ -91,18 +94,42 @@ function readCentralDirectory(bytes, eocdOffset, view) {
     }
 
     const nameStart = cursor + 46;
-    const name = decoder.decode(bytes.subarray(nameStart, nameStart + nameLength));
-    entries.set(name, {
+    let name;
+    try {
+      name = decoder.decode(bytes.subarray(nameStart, nameStart + nameLength));
+    } catch {
+      throw zipError('not-a-zip');
+    }
+    if (entries.has(name)) throw zipError('not-a-zip');
+
+    const entry = {
       method,
       encrypted: Boolean(flags & 1),
       compressedSize,
       uncompressedSize,
       headerOffset,
-    });
+    };
+    entries.set(name, entry);
+    parsedEntries.push({ entry, flags });
     cursor += recordLength;
   }
 
   if (cursor !== centralEnd) throw zipError('not-a-zip');
+
+  const localOrder = [...parsedEntries].sort(
+    (left, right) => left.entry.headerOffset - right.entry.headerOffset,
+  );
+  for (let index = 0; index < localOrder.length; index += 1) {
+    const current = localOrder[index];
+    const boundary = localOrder[index + 1]?.entry.headerOffset ?? centralOffset;
+    if (
+      current.entry.headerOffset + 30 > boundary
+      || current.entry.headerOffset === localOrder[index + 1]?.entry.headerOffset
+    ) {
+      throw zipError('not-a-zip');
+    }
+    entryMetadata.set(current.entry, { boundary, flags: current.flags });
+  }
   return { entries };
 }
 
@@ -113,6 +140,7 @@ export function parseZip(arrayBuffer) {
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   const firstCandidate = bytes.length - EOCD_LENGTH;
   const lastCandidate = Math.max(0, firstCandidate - MAX_COMMENT_LENGTH);
+  const candidates = [];
   let sawZip64 = false;
 
   for (let offset = firstCandidate; offset >= lastCandidate; offset -= 1) {
@@ -121,22 +149,28 @@ export function parseZip(arrayBuffer) {
     if (offset + EOCD_LENGTH + commentLength !== bytes.length) continue;
 
     try {
-      return readCentralDirectory(bytes, offset, view);
+      candidates.push(readCentralDirectory(bytes, offset, view));
     } catch (error) {
       if (error?.code === 'zip64-unsupported') sawZip64 = true;
     }
   }
 
+  if (candidates.length === 1 && !sawZip64) return candidates[0];
+  if (candidates.length > 1) throw zipError('not-a-zip');
   throw zipError(sawZip64 ? 'zip64-unsupported' : 'not-a-zip');
 }
 
-function outputBytes(value) {
-  if (value instanceof Uint8Array) return Uint8Array.from(value);
-  if (value instanceof ArrayBuffer) return new Uint8Array(value.slice(0));
+function byteView(value) {
+  if (value instanceof Uint8Array) return value;
+  if (value instanceof ArrayBuffer) return new Uint8Array(value);
   if (ArrayBuffer.isView(value)) {
-    return new Uint8Array(value.buffer, value.byteOffset, value.byteLength).slice();
+    return new Uint8Array(value.buffer, value.byteOffset, value.byteLength);
   }
   throw zipError('bad-entry');
+}
+
+function outputBytes(value) {
+  return byteView(value).slice();
 }
 
 export async function readEntry(
@@ -149,6 +183,20 @@ export async function readEntry(
     throw zipError(entry ? 'unsupported-method' : 'bad-entry');
   }
 
+  if (
+    !Number.isSafeInteger(entry.compressedSize)
+    || !Number.isSafeInteger(entry.uncompressedSize)
+    || entry.compressedSize < 0
+    || entry.uncompressedSize < 0
+    || entry.compressedSize > MAX_ENTRY_BYTES
+    || entry.uncompressedSize > MAX_ENTRY_BYTES
+  ) {
+    throw zipError('bad-entry');
+  }
+
+  const metadata = entryMetadata.get(entry);
+  if (!metadata) throw zipError('bad-entry');
+
   const bytes = archiveBytes(arrayBuffer, 'bad-entry');
   const { headerOffset, compressedSize, uncompressedSize } = entry;
   if (!hasRange(bytes, headerOffset, 30)) throw zipError('bad-entry');
@@ -157,15 +205,33 @@ export async function readEntry(
   if (view.getUint32(headerOffset, true) !== LOCAL_SIGNATURE) {
     throw zipError('bad-entry');
   }
-  if (view.getUint16(headerOffset + 6, true) & 1) throw zipError('encrypted');
+  const localFlags = view.getUint16(headerOffset + 6, true);
+  if (localFlags & 1) throw zipError('encrypted');
+  if (Boolean(localFlags & 8) !== Boolean(metadata.flags & 8)) {
+    throw zipError('bad-entry');
+  }
   if (view.getUint16(headerOffset + 8, true) !== entry.method) {
     throw zipError('bad-entry');
   }
-
+  if (!(localFlags & 8)) {
+    const localCompressedSize = view.getUint32(headerOffset + 18, true);
+    const localUncompressedSize = view.getUint32(headerOffset + 22, true);
+    if (
+      localCompressedSize !== compressedSize
+      || localUncompressedSize !== uncompressedSize
+    ) {
+      throw zipError('bad-entry');
+    }
+  }
   const nameLength = view.getUint16(headerOffset + 26, true);
   const extraLength = view.getUint16(headerOffset + 28, true);
   const dataOffset = headerOffset + 30 + nameLength + extraLength;
-  if (!hasRange(bytes, dataOffset, compressedSize)) throw zipError('bad-entry');
+  if (
+    !hasRange(bytes, dataOffset, compressedSize)
+    || dataOffset + compressedSize > metadata.boundary
+  ) {
+    throw zipError('bad-entry');
+  }
 
   const compressed = bytes.slice(dataOffset, dataOffset + compressedSize);
   let output;
@@ -174,7 +240,7 @@ export async function readEntry(
     output = compressed;
   } else {
     try {
-      output = outputBytes(await inflate(compressed));
+      output = outputBytes(await inflate(compressed, uncompressedSize));
     } catch {
       throw zipError('bad-entry');
     }
@@ -184,11 +250,75 @@ export async function readEntry(
   return output;
 }
 
-export async function inflateWithDecompressionStream(bytes) {
-  const stream = new Blob([bytes])
-    .stream()
-    .pipeThrough(new DecompressionStream('deflate-raw'));
-  return new Uint8Array(await new Response(stream).arrayBuffer());
+async function cancelReader(reader) {
+  try {
+    await reader.cancel();
+  } catch {
+    // The original malformed-entry error remains authoritative.
+  }
+}
+
+export async function inflateWithDecompressionStream(
+  bytes,
+  expectedSize,
+  DecompressionStreamType = DecompressionStream,
+) {
+  const hasExpectedSize = expectedSize !== undefined;
+  if (
+    hasExpectedSize
+    && (!Number.isSafeInteger(expectedSize)
+      || expectedSize < 0
+      || expectedSize > MAX_ENTRY_BYTES)
+  ) {
+    throw zipError('bad-entry');
+  }
+
+  const limit = hasExpectedSize ? expectedSize : MAX_ENTRY_BYTES;
+  let reader;
+  try {
+    const stream = new Blob([bytes])
+      .stream()
+      .pipeThrough(new DecompressionStreamType('deflate-raw'));
+    reader = stream.getReader();
+  } catch {
+    throw zipError('bad-entry');
+  }
+
+  const output = hasExpectedSize ? new Uint8Array(expectedSize) : null;
+  const chunks = [];
+  let total = 0;
+  try {
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      const chunk = byteView(value);
+      if (chunk.length > limit - total) {
+        await cancelReader(reader);
+        throw zipError('bad-entry');
+      }
+      if (output) output.set(chunk, total);
+      else chunks.push(chunk.slice());
+      total += chunk.length;
+    }
+  } catch (error) {
+    await cancelReader(reader);
+    throw error?.code === 'bad-entry' ? error : zipError('bad-entry');
+  } finally {
+    reader.releaseLock();
+  }
+
+  if (hasExpectedSize) {
+    if (total !== expectedSize) throw zipError('bad-entry');
+    return output;
+  }
+
+  const combined = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    combined.set(chunk, offset);
+    offset += chunk.length;
+  }
+  return combined;
 }
 
 export function supportsInflate() {
