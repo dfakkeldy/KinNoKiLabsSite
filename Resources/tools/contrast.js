@@ -11,7 +11,10 @@ export function hexToRgb(hex) {
   };
 }
 
-export function rgbToHex({ r, g, b }) {
+export function rgbToHex(rgb) {
+  if (!rgb || typeof rgb !== 'object') return null;
+  const { r, g, b } = rgb;
+  if (![r, g, b].every(Number.isFinite)) return null;
   const part = (value) => Math.round(Math.min(255, Math.max(0, value))).toString(16).padStart(2, '0');
   return `#${part(r)}${part(g)}${part(b)}`;
 }
@@ -21,7 +24,10 @@ const channel = (value) => {
   return scaled <= 0.04045 ? scaled / 12.92 : ((scaled + 0.055) / 1.055) ** 2.4;
 };
 
-export function relativeLuminance({ r, g, b }) {
+export function relativeLuminance(rgb) {
+  if (!rgb || typeof rgb !== 'object') return null;
+  const { r, g, b } = rgb;
+  if (![r, g, b].every(Number.isFinite)) return null;
   return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
 }
 
@@ -72,10 +78,18 @@ function hslToRgb({ h, s, l }) {
 
 export function suggestPassing(fgHex, bgHex, target) {
   const foreground = hexToRgb(fgHex);
-  if (!foreground || !hexToRgb(bgHex)) return null;
+  const background = hexToRgb(bgHex);
+  if (!foreground || !background || !Number.isFinite(target) || target < 1 || target > 21) return null;
+
+  const normalizedForeground = rgbToHex(foreground);
+  if (contrastRatio(normalizedForeground, bgHex) >= target) return normalizedForeground;
 
   const base = rgbToHsl(foreground);
-  for (let delta = 1; delta <= 100; delta += 1) {
+  // A channel can change at most 510 RGB units per unit of HSL lightness.
+  // Half-unit RGB resolution visits every rounded candidate while staying deterministic.
+  const lightnessStep = 100 / 1020;
+  for (let step = 1; step <= 1020; step += 1) {
+    const delta = step * lightnessStep;
     for (const sign of [1, -1]) {
       const lightness = base.l + sign * delta;
       if (lightness < 0 || lightness > 100) continue;
