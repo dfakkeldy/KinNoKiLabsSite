@@ -580,6 +580,20 @@ test('parseZip rejects duplicate decoded entry names', () => {
   );
 });
 
+test('parseZip preserves a leading U+FEFF as part of the exact entry name', () => {
+  const bomName = '\ufeffchapter.xhtml';
+  const plainName = 'chapter.xhtml';
+  const fixture = buildZip([
+    { name: bomName, data: 'with leading character' },
+    { name: plainName, data: 'without leading character' },
+  ]);
+
+  const { entries } = epubZip.parseZip(fixture.buffer);
+
+  assert.deepEqual([...entries.keys()], [bomName, plainName]);
+  assert.equal(entries.size, 2);
+});
+
 test('readEntry rejects bad local signatures, truncated headers, and out-of-bounds data', async () => {
   const base = buildZip([{ name: 'chapter.xhtml', data: 'chapter' }]);
   const entry = epubZip.parseZip(base.buffer).entries.get('chapter.xhtml');

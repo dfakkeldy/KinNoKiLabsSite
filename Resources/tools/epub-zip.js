@@ -55,7 +55,7 @@ function readCentralDirectory(bytes, eocdOffset, view) {
   const centralEnd = centralOffset + centralSize;
   if (centralEnd !== eocdOffset) throw zipError('not-a-zip');
 
-  const decoder = new TextDecoder('utf-8', { fatal: true });
+  const decoder = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true });
   const entries = new Map();
   const parsedEntries = [];
   let cursor = centralOffset;
