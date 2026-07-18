@@ -10,7 +10,7 @@
 #   make listen-catalog  Regenerate Resources/listen/books.json + per-book
 #                        assets from local checkouts (Tools/build-listen-catalog.sh)
 
-.PHONY: publish preview generate clean test test-listen test-games listen-catalog paired-covers
+.PHONY: publish preview generate clean test test-listen test-games test-tools listen-catalog paired-covers
 
 generate:
 	publish generate
@@ -27,13 +27,16 @@ preview:
 clean:
 	swift package clean
 
-test: test-listen test-games
+test: test-listen test-games test-tools
 
 test-listen:
 	node --test Tests/listen/*.test.mjs
 
 test-games:
 	node --test Tests/games/*.test.mjs
+
+test-tools:
+	node --test Tests/tools/*.test.mjs
 
 listen-catalog:
 	Tools/build-listen-catalog.sh
