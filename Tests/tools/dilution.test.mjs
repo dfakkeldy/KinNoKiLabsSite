@@ -18,7 +18,10 @@ test('general: target stronger than stock is an error, not a clamp', () => {
 test('general: zero/negative/non-finite inputs are invalid', () => {
   for (const bad of [{ stockPercent: 0, targetPercent: 3, totalMl: 500 },
     { stockPercent: 30, targetPercent: -1, totalMl: 500 },
-    { stockPercent: 30, targetPercent: 3, totalMl: 0 }]) {
+    { stockPercent: 30, targetPercent: 3, totalMl: 0 },
+    { stockPercent: NaN, targetPercent: 3, totalMl: 500 },
+    { stockPercent: Infinity, targetPercent: 3, totalMl: 500 },
+    { stockPercent: 30, targetPercent: -Infinity, totalMl: 500 }]) {
     assert.deepEqual(computeGeneral(bad), { error: 'invalid' });
   }
 });
@@ -30,8 +33,24 @@ test('ratio: 1:32 into a 1 L bottle', () => {
   assert.equal(roundMl(concentrateMl + waterMl), 1000);
 });
 
+test('ratio: non-finite inputs are invalid', () => {
+  for (const bad of [{ parts: NaN, totalMl: 1000 },
+    { parts: Infinity, totalMl: 1000 },
+    { parts: 32, totalMl: -Infinity }]) {
+    assert.deepEqual(computeRatio(bad), { error: 'invalid' });
+  }
+});
+
 test('dose: 2 ml/L at strong (1.5x) for a 9 L can', () => {
   assert.deepEqual(computeDose({ dosePerL: 2, totalL: 9, multiplier: 1.5 }), { doseMl: 27 });
+});
+
+test('dose: non-finite inputs are invalid', () => {
+  for (const bad of [{ dosePerL: NaN, totalL: 9, multiplier: 1 },
+    { dosePerL: Infinity, totalL: 9, multiplier: 1 },
+    { dosePerL: 2, totalL: -Infinity, multiplier: 1 }]) {
+    assert.deepEqual(computeDose(bad), { error: 'invalid' });
+  }
 });
 
 test('percent/parts round-trip', () => {
