@@ -66,6 +66,14 @@ test('suggestPassing returns the closest representable lightness-adjusted candid
   assert.equal(suggestPassing('#777777', '#888888', 4.5), '#212121');
 });
 
+test('suggestPassing finds the closest passing candidate on a coloured HSL path', () => {
+  const candidate = suggestPassing('#0099cc', '#0b0b0c', 12);
+  assert.equal(candidate, '#65d8ff');
+  assert.ok(contrastRatio(candidate, '#0b0b0c') >= 12);
+  assert.equal(Number(contrastRatio(candidate, '#0b0b0c').toFixed(2)), 12.01);
+  assert.ok(contrastRatio('#65d7ff', '#0b0b0c') < 12);
+});
+
 test('suggestPassing returns null when its target is impossible', () => {
   assert.equal(suggestPassing('#808080', '#808080', 21), null);
 });
