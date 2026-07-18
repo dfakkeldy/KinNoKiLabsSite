@@ -39,7 +39,25 @@ const generate = (root) => {
   button.click();
 };
 
-const withTool = (run, { storage = createStorage(), clipboard, randomSource } = {}) => {
+const deferred = () => {
+  let resolve;
+  let reject;
+  const promise = new Promise((resolvePromise, rejectPromise) => {
+    resolve = resolvePromise;
+    reject = rejectPromise;
+  });
+  return { promise, resolve, reject };
+};
+
+const settle = async () => {
+  await Promise.resolve();
+  await Promise.resolve();
+  await Promise.resolve();
+};
+
+const withTool = (run, {
+  storage = createStorage(), clipboard, randomSource, generatePassphraseFn, generateStringFn,
+} = {}) => {
   const fixture = createDOMFixture();
   const restore = installDOM(fixture);
   const announcements = [];
@@ -48,6 +66,8 @@ const withTool = (run, { storage = createStorage(), clipboard, randomSource } = 
       storage,
       clipboard,
       randomSource: randomSource ?? ((buffer) => { buffer[0] = 0; }),
+      generatePassphraseFn,
+      generateStringFn,
       announce: (text) => announcements.push(text),
     });
     const outcome = run({ fixture, storage, announcements });
@@ -74,6 +94,7 @@ test('mounts two pressed-state tabs and an on-demand passphrase form with EFF at
   assert.ok(field(fixture.root, 'includeNumber'));
   assert.equal(fixture.root.querySelector('.tool-result-strong'), null);
   assert.equal(fixture.root.querySelector('.tool-result'), null);
+  assert.equal(fixture.root.querySelectorAll('button').some((node) => node.textContent === 'Copy'), false);
   assert.equal(fixture.root.querySelectorAll('p').some((node) => node.textContent === 'Wordlist: EFF large wordlist (CC BY 3.0)'), true);
 }));
 
@@ -159,4 +180,130 @@ test('restores passphrase options without rendering a generated value', () => {
     assert.equal(field(fixture.root, 'symbols').checked, true);
     assert.equal(fixture.root.querySelector('.tool-result-strong'), null);
   }, { storage });
+});
+
+test('uses Good at exact 45-bit and 70-bit entropy boundaries', () => {
+  const results = [
+    { phrase: 'at-forty-five', entropyBits: 45 },
+    { phrase: 'at-seventy', entropyBits: 70 },
+  ];
+  withTool(({ fixture }) => {
+    generate(fixture.root);
+    assert.equal(fixture.root.querySelector('.tool-result').textContent, '~45 bits — Good');
+    generate(fixture.root);
+    assert.equal(fixture.root.querySelector('.tool-result').textContent, '~70 bits — Good');
+  }, { generatePassphraseFn: () => results.shift() });
+});
+
+test('ignores a stale successful copy after a newer generation', async () => {
+  const pending = deferred();
+  const results = [
+    { phrase: 'first-secret', entropyBits: 50 },
+    { phrase: 'second-secret', entropyBits: 50 },
+  ];
+  await withTool(async ({ fixture, announcements }) => {
+    generate(fixture.root);
+    fixture.root.querySelectorAll('button').find((node) => node.textContent === 'Copy').click();
+    generate(fixture.root);
+    pending.resolve();
+    await settle();
+
+    assert.equal(fixture.root.querySelector('.tool-result-strong').textContent, 'second-secret');
+    assert.equal(fixture.root.querySelector('.tool-error'), null);
+    assert.equal(announcements.includes('Copied'), false);
+  }, {
+    clipboard: { writeText: () => pending.promise },
+    generatePassphraseFn: () => results.shift(),
+  });
+});
+
+test('ignores a stale failed copy after a newer generation', async () => {
+  const pending = deferred();
+  const results = [
+    { phrase: 'first-secret', entropyBits: 50 },
+    { phrase: 'second-secret', entropyBits: 50 },
+  ];
+  await withTool(async ({ fixture, announcements }) => {
+    generate(fixture.root);
+    fixture.root.querySelectorAll('button').find((node) => node.textContent === 'Copy').click();
+    generate(fixture.root);
+    pending.reject(new Error('clipboard unavailable'));
+    await settle();
+
+    assert.equal(fixture.root.querySelector('.tool-result-strong').textContent, 'second-secret');
+    assert.equal(fixture.root.querySelector('.tool-error'), null);
+    assert.equal(announcements.some((text) => /unable to copy/i.test(text)), false);
+  }, {
+    clipboard: { writeText: () => pending.promise },
+    generatePassphraseFn: () => results.shift(),
+  });
+});
+
+test('reports a failure when the current generated value cannot be copied', async () => {
+  await withTool(async ({ fixture, announcements }) => {
+    generate(fixture.root);
+    fixture.root.querySelectorAll('button').find((node) => node.textContent === 'Copy').click();
+    await settle();
+
+    const error = fixture.root.querySelector('.tool-error');
+    assert.ok(error);
+    assert.equal(error.textContent, 'Unable to copy the generated value.');
+    assert.equal(announcements.at(-1), error.textContent);
+  }, { clipboard: { writeText: () => Promise.reject(new Error('clipboard unavailable')) } });
+});
+
+test('reports disabled string character sets and manipulated oversized lengths without crashing', () => withTool(({ fixture, announcements }) => {
+  fixture.root.querySelectorAll('.tool-tab')[1].click();
+  toggle(fixture.root, 'lower', false);
+  toggle(fixture.root, 'upper', false);
+  toggle(fixture.root, 'digits', false);
+  toggle(fixture.root, 'symbols', false);
+  generate(fixture.root);
+  assert.equal(fixture.root.querySelector('.tool-error').textContent, 'Select at least one character set.');
+  assert.equal(announcements.at(-1), 'Select at least one character set.');
+
+  toggle(fixture.root, 'lower', true);
+  change(fixture.root, 'length', '1025');
+  generate(fixture.root);
+  assert.match(fixture.root.querySelector('.tool-error').textContent, /unable to generate/i);
+  assert.equal(announcements.at(-1), fixture.root.querySelector('.tool-error').textContent);
+}));
+
+test('normalizes invalid persisted passphrase options to safe defaults', () => {
+  const storage = createStorage();
+  storage.setItem('kinnoki-tools:v1', JSON.stringify({
+    version: 1,
+    tools: {
+      passphrase: {
+        mode: 'invalid', words: 2, separator: '/', capitalize: 'yes', includeNumber: 1,
+        length: 1025, lower: 'yes', upper: 1, digits: null, symbols: false,
+      },
+    },
+  }));
+  withTool(({ fixture }) => {
+    assert.deepEqual(fixture.root.querySelectorAll('.tool-tab').map((tab) => tab.getAttribute('aria-pressed')), ['true', 'false']);
+    assert.equal(field(fixture.root, 'words').value, '5');
+    assert.equal(field(fixture.root, 'separator').value, '-');
+    assert.equal(field(fixture.root, 'capitalize').checked, false);
+    assert.equal(field(fixture.root, 'includeNumber').checked, false);
+    fixture.root.querySelectorAll('.tool-tab')[1].click();
+    assert.equal(field(fixture.root, 'length').value, '20');
+    assert.equal(field(fixture.root, 'lower').checked, true);
+    assert.equal(field(fixture.root, 'upper').checked, true);
+    assert.equal(field(fixture.root, 'digits').checked, true);
+    assert.equal(field(fixture.root, 'symbols').checked, false);
+  }, { storage });
+});
+
+test('switching modes clears the generated value and does not multiply Generate listeners', () => {
+  let calls = 0;
+  withTool(({ fixture }) => {
+    generate(fixture.root);
+    assert.ok(fixture.root.querySelector('.tool-result-strong'));
+
+    for (const mode of [1, 0, 1, 0]) fixture.root.querySelectorAll('.tool-tab')[mode].click();
+    assert.equal(fixture.root.querySelector('.tool-result-strong'), null);
+    generate(fixture.root);
+    assert.equal(calls, 2);
+  }, { generatePassphraseFn: () => ({ phrase: `secret-${++calls}`, entropyBits: 50 }) });
 });

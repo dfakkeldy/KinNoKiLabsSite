@@ -67,7 +67,10 @@ export function renderPassphraseTool(root, deps = {}) {
   const announce = deps.announce ?? createAnnouncer(doc.querySelector('.tools-live-region'));
   const randomSource = deps.randomSource;
   const wordlist = deps.wordlist ?? EFF_LARGE_WORDLIST;
+  const generatePassphraseFn = deps.generatePassphraseFn ?? generatePassphrase;
+  const generateStringFn = deps.generateStringFn ?? generateString;
   let prefs = openToolPrefs(storage);
+  let currentResultToken = 0;
   const saved = toolPrefs(prefs, 'passphrase');
   const values = {
     mode: isMode(saved.mode) ? saved.mode : DEFAULTS.mode,
@@ -91,7 +94,13 @@ export function renderPassphraseTool(root, deps = {}) {
     prefs = setToolPrefs(storage, prefs, 'passphrase', { ...values });
   };
 
+  const invalidateResult = () => {
+    currentResultToken += 1;
+    return currentResultToken;
+  };
+
   const renderResult = (container, result, kind) => {
+    const resultToken = invalidateResult();
     if (result.error) {
       const text = 'Select at least one character set.';
       container.replaceChildren(element('p', { class: 'tool-error', text, ownerDocument: doc }));
@@ -105,6 +114,7 @@ export function renderPassphraseTool(root, deps = {}) {
     const copy = element('button', { type: 'button', text: 'Copy', ownerDocument: doc });
     copy.addEventListener('click', async () => {
       const copied = await copyText(value, deps.clipboard);
+      if (resultToken !== currentResultToken) return;
       if (copied) {
         announce('Copied');
         return;
@@ -127,6 +137,7 @@ export function renderPassphraseTool(root, deps = {}) {
   };
 
   const renderError = (container) => {
+    invalidateResult();
     const text = 'Unable to generate a value. Check the selected options.';
     container.replaceChildren(element('p', { class: 'tool-error', text, ownerDocument: doc }));
     announce(text);
@@ -154,7 +165,7 @@ export function renderPassphraseTool(root, deps = {}) {
     const generate = element('button', { type: 'button', text: 'Generate', ownerDocument: doc });
     generate.addEventListener('click', () => {
       try {
-        renderResult(results, generatePassphrase({
+        renderResult(results, generatePassphraseFn({
           words: values.words,
           separator: values.separator,
           capitalize: values.capitalize,
@@ -198,7 +209,7 @@ export function renderPassphraseTool(root, deps = {}) {
     const generate = element('button', { type: 'button', text: 'Generate', ownerDocument: doc });
     generate.addEventListener('click', () => {
       try {
-        renderResult(results, generateString({
+        renderResult(results, generateStringFn({
           length: values.length,
           lower: values.lower,
           upper: values.upper,
@@ -244,6 +255,7 @@ export function renderPassphraseTool(root, deps = {}) {
         if (values.mode === id) return;
         values.mode = id;
         save();
+        invalidateResult();
         render();
       });
       return tab;
