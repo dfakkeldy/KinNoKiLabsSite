@@ -154,9 +154,19 @@
       els.seriesProgress.hidden = false;
     }
 
+    function playableAdjacent(volume) {
+      if (!volume || !Array.isArray(catalog.books)) return null;
+      var matches = catalog.books.filter(function (candidate) {
+        return candidate && candidate.slug === volume.book;
+      });
+      return matches.length === 1 && matches[0].audio && matches[0].audio.status === 'available'
+        ? volume
+        : null;
+    }
+
     [
-      { element: els.seriesPrevious, volume: context && context.previous, label: 'Previous' },
-      { element: els.seriesNext, volume: context && context.next, label: 'Next' },
+      { element: els.seriesPrevious, volume: playableAdjacent(context && context.previous), label: 'Previous' },
+      { element: els.seriesNext, volume: playableAdjacent(context && context.next), label: 'Next' },
     ].forEach(function (item) {
       if (!item.volume) {
         item.element.hidden = true;

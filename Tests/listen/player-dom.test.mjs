@@ -470,6 +470,28 @@ test('a series deep link preserves selection, honest edition status, and only re
   assert.equal(player.elements.get('editionStatus').textContent, catalog.books[1].edition.disclosure);
 });
 
+test('series navigation never links to an adjacent published volume without streaming audio', async () => {
+  const nextUnavailable = claudeSeriesCatalog();
+  nextUnavailable.books[1].audio = { status: 'none' };
+  const first = await bootPlayer({
+    catalog: nextUnavailable,
+    search: '?book=claude-platform-01-the-message',
+  });
+  assert.equal(first.elements.get('seriesNext').hidden, true);
+  assert.equal(first.elements.get('seriesNext').href, '');
+  assert.equal(first.elements.get('seriesNext').parentNode.hidden, true);
+
+  const previousUnavailable = claudeSeriesCatalog();
+  previousUnavailable.books[0].audio = { status: 'none' };
+  const second = await bootPlayer({
+    catalog: previousUnavailable,
+    search: '?book=claude-platform-02-thinking-and-reliable-responses',
+  });
+  assert.equal(second.elements.get('seriesPrevious').hidden, true);
+  assert.equal(second.elements.get('seriesPrevious').href, '');
+  assert.equal(second.elements.get('seriesPrevious').parentNode.hidden, true);
+});
+
 test('series and standalone shelves stay structurally complete while selected cards lose redundant Listen actions', async () => {
   const catalog = claudeSeriesCatalog();
   const player = await bootPlayer({ catalog, search: '?book=claude-platform-01-the-message' });
