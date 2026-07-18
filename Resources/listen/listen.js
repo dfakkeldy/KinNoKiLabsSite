@@ -23,6 +23,10 @@
     iconPlay: $('iconPlay'), iconPause: $('iconPause'), back30: $('back30'), fwd30: $('fwd30'),
     speed: $('speed'), scrubber: $('scrubber'), timeNow: $('timeNow'), timeTotal: $('timeTotal'),
     selectedFormats: $('selectedFormats'), emptyState: $('emptyState'),
+    bookSeries: $('bookSeries'), seriesProgress: $('seriesProgress'),
+    seriesPrevious: $('seriesPrevious'), seriesNext: $('seriesNext'),
+    editionStatus: $('editionStatus'), seriesShelves: $('seriesShelves'),
+    seriesLibrary: $('seriesLibrary'), moreBooksShelf: $('moreBooksShelf'),
     library: $('library'), honesty: $('honesty'),
   };
   var main = document.querySelector('.room-main');
@@ -136,51 +140,149 @@
     els.selectedFormats.hidden = actions.length === 0;
   }
 
-  function renderLibrary(catalog) {
-    catalog.books.forEach(function (b) {
-      if (book && b.slug === book.slug) return;
-      var li = document.createElement('li');
-      if (b.cover) {
-        var thumb = document.createElement('img');
-        thumb.className = 'room-lib-cover';
-        thumb.src = b.cover;
-        thumb.alt = b.coverAlt || ('Cover of ' + b.title);
-        thumb.loading = 'lazy';
-        thumb.decoding = 'async';
-        // Covers keep their natural shape — most are portrait, but the
-        // paired-m4b books ship square art — so the intrinsic ratio comes
-        // from the catalog's own pixel dimensions instead of a hard-coded
-        // one. With both hints the lazy grid reserves the true box and
-        // doesn't reflow as covers arrive; with neither, the browser
-        // measures on load rather than being told a wrong shape.
-        if (hasCoverSize(b)) {
-          thumb.setAttribute('width', String(b.coverWidth));
-          thumb.setAttribute('height', String(b.coverHeight));
-        }
-        li.appendChild(thumb);
+  function renderSeriesContext(catalog) {
+    if (!els.bookSeries || !els.seriesProgress || !els.seriesPrevious || !els.seriesNext ||
+        !els.editionStatus || typeof core.seriesContext !== 'function') return;
+    var context = core.seriesContext(catalog, book.slug);
+    var navigation = els.seriesPrevious.parentNode;
+
+    if (context) {
+      els.bookSeries.textContent = context.series.title + ' · Volume ' + context.volume.number;
+      els.bookSeries.hidden = false;
+      els.seriesProgress.textContent = context.availableCount + ' of ' + context.plannedCount +
+        ' planned volumes available';
+      els.seriesProgress.hidden = false;
+    }
+
+    [
+      { element: els.seriesPrevious, volume: context && context.previous, label: 'Previous' },
+      { element: els.seriesNext, volume: context && context.next, label: 'Next' },
+    ].forEach(function (item) {
+      if (!item.volume) {
+        item.element.hidden = true;
+        return;
       }
-      var title = document.createElement('span');
-      title.className = 'room-lib-title';
-      title.textContent = b.title;
-      li.appendChild(title);
-      if (b.subtitle) {
-        var subtitle = document.createElement('span');
-        subtitle.className = 'room-lib-subtitle';
-        subtitle.textContent = b.subtitle;
-        li.appendChild(subtitle);
-      }
-      var by = document.createElement('span');
-      by.className = 'room-lib-by';
-      by.textContent = 'Written by ' + b.writtenBy;
-      li.appendChild(by);
-      var links = document.createElement('span');
-      links.className = 'room-lib-links';
-      core.libraryActions(b).forEach(function (action) {
-        links.appendChild(actionLink(action));
-      });
-      li.appendChild(links);
-      els.library.appendChild(li);
+      item.element.href = '?book=' + encodeURIComponent(item.volume.book);
+      item.element.textContent = item.label + ': Volume ' + item.volume.number;
+      item.element.hidden = false;
     });
+    navigation.hidden = !context || (els.seriesPrevious.hidden && els.seriesNext.hidden);
+
+    var disclosure = book.edition && book.edition.disclosure;
+    if (typeof disclosure === 'string' && disclosure.length > 0) {
+      els.editionStatus.textContent = disclosure;
+      els.editionStatus.hidden = false;
+    }
+  }
+
+  function renderLibraryCard(b, volumeNumber) {
+    var li = document.createElement('li');
+    var selected = book && b.slug === book.slug;
+    if (selected) li.setAttribute('aria-current', 'page');
+    if (b.cover) {
+      var thumb = document.createElement('img');
+      thumb.className = 'room-lib-cover';
+      thumb.src = b.cover;
+      thumb.alt = b.coverAlt || ('Cover of ' + b.title);
+      thumb.loading = 'lazy';
+      thumb.decoding = 'async';
+      // Covers keep their natural shape — most are portrait, but the
+      // paired-m4b books ship square art — so the intrinsic ratio comes
+      // from the catalog's own pixel dimensions instead of a hard-coded
+      // one. With both hints the lazy grid reserves the true box and
+      // doesn't reflow as covers arrive; with neither, the browser
+      // measures on load rather than being told a wrong shape.
+      if (hasCoverSize(b)) {
+        thumb.setAttribute('width', String(b.coverWidth));
+        thumb.setAttribute('height', String(b.coverHeight));
+      }
+      li.appendChild(thumb);
+    }
+    if (typeof volumeNumber === 'number') {
+      var volume = document.createElement('span');
+      volume.className = 'room-lib-volume';
+      volume.textContent = 'Volume ' + volumeNumber;
+      li.appendChild(volume);
+    }
+    var title = document.createElement('span');
+    title.className = 'room-lib-title';
+    title.textContent = b.title;
+    li.appendChild(title);
+    if (b.subtitle) {
+      var subtitle = document.createElement('span');
+      subtitle.className = 'room-lib-subtitle';
+      subtitle.textContent = b.subtitle;
+      li.appendChild(subtitle);
+    }
+    var by = document.createElement('span');
+    by.className = 'room-lib-by';
+    by.textContent = 'Written by ' + b.writtenBy;
+    li.appendChild(by);
+    var links = document.createElement('span');
+    links.className = 'room-lib-links';
+    core.libraryActions(b).filter(function (action) {
+      return !selected || action.label !== 'Listen';
+    }).forEach(function (action) {
+      links.appendChild(actionLink(action));
+    });
+    li.appendChild(links);
+    return li;
+  }
+
+  function renderLibrary(catalog) {
+    if (typeof core.librarySections !== 'function' || !els.seriesLibrary || !els.seriesShelves ||
+        !els.moreBooksShelf) {
+      catalog.books.forEach(function (candidate) {
+        els.library.appendChild(renderLibraryCard(candidate));
+      });
+      return;
+    }
+    var books = new Map();
+    catalog.books.forEach(function (candidate) { books.set(candidate.slug, candidate); });
+    var seriesById = new Map();
+    (catalog.series || []).forEach(function (series) { seriesById.set(series.id, series); });
+    var sections = core.librarySections(catalog, book && book.slug);
+
+    sections.series.forEach(function (section, index) {
+      var series = seriesById.get(section.id);
+      if (!series) return;
+      var shelf = document.createElement('section');
+      shelf.className = 'series-shelf';
+      var heading = document.createElement('h3');
+      heading.id = 'seriesShelfTitle-' + (index + 1);
+      heading.textContent = series.title;
+      shelf.setAttribute('aria-labelledby', heading.id);
+      shelf.appendChild(heading);
+
+      if (series.description) {
+        var description = document.createElement('p');
+        description.className = 'series-shelf-description';
+        description.textContent = series.description;
+        shelf.appendChild(description);
+      }
+      var availability = document.createElement('p');
+      availability.className = 'series-shelf-availability';
+      availability.textContent = section.books.length + ' of ' +
+        (series.plannedVolumeCount || section.books.length) + ' planned volumes available';
+      shelf.appendChild(availability);
+
+      var list = document.createElement('ol');
+      list.className = 'series-volume-list';
+      section.books.forEach(function (slug) {
+        var candidate = books.get(slug);
+        var volume = series.volumes.find(function (entry) { return entry.book === slug; });
+        if (candidate) list.appendChild(renderLibraryCard(candidate, volume && volume.number));
+      });
+      shelf.appendChild(list);
+      els.seriesLibrary.appendChild(shelf);
+    });
+    els.seriesShelves.hidden = els.seriesLibrary.children.length === 0;
+
+    sections.moreBooks.forEach(function (slug) {
+      var candidate = books.get(slug);
+      if (candidate) els.library.appendChild(renderLibraryCard(candidate));
+    });
+    els.moreBooksShelf.hidden = els.library.children.length === 0;
   }
 
   /* ── Rendering: chapters ────────────────────────────── */
@@ -582,7 +684,12 @@
     .then(function (catalog) {
       var wanted = new URLSearchParams(location.search).get('book');
       var available = catalog.books.filter(function (b) { return b.audio.status === 'available'; });
-      book = available.find(function (b) { return b.slug === wanted; }) || available[0];
+      var defaultSlug = typeof core.defaultBookSlug === 'function'
+        ? core.defaultBookSlug(catalog)
+        : (available[0] && available[0].slug);
+      var invalidRequestedBook = wanted && !available.some(function (b) { return b.slug === wanted; });
+      book = available.find(function (b) { return b.slug === wanted; }) ||
+        available.find(function (b) { return b.slug === defaultSlug; });
       if (!book) {
         // Nothing streamable: hide the player shell, keep the library +
         // Echo CTA so the page still earns its visit.
@@ -599,6 +706,7 @@
         if (saved && typeof saved.t === 'number') pendingResumeT = saved.t;
       } catch (e) {}
       renderBook();
+      renderSeriesContext(catalog);
       renderSelectedFormats();
       renderChapters();
       renderLibrary(catalog);
@@ -617,7 +725,11 @@
       audio.appendChild(source);
       audio.load();
       loadReadAlong();
-      setStatus('');
+      if (invalidRequestedBook) {
+        setStatus('The requested book isn’t available in the Listening Room.', true);
+      } else {
+        setStatus('');
+      }
     })
     .catch(function (err) {
       console.debug('[listen] catalog failed:', err);

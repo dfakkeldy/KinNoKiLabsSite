@@ -136,7 +136,7 @@ async function settle() {
 
 async function bootPlayer({
   catalog = cloneCatalog(), catalogFailure = false, mediaSession = false,
-  blocks = [], anchors = [], trackImages = false,
+  blocks = [], anchors = [], trackImages = false, search = '?book=chicken-predators',
 } = {}) {
   const ids = [
     'cover', 'bookTitle', 'bookSubtitle', 'bookByline', 'chapterCount', 'chapterList',
@@ -144,6 +144,8 @@ async function bootPlayer({
     'selectedFormats', 'playPause', 'iconPlay', 'iconPause', 'back30', 'fwd30',
     'speed', 'scrubber', 'timeNow', 'timeTotal', 'library', 'honesty',
     'figurePanel', 'figureImg', 'figureCaption',
+    'bookSeries', 'seriesProgress', 'seriesPrevious', 'seriesNext', 'editionStatus',
+    'seriesShelves', 'seriesLibrary', 'moreBooksShelf',
   ];
   const elements = new Map(ids.map((id) => [id, new FakeNode(id === 'figureImg' ? 'img' : 'div')]));
   elements.get('playPause').disabled = true;
@@ -152,11 +154,22 @@ async function bootPlayer({
   elements.get('selectedFormats').hidden = true;
   elements.get('figurePanel').hidden = true;
   elements.get('figureCaption').hidden = true;
+  for (const id of ['bookSeries', 'seriesProgress', 'seriesPrevious', 'seriesNext', 'editionStatus', 'seriesShelves']) {
+    elements.get(id).hidden = true;
+  }
 
   const main = new FakeNode('main');
   const room = new FakeNode('section');
   const cta = new FakeNode('section');
   main.appendChild(room);
+  room.appendChild(elements.get('bookSeries'));
+  room.appendChild(elements.get('seriesProgress'));
+  const seriesNavigation = new FakeNode('nav');
+  seriesNavigation.hidden = true;
+  seriesNavigation.appendChild(elements.get('seriesPrevious'));
+  seriesNavigation.appendChild(elements.get('seriesNext'));
+  room.appendChild(seriesNavigation);
+  room.appendChild(elements.get('editionStatus'));
   const figurePanel = elements.get('figurePanel');
   figurePanel.appendChild(elements.get('figureImg'));
   figurePanel.appendChild(elements.get('figureCaption'));
@@ -165,7 +178,10 @@ async function bootPlayer({
   room.appendChild(elements.get('selectedFormats'));
   main.appendChild(elements.get('emptyState'));
   main.appendChild(cta);
-  main.appendChild(elements.get('library'));
+  elements.get('seriesShelves').appendChild(elements.get('seriesLibrary'));
+  main.appendChild(elements.get('seriesShelves'));
+  elements.get('moreBooksShelf').appendChild(elements.get('library'));
+  main.appendChild(elements.get('moreBooksShelf'));
   main.appendChild(elements.get('honesty'));
 
   const preloadedImages = [];
@@ -265,7 +281,7 @@ async function bootPlayer({
       return { ok: true, json: async () => anchors };
     },
     localStorage: { getItem: () => null, setItem() {} },
-    location: { href: 'https://kinnokilabs.com/listen/', search: '?book=chicken-predators' },
+    location: { href: 'https://kinnokilabs.com/listen/', search },
     MediaMetadata: class MediaMetadata {
       constructor(value) {
         Object.assign(this, value);
@@ -353,6 +369,159 @@ test('the template keeps the empty state outside the player and selected formats
   assert.match(playerTemplate, /id="emptyState"[^>]+role="status"[^>]+aria-live="polite"[^>]+hidden/);
 });
 
+test('the template exposes semantic series metadata, adjacent links, and complete library shelves', () => {
+  const title = playerTemplate.indexOf('id="bookTitle"');
+  const series = playerTemplate.indexOf('id="bookSeries"');
+  const progress = playerTemplate.indexOf('id="seriesProgress"');
+  const previous = playerTemplate.indexOf('id="seriesPrevious"');
+  const next = playerTemplate.indexOf('id="seriesNext"');
+  const edition = playerTemplate.indexOf('id="editionStatus"');
+
+  assert.ok(series >= 0 && series < title);
+  assert.ok(progress > series && progress < title);
+  assert.ok(previous > progress && previous < title);
+  assert.ok(next > previous && next < title);
+  assert.ok(edition > next && edition < title);
+  assert.match(playerTemplate, /<p id="bookSeries" class="book-series" hidden><\/p>/);
+  assert.match(playerTemplate, /<p id="seriesProgress" class="series-progress" hidden><\/p>/);
+  assert.match(playerTemplate, /<nav class="series-navigation" aria-label="Published volumes in this series" hidden>/);
+  assert.match(playerTemplate, /<a id="seriesPrevious" class="series-link" hidden><\/a>/);
+  assert.match(playerTemplate, /<a id="seriesNext" class="series-link" hidden><\/a>/);
+  assert.match(playerTemplate, /<p id="editionStatus" class="edition-status" hidden><\/p>/);
+
+  const seriesShelves = playerTemplate.indexOf('id="seriesShelves"');
+  const seriesLibrary = playerTemplate.indexOf('id="seriesLibrary"');
+  const moreBooks = playerTemplate.indexOf('id="moreBooksShelf"');
+  const library = playerTemplate.indexOf('id="library"');
+  assert.ok(seriesShelves > title && seriesLibrary > seriesShelves);
+  assert.ok(moreBooks > seriesLibrary && library > moreBooks);
+  assert.match(playerTemplate, /<section id="seriesShelves" class="room-library" aria-labelledby="seriesLibraryTitle" hidden>/);
+  assert.match(playerTemplate, /<h2 id="seriesLibraryTitle">Series<\/h2>/);
+  assert.match(playerTemplate, /<section id="moreBooksShelf" class="room-library" aria-labelledby="moreBooksTitle">/);
+  assert.match(playerTemplate, /<h2 id="moreBooksTitle">More books<\/h2>/);
+});
+
+function claudeSeriesCatalog() {
+  const playableSources = publishedCatalog.books.filter((candidate) => candidate.audio.status === 'available');
+  const [firstSource, secondSource, standaloneSource] = playableSources.slice(0, 3);
+  const disclosure = 'Automated checks passed. Full human first-listen review is pending.';
+  return {
+    version: 2,
+    series: [{
+      id: 'claude-platform',
+      title: 'Claude Platform Documentation',
+      description: 'A mechanism-first guide to building on the Claude Platform.',
+      plannedVolumeCount: 9,
+      featured: true,
+      volumes: [
+        { number: 1, book: 'claude-platform-01-the-message' },
+        { number: 2, book: 'claude-platform-02-thinking-and-reliable-responses' },
+      ],
+    }],
+    books: [
+      { ...firstSource, slug: 'claude-platform-01-the-message', title: 'The Message', edition: { disclosure } },
+      {
+        ...secondSource,
+        slug: 'claude-platform-02-thinking-and-reliable-responses',
+        title: 'Making Claude Think and Respond Reliably',
+        edition: { disclosure },
+      },
+      { ...standaloneSource, slug: 'standalone-book', title: 'Standalone Book' },
+    ],
+  };
+}
+
+function cardWithTitle(root, title) {
+  return descendants(root, (node) => (
+    node.tagName === 'LI' && descendants(node, (child) => (
+      child.classList.values.has('room-lib-title') && child.textContent === title
+    )).length === 1
+  ))[0];
+}
+
+test('featured series becomes the default and exposes its volume track', async () => {
+  const player = await bootPlayer({ catalog: claudeSeriesCatalog(), search: '' });
+
+  assert.equal(player.elements.get('bookTitle').textContent, 'The Message');
+  assert.equal(player.elements.get('bookSeries').hidden, false);
+  assert.equal(player.elements.get('bookSeries').textContent, 'Claude Platform Documentation · Volume 1');
+  assert.equal(player.elements.get('seriesProgress').hidden, false);
+  assert.equal(player.elements.get('seriesProgress').textContent, '2 of 9 planned volumes available');
+  assert.equal(player.elements.get('seriesPrevious').hidden, true);
+  assert.equal(player.elements.get('seriesNext').hidden, false);
+  assert.equal(player.elements.get('seriesNext').textContent, 'Next: Volume 2');
+  assert.equal(player.elements.get('seriesNext').href, '?book=claude-platform-02-thinking-and-reliable-responses');
+});
+
+test('a series deep link preserves selection, honest edition status, and only real adjacency', async () => {
+  const catalog = claudeSeriesCatalog();
+  const player = await bootPlayer({
+    catalog,
+    search: '?book=claude-platform-02-thinking-and-reliable-responses',
+  });
+
+  assert.equal(player.elements.get('bookTitle').textContent, 'Making Claude Think and Respond Reliably');
+  assert.equal(player.elements.get('bookSeries').textContent, 'Claude Platform Documentation · Volume 2');
+  assert.equal(player.elements.get('seriesPrevious').hidden, false);
+  assert.equal(player.elements.get('seriesPrevious').textContent, 'Previous: Volume 1');
+  assert.equal(player.elements.get('seriesPrevious').href, '?book=claude-platform-01-the-message');
+  assert.equal(player.elements.get('seriesNext').hidden, true, 'no future-volume placeholder link');
+  assert.equal(player.elements.get('editionStatus').hidden, false);
+  assert.equal(player.elements.get('editionStatus').textContent, catalog.books[1].edition.disclosure);
+});
+
+test('series and standalone shelves stay structurally complete while selected cards lose redundant Listen actions', async () => {
+  const catalog = claudeSeriesCatalog();
+  const player = await bootPlayer({ catalog, search: '?book=claude-platform-01-the-message' });
+  const seriesLibrary = player.elements.get('seriesLibrary');
+  const library = player.elements.get('library');
+
+  assert.equal(player.elements.get('seriesShelves').hidden, false);
+  assert.equal(seriesLibrary.children.length, 1, 'one ordered shelf for the Claude series');
+  const shelf = seriesLibrary.children[0];
+  assert.match(shelf.textContent + descendants(shelf, () => true).map((node) => node.textContent).join(' '), /Claude Platform Documentation/);
+  assert.match(descendants(shelf, (node) => node.classList.values.has('series-shelf-description'))[0].textContent, /mechanism-first/);
+  assert.equal(descendants(shelf, (node) => node.classList.values.has('series-shelf-availability'))[0].textContent, '2 of 9 planned volumes available');
+  const orderedLists = descendants(shelf, (node) => node.tagName === 'OL');
+  assert.equal(orderedLists.length, 1);
+  assert.equal(orderedLists[0].children.length, 2);
+  assert.deepEqual(
+    orderedLists[0].children.map((card) => (
+      descendants(card, (node) => node.classList.values.has('room-lib-volume'))[0].textContent
+    )),
+    ['Volume 1', 'Volume 2'],
+  );
+
+  const selected = cardWithTitle(seriesLibrary, 'The Message');
+  assert.equal(selected.getAttribute('aria-current'), 'page');
+  assert.deepEqual(descendants(selected, (node) => node.tagName === 'A').map((link) => link.textContent), ['EPUB', 'Read']);
+  const second = cardWithTitle(seriesLibrary, 'Making Claude Think and Respond Reliably');
+  assert.deepEqual(descendants(second, (node) => node.tagName === 'A').map((link) => link.textContent), ['Listen', 'EPUB', 'Read']);
+
+  assert.equal(player.elements.get('moreBooksShelf').hidden, false);
+  assert.equal(library.children.length, 1);
+  assert.equal(cardWithTitle(library, 'Standalone Book').getAttribute('aria-current'), null);
+});
+
+test('an active standalone remains in More books and is marked without a redundant Listen action', async () => {
+  const player = await bootPlayer({ catalog: claudeSeriesCatalog(), search: '?book=standalone-book' });
+  const selected = cardWithTitle(player.elements.get('library'), 'Standalone Book');
+
+  assert.equal(selected.getAttribute('aria-current'), 'page');
+  assert.deepEqual(descendants(selected, (node) => node.tagName === 'A').map((link) => link.textContent), ['EPUB', 'Read']);
+  assert.equal(player.elements.get('bookSeries').hidden, true);
+  assert.equal(player.elements.get('seriesProgress').hidden, true);
+  assert.equal(player.elements.get('editionStatus').hidden, true);
+});
+
+test('an invalid explicit slug keeps an error while the featured default remains usable', async () => {
+  const player = await bootPlayer({ catalog: claudeSeriesCatalog(), search: '?book=missing-volume' });
+
+  assert.equal(player.elements.get('bookTitle').textContent, 'The Message');
+  assert.equal(player.elements.get('status').textContent, 'The requested book isn’t available in the Listening Room.');
+  assert.ok(player.elements.get('status').classList.values.has('error'));
+});
+
 test('fallback links and the primary empty state use the high-contrast theme text token', () => {
   assert.match(cssDeclarations('.room-formats a'), /color:\s*var\(--text\);/);
   const hover = cssDeclarations('.room-formats a:hover');
@@ -380,15 +549,16 @@ test('an all-text catalog hides the player but shows one honest streaming status
   assert.equal(libraryLinks.filter((link) => link.textContent === 'Listen').length, 0);
 });
 
-test('the selected playable book stays off the secondary list but keeps its EPUB and Read fallbacks', async () => {
+test('the selected playable standalone stays in the complete secondary list and keeps its fallbacks', async () => {
   const player = await bootPlayer();
   const library = player.elements.get('library');
-  const libraryTitles = library.children.map((item) => item.children[0].textContent);
+  const selected = cardWithTitle(library, 'Chicken Predators');
 
   assert.equal(player.room.hidden, false);
   assert.equal(player.elements.get('emptyState').hidden, true);
-  assert.equal(library.children.length, publishedCatalog.books.length - 1);
-  assert.ok(!libraryTitles.includes('Chicken Predators'));
+  assert.equal(library.children.length, publishedCatalog.books.length);
+  assert.equal(selected.getAttribute('aria-current'), 'page');
+  assert.deepEqual(descendants(selected, (node) => node.tagName === 'A').map((link) => link.textContent), ['EPUB', 'Read']);
   assertChickenFallbacks(player);
 });
 
@@ -651,7 +821,7 @@ test('library entries with covers render visual cards with cover, subtitle, byli
   const player = await bootPlayer({ catalog });
   const library = player.elements.get('library');
 
-  assert.equal(library.children.length, catalog.books.length - 1);
+  assert.equal(library.children.length, catalog.books.length);
   for (const item of library.children) {
     const cover = item.children[0];
     const title = item.children[1];
@@ -737,7 +907,7 @@ test('a cover without catalog dimensions gets neither width nor height', async (
   const player = await bootPlayer({ catalog: sizedCatalog({}) });
   const library = player.elements.get('library');
 
-  assert.equal(library.children.length, publishedCatalog.books.length - 1);
+  assert.equal(library.children.length, publishedCatalog.books.length);
   for (const item of library.children) {
     const cover = item.children[0];
     assert.equal(cover.tagName, 'IMG');
@@ -787,7 +957,7 @@ test('library entries without covers render no img and keep title-first markup a
   const player = await bootPlayer({ catalog });
   const library = player.elements.get('library');
 
-  assert.equal(library.children.length, catalog.books.length - 1);
+  assert.equal(library.children.length, catalog.books.length);
   assert.equal(descendants(library, (node) => node.tagName === 'IMG').length, 0);
   for (const item of library.children) {
     assert.equal(item.children[0].className, 'room-lib-title');
