@@ -276,6 +276,9 @@ export function renderQrTool(root, deps = {}) {
     save();
     regenerate();
   };
+  const onSubmit = (event) => {
+    event.preventDefault();
+  };
   const onDownloadSvg = () => {
     if (!currentQr || disposed) return;
     actionStatus.replaceChildren();
@@ -327,6 +330,7 @@ export function renderQrTool(root, deps = {}) {
 
   input.addEventListener('input', onInput);
   levelSelect.addEventListener('change', onLevelChange);
+  form.addEventListener('submit', onSubmit);
   downloadSvg.addEventListener('click', onDownloadSvg);
   downloadPng.addEventListener('click', onDownloadPng);
   copyPng.addEventListener('click', onCopyPng);
@@ -350,6 +354,7 @@ export function renderQrTool(root, deps = {}) {
     revision += 1;
     input.removeEventListener('input', onInput);
     levelSelect.removeEventListener('change', onLevelChange);
+    form.removeEventListener('submit', onSubmit);
     downloadSvg.removeEventListener('click', onDownloadSvg);
     downloadPng.removeEventListener('click', onDownloadPng);
     copyPng.removeEventListener('click', onCopyPng);

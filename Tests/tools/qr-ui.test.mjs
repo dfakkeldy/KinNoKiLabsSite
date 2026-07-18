@@ -379,3 +379,25 @@ test('cleanup and repeated mounting remove old control listeners and invalidate 
     assert.doesNotThrow(dispose);
   });
 });
+
+test('prevents form submission without retaining submit listeners after cleanup or remount', async () => {
+  await withTool(async ({ fixture, dispose }) => {
+    const firstForm = fixture.root.querySelector('form');
+    const activeSubmit = new Event('submit', { cancelable: true });
+    firstForm.dispatchEvent(activeSubmit);
+    assert.equal(activeSubmit.defaultPrevented, true);
+
+    const secondDispose = renderQrTool(fixture.root, { storage: createStorage() });
+    const detachedSubmit = new Event('submit', { cancelable: true });
+    firstForm.dispatchEvent(detachedSubmit);
+    assert.equal(detachedSubmit.defaultPrevented, false);
+
+    const secondForm = fixture.root.querySelector('form');
+    const remountedSubmit = new Event('submit', { cancelable: true });
+    secondForm.dispatchEvent(remountedSubmit);
+    assert.equal(remountedSubmit.defaultPrevented, true);
+
+    secondDispose();
+    dispose();
+  });
+});
