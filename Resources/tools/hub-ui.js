@@ -1,12 +1,4 @@
-const el = (doc, tag, attrs = {}, ...children) => {
-  const node = doc.createElement(tag);
-  for (const [key, value] of Object.entries(attrs)) {
-    if (key === 'text') node.textContent = value;
-    else node.setAttribute(key, value);
-  }
-  for (const child of children) node.append(child);
-  return node;
-};
+import { element } from './core.js';
 
 export const TOOLS = Object.freeze([
   Object.freeze({ id: 'qr-code', title: 'QR Code Generator', tagline: 'Text or link in, crisp SVG out.', href: '/tools/qr-code' }),
@@ -20,14 +12,14 @@ export const TOOLS = Object.freeze([
 
 export function renderToolsHub(root) {
   const doc = root.ownerDocument ?? document;
-  while (root.firstChild) root.firstChild.remove();
-  const cards = TOOLS.map((tool) => el(doc, 'article', { class: 'tool-card' },
-    el(doc, 'h2', {}, el(doc, 'a', { href: tool.href, text: tool.title })),
-    el(doc, 'p', { text: tool.tagline })));
+  root.replaceChildren();
+  const cards = TOOLS.map((tool) => element('article', { class: 'tool-card', ownerDocument: doc },
+    element('h2', { ownerDocument: doc }, element('a', { href: tool.href, text: tool.title, ownerDocument: doc })),
+    element('p', { text: tool.tagline, ownerDocument: doc })));
   root.append(
-    el(doc, 'header', { class: 'tool-shell' },
-      el(doc, 'h1', { text: 'Web tools' }),
-      el(doc, 'p', { class: 'tool-lede', text: 'Small, fast utilities. They load once, work offline, and keep everything on your device.' })),
-    el(doc, 'div', { class: 'tool-hub-grid' }, ...cards)
+    element('header', { class: 'tool-shell', ownerDocument: doc },
+      element('h1', { text: 'Web tools', ownerDocument: doc }),
+      element('p', { class: 'tool-lede', text: 'Small, fast utilities. They load once, work offline, and keep everything on your device.', ownerDocument: doc })),
+    element('div', { class: 'tool-hub-grid', ownerDocument: doc }, ...cards)
   );
 }
