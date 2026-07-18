@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { FixtureElement } from '../games/dom-fixture.mjs';
 import { TOOLS, renderToolsHub } from '../../Resources/tools/hub-ui.js';
 
@@ -29,4 +30,20 @@ test('hub mounts one card per tool with title link', () => {
     .flatMap((grid) => grid.children);
   assert.equal(cards.length, 7);
   assert.equal(cards[0].getAttribute('class'), 'tool-card');
+  assert.deepEqual(cards.map((card) => {
+    const titleLink = card.querySelector('h2 a');
+    return { text: titleLink?.textContent, href: titleLink?.getAttribute('href') };
+  }), TOOLS.map(({ title, href }) => ({ text: title, href })));
+});
+
+test('shared tools scaffold exposes the privacy disclosure to JavaScript users', () => {
+  const theme = readFileSync(new URL('../../Sources/KinNoKiLabsSite/Theme/KinNoKiTheme.swift', import.meta.url), 'utf8');
+  const toolsMain = theme.slice(
+    theme.indexOf('private func toolsMain'),
+    theme.indexOf('private func postsListMain'),
+  );
+  const disclosure = toolsMain.indexOf('Runs entirely in your browser. Nothing you enter leaves this device.');
+  const noscript = toolsMain.indexOf('.element(named: "noscript"');
+  assert.ok(disclosure >= 0, 'toolsMain must include the exact visible privacy disclosure');
+  assert.ok(disclosure < noscript, 'privacy disclosure must appear outside noscript for JavaScript users');
 });

@@ -427,6 +427,10 @@ private func toolsMain(page: String) -> Node<HTML.BodyContext> {
             .class("tools-app"),
             .attribute(named: "id", value: "tools-app")
         ),
+        .p(
+            .class("tool-privacy"),
+            .text("Runs entirely in your browser. Nothing you enter leaves this device.")
+        ),
         .element(named: "noscript", nodes: [
             .p(
                 .class("tool-privacy"),
