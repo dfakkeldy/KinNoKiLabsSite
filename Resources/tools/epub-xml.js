@@ -241,8 +241,17 @@ export function parseXml(input) {
     if (text.startsWith('<?', opening)) {
       const end = text.indexOf('?>', opening + 2);
       if (end === -1) throw badXml();
-      const declaration = text.slice(opening + 2, end);
-      const validDeclaration = /^xml\s+version\s*=\s*(?:"1\.[0-9]+"|'1\.[0-9]+')(?:\s+encoding\s*=\s*(?:"[A-Za-z][A-Za-z0-9._-]*"|'[A-Za-z][A-Za-z0-9._-]*'))?(?:\s+standalone\s*=\s*(?:"(?:yes|no)"|'(?:yes|no)'))?\s*$/.test(declaration);
+      const instruction = text.slice(opening + 2, end);
+      const target = instruction.match(/^([A-Za-z_][\w:.-]*)(?=\s|$)/)?.[1];
+      if (!target) throw badXml();
+
+      if (target.toLowerCase() !== 'xml') {
+        if (!root && stack.length === 0) prologMarkupSeen = true;
+        cursor = end + 2;
+        continue;
+      }
+
+      const validDeclaration = /^xml\s+version\s*=\s*(?:"1\.[0-9]+"|'1\.[0-9]+')(?:\s+encoding\s*=\s*(?:"[A-Za-z][A-Za-z0-9._-]*"|'[A-Za-z][A-Za-z0-9._-]*'))?(?:\s+standalone\s*=\s*(?:"(?:yes|no)"|'(?:yes|no)'))?\s*$/.test(instruction);
       if (!validDeclaration || xmlDeclarationSeen || prologMarkupSeen || root || stack.length > 0) {
         throw badXml();
       }

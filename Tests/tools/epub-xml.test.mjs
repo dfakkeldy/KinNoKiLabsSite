@@ -119,15 +119,26 @@ test('parseXml skips bounded standard DOCTYPE declarations without resolving ent
   assertBadXml('<!DOCTYPE expected><actual />');
 });
 
-test('parseXml rejects unsafe literal XML and misplaced processing instructions', () => {
+test('parseXml skips well-formed non-reserved processing instructions', () => {
+  const root = parseXml(`<?xml-stylesheet type="text/xsl" href="style.xsl"?>
+    <?work before?><root>one<?work inside?>two</root><?work after?>`);
+
+  assert.equal(root.name, 'root');
+  assert.equal(root.text, 'onetwo');
+});
+
+test('parseXml rejects unsafe literal XML and malformed or misplaced XML declarations', () => {
   for (const xml of [
     '<root attr="raw < value" />',
     '<root>nul\u0000value</root>',
     '<root>raw ]]> value</root>',
-    '<root><?work item?></root>',
-    '<?work item?><root />',
+    '<?xml-stylesheet type="text/xsl"<root />',
+    '<?123?><root />',
+    '<?XML version="1.0"?><root />',
     '<?xml version="1.0"?><?xml version="1.0"?><root />',
     '<!-- before --><?xml version="1.0"?><root />',
+    '<?work before?><?xml version="1.0"?><root />',
+    '<root><?xml version="1.0"?></root>',
     '<root /><?xml version="1.0"?>',
   ]) {
     assertBadXml(xml);
