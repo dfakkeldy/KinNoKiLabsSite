@@ -142,6 +142,34 @@ test('generatePassphrase validates malformed wordlists before attempting random 
   }
 });
 
+test('generatePassphrase snapshots a changing wordlist length once for bounded validation and generation', () => {
+  let lengthReads = 0;
+  const indexedReads = [];
+  const wordlist = new Proxy(['alpha', 'bravo', 'ignored'], {
+    get(target, property, receiver) {
+      if (property === 'length') {
+        lengthReads += 1;
+        return lengthReads === 1 ? 2 : 65537;
+      }
+      if (/^\d+$/.test(property)) {
+        const index = Number(property);
+        indexedReads.push(index);
+        if (index >= 2) throw new Error('wordlist read escaped its length snapshot');
+      }
+      return Reflect.get(target, property, receiver);
+    },
+  });
+  const { source, calls } = sourceFrom([0, 1]);
+
+  const result = generatePassphrase({ words: 2 }, source, wordlist);
+
+  assert.equal(result.phrase, 'alpha-bravo');
+  assert.equal(result.entropyBits, 2 * Math.log2(2));
+  assert.equal(lengthReads, 1);
+  assert.ok(indexedReads.every((index) => index < 2));
+  assert.equal(calls(), 2);
+});
+
 test('generateString draws from alphanumeric characters and reports entropy', () => {
   const { source } = sourceFrom(Array(20).fill(0));
 

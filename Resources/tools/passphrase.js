@@ -34,29 +34,31 @@ const defaultSource = (buffer) => crypto.getRandomValues(buffer);
 
 const validateWordlist = (wordlist) => {
   if (!Array.isArray(wordlist)) throw new TypeError('wordlist must be an array');
-  if (wordlist.length === 0) throw new RangeError('wordlist must not be empty');
-  requireRandomBound(wordlist.length, 'wordlist length');
-  requireMaximum(wordlist.length, MAX_WORDLIST_ENTRIES, 'wordlist length');
-  for (let index = 0; index < wordlist.length; index += 1) {
+  const length = wordlist.length;
+  if (length === 0) throw new RangeError('wordlist must not be empty');
+  requireRandomBound(length, 'wordlist length');
+  requireMaximum(length, MAX_WORDLIST_ENTRIES, 'wordlist length');
+  for (let index = 0; index < length; index += 1) {
     if (typeof wordlist[index] !== 'string' || wordlist[index].length === 0) {
       throw new TypeError('wordlist entries must be non-empty strings');
     }
   }
+  return length;
 };
 
 export function generatePassphrase(options, randomSource = defaultSource, wordlist) {
   const { words = 5, separator = '-', capitalize = false, includeNumber = false } = options ?? {};
   requirePositiveInteger(words, 'words');
   requireMaximum(words, MAX_PASSPHRASE_WORDS, 'words');
-  validateWordlist(wordlist);
+  const wordlistLength = validateWordlist(wordlist);
   const picked = Array.from(
     { length: words },
-    () => wordlist[randomInt(wordlist.length, randomSource)],
+    () => wordlist[randomInt(wordlistLength, randomSource)],
   );
   const cased = capitalize
     ? picked.map((word) => word[0].toUpperCase() + word.slice(1))
     : [...picked];
-  let entropyBits = words * Math.log2(wordlist.length);
+  let entropyBits = words * Math.log2(wordlistLength);
   if (includeNumber) {
     const slot = randomInt(words, randomSource);
     cased[slot] += String(randomInt(10, randomSource));
