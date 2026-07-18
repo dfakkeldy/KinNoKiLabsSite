@@ -60,6 +60,9 @@ test('parseContainer rejects malformed, missing, and unsafe rootfiles', () => {
     '<container><rootfile full-path="/content.opf" /></container>',
     '<container><rootfile full-path="content.opf"></container>',
     '<container>&bogus;</container>',
+    '<evil:container xmlns:evil="urn:evil"><evil:rootfile full-path="content.opf" /></evil:container>',
+    `<container xmlns="urn:oasis:names:tc:opendocument:xmlns:container"
+      xmlns:evil="urn:evil"><evil:rootfile full-path="content.opf" /></container>`,
   ]) {
     assert.throws(
       () => parseContainer(xml),
@@ -89,7 +92,6 @@ test('parsePackage reads EPUB 3 metadata, cover, nav, and ordered spine', () => 
       </manifest>
       <spine>
         <itemref idref="chapter" />
-        <itemref idref="missing" />
         <itemref idref="chapter" />
       </spine>
     </package>`;
@@ -108,11 +110,6 @@ test('parsePackage reads EPUB 3 metadata, cover, nav, and ordered spine', () => 
   });
   assert.equal(result.manifest.has('unsafe'), false);
   assert.deepEqual(result.spine, [
-    {
-      idref: 'chapter',
-      href: 'OEBPS/Text/ch1.xhtml',
-      mediaType: 'application/xhtml+xml',
-    },
     {
       idref: 'chapter',
       href: 'OEBPS/Text/ch1.xhtml',
@@ -148,9 +145,11 @@ test('parsePackage reads EPUB 2 cover metadata and NCX reference', () => {
 
 test('parsePackage uses exact metadata fallbacks and null optional references', () => {
   const result = parsePackage(
-    `<package><metadata><dc:title> </dc:title><dc:creator /></metadata>
-      <manifest><item id="cover" href="cover.jpg" media-type="image/jpeg" /></manifest>
-      <spine toc="missing"><itemref idref="missing" /></spine></package>`,
+    `<package xmlns="http://www.idpf.org/2007/opf"
+      xmlns:dc="http://purl.org/dc/elements/1.1/">
+      <metadata><dc:title> </dc:title><dc:creator /></metadata>
+      <manifest><item id="chapter" href="chapter.xhtml" media-type="application/xhtml+xml" /></manifest>
+      <spine toc="missing"><itemref idref="chapter" /></spine></package>`,
     'book.opf',
   );
 
@@ -159,7 +158,52 @@ test('parsePackage uses exact metadata fallbacks and null optional references', 
   assert.equal(result.coverHref, null);
   assert.equal(result.navHref, null);
   assert.equal(result.ncxHref, null);
-  assert.deepEqual(result.spine, []);
+  assert.deepEqual(result.spine, [{
+    idref: 'chapter',
+    href: 'chapter.xhtml',
+    mediaType: 'application/xhtml+xml',
+  }]);
+});
+
+test('parsePackage requires a manifest, spine, and at least one resolvable unique idref', () => {
+  const open = `<package xmlns="http://www.idpf.org/2007/opf"><metadata />`;
+  const close = '</package>';
+  for (const opf of [
+    `${open}<spine><itemref idref="one" /></spine>${close}`,
+    `${open}<manifest><item id="one" href="one.xhtml" media-type="application/xhtml+xml" /></manifest>${close}`,
+    `${open}<manifest><item id="one" href="one.xhtml" media-type="application/xhtml+xml" /></manifest><spine />${close}`,
+    `${open}<manifest><item id="one" href="one.xhtml" media-type="application/xhtml+xml" /></manifest>
+      <spine><itemref idref="missing" /></spine>${close}`,
+    `${open}<manifest><item id="unsafe" href="%2e%2e/escape.xhtml" media-type="application/xhtml+xml" /></manifest>
+      <spine><itemref idref="unsafe" /></spine>${close}`,
+    `<package xmlns="http://www.idpf.org/2007/opf"><metadata>
+      <manifest><item id="one" href="one.xhtml" media-type="application/xhtml+xml" /></manifest>
+      <spine><itemref idref="one" /></spine>
+      </metadata></package>`,
+  ]) {
+    assert.throws(
+      () => parsePackage(opf, 'book.opf'),
+      (error) => error?.code === 'bad-package',
+    );
+  }
+});
+
+test('parsePackage resolves metadata by namespace URI instead of local name alone', () => {
+  const result = parsePackage(
+    `<package xmlns="http://www.idpf.org/2007/opf"
+      xmlns:evil="urn:evil" xmlns:d="http://purl.org/dc/elements/1.1/">
+      <metadata>
+        <evil:title>Poison title</evil:title><d:title>Real title</d:title>
+        <evil:creator>Poison author</evil:creator><d:creator>Real author</d:creator>
+      </metadata>
+      <manifest><item id="one" href="one.xhtml" media-type="application/xhtml+xml" /></manifest>
+      <spine><itemref idref="one" /></spine>
+    </package>`,
+    'book.opf',
+  );
+
+  assert.equal(result.title, 'Real title');
+  assert.equal(result.author, 'Real author');
 });
 
 test('parsePackage rejects malformed XML and an unsafe OPF path', () => {
@@ -196,6 +240,34 @@ test('parseToc reads only the EPUB 3 toc nav and strips fragments for v1', () =>
   ]);
 });
 
+test('parseToc requires a genuine EPUB namespace toc marker', () => {
+  const landmarksOnly = `<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+    <body><nav epub:type="landmarks"><a href="cover.xhtml">Cover</a></nav></body>
+  </html>`;
+  const forgedType = `<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:epub="http://www.idpf.org/2007/ops" xmlns:evil="urn:evil">
+    <body><nav evil:type="toc" epub:type="page-list">
+      <a href="page.xhtml">Page</a>
+    </nav></body>
+  </html>`;
+  const forgedRoot = `<evil:wrapper xmlns:evil="urn:evil"
+      xmlns:x="http://www.w3.org/1999/xhtml"
+      xmlns:epub="http://www.idpf.org/2007/ops">
+    <x:nav epub:type="toc"><x:a href="one.xhtml">One</x:a></x:nav>
+  </evil:wrapper>`;
+  const forgedNcxRoot = `<evil:wrapper xmlns:evil="urn:evil"
+      xmlns:n="http://www.daisy.org/z3986/2005/ncx/">
+    <n:navPoint><n:navLabel><n:text>One</n:text></n:navLabel>
+      <n:content src="one.xhtml" /></n:navPoint>
+  </evil:wrapper>`;
+
+  assert.deepEqual(parseToc(landmarksOnly, 'OEBPS/nav.xhtml', 'nav'), []);
+  assert.deepEqual(parseToc(forgedType, 'OEBPS/nav.xhtml', 'nav'), []);
+  assert.deepEqual(parseToc(forgedRoot, 'OEBPS/nav.xhtml', 'nav'), []);
+  assert.deepEqual(parseToc(forgedNcxRoot, 'OEBPS/toc.ncx', 'ncx'), []);
+});
+
 test('parseToc reads nested NCX navPoints in document order', () => {
   const ncx = `<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/">
     <navMap>
@@ -219,6 +291,20 @@ test('parseToc reads nested NCX navPoints in document order', () => {
     { label: 'Chapter One', href: 'OEBPS/Text/ch1.xhtml' },
     { label: 'Part A', href: 'OEBPS/Text/ch1a.xhtml' },
     { label: 'Chapter Two', href: 'OEBPS/Text/ch2.xhtml' },
+  ]);
+});
+
+test('parseToc accepts a standard EPUB 2 NCX external DOCTYPE without resolving it', () => {
+  const ncx = `<?xml version="1.0"?>
+    <!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN"
+      "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd">
+    <ncx xmlns="http://www.daisy.org/z3986/2005/ncx/">
+      <navMap><navPoint><navLabel><text>One</text></navLabel>
+        <content src="one.xhtml#start" /></navPoint></navMap>
+    </ncx>`;
+
+  assert.deepEqual(parseToc(ncx, 'OPS/toc.ncx', 'ncx'), [
+    { label: 'One', href: 'OPS/one.xhtml' },
   ]);
 });
 

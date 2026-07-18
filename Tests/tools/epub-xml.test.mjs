@@ -61,6 +61,16 @@ test('element text concatenates descendant text in document order', () => {
   assert.equal(root.children[0].text, 'twothreefour');
 });
 
+test('aggregate element text is computed lazily instead of copied onto every ancestor', () => {
+  const root = parseXml('<root>one<a>two<b>three</b>four</a>five</root>');
+  const child = root.children[0];
+
+  assert.equal(typeof Object.getOwnPropertyDescriptor(root, 'text')?.get, 'function');
+  assert.equal(typeof Object.getOwnPropertyDescriptor(child, 'text')?.get, 'function');
+  assert.equal(root.text, 'onetwothreefourfive');
+  assert.equal(child.text, 'twothreefour');
+});
+
 test('localName and find helpers match element names ignoring prefixes', () => {
   const root = parseXml(
     '<package><metadata><dc:title>One</dc:title><title>Two</title></metadata></package>',
@@ -84,10 +94,56 @@ test('parseXml rejects malformed element structure', () => {
     '<root a="one" a="two" />',
     '<root><!-- unclosed</root>',
     '<root><![CDATA[unclosed</root>',
-    '<!DOCTYPE root><root />',
   ]) {
     assertBadXml(xml);
   }
+});
+
+test('parseXml skips bounded standard DOCTYPE declarations without resolving entities', () => {
+  const publicDoctype = parseXml(`<?xml version="1.0"?>
+    <!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN"
+      "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd">
+    <ncx><navMap /></ncx>`);
+  const internalSubset = parseXml(`<!DOCTYPE package [
+    <!ELEMENT package ANY>
+    <!-- a harmless ] and > inside the bounded subset comment -->
+    <!ENTITY unused "never expanded">
+  ]><package><metadata /></package>`);
+
+  assert.equal(publicDoctype.name, 'ncx');
+  assert.equal(internalSubset.name, 'package');
+  assertBadXml('<!DOCTYPE root [<!ENTITY writer "Dan">]><root>&writer;</root>');
+  assertBadXml(`<!DOCTYPE root [${' '.repeat(65_537)}]><root />`);
+  assertBadXml('<!DOCTYPE ><root />');
+  assertBadXml('<!DOCTYPE root BOGUS><root />');
+  assertBadXml('<!DOCTYPE expected><actual />');
+});
+
+test('parseXml rejects unsafe literal XML and misplaced processing instructions', () => {
+  for (const xml of [
+    '<root attr="raw < value" />',
+    '<root>nul\u0000value</root>',
+    '<root>raw ]]> value</root>',
+    '<root><?work item?></root>',
+    '<?work item?><root />',
+    '<?xml version="1.0"?><?xml version="1.0"?><root />',
+    '<!-- before --><?xml version="1.0"?><root />',
+    '<root /><?xml version="1.0"?>',
+  ]) {
+    assertBadXml(xml);
+  }
+});
+
+test('parseXml enforces bounded input, depth, node count, and text storage', () => {
+  assertBadXml(`<root data="${'a'.repeat(1_048_577)}" />`);
+
+  const tooDeep = `${'<n>'.repeat(129)}${'</n>'.repeat(129)}`;
+  assertBadXml(tooDeep);
+
+  const tooManyNodes = `<root>${'<n />'.repeat(10_000)}</root>`;
+  assertBadXml(tooManyNodes);
+
+  assertBadXml(`<root>${'a'.repeat(262_145)}</root>`);
 });
 
 test('parseXml rejects invalid entities and numeric references', () => {
