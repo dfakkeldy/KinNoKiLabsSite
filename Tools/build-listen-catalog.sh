@@ -125,7 +125,7 @@ listen_catalog_transaction_init "$OUT_DIR"
 
 # BEGIN VALIDATE_SERIES
 json_contains_absolute_path() {
-  jq -e '.. | strings | select(startswith("/") or startswith("file://") or test("^[A-Za-z]:[\\\\/]"))' "$1" >/dev/null
+  jq -e '.. | strings | select(startswith("/") or (ascii_downcase | startswith("file://")) or test("^[A-Za-z]:[\\\\/]"))' "$1" >/dev/null
 }
 
 validate_series() {

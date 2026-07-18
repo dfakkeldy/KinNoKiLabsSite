@@ -320,6 +320,7 @@ const invalidSeriesFixtures = [
     volumes: [{ number: 1, book: 'claude-platform-01-the-message' }],
   })],
   ['absolute path', (source) => { source.series[0].description = '/Users/example/private'; }],
+  ['mixed-case file URL', (source) => { source.series[0].description = 'FILE:///Users/private'; }],
 ];
 
 for (const [name, mutate] of invalidSeriesFixtures) {
