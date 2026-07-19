@@ -21,6 +21,12 @@ make preview           # equivalent: publish run
 # Run the Arcade Hall JavaScript and generated-route tests
 make test-games
 
+# Run the Web Tools engine, controller, PWA, and generated-route tests
+make test-tools
+
+# Run all three JavaScript suites (Listening Room, Arcade Hall, and Web Tools)
+make test
+
 # Build the Swift package / clean artifacts
 swift build
 make clean             # equivalent: swift package clean
@@ -37,6 +43,7 @@ make clean             # equivalent: swift package clean
 - **`Content/`** — Markdown source files. Top-level `.md` files become pages (e.g., `about.md` → `/about`); subdirectories become sections (e.g., `Content/posts/` → `SectionID.posts`).
 - **`Resources/`** — Static assets (images, CSS, JS) copied verbatim to the output root. `styles.css` defines all site styling including the sticky nav, typography, and light/dark mode support.
 - **Arcade Hall** — `/games`, `/games/sudoku`, `/games/crossword`, `/games/word-search`, `/games/kinnoki-stack`, `/games/kinnoki-yard`, and `/games/kinnoki-charts` are generated from matching files under `Content/`. Shared storage, lifecycle, cargo geometry, procedural audio, and win celebration live in `Resources/games/core.js`, `controller-common.js`, `cargo-geometry.js`, `game-audio.js`, and `celebration.js` (reduced-motion-aware win celebration); DOM-free game engines and matching `*-ui.js` controllers remain separate — Kinnoki Charts (nonogram/picture-logic) adds `kinnoki-charts.js`, `kinnoki-charts-content.js` (pictogram catalog), and `kinnoki-charts-ui.js`. Store v2 keeps validated progress, typed records, repeat history, and separate music/effects preferences local to that browser; nothing is uploaded. Run `make test-games` after Arcade Hall changes.
+- **Web Tools** — `/tools` is the hub for `/tools/qr-code`, `/tools/epub-reader`, `/tools/dilution`, `/tools/contrast`, `/tools/word-count`, `/tools/unit-converter`, and `/tools/passphrase`. Theme-routed pages load `Resources/tools/ui.js`, which dynamically imports only that page's DOM-free engine and `*-ui.js` controller; `core.js` provides shared browser-safe UI, storage, connectivity, and service-worker helpers. A `/tools/`-scoped service worker plus `manifest.webmanifest` precaches the hub, all seven utilities, and required assets for offline use and installation. Preferences use the single localStorage key `kinnoki-tools:v1`; the on-device EPUB library uses IndexedDB database `kinnoki-tools-epub`; nothing is uploaded. `wordlist.js` includes the Electronic Frontier Foundation Large Wordlist under CC BY 3.0 with source attribution in the file and passphrase page. Run `make test-tools` after Web Tools changes.
 - **`Tests/games/`** — Node tests cover the pure game engines, DOM controllers, accessibility behavior, and generated routes (`hub-six-games.test.mjs` covers all six Arcade Hall cards). Run them with `make test-games` after game changes; generate the site before running route assertions directly.
 
 ### Publish Conventions
