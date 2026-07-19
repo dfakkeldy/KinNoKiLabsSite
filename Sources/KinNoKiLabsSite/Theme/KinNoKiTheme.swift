@@ -86,6 +86,7 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
     func makePageHTML(for page: Page, context: PublishingContext<Site>) throws -> HTML {
         let main: Node<HTML.BodyContext>
         let active: String
+        let isTaxSale = page.path.string == "taxsale"
         let toolsHead = page.path.string == "tools" || page.path.string.hasPrefix("tools/")
         switch page.path.string {
         case "games":             main = gamesMain(page: "hub");         active = "/games"
@@ -111,6 +112,7 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
         case "tools/passphrase":     main = toolsMain(page: "passphrase");     active = "/tools"
         case "services":          main = servicesMain();                  active = "/services"
         case "learn":             main = learnMain();                     active = ""
+        case "taxsale":           main = taxSaleHubMain();                active = ""
         case "about":             main = aboutMain();                     active = "/about"
         case "support":           main = supportMain();                   active = ""
         default:                  main = proseMain(page);                  active = ""
@@ -118,7 +120,7 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
         return HTML(
             .lang(context.site.language),
             siteHead(for: page, context: context, toolsHead: toolsHead),
-            .body(.class("page-page"), siteHeader(active: active), main, siteFooter())
+            .body(.class(isTaxSale ? "page-page page-tax-sale" : "page-page"), siteHeader(active: active), main, siteFooter())
         )
     }
 
@@ -455,6 +457,187 @@ private func toolsMain(page: String) -> Node<HTML.BodyContext> {
             .attribute(named: "type", value: "module"),
             .attribute(named: "src", value: "/tools/ui.js")
         ])
+    )
+}
+
+private func taxSaleHubMain() -> Node<HTML.BodyContext> {
+    .main(
+        .class("tax-sale-main"),
+        .raw(
+            #"""
+            <section class="tax-hero" aria-labelledby="tax-hero-title">
+              <div class="tax-wrap tax-hero-grid">
+                <div class="tax-hero-copy">
+                  <p class="tax-kicker">KinNoKi Labs · Nova Scotia field desk</p>
+                  <h1 id="tax-hero-title">Nova Scotia<br><em>tax sales, mapped.</em></h1>
+                  <p class="tax-lede">One quick place for posted municipal dates, the live parcel map, and <cite>Beyond the Tax-Sale Packet</cite> as it becomes a book, audiobook, and video.</p>
+                  <div class="tax-actions">
+                    <a class="tax-button tax-button-solid" href="/apps/nsmarksthespot/map/">Open the live map <span aria-hidden="true">↗</span></a>
+                    <a class="tax-button tax-button-line" href="#dates">See posted dates <span aria-hidden="true">↓</span></a>
+                  </div>
+                  <p class="tax-refreshed">Municipal notices re-checked July 19, 2026</p>
+                </div>
+
+                <aside class="tax-desk" aria-label="Current tax-sale desk summary">
+                  <div class="tax-desk-label"><span>Current desk</span><span>NS / 2026</span></div>
+                  <div class="tax-desk-date">
+                    <span class="tax-desk-day">21</span>
+                    <div><strong>July</strong><small>CBRM · 11:00 a.m.</small></div>
+                  </div>
+                  <div class="tax-desk-date">
+                    <span class="tax-desk-day">11</span>
+                    <div><strong>August</strong><small>Inverness County · 9:30 a.m.</small></div>
+                  </div>
+                  <div class="tax-desk-rule"></div>
+                  <p><strong>112</strong> advertised rows</p>
+                  <p><strong>115</strong> unique mapped PIDs</p>
+                  <small>Counts reflect the two dated notices currently reconciled into the map. Lists can change.</small>
+                </aside>
+              </div>
+            </section>
+
+            <section class="tax-section tax-dates-section" id="dates" aria-labelledby="tax-dates-heading">
+              <div class="tax-wrap">
+                <div class="tax-section-intro reveal">
+                  <div>
+                    <p class="tax-kicker">Posted dates</p>
+                    <h2 id="tax-dates-heading">What municipalities<br><em>have announced.</em></h2>
+                  </div>
+                  <p>These are the current official notices tracked in the map—not a promise that every advertised property will still be offered. Always open the municipal source again before acting.</p>
+                </div>
+
+                <div class="tax-date-list">
+                  <article class="tax-date-card reveal">
+                    <div class="tax-date-calendar" aria-hidden="true"><span>JUL</span><strong>21</strong><small>2026</small></div>
+                    <div class="tax-date-copy">
+                      <p class="tax-status tax-status-soon">Posted · Public auction</p>
+                      <h3>Cape Breton Regional Municipality</h3>
+                      <p><strong>Tuesday, July 21 at 11:00 a.m.</strong><br>Centre 200 main concourse, Sydney</p>
+                      <p class="tax-date-detail">67 advertised rows · 68 unique PIDs mapped</p>
+                    </div>
+                    <div class="tax-date-actions">
+                      <a href="https://cbrm.ns.ca/business/property-sales-management/tax-sales/">Official CBRM page <span aria-hidden="true">↗</span></a>
+                      <a href="/apps/nsmarksthespot/map/">View mapped parcels <span aria-hidden="true">→</span></a>
+                    </div>
+                  </article>
+
+                  <article class="tax-date-card reveal">
+                    <div class="tax-date-calendar" aria-hidden="true"><span>AUG</span><strong>11</strong><small>2026</small></div>
+                    <div class="tax-date-copy">
+                      <p class="tax-status">Posted · Public auction</p>
+                      <h3>Municipality of the County of Inverness</h3>
+                      <p><strong>Tuesday, August 11 at 9:30 a.m.</strong><br>St. Peter’s Parish Hall, 260 Main Street, Port Hood</p>
+                      <p class="tax-date-detail">45 advertised rows · 47 unique PIDs mapped</p>
+                    </div>
+                    <div class="tax-date-actions">
+                      <a href="https://invernesscounty.ca/services/finance-taxation/tax-sales/">Official Inverness page <span aria-hidden="true">↗</span></a>
+                      <a href="/apps/nsmarksthespot/map/">View mapped parcels <span aria-hidden="true">→</span></a>
+                    </div>
+                  </article>
+                </div>
+
+                <div class="tax-notice reveal" role="note">
+                  <strong>Posted does not mean final.</strong>
+                  <p>Owners may pay arrears, municipalities may revise or remove listings, and results are a separate record. Confirm the current list, terms, time, venue, and outcome with the municipality.</p>
+                </div>
+              </div>
+            </section>
+
+            <section class="tax-section tax-map-section" aria-labelledby="tax-map-heading">
+              <div class="tax-wrap tax-split">
+                <div class="reveal">
+                  <p class="tax-kicker">Explore</p>
+                  <h2 id="tax-map-heading">From notice row<br>to <em>parcel context.</em></h2>
+                </div>
+                <div class="tax-split-copy reveal">
+                  <p class="tax-large-copy">Search an eight-digit PID or Nova Scotia civic address, open a mapped tax-sale parcel, and compare it with roads, water, aerial imagery, Crown land, and municipal context.</p>
+                  <ul class="tax-facts">
+                    <li><span>Mapped now</span><strong>CBRM + Inverness County notices</strong></li>
+                    <li><span>Search</span><strong>PID, civic address, or visible parcel</strong></li>
+                    <li><span>Privacy</span><strong>No owner names; no location upload</strong></li>
+                    <li><span>Boundary</span><strong>Approximate context, never a legal survey</strong></li>
+                  </ul>
+                  <a class="tax-text-link" href="/apps/nsmarksthespot/map/">Explore the current map <span aria-hidden="true">→</span></a>
+                </div>
+              </div>
+            </section>
+
+            <section class="tax-section tax-guide-section" id="guide" aria-labelledby="tax-guide-heading">
+              <div class="tax-wrap">
+                <div class="tax-section-intro reveal">
+                  <div>
+                    <p class="tax-kicker">One guide · three forms</p>
+                    <h2 id="tax-guide-heading"><em>Beyond the<br>Tax-Sale Packet</em></h2>
+                  </div>
+                  <div>
+                    <p class="tax-large-copy">A spoken-first, illustrated guide to how Nova Scotia municipal tax sales work—and how to research carefully without mistaking a notice, assessment, or map for an answer.</p>
+                    <a class="tax-text-link" href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/docs/nova-scotia-tax-sale-book">Open the public development packet <span aria-hidden="true">↗</span></a>
+                  </div>
+                </div>
+
+                <div class="tax-format-grid" aria-label="Guide formats and status">
+                  <article class="tax-format-card reveal">
+                    <p class="tax-format-number">01</p>
+                    <p class="tax-status tax-status-active">In development</p>
+                    <h3>Illustrated book</h3>
+                    <p>The public research packet, twelve-chapter argument, approved visual direction, maps, and source trail are taking shape now.</p>
+                    <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/docs/nova-scotia-tax-sale-book">See the work in progress <span aria-hidden="true">↗</span></a>
+                  </article>
+                  <article class="tax-format-card reveal">
+                    <p class="tax-format-number">02</p>
+                    <p class="tax-status">Planned after manuscript</p>
+                    <h3>Audiobook</h3>
+                    <p>A chaptered, spoken-first edition for the road, a walk, or the workbench. No finished public audiobook exists yet.</p>
+                  </article>
+                  <article class="tax-format-card reveal">
+                    <p class="tax-format-number">03</p>
+                    <p class="tax-status">Planned after visuals</p>
+                    <h3>Video edition</h3>
+                    <p>Maps, packet anatomy, and process diagrams paced to the same grounded narration. No finished public video exists yet.</p>
+                  </article>
+                </div>
+              </div>
+            </section>
+
+            <section class="tax-section tax-sources-section" aria-labelledby="tax-sources-heading">
+              <div class="tax-wrap tax-split">
+                <div class="reveal">
+                  <p class="tax-kicker">Official starting points</p>
+                  <h2 id="tax-sources-heading">Keep the source<br><em>one click away.</em></h2>
+                </div>
+                <div class="tax-source-list reveal">
+                  <a href="https://nslegislature.ca/sites/default/files/legc/statutes/municipal%20government.pdf"><span>Provincial law</span><strong>Nova Scotia Municipal Government Act</strong><b aria-hidden="true">↗</b></a>
+                  <a href="https://cbrm.ns.ca/business/property-sales-management/tax-sales/"><span>Current notice</span><strong>CBRM tax-sales page</strong><b aria-hidden="true">↗</b></a>
+                  <a href="https://invernesscounty.ca/services/finance-taxation/tax-sales/"><span>Current notice</span><strong>Inverness County tax-sales page</strong><b aria-hidden="true">↗</b></a>
+                  <a href="https://www.novascotia.ca/sign-property-online"><span>Land records</span><strong>Nova Scotia Property Online</strong><b aria-hidden="true">↗</b></a>
+                </div>
+              </div>
+            </section>
+
+            <section class="tax-boundary" aria-labelledby="tax-boundary-heading">
+              <div class="tax-wrap tax-boundary-grid reveal">
+                <p class="tax-kicker">The useful boundary</p>
+                <h2 id="tax-boundary-heading">A map can tell you <em>where.</em><br>It cannot tell you <em>whether.</em></h2>
+                <div>
+                  <p>Neither this hub, the map, nor the guide proves access, title, condition, value, possession, insurance, financing, environmental condition, or buildability.</p>
+                  <p>Use these resources to ask better questions. Verify live details with the municipality and take unresolved legal, tax, title, survey, planning, or construction questions to the right qualified professional.</p>
+                </div>
+              </div>
+            </section>
+
+            <section class="tax-final" aria-labelledby="tax-final-heading">
+              <div class="tax-wrap reveal">
+                <p class="tax-kicker">kinnokilabs.com/taxsale</p>
+                <h2 id="tax-final-heading">Start with the notice.<br><em>Keep the questions.</em></h2>
+                <div class="tax-actions tax-final-actions">
+                  <a class="tax-button tax-button-solid" href="/apps/nsmarksthespot/map/">Open the live map <span aria-hidden="true">↗</span></a>
+                  <a class="tax-button tax-button-line" href="#dates">Review posted dates <span aria-hidden="true">↑</span></a>
+                </div>
+                <p class="tax-fine-print">Educational information only—not legal, tax, investment, surveying, appraisal, environmental, planning, or construction advice.</p>
+              </div>
+            </section>
+            """#
+        )
     )
 }
 
