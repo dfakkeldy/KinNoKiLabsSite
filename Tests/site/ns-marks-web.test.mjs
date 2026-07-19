@@ -166,7 +166,7 @@ test('KinNoKi app surfaces lead to the monochrome product page and online map', 
     [...theme.matchAll(/class="app-card" href="\/apps\/nsmarksthespot\/"/g)].length,
     2,
   );
-  assert.match(generated, /href="\/apps\/nsmarksthespot\/map\/"[^>]*>Open Online Map<\/a>/);
+  assert.match(generated, /href="\/apps\/nsmarksthespot\/map\/"[^>]*>Open the live map/);
   assert.match(generated, /See the parcel\.[\s\S]*Understand the process\./);
   assert.match(generated, /Online parcel map/);
   assert.match(generated, /Book, audiobook &amp; video/);
