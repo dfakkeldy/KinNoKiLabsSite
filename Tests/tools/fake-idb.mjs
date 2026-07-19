@@ -24,6 +24,30 @@ export function fakeIndexedDb() {
     return failure.error;
   };
 
+  const conflicts = (left, right) => (
+    (left.mode === 'readwrite' || right.mode === 'readwrite')
+    && left.storeNames.some((name) => right.storeNames.includes(name))
+  );
+
+  const scheduleTransactions = (record) => {
+    if (record.pumpQueued) return;
+    record.pumpQueued = true;
+    queueMicrotask(() => {
+      record.pumpQueued = false;
+      for (let index = 0; index < record.queue.length; index += 1) {
+        const transaction = record.queue[index];
+        if (transaction.started || transaction.settled) continue;
+        const blockedByActive = [...record.active].some((active) => (
+          conflicts(active, transaction)
+        ));
+        const blockedByEarlier = record.queue.slice(0, index).some((earlier) => (
+          !earlier.started && !earlier.settled && conflicts(earlier, transaction)
+        ));
+        if (!blockedByActive && !blockedByEarlier) transaction.activate();
+      }
+    });
+  };
+
   const factory = {
     transactions,
     failNext(operation, error = new Error(`fake IndexedDB ${operation} failure`)) {
@@ -54,7 +78,13 @@ export function fakeIndexedDb() {
           return;
         }
         if (!record) {
-          record = { version: 0, stores: new Map() };
+          record = {
+            version: 0,
+            stores: new Map(),
+            queue: [],
+            active: new Set(),
+            pumpQueued: false,
+          };
           databases.set(name, record);
         }
 
@@ -73,60 +103,91 @@ export function fakeIndexedDb() {
               if (!record.stores.has(storeName)) throw new Error('NotFoundError');
             }
 
-            const snapshots = new Map(names.map((storeName) => {
-              const store = record.stores.get(storeName);
-              return [storeName, { ...store, records: cloneMap(store.records) }];
-            }));
+            let snapshots;
             let pending = 0;
             let settled = false;
             let completionQueued = false;
+            const requests = [];
+
+            const release = () => {
+              record.active.delete(transaction);
+              record.queue = record.queue.filter((queued) => queued !== transaction);
+              scheduleTransactions(record);
+            };
+
+            const queueCompletion = () => {
+              if (completionQueued || settled) return;
+              completionQueued = true;
+              queueMicrotask(() => {
+                completionQueued = false;
+                if (settled || pending !== 0) return;
+                settled = true;
+                transaction.settled = true;
+                if (mode === 'readwrite') {
+                  for (const [changedName, changed] of snapshots) {
+                    record.stores.get(changedName).records = changed.records;
+                  }
+                }
+                transaction.oncomplete?.({ target: transaction });
+                release();
+              });
+            };
+
+            const abort = (request, error) => {
+              request.error = error;
+              transaction.error = error;
+              request.onerror?.({ target: request });
+              settled = true;
+              transaction.settled = true;
+              transaction.onerror?.({ target: transaction });
+              transaction.onabort?.({ target: transaction });
+              release();
+            };
+
+            const runRequest = (entry) => {
+              queueMicrotask(() => {
+                if (settled) return;
+                const failure = takeFailure(entry.operation);
+                if (failure) {
+                  abort(entry.request, failure);
+                  return;
+                }
+                try {
+                  entry.request.result = entry.action(snapshots.get(entry.storeName));
+                  entry.request.onsuccess?.({ target: entry.request });
+                } catch (error) {
+                  abort(entry.request, error);
+                  return;
+                }
+                pending -= 1;
+                queueCompletion();
+              });
+            };
+
             const transaction = {
               mode,
               storeNames: names,
               error: null,
+              started: false,
+              settled: false,
+              activate() {
+                this.started = true;
+                record.active.add(this);
+                snapshots = new Map(names.map((storeName) => {
+                  const store = record.stores.get(storeName);
+                  return [storeName, { ...store, records: cloneMap(store.records) }];
+                }));
+                for (const entry of requests) runRequest(entry);
+                queueCompletion();
+              },
               objectStore(storeName) {
-                const snapshot = snapshots.get(storeName);
-                if (!snapshot) throw new Error('NotFoundError');
+                if (!names.includes(storeName)) throw new Error('NotFoundError');
                 const request = (operation, action) => {
                   const result = { result: undefined, error: null };
                   pending += 1;
-                  queueMicrotask(() => {
-                    if (settled) return;
-                    const failure = takeFailure(operation);
-                    if (failure) {
-                      result.error = failure;
-                      transaction.error = failure;
-                      result.onerror?.({ target: result });
-                      settled = true;
-                      transaction.onabort?.({ target: transaction });
-                      return;
-                    }
-                    try {
-                      result.result = action(snapshot);
-                      result.onsuccess?.({ target: result });
-                    } catch (error) {
-                      result.error = error;
-                      transaction.error = error;
-                      result.onerror?.({ target: result });
-                      settled = true;
-                      transaction.onabort?.({ target: transaction });
-                      return;
-                    }
-                    pending -= 1;
-                    if (pending === 0 && !completionQueued) {
-                      completionQueued = true;
-                      queueMicrotask(() => {
-                        if (settled || pending !== 0) return;
-                        settled = true;
-                        if (mode === 'readwrite') {
-                          for (const [changedName, changed] of snapshots) {
-                            record.stores.get(changedName).records = changed.records;
-                          }
-                        }
-                        transaction.oncomplete?.({ target: transaction });
-                      });
-                    }
-                  });
+                  const entry = { operation, action, request: result, storeName };
+                  requests.push(entry);
+                  if (transaction.started) runRequest(entry);
                   return result;
                 };
                 return {
@@ -157,6 +218,8 @@ export function fakeIndexedDb() {
               },
             };
             transactions.push(transaction);
+            record.queue.push(transaction);
+            scheduleTransactions(record);
             return transaction;
           },
         };

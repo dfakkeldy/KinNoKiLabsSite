@@ -15,9 +15,9 @@ const DROPPED_TAGS = new Set([
 ]);
 
 const VOID_TAGS = new Set(['br', 'hr', 'img']);
-const MAX_NODES = 50_000;
-const MAX_DEPTH = 4_096;
-const MAX_TEXT_LENGTH = 1_000_000;
+const MAX_NODES = 10_000;
+const MAX_DEPTH = 128;
+const MAX_TEXT_LENGTH = 262_144;
 const MAX_REFERENCE_LENGTH = 2_048;
 
 const append = (parent, child) => {
@@ -25,13 +25,20 @@ const append = (parent, child) => {
   else parent.appendChild(child);
 };
 
-const childrenOf = (node) => Array.from(node?.childNodes ?? []);
-
-const pushChildren = (stack, node, parent, depth) => {
-  const children = childrenOf(node);
-  for (let index = children.length - 1; index >= 0; index -= 1) {
-    stack.push({ source: children[index], parent, depth });
+const childIterator = (node) => {
+  const children = node?.childNodes;
+  if (typeof children?.[Symbol.iterator] === 'function') {
+    return children[Symbol.iterator]();
   }
+  let index = 0;
+  return {
+    next() {
+      if (!children || index >= children.length) return { done: true };
+      const value = children[index];
+      index += 1;
+      return { done: false, value };
+    },
+  };
 };
 
 const safeId = (value) => (
@@ -147,18 +154,30 @@ export function sanitizeChapter(sourceRoot, {
   resolveLink,
 }) {
   const outputRoot = createElement('div');
-  const stack = [];
-  pushChildren(stack, sourceRoot, outputRoot, 0);
+  const stack = [{ iterator: childIterator(sourceRoot), parent: outputRoot, depth: 1 }];
   let visited = 0;
+  let textLength = 0;
 
   while (stack.length > 0 && visited < MAX_NODES) {
-    const { source, parent, depth } = stack.pop();
+    const frame = stack.at(-1);
+    const next = frame.iterator.next();
+    if (next.done) {
+      stack.pop();
+      continue;
+    }
+
+    const { parent, depth } = frame;
+    const source = next.value;
     visited += 1;
     if (!source || depth > MAX_DEPTH) continue;
 
     if (source.nodeType === 3) {
       const value = String(source.textContent ?? '');
-      append(parent, createTextNode(value.slice(0, MAX_TEXT_LENGTH)));
+      const remaining = MAX_TEXT_LENGTH - textLength;
+      if (remaining <= 0) continue;
+      const bounded = value.slice(0, remaining);
+      textLength += bounded.length;
+      append(parent, createTextNode(bounded));
       continue;
     }
     if (source.nodeType !== 1) continue;
@@ -166,7 +185,9 @@ export function sanitizeChapter(sourceRoot, {
     const tagName = String(source.tagName ?? '').toLowerCase();
     if (DROPPED_TAGS.has(tagName)) continue;
     if (!ALLOWED_TAGS.has(tagName)) {
-      pushChildren(stack, source, parent, depth + 1);
+      if (depth < MAX_DEPTH) {
+        stack.push({ iterator: childIterator(source), parent, depth: depth + 1 });
+      }
       continue;
     }
 
@@ -183,7 +204,9 @@ export function sanitizeChapter(sourceRoot, {
     if (tagName === 'a') {
       const linkAttributes = resolvedLink(source, resolveLink);
       if (!linkAttributes) {
-        pushChildren(stack, source, parent, depth + 1);
+        if (depth < MAX_DEPTH) {
+          stack.push({ iterator: childIterator(source), parent, depth: depth + 1 });
+        }
         continue;
       }
       const link = createElement('a');
@@ -192,14 +215,18 @@ export function sanitizeChapter(sourceRoot, {
         link.setAttribute(name, value);
       }
       append(parent, link);
-      pushChildren(stack, source, link, depth + 1);
+      if (depth < MAX_DEPTH) {
+        stack.push({ iterator: childIterator(source), parent: link, depth: depth + 1 });
+      }
       continue;
     }
 
     const output = createElement(tagName);
     copyAttributes(source, output, tagName);
     append(parent, output);
-    if (!VOID_TAGS.has(tagName)) pushChildren(stack, source, output, depth + 1);
+    if (!VOID_TAGS.has(tagName) && depth < MAX_DEPTH) {
+      stack.push({ iterator: childIterator(source), parent: output, depth: depth + 1 });
+    }
   }
 
   return outputRoot;

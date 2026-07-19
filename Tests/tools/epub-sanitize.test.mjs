@@ -198,9 +198,9 @@ test('table spans, ids, and alt text are copied only within safe limits', () => 
   assert.deepEqual(attrsOf(cells[2]), {});
 });
 
-test('preserves deeply nested allowed structure without recursive stack pressure', () => {
+test('preserves normal nested allowed structure without recursive stack pressure', () => {
   let nested = text('bottom');
-  for (let depth = 0; depth < 2_000; depth += 1) {
+  for (let depth = 0; depth < 64; depth += 1) {
     nested = source('span', {}, [nested]);
   }
 
@@ -213,6 +213,61 @@ test('preserves deeply nested allowed structure without recursive stack pressure
     depth += 1;
     cursor = cursor.childNodes[0];
   }
-  assert.equal(depth, 2_000);
+  assert.equal(depth, 64);
   assert.equal(cursor.textContent, 'bottom');
+});
+
+test('bounds flat-wide source iteration and output node work', () => {
+  let pulled = 0;
+  const childNodes = {
+    [Symbol.iterator]() {
+      let index = 0;
+      return {
+        next() {
+          pulled += 1;
+          if (index >= 20_000) return { done: true };
+          const value = text(String(index));
+          index += 1;
+          return { done: false, value };
+        },
+      };
+    },
+  };
+  const root = { ...source('body'), childNodes };
+
+  const result = sanitize(root);
+
+  assert.equal(pulled, 10_000);
+  assert.equal(result.childNodes.length, 10_000);
+  assert.equal(result.childNodes[0].textContent, '0');
+  assert.equal(result.childNodes.at(-1).textContent, '9999');
+});
+
+test('caps aggregate text across multiple source text nodes', () => {
+  const result = sanitize(source('body', {}, [
+    text('a'.repeat(200_000)),
+    text('b'.repeat(200_000)),
+    text('tail'),
+  ]));
+
+  assert.equal(allText(result).length, 262_144);
+  assert.equal(allText(result), `${'a'.repeat(200_000)}${'b'.repeat(62_144)}`);
+});
+
+test('caps adversarial nesting at 128 element levels', () => {
+  let nested = text('too deep');
+  for (let depth = 0; depth < 200; depth += 1) {
+    nested = source('span', {}, [nested]);
+  }
+
+  const result = sanitize(source('body', {}, [nested]));
+  let cursor = result.childNodes[0];
+  let depth = 0;
+  while (cursor?.tagName === 'span') {
+    depth += 1;
+    cursor = cursor.childNodes[0];
+  }
+
+  assert.equal(depth, 128);
+  assert.equal(cursor, undefined);
 });

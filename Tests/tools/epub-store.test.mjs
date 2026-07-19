@@ -121,3 +121,37 @@ test('write failures reject and do not commit the transaction', async () => {
   }), (error) => error === expected);
   assert.deepEqual(await listBooks(db), []);
 });
+
+test('overlapping readwrite transactions serialize without losing writes', async () => {
+  const indexedDb = fakeIndexedDb();
+  const db = await openLibrary(indexedDb);
+  const first = {
+    id: 'first', title: 'First', author: 'A', addedAt: 1, coverBlob: null, file: new Blob(['first']),
+  };
+  const second = {
+    id: 'second', title: 'Second', author: 'B', addedAt: 2, coverBlob: null, file: new Blob(['second']),
+  };
+
+  await Promise.all([addBook(db, first), addBook(db, second)]);
+
+  assert.deepEqual((await listBooks(db)).map((book) => book.id), ['second', 'first']);
+});
+
+test('a multi-store delete waits for an earlier conflicting book write', async () => {
+  const indexedDb = fakeIndexedDb();
+  const db = await openLibrary(indexedDb);
+  await addBook(db, {
+    id: 'old', title: 'Old', author: 'A', addedAt: 1, coverBlob: null, file: new Blob(['old']),
+  });
+  await savePosition(db, {
+    bookId: 'old', spineIndex: 0, scrollFraction: 0.5, updatedAt: 1,
+  });
+  const replacement = {
+    id: 'new', title: 'New', author: 'B', addedAt: 2, coverBlob: null, file: new Blob(['new']),
+  };
+
+  await Promise.all([addBook(db, replacement), deleteBook(db, 'old')]);
+
+  assert.deepEqual((await listBooks(db)).map((book) => book.id), ['new']);
+  assert.equal(await getPosition(db, 'old'), undefined);
+});
