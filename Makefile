@@ -10,7 +10,7 @@
 #   make listen-catalog  Regenerate Resources/listen/books.json + per-book
 #                        assets from local checkouts (Tools/build-listen-catalog.sh)
 
-.PHONY: publish preview generate clean test test-listen test-games test-tools listen-catalog paired-covers
+.PHONY: publish preview generate clean test test-listen test-games test-tools test-site listen-catalog paired-covers sync-ns-marks-web
 
 generate:
 	@generation_epochs="$$(node Tools/prepare-deterministic-publish.mjs)" && \
@@ -39,7 +39,7 @@ preview:
 clean:
 	swift package clean
 
-test: test-listen test-games test-tools
+test: test-listen test-games test-tools test-site
 
 test-listen:
 	node --test Tests/listen/*.test.mjs
@@ -50,8 +50,14 @@ test-games:
 test-tools:
 	node --test Tests/tools/*.test.mjs
 
+test-site:
+	node --test Tests/site/*.test.mjs
+
 listen-catalog:
 	Tools/build-listen-catalog.sh
 
 paired-covers:
 	Tools/sync-paired-cover-assets.sh
+
+sync-ns-marks-web:
+	node Tools/sync-ns-marks-web.mjs
