@@ -14,6 +14,7 @@ import { spawnSync } from 'node:child_process';
 
 const projectRoot = new URL('../../', import.meta.url);
 const syncTool = new URL('../../Tools/sync-ns-marks-web.mjs', import.meta.url);
+const expectedNsMarksCommit = 'e4cff7970d33755f7aab112e83f3758cc1afa77e';
 
 function run(command, args, cwd) {
   const result = spawnSync(command, args, { cwd, encoding: 'utf8' });
@@ -125,6 +126,7 @@ test('committed and generated map routes carry the pinned source receipt byte-fo
     'utf8',
   ));
   assert.match(sourceConfig.commit, /^[0-9a-f]{40}$/);
+  assert.equal(sourceConfig.commit, expectedNsMarksCommit);
   assert.equal(sourceConfig.publicPath, '/apps/nsmarksthespot/map/');
 
   for (const root of ['Resources', 'Output']) {
