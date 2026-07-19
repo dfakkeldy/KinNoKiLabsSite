@@ -663,7 +663,7 @@ private func homeMain() -> Node<HTML.BodyContext> {
               <span class="platforms">Watch · iPhone</span>
             </div>
           </a>
-          <a class="app-card" href="https://dfakkeldy.github.io/ns-marks-the-spot/" target="_blank" rel="noopener">
+          <a class="app-card" href="/apps/nsmarksthespot/">
             <img class="app-icon" src="/images/apps/nsmarksthespot.svg" alt="NS Marks The Spot app icon">
             <h3>NS Marks The Spot</h3>
             <p>Historical Nova Scotia maps, lined up with the map in your hand.</p>
@@ -756,7 +756,7 @@ private func appsMain() -> Node<HTML.BodyContext> {
             <span class="platforms">Watch · iPhone</span>
           </div>
         </a>
-        <a class="app-card" href="https://dfakkeldy.github.io/ns-marks-the-spot/" target="_blank" rel="noopener">
+        <a class="app-card" href="/apps/nsmarksthespot/">
           <img class="app-icon" src="/images/apps/nsmarksthespot.svg" alt="NS Marks The Spot app icon">
           <h3>NS Marks The Spot</h3>
           <p>Slide Nova Scotia's archival Fletcher maps over today's landscape — old roads, gold mines, and shorelines line up under your thumb. Offline-first tiles for places with weak signal.</p>
@@ -784,7 +784,7 @@ private func appsMain() -> Node<HTML.BodyContext> {
           </div>
         </a>
       </div>
-      <p style="font-size:13.5px;color:var(--text-quaternary);margin:28px 0 0;">Cards link to each app's project site. Source for everything is on <a class="link-quiet" href="https://github.com/dfakkeldy" target="_blank" rel="noopener">GitHub</a>.</p>
+      <p style="font-size:13.5px;color:var(--text-quaternary);margin:28px 0 0;">Cards lead to each app's public home. Source for everything is on <a class="link-quiet" href="https://github.com/dfakkeldy" target="_blank" rel="noopener">GitHub</a>.</p>
     </main>
     """)
 }

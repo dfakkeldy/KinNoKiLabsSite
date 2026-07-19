@@ -30,4 +30,4 @@ NS Marks The Spot turns archival Nova Scotia maps into a practical companion for
 The code is public on GitHub, structured around a map-engine boundary so the interface can stay steady while the renderer evolves.
 
 ---
-[Project Site](https://dfakkeldy.github.io/ns-marks-the-spot/) | [View Source Code on GitHub](https://github.com/dfakkeldy/ns-marks-the-spot) | [Get Help & Support](/nsmarksthespot-help)
+[Open Online Map](/apps/nsmarksthespot/map/) | [Project Site](https://dfakkeldy.github.io/ns-marks-the-spot/) | [View Source Code on GitHub](https://github.com/dfakkeldy/ns-marks-the-spot) | [Get Help & Support](/nsmarksthespot-help)
