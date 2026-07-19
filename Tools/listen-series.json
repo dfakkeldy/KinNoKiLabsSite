@@ -14,6 +14,10 @@
         {
           "number": 2,
           "book": "claude-platform-02-thinking-and-reliable-responses"
+        },
+        {
+          "number": 3,
+          "book": "claude-platform-03-giving-claude-tools"
         }
       ]
     }

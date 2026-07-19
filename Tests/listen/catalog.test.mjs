@@ -27,6 +27,7 @@ const expectedBooks = [
   'is-there-anyone-in-here',
   'claude-platform-01-the-message',
   'claude-platform-02-thinking-and-reliable-responses',
+  'claude-platform-03-giving-claude-tools',
 ];
 const expectedPlayable = [...expectedBooks];
 const expectedAnchorCounts = new Map([
@@ -110,7 +111,11 @@ test('catalog publishes the curated version 2 series exactly', () => {
   assert.equal(catalog.series[0].plannedVolumeCount, 9);
   assert.deepEqual(
     catalog.series[0].volumes.map((volume) => volume.book),
-    ['claude-platform-01-the-message', 'claude-platform-02-thinking-and-reliable-responses'],
+    [
+      'claude-platform-01-the-message',
+      'claude-platform-02-thinking-and-reliable-responses',
+      'claude-platform-03-giving-claude-tools',
+    ],
   );
 });
 
@@ -118,6 +123,7 @@ test('public-first-listen books disclose their edition while legacy books remain
   const firstListenSlugs = new Set([
     'claude-platform-01-the-message',
     'claude-platform-02-thinking-and-reliable-responses',
+    'claude-platform-03-giving-claude-tools',
   ]);
   for (const book of catalog.books) {
     if (firstListenSlugs.has(book.slug)) {

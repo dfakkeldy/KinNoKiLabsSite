@@ -192,6 +192,7 @@ function seriesCatalog() {
         volumes: [
           { number: 1, book: 'claude-platform-01-the-message' },
           { number: 2, book: 'claude-platform-02-thinking-and-reliable-responses' },
+          { number: 3, book: 'claude-platform-03-giving-claude-tools' },
         ],
       },
     ],
@@ -199,6 +200,7 @@ function seriesCatalog() {
       { slug: 'standalone-book', audio: { status: 'available' } },
       { slug: 'claude-platform-01-the-message', audio: { status: 'available' } },
       { slug: 'claude-platform-02-thinking-and-reliable-responses', audio: { status: 'available' } },
+      { slug: 'claude-platform-03-giving-claude-tools', audio: { status: 'available' } },
     ],
   };
 }
@@ -211,15 +213,16 @@ test('series context resolves adjacent published volumes without synthesizing pl
 
   assert.equal(context.series.id, 'claude-platform');
   assert.equal(context.volume.number, 2);
-  assert.equal(context.availableCount, 2);
+  assert.equal(context.availableCount, 3);
   assert.equal(context.plannedCount, 9);
   assert.equal(context.previous.book, 'claude-platform-01-the-message');
-  assert.equal(context.next, null);
+  assert.equal(context.next.book, 'claude-platform-03-giving-claude-tools');
   assert.deepEqual(
     context.series.volumes.map((volume) => volume.book),
     [
       'claude-platform-01-the-message',
       'claude-platform-02-thinking-and-reliable-responses',
+      'claude-platform-03-giving-claude-tools',
     ],
   );
 });
@@ -257,6 +260,7 @@ test('library sections preserve published series order and separate standalone b
       books: [
         'claude-platform-01-the-message',
         'claude-platform-02-thinking-and-reliable-responses',
+        'claude-platform-03-giving-claude-tools',
       ],
     }],
     moreBooks: ['standalone-book'],
@@ -270,6 +274,7 @@ test('library sections retain active books in their structural shelf', () => {
       books: [
         'claude-platform-01-the-message',
         'claude-platform-02-thinking-and-reliable-responses',
+        'claude-platform-03-giving-claude-tools',
       ],
     }],
     moreBooks: ['standalone-book'],

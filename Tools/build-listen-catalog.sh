@@ -92,6 +92,7 @@ the-new-deal|The New Deal|Canada Post, CUPW, and What It Means for Rural Mail|GL
 is-there-anyone-in-here|Is There Anyone in Here?|One Language Model Examines the Case for Its Own Consciousness|Claude Fable 5
 claude-platform-01-the-message|The Message|Conversations, Content Blocks, and the Messages API|Codex (GPT-5)
 claude-platform-02-thinking-and-reliable-responses|Making Claude Think and Respond Reliably|Reasoning, Multimodal Inputs, Structured Output, and Streaming|Codex (GPT-5)
+claude-platform-03-giving-claude-tools|Giving Claude Tools|Contracts, Agent Loops, and Controlled Action|Codex (GPT-5)
 EOF
 )"
 
@@ -112,15 +113,17 @@ rodents-in-the-walls
 the-new-deal
 is-there-anyone-in-here
 claude-platform-01-the-message
-claude-platform-02-thinking-and-reliable-responses"
+claude-platform-02-thinking-and-reliable-responses
+claude-platform-03-giving-claude-tools"
 
 # These editions were authorized under the public-first-listen contract. Their
 # publication receipts are mandatory and must pass the verifier shipped in the
 # exact BOOKS_REPO checkout before any of their assets enter the staging tree.
 PUBLICATION_REQUIRED="claude-platform-01-the-message
-claude-platform-02-thinking-and-reliable-responses"
+claude-platform-02-thinking-and-reliable-responses
+claude-platform-03-giving-claude-tools"
 
-EXPECTED_BOOK_COUNT=16
+EXPECTED_BOOK_COUNT=17
 listen_catalog_transaction_init "$OUT_DIR"
 
 # BEGIN VALIDATE_SERIES
