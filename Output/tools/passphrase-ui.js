@@ -248,7 +248,7 @@ export function renderPassphraseTool(root, deps = {}) {
   const render = () => {
     const tabs = element('div', { class: 'tool-tabs', ownerDocument: doc }, ...MODES.map(({ id, label }) => {
       const tab = element('button', {
-        type: 'button', class: 'tool-tab', text: label,
+        type: 'button', class: `tool-tab${values.mode === id ? ' is-active' : ''}`, text: label,
         'aria-pressed': String(values.mode === id), ownerDocument: doc,
       });
       tab.addEventListener('click', () => {

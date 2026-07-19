@@ -1518,3 +1518,87 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .contrast-swatch { min-width: 44px; min-height: 44px; border: 1px solid var(--separator); border-radius: 9px; }
 .tool-connectivity-status:not(:empty) { margin-top: 12px; }
 .tool-offline-chip { display: inline-flex; align-items: center; min-height: 28px; padding: 4px 10px; color: var(--game-text-accent); background: var(--fill-2); border: 1px solid var(--gold-hairline); border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 600; }
+
+.tool-form input:not([type="checkbox"]),
+.tool-form textarea,
+.tool-form select,
+.tool-form button,
+.tool-check,
+.epub-reader-controls button,
+.epub-reader-controls select,
+.epub-toc button,
+.epub-drop,
+.epub-book-card button {
+  min-height: 44px;
+}
+.tool-form input:not([type="checkbox"]),
+.tool-form textarea,
+.tool-form select,
+.epub-reader-controls select {
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--separator);
+  border-radius: 9px;
+  font: inherit;
+  padding: 8px 12px;
+}
+.tool-form button,
+.epub-reader-controls button,
+.epub-toc button,
+.epub-book-card button {
+  padding: 8px 12px;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--separator);
+  border-radius: 9px;
+  font: inherit;
+}
+.tool-check { display: flex; align-items: center; gap: 10px; }
+.epub-library-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+.epub-book-card {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-width: 0;
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--separator);
+  border-radius: 12px;
+}
+.epub-book-card img { width: 100%; max-height: 320px; object-fit: contain; border-radius: 6px; }
+.epub-drop {
+  display: grid;
+  place-items: center;
+  min-height: 112px;
+  padding: 20px;
+  color: var(--game-text-secondary);
+  background: var(--surface);
+  border: 2px dashed var(--separator);
+  border-radius: 12px;
+  cursor: pointer;
+}
+.epub-drop.is-dragover { color: var(--game-text-accent); border-color: var(--gold-500); background: var(--fill-2); }
+.epub-reader { display: grid; gap: 18px; min-width: 0; }
+.epub-reader-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.epub-chapter {
+  max-width: 70ch;
+  min-width: 0;
+  margin-inline: auto;
+  padding: clamp(18px, 4vw, 36px);
+  background: var(--surface);
+  border: 1px solid var(--separator);
+  border-radius: 12px;
+}
+.epub-chapter img { max-width: 100%; height: auto; }
+.epub-toc { display: none; padding: 16px; background: var(--surface); border: 1px solid var(--separator); border-radius: 12px; }
+.epub-toc.is-open { display: block; }
+.epub-toc ol { display: grid; gap: 8px; margin: 0; padding-left: 1.5rem; }
+.epub-toc button { width: 100%; text-align: left; }
+
+@media (min-width: 640px) {
+  .epub-library-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 900px) {
+  .epub-library-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

@@ -4,6 +4,11 @@ const EOCD_SIGNATURE = 0x06054b50;
 const EOCD_LENGTH = 22;
 const MAX_COMMENT_LENGTH = 0xffff;
 const MAX_ENTRY_BYTES = 64 * 1024 * 1024;
+// These are intentionally generous for EPUB while bounding metadata work before
+// any filenames are decoded or retained.
+const MAX_ENTRY_COUNT = 10_000;
+const MAX_CENTRAL_DIRECTORY_BYTES = 64 * 1024 * 1024;
+const MAX_TOTAL_NAME_BYTES = 16 * 1024 * 1024;
 const ZIP64_U16 = 0xffff;
 const ZIP64_U32 = 0xffffffff;
 const entryMetadata = new WeakMap();
@@ -29,6 +34,50 @@ function hasRange(bytes, offset, length) {
     && length <= bytes.length - offset;
 }
 
+function validateCentralBudget(bytes, view, centralOffset, centralEnd, entryCount) {
+  let cursor = centralOffset;
+  let totalNameBytes = 0;
+
+  for (let index = 0; index < entryCount; index += 1) {
+    if (!hasRange(bytes, cursor, 46)) throw zipError('not-a-zip');
+    if (view.getUint32(cursor, true) !== CENTRAL_SIGNATURE) {
+      throw zipError('not-a-zip');
+    }
+
+    const nameLength = view.getUint16(cursor + 28, true);
+    const extraLength = view.getUint16(cursor + 30, true);
+    const commentLength = view.getUint16(cursor + 32, true);
+    const recordLength = 46 + nameLength + extraLength + commentLength;
+    if (!hasRange(bytes, cursor, recordLength) || cursor + recordLength > centralEnd) {
+      throw zipError('not-a-zip');
+    }
+    if (nameLength > MAX_TOTAL_NAME_BYTES - totalNameBytes) {
+      throw zipError('not-a-zip');
+    }
+
+    totalNameBytes += nameLength;
+    cursor += recordLength;
+  }
+
+  if (cursor !== centralEnd) throw zipError('not-a-zip');
+}
+
+const CRC32_TABLE = Uint32Array.from({ length: 256 }, (_, value) => {
+  let crc = value;
+  for (let bit = 0; bit < 8; bit += 1) {
+    crc = (crc >>> 1) ^ ((crc & 1) ? 0xedb88320 : 0);
+  }
+  return crc >>> 0;
+});
+
+function crc32(bytes) {
+  let crc = 0xffffffff;
+  for (const byte of bytes) {
+    crc = (crc >>> 8) ^ CRC32_TABLE[(crc ^ byte) & 0xff];
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
 function readCentralDirectory(bytes, eocdOffset, view) {
   const diskNumber = view.getUint16(eocdOffset + 4, true);
   const centralDisk = view.getUint16(eocdOffset + 6, true);
@@ -50,10 +99,19 @@ function readCentralDirectory(bytes, eocdOffset, view) {
   if (diskNumber !== 0 || centralDisk !== 0 || diskEntryCount !== entryCount) {
     throw zipError('not-a-zip');
   }
+  if (
+    entryCount > MAX_ENTRY_COUNT
+  ) {
+    throw zipError('too-many-entries');
+  }
+  if (centralSize > MAX_CENTRAL_DIRECTORY_BYTES) {
+    throw zipError('not-a-zip');
+  }
   if (!hasRange(bytes, centralOffset, centralSize)) throw zipError('not-a-zip');
 
   const centralEnd = centralOffset + centralSize;
   if (centralEnd !== eocdOffset) throw zipError('not-a-zip');
+  validateCentralBudget(bytes, view, centralOffset, centralEnd, entryCount);
 
   const decoder = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true });
   const entries = new Map();
@@ -68,6 +126,7 @@ function readCentralDirectory(bytes, eocdOffset, view) {
 
     const flags = view.getUint16(cursor + 8, true);
     const method = view.getUint16(cursor + 10, true);
+    const checksum = view.getUint32(cursor + 16, true);
     const compressedSize = view.getUint32(cursor + 20, true);
     const uncompressedSize = view.getUint32(cursor + 24, true);
     const nameLength = view.getUint16(cursor + 28, true);
@@ -110,7 +169,7 @@ function readCentralDirectory(bytes, eocdOffset, view) {
       headerOffset,
     };
     entries.set(name, entry);
-    parsedEntries.push({ entry, flags });
+    parsedEntries.push({ entry, flags, checksum });
     cursor += recordLength;
   }
 
@@ -128,7 +187,11 @@ function readCentralDirectory(bytes, eocdOffset, view) {
     ) {
       throw zipError('not-a-zip');
     }
-    entryMetadata.set(current.entry, { boundary, flags: current.flags });
+    entryMetadata.set(current.entry, {
+      boundary,
+      flags: current.flags,
+      checksum: current.checksum,
+    });
   }
   return { entries };
 }
@@ -142,6 +205,7 @@ export function parseZip(arrayBuffer) {
   const lastCandidate = Math.max(0, firstCandidate - MAX_COMMENT_LENGTH);
   const candidates = [];
   let sawZip64 = false;
+  let sawTooManyEntries = false;
 
   for (let offset = firstCandidate; offset >= lastCandidate; offset -= 1) {
     if (view.getUint32(offset, true) !== EOCD_SIGNATURE) continue;
@@ -152,11 +216,13 @@ export function parseZip(arrayBuffer) {
       candidates.push(readCentralDirectory(bytes, offset, view));
     } catch (error) {
       if (error?.code === 'zip64-unsupported') sawZip64 = true;
+      if (error?.code === 'too-many-entries') sawTooManyEntries = true;
     }
   }
 
-  if (candidates.length === 1 && !sawZip64) return candidates[0];
+  if (candidates.length === 1 && !sawZip64 && !sawTooManyEntries) return candidates[0];
   if (candidates.length > 1) throw zipError('not-a-zip');
+  if (sawTooManyEntries && !sawZip64) throw zipError('too-many-entries');
   throw zipError(sawZip64 ? 'zip64-unsupported' : 'not-a-zip');
 }
 
@@ -214,10 +280,12 @@ export async function readEntry(
     throw zipError('bad-entry');
   }
   if (!(localFlags & 8)) {
+    const localChecksum = view.getUint32(headerOffset + 14, true);
     const localCompressedSize = view.getUint32(headerOffset + 18, true);
     const localUncompressedSize = view.getUint32(headerOffset + 22, true);
     if (
-      localCompressedSize !== compressedSize
+      localChecksum !== metadata.checksum
+      || localCompressedSize !== compressedSize
       || localUncompressedSize !== uncompressedSize
     ) {
       throw zipError('bad-entry');
@@ -247,6 +315,7 @@ export async function readEntry(
   }
 
   if (output.length !== uncompressedSize) throw zipError('bad-entry');
+  if (crc32(output) !== metadata.checksum) throw zipError('bad-entry');
   return output;
 }
 
