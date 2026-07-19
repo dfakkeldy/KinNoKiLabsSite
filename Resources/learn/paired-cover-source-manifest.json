@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "sourceCommit": "80a9cb485885e1b7b01d238e3905ea1552a85d58",
+  "sourceCommit": "49e3b845f79a9ab486a24e36a54528c7db5b8008",
   "books": {
     "an-unsettling-conversation": {
       "receiptKind": "cover-selection-v2", "receiptPath": "cover-selection.json", "receiptSha256": "e03af343c74d4ebbf83dcb67610616e3fcae536dc74ed964ef92fd6ea6607839", "candidateId": "cut-in-the-page",
@@ -81,6 +81,11 @@
       "receiptKind": "cover-selection-v2", "receiptPath": "cover-selection.json", "receiptSha256": "0daa0937f344104b56a294a7cf89929db0296f303bd9df7585461a42fc6de278", "candidateId": "event-by-event",
       "portrait": { "sha256": "1b7ca031550cde82c3f7ac8b1ee234b4884befad32cca1c96f5c3d5d2659493a", "specSha256": "2cb9097478ce4ccb3cbed8283e47fc6acfb664707c07e8837a58dac4e11783a2", "receiptSpecSha256": "01b752444f528f8877822bd1044c2dbf37beb5f35c0762e1a6c13945e9467b6a" },
       "square": { "sha256": "f47d53aa8ed60e69e291b595eea2826a326682bfa21660277e84a42ae3b220d1", "specSha256": "c0fe4c9f0dca850765fb283f500449a96ae7c7c356058b245ba42772f4c8b422", "receiptSpecSha256": "9bfd7d67a100344ff7aff8c6e2519c353be873e63cb20938a065f0ec969d9155" }
+    },
+    "claude-platform-03-giving-claude-tools": {
+      "receiptKind": "cover-selection-v2", "receiptPath": "cover-selection.json", "receiptSha256": "f26e8b2d5be76bd6f6609aeabc751d83edc95a8cf67742f91c49bd91a6e3f713", "candidateId": "application-keeps-key",
+      "portrait": { "sha256": "4d68ef7fa713061307c650790e0985e3c5bc7cc5ec6822149732f48882161627", "specSha256": "9c761b037b38b25b6ba439988a87b45639c67ff18586267832739abeb17855fd", "receiptSpecSha256": "f12fe0fc3dc321fa3f6cd915971cb4b7b7745012a7f5e97136bd037a545664b9" },
+      "square": { "sha256": "0dc552e4384c332e3504012cc11dbbf17058893f8d3ddcd7833b9eb51d6e0afe", "specSha256": "2c5343569327e66377e024c7ce395e9cb6c9d582c622fdc3baf4139eba6fa044", "receiptSpecSha256": "edb11ef663284598a153571dd7649e002af681e97f7eec518c814f4d34ee91a1" }
     }
   }
 }

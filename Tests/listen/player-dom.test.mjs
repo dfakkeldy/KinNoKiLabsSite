@@ -403,7 +403,7 @@ test('the template exposes semantic series metadata, adjacent links, and complet
 
 function claudeSeriesCatalog() {
   const playableSources = publishedCatalog.books.filter((candidate) => candidate.audio.status === 'available');
-  const [firstSource, secondSource, standaloneSource] = playableSources.slice(0, 3);
+  const [firstSource, secondSource, thirdSource, standaloneSource] = playableSources.slice(0, 4);
   const disclosure = 'Automated checks passed. Full human first-listen review is pending.';
   return {
     version: 2,
@@ -416,6 +416,7 @@ function claudeSeriesCatalog() {
       volumes: [
         { number: 1, book: 'claude-platform-01-the-message' },
         { number: 2, book: 'claude-platform-02-thinking-and-reliable-responses' },
+        { number: 3, book: 'claude-platform-03-giving-claude-tools' },
       ],
     }],
     books: [
@@ -424,6 +425,12 @@ function claudeSeriesCatalog() {
         ...secondSource,
         slug: 'claude-platform-02-thinking-and-reliable-responses',
         title: 'Making Claude Think and Respond Reliably',
+        edition: { disclosure },
+      },
+      {
+        ...thirdSource,
+        slug: 'claude-platform-03-giving-claude-tools',
+        title: 'Giving Claude Tools',
         edition: { disclosure },
       },
       { ...standaloneSource, slug: 'standalone-book', title: 'Standalone Book' },
@@ -446,14 +453,14 @@ test('featured series becomes the default and exposes its volume track', async (
   assert.equal(player.elements.get('bookSeries').hidden, false);
   assert.equal(player.elements.get('bookSeries').textContent, 'Claude Platform Documentation · Volume 1');
   assert.equal(player.elements.get('seriesProgress').hidden, false);
-  assert.equal(player.elements.get('seriesProgress').textContent, '2 of 9 planned volumes available');
+  assert.equal(player.elements.get('seriesProgress').textContent, '3 of 9 planned volumes available');
   assert.equal(player.elements.get('seriesPrevious').hidden, true);
   assert.equal(player.elements.get('seriesNext').hidden, false);
   assert.equal(player.elements.get('seriesNext').textContent, 'Next: Volume 2');
   assert.equal(player.elements.get('seriesNext').href, '?book=claude-platform-02-thinking-and-reliable-responses');
 });
 
-test('a series deep link preserves selection, honest edition status, and only real adjacency', async () => {
+test('Volume 2 links backward to Volume 1 and forward to Volume 3', async () => {
   const catalog = claudeSeriesCatalog();
   const player = await bootPlayer({
     catalog,
@@ -465,9 +472,28 @@ test('a series deep link preserves selection, honest edition status, and only re
   assert.equal(player.elements.get('seriesPrevious').hidden, false);
   assert.equal(player.elements.get('seriesPrevious').textContent, 'Previous: Volume 1');
   assert.equal(player.elements.get('seriesPrevious').href, '?book=claude-platform-01-the-message');
-  assert.equal(player.elements.get('seriesNext').hidden, true, 'no future-volume placeholder link');
+  assert.equal(player.elements.get('seriesNext').hidden, false);
+  assert.equal(player.elements.get('seriesNext').textContent, 'Next: Volume 3');
+  assert.equal(player.elements.get('seriesNext').href, '?book=claude-platform-03-giving-claude-tools');
   assert.equal(player.elements.get('editionStatus').hidden, false);
   assert.equal(player.elements.get('editionStatus').textContent, catalog.books[1].edition.disclosure);
+});
+
+test('Volume 3 links backward to Volume 2 without a future placeholder', async () => {
+  const catalog = claudeSeriesCatalog();
+  const player = await bootPlayer({
+    catalog,
+    search: '?book=claude-platform-03-giving-claude-tools',
+  });
+
+  assert.equal(player.elements.get('bookTitle').textContent, 'Giving Claude Tools');
+  assert.equal(player.elements.get('bookSeries').textContent, 'Claude Platform Documentation · Volume 3');
+  assert.equal(player.elements.get('seriesPrevious').hidden, false);
+  assert.equal(player.elements.get('seriesPrevious').textContent, 'Previous: Volume 2');
+  assert.equal(player.elements.get('seriesPrevious').href, '?book=claude-platform-02-thinking-and-reliable-responses');
+  assert.equal(player.elements.get('seriesNext').hidden, true, 'no future-volume placeholder link');
+  assert.equal(player.elements.get('editionStatus').hidden, false);
+  assert.equal(player.elements.get('editionStatus').textContent, catalog.books[2].edition.disclosure);
 });
 
 test('series navigation never links to an adjacent published volume without streaming audio', async () => {
@@ -489,7 +515,9 @@ test('series navigation never links to an adjacent published volume without stre
   });
   assert.equal(second.elements.get('seriesPrevious').hidden, true);
   assert.equal(second.elements.get('seriesPrevious').href, '');
-  assert.equal(second.elements.get('seriesPrevious').parentNode.hidden, true);
+  assert.equal(second.elements.get('seriesPrevious').parentNode.hidden, false, 'Volume 3 remains a valid next link');
+  assert.equal(second.elements.get('seriesNext').hidden, false);
+  assert.equal(second.elements.get('seriesNext').href, '?book=claude-platform-03-giving-claude-tools');
 });
 
 test('series and standalone shelves stay structurally complete while selected cards lose redundant Listen actions', async () => {
@@ -503,15 +531,15 @@ test('series and standalone shelves stay structurally complete while selected ca
   const shelf = seriesLibrary.children[0];
   assert.match(shelf.textContent + descendants(shelf, () => true).map((node) => node.textContent).join(' '), /Claude Platform Documentation/);
   assert.match(descendants(shelf, (node) => node.classList.values.has('series-shelf-description'))[0].textContent, /mechanism-first/);
-  assert.equal(descendants(shelf, (node) => node.classList.values.has('series-shelf-availability'))[0].textContent, '2 of 9 planned volumes available');
+  assert.equal(descendants(shelf, (node) => node.classList.values.has('series-shelf-availability'))[0].textContent, '3 of 9 planned volumes available');
   const orderedLists = descendants(shelf, (node) => node.tagName === 'OL');
   assert.equal(orderedLists.length, 1);
-  assert.equal(orderedLists[0].children.length, 2);
+  assert.equal(orderedLists[0].children.length, 3);
   assert.deepEqual(
     orderedLists[0].children.map((card) => (
       descendants(card, (node) => node.classList.values.has('room-lib-volume'))[0].textContent
     )),
-    ['Volume 1', 'Volume 2'],
+    ['Volume 1', 'Volume 2', 'Volume 3'],
   );
 
   const selected = cardWithTitle(seriesLibrary, 'The Message');
@@ -519,6 +547,8 @@ test('series and standalone shelves stay structurally complete while selected ca
   assert.deepEqual(descendants(selected, (node) => node.tagName === 'A').map((link) => link.textContent), ['EPUB', 'Read']);
   const second = cardWithTitle(seriesLibrary, 'Making Claude Think and Respond Reliably');
   assert.deepEqual(descendants(second, (node) => node.tagName === 'A').map((link) => link.textContent), ['Listen', 'EPUB', 'Read']);
+  const third = cardWithTitle(seriesLibrary, 'Giving Claude Tools');
+  assert.deepEqual(descendants(third, (node) => node.tagName === 'A').map((link) => link.textContent), ['Listen', 'EPUB', 'Read']);
 
   assert.equal(player.elements.get('moreBooksShelf').hidden, false);
   assert.equal(library.children.length, 1);
