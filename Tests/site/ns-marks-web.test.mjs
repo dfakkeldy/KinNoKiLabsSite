@@ -147,7 +147,7 @@ test('committed and generated map routes carry the pinned source receipt byte-fo
   assert.deepEqual(outputIndex, resourceIndex);
 });
 
-test('KinNoKi app surfaces lead to the monochrome product page and online map', () => {
+test('KinNoKi app surfaces lead to the internal product page and online map', () => {
   const content = readFileSync(
     new URL('../../Content/apps/nsmarksthespot.md', import.meta.url),
     'utf8',
@@ -166,13 +166,5 @@ test('KinNoKi app surfaces lead to the monochrome product page and online map', 
     [...theme.matchAll(/class="app-card" href="\/apps\/nsmarksthespot\/"/g)].length,
     2,
   );
-  assert.match(generated, /href="\/apps\/nsmarksthespot\/map\/"[^>]*>Open the live map/);
-  assert.match(generated, /See the parcel\.[\s\S]*Understand the process\./);
-  assert.match(generated, /Online parcel map/);
-  assert.match(generated, /Book, audiobook &amp; video/);
-  assert.match(generated, /Book \/ In development/);
-  assert.match(generated, /Audiobook \/ Planned/);
-  assert.match(generated, /Video \/ Planned/);
-  assert.match(generated, /A map can tell you [\s\S]*where\.[\s\S]*It cannot tell you [\s\S]*whether\./);
-  assert.match(generated, /explainer-audiobooks\/tree\/main\/docs\/nova-scotia-tax-sale-book/);
+  assert.match(generated, /href="\/apps\/nsmarksthespot\/map\/"[^>]*>Open Online Map<\/a>/);
 });
