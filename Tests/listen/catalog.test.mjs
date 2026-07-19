@@ -47,6 +47,7 @@ const expectedAnchorCounts = new Map([
   ['is-there-anyone-in-here', 139],
   ['claude-platform-01-the-message', 571],
   ['claude-platform-02-thinking-and-reliable-responses', 346],
+  ['claude-platform-03-giving-claude-tools', 822],
 ]);
 // Covers are NOT all one shape: approved player books with paired art are square
 // because Tools/sync-paired-cover-assets.sh re-derives them from the paired

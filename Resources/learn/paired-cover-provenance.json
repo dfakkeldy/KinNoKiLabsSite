@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "source": {
     "repository": "dfakkeldy/explainer-audiobooks",
-    "commit": "80a9cb485885e1b7b01d238e3905ea1552a85d58"
+    "commit": "49e3b845f79a9ab486a24e36a54528c7db5b8008"
   },
   "books": {
     "an-unsettling-conversation": {
@@ -368,6 +368,30 @@
       "square": {
         "sourceSha256": "f47d53aa8ed60e69e291b595eea2826a326682bfa21660277e84a42ae3b220d1",
         "derivativeSha256": "4855629dacdbca32164580c1b281c43db7ccdce512230b27cb143c65477cb6e1",
+        "sourceDimensions": [
+          2400,
+          2400
+        ],
+        "derivativeDimensions": [
+          768,
+          768
+        ]
+      }
+    },
+    "claude-platform-03-giving-claude-tools": {
+      "receiptKind": "cover-selection-v2",
+      "receiptSchemaVersion": 2,
+      "selectionReceiptSha256": "f26e8b2d5be76bd6f6609aeabc751d83edc95a8cf67742f91c49bd91a6e3f713",
+      "portrait": {
+        "sourceSha256": "4d68ef7fa713061307c650790e0985e3c5bc7cc5ec6822149732f48882161627",
+        "dimensions": [
+          1600,
+          2560
+        ]
+      },
+      "square": {
+        "sourceSha256": "0dc552e4384c332e3504012cc11dbbf17058893f8d3ddcd7833b9eb51d6e0afe",
+        "derivativeSha256": "0497e6d9c09b44104bbfe968ffaf5c4b2230dd2918da6b23d9e7dca2dfd683b4",
         "sourceDimensions": [
           2400,
           2400
