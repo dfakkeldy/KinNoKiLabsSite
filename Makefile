@@ -10,10 +10,16 @@
 #   make listen-catalog  Regenerate Resources/listen/books.json + per-book
 #                        assets from local checkouts (Tools/build-listen-catalog.sh)
 
-.PHONY: publish preview generate clean test test-listen test-games listen-catalog paired-covers
+.PHONY: publish preview generate clean test test-listen test-games test-tools listen-catalog paired-covers
 
 generate:
-	publish generate
+	@generation_epochs="$$(node Tools/prepare-deterministic-publish.mjs)" && \
+		set -- $$generation_epochs && \
+		TZ=America/Halifax \
+		KINNOKI_RSS_DATE_EPOCH="$$1" \
+		KINNOKI_APPS_SECTION_DATE_EPOCH="$$2" \
+		KINNOKI_POSTS_SECTION_DATE_EPOCH="$$3" \
+		publish generate
 
 publish: generate
 	git add -A
@@ -22,18 +28,27 @@ publish: generate
 	@echo "Pushed — Cloudflare Pages will deploy momentarily."
 
 preview:
-	publish run
+	@generation_epochs="$$(node Tools/prepare-deterministic-publish.mjs)" && \
+		set -- $$generation_epochs && \
+		TZ=America/Halifax \
+		KINNOKI_RSS_DATE_EPOCH="$$1" \
+		KINNOKI_APPS_SECTION_DATE_EPOCH="$$2" \
+		KINNOKI_POSTS_SECTION_DATE_EPOCH="$$3" \
+		publish run
 
 clean:
 	swift package clean
 
-test: test-listen test-games
+test: test-listen test-games test-tools
 
 test-listen:
 	node --test Tests/listen/*.test.mjs
 
 test-games:
 	node --test Tests/games/*.test.mjs
+
+test-tools:
+	node --test Tests/tools/*.test.mjs
 
 listen-catalog:
 	Tools/build-listen-catalog.sh

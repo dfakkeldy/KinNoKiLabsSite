@@ -86,6 +86,7 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
     func makePageHTML(for page: Page, context: PublishingContext<Site>) throws -> HTML {
         let main: Node<HTML.BodyContext>
         let active: String
+        let toolsHead = page.path.string == "tools" || page.path.string.hasPrefix("tools/")
         switch page.path.string {
         case "games":             main = gamesMain(page: "hub");         active = "/games"
         case "games/sudoku":      main = gamesMain(page: "sudoku");      active = "/games"
@@ -100,6 +101,14 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
         case "games/kinnoki-charts":
             main = gamesMain(page: "kinnoki-charts")
             active = "/games"
+        case "tools":                main = toolsMain(page: "hub");            active = "/tools"
+        case "tools/qr-code":        main = toolsMain(page: "qr-code");        active = "/tools"
+        case "tools/epub-reader":    main = toolsMain(page: "epub-reader");    active = "/tools"
+        case "tools/dilution":       main = toolsMain(page: "dilution");       active = "/tools"
+        case "tools/contrast":       main = toolsMain(page: "contrast");       active = "/tools"
+        case "tools/word-count":     main = toolsMain(page: "word-count");     active = "/tools"
+        case "tools/unit-converter": main = toolsMain(page: "unit-converter"); active = "/tools"
+        case "tools/passphrase":     main = toolsMain(page: "passphrase");     active = "/tools"
         case "services":          main = servicesMain();                  active = "/services"
         case "learn":             main = learnMain();                     active = ""
         case "about":             main = aboutMain();                     active = "/about"
@@ -108,7 +117,7 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
         }
         return HTML(
             .lang(context.site.language),
-            siteHead(for: page, context: context),
+            siteHead(for: page, context: context, toolsHead: toolsHead),
             .body(.class("page-page"), siteHeader(active: active), main, siteFooter())
         )
     }
@@ -158,7 +167,8 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
 private func siteHead<L: Location>(
     for location: L,
     context: PublishingContext<KinNoKiLabsSite>,
-    titleOverride: String? = nil
+    titleOverride: String? = nil,
+    toolsHead: Bool = false
 ) -> Node<HTML.DocumentContext> {
     let site = context.site
     let isIndex = location.path.string.isEmpty
@@ -187,6 +197,18 @@ private func siteHead<L: Location>(
         .meta(.name("description"), .content(description)),
         .link(.attribute(named: "rel", value: "canonical"), .attribute(named: "href", value: url.absoluteString)),
         .link(.attribute(named: "rel", value: "icon"), .attribute(named: "href", value: "/logo.png")),
+        .if(toolsHead,
+            .link(
+                .attribute(named: "rel", value: "manifest"),
+                .attribute(named: "href", value: "/tools/manifest.webmanifest")
+            )
+        ),
+        .if(toolsHead,
+            .meta(
+                .name("theme-color"),
+                .content("#000000")
+            )
+        ),
         .stylesheet("/styles.css"),
         .element(named: "script", nodes: [
             .attribute(named: "src", value: "/site.js"),
@@ -219,6 +241,7 @@ private func siteHeader(active: String) -> Node<HTML.BodyContext> {
                         .class("nav-links"),
                         navLink("/", "Home", active),
                         navLink("/games", "Games", active),
+                        navLink("/tools", "Tools", active),
                         navLink("/services", "Services", active),
                         navLink("/apps", "Apps", active),
                         navLink("/posts", "Posts", active),
@@ -303,6 +326,7 @@ private func mobileMenu(active: String) -> Node<HTML.BodyContext> {
         .nav(
             mobileLink("/", "Home", active),
             mobileLink("/games", "Games", active),
+            mobileLink("/tools", "Tools", active),
             mobileLink("/services", "Services", active),
             mobileLink("/apps", "Apps", active),
             mobileLink("/posts", "Posts", active),
@@ -401,6 +425,35 @@ private func gamesMain(page: String) -> Node<HTML.BodyContext> {
         .element(named: "script", nodes: [
             .attribute(named: "type", value: "module"),
             .attribute(named: "src", value: "/games/ui.js")
+        ])
+    )
+}
+
+private func toolsMain(page: String) -> Node<HTML.BodyContext> {
+    .main(
+        .class("site-main tools-main"),
+        .attribute(named: "data-tool-page", value: page),
+        .div(
+            .class("tools-live-region"),
+            .attribute(named: "aria-live", value: "polite")
+        ),
+        .div(
+            .class("tools-app"),
+            .attribute(named: "id", value: "tools-app")
+        ),
+        .p(
+            .class("tool-privacy"),
+            .text("Runs entirely in your browser. Nothing you enter leaves this device.")
+        ),
+        .element(named: "noscript", nodes: [
+            .p(
+                .class("tool-privacy"),
+                .text("These tools need JavaScript. Everything runs and stays on your device.")
+            )
+        ]),
+        .element(named: "script", nodes: [
+            .attribute(named: "type", value: "module"),
+            .attribute(named: "src", value: "/tools/ui.js")
         ])
     )
 }

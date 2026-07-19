@@ -28,5 +28,58 @@ struct KinNoKiLabsSite: Website {
     var imagePath: Path? { nil }
 }
 
-// Generate using our custom theme with sticky navigation and modern CSS:
-try KinNoKiLabsSite().publish(withTheme: .kinNoKi)
+private enum GenerationConfigurationError: LocalizedError {
+    case missingDate(environmentKey: String)
+
+    var errorDescription: String? {
+        switch self {
+        case .missingDate(let environmentKey):
+            return "Missing or invalid \(environmentKey). Use 'make generate' or 'make preview' so generated dates come from Git history."
+        }
+    }
+}
+
+private func deterministicDate(environmentKey: String) throws -> Date {
+    let value = ProcessInfo.processInfo.environment[environmentKey]
+    guard let value,
+          let interval = TimeInterval(value),
+          interval.isFinite,
+          interval > 0 else {
+        throw GenerationConfigurationError.missingDate(environmentKey: environmentKey)
+    }
+    return Date(timeIntervalSince1970: interval)
+}
+
+private func applyDeterministicSectionDates(
+    _ dates: [KinNoKiLabsSite.SectionID: Date]
+) -> PublishingStep<KinNoKiLabsSite> {
+    .step(named: "Apply deterministic section dates") { context in
+        try context.mutateAllSections { section in
+            guard let date = dates[section.id] else {
+                throw GenerationConfigurationError.missingDate(
+                    environmentKey: "the \(section.id.rawValue) section date"
+                )
+            }
+            section.lastModified = date
+        }
+    }
+}
+
+let site = KinNoKiLabsSite()
+let rssDate = try deterministicDate(environmentKey: "KINNOKI_RSS_DATE_EPOCH")
+let sectionDates = try Dictionary(uniqueKeysWithValues: KinNoKiLabsSite.SectionID.allCases.map { id in
+    let environmentKey = "KINNOKI_\(id.rawValue.uppercased())_SECTION_DATE_EPOCH"
+    return (id, try deterministicDate(environmentKey: environmentKey))
+})
+try site.publish(using: [
+    .optional(.copyResources()),
+    .addMarkdownFiles(),
+    applyDeterministicSectionDates(sectionDates),
+    .sortItems(by: \.date, order: .descending),
+    .generateHTML(withTheme: .kinNoKi),
+    .generateRSSFeed(
+        including: Set(KinNoKiLabsSite.SectionID.allCases),
+        date: rssDate
+    ),
+    .generateSiteMap()
+])

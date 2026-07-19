@@ -1464,3 +1464,141 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   .charts-cell.is-reveal-clear { transition: none; opacity: 0; }
   .charts-clue { transition: none; }
 }
+
+/* ===== Tools (project addition) ===== */
+.tools-main {
+  max-width: 960px;
+  min-height: 60vh;
+  margin: 0 auto;
+  padding: clamp(48px, 7vw, 82px) clamp(16px, 4vw, 32px) 24px;
+}
+.tools-live-region {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.tools-app { min-width: 0; }
+.tool-shell { max-width: 700px; margin-bottom: clamp(28px, 5vw, 48px); }
+.tool-shell h1 { font-size: clamp(2.4rem, 6vw, 4.8rem); letter-spacing: -0.045em; margin-bottom: 18px; }
+.tool-lede { color: var(--game-text-secondary); font-size: clamp(1rem, 2vw, 1.15rem); }
+.tool-hub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.tool-card {
+  min-width: 0;
+  padding: clamp(22px, 3vw, 30px);
+  background: linear-gradient(155deg, color-mix(in srgb, var(--surface-2) 66%, var(--surface)), var(--surface) 58%);
+  border: 1px solid var(--separator);
+  border-top-width: 2px;
+  border-top-color: color-mix(in srgb, var(--gold-500) 42%, var(--separator));
+  border-radius: var(--radius-bento);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18), inset 0 1px rgba(255, 255, 255, 0.04);
+}
+.tool-card h2 { font-size: 1.2rem; margin-bottom: 8px; }
+.tool-card h2 a { color: var(--text); text-decoration: none; }
+.tool-card h2 a:hover { color: var(--game-text-accent); }
+.tool-card p, .tool-privacy { color: var(--game-text-secondary); }
+.tool-privacy { font-size: 0.88rem; }
+.tool-form { display: grid; gap: 16px; }
+.tool-field { display: grid; gap: 6px; }
+.tool-field label { display: block; color: var(--game-text-secondary); font-size: 0.88rem; }
+.tool-field input, .tool-field textarea, .tool-field select { width: 100%; min-height: 44px; color: var(--text); background: var(--surface-2); border: 1px solid var(--separator); border-radius: 9px; font: inherit; padding: 8px 12px; }
+.tool-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.tool-result { padding: 18px 20px; background: var(--surface); border: 1px solid var(--separator); border-radius: 12px; }
+.tool-result-strong { color: var(--game-text-accent); font-weight: 700; }
+.tool-error { padding: 18px 20px; color: #ef8d87; background: color-mix(in srgb, #9e3733 24%, var(--surface)); border: 1px solid #ef8d87; border-left-width: 4px; border-radius: 12px; }
+.tool-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.tool-tab { min-height: 44px; padding: 8px 12px; color: var(--game-text-secondary); background: var(--surface-2); border: 1px solid var(--separator); border-radius: 9px; font: inherit; }
+.tool-tab.is-active { color: var(--game-text-primary); border-color: var(--gold-500); }
+.qr-stage { max-width: 320px; padding: 16px; background: #fff; border-radius: 12px; }
+.contrast-preview { padding: 20px; background: var(--surface); border: 1px solid var(--separator); border-radius: 12px; }
+.contrast-swatch { min-width: 44px; min-height: 44px; border: 1px solid var(--separator); border-radius: 9px; }
+.tool-connectivity-status:not(:empty) { margin-top: 12px; }
+.tool-offline-chip { display: inline-flex; align-items: center; min-height: 28px; padding: 4px 10px; color: var(--game-text-accent); background: var(--fill-2); border: 1px solid var(--gold-hairline); border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 600; }
+
+.tool-form input:not([type="checkbox"]),
+.tool-form textarea,
+.tool-form select,
+.tool-form button,
+.tool-check,
+.epub-reader-controls button,
+.epub-reader-controls select,
+.epub-toc button,
+.epub-drop,
+.epub-book-card button {
+  min-height: 44px;
+}
+.tool-form input:not([type="checkbox"]),
+.tool-form textarea,
+.tool-form select,
+.epub-reader-controls select {
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--separator);
+  border-radius: 9px;
+  font: inherit;
+  padding: 8px 12px;
+}
+.tool-form button,
+.epub-reader-controls button,
+.epub-toc button,
+.epub-book-card button {
+  padding: 8px 12px;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--separator);
+  border-radius: 9px;
+  font: inherit;
+}
+.tool-check { display: flex; align-items: center; gap: 10px; }
+.epub-library-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+.epub-book-card {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-width: 0;
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--separator);
+  border-radius: 12px;
+}
+.epub-book-card img { width: 100%; max-height: 320px; object-fit: contain; border-radius: 6px; }
+.epub-drop {
+  display: grid;
+  place-items: center;
+  min-height: 112px;
+  padding: 20px;
+  color: var(--game-text-secondary);
+  background: var(--surface);
+  border: 2px dashed var(--separator);
+  border-radius: 12px;
+  cursor: pointer;
+}
+.epub-drop.is-dragover { color: var(--game-text-accent); border-color: var(--gold-500); background: var(--fill-2); }
+.epub-reader { display: grid; gap: 18px; min-width: 0; }
+.epub-reader-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.epub-chapter {
+  max-width: 70ch;
+  min-width: 0;
+  margin-inline: auto;
+  padding: clamp(18px, 4vw, 36px);
+  background: var(--surface);
+  border: 1px solid var(--separator);
+  border-radius: 12px;
+}
+.epub-chapter img { max-width: 100%; height: auto; }
+.epub-toc { display: none; padding: 16px; background: var(--surface); border: 1px solid var(--separator); border-radius: 12px; }
+.epub-toc.is-open { display: block; }
+.epub-toc ol { display: grid; gap: 8px; margin: 0; padding-left: 1.5rem; }
+.epub-toc button { width: 100%; text-align: left; }
+
+@media (min-width: 640px) {
+  .epub-library-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 900px) {
+  .epub-library-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

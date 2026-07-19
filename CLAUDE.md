@@ -12,11 +12,11 @@ We are building a static site using the Swift [Publish](https://github.com/johns
 # Generate + commit + push (Cloudflare Pages serves the committed Output/)
 make publish
 
-# Generate Output/ only, no commit/push
-make generate          # equivalent: publish generate
+# Generate Output/ deterministically, no commit/push
+make generate
 
 # Generate and serve locally at http://localhost:8000
-make preview           # equivalent: publish run
+make preview           # deterministic generation + preview server
 
 # Run the Arcade Hall JavaScript and generated-route tests
 make test-games
@@ -24,7 +24,10 @@ make test-games
 # Run the Echo Listening Room tests (player logic, catalog contract)
 make test-listen
 
-# Both JavaScript suites
+# Run the Web Tools engine, controller, PWA, and generated-route tests
+make test-tools
+
+# All three JavaScript suites
 make test
 
 # Rebuild the Listening Room catalog from the local book library
@@ -46,6 +49,7 @@ make clean             # equivalent: swift package clean
 - **`Content/`** — Markdown source files. Top-level `.md` files become pages (e.g., `about.md` → `/about`); subdirectories become sections (e.g., `Content/posts/` → `SectionID.posts`).
 - **`Resources/`** — Static assets copied verbatim to the output root. `styles.css` (dark-default tokens + light override), `site.js` (theme/font/menu/reveal behavior; also documents the no-flash snippet the theme inlines), brand + app + screenshot art under `images/{brand,apps,screenshots}`, and `OpenDyslexic-Regular.otf`. `logo.png` is kept for the favicon/og:image only.
 - **Arcade Hall** — `/games`, `/games/sudoku`, `/games/crossword`, `/games/word-search`, `/games/kinnoki-stack`, `/games/kinnoki-yard`, and `/games/kinnoki-charts` are generated from matching files under `Content/`. Shared storage, lifecycle, cargo geometry, procedural audio, and win celebration live in `Resources/games/core.js`, `controller-common.js`, `cargo-geometry.js`, `game-audio.js`, and `celebration.js` (reduced-motion-aware win celebration); DOM-free game engines and matching `*-ui.js` controllers remain separate — Kinnoki Charts (nonogram/picture-logic) adds `kinnoki-charts.js`, `kinnoki-charts-content.js` (pictogram catalog), and `kinnoki-charts-ui.js`. Store v2 keeps validated progress, typed records, repeat history, and separate music/effects preferences local to that browser; nothing is uploaded. Run `make test-games` after Arcade Hall changes.
+- **Web Tools** — `/tools` is the hub for `/tools/qr-code`, `/tools/epub-reader`, `/tools/dilution`, `/tools/contrast`, `/tools/word-count`, `/tools/unit-converter`, and `/tools/passphrase`. Theme-routed pages load `Resources/tools/ui.js`, which dynamically imports only that page's DOM-free engine and `*-ui.js` controller; `core.js` provides shared browser-safe UI, storage, connectivity, and service-worker helpers. A `/tools/`-scoped service worker plus `manifest.webmanifest` precaches the hub, all seven utilities, and required assets for offline use and installation. Preferences use the single localStorage key `kinnoki-tools:v1`; the on-device EPUB library uses IndexedDB database `kinnoki-tools-epub`; nothing is uploaded. `wordlist.js` includes the Electronic Frontier Foundation Large Wordlist under CC BY 3.0 with source attribution in the file and passphrase page. Run `make test-tools` after Web Tools changes.
 - **`Tests/games/`** — Node tests cover the pure game engines, DOM controllers, accessibility behavior, and generated routes (`hub-six-games.test.mjs` covers all six Arcade Hall cards). Run them with `make test-games` after game changes; generate the site before running route assertions directly.
 - **Echo Listening Room** — `/listen` is a hand-authored static app (not theme-generated): `Resources/listen/index.html` + `listen.css` + `listen-core.js` (DOM-free ports of Echo's `WordTokenizer`, `WordTimingInterpolator`, and `VisualListeningCueResolver` — keep these in step with the native semantics) + `listen.js` (DOM/audio/MediaSession glue). It streams one book at a time, selected by `?book=<slug>`, and reads the generated `books.json` catalog. Playback position, speed, and theme stay in that browser's `localStorage`; nothing is uploaded. Run `make test-listen` after changes.
 - **`Tests/listen/`** — Node tests cover the pure cue/timing logic, a fake-DOM drive of `listen.js` (including the figure stage and library grid), WCAG contrast of the player tokens, the catalog contract, and the builder's transaction semantics.
@@ -60,6 +64,7 @@ make clean             # equivalent: swift package clean
 
 ### Publish Conventions
 
+- **Generation dates are deterministic and `make` is the supported entry point.** `make generate` and `make preview` run `Tools/prepare-deterministic-publish.mjs`, which first fails without modifying files when `Content/` has tracked or untracked changes, then normalizes every clean `Content/**/*.md` modification time to its last Git commit. It fixes the build timezone to `America/Halifax` and passes Git-derived RSS and section-root dates into Publish. The preflight removes only Publish 0.8's derived RSS cache file because that cache key omits the explicit date and can otherwise replay stale feed bytes. This keeps every sitemap and feed date identical across days and worktrees without hand-editing `Output/`; direct `publish generate` intentionally fails closed.
 - **Site config** lives in the `Website` conformance (`url`, `name`, `description`, `language`, sections via `SectionID` enum).
 - **Sections** are declared as cases of `SectionID: String, WebsiteSectionID`. Each section maps to a subdirectory in `Content/`.
 - **Item metadata** can be added via frontmatter in content files (YAML between `---` delimiters) and parsed into `ItemMetadata`.
