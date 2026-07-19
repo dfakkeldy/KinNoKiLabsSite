@@ -9,6 +9,8 @@ const theme = readFileSync(
   'utf8',
 );
 const generated = readFileSync(new URL('../../Output/taxsale/index.html', import.meta.url), 'utf8');
+const styles = readFileSync(new URL('../../Resources/styles.css', import.meta.url), 'utf8');
+const generatedStyles = readFileSync(new URL('../../Output/styles.css', import.meta.url), 'utf8');
 
 test('publishes the short Nova Scotia tax-sale hub route', () => {
   assert.match(content, /title: Nova Scotia Tax Sale Hub/);
@@ -36,4 +38,13 @@ test('shows truthful format status and connects the existing app page', () => {
   assert.match(generated, /\/apps\/nsmarksthespot\/map\//);
   assert.match(generated, /\/images\/taxsale\/og\.png/);
   assert.match(appContent, /\[Nova Scotia Tax Sale Hub\]\(\/taxsale\/\)/);
+});
+
+test('uses the live map palette across source and generated styles', () => {
+  for (const color of ['#12343b', '#2f80ed', '#be4d3c', '#718b56', '#e7a86b', '#eef7f5']) {
+    assert.match(styles, new RegExp(color), `${color} must remain in the tax-sale palette`);
+  }
+  assert.match(styles, /\.tax-map-section\s*\{[^}]*background-color: var\(--tax-water-soft\)/);
+  assert.match(styles, /\.tax-format-card:nth-child\(3\)[^}]*var\(--tax-lavender\)/);
+  assert.equal(generatedStyles, styles, 'generated CSS must match the reviewed source palette');
 });

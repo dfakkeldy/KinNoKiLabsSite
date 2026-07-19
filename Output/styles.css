@@ -1605,26 +1605,44 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 
 /* ===== Nova Scotia tax-sale hub ===== */
 .page-tax-sale {
-  --tax-paper: #0a0a09;
-  --tax-sheet: #131311;
-  --tax-ink: #f2efe7;
-  --tax-muted: #aaa79f;
-  --tax-line: #3c3a35;
-  --tax-faint: #24231f;
-  --tax-inverse: #11110f;
-  --tax-accent: #d6d0c3;
+  --tax-paper: #0b252b;
+  --tax-sheet: #12343b;
+  --tax-ink: #fbf6ea;
+  --tax-muted: #bdd2d1;
+  --tax-line: #85b5ff4f;
+  --tax-faint: #18434b;
+  --tax-inverse: #fff;
+  --tax-accent: #2f80ed;
+  --tax-accent-strong: #85b5ff;
+  --tax-teal: #12343b;
+  --tax-deep-water: #0a4f5c;
+  --tax-blue: #2f80ed;
+  --tax-water: #b7dce3;
+  --tax-water-soft: #0a4f5c;
+  --tax-peach: #e7a86b;
+  --tax-survey-red: #be4d3c;
+  --tax-red: #ef7564;
+  --tax-lichen: #718b56;
+  --tax-lavender: #d69be8;
+  --tax-map-grid: #d69be836;
+  --tax-map-wash: #2f80ed24;
   --tax-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
 }
 
 [data-theme="light"] .page-tax-sale {
-  --tax-paper: #efede6;
-  --tax-sheet: #faf8f1;
-  --tax-ink: #11110f;
-  --tax-muted: #5d5a54;
-  --tax-line: #b9b5aa;
-  --tax-faint: #dedad0;
-  --tax-inverse: #f8f6ef;
-  --tax-accent: #4f4d48;
+  --tax-paper: #eef7f5;
+  --tax-sheet: #fff;
+  --tax-ink: #12343b;
+  --tax-muted: #4c686d;
+  --tax-line: #12343b38;
+  --tax-faint: #d9eeed;
+  --tax-inverse: #fff;
+  --tax-accent: #2f80ed;
+  --tax-accent-strong: #165fb9;
+  --tax-water-soft: #b7dce3;
+  --tax-red: #a93c2e;
+  --tax-map-grid: #d69be852;
+  --tax-map-wash: #2f80ed1f;
 }
 
 .page-tax-sale .site-footer { margin-top: 0; }
@@ -1654,6 +1672,15 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   text-transform: uppercase;
 }
 
+.tax-kicker::before {
+  content: '';
+  display: block;
+  width: 72px;
+  height: 4px;
+  margin-bottom: 16px;
+  background: linear-gradient(90deg, var(--tax-blue) 0 34%, var(--tax-lavender) 34% 67%, var(--tax-lichen) 67%);
+}
+
 .tax-hero {
   position: relative;
   min-height: min(850px, calc(100svh - 64px));
@@ -1661,6 +1688,10 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   align-items: center;
   padding: clamp(70px, 10vw, 130px) 0;
   border-bottom: 1px solid var(--tax-line);
+  background-color: var(--tax-paper);
+  background-image:
+    radial-gradient(circle at 84% 17%, var(--tax-map-wash), transparent 31%),
+    linear-gradient(145deg, transparent 0 72%, #718b5624 72% 82%, transparent 82%);
 }
 
 .tax-hero::before {
@@ -1670,8 +1701,9 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   pointer-events: none;
   opacity: 0.42;
   background-image:
-    linear-gradient(var(--tax-faint) 1px, transparent 1px),
-    linear-gradient(90deg, var(--tax-faint) 1px, transparent 1px);
+    linear-gradient(var(--tax-map-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--tax-map-grid) 1px, transparent 1px),
+    linear-gradient(28deg, transparent 48%, var(--tax-map-grid) 49%, transparent 50%);
   background-size: 60px 60px;
   mask-image: linear-gradient(to right, transparent 0%, #000 56%, #000 100%);
 }
@@ -1693,6 +1725,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   letter-spacing: -0.064em;
   text-wrap: balance;
 }
+.tax-hero h1 em { color: var(--tax-accent-strong); }
 
 .tax-lede {
   max-width: 690px;
@@ -1710,17 +1743,17 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   justify-content: center;
   gap: 18px;
   padding: 0 21px;
-  border: 1px solid var(--tax-ink);
-  border-radius: 0;
+  border: 1px solid var(--tax-blue);
+  border-radius: 6px;
   font-size: 0.91rem;
   font-weight: 650;
   text-decoration: none;
   transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
 }
 .tax-button:hover { transform: translateY(-2px); }
-.tax-button-solid { color: var(--tax-inverse); background: var(--tax-ink); }
-.tax-button-line { color: var(--tax-ink); background: transparent; }
-.tax-button-line:hover { color: var(--tax-inverse); background: var(--tax-ink); }
+.tax-button-solid { color: var(--tax-inverse); background: var(--tax-blue); }
+.tax-button-line { color: var(--tax-accent-strong); background: transparent; }
+.tax-button-line:hover { color: var(--tax-inverse); background: var(--tax-deep-water); border-color: var(--tax-deep-water); }
 .tax-refreshed { margin: 28px 0 0; color: var(--tax-muted); font: 0.69rem var(--font-mono); }
 
 .tax-desk {
@@ -1729,7 +1762,8 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   color: var(--tax-ink);
   background: var(--tax-sheet);
   border: 1px solid var(--tax-line);
-  box-shadow: 17px 19px 0 var(--tax-faint);
+  border-top: 7px solid var(--tax-blue);
+  box-shadow: 17px 19px 0 color-mix(in srgb, var(--tax-peach) 68%, var(--tax-faint));
   transform: rotate(1deg);
 }
 
@@ -1751,7 +1785,8 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   padding: 20px 0;
   border-top: 1px solid var(--tax-line);
 }
-.tax-desk-day { font-family: var(--tax-display); font-size: 4.3rem; line-height: 0.8; }
+.tax-desk-day { color: var(--tax-red); font-family: var(--tax-display); font-size: 4.3rem; line-height: 0.8; }
+.tax-desk-date:nth-of-type(3) .tax-desk-day { color: var(--tax-accent-strong); }
 .tax-desk-date strong { display: block; font-size: 1.25rem; }
 .tax-desk-date small { display: block; margin-top: 6px; color: var(--tax-muted); font: 0.68rem var(--font-mono); }
 .tax-desk-rule { margin: 4px 0 18px; border-top: 1px solid var(--tax-line); }
@@ -1793,7 +1828,9 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   text-align: center;
   background: var(--tax-sheet);
   border: 1px solid var(--tax-line);
+  border-top: 6px solid var(--tax-survey-red);
 }
+.tax-date-card:nth-of-type(even) .tax-date-calendar { border-top-color: var(--tax-blue); }
 .tax-date-calendar span,
 .tax-date-calendar small { display: block; font: 0.65rem var(--font-mono); letter-spacing: 0.12em; }
 .tax-date-calendar strong { display: block; margin: 7px 0 3px; font-family: var(--tax-display); font-size: 4rem; font-weight: 400; line-height: 0.85; }
@@ -1804,12 +1841,12 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .tax-status { color: var(--tax-muted); font: 0.65rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
 .tax-status::before { content: '○'; margin-right: 7px; }
 .tax-status-active,
-.tax-status-soon { color: var(--tax-ink); }
+.tax-status-soon { color: var(--tax-red); }
 .tax-status-active::before,
 .tax-status-soon::before { content: '●'; }
 .tax-date-actions { display: grid; gap: 14px; justify-items: start; }
 .tax-date-actions a,
-.tax-format-card a { color: var(--tax-ink); font-size: 0.82rem; font-weight: 650; text-decoration: none; border-bottom: 1px solid currentColor; }
+.tax-format-card a { color: var(--tax-accent-strong); font-size: 0.82rem; font-weight: 650; text-decoration: none; border-bottom: 1px solid currentColor; }
 .tax-date-actions a:hover,
 .tax-format-card a:hover { color: var(--tax-muted); }
 
@@ -1819,13 +1856,16 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   gap: 28px;
   margin-top: 36px;
   padding: 24px 28px;
-  background: var(--tax-faint);
-  border-left: 3px solid var(--tax-ink);
+  background: color-mix(in srgb, var(--tax-peach) 18%, var(--tax-sheet));
+  border-left: 4px solid var(--tax-survey-red);
 }
 .tax-notice strong { font-family: var(--tax-display); font-size: 1.25rem; font-weight: 400; }
 .tax-notice p { color: var(--tax-muted); font-size: 0.9rem; line-height: 1.65; }
 
-.tax-map-section { background: var(--tax-sheet); }
+.tax-map-section {
+  background-color: var(--tax-water-soft);
+  background-image: linear-gradient(118deg, transparent 0 62%, #d69be81f 62% 63%, transparent 63%);
+}
 .tax-split { align-items: start; }
 .tax-split-copy { max-width: 690px; }
 .tax-facts { margin: 46px 0 30px; list-style: none; border-top: 1px solid var(--tax-line); }
@@ -1843,7 +1883,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   align-items: center;
   gap: 14px;
   padding-bottom: 4px;
-  color: var(--tax-ink);
+  color: var(--tax-accent-strong);
   border-bottom: 1px solid currentColor;
   font-size: 0.88rem;
   font-weight: 650;
@@ -1863,6 +1903,9 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   border: 1px solid var(--tax-line);
 }
 .tax-format-card { min-height: 405px; padding: clamp(26px, 4vw, 46px); background: var(--tax-sheet); }
+.tax-format-card:nth-child(1) { border-top: 6px solid var(--tax-lichen); }
+.tax-format-card:nth-child(2) { border-top: 6px solid var(--tax-blue); }
+.tax-format-card:nth-child(3) { border-top: 6px solid var(--tax-lavender); }
 .tax-format-number { margin-bottom: 54px; color: var(--tax-muted); font: 0.7rem var(--font-mono); }
 .tax-format-card h3 { margin: 22px 0 16px; font-family: var(--tax-display); font-size: clamp(1.85rem, 2.7vw, 2.6rem); font-weight: 400; }
 .tax-format-card > p:not(.tax-format-number, .tax-status) { min-height: 112px; color: var(--tax-muted); font-size: 0.92rem; line-height: 1.68; }
@@ -1881,19 +1924,25 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 }
 .tax-source-list span { color: var(--tax-muted); font: 0.67rem var(--font-mono); text-transform: uppercase; }
 .tax-source-list strong { font-size: 0.95rem; font-weight: 570; }
-.tax-source-list b { font-weight: 400; transition: transform 160ms ease; }
+.tax-source-list b { color: var(--tax-accent-strong); font-weight: 400; transition: transform 160ms ease; }
 .tax-source-list a:hover b { transform: translate(3px, -3px); }
 
-.tax-boundary { padding: clamp(92px, 13vw, 180px) 0; color: #f5f2ea; background: #10100f; }
+.tax-boundary { padding: clamp(92px, 13vw, 180px) 0; color: #eef7f5; background: var(--tax-teal); }
 .tax-boundary .tax-kicker,
-.tax-boundary-grid > div { color: #aaa79f; }
-.tax-boundary h2 { color: #f5f2ea; margin: 0; font-size: clamp(3.2rem, 6.4vw, 6.8rem); line-height: 0.93; letter-spacing: -0.056em; }
+.tax-boundary-grid > div { color: #bdd2d1; }
+.tax-boundary h2 { color: #fbf6ea; margin: 0; font-size: clamp(3.2rem, 6.4vw, 6.8rem); line-height: 0.93; letter-spacing: -0.056em; }
 .tax-boundary-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(270px, 0.6fr); gap: 52px 100px; }
 .tax-boundary-grid > .tax-kicker { grid-column: 1 / -1; }
 .tax-boundary-grid > div { align-self: end; }
 .tax-boundary-grid > div p + p { margin-top: 22px; }
 
-.tax-final { padding: clamp(105px, 15vw, 205px) 0; text-align: center; }
+.tax-final {
+  padding: clamp(105px, 15vw, 205px) 0;
+  text-align: center;
+  background-image:
+    radial-gradient(circle at 12% 80%, #718b562b, transparent 30%),
+    radial-gradient(circle at 86% 18%, var(--tax-map-wash), transparent 34%);
+}
 .tax-final h2 { margin: 0; font-size: clamp(3.55rem, 7.5vw, 7.8rem); line-height: 0.89; letter-spacing: -0.061em; }
 .tax-final-actions { justify-content: center; }
 .tax-fine-print { max-width: 760px; margin: 40px auto 0; color: var(--tax-muted); font-size: 0.7rem; }
@@ -1963,4 +2012,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   .tax-sale-main h2,
   .tax-sale-main h3,
   .tax-boundary h2 { color: #111; }
+  .tax-hero,
+  .tax-map-section,
+  .tax-final { background-image: none; }
 }
