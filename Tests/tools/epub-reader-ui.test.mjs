@@ -493,6 +493,55 @@ test('uses contextual labels, focuses destructive confirmation, and restores foc
   });
 });
 
+test('moves focus to the import control after a successful deletion', async () => {
+  await mountedTool(async ({ fixture }) => {
+    await importThroughInput(fixture.root, epubFile(bookFixture()));
+    findButton(fixture.root, 'Delete').click();
+    findButton(fixture.root.querySelector('.epub-delete-confirm'), 'Delete book').click();
+    await waitFor(() => fixture.root.querySelector('.epub-book-card') === null, 'book deletion');
+
+    const input = fixture.root.querySelector('input[type=file]');
+    assert.ok(input);
+    assert.equal(fixture.document.activeElement, input);
+  });
+});
+
+test('unregisters confirmation listeners across repeated cancel and failure cycles', async () => {
+  const listenerCount = (node) => node.listeners.get('click')?.length ?? 0;
+  await mountedTool(async ({ fixture, idb }) => {
+    await importThroughInput(fixture.root, epubFile(bookFixture()));
+    const remove = findButton(fixture.root, 'Delete');
+
+    for (let cycle = 0; cycle < 3; cycle += 1) {
+      remove.click();
+      const confirmation = fixture.root.querySelector('.epub-delete-confirm');
+      const cancel = findButton(confirmation, 'Cancel');
+      const confirm = findButton(confirmation, 'Delete book');
+      assert.equal(listenerCount(cancel), 1);
+      assert.equal(listenerCount(confirm), 1);
+
+      cancel.click();
+
+      assert.equal(listenerCount(cancel), 0);
+      assert.equal(listenerCount(confirm), 0);
+    }
+
+    for (let cycle = 0; cycle < 3; cycle += 1) {
+      idb.failNext('delete', new Error(`delete blocked ${cycle}`));
+      remove.click();
+      const confirmation = fixture.root.querySelector('.epub-delete-confirm');
+      const cancel = findButton(confirmation, 'Cancel');
+      const confirm = findButton(confirmation, 'Delete book');
+      confirm.click();
+      await waitFor(() => listenerCount(confirm) === 0, 'failed confirmation cleanup');
+
+      assert.equal(listenerCount(cancel), 0);
+      assert.equal(listenerCount(confirm), 0);
+      assert.equal(remove.listeners.get('click')?.length ?? 0, 1);
+    }
+  });
+});
+
 test('disposal revokes cover URLs held by the mounted library', async () => {
   await mountedTool(async ({ fixture, urls, dispose }) => {
     await importThroughInput(fixture.root, epubFile(bookFixture()));

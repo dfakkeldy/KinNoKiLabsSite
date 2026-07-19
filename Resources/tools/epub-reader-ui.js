@@ -242,7 +242,13 @@ export function renderEpubTool(root, deps = {}) {
 
   const listen = (target, type, handler) => {
     target.addEventListener(type, handler);
-    const cleanup = () => target.removeEventListener(type, handler);
+    let listening = true;
+    const cleanup = () => {
+      if (!listening) return;
+      listening = false;
+      target.removeEventListener(type, handler);
+      viewCleanups.delete(cleanup);
+    };
     viewCleanups.add(cleanup);
     return cleanup;
   };
@@ -425,7 +431,7 @@ export function renderEpubTool(root, deps = {}) {
     }
   };
 
-  const addDeleteConfirmation = (card, book, status, trigger) => {
+  const addDeleteConfirmation = (card, book, status, trigger, onClose) => {
     card.querySelector('.epub-delete-confirm')?.remove();
     const confirmation = element('div', {
       class: 'epub-delete-confirm', role: 'group', 'aria-label': `Delete ${book.title}?`, ownerDocument: doc,
@@ -445,29 +451,39 @@ export function renderEpubTool(root, deps = {}) {
       cancel,
       confirm,
     );
-    listen(cancel, 'click', () => {
+    const confirmationCleanups = new Set();
+    const closeConfirmation = ({ restoreFocus = false } = {}) => {
+      for (const cleanup of confirmationCleanups) cleanup();
+      confirmationCleanups.clear();
       confirmation.remove();
-      trigger.focus?.();
-    });
-    listen(confirm, 'click', async () => {
+      onClose();
+      if (restoreFocus) trigger.focus?.();
+    };
+    confirmationCleanups.add(listen(cancel, 'click', () => {
+      closeConfirmation({ restoreFocus: true });
+    }));
+    confirmationCleanups.add(listen(confirm, 'click', async () => {
       const token = ++revision;
       confirm.disabled = true;
       try {
         await deleteBook(await libraryDb(), book.id);
+        closeConfirmation();
         if (!current(token)) return;
         revokeLibraryUrl(book.id);
         announce(`${book.title} removed from your library.`);
         await renderLibrary();
+        if (!disposed) body.querySelector('input[type=file]')?.focus?.();
       } catch {
+        closeConfirmation();
         if (current(token)) {
-          confirm.disabled = false;
           showLibraryError(status, READER_ERRORS.storage);
-          confirm.focus?.();
+          trigger.focus?.();
         }
       }
-    });
+    }));
     card.append(confirmation);
     confirm.focus?.();
+    return closeConfirmation;
   };
 
   const renderBookCard = (book, position, status) => {
@@ -491,8 +507,14 @@ export function renderEpubTool(root, deps = {}) {
     const remove = element('button', {
       type: 'button', text: 'Delete', 'aria-label': `Delete ${book.title}`, ownerDocument: doc,
     });
+    let closeConfirmation = null;
     listen(open, 'click', () => { void openBook(book.id); });
-    listen(remove, 'click', () => addDeleteConfirmation(card, book, status, remove));
+    listen(remove, 'click', () => {
+      closeConfirmation?.();
+      closeConfirmation = addDeleteConfirmation(card, book, status, remove, () => {
+        closeConfirmation = null;
+      });
+    });
     card.append(
       element('h2', { text: book.title, ownerDocument: doc }),
       element('p', { class: 'epub-book-author', text: book.author, ownerDocument: doc }),
