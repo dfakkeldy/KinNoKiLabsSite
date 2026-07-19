@@ -1,5 +1,5 @@
 /* KinNoKi Labs — site behavior (theme, a11y font, mobile menu, reveal)
-   Load with <script src="/site.js" defer></script>.
+   Load with <script src="/site.js?v=20260719" defer></script>.
    IMPORTANT: also inline the no-flash snippet in <head> BEFORE styles.css:
 
    <script>
@@ -15,7 +15,17 @@
 (function () {
   'use strict';
 
-  var root = document.documentElement;
+  // Some Safari/WebView versions expose querySelectorAll results without
+  // NodeList.prototype.forEach. A plain indexed loop keeps every control from
+  // losing its handler when that compatibility method is unavailable.
+  function forEachElement(collection, callback) {
+    for (var index = 0; index < collection.length; index += 1) {
+      callback(collection[index]);
+    }
+  }
+
+  function initializeSite() {
+    var root = document.documentElement;
 
   /* ── Theme toggle (dark default, explicit choice persisted) ── */
   function currentTheme() {
@@ -24,14 +34,14 @@
   function applyTheme(t) {
     root.setAttribute('data-theme', t);
     try { localStorage.setItem('kinnoki-theme', t); } catch (e) {}
-    document.querySelectorAll('.theme-toggle').forEach(function (btn) {
+    forEachElement(document.querySelectorAll('.theme-toggle'), function (btn) {
       btn.setAttribute('aria-pressed', t === 'dark' ? 'true' : 'false');
       var sun = btn.querySelector('.icon-sun'), moon = btn.querySelector('.icon-moon');
       if (sun) sun.style.display = t === 'dark' ? 'block' : 'none';
       if (moon) moon.style.display = t === 'dark' ? 'none' : 'block';
     });
   }
-  document.querySelectorAll('.theme-toggle').forEach(function (btn) {
+  forEachElement(document.querySelectorAll('.theme-toggle'), function (btn) {
     btn.addEventListener('click', function () {
       applyTheme(currentTheme() === 'dark' ? 'light' : 'dark');
     });
@@ -42,12 +52,12 @@
   function applyFont(on) {
     document.body.classList.toggle('font-opendyslexic', on);
     try { localStorage.setItem('kinnoki-dyslexic', on ? 'true' : 'false'); } catch (e) {}
-    document.querySelectorAll('.font-toggle').forEach(function (btn) {
+    forEachElement(document.querySelectorAll('.font-toggle'), function (btn) {
       btn.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
   }
   try { applyFont(localStorage.getItem('kinnoki-dyslexic') === 'true'); } catch (e) {}
-  document.querySelectorAll('.font-toggle').forEach(function (btn) {
+  forEachElement(document.querySelectorAll('.font-toggle'), function (btn) {
     btn.addEventListener('click', function () {
       applyFont(!document.body.classList.contains('font-opendyslexic'));
     });
@@ -56,10 +66,10 @@
   /* ── Mobile menu ────────────────────────────────────── */
   var menu = document.querySelector('.mobile-menu');
   if (menu) {
-    document.querySelectorAll('.nav-burger').forEach(function (btn) {
+    forEachElement(document.querySelectorAll('.nav-burger'), function (btn) {
       btn.addEventListener('click', function () { menu.classList.add('open'); });
     });
-    menu.querySelectorAll('.menu-close, nav a').forEach(function (el) {
+    forEachElement(menu.querySelectorAll('.menu-close, nav a'), function (el) {
       el.addEventListener('click', function () { menu.classList.remove('open'); });
     });
     document.addEventListener('keydown', function (e) {
@@ -78,8 +88,15 @@
         }
       });
     }, { threshold: 0.08 });
-    document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+    forEachElement(document.querySelectorAll('.reveal'), function (el) { io.observe(el); });
   } else {
-    document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('revealed'); });
+    forEachElement(document.querySelectorAll('.reveal'), function (el) { el.classList.add('revealed'); });
+  }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeSite);
+  } else {
+    initializeSite();
   }
 })();

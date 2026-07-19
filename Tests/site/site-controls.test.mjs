@@ -33,6 +33,12 @@ function button() {
   };
 }
 
+function legacyNodeList(items) {
+  const collection = { length: items.length };
+  items.forEach((item, index) => { collection[index] = item; });
+  return collection;
+}
+
 function runSiteScript(savedFont) {
   const fontButtons = [button(), button(), button()];
   const body = { classList: classList() };
@@ -79,6 +85,105 @@ test('saved OpenDyslexic state and every duplicate toggle stay synchronized', ()
   assert.deepEqual(fontButtons.map((item) => item.getAttribute('aria-pressed')), ['true', 'true', 'true']);
 });
 
+test('site controls initialize when Safari returns NodeLists without forEach', () => {
+  const themeButton = button();
+  const fontButton = button();
+  const burgerButton = button();
+  const closeButton = button();
+  const menuLink = button();
+  const body = { classList: classList() };
+  const menu = {
+    classList: classList(),
+    querySelectorAll() { return legacyNodeList([closeButton, menuLink]); },
+  };
+  const rootAttributes = new Map([['data-theme', 'dark']]);
+  const storage = new Map();
+  const localStorage = {
+    getItem(key) { return storage.get(key) ?? null; },
+    setItem(key, value) { storage.set(key, String(value)); },
+  };
+  const collections = new Map([
+    ['.theme-toggle', legacyNodeList([themeButton])],
+    ['.font-toggle', legacyNodeList([fontButton])],
+    ['.nav-burger', legacyNodeList([burgerButton])],
+    ['.reveal', legacyNodeList([])],
+  ]);
+  const document = {
+    body,
+    documentElement: {
+      classList: classList(),
+      getAttribute(name) { return rootAttributes.get(name) ?? null; },
+      setAttribute(name, value) { rootAttributes.set(name, String(value)); },
+    },
+    querySelector(selector) { return selector === '.mobile-menu' ? menu : null; },
+    querySelectorAll(selector) { return collections.get(selector) ?? legacyNodeList([]); },
+    addEventListener() {},
+  };
+  const window = { matchMedia: () => ({ matches: true }) };
+
+  assert.doesNotThrow(() => {
+    vm.runInNewContext(siteScript, { document, window, localStorage }, { filename: 'site.js' });
+  });
+
+  themeButton.click();
+  assert.equal(rootAttributes.get('data-theme'), 'light');
+  fontButton.click();
+  assert.equal(body.classList.contains('font-opendyslexic'), true);
+  burgerButton.click();
+  assert.equal(menu.classList.contains('open'), true);
+  closeButton.click();
+  assert.equal(menu.classList.contains('open'), false);
+});
+
+test('site controls wait for the DOM when a mobile browser ignores defer timing', () => {
+  const themeButton = button();
+  const fontButton = button();
+  const burgerButton = button();
+  const closeButton = button();
+  const menu = {
+    classList: classList(),
+    querySelectorAll() { return [closeButton]; },
+  };
+  const body = { classList: classList() };
+  const rootAttributes = new Map([['data-theme', 'dark']]);
+  let domReady = false;
+  let domReadyCallback;
+  const document = {
+    body: null,
+    readyState: 'loading',
+    documentElement: {
+      classList: classList(),
+      getAttribute(name) { return rootAttributes.get(name) ?? null; },
+      setAttribute(name, value) { rootAttributes.set(name, String(value)); },
+    },
+    querySelector(selector) { return domReady && selector === '.mobile-menu' ? menu : null; },
+    querySelectorAll(selector) {
+      if (!domReady) return [];
+      if (selector === '.theme-toggle') return [themeButton];
+      if (selector === '.font-toggle') return [fontButton];
+      if (selector === '.nav-burger') return [burgerButton];
+      return [];
+    },
+    addEventListener(type, callback) {
+      if (type === 'DOMContentLoaded') domReadyCallback = callback;
+    },
+  };
+  const localStorage = { getItem() { return null; }, setItem() {} };
+  const window = { matchMedia: () => ({ matches: true }) };
+
+  vm.runInNewContext(siteScript, { document, window, localStorage }, { filename: 'site.js' });
+  domReady = true;
+  document.body = body;
+  domReadyCallback?.();
+
+  themeButton.click();
+  assert.equal(rootAttributes.get('data-theme'), 'light');
+  fontButton.click();
+  assert.equal(body.classList.contains('font-opendyslexic'), true);
+  burgerButton.click();
+  assert.equal(menu.classList.contains('open'), true);
+});
+
 function fontToggleTags(html) {
   return html.match(/<button\b[^>]*class="[^"]*font-toggle[^"]*"[^>]*>/g) ?? [];
 }
@@ -88,6 +193,9 @@ test('static and generated font controls start with deterministic pressed state'
   const swiftTheme = readFileSync(new URL('../../Sources/KinNoKiLabsSite/Theme/KinNoKiTheme.swift', import.meta.url), 'utf8');
   const generatedHome = readFileSync(new URL('../../Output/index.html', import.meta.url), 'utf8');
   const generatedListen = readFileSync(new URL('../../Output/listen/index.html', import.meta.url), 'utf8');
+
+  assert.match(swiftTheme, /value: "\/site\.js\?v=20260719"/);
+  assert.match(generatedHome, /src="\/site\.js\?v=20260719"/);
 
   const staticTags = fontToggleTags(staticListen);
   assert.equal(staticTags.length, 1);

@@ -211,7 +211,7 @@ private func siteHead<L: Location>(
         ),
         .stylesheet("/styles.css"),
         .element(named: "script", nodes: [
-            .attribute(named: "src", value: "/site.js"),
+            .attribute(named: "src", value: "/site.js?v=20260719"),
             // Non-empty value: Plot omits empty-valued attributes, and without
             // `defer` this head script would run before <body> exists.
             .attribute(named: "defer", value: "defer")
