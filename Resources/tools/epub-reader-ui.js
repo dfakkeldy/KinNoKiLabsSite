@@ -33,6 +33,13 @@ const FONT_OPTIONS = Object.freeze([
   Object.freeze({ id: 'OpenDyslexic', label: 'OpenDyslexic', css: 'OpenDyslexic, sans-serif' }),
 ]);
 const LINE_HEIGHTS = Object.freeze(['1.4', '1.6', '1.8']);
+const RESOURCE_LIMITS = Object.freeze({
+  epubBytes: 256 * 1024 * 1024,
+  zipEntries: 10_000,
+  chapterBytes: 4 * 1024 * 1024,
+  chapterImages: 256,
+  chapterImageBytes: 32 * 1024 * 1024,
+});
 const mountedControllers = new WeakMap();
 const persistenceRequests = new WeakSet();
 
@@ -42,6 +49,11 @@ const READER_ERRORS = Object.freeze({
   inflate: 'This EPUB reader needs a newer browser with built-in ZIP decompression.',
   unsupported: 'This EPUB uses unsupported compression and cannot be opened here.',
   storage: "We couldn't save that EPUB to this browser's local library.",
+  'file-too-large': 'This EPUB is too large to open safely in this browser.',
+  'too-many-entries': 'This EPUB contains too many files to open safely.',
+  'chapter-too-large': 'This chapter is too large to open safely.',
+  'too-many-images': 'This chapter contains too many images to open safely.',
+  'images-too-large': "This chapter's images are too large to open safely.",
 });
 
 function codedError(code) {
@@ -73,6 +85,7 @@ function messageFor(error) {
     return READER_ERRORS.unsupported;
   }
   if (error?.code === 'storage') return READER_ERRORS.storage;
+  if (READER_ERRORS[error?.code]) return READER_ERRORS[error.code];
   return READER_ERRORS.corrupt;
 }
 
@@ -96,10 +109,22 @@ function parserError(documentNode) {
   return String(documentNode?.documentElement?.localName ?? '').toLowerCase() === 'parsererror';
 }
 
+function escapeMarkup(text) {
+  return String(text)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
 function parsedBody(parser, text) {
   if (!parser?.parseFromString) throw codedError('bad-chapter');
   let parsed = parser.parseFromString(text, 'application/xhtml+xml');
-  if (parserError(parsed)) parsed = parser.parseFromString(text, 'text/html');
+  if (parserError(parsed)) {
+    const inertMarkup = `<html><body><pre>${escapeMarkup(text)}</pre></body></html>`;
+    parsed = parser.parseFromString(inertMarkup, 'text/html');
+  }
   if (parserError(parsed)) throw codedError('bad-chapter');
   const body = parsed?.body ?? parsed?.querySelector?.('body');
   if (!body) throw codedError('bad-chapter');
@@ -107,7 +132,7 @@ function parsedBody(parser, text) {
 }
 
 function imageReferences(root) {
-  const references = new Set();
+  const references = [];
   const stack = [...(root?.childNodes ?? [])];
   let visited = 0;
   while (stack.length > 0 && visited < 10_000) {
@@ -116,11 +141,38 @@ function imageReferences(root) {
     if (node?.nodeType !== 1) continue;
     if (String(node.tagName).toLowerCase() === 'img') {
       const src = node.getAttribute?.('src');
-      if (typeof src === 'string' && src) references.add(src);
+      if (typeof src === 'string' && src) {
+        references.push(src);
+        if (references.length > RESOURCE_LIMITS.chapterImages) {
+          throw codedError('too-many-images');
+        }
+      }
     }
     for (const child of node.childNodes ?? []) stack.push(child);
   }
   return references;
+}
+
+function stripChapterIds(root) {
+  const stack = [...(root?.childNodes ?? root?.children ?? [])];
+  while (stack.length > 0) {
+    const node = stack.pop();
+    if (node?.nodeType !== 1 && typeof node?.tagName !== 'string') continue;
+    node.removeAttribute?.('id');
+    for (const child of node.childNodes ?? node.children ?? []) stack.push(child);
+  }
+}
+
+function assertFileBudget(file) {
+  if (Number.isFinite(file?.size) && file.size > RESOURCE_LIMITS.epubBytes) {
+    throw codedError('file-too-large');
+  }
+}
+
+function assertBufferBudget(buffer) {
+  if (Number(buffer?.byteLength) > RESOURCE_LIMITS.epubBytes) {
+    throw codedError('file-too-large');
+  }
 }
 
 function scrollFraction(root) {
@@ -154,6 +206,10 @@ export function renderEpubTool(root, deps = {}) {
   const canInflate = typeof inflate === 'function' || (!hasInjectedInflate && supportsInflate());
   const setIntervalFn = deps.setInterval ?? globalThis.setInterval?.bind(globalThis);
   const clearIntervalFn = deps.clearInterval ?? globalThis.clearInterval?.bind(globalThis);
+  const idFactory = deps.idFactory ?? (() => (
+    globalThis.crypto?.randomUUID?.()
+      ?? `epub-${Date.now()}-${Math.random().toString(16).slice(2)}`
+  ));
 
   let prefs = deps.prefs ?? openToolPrefs(storage);
   let readerPrefs = toolPrefs(prefs, 'epub-reader');
@@ -171,6 +227,8 @@ export function renderEpubTool(root, deps = {}) {
   let session = null;
   let intervalHandle = null;
   let dirtyScroll = false;
+  let positionWrites = Promise.resolve();
+  let disposalPromise = null;
   const viewCleanups = new Set();
   const libraryUrls = new Map();
   const chapterUrls = new Set();
@@ -242,6 +300,7 @@ export function renderEpubTool(root, deps = {}) {
 
   const parseArchive = async (buffer, includeToc = false) => {
     const zip = parseZip(buffer);
+    if (zip.entries.size > RESOURCE_LIMITS.zipEntries) throw codedError('too-many-entries');
     if ([...zip.entries.values()].some((entry) => entry.encrypted)
       || zip.entries.has('META-INF/encryption.xml')) {
       throw codedError('drm');
@@ -266,6 +325,17 @@ export function renderEpubTool(root, deps = {}) {
       }
     }
     return { buffer, zip, pkg, toc };
+  };
+
+  const uniqueBookId = async (library, token) => {
+    for (let attempt = 0; attempt < 8; attempt += 1) {
+      const candidate = idFactory(attempt);
+      if (typeof candidate !== 'string' || candidate.length < 1 || candidate.length > 256) continue;
+      const existing = await getBook(library, candidate);
+      if (!current(token)) return null;
+      if (!existing) return candidate;
+    }
+    throw codedError('storage');
   };
 
   const saveReaderPrefs = (patch) => {
@@ -302,7 +372,9 @@ export function renderEpubTool(root, deps = {}) {
     input.disabled = true;
     try {
       if (!file || typeof file.arrayBuffer !== 'function') throw codedError('bad-entry');
+      assertFileBudget(file);
       const buffer = await file.arrayBuffer();
+      assertBufferBudget(buffer);
       if (!current(token)) return;
       const archive = await parseArchive(buffer, false);
       if (!current(token)) return;
@@ -318,8 +390,8 @@ export function renderEpubTool(root, deps = {}) {
       }
       const library = await libraryDb();
       if (!current(token)) return;
-      const randomId = globalThis.crypto?.randomUUID?.()
-        ?? `epub-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      const randomId = await uniqueBookId(library, token);
+      if (!randomId || !current(token)) return;
       try {
         await addBook(library, {
           id: randomId,
@@ -353,35 +425,49 @@ export function renderEpubTool(root, deps = {}) {
     }
   };
 
-  const addDeleteConfirmation = (card, book, status) => {
+  const addDeleteConfirmation = (card, book, status, trigger) => {
     card.querySelector('.epub-delete-confirm')?.remove();
     const confirmation = element('div', {
       class: 'epub-delete-confirm', role: 'group', 'aria-label': `Delete ${book.title}?`, ownerDocument: doc,
     });
-    const cancel = element('button', { type: 'button', text: 'Cancel', ownerDocument: doc });
+    const cancel = element('button', {
+      type: 'button', text: 'Cancel', 'aria-label': `Cancel deleting ${book.title}`, ownerDocument: doc,
+    });
     const confirm = element('button', {
-      type: 'button', class: 'tool-danger', text: 'Delete book', ownerDocument: doc,
+      type: 'button',
+      class: 'tool-danger',
+      text: 'Delete book',
+      'aria-label': `Delete ${book.title} permanently`,
+      ownerDocument: doc,
     });
     confirmation.append(
       element('p', { text: 'Remove this book and its saved position?', ownerDocument: doc }),
       cancel,
       confirm,
     );
-    listen(cancel, 'click', () => confirmation.remove());
+    listen(cancel, 'click', () => {
+      confirmation.remove();
+      trigger.focus?.();
+    });
     listen(confirm, 'click', async () => {
       const token = ++revision;
       confirm.disabled = true;
-      revokeLibraryUrl(book.id);
       try {
         await deleteBook(await libraryDb(), book.id);
         if (!current(token)) return;
+        revokeLibraryUrl(book.id);
         announce(`${book.title} removed from your library.`);
         await renderLibrary();
       } catch {
-        if (current(token)) showLibraryError(status, READER_ERRORS.storage);
+        if (current(token)) {
+          confirm.disabled = false;
+          showLibraryError(status, READER_ERRORS.storage);
+          confirm.focus?.();
+        }
       }
     });
     card.append(confirmation);
+    confirm.focus?.();
   };
 
   const renderBookCard = (book, position, status) => {
@@ -399,10 +485,14 @@ export function renderEpubTool(root, deps = {}) {
         // Metadata remains usable if the browser cannot make a cover URL.
       }
     }
-    const open = element('button', { type: 'button', text: 'Open', ownerDocument: doc });
-    const remove = element('button', { type: 'button', text: 'Delete', ownerDocument: doc });
+    const open = element('button', {
+      type: 'button', text: 'Open', 'aria-label': `Open ${book.title}`, ownerDocument: doc,
+    });
+    const remove = element('button', {
+      type: 'button', text: 'Delete', 'aria-label': `Delete ${book.title}`, ownerDocument: doc,
+    });
     listen(open, 'click', () => { void openBook(book.id); });
-    listen(remove, 'click', () => addDeleteConfirmation(card, book, status));
+    listen(remove, 'click', () => addDeleteConfirmation(card, book, status, remove));
     card.append(
       element('h2', { text: book.title, ownerDocument: doc }),
       element('p', { class: 'epub-book-author', text: book.author, ownerDocument: doc }),
@@ -515,41 +605,84 @@ export function renderEpubTool(root, deps = {}) {
     root.scrollTo({ top: maximum * fraction, behavior: 'auto' });
   };
 
-  const checkpoint = async (spineIndex = session?.spineIndex, fraction = scrollFraction(root)) => {
-    if (!session || !Number.isInteger(spineIndex)) return;
-    await savePosition(await libraryDb(), {
-      bookId: session.book.id,
+  const positionSnapshot = (
+    spineIndex = session?.spineIndex,
+    fraction = scrollFraction(root),
+  ) => {
+    const active = session;
+    if (!active || !Number.isInteger(spineIndex)) return null;
+    return Object.freeze({
+      bookId: active.book.id,
       spineIndex,
       scrollFraction: Math.min(1, Math.max(0, Number(fraction) || 0)),
       updatedAt: Date.now(),
+      revision,
     });
   };
 
+  const enqueueCheckpoint = (snapshot) => {
+    if (!snapshot) return positionWrites;
+    const { revision: capturedRevision, ...position } = snapshot;
+    positionWrites = positionWrites.catch(() => {}).then(async () => {
+      // Retain the captured revision as part of the immutable write intent. Writes are
+      // serialized rather than cancelled, so a later chapter cannot overtake this one.
+      void capturedRevision;
+      await savePosition(await libraryDb(), position);
+    });
+    return positionWrites;
+  };
+
   const prepareImages = async (sourceRoot, chapterHref, token) => {
+    const active = session;
+    if (!active) return null;
     const imageUrls = new Map();
+    const hrefUrls = new Map();
     const created = new Set();
-    for (const reference of imageReferences(sourceRoot)) {
-      if (!current(token)) break;
-      let href;
-      try {
-        href = resolveZipPath(chapterHref, reference);
-      } catch {
-        continue;
-      }
-      if (!session.zip.entries.has(href)) continue;
-      try {
-        const data = await archiveEntry(session.buffer, session.zip, href);
+    let declaredBytes = 0;
+    let materializedBytes = 0;
+    try {
+      for (const reference of imageReferences(sourceRoot)) {
         if (!current(token)) break;
-        const url = urlFactory.create(new Blob([data], { type: mimeFor(session.pkg, href) }));
-        if (!current(token)) {
-          revoke(url);
-          break;
+        let href;
+        try {
+          href = resolveZipPath(chapterHref, reference);
+        } catch {
+          continue;
         }
-        imageUrls.set(reference, url);
-        created.add(url);
-      } catch {
-        // A broken image is omitted without making the readable text unavailable.
+        const cachedUrl = hrefUrls.get(href);
+        if (cachedUrl) {
+          imageUrls.set(reference, cachedUrl);
+          continue;
+        }
+        const entry = active.zip.entries.get(href);
+        if (!entry) continue;
+        declaredBytes += Math.max(0, Number(entry.uncompressedSize) || 0);
+        if (declaredBytes > RESOURCE_LIMITS.chapterImageBytes) {
+          throw codedError('images-too-large');
+        }
+        try {
+          const data = await archiveEntry(active.buffer, active.zip, href);
+          materializedBytes += data.byteLength;
+          if (materializedBytes > RESOURCE_LIMITS.chapterImageBytes) {
+            throw codedError('images-too-large');
+          }
+          if (!current(token)) break;
+          const url = urlFactory.create(new Blob([data], { type: mimeFor(active.pkg, href) }));
+          if (!current(token)) {
+            revoke(url);
+            break;
+          }
+          hrefUrls.set(href, url);
+          imageUrls.set(reference, url);
+          created.add(url);
+        } catch (error) {
+          if (error?.code === 'images-too-large') throw error;
+          // A broken image is omitted without making the readable text unavailable.
+        }
       }
+    } catch (error) {
+      for (const url of created) revoke(url);
+      throw error;
     }
     if (!current(token)) {
       for (const url of created) revoke(url);
@@ -581,11 +714,14 @@ export function renderEpubTool(root, deps = {}) {
     const token = ++revision;
     const oldIndex = session.spineIndex;
     const oldFraction = scrollFraction(root);
+    const previousPosition = saveCurrent
+      ? positionSnapshot(oldIndex, oldFraction)
+      : null;
     revokeChapterUrls();
     session.chapter.replaceChildren(element('p', { text: 'Loading chapter…', ownerDocument: doc }));
-    if (saveCurrent && Number.isInteger(oldIndex)) {
+    if (previousPosition) {
       try {
-        await checkpoint(oldIndex, oldFraction);
+        await enqueueCheckpoint(previousPosition);
       } catch {
         // The requested chapter remains readable even if a checkpoint fails.
       }
@@ -593,11 +729,22 @@ export function renderEpubTool(root, deps = {}) {
     }
 
     const spine = session.pkg.spine[index];
+    let prepared = null;
+    let transferredUrls = false;
     try {
-      const markup = await archiveText(session.buffer, session.zip, spine.href);
+      const chapterEntry = session.zip.entries.get(spine.href);
+      if (!chapterEntry) throw codedError('bad-entry');
+      if (Number(chapterEntry.uncompressedSize) > RESOURCE_LIMITS.chapterBytes) {
+        throw codedError('chapter-too-large');
+      }
+      const chapterBytes = await archiveEntry(session.buffer, session.zip, spine.href);
+      if (chapterBytes.byteLength > RESOURCE_LIMITS.chapterBytes) {
+        throw codedError('chapter-too-large');
+      }
+      const markup = UTF8.decode(chapterBytes);
       if (!current(token)) return;
       const sourceRoot = parsedBody(parser, markup);
-      const prepared = await prepareImages(sourceRoot, spine.href, token);
+      prepared = await prepareImages(sourceRoot, spine.href, token);
       if (!prepared || !current(token)) return;
       const sanitized = sanitizeChapter(sourceRoot, {
         createElement: (tag) => element(tag, { ownerDocument: doc }),
@@ -614,30 +761,30 @@ export function renderEpubTool(root, deps = {}) {
             : null;
         },
       });
-      if (!current(token)) {
-        for (const url of prepared.created) revoke(url);
-        return;
-      }
+      stripChapterIds(sanitized);
+      if (!current(token)) return;
       session.spineIndex = index;
       dirtyScroll = false;
       try {
-        await checkpoint(index, restoreFraction);
+        await enqueueCheckpoint(positionSnapshot(index, restoreFraction));
       } catch {
         // Position saving is best effort; chapter rendering is still useful.
       }
-      if (!current(token)) {
-        for (const url of prepared.created) revoke(url);
-        return;
-      }
-      for (const url of prepared.created) chapterUrls.add(url);
+      if (!current(token)) return;
       session.chapter.replaceChildren(sanitized);
       applyTypography(session.chapter);
       session.previous.disabled = index === 0;
       session.next.disabled = index === session.pkg.spine.length - 1;
       restoreScroll(restoreFraction);
       announce(`Opened chapter ${index + 1} of ${session.pkg.spine.length}.`);
+      for (const url of prepared.created) chapterUrls.add(url);
+      transferredUrls = true;
     } catch (error) {
       if (current(token)) readerError(session.chapter, error);
+    } finally {
+      if (prepared && !transferredUrls) {
+        for (const url of prepared.created) revoke(url);
+      }
     }
   }
 
@@ -724,7 +871,9 @@ export function renderEpubTool(root, deps = {}) {
     };
 
     listen(back, 'click', () => {
-      void checkpoint().catch(() => {});
+      const finalPosition = positionSnapshot();
+      dirtyScroll = false;
+      void enqueueCheckpoint(finalPosition).catch(() => {});
       void renderLibrary();
     });
     listen(tocButton, 'click', () => {
@@ -778,8 +927,9 @@ export function renderEpubTool(root, deps = {}) {
     if (typeof setIntervalFn === 'function') {
       intervalHandle = setIntervalFn(() => {
         if (!dirtyScroll || !session || disposed) return;
+        const pendingPosition = positionSnapshot();
         dirtyScroll = false;
-        void checkpoint().catch(() => {});
+        void enqueueCheckpoint(pendingPosition).catch(() => {});
       }, 1_000);
     }
 
@@ -803,7 +953,9 @@ export function renderEpubTool(root, deps = {}) {
       const library = await libraryDb();
       const book = await getBook(library, bookId);
       if (!book?.file?.arrayBuffer) throw codedError('bad-entry');
+      assertFileBudget(book.file);
       const buffer = await book.file.arrayBuffer();
+      assertBufferBudget(buffer);
       if (!current(token)) return;
       const archive = await parseArchive(buffer, true);
       if (!current(token)) return;
@@ -824,7 +976,10 @@ export function renderEpubTool(root, deps = {}) {
   }
 
   const dispose = () => {
-    if (disposed) return;
+    if (disposalPromise) return disposalPromise;
+    const finalPosition = dirtyScroll ? positionSnapshot() : null;
+    dirtyScroll = false;
+    if (finalPosition) enqueueCheckpoint(finalPosition);
     disposed = true;
     revision += 1;
     clearView();
@@ -832,6 +987,12 @@ export function renderEpubTool(root, deps = {}) {
     revokeChapterUrls();
     session = null;
     if (mountedControllers.get(root) === dispose) mountedControllers.delete(root);
+    const pendingConnection = dbPromise;
+    disposalPromise = positionWrites.catch(() => {}).then(async () => {
+      const connection = db ?? (pendingConnection ? await pendingConnection.catch(() => null) : null);
+      try { connection?.close?.(); } catch { /* Closing is best effort during teardown. */ }
+    });
+    return disposalPromise;
   };
   mountedControllers.set(root, dispose);
   void renderLibrary();

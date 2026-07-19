@@ -40,13 +40,14 @@ function buildZip(entries) {
     const compressed = method === 8
       ? Uint8Array.from(zlib.deflateRawSync(plain))
       : plain;
+    const uncompressedSize = description.uncompressedSize ?? plain.length;
     const localHeader = record(30, (view) => {
       view.setUint32(0, 0x04034b50, true);
       view.setUint16(4, 20, true);
       view.setUint16(6, flags, true);
       view.setUint16(8, method, true);
       view.setUint32(18, compressed.length, true);
-      view.setUint32(22, plain.length, true);
+      view.setUint32(22, uncompressedSize, true);
       view.setUint16(26, name.length, true);
     });
     const localRecord = joinBytes(localHeader, name, compressed);
@@ -59,7 +60,7 @@ function buildZip(entries) {
       view.setUint16(8, flags, true);
       view.setUint16(10, method, true);
       view.setUint32(20, compressed.length, true);
-      view.setUint32(24, plain.length, true);
+      view.setUint32(24, uncompressedSize, true);
       view.setUint16(28, name.length, true);
       view.setUint32(42, localOffset, true);
     });
@@ -111,6 +112,9 @@ function bookFixture({
   inlineMethod = 0,
   encrypted = false,
   unsupported = false,
+  chapterMarkup = '<html><body><h1>Chapter One</h1><img src="images/inline.png" /></body></html>',
+  chapterSize,
+  extraEntries = [],
 } = {}) {
   return buildZip([
     { name: 'mimetype', data: 'application/epub+zip' },
@@ -119,13 +123,15 @@ function bookFixture({
     { name: 'OPS/nav.xhtml', data: nav },
     {
       name: 'OPS/ch1.xhtml',
-      data: '<html><body><h1>Chapter One</h1><img src="images/inline.png" /></body></html>',
+      data: chapterMarkup,
       method: unsupported ? 12 : chapterMethod,
       flags: encrypted ? 1 : 0,
+      uncompressedSize: chapterSize,
     },
     { name: 'OPS/ch2.xhtml', data: '<html><body><h1>Chapter Two</h1></body></html>' },
     { name: 'OPS/images/cover.png', data: [137, 80, 78, 71] },
     { name: 'OPS/images/inline.png', data: [1, 2, 3, 4], method: inlineMethod },
+    ...extraEntries,
   ]);
 }
 
@@ -182,6 +188,24 @@ function parserStub({ parserErrorFirst = false } = {}) {
   };
 }
 
+function parserWithBody(body) {
+  const calls = [];
+  return {
+    calls,
+    parseFromString(markup, type) {
+      calls.push({ markup, type });
+      return {
+        body,
+        querySelector(selector) {
+          if (selector === 'parsererror') return null;
+          if (selector === 'body') return body;
+          return null;
+        },
+      };
+    },
+  };
+}
+
 const inflateWithNode = async (input) => Uint8Array.from(zlib.inflateRawSync(input));
 
 const storageFixture = () => {
@@ -210,6 +234,33 @@ const urlRecorder = () => {
     },
   };
 };
+
+function closeRecordingIndexedDb() {
+  const base = fakeIndexedDb();
+  let closeCalls = 0;
+  return {
+    get transactions() { return base.transactions; },
+    failNext: base.failNext.bind(base),
+    failAfter: base.failAfter.bind(base),
+    inspect: base.inspect.bind(base),
+    get closeCalls() { return closeCalls; },
+    open(...args) {
+      const request = base.open(...args);
+      let success;
+      Object.defineProperty(request, 'onsuccess', {
+        configurable: true,
+        get() { return success; },
+        set(callback) {
+          success = (event) => {
+            request.result.close = () => { closeCalls += 1; };
+            callback?.(event);
+          };
+        },
+      });
+      return request;
+    },
+  };
+}
 
 const waitFor = async (predicate, message = 'condition') => {
   for (let attempt = 0; attempt < 80; attempt += 1) {
@@ -271,7 +322,7 @@ async function mountedTool(run, overrides = {}) {
       fixture, idb, storage, urls, parser, announcements, storageCalls, dispose,
     });
   } finally {
-    dispose?.();
+    await dispose?.();
     restore();
   }
 }
@@ -352,6 +403,34 @@ test('maps corrupt, encrypted/DRM, and unsupported archives to distinct messages
   });
 });
 
+test('rejects oversized whole files before reading their bytes', async () => {
+  await mountedTool(async ({ fixture }) => {
+    let reads = 0;
+    const file = {
+      name: 'huge.epub',
+      size: 512 * 1024 * 1024,
+      async arrayBuffer() { reads += 1; return bookFixture(); },
+    };
+
+    await importThroughInput(fixture.root, file);
+
+    assert.equal(reads, 0);
+    assert.match(fixture.root.querySelector('.tool-error').textContent, /too large/i);
+  });
+});
+
+test('rejects archives with an excessive ZIP entry count', async () => {
+  const extras = Array.from({ length: 10_050 }, (_, index) => ({
+    name: `OPS/extras/${index}.txt`, data: [],
+  }));
+  await mountedTool(async ({ fixture }) => {
+    await importThroughInput(fixture.root, epubFile(bookFixture({ extraEntries: extras })));
+
+    assert.match(fixture.root.querySelector('.tool-error')?.textContent ?? '', /too many files/i);
+    assert.equal(fixture.root.querySelector('.epub-book-card'), null);
+  });
+});
+
 test('deletes only after a two-button inline confirmation and revokes its cover URL', async () => {
   await mountedTool(async ({ fixture, urls }) => {
     fixture.window.confirm = () => assert.fail('window.confirm must not be called');
@@ -372,6 +451,45 @@ test('deletes only after a two-button inline confirmation and revokes its cover 
     await waitFor(() => fixture.root.querySelector('.epub-book-card') === null, 'book deletion');
     assert.match(fixture.root.textContent, /No books yet/);
     assert.ok(urls.revoked.includes(coverUrl));
+  });
+});
+
+test('keeps a cover URL alive when IndexedDB deletion fails', async () => {
+  await mountedTool(async ({ fixture, idb, urls }) => {
+    await importThroughInput(fixture.root, epubFile(bookFixture()));
+    const cover = fixture.root.querySelector('.epub-book-card img');
+    const coverUrl = cover.getAttribute('src');
+    idb.failNext('delete', new Error('delete blocked'));
+
+    findButton(fixture.root, 'Delete').click();
+    findButton(fixture.root.querySelector('.epub-delete-confirm'), 'Delete book').click();
+    await waitFor(() => fixture.root.querySelector('.tool-error'), 'delete failure');
+
+    assert.ok(fixture.root.querySelector('.epub-book-card'));
+    assert.equal(cover.getAttribute('src'), coverUrl);
+    assert.equal(urls.revoked.includes(coverUrl), false);
+  });
+});
+
+test('uses contextual labels, focuses destructive confirmation, and restores focus on cancel', async () => {
+  await mountedTool(async ({ fixture }) => {
+    await importThroughInput(fixture.root, epubFile(bookFixture()));
+    const card = fixture.root.querySelector('.epub-book-card');
+    const open = findButton(card, 'Open');
+    const remove = findButton(card, 'Delete');
+    assert.equal(open.getAttribute('aria-label'), 'Open Fixture Book');
+    assert.equal(remove.getAttribute('aria-label'), 'Delete Fixture Book');
+    remove.focus();
+    remove.click();
+
+    const confirmation = card.querySelector('.epub-delete-confirm');
+    const confirm = findButton(confirmation, 'Delete book');
+    const cancel = findButton(confirmation, 'Cancel');
+    assert.equal(confirm.getAttribute('aria-label'), 'Delete Fixture Book permanently');
+    assert.equal(cancel.getAttribute('aria-label'), 'Cancel deleting Fixture Book');
+    assert.equal(fixture.document.activeElement, confirm);
+    cancel.click();
+    assert.equal(fixture.document.activeElement, remove);
   });
 });
 
@@ -417,6 +535,22 @@ test('persistent storage is requested only once across controller remounts', asy
     assert.equal(persistCalls, 1);
     nextDispose();
   }, { idb, navigator });
+});
+
+test('retries injected book IDs after a collision without overwriting the existing book', async () => {
+  const generated = ['shared-id', 'shared-id', 'unique-id'];
+  await mountedTool(async ({ fixture, idb }) => {
+    await importThroughInput(fixture.root, epubFile(bookFixture({ title: 'First Book' })));
+    const picker = fixture.root.querySelector('input[type=file]');
+    picker.files = [epubFile(bookFixture({ title: 'Second Book' }), 'second.epub')];
+    picker.dispatchEvent(new FixtureEvent('change'));
+    await waitFor(() => fixture.root.querySelectorAll('.epub-book-card').length === 2, 'collision-safe import');
+
+    const records = idb.inspect('kinnoki-tools-epub').stores.get('books').records;
+    assert.deepEqual([...records.keys()].sort(), ['shared-id', 'unique-id']);
+    assert.equal(records.get('shared-id').title, 'First Book');
+    assert.equal(records.get('unique-id').title, 'Second Book');
+  }, { idFactory: () => generated.shift() });
 });
 
 test('opens, sanitizes, navigates by controls/link/TOC, and revokes chapter URLs', async () => {
@@ -487,6 +621,135 @@ test('falls back from XHTML parsererror to HTML parsing', async () => {
   }, { domParser });
 });
 
+test('passes only an inert escaped representation to the malformed-HTML fallback parser', async () => {
+  const domParser = parserStub({ parserErrorFirst: true });
+  const malicious = `<html><body>
+    <img src="https://tracker.invalid/pixel">
+    <iframe src="https://tracker.invalid/frame"></iframe>
+    <link rel="stylesheet" href="https://tracker.invalid/style.css">
+    <style>@import "https://tracker.invalid/import.css";</style>
+    <p>Readable fallback text</p>
+  </body></html>`;
+  await mountedTool(async ({ fixture }) => {
+    await importThroughInput(fixture.root, epubFile(bookFixture({ chapterMarkup: malicious })));
+    findButton(fixture.root, 'Open').click();
+    await waitFor(() => domParser.calls.length >= 2, 'resource-neutral HTML fallback');
+
+    const fallback = domParser.calls[1];
+    assert.equal(fallback.type, 'text/html');
+    assert.match(fallback.markup, /<pre>/i);
+    assert.match(fallback.markup, /&lt;img/i);
+    assert.doesNotMatch(
+      fallback.markup,
+      /<(?:img|iframe|link|style|source|video|audio|object|embed)\b/i,
+    );
+  }, { domParser });
+});
+
+test('revokes prepared image URLs when sanitizer element creation throws', async () => {
+  const urls = urlRecorder();
+  await mountedTool(async ({ fixture }) => {
+    await importThroughInput(fixture.root, epubFile(bookFixture()));
+    const originalCreateElement = fixture.document.createElement.bind(fixture.document);
+    fixture.document.createElement = (tag) => {
+      if (urls.created.length >= 2 && tag.toLowerCase() === 'div') {
+        throw new Error('sanitizer factory failed');
+      }
+      return originalCreateElement(tag);
+    };
+
+    findButton(fixture.root, 'Open').click();
+    await waitFor(() => fixture.root.querySelector('.epub-chapter .tool-error'), 'sanitizer failure');
+
+    const preparedUrl = urls.created.at(-1).url;
+    assert.ok(urls.revoked.includes(preparedUrl));
+  }, { urls });
+});
+
+test('rejects oversized chapter markup before DOM parsing', async () => {
+  const domParser = parserStub();
+  await mountedTool(async ({ fixture }) => {
+    await importThroughInput(fixture.root, epubFile(bookFixture({
+      chapterSize: 8 * 1024 * 1024,
+    })));
+    findButton(fixture.root, 'Open').click();
+    await waitFor(() => fixture.root.querySelector('.epub-chapter .tool-error'), 'chapter size error');
+
+    assert.match(fixture.root.querySelector('.epub-chapter .tool-error').textContent, /chapter is too large/i);
+    assert.equal(domParser.calls.length, 0);
+  }, { domParser });
+});
+
+test('rejects chapters with too many image elements', async () => {
+  const body = source('body', {}, Array.from({ length: 300 }, (_, index) => (
+    source('img', { src: `images/missing-${index}.png`, alt: '' })
+  )));
+  const domParser = parserWithBody(body);
+  await mountedTool(async ({ fixture }) => {
+    await importThroughInput(fixture.root, epubFile(bookFixture()));
+    findButton(fixture.root, 'Open').click();
+    await waitFor(() => fixture.root.querySelector('.epub-chapter .tool-error'), 'image count error');
+
+    assert.match(fixture.root.querySelector('.epub-chapter .tool-error').textContent, /too many images/i);
+  }, { domParser });
+});
+
+test('rejects chapters whose referenced images exceed the aggregate byte budget', async () => {
+  const entries = [
+    {
+      name: 'OPS/images/large.png',
+      data: [1],
+      uncompressedSize: 33 * 1024 * 1024,
+    },
+    { name: 'OPS/images/safe.png', data: [2] },
+  ];
+  const body = source('body', {}, [
+    source('img', { src: 'images/large.png', alt: '' }),
+    source('img', { src: 'images/safe.png', alt: '' }),
+  ]);
+  const domParser = parserWithBody(body);
+  const urls = urlRecorder();
+  await mountedTool(async ({ fixture }) => {
+    await importThroughInput(fixture.root, epubFile(bookFixture({ extraEntries: entries })));
+    findButton(fixture.root, 'Open').click();
+    await waitFor(() => fixture.root.querySelector('.epub-chapter .tool-error'), 'aggregate image size error');
+
+    assert.match(fixture.root.querySelector('.epub-chapter .tool-error').textContent, /images are too large/i);
+    const preparedUrls = urls.created.slice(1).map(({ url }) => url);
+    assert.ok(preparedUrls.length > 0);
+    assert.deepEqual(preparedUrls.filter((url) => !urls.revoked.includes(url)), []);
+  }, { domParser, urls });
+});
+
+test('caches chapter images by normalized ZIP href across source aliases', async () => {
+  const body = source('body', {}, [
+    source('img', { src: 'images/inline.png', alt: 'First' }),
+    source('img', { src: './images/inline.png', alt: 'Second' }),
+  ]);
+  const domParser = parserWithBody(body);
+  const urls = urlRecorder();
+  await mountedTool(async ({ fixture }) => {
+    await importThroughInput(fixture.root, epubFile(bookFixture()));
+    findButton(fixture.root, 'Open').click();
+    await waitFor(() => fixture.root.querySelectorAll('.epub-chapter img').length === 2, 'aliased images');
+
+    const images = fixture.root.querySelectorAll('.epub-chapter img');
+    assert.equal(images[0].getAttribute('src'), images[1].getAttribute('src'));
+  }, { domParser, urls });
+});
+
+test('strips untrusted chapter IDs while internal spine links remain navigable', async () => {
+  await mountedTool(async ({ fixture }) => {
+    await importThroughInput(fixture.root, epubFile(bookFixture()));
+    findButton(fixture.root, 'Open').click();
+    await waitFor(() => fixture.root.querySelector('.epub-chapter h1'), 'chapter with source ID');
+
+    assert.equal(fixture.root.querySelector('.epub-chapter [id=start]'), null);
+    fixture.root.querySelector('.epub-chapter a[data-spine-href]').click();
+    await waitFor(() => fixture.root.querySelector('.epub-chapter').textContent.includes('Chapter Two'), 'spine link after ID stripping');
+  });
+});
+
 test('persists reader preferences and interval-ticked dirty scroll without a timeout', async () => {
   await mountedTool(async ({ fixture, storage, idb }) => {
     await importThroughInput(fixture.root, epubFile(bookFixture()));
@@ -524,6 +787,47 @@ test('persists reader preferences and interval-ticked dirty scroll without a tim
       return stored?.scrollFraction === 0.5;
     }, 'interval scroll checkpoint');
   });
+});
+
+test('Back to library flushes a dirty checkpoint captured before session teardown', async () => {
+  await mountedTool(async ({ fixture, idb }) => {
+    await importThroughInput(fixture.root, epubFile(bookFixture()));
+    findButton(fixture.root, 'Open').click();
+    await waitFor(() => fixture.root.querySelector('.epub-chapter h1'), 'reader before Back');
+    fixture.root.scrollTop = 300;
+    fixture.root.scrollHeight = 900;
+    fixture.root.clientHeight = 300;
+    fixture.root.dispatchEvent(new FixtureEvent('scroll', { bubbles: false }));
+
+    findButton(fixture.root, 'Back to library').click();
+    await waitFor(() => fixture.root.querySelector('.epub-library-grid'), 'library after dirty Back');
+    await waitFor(() => (
+      [...idb.inspect('kinnoki-tools-epub').stores.get('positions').records.values()][0]
+        ?.scrollFraction === 0.5
+    ), 'captured Back checkpoint');
+  });
+});
+
+test('dispose serializes dirty checkpoints and closes IndexedDB after the final write', async () => {
+  const idb = closeRecordingIndexedDb();
+  await mountedTool(async ({ fixture, dispose }) => {
+    await importThroughInput(fixture.root, epubFile(bookFixture()));
+    findButton(fixture.root, 'Open').click();
+    await waitFor(() => fixture.root.querySelector('.epub-chapter h1'), 'reader before disposal');
+    fixture.root.scrollTop = 100;
+    fixture.root.scrollHeight = 500;
+    fixture.root.clientHeight = 100;
+    fixture.root.dispatchEvent(new FixtureEvent('scroll', { bubbles: false }));
+    fixture.tickIntervals();
+    fixture.root.scrollTop = 300;
+    fixture.root.dispatchEvent(new FixtureEvent('scroll', { bubbles: false }));
+
+    await dispose();
+
+    const position = [...idb.inspect('kinnoki-tools-epub').stores.get('positions').records.values()][0];
+    assert.equal(position.scrollFraction, 0.75);
+    assert.equal(idb.closeCalls, 1);
+  }, { idb });
 });
 
 test('restores saved spine and scroll position after a full controller remount', async () => {
