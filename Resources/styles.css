@@ -1516,4 +1516,5 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .qr-stage { max-width: 320px; padding: 16px; background: #fff; border-radius: 12px; }
 .contrast-preview { padding: 20px; background: var(--surface); border: 1px solid var(--separator); border-radius: 12px; }
 .contrast-swatch { min-width: 44px; min-height: 44px; border: 1px solid var(--separator); border-radius: 9px; }
+.tool-connectivity-status:not(:empty) { margin-top: 12px; }
 .tool-offline-chip { display: inline-flex; align-items: center; min-height: 28px; padding: 4px 10px; color: var(--game-text-accent); background: var(--fill-2); border: 1px solid var(--gold-hairline); border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 600; }

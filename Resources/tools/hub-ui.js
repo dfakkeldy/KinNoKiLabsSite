@@ -19,7 +19,8 @@ export function renderToolsHub(root) {
   root.append(
     element('header', { class: 'tool-shell', ownerDocument: doc },
       element('h1', { text: 'Web tools', ownerDocument: doc }),
-      element('p', { class: 'tool-lede', text: 'Small, fast utilities. They load once, work offline, and keep everything on your device.', ownerDocument: doc })),
+      element('p', { class: 'tool-lede', text: 'Small, fast utilities. They load once, work offline, and keep everything on your device.', ownerDocument: doc }),
+      element('div', { class: 'tool-connectivity-status', 'data-tool-connectivity': '', ownerDocument: doc })),
     element('div', { class: 'tool-hub-grid', ownerDocument: doc }, ...cards)
   );
 }

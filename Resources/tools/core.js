@@ -72,7 +72,8 @@ export function toolShell(root, { title, lede }) {
     element('header', { class: 'tool-shell', ownerDocument: doc },
       element('h1', { text: title, ownerDocument: doc }),
       element('p', { class: 'tool-lede', text: lede, ownerDocument: doc }),
-      element('p', { class: 'tool-privacy', text: 'Runs entirely in your browser. Nothing you enter leaves this device.', ownerDocument: doc })),
+      element('p', { class: 'tool-privacy', text: 'Runs entirely in your browser. Nothing you enter leaves this device.', ownerDocument: doc }),
+      element('div', { class: 'tool-connectivity-status', 'data-tool-connectivity': '', ownerDocument: doc })),
     body);
   return body;
 }
@@ -89,7 +90,25 @@ export function watchConnectivity(target, onChange) {
   return () => { target.removeEventListener('online', notify); target.removeEventListener('offline', notify); };
 }
 
+export function updateToolsConnectivity(root, isOnline) {
+  const slot = root?.querySelector?.('[data-tool-connectivity]');
+  if (!slot) return;
+  const current = slot.querySelector('.tool-offline-chip');
+  if (isOnline) {
+    current?.remove();
+    return;
+  }
+  if (current) return;
+  const doc = root.ownerDocument ?? document;
+  slot.append(element('span', {
+    class: 'tool-offline-chip',
+    role: 'status',
+    text: 'Offline — everything here still works',
+    ownerDocument: doc,
+  }));
+}
+
 export function registerToolsServiceWorker(container = globalThis.navigator?.serviceWorker) {
   if (!container?.register) return;
-  container.register('/tools/sw.js').catch(() => {});
+  container.register('/tools/sw.js', { scope: '/tools/' }).catch(() => {});
 }
