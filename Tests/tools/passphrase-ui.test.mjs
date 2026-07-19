@@ -85,6 +85,7 @@ test('mounts two pressed-state tabs and an on-demand passphrase form with EFF at
   assert.equal(tabs.length, 2);
   assert.deepEqual(tabs.map((tab) => tab.textContent), ['Passphrase', 'Random string']);
   assert.deepEqual(tabs.map((tab) => tab.getAttribute('aria-pressed')), ['true', 'false']);
+  assert.deepEqual(tabs.map((tab) => tab.classList.contains('is-active')), [true, false]);
 
   const words = field(fixture.root, 'words');
   assert.deepEqual(words.querySelectorAll('option').map((option) => option.value), ['3', '4', '5', '6', '7', '8']);
@@ -132,6 +133,7 @@ test('generates random strings from injected randomness, copies through the inje
   await withTool(async ({ fixture, storage, announcements }) => {
     fixture.root.querySelectorAll('.tool-tab')[1].click();
     assert.deepEqual(fixture.root.querySelectorAll('.tool-tab').map((tab) => tab.getAttribute('aria-pressed')), ['false', 'true']);
+    assert.deepEqual(fixture.root.querySelectorAll('.tool-tab').map((tab) => tab.classList.contains('is-active')), [false, true]);
     change(fixture.root, 'length', '6');
     toggle(fixture.root, 'upper', false);
     toggle(fixture.root, 'digits', false);

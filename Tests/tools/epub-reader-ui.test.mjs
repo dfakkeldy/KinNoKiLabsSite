@@ -29,6 +29,20 @@ const record = (length, write) => {
   return output;
 };
 
+const crcTable = Uint32Array.from({ length: 256 }, (_, value) => {
+  let crc = value;
+  for (let bit = 0; bit < 8; bit += 1) {
+    crc = (crc >>> 1) ^ ((crc & 1) ? 0xedb88320 : 0);
+  }
+  return crc >>> 0;
+});
+
+const crc32 = (data) => {
+  let crc = 0xffffffff;
+  for (const byte of data) crc = (crc >>> 8) ^ crcTable[(crc ^ byte) & 0xff];
+  return (crc ^ 0xffffffff) >>> 0;
+};
+
 function buildZip(entries) {
   const local = [];
   const central = [];
@@ -41,12 +55,14 @@ function buildZip(entries) {
     const compressed = method === 8
       ? Uint8Array.from(zlib.deflateRawSync(plain))
       : plain;
+    const checksum = crc32(plain);
     const uncompressedSize = description.uncompressedSize ?? plain.length;
     const localHeader = record(30, (view) => {
       view.setUint32(0, 0x04034b50, true);
       view.setUint16(4, 20, true);
       view.setUint16(6, flags, true);
       view.setUint16(8, method, true);
+      view.setUint32(14, checksum, true);
       view.setUint32(18, compressed.length, true);
       view.setUint32(22, uncompressedSize, true);
       view.setUint16(26, name.length, true);
@@ -60,6 +76,7 @@ function buildZip(entries) {
       view.setUint16(6, 20, true);
       view.setUint16(8, flags, true);
       view.setUint16(10, method, true);
+      view.setUint32(16, checksum, true);
       view.setUint32(20, compressed.length, true);
       view.setUint32(24, uncompressedSize, true);
       view.setUint16(28, name.length, true);
@@ -303,6 +320,16 @@ async function mountedTool(run, overrides = {}) {
       async persist() { storageCalls.persist += 1; return true; },
     },
   };
+  const viewport = overrides.viewport ?? {
+    scrollTop: 0,
+    scrollHeight: 0,
+    clientHeight: 0,
+    scrolls: [],
+  };
+  const scrollTarget = overrides.scrollTarget ?? fixture.window;
+  if (typeof scrollTarget.scrollTo !== 'function') {
+    scrollTarget.scrollTo = (options) => viewport.scrolls.push(options);
+  }
   let dispose;
   try {
     dispose = renderEpubTool(fixture.root, {
@@ -313,6 +340,8 @@ async function mountedTool(run, overrides = {}) {
       domParser: parser,
       urlFactory: urls.factory,
       navigator,
+      scrollTarget,
+      scrollMetrics: overrides.scrollMetrics ?? (() => viewport),
       ...overrides,
     });
     await waitFor(
@@ -320,7 +349,7 @@ async function mountedTool(run, overrides = {}) {
       'initial EPUB library',
     );
     await run({
-      fixture, idb, storage, urls, parser, announcements, storageCalls, dispose,
+      fixture, idb, storage, urls, parser, announcements, storageCalls, viewport, scrollTarget, dispose,
     });
   } finally {
     await dispose?.();
@@ -652,7 +681,7 @@ test('retries injected book IDs after a collision without overwriting the existi
 });
 
 test('opens, sanitizes, navigates by controls/link/TOC, and revokes chapter URLs', async () => {
-  await mountedTool(async ({ fixture, urls, parser, idb }) => {
+  await mountedTool(async ({ fixture, urls, parser, idb, scrollTarget }) => {
     await importThroughInput(fixture.root, epubFile(bookFixture()));
     const coverUrl = fixture.root.querySelector('.epub-book-card img').getAttribute('src');
     findButton(fixture.root, 'Open').click();
@@ -680,8 +709,10 @@ test('opens, sanitizes, navigates by controls/link/TOC, and revokes chapter URLs
     const tocButton = findButton(fixture.root, 'Table of contents');
     const toc = fixture.root.querySelector('.epub-toc');
     assert.equal(toc.classList.contains('is-open'), false);
+    assert.equal(tocButton.getAttribute('aria-expanded'), 'false');
     tocButton.click();
     assert.equal(toc.classList.contains('is-open'), true);
+    assert.equal(tocButton.getAttribute('aria-expanded'), 'true');
     assert.deepEqual(toc.querySelectorAll('button').map((button) => button.textContent), [
       'Chapter One', 'Chapter Two',
     ]);
@@ -703,6 +734,7 @@ test('opens, sanitizes, navigates by controls/link/TOC, and revokes chapter URLs
     findButton(fixture.root, 'Back to library').click();
     await waitFor(() => fixture.root.querySelector('.epub-library-grid'), 'back to library');
     assert.equal(fixture.activeIntervalCount(), 0);
+    assert.equal(scrollTarget.listenerCount('scroll'), 0);
     if (activeChapterUrl) assert.ok(urls.revoked.includes(activeChapterUrl));
   });
 });
@@ -849,7 +881,7 @@ test('strips untrusted chapter IDs while internal spine links remain navigable',
 });
 
 test('persists reader preferences and interval-ticked dirty scroll without a timeout', async () => {
-  await mountedTool(async ({ fixture, storage, idb }) => {
+  await mountedTool(async ({ fixture, storage, idb, viewport, scrollTarget }) => {
     await importThroughInput(fixture.root, epubFile(bookFixture()));
     findButton(fixture.root, 'Open').click();
     await waitFor(() => fixture.root.querySelector('.epub-chapter h1'), 'reader controls');
@@ -868,11 +900,13 @@ test('persists reader preferences and interval-ticked dirty scroll without a tim
     assert.equal(saved.fontSize, 110);
     assert.equal(saved.fontFamily, 'OpenDyslexic');
 
-    fixture.root.scrollTop = 250;
-    fixture.root.scrollHeight = 1000;
-    fixture.root.clientHeight = 500;
+    viewport.scrollTop = 250;
+    viewport.scrollHeight = 1000;
+    viewport.clientHeight = 500;
     const before = idb.transactions.filter((entry) => entry.mode === 'readwrite').length;
-    fixture.root.dispatchEvent(new FixtureEvent('scroll', { bubbles: false }));
+    assert.equal(fixture.root.listeners.get('scroll')?.length ?? 0, 0, 'app root is not the viewport');
+    assert.equal(scrollTarget.listenerCount('scroll'), 1);
+    scrollTarget.dispatchEvent(new FixtureEvent('scroll', { bubbles: false }));
     await new Promise((resolve) => setImmediate(resolve));
     assert.equal(
       idb.transactions.filter((entry) => entry.mode === 'readwrite').length,
@@ -888,14 +922,14 @@ test('persists reader preferences and interval-ticked dirty scroll without a tim
 });
 
 test('Back to library flushes a dirty checkpoint captured before session teardown', async () => {
-  await mountedTool(async ({ fixture, idb }) => {
+  await mountedTool(async ({ fixture, idb, viewport, scrollTarget }) => {
     await importThroughInput(fixture.root, epubFile(bookFixture()));
     findButton(fixture.root, 'Open').click();
     await waitFor(() => fixture.root.querySelector('.epub-chapter h1'), 'reader before Back');
-    fixture.root.scrollTop = 300;
-    fixture.root.scrollHeight = 900;
-    fixture.root.clientHeight = 300;
-    fixture.root.dispatchEvent(new FixtureEvent('scroll', { bubbles: false }));
+    viewport.scrollTop = 300;
+    viewport.scrollHeight = 900;
+    viewport.clientHeight = 300;
+    scrollTarget.dispatchEvent(new FixtureEvent('scroll', { bubbles: false }));
 
     findButton(fixture.root, 'Back to library').click();
     await waitFor(() => fixture.root.querySelector('.epub-library-grid'), 'library after dirty Back');
@@ -908,46 +942,46 @@ test('Back to library flushes a dirty checkpoint captured before session teardow
 
 test('dispose serializes dirty checkpoints and closes IndexedDB after the final write', async () => {
   const idb = closeRecordingIndexedDb();
-  await mountedTool(async ({ fixture, dispose }) => {
+  await mountedTool(async ({ fixture, viewport, scrollTarget, dispose }) => {
     await importThroughInput(fixture.root, epubFile(bookFixture()));
     findButton(fixture.root, 'Open').click();
     await waitFor(() => fixture.root.querySelector('.epub-chapter h1'), 'reader before disposal');
-    fixture.root.scrollTop = 100;
-    fixture.root.scrollHeight = 500;
-    fixture.root.clientHeight = 100;
-    fixture.root.dispatchEvent(new FixtureEvent('scroll', { bubbles: false }));
+    viewport.scrollTop = 100;
+    viewport.scrollHeight = 500;
+    viewport.clientHeight = 100;
+    scrollTarget.dispatchEvent(new FixtureEvent('scroll', { bubbles: false }));
     fixture.tickIntervals();
-    fixture.root.scrollTop = 300;
-    fixture.root.dispatchEvent(new FixtureEvent('scroll', { bubbles: false }));
+    viewport.scrollTop = 300;
+    scrollTarget.dispatchEvent(new FixtureEvent('scroll', { bubbles: false }));
 
     await dispose();
 
     const position = [...idb.inspect('kinnoki-tools-epub').stores.get('positions').records.values()][0];
     assert.equal(position.scrollFraction, 0.75);
     assert.equal(idb.closeCalls, 1);
+    assert.equal(scrollTarget.listenerCount('scroll'), 0);
   }, { idb });
 });
 
 test('restores saved spine and scroll position after a full controller remount', async () => {
   const idb = fakeIndexedDb();
-  await mountedTool(async ({ fixture, dispose }) => {
+  await mountedTool(async ({ fixture, viewport, scrollTarget, dispose }) => {
     await importThroughInput(fixture.root, epubFile(bookFixture()));
     findButton(fixture.root, 'Open').click();
     await waitFor(() => fixture.root.querySelector('.epub-chapter h1'), 'initial reader');
     findButton(fixture.root, 'Next').click();
     await waitFor(() => fixture.root.querySelector('.epub-chapter').textContent.includes('Chapter Two'), 'second chapter');
-    fixture.root.scrollTop = 150;
-    fixture.root.scrollHeight = 800;
-    fixture.root.clientHeight = 500;
-    fixture.root.dispatchEvent(new FixtureEvent('scroll', { bubbles: false }));
+    viewport.scrollTop = 150;
+    viewport.scrollHeight = 800;
+    viewport.clientHeight = 500;
+    scrollTarget.dispatchEvent(new FixtureEvent('scroll', { bubbles: false }));
     fixture.tickIntervals();
     await waitFor(() => (
       [...idb.inspect('kinnoki-tools-epub').stores.get('positions').records.values()][0]?.scrollFraction === 0.5
     ), 'saved position');
     dispose();
 
-    const scrolls = [];
-    fixture.root.scrollTo = (options) => scrolls.push(options);
+    const scrolls = viewport.scrolls;
     const nextDispose = renderEpubTool(fixture.root, {
       idb,
       storage: storageFixture(),
@@ -955,6 +989,8 @@ test('restores saved spine and scroll position after a full controller remount',
       domParser: parserStub(),
       urlFactory: urlRecorder().factory,
       navigator: {},
+      scrollTarget,
+      scrollMetrics: () => viewport,
     });
     await waitFor(() => fixture.root.querySelector('.epub-book-card'), 'reloaded library');
     findButton(fixture.root, 'Open').click();

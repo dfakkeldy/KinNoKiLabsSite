@@ -213,7 +213,7 @@ test('parseZip rejects more than 10,000 entries before materializing them', () =
 
   assert.throws(
     () => epubZip.parseZip(fixture.buffer),
-    assertCode('not-a-zip'),
+    assertCode('too-many-entries'),
   );
 });
 

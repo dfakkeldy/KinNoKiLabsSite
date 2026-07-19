@@ -63,6 +63,25 @@ test('openToolPrefs returns fresh empty preferences for missing, corrupt, and wr
   assert.deepEqual(openToolPrefs(storage), empty);
 });
 
+test('openToolPrefs rejects non-record tools maps and tool bags', () => {
+  const storage = createStorage();
+  const empty = { version: 1, tools: {} };
+  const invalidTools = [null, [], 'word-count', 7];
+
+  for (const tools of invalidTools) {
+    storage.setItem('kinnoki-tools:v1', JSON.stringify({ version: 1, tools }));
+    assert.deepEqual(openToolPrefs(storage), empty);
+  }
+
+  for (const bag of [null, [], 'invalid', 7]) {
+    storage.setItem('kinnoki-tools:v1', JSON.stringify({
+      version: 1,
+      tools: { dilution: bag },
+    }));
+    assert.deepEqual(openToolPrefs(storage), empty);
+  }
+});
+
 test('preference helpers persist and merge a tool bag under the versioned key', () => {
   const storage = createStorage();
   const initial = openToolPrefs(storage);

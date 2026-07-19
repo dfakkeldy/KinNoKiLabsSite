@@ -101,8 +101,10 @@ function readCentralDirectory(bytes, eocdOffset, view) {
   }
   if (
     entryCount > MAX_ENTRY_COUNT
-    || centralSize > MAX_CENTRAL_DIRECTORY_BYTES
   ) {
+    throw zipError('too-many-entries');
+  }
+  if (centralSize > MAX_CENTRAL_DIRECTORY_BYTES) {
     throw zipError('not-a-zip');
   }
   if (!hasRange(bytes, centralOffset, centralSize)) throw zipError('not-a-zip');
@@ -203,6 +205,7 @@ export function parseZip(arrayBuffer) {
   const lastCandidate = Math.max(0, firstCandidate - MAX_COMMENT_LENGTH);
   const candidates = [];
   let sawZip64 = false;
+  let sawTooManyEntries = false;
 
   for (let offset = firstCandidate; offset >= lastCandidate; offset -= 1) {
     if (view.getUint32(offset, true) !== EOCD_SIGNATURE) continue;
@@ -213,11 +216,13 @@ export function parseZip(arrayBuffer) {
       candidates.push(readCentralDirectory(bytes, offset, view));
     } catch (error) {
       if (error?.code === 'zip64-unsupported') sawZip64 = true;
+      if (error?.code === 'too-many-entries') sawTooManyEntries = true;
     }
   }
 
-  if (candidates.length === 1 && !sawZip64) return candidates[0];
+  if (candidates.length === 1 && !sawZip64 && !sawTooManyEntries) return candidates[0];
   if (candidates.length > 1) throw zipError('not-a-zip');
+  if (sawTooManyEntries && !sawZip64) throw zipError('too-many-entries');
   throw zipError(sawZip64 ? 'zip64-unsupported' : 'not-a-zip');
 }
 

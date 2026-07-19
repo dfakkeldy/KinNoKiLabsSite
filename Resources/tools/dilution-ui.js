@@ -173,7 +173,13 @@ export function renderDilutionTool(root, deps = {}) {
   const renderDose = () => {
     const form = element('form', { class: 'tool-form', ownerDocument: doc });
     const display = resultDisplay(doc, announce);
-    const values = { dosePerL: '', volume: '', volumeUnit: 'l', multiplier: 1 };
+    const dosePrefs = toolPrefs(prefs, 'dilution');
+    const values = {
+      dosePerL: '',
+      volume: '',
+      volumeUnit: ['l', 'gal'].includes(dosePrefs.volumeUnit) ? dosePrefs.volumeUnit : 'l',
+      multiplier: 1,
+    };
     const calculate = () => {
       const totalL = convertVolume(parseDecimal(values.volume), values.volumeUnit, 'l');
       const result = computeDose({
@@ -194,7 +200,14 @@ export function renderDilutionTool(root, deps = {}) {
       element('option', { value: 'gal', text: 'gal', ownerDocument: doc }),
     );
     unit.value = values.volumeUnit;
-    unit.addEventListener('change', (event) => { values.volumeUnit = event.currentTarget.value; calculate(); });
+    unit.addEventListener('change', (event) => {
+      values.volumeUnit = ['l', 'gal'].includes(event.currentTarget.value)
+        ? event.currentTarget.value
+        : 'l';
+      unit.value = values.volumeUnit;
+      save({ volumeUnit: values.volumeUnit });
+      calculate();
+    });
     const strengths = element('div', { class: 'tool-strengths', ownerDocument: doc },
       ...[['Weak', 0.5], ['Normal', 1], ['Strong', 1.5]].map(([label, multiplier]) => {
         const button = element('button', { type: 'button', class: 'tool-strength', text: label, ownerDocument: doc });
@@ -209,7 +222,7 @@ export function renderDilutionTool(root, deps = {}) {
   const render = () => {
     const tabs = element('div', { class: 'tool-tabs', ownerDocument: doc }, ...MODES.map(({ id, label }) => {
       const tab = element('button', {
-        type: 'button', class: 'tool-tab', text: label,
+        type: 'button', class: `tool-tab${mode === id ? ' is-active' : ''}`, text: label,
         'aria-pressed': String(mode === id), ownerDocument: doc,
       });
       tab.addEventListener('click', () => {

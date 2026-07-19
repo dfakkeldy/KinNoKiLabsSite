@@ -22,12 +22,19 @@ export function safeLocalStorage(scope = globalThis) {
 
 const PREFS_KEY = 'kinnoki-tools:v1';
 const emptyPrefs = () => ({ version: 1, tools: {} });
+const isRecord = (value) => (
+  typeof value === 'object' && value !== null && !Array.isArray(value)
+);
 
 export function openToolPrefs(storage) {
   if (!storage) return emptyPrefs();
   try {
     const parsed = JSON.parse(storage.getItem(PREFS_KEY) ?? '');
-    if (parsed?.version === 1 && typeof parsed.tools === 'object' && parsed.tools !== null) return parsed;
+    if (
+      parsed?.version === 1
+      && isRecord(parsed.tools)
+      && Object.values(parsed.tools).every(isRecord)
+    ) return parsed;
   } catch { /* fall through */ }
   return emptyPrefs();
 }

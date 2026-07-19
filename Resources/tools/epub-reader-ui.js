@@ -175,10 +175,10 @@ function assertBufferBudget(buffer) {
   }
 }
 
-function scrollFraction(root) {
-  const maximum = Number(root.scrollHeight) - Number(root.clientHeight);
+function scrollFraction(metrics) {
+  const maximum = Number(metrics?.scrollHeight) - Number(metrics?.clientHeight);
   if (!Number.isFinite(maximum) || maximum <= 0) return 0;
-  const fraction = Number(root.scrollTop) / maximum;
+  const fraction = Number(metrics?.scrollTop) / maximum;
   return Number.isFinite(fraction) ? Math.min(1, Math.max(0, fraction)) : 0;
 }
 
@@ -206,6 +206,15 @@ export function renderEpubTool(root, deps = {}) {
   const canInflate = typeof inflate === 'function' || (!hasInjectedInflate && supportsInflate());
   const setIntervalFn = deps.setInterval ?? globalThis.setInterval?.bind(globalThis);
   const clearIntervalFn = deps.clearInterval ?? globalThis.clearInterval?.bind(globalThis);
+  const scrollTarget = deps.scrollTarget ?? globalThis.window;
+  const scrollMetrics = deps.scrollMetrics ?? (() => {
+    const scrollingElement = doc.scrollingElement ?? doc.documentElement ?? doc.body;
+    return {
+      scrollTop: Number(scrollTarget?.scrollY ?? scrollingElement?.scrollTop),
+      scrollHeight: Number(scrollingElement?.scrollHeight),
+      clientHeight: Number(scrollTarget?.innerHeight ?? scrollingElement?.clientHeight),
+    };
+  });
   const idFactory = deps.idFactory ?? (() => (
     globalThis.crypto?.randomUUID?.()
       ?? `epub-${Date.now()}-${Math.random().toString(16).slice(2)}`
@@ -632,15 +641,16 @@ export function renderEpubTool(root, deps = {}) {
   }
 
   const restoreScroll = (fraction) => {
-    if (!(fraction > 0) || typeof root.scrollTo !== 'function') return;
-    const maximum = Number(root.scrollHeight) - Number(root.clientHeight);
+    if (!(fraction > 0) || typeof scrollTarget?.scrollTo !== 'function') return;
+    const metrics = scrollMetrics();
+    const maximum = Number(metrics?.scrollHeight) - Number(metrics?.clientHeight);
     if (!Number.isFinite(maximum) || maximum <= 0) return;
-    root.scrollTo({ top: maximum * fraction, behavior: 'auto' });
+    scrollTarget.scrollTo({ top: maximum * fraction, behavior: 'auto' });
   };
 
   const positionSnapshot = (
     spineIndex = session?.spineIndex,
-    fraction = scrollFraction(root),
+    fraction = scrollFraction(scrollMetrics()),
   ) => {
     const active = session;
     if (!active || !Number.isInteger(spineIndex)) return null;
@@ -746,7 +756,7 @@ export function renderEpubTool(root, deps = {}) {
     if (!session || index < 0 || index >= session.pkg.spine.length) return;
     const token = ++revision;
     const oldIndex = session.spineIndex;
-    const oldFraction = scrollFraction(root);
+    const oldFraction = scrollFraction(scrollMetrics());
     const previousPosition = saveCurrent
       ? positionSnapshot(oldIndex, oldFraction)
       : null;
@@ -956,7 +966,9 @@ export function renderEpubTool(root, deps = {}) {
       const index = session.pkg.spine.findIndex((item) => item.href === href);
       if (index >= 0) void showChapter(index, { saveCurrent: true });
     });
-    listen(root, 'scroll', () => { dirtyScroll = true; });
+    if (scrollTarget?.addEventListener) {
+      listen(scrollTarget, 'scroll', () => { dirtyScroll = true; });
+    }
     if (typeof setIntervalFn === 'function') {
       intervalHandle = setIntervalFn(() => {
         if (!dirtyScroll || !session || disposed) return;
