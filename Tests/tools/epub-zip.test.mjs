@@ -96,7 +96,7 @@ function buildZip(entries, { comment = new Uint8Array() } = {}) {
       view.setUint16(6, 20, true);
       view.setUint16(8, flags, true);
       view.setUint16(10, method, true);
-      view.setUint32(16, checksum, true);
+      view.setUint32(16, description.centralCrc ?? checksum, true);
       view.setUint32(20, compressed.length, true);
       view.setUint32(24, plain.length, true);
       view.setUint16(28, name.length, true);
@@ -204,6 +204,49 @@ test('parseZip returns stored and deflated central-directory entries', () => {
   assert.ok(chapter.compressedSize > 0);
 });
 
+test('parseZip rejects more than 10,000 entries before materializing them', () => {
+  const entries = Array.from({ length: 10_001 }, (_, index) => ({
+    name: `entry-${index}`,
+    data: [],
+  }));
+  const fixture = buildZip(entries);
+
+  assert.throws(
+    () => epubZip.parseZip(fixture.buffer),
+    assertCode('not-a-zip'),
+  );
+});
+
+test('parseZip rejects a central directory larger than 64 MiB', () => {
+  const entries = Array.from({ length: 1_025 }, (_, index) => ({
+    name: `e-${index}`,
+    data: [],
+    centralExtra: new Uint8Array(65_535),
+  }));
+  const fixture = buildZip(entries);
+
+  assert.ok(fixture.centralSize > 64 * 1024 * 1024);
+  assert.throws(
+    () => epubZip.parseZip(fixture.buffer),
+    assertCode('not-a-zip'),
+  );
+});
+
+test('parseZip rejects more than 16 MiB of entry-name bytes', () => {
+  const entries = Array.from({ length: 257 }, (_, index) => ({
+    name: `${String(index).padStart(3, '0')}-${'n'.repeat(65_531)}`,
+    localName: `l-${index}`,
+    data: [],
+  }));
+  const fixture = buildZip(entries);
+
+  assert.ok(entries.reduce((total, entry) => total + entry.name.length, 0) > 16 * 1024 * 1024);
+  assert.throws(
+    () => epubZip.parseZip(fixture.buffer),
+    assertCode('not-a-zip'),
+  );
+});
+
 test('readEntry returns exact stored and injected-inflate bytes', async () => {
   const stored = Uint8Array.from([0, 1, 2, 127, 128, 254, 255]);
   const deflated = encoder.encode('A chapter with enough repeated words. '.repeat(8));
@@ -225,6 +268,90 @@ test('readEntry returns exact stored and injected-inflate bytes', async () => {
     ),
     deflated,
   );
+});
+
+test('readEntry verifies the CRC-32 known answer for stored and deflated entries', async () => {
+  const expected = encoder.encode('123456789');
+  const knownCrc32 = 0xcbf43926;
+  const fixture = buildZip([
+    {
+      name: 'stored.bin',
+      data: expected,
+      localCrc: knownCrc32,
+      centralCrc: knownCrc32,
+    },
+    {
+      name: 'deflated.bin',
+      data: expected,
+      method: 8,
+      localCrc: knownCrc32,
+      centralCrc: knownCrc32,
+    },
+  ]);
+  const { entries } = epubZip.parseZip(fixture.buffer);
+
+  assert.deepEqual(
+    await epubZip.readEntry(fixture.buffer, entries.get('stored.bin')),
+    expected,
+  );
+  assert.deepEqual(
+    await epubZip.readEntry(
+      fixture.buffer,
+      entries.get('deflated.bin'),
+      inflateWithNode,
+    ),
+    expected,
+  );
+});
+
+test('readEntry rejects same-length stored data corrupted after its headers', async () => {
+  const fixture = cloneFixture(buildZip([{ name: 'stored.bin', data: '123456789' }]));
+  const entry = epubZip.parseZip(fixture.buffer).entries.get('stored.bin');
+  fixture.bytes[fixture.records[0].localHeaderLength + 4] ^= 0xff;
+
+  await assert.rejects(
+    epubZip.readEntry(fixture.buffer, entry),
+    assertCode('bad-entry'),
+  );
+});
+
+test('readEntry rejects deflated output that disagrees with the declared CRC-32', async () => {
+  const expected = encoder.encode('123456789');
+  const incorrectCrc32 = 0xcbf43927;
+  const fixture = buildZip([{
+    name: 'deflated.bin',
+    data: expected,
+    method: 8,
+    localCrc: incorrectCrc32,
+    centralCrc: incorrectCrc32,
+  }]);
+  const entry = epubZip.parseZip(fixture.buffer).entries.get('deflated.bin');
+
+  await assert.rejects(
+    epubZip.readEntry(fixture.buffer, entry, inflateWithNode),
+    assertCode('bad-entry'),
+  );
+});
+
+test('readEntry rejects conflicting local and central CRC-32 declarations before inflate', async () => {
+  const fixture = buildZip([{
+    name: 'deflated.bin',
+    data: '123456789',
+    method: 8,
+    localCrc: 0xcbf43926,
+    centralCrc: 0xcbf43927,
+  }]);
+  const entry = epubZip.parseZip(fixture.buffer).entries.get('deflated.bin');
+  let inflated = false;
+
+  await assert.rejects(
+    epubZip.readEntry(fixture.buffer, entry, async () => {
+      inflated = true;
+      return encoder.encode('123456789');
+    }),
+    assertCode('bad-entry'),
+  );
+  assert.equal(inflated, false);
 });
 
 test('native deflate-raw inflation works when the runtime advertises support', async () => {
