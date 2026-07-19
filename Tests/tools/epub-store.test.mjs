@@ -155,3 +155,42 @@ test('a multi-store delete waits for an earlier conflicting book write', async (
   assert.deepEqual((await listBooks(db)).map((book) => book.id), ['new']);
   assert.equal(await getPosition(db, 'old'), undefined);
 });
+
+test('put snapshots a value before a blocked transaction later runs', async () => {
+  const indexedDb = fakeIndexedDb();
+  const db = await openLibrary(indexedDb);
+  const blocker = addBook(db, {
+    id: 'blocker', title: 'Blocker', author: 'A', addedAt: 1, coverBlob: null, file: new Blob(['blocker']),
+  });
+  const queued = {
+    id: 'queued', title: 'Before', author: 'B', addedAt: 2, coverBlob: null, file: new Blob(['queued']),
+  };
+
+  const pending = addBook(db, queued);
+  queued.title = 'After';
+  await Promise.all([blocker, pending]);
+
+  assert.equal((await getBook(db, 'queued')).title, 'Before');
+});
+
+test('put reports DataCloneError at call time', async () => {
+  const indexedDb = fakeIndexedDb();
+  const db = await openLibrary(indexedDb);
+  const transaction = db.transaction(['books'], 'readwrite');
+
+  assert.throws(
+    () => transaction.objectStore('books').put({ id: 'invalid', callback() {} }),
+    (error) => error?.name === 'DataCloneError',
+  );
+});
+
+test('put reports a missing key as DataError at call time', async () => {
+  const indexedDb = fakeIndexedDb();
+  const db = await openLibrary(indexedDb);
+  const transaction = db.transaction(['books'], 'readwrite');
+
+  assert.throws(
+    () => transaction.objectStore('books').put({ title: 'Missing id' }),
+    (error) => error?.name === 'DataError',
+  );
+});

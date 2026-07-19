@@ -1,5 +1,6 @@
 const cloneMap = (source) => new Map(source);
 const cloneValue = (value) => structuredClone(value);
+const fakeError = (name) => Object.assign(new Error(name), { name });
 
 const namesList = (stores) => ({
   contains: (name) => stores.has(name),
@@ -192,10 +193,11 @@ export function fakeIndexedDb() {
                 };
                 return {
                   put(value) {
+                    const captured = cloneValue(value);
+                    const key = captured?.[record.stores.get(storeName).keyPath];
+                    if (key === undefined) throw fakeError('DataError');
                     return request('put', (store) => {
-                      const key = value?.[store.keyPath];
-                      if (key === undefined) throw new Error('DataError');
-                      store.records.set(key, cloneValue(value));
+                      store.records.set(key, captured);
                       return key;
                     });
                   },
