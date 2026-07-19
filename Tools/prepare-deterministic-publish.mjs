@@ -27,6 +27,13 @@ function parseEpoch(raw, context) {
 }
 
 const root = git(process.cwd(), ['rev-parse', '--show-toplevel']);
+const dirtyContent = git(root, ['status', '--porcelain=v1', '--untracked-files=all', '--', 'Content']);
+if (dirtyContent !== '') {
+  throw new Error(
+    'Content/ has uncommitted changes. Commit or stash them before generation; no files were modified.',
+  );
+}
+
 const headEpoch = parseEpoch(git(root, ['log', '-1', '--format=%ct', 'HEAD']), 'HEAD');
 
 for (const file of markdownFiles(join(root, 'Content'))) {
@@ -41,5 +48,12 @@ for (const file of markdownFiles(join(root, 'Content'))) {
 // from overriding the deterministic date supplied by the custom pipeline.
 rmSync(join(root, '.publish/Caches/generate-rss-feed/feed'), { force: true });
 
-const feedEpoch = git(root, ['log', '-1', '--format=%ct', '--', 'Content/apps', 'Content/posts']);
-process.stdout.write(String(feedEpoch === '' ? headEpoch : parseEpoch(feedEpoch, 'RSS content')));
+function latestEpoch(paths, context) {
+  const committed = git(root, ['log', '-1', '--format=%ct', '--', ...paths]);
+  return committed === '' ? headEpoch : parseEpoch(committed, context);
+}
+
+const feedEpoch = latestEpoch(['Content/apps', 'Content/posts'], 'RSS content');
+const appsEpoch = latestEpoch(['Content/apps'], 'apps section');
+const postsEpoch = latestEpoch(['Content/posts'], 'posts section');
+process.stdout.write(`${feedEpoch} ${appsEpoch} ${postsEpoch}`);

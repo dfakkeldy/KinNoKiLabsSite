@@ -13,8 +13,13 @@
 .PHONY: publish preview generate clean test test-listen test-games test-tools listen-catalog paired-covers
 
 generate:
-	@rss_epoch="$$(node Tools/prepare-deterministic-publish.mjs)" && \
-		TZ=America/Halifax KINNOKI_RSS_DATE_EPOCH="$$rss_epoch" publish generate
+	@generation_epochs="$$(node Tools/prepare-deterministic-publish.mjs)" && \
+		set -- $$generation_epochs && \
+		TZ=America/Halifax \
+		KINNOKI_RSS_DATE_EPOCH="$$1" \
+		KINNOKI_APPS_SECTION_DATE_EPOCH="$$2" \
+		KINNOKI_POSTS_SECTION_DATE_EPOCH="$$3" \
+		publish generate
 
 publish: generate
 	git add -A
@@ -23,8 +28,13 @@ publish: generate
 	@echo "Pushed — Cloudflare Pages will deploy momentarily."
 
 preview:
-	@rss_epoch="$$(node Tools/prepare-deterministic-publish.mjs)" && \
-		TZ=America/Halifax KINNOKI_RSS_DATE_EPOCH="$$rss_epoch" publish run
+	@generation_epochs="$$(node Tools/prepare-deterministic-publish.mjs)" && \
+		set -- $$generation_epochs && \
+		TZ=America/Halifax \
+		KINNOKI_RSS_DATE_EPOCH="$$1" \
+		KINNOKI_APPS_SECTION_DATE_EPOCH="$$2" \
+		KINNOKI_POSTS_SECTION_DATE_EPOCH="$$3" \
+		publish run
 
 clean:
 	swift package clean
