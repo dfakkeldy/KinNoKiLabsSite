@@ -356,6 +356,17 @@ export function renderEpubTool(root, deps = {}) {
     announce(message);
   };
 
+  const focusLibraryControl = () => {
+    const input = body.querySelector('input[type=file]');
+    if (input && !input.disabled) {
+      input.focus?.();
+      return;
+    }
+    const fallback = body.querySelector('.epub-drop') ?? root.querySelector('h1');
+    if (fallback && !fallback.hasAttribute?.('tabindex')) fallback.setAttribute?.('tabindex', '-1');
+    fallback?.focus?.();
+  };
+
   const estimateStorage = async (container, token) => {
     if (typeof navigatorObject?.storage?.estimate !== 'function') return;
     try {
@@ -456,7 +467,7 @@ export function renderEpubTool(root, deps = {}) {
       for (const cleanup of confirmationCleanups) cleanup();
       confirmationCleanups.clear();
       confirmation.remove();
-      onClose();
+      onClose(closeConfirmation);
       if (restoreFocus) trigger.focus?.();
     };
     confirmationCleanups.add(listen(cancel, 'click', () => {
@@ -472,7 +483,7 @@ export function renderEpubTool(root, deps = {}) {
         revokeLibraryUrl(book.id);
         announce(`${book.title} removed from your library.`);
         await renderLibrary();
-        if (!disposed) body.querySelector('input[type=file]')?.focus?.();
+        if (!disposed) focusLibraryControl();
       } catch {
         closeConfirmation();
         if (current(token)) {
@@ -511,8 +522,8 @@ export function renderEpubTool(root, deps = {}) {
     listen(open, 'click', () => { void openBook(book.id); });
     listen(remove, 'click', () => {
       closeConfirmation?.();
-      closeConfirmation = addDeleteConfirmation(card, book, status, remove, () => {
-        closeConfirmation = null;
+      closeConfirmation = addDeleteConfirmation(card, book, status, remove, (owner) => {
+        if (closeConfirmation === owner) closeConfirmation = null;
       });
     });
     card.append(

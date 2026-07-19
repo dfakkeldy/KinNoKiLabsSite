@@ -4,6 +4,7 @@ import * as zlib from 'node:zlib';
 
 import { createDOMFixture, FixtureEvent, installDOM } from '../games/dom-fixture.mjs';
 import { renderEpubTool } from '../../Resources/tools/epub-reader-ui.js';
+import { addBook, openLibrary } from '../../Resources/tools/epub-store.js';
 import { fakeIndexedDb } from './fake-idb.mjs';
 
 const encoder = new TextEncoder();
@@ -503,6 +504,54 @@ test('moves focus to the import control after a successful deletion', async () =
     const input = fixture.root.querySelector('input[type=file]');
     assert.ok(input);
     assert.equal(fixture.document.activeElement, input);
+  });
+});
+
+test('moves focus to the drop zone when the surviving import input is disabled', async () => {
+  const idb = fakeIndexedDb();
+  const library = await openLibrary(idb);
+  await addBook(library, {
+    id: 'seeded-book',
+    title: 'Seeded Book',
+    author: 'Fixture Author',
+    addedAt: Date.now(),
+    coverBlob: null,
+    file: epubFile(bookFixture()),
+    spineCount: 2,
+  });
+  await mountedTool(async ({ fixture }) => {
+    findButton(fixture.root, 'Delete').click();
+    findButton(fixture.root.querySelector('.epub-delete-confirm'), 'Delete book').click();
+    await waitFor(() => fixture.root.querySelector('.epub-book-card') === null, 'book deletion');
+
+    const input = fixture.root.querySelector('input[type=file]');
+    const drop = fixture.root.querySelector('.epub-drop');
+    assert.equal(input.disabled, true);
+    assert.equal(drop.getAttribute('tabindex'), '0');
+    assert.equal(fixture.document.activeElement, drop);
+  }, { idb, inflate: undefined });
+});
+
+test('a failed pending deletion cannot orphan replacement confirmation listeners', async () => {
+  const listenerCount = (node) => node.listeners.get('click')?.length ?? 0;
+  await mountedTool(async ({ fixture, idb }) => {
+    await importThroughInput(fixture.root, epubFile(bookFixture()));
+    const remove = findButton(fixture.root, 'Delete');
+    idb.failNext('delete', new Error('overlapping delete blocked'));
+
+    remove.click();
+    findButton(fixture.root.querySelector('.epub-delete-confirm'), 'Delete book').click();
+    remove.click();
+    const replacement = fixture.root.querySelector('.epub-delete-confirm');
+    const replacementCancel = findButton(replacement, 'Cancel');
+    const replacementConfirm = findButton(replacement, 'Delete book');
+    await waitFor(() => fixture.root.querySelector('.tool-error'), 'pending deletion failure');
+
+    remove.click();
+
+    assert.equal(listenerCount(replacementCancel), 0);
+    assert.equal(listenerCount(replacementConfirm), 0);
+    assert.equal(fixture.root.querySelectorAll('.epub-delete-confirm').length, 1);
   });
 });
 
