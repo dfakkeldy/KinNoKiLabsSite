@@ -13,7 +13,8 @@
 .PHONY: publish preview generate clean test test-listen test-games test-tools listen-catalog paired-covers
 
 generate:
-	publish generate
+	@rss_epoch="$$(node Tools/prepare-deterministic-publish.mjs)" && \
+		TZ=America/Halifax KINNOKI_RSS_DATE_EPOCH="$$rss_epoch" publish generate
 
 publish: generate
 	git add -A
@@ -22,7 +23,8 @@ publish: generate
 	@echo "Pushed — Cloudflare Pages will deploy momentarily."
 
 preview:
-	publish run
+	@rss_epoch="$$(node Tools/prepare-deterministic-publish.mjs)" && \
+		TZ=America/Halifax KINNOKI_RSS_DATE_EPOCH="$$rss_epoch" publish run
 
 clean:
 	swift package clean

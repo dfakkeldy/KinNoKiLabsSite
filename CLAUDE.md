@@ -12,11 +12,11 @@ We are building a static site using the Swift [Publish](https://github.com/johns
 # Generate + commit + push (Cloudflare Pages serves the committed Output/)
 make publish
 
-# Generate Output/ only, no commit/push
-make generate          # equivalent: publish generate
+# Generate Output/ deterministically, no commit/push
+make generate
 
 # Generate and serve locally at http://localhost:8000
-make preview           # equivalent: publish run
+make preview           # deterministic generation + preview server
 
 # Run the Arcade Hall JavaScript and generated-route tests
 make test-games
@@ -64,6 +64,7 @@ make clean             # equivalent: swift package clean
 
 ### Publish Conventions
 
+- **Generation dates are deterministic and `make` is the supported entry point.** `make generate` and `make preview` run `Tools/prepare-deterministic-publish.mjs`, which normalizes every `Content/**/*.md` modification time to its last Git commit, fixes the build timezone to `America/Halifax`, and passes the latest `Content/apps`/`Content/posts` commit time into Publish's explicit RSS date API. The preflight removes only Publish 0.8's derived RSS cache file because that cache key omits the explicit date and can otherwise replay stale feed bytes. This keeps sitemap and feed dates identical across worktrees without hand-editing `Output/`; direct `publish generate` intentionally fails closed.
 - **Site config** lives in the `Website` conformance (`url`, `name`, `description`, `language`, sections via `SectionID` enum).
 - **Sections** are declared as cases of `SectionID: String, WebsiteSectionID`. Each section maps to a subdirectory in `Content/`.
 - **Item metadata** can be added via frontmatter in content files (YAML between `---` delimiters) and parsed into `ItemMetadata`.

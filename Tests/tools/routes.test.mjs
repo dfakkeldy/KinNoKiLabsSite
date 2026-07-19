@@ -3,14 +3,48 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 
 const toolPages = [
-  ['tools', 'hub'],
-  ['tools/qr-code', 'qr-code'],
-  ['tools/epub-reader', 'epub-reader'],
-  ['tools/dilution', 'dilution'],
-  ['tools/contrast', 'contrast'],
-  ['tools/word-count', 'word-count'],
-  ['tools/unit-converter', 'unit-converter'],
-  ['tools/passphrase', 'passphrase'],
+  {
+    route: 'tools', pageID: 'hub', title: 'Tools — KinNoKi Labs',
+    description: 'Seven small web utilities from KinNoKi Labs — QR codes, EPUB reading, dilution math, contrast checks and more. Offline-capable; everything stays on your device.',
+  },
+  {
+    route: 'tools/qr-code', pageID: 'qr-code', title: 'QR Code Generator — KinNoKi Labs',
+    description: 'Generate crisp QR codes as SVG or PNG, entirely in your browser.',
+  },
+  {
+    route: 'tools/epub-reader', pageID: 'epub-reader', title: 'EPUB Reader — KinNoKi Labs',
+    description: 'Read EPUB books in your browser while keeping each book on your device.',
+  },
+  {
+    route: 'tools/dilution', pageID: 'dilution', title: 'Dilution Calculator — KinNoKi Labs',
+    description: 'Calculate concentrate and water amounts for a precise dilution.',
+  },
+  {
+    route: 'tools/contrast', pageID: 'contrast', title: 'Contrast Checker — KinNoKi Labs',
+    description: 'Check text and background colour contrast against WCAG guidance.',
+  },
+  {
+    route: 'tools/word-count', pageID: 'word-count', title: 'Word Counter — KinNoKi Labs',
+    description: 'Count words and estimate reading and narration time in your text.',
+  },
+  {
+    route: 'tools/unit-converter', pageID: 'unit-converter', title: 'Unit Converter — KinNoKi Labs',
+    description: 'Convert common units from length and mass to data sizes.',
+  },
+  {
+    route: 'tools/passphrase', pageID: 'passphrase', title: 'Passphrase Generator — KinNoKi Labs',
+    description: 'Generate strong, memorable passphrases entirely in your browser.',
+  },
+];
+
+const expectedNavigation = [
+  ['/', 'Home'],
+  ['/games', 'Games'],
+  ['/tools', 'Tools'],
+  ['/services', 'Services'],
+  ['/apps', 'Apps'],
+  ['/posts', 'Posts'],
+  ['/about', 'About'],
 ];
 
 function resourceFiles(directory = new URL('../../Resources/tools/', import.meta.url), prefix = '') {
@@ -45,17 +79,42 @@ function outputURLForPrecache(urlPath) {
   return new URL(`../../Output${urlPath}${suffix}`, import.meta.url);
 }
 
-for (const [route, page] of toolPages) {
-  test(`${route} has the tools shell, module, manifest, and no Arcade Hall shell`, () => {
-    const html = readFileSync(new URL(`../../Output/${route}/index.html`, import.meta.url), 'utf8');
+function navigationEntries(markup) {
+  return [...markup.matchAll(/<a([^>]*)href="([^"]+)"([^>]*)>([\s\S]*?)<\/a>/g)].map((match) => ({
+    href: match[2],
+    label: match[4].replace(/<[^>]+>/g, '').trim(),
+    current: `${match[1]} ${match[3]}`.includes('aria-current="page"'),
+  }));
+}
 
-    assert.match(html, new RegExp(`data-tool-page="${page}"`));
+for (const { route, pageID, title, description } of toolPages) {
+  test(`${route} has independent metadata, install head, tools shell, and no Arcade Hall shell`, () => {
+    const html = readFileSync(new URL(`../../Output/${route}/index.html`, import.meta.url), 'utf8');
+    const canonical = `https://kinnokilabs.com/${route}`;
+
+    assert.ok(html.includes(`<title>${title}</title>`));
+    assert.ok(html.includes(`<meta name="description" content="${description}"/>`));
+    assert.ok(html.includes(`<link rel="canonical" href="${canonical}"/>`));
+    assert.ok(html.includes(`<meta property="og:url" content="${canonical}"/>`));
+    assert.match(html, new RegExp(`data-tool-page="${pageID}"`));
     assert.match(html, /<script[^>]+type="module"[^>]+src="\/tools\/ui\.js"/);
     assert.match(html, /<link[^>]+rel="manifest"[^>]+href="\/tools\/manifest\.webmanifest"/);
+    assert.match(html, /<meta name="theme-color" content="#000000"/);
     assert.doesNotMatch(
       html,
       /data-game-page=|id="games-app"|class="[^"]*\bgames-(?:main|app|live-region)\b|src="\/games\/ui\.js"/,
     );
+
+    const desktop = html.match(/<ul class="nav-links">([\s\S]*?)<\/ul>/)?.[1];
+    const mobile = html.match(/<div class="mobile-menu">[\s\S]*?<nav>([\s\S]*?)<\/nav>/)?.[1];
+    for (const [name, markup] of [['desktop', desktop], ['mobile', mobile]]) {
+      assert.notEqual(markup, undefined, `${name} navigation must exist`);
+      assert.deepEqual(
+        navigationEntries(markup),
+        expectedNavigation.map(([href, label]) => ({ href, label, current: href === '/tools' })),
+        `${name} navigation order and current page`,
+      );
+    }
   });
 }
 

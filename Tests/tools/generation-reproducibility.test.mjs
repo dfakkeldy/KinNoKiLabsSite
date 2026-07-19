@@ -1,0 +1,162 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  statSync,
+  utimesSync,
+  writeFileSync,
+} from 'node:fs';
+import { tmpdir } from 'node:os';
+import { basename, dirname, join, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const repositoryRoot = fileURLToPath(new URL('../../', import.meta.url));
+const preflightURL = new URL('../../Tools/prepare-deterministic-publish.mjs', import.meta.url);
+
+function git(cwd, args, env = {}) {
+  return execFileSync('git', args, {
+    cwd,
+    encoding: 'utf8',
+    env: { ...process.env, ...env },
+  }).trim();
+}
+
+function commit(cwd, message, isoDate) {
+  git(cwd, ['add', '.']);
+  git(cwd, ['commit', '-m', message], {
+    GIT_AUTHOR_DATE: isoDate,
+    GIT_COMMITTER_DATE: isoDate,
+  });
+}
+
+function latestCommitEpoch(paths) {
+  return Number(git(repositoryRoot, ['log', '-1', '--format=%ct', '--', ...paths]));
+}
+
+function sitemapEntries(xml) {
+  return new Map([...xml.matchAll(/<url><loc>([^<]+)<\/loc>[\s\S]*?<lastmod>([^<]+)<\/lastmod><\/url>/g)]
+    .map((match) => [match[1], match[2]]));
+}
+
+function contentFiles(directory = join(repositoryRoot, 'Content')) {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const child = join(directory, entry.name);
+    return entry.isDirectory() ? contentFiles(child) : entry.name.endsWith('.md') ? [child] : [];
+  });
+}
+
+function routeForContent(file) {
+  const sourcePath = relative(join(repositoryRoot, 'Content'), file);
+  if (sourcePath === 'index.md') return null;
+  const withoutExtension = sourcePath.slice(0, -3);
+  return withoutExtension.endsWith('/index')
+    ? withoutExtension.slice(0, -'/index'.length)
+    : withoutExtension;
+}
+
+function canonicalFeedContent(feed) {
+  const withoutDates = feed.replace(
+    /<(?:lastBuildDate|pubDate)>[^<]+<\/(?:lastBuildDate|pubDate)>/g,
+    '',
+  );
+  const items = [...withoutDates.matchAll(/<item>[\s\S]*?<\/item>/g)]
+    .map((match) => match[0])
+    .sort();
+  return withoutDates.replace(/<item>[\s\S]*?<\/item>/g, '') + items.join('');
+}
+
+function halifaxCalendarDate(epoch) {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Halifax', year: 'numeric', month: '2-digit', day: '2-digit',
+  }).formatToParts(new Date(epoch * 1000)).map((part) => [part.type, part.value]));
+  return `${parts.year}-${parts.month}-${parts.day}`;
+}
+
+test('generation preflight uses Git dates, ignores later Tools-only commits for RSS, and clears stale RSS cache', () => {
+  assert.equal(existsSync(preflightURL), true, 'deterministic generation preflight must exist');
+
+  const fixture = mkdtempSync(join(tmpdir(), 'kinnoki-publish-dates-'));
+  try {
+    git(fixture, ['init', '-q']);
+    git(fixture, ['config', 'user.name', 'Test']);
+    git(fixture, ['config', 'user.email', 'test@example.com']);
+    for (const name of ['Content/index.md', 'Content/apps/index.md', 'Content/apps/echo.md', 'Content/posts/index.md']) {
+      mkdirSync(dirname(join(fixture, name)), { recursive: true });
+      writeFileSync(join(fixture, name), `# ${basename(name)}\n`);
+    }
+    const feedDate = '2026-01-02T03:04:05Z';
+    commit(fixture, 'feed content', feedDate);
+
+    writeFileSync(join(fixture, 'Content/tools.md'), '# Tools\n');
+    commit(fixture, 'tools only', '2026-02-03T04:05:06Z');
+
+    for (const file of contentFiles(join(fixture, 'Content'))) {
+      utimesSync(file, new Date('2035-01-01T00:00:00Z'), new Date('2035-01-01T00:00:00Z'));
+    }
+    const cache = join(fixture, '.publish/Caches/generate-rss-feed/feed');
+    mkdirSync(dirname(cache), { recursive: true });
+    writeFileSync(cache, 'stale');
+
+    const expectedFeedEpoch = Math.floor(Date.parse(feedDate) / 1000);
+    const run = () => Number(execFileSync(process.execPath, [fileURLToPath(preflightURL)], {
+      cwd: fixture,
+      encoding: 'utf8',
+    }).trim());
+
+    assert.equal(run(), expectedFeedEpoch);
+    assert.equal(existsSync(cache), false, 'stale Publish RSS cache must be removed');
+    for (const file of contentFiles(join(fixture, 'Content'))) {
+      const actual = Math.round(statSync(file).mtimeMs / 1000);
+      const fileEpoch = Number(git(fixture, ['log', '-1', '--format=%ct', '--', relative(fixture, file)]));
+      assert.equal(actual, fileEpoch, `${relative(fixture, file)} must use its Git commit date`);
+    }
+
+    utimesSync(join(fixture, 'Content/tools.md'), new Date('2040-01-01T00:00:00Z'), new Date('2040-01-01T00:00:00Z'));
+    assert.equal(run(), expectedFeedEpoch, 'a repeat run must return the same feed date');
+    assert.equal(
+      Math.round(statSync(join(fixture, 'Content/tools.md')).mtimeMs / 1000),
+      Number(git(fixture, ['log', '-1', '--format=%ct', '--', 'Content/tools.md'])),
+    );
+  } finally {
+    rmSync(fixture, { recursive: true, force: true });
+  }
+});
+
+test('generated feed dates come from feed-source commits without unrelated feed content churn', () => {
+  const feed = readFileSync(join(repositoryRoot, 'Output/feed.rss'), 'utf8');
+  const buildDate = feed.match(/<lastBuildDate>([^<]+)<\/lastBuildDate>/)?.[1];
+  const expectedBuildEpoch = latestCommitEpoch(['Content/apps', 'Content/posts']);
+  assert.equal(Math.floor(Date.parse(buildDate) / 1000), expectedBuildEpoch);
+
+  for (const file of contentFiles(join(repositoryRoot, 'Content/apps')).filter((path) => basename(path) !== 'index.md')) {
+    const url = `https://kinnokilabs.com/apps/${basename(file, '.md')}`;
+    const item = feed.match(new RegExp(`<item><guid[^>]*>${url.replaceAll('.', '\\.')}` + '[\\s\\S]*?</item>'))?.[0];
+    assert.ok(item, `${url} must remain in the feed`);
+    const itemDate = item.match(/<pubDate>([^<]+)<\/pubDate>/)?.[1];
+    assert.equal(Math.floor(Date.parse(itemDate) / 1000), latestCommitEpoch([relative(repositoryRoot, file)]));
+  }
+
+  assert.equal(
+    createHash('sha256').update(canonicalFeedContent(feed)).digest('hex'),
+    'e65c38a5584616e846d4eb6e5c5205967d1525df5f51736ab64a64a03f2e364d',
+    'deterministic generation must not churn unrelated feed content',
+  );
+});
+
+test('generated sitemap last-modified dates come from each content file commit', () => {
+  const entries = sitemapEntries(readFileSync(join(repositoryRoot, 'Output/sitemap.xml'), 'utf8'));
+  for (const file of contentFiles()) {
+    const route = routeForContent(file);
+    if (route === null || route === 'apps' || route === 'posts') continue;
+    const url = `https://kinnokilabs.com/${route}`;
+    const expected = halifaxCalendarDate(latestCommitEpoch([relative(repositoryRoot, file)]));
+    assert.equal(entries.get(url), expected, `${url} must use ${relative(repositoryRoot, file)} history`);
+  }
+});
