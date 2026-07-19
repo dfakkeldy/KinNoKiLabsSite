@@ -68,15 +68,16 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
 
     func makeItemHTML(for item: Item<Site>, context: PublishingContext<Site>) throws -> HTML {
         let isEcho = item.path.string == "apps/echo"
+        let isNSMarks = item.path.string == "apps/nsmarksthespot"
         let active = item.sectionID == .posts ? "/posts" : "/apps"
         return HTML(
             .lang(context.site.language),
             siteHead(for: item, context: context),
             .body(
-                .class("page-item"),
+                .class(isNSMarks ? "page-item page-ns-marks" : "page-item"),
                 siteHeader(active: active),
                 .if(item.sectionID == .apps,
-                    isEcho ? echoDetailMain() : appItemMain(item),
+                    isEcho ? echoDetailMain() : (isNSMarks ? nsMarksDetailMain() : appItemMain(item)),
                     else: postDetailMain(item)),
                 siteFooter()
             )
@@ -510,6 +511,143 @@ private func appItemMain(_ item: Item<KinNoKiLabsSite>) -> Node<HTML.BodyContext
             )
         ),
         .article(.class("prose"), item.body.node)
+    )
+}
+
+private func nsMarksDetailMain() -> Node<HTML.BodyContext> {
+    .main(
+        .class("ns-main"),
+        .raw(
+            #"""
+            <section class="ns-hero" aria-labelledby="ns-hero-title">
+              <div class="ns-wrap ns-hero-grid">
+                <div class="ns-hero-copy">
+                  <a class="ns-back" href="/apps/" aria-label="Back to all apps">← All apps</a>
+                  <p class="ns-kicker">Online map + one guide in three forms</p>
+                  <h1 id="ns-hero-title">See the parcel.<br><em>Understand the process.</em></h1>
+                  <p class="ns-lede">Explore Nova Scotia municipal tax-sale notices on a live map. Then go beyond the packet with a grounded, illustrated guide being made to read, listen to, and watch.</p>
+                  <div class="ns-actions">
+                    <a class="ns-button ns-button-solid" href="/apps/nsmarksthespot/map/">Open the live map <span aria-hidden="true">↗</span></a>
+                    <a class="ns-button ns-button-line" href="#guide">Meet the guide <span aria-hidden="true">↓</span></a>
+                  </div>
+                  <div class="ns-availability" aria-label="Availability">
+                    <p><span class="ns-status ns-status-live">Live</span> Online parcel map</p>
+                    <p><span class="ns-status">In development</span> Book, audiobook &amp; video</p>
+                  </div>
+                </div>
+
+                <div class="ns-map-sheet" aria-hidden="true">
+                  <div class="ns-map-meta"><span>NSPRD / MUNICIPAL NOTICE</span><span>45° 54′ N</span></div>
+                  <svg viewBox="0 0 640 700" role="presentation">
+                    <path class="ns-shore" d="M-30 84 C76 28 114 135 194 118 C276 101 265 23 367 27 C485 31 490 149 676 126 L676 760 L-30 760 Z"/>
+                    <path class="ns-road" d="M-18 558 C128 494 226 533 313 431 C405 322 470 233 674 175"/>
+                    <path class="ns-road ns-road-thin" d="M80 706 C102 558 174 430 240 351 C300 279 367 238 406 13"/>
+                    <g class="ns-parcels">
+                      <path d="M92 122 L212 104 L236 215 L111 246 Z"/>
+                      <path d="M212 104 L335 77 L351 194 L236 215 Z"/>
+                      <path d="M111 246 L236 215 L267 332 L139 356 Z"/>
+                      <path class="ns-parcel-selected" d="M236 215 L351 194 L390 305 L267 332 Z"/>
+                      <path d="M139 356 L267 332 L299 453 L161 478 Z"/>
+                      <path d="M267 332 L390 305 L432 427 L299 453 Z"/>
+                      <path d="M161 478 L299 453 L329 582 L180 608 Z"/>
+                      <path d="M299 453 L432 427 L475 548 L329 582 Z"/>
+                    </g>
+                    <circle class="ns-pin" cx="326" cy="261" r="9"/>
+                  </svg>
+                  <div class="ns-pid-card">
+                    <span>SELECTED PARCEL</span>
+                    <strong>PID 50203256</strong>
+                    <small>Geometry is approximate — not a legal survey</small>
+                  </div>
+                  <div class="ns-scale"><span></span> 1 km</div>
+                </div>
+              </div>
+            </section>
+
+            <section class="ns-section ns-map-section" aria-labelledby="map-heading">
+              <div class="ns-wrap ns-two-column">
+                <div class="ns-section-heading reveal">
+                  <p class="ns-kicker">01 / Explore</p>
+                  <h2 id="map-heading">From notice row<br>to parcel shape.</h2>
+                </div>
+                <div class="ns-section-copy reveal">
+                  <p class="ns-intro">The online map brings dated municipal notices together with live provincial parcel geometry. Search by PID or civic address, compare mapped context, and keep the official source one click away.</p>
+                  <ul class="ns-fact-list">
+                    <li><span>Search</span><strong>PID, civic address, or visible parcel</strong></li>
+                    <li><span>Context</span><strong>Boundaries, roads, water, aerial &amp; Crown land</strong></li>
+                    <li><span>Notices</span><strong>CBRM and Inverness County</strong></li>
+                    <li><span>Privacy</span><strong>No owner names; location stays in your browser</strong></li>
+                  </ul>
+                  <a class="ns-text-link" href="/apps/nsmarksthespot/map/">Explore the current map <span aria-hidden="true">→</span></a>
+                </div>
+              </div>
+            </section>
+
+            <section class="ns-section ns-guide-section" id="guide" aria-labelledby="guide-heading">
+              <div class="ns-wrap">
+                <div class="ns-guide-top">
+                  <div class="ns-section-heading reveal">
+                    <p class="ns-kicker">02 / Understand</p>
+                    <h2 id="guide-heading"><em>Beyond the<br>Tax-Sale Packet</em></h2>
+                  </div>
+                  <div class="ns-section-copy reveal">
+                    <p class="ns-intro">A spoken-first, illustrated guide to how Nova Scotia municipal tax sales work—and how to research carefully without turning a map, assessment, or auction notice into a promise.</p>
+                    <p>Built from statutes, official municipal guidance, public records, map evidence, and clearly marked limits. The current twelve-chapter development packet uses Inverness County as its principal case and compares procedures across Nova Scotia.</p>
+                    <a class="ns-text-link" href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/docs/nova-scotia-tax-sale-book">View the public development packet <span aria-hidden="true">↗</span></a>
+                  </div>
+                </div>
+
+                <div class="ns-evidence-chain reveal" aria-label="The guide's evidence chain">
+                  <div><span>01</span><strong>Notice</strong><small>What was published?</small></div>
+                  <div><span>02</span><strong>Map</strong><small>Where is the mapped parcel?</small></div>
+                  <div><span>03</span><strong>Records</strong><small>What can be verified?</small></div>
+                  <div><span>04</span><strong>Limits</strong><small>Who must answer the rest?</small></div>
+                </div>
+
+                <div class="ns-format-grid" aria-label="Planned guide formats">
+                  <article class="ns-format-card reveal">
+                    <div class="ns-format-icon" aria-hidden="true">Aa</div>
+                    <p class="ns-format-meta">Book / In development</p>
+                    <h3>Read the full argument.</h3>
+                    <p>An illustrated, source-led edition with maps, diagrams, and the evidence trail kept visible.</p>
+                  </article>
+                  <article class="ns-format-card reveal">
+                    <div class="ns-format-icon" aria-hidden="true">)))</div>
+                    <p class="ns-format-meta">Audiobook / Planned</p>
+                    <h3>Learn with your eyes up.</h3>
+                    <p>A chaptered, spoken-first edition designed for the road, a walk, or the workbench.</p>
+                  </article>
+                  <article class="ns-format-card reveal">
+                    <div class="ns-format-icon" aria-hidden="true">▶</div>
+                    <p class="ns-format-meta">Video / Planned</p>
+                    <h3>Watch the evidence connect.</h3>
+                    <p>The book’s visual edition: maps and diagrams paced to the same grounded narration.</p>
+                  </article>
+                </div>
+              </div>
+            </section>
+
+            <section class="ns-boundary" aria-labelledby="boundary-heading">
+              <div class="ns-wrap ns-boundary-grid reveal">
+                <p class="ns-kicker">The useful boundary</p>
+                <h2 id="boundary-heading">A map can tell you <em>where.</em><br>It cannot tell you <em>whether.</em></h2>
+                <div class="ns-boundary-copy">
+                  <p>Mapped boundaries are not a survey. A notice is not a promise that a property remains in the sale. Neither the map nor the guide proves access, title, condition, value, possession, insurance, financing, or buildability.</p>
+                  <p>Use them to ask better questions—then verify the current municipal source and bring the unresolved ones to the right qualified professional.</p>
+                </div>
+              </div>
+            </section>
+
+            <section class="ns-final" aria-labelledby="ns-final-heading">
+              <div class="ns-wrap ns-final-inner reveal">
+                <p class="ns-kicker">Start with what is live</p>
+                <h2 id="ns-final-heading">Open the map.<br><em>Keep the questions.</em></h2>
+                <a class="ns-button ns-button-solid" href="/apps/nsmarksthespot/map/">Explore Nova Scotia parcels <span aria-hidden="true">↗</span></a>
+                <p class="ns-fine-print">Educational tools, not legal, tax, investment, surveying, appraisal, environmental, planning, or construction advice.</p>
+              </div>
+            </section>
+            """#
+        )
     )
 }
 

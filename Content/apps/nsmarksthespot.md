@@ -1,11 +1,11 @@
 ---
-title: NS Marks The Spot
-description: Historical Nova Scotia maps, lined up with the map in your hand.
+title: NS Marks The Spot — Tax-Sale Map & Guide
+description: Explore Nova Scotia municipal tax-sale notices on a live parcel map, then understand the process through an illustrated book, audiobook, and video in development.
 image: /images/apps/nsmarksthespot.svg
 accent: #12343b
-tagline: Historical maps, live in your pocket.
-platforms: iPhone
-status: TestFlight — v1.0 candidate
+tagline: See the parcel. Understand the process.
+platforms: Web · iPhone
+status: Online map live · Guide in development
 ---
 
 NS Marks The Spot lets you slide Nova Scotia's Fletcher maps over today's landscape and see old roads, lakes, and landmarks line up under your thumb.
