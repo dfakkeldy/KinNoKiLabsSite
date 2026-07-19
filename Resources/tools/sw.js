@@ -70,24 +70,35 @@ const cacheKey = (request) => {
   return pathname;
 };
 
+const offlineResponse = async (request) => {
+  try {
+    const cache = await caches.open(CACHE);
+    const cached = await cache.match(cacheKey(request));
+    if (cached) return cached;
+    if (isToolsNavigation(request)) return await cache.match('/tools/') ?? Response.error();
+  } catch { /* cache unavailable */ }
+  return Response.error();
+};
+
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
   if (request.method !== 'GET' || url.origin !== self.location.origin) return;
 
   event.respondWith((async () => {
+    let fresh;
     try {
-      const fresh = await fetch(request);
-      if (fresh.ok && fresh.type !== 'opaque' && fresh.type !== 'error') {
+      fresh = await fetch(request);
+    } catch {
+      return offlineResponse(request);
+    }
+
+    if (fresh.ok && fresh.type !== 'opaque' && fresh.type !== 'error') {
+      try {
         const cache = await caches.open(CACHE);
         await cache.put(cacheKey(request), fresh.clone());
-      }
-      return fresh;
-    } catch {
-      const cached = await caches.match(cacheKey(request));
-      if (cached) return cached;
-      if (isToolsNavigation(request)) return caches.match('/tools/');
-      return Response.error();
+      } catch { /* best-effort cache refresh */ }
     }
+    return fresh;
   })());
 });

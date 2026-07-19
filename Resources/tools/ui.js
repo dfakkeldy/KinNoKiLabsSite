@@ -1,7 +1,6 @@
 import {
+  connectToolsConnectivity,
   registerToolsServiceWorker,
-  updateToolsConnectivity,
-  watchConnectivity,
 } from './core.js';
 
 const root = document.getElementById('tools-app');
@@ -22,14 +21,7 @@ const controllers = {
 
 (controllers[page] ?? controllers.hub)()
   .then(() => {
-    const stopWatching = watchConnectivity(window, (online) => {
-      updateToolsConnectivity(root, online);
-    });
-    const disposeConnectivity = () => {
-      stopWatching();
-      window.removeEventListener('pagehide', disposeConnectivity);
-    };
-    window.addEventListener('pagehide', disposeConnectivity);
+    connectToolsConnectivity(root, window);
   })
   .catch((error) => {
     console.error('tools: failed to start', error);

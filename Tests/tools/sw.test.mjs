@@ -63,10 +63,12 @@ function loadWorker() {
   const deleted = [];
   const added = [];
   const puts = [];
-  const matches = [];
+  const cacheMatches = [];
+  const globalMatches = [];
   const cache = {
     async addAll(urls) { added.push(...urls); },
     async put(key, response) { puts.push({ key, response }); },
+    async match(key) { cacheMatches.push(key); return null; },
   };
   const context = {
     URL,
@@ -76,7 +78,7 @@ function loadWorker() {
       async open(name) { opened.push(name); return cache; },
       async keys() { return ['kinnoki-tools-v0', 'kinnoki-tools-v1', 'unrelated-v3']; },
       async delete(name) { deleted.push(name); return true; },
-      async match(key) { matches.push(key); return null; },
+      async match(key) { globalMatches.push(key); return null; },
     },
     self: {
       location: { origin: 'https://kinnokilabs.com' },
@@ -87,7 +89,9 @@ function loadWorker() {
     },
   };
   if (workerSource) runInNewContext(workerSource, context, { filename: 'sw.js' });
-  return { handlers, context, opened, deleted, added, puts, matches };
+  return {
+    handlers, context, cache, opened, deleted, added, puts, cacheMatches, globalMatches,
+  };
 }
 
 function waitableEvent(extra = {}) {
@@ -200,13 +204,31 @@ test('worker handles only same-origin GET and caches only successful non-opaque 
   assert.deepEqual(worker.puts, [{ key: '/tools/ui.js', response: { cloned: true } }]);
 });
 
+test('a successful network response survives rejected cache open and cache writes', async () => {
+  for (const failCache of [
+    (worker) => { worker.context.caches.open = async () => { throw new Error('quota'); }; },
+    (worker) => { worker.cache.put = async () => { throw new Error('quota'); }; },
+  ]) {
+    const worker = loadWorker();
+    const fresh = { ok: true, type: 'basic', clone() { return { cloned: true }; } };
+    worker.context.fetch = async () => fresh;
+    failCache(worker);
+    let response;
+    worker.handlers.get('fetch')({
+      request: { method: 'GET', url: 'https://kinnokilabs.com/tools/ui.js', mode: 'same-origin' },
+      respondWith(value) { response = value; },
+    });
+    assert.equal(await response, fresh);
+  }
+});
+
 test('offline navigation normalization and hub fallback stay inside the tools scope', async () => {
   const worker = loadWorker();
   assert.ok(worker.handlers.get('fetch'), 'fetch handler must be registered');
   worker.context.fetch = async () => { throw new Error('offline'); };
   const cachedPage = { cached: 'word-count' };
-  worker.context.caches.match = async (key) => {
-    worker.matches.push(key);
+  worker.cache.match = async (key) => {
+    worker.cacheMatches.push(key);
     return key === '/tools/word-count/' ? cachedPage : null;
   };
 
@@ -216,12 +238,15 @@ test('offline navigation normalization and hub fallback stay inside the tools sc
     respondWith(value) { response = value; },
   });
   assert.equal(await response, cachedPage);
-  assert.deepEqual(worker.matches, ['/tools/word-count/']);
+  assert.deepEqual(worker.cacheMatches, ['/tools/word-count/']);
+  assert.deepEqual(worker.globalMatches, []);
+  assert.deepEqual(worker.opened, ['kinnoki-tools-v1']);
 
-  worker.matches.length = 0;
+  worker.cacheMatches.length = 0;
+  worker.opened.length = 0;
   const hub = { cached: 'hub' };
-  worker.context.caches.match = async (key) => {
-    worker.matches.push(key);
+  worker.cache.match = async (key) => {
+    worker.cacheMatches.push(key);
     return key === '/tools/' ? hub : null;
   };
   worker.handlers.get('fetch')({
@@ -229,15 +254,20 @@ test('offline navigation normalization and hub fallback stay inside the tools sc
     respondWith(value) { response = value; },
   });
   assert.equal(await response, hub);
-  assert.deepEqual(worker.matches, ['/tools/missing/', '/tools/']);
+  assert.deepEqual(worker.cacheMatches, ['/tools/missing/', '/tools/']);
+  assert.deepEqual(worker.globalMatches, []);
+  assert.deepEqual(worker.opened, ['kinnoki-tools-v1']);
 
-  worker.matches.length = 0;
+  worker.cacheMatches.length = 0;
+  worker.opened.length = 0;
   worker.handlers.get('fetch')({
     request: { method: 'GET', url: 'https://kinnokilabs.com/about', mode: 'navigate' },
     respondWith(value) { response = value; },
   });
   assert.deepEqual(await response, { type: 'error', status: 0 });
-  assert.deepEqual(worker.matches, ['/about']);
+  assert.deepEqual(worker.cacheMatches, ['/about']);
+  assert.deepEqual(worker.globalMatches, []);
+  assert.deepEqual(worker.opened, ['kinnoki-tools-v1']);
 });
 
 test('connectivity chip mounts once, unmounts online, and remounts in hub and tool shells', () => {
@@ -265,10 +295,46 @@ test('connectivity chip mounts once, unmounts online, and remounts in hub and to
 
 test('tools bootstrap registers the scoped worker and disposes connectivity watching at page hide', () => {
   assert.match(uiSource, /registerToolsServiceWorker\(window\.navigator\?\.serviceWorker\)/);
-  assert.match(uiSource, /watchConnectivity\(window,/);
-  assert.match(uiSource, /updateToolsConnectivity\(root, online\)/);
-  assert.match(uiSource, /addEventListener\('pagehide', disposeConnectivity/);
-  assert.match(uiSource, /removeEventListener\('pagehide', disposeConnectivity/);
+  assert.match(uiSource, /connectToolsConnectivity\(root, window\)/);
+});
+
+test('connectivity lifecycle survives BFCache, refreshes on pageshow, and fully disposes on final pagehide', () => {
+  assert.equal(typeof core.connectToolsConnectivity, 'function');
+  const document = createDocument();
+  const root = document.createElement('main');
+  core.toolShell(root, { title: 'Tool', lede: 'Lede' });
+  const listeners = new Map();
+  const target = {
+    navigator: { onLine: false },
+    addEventListener(type, listener) {
+      listeners.set(type, [...(listeners.get(type) ?? []), listener]);
+    },
+    removeEventListener(type, listener) {
+      listeners.set(type, (listeners.get(type) ?? []).filter((value) => value !== listener));
+    },
+  };
+  const dispatch = (type, event = {}) => {
+    for (const listener of listeners.get(type) ?? []) listener(event);
+  };
+  const count = (type) => (listeners.get(type) ?? []).length;
+
+  const dispose = core.connectToolsConnectivity(root, target);
+  assert.equal(root.querySelector('.tool-offline-chip')?.textContent,
+    'Offline — everything here still works');
+  for (const type of ['online', 'offline', 'pagehide', 'pageshow']) assert.equal(count(type), 1);
+
+  dispatch('pagehide', { persisted: true });
+  for (const type of ['online', 'offline', 'pagehide', 'pageshow']) assert.equal(count(type), 1);
+  target.navigator.onLine = true;
+  dispatch('pageshow', { persisted: true });
+  assert.equal(root.querySelector('.tool-offline-chip'), null);
+
+  target.navigator.onLine = false;
+  dispatch('offline');
+  assert.ok(root.querySelector('.tool-offline-chip'));
+  dispatch('pagehide', { persisted: false });
+  for (const type of ['online', 'offline', 'pagehide', 'pageshow']) assert.equal(count(type), 0);
+  assert.doesNotThrow(dispose);
 });
 
 test('only tools pages request the tools manifest and actual-color browser theme', () => {

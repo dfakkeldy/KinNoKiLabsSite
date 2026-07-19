@@ -108,6 +108,30 @@ export function updateToolsConnectivity(root, isOnline) {
   }));
 }
 
+export function connectToolsConnectivity(root, target = globalThis) {
+  const refresh = () => updateToolsConnectivity(
+    root,
+    target.navigator ? target.navigator.onLine !== false : true,
+  );
+  const stopWatching = watchConnectivity(target, (online) => {
+    updateToolsConnectivity(root, online);
+  });
+  let disposed = false;
+  const dispose = () => {
+    if (disposed) return;
+    disposed = true;
+    stopWatching();
+    target.removeEventListener('pagehide', handlePageHide);
+    target.removeEventListener('pageshow', refresh);
+  };
+  const handlePageHide = (event) => {
+    if (!event.persisted) dispose();
+  };
+  target.addEventListener('pagehide', handlePageHide);
+  target.addEventListener('pageshow', refresh);
+  return dispose;
+}
+
 export function registerToolsServiceWorker(container = globalThis.navigator?.serviceWorker) {
   if (!container?.register) return;
   container.register('/tools/sw.js', { scope: '/tools/' }).catch(() => {});
