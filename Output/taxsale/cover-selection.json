@@ -1,0 +1,41 @@
+{
+  "book_slug": "beyond-the-tax-sale-packet",
+  "candidate": {
+    "direction_name": "The Packet Lifts",
+    "id": "packet-lifts"
+  },
+  "edition_id": "2026-public-epub",
+  "font_manifest_sha256": "5c905e1ab6642b14d341a450be01e12a54f541a775e0e63410765ae87e11947f",
+  "privacy": {
+    "classification": "public-safe",
+    "permission_to_publish": true
+  },
+  "schema_version": 2,
+  "selected_at": "2026-07-21T16:48:41-03:00",
+  "selection_source": "user",
+  "source_art_sha256": "bd8aa65d8172722bb38a352272e04445954bbeea271f0384581403118ddd85af",
+  "variants": {
+    "portrait": {
+      "cover_sha256": "fffaf3037b43f6341a822cb004a0a4d1829e8ef56df80c753400471ffe53ddf6",
+      "dimensions": [
+        1600,
+        2560
+      ],
+      "render_receipt_sha256": "2aabe78e345692d9a8511bcf217dbf7ad72a51c759c86e7e7d9905a12d589138",
+      "specification_sha256": "913194f7b0c39eb04728982f9cfa0f452db4ee42b3119596420adce27a113299",
+      "subtitle_included": true,
+      "thumbnail_sha256": "53766aead277386a0bfde4bf73074c3077a76d1121a128544e098472133c98a3"
+    },
+    "square": {
+      "cover_sha256": "350a78085825b8cadcf706d0be7355cc7020030b5cf86b90a5376aea3eeb707c",
+      "dimensions": [
+        2400,
+        2400
+      ],
+      "render_receipt_sha256": "277304c9963cdcb2de2c111fee66882a00c1c3fd1ab604b910e9b53250cbeb9a",
+      "specification_sha256": "c6d4954f5acd8c99e44728075c7b11f9bdb8ae9697120333c2d3481719e24672",
+      "subtitle_included": false,
+      "thumbnail_sha256": "df0a73f8de41ca08d6155b443284ce796c6421bdce489fff7eb07282078c309a"
+    }
+  }
+}

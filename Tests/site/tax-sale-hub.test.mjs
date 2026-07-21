@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
@@ -11,6 +12,16 @@ const theme = readFileSync(
 const generated = readFileSync(new URL('../../Output/taxsale/index.html', import.meta.url), 'utf8');
 const styles = readFileSync(new URL('../../Resources/styles.css', import.meta.url), 'utf8');
 const generatedStyles = readFileSync(new URL('../../Output/styles.css', import.meta.url), 'utf8');
+const publicEpub = readFileSync(
+  new URL('../../Resources/taxsale/beyond-the-tax-sale-packet.epub', import.meta.url),
+);
+const generatedEpub = readFileSync(
+  new URL('../../Output/taxsale/beyond-the-tax-sale-packet.epub', import.meta.url),
+);
+const publicCover = readFileSync(new URL('../../Resources/taxsale/cover.png', import.meta.url));
+const generatedCover = readFileSync(new URL('../../Output/taxsale/cover.png', import.meta.url));
+
+const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 
 test('publishes the short Nova Scotia tax-sale hub route', () => {
   assert.match(content, /title: Nova Scotia Tax Sale Hub/);
@@ -32,12 +43,23 @@ test('keeps current posted dates tied to official municipal sources', () => {
 });
 
 test('shows truthful format status and connects the existing app page', () => {
-  assert.match(generated, /Illustrated book/);
-  assert.match(generated, /No finished public audiobook exists yet\./);
-  assert.match(generated, /No finished public video exists yet\./);
+  assert.match(generated, /Public EPUB · available now/);
+  assert.match(generated, /EPUB text edition/);
+  assert.match(generated, /No finished public audiobook is available yet\./);
+  assert.match(generated, /No finished public video is available yet\./);
   assert.match(generated, /\/apps\/nsmarksthespot\/map\//);
   assert.match(generated, /\/images\/taxsale\/og\.png/);
   assert.match(appContent, /\[Nova Scotia Tax Sale Hub\]\(\/taxsale\/\)/);
+});
+
+test('publishes the exact approved EPUB and selected cover as first-party downloads', () => {
+  assert.match(generated, /href="\/taxsale\/beyond-the-tax-sale-packet\.epub" download/);
+  assert.match(generated, /src="\/taxsale\/cover\.png"/);
+  assert.match(generated, /href="\/tools\/epub-reader\/"/);
+  assert.equal(sha256(publicEpub), '40049b5e7bac13657d5b1417fc1dbac25f6c3d02587c3c484e2e49dc73003bd0');
+  assert.equal(sha256(publicCover), 'fffaf3037b43f6341a822cb004a0a4d1829e8ef56df80c753400471ffe53ddf6');
+  assert.deepEqual(generatedEpub, publicEpub);
+  assert.deepEqual(generatedCover, publicCover);
 });
 
 test('uses the live map palette across source and generated styles', () => {

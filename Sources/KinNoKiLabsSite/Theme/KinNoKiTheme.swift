@@ -470,7 +470,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                 <div class="tax-hero-copy">
                   <p class="tax-kicker">KinNoKi Labs · Nova Scotia field desk</p>
                   <h1 id="tax-hero-title">Nova Scotia<br><em>tax sales, mapped.</em></h1>
-                  <p class="tax-lede">One quick place for posted municipal dates, the live parcel map, and <cite>Beyond the Tax-Sale Packet</cite> as it becomes a book, audiobook, and video.</p>
+                  <p class="tax-lede">One quick place for posted municipal dates, the live parcel map, and the public EPUB of <cite>Beyond the Tax-Sale Packet</cite>.</p>
                   <div class="tax-actions">
                     <a class="tax-button tax-button-solid" href="/apps/nsmarksthespot/map/">Open the live map <span aria-hidden="true">↗</span></a>
                     <a class="tax-button tax-button-line" href="#dates">See posted dates <span aria-hidden="true">↓</span></a>
@@ -564,38 +564,42 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
 
             <section class="tax-section tax-guide-section" id="guide" aria-labelledby="tax-guide-heading">
               <div class="tax-wrap">
-                <div class="tax-section-intro reveal">
-                  <div>
-                    <p class="tax-kicker">One guide · three forms</p>
+                <div class="tax-guide-feature reveal">
+                  <img class="tax-book-cover" src="/taxsale/cover.png" alt="Cover of Beyond the Tax-Sale Packet by Dan Fakkeldy" width="1600" height="2560" loading="lazy" decoding="async">
+                  <div class="tax-guide-copy">
+                    <p class="tax-kicker">Public EPUB · available now</p>
                     <h2 id="tax-guide-heading"><em>Beyond the<br>Tax-Sale Packet</em></h2>
-                  </div>
-                  <div>
-                    <p class="tax-large-copy">A spoken-first, illustrated guide to how Nova Scotia municipal tax sales work—and how to research carefully without mistaking a notice, assessment, or map for an answer.</p>
-                    <a class="tax-text-link" href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/docs/nova-scotia-tax-sale-book">Open the public development packet <span aria-hidden="true">↗</span></a>
+                    <p class="tax-large-copy">A thirteen-chapter guide to how Nova Scotia municipal tax sales work—and how to research carefully without mistaking a notice, assessment, or map for an answer.</p>
+                    <div class="tax-actions tax-guide-actions">
+                      <a class="tax-button tax-button-solid" href="/taxsale/beyond-the-tax-sale-packet.epub" download>Download the EPUB <span aria-hidden="true">↓</span></a>
+                      <a class="tax-button tax-button-line" href="/tools/epub-reader/">Open the on-device reader <span aria-hidden="true">→</span></a>
+                    </div>
+                    <p class="tax-guide-meta">Text edition · 13 chapters · educational information only</p>
                   </div>
                 </div>
 
                 <div class="tax-format-grid" aria-label="Guide formats and status">
                   <article class="tax-format-card reveal">
                     <p class="tax-format-number">01</p>
-                    <p class="tax-status tax-status-active">In development</p>
-                    <h3>Illustrated book</h3>
-                    <p>The public research packet, twelve-chapter argument, approved visual direction, maps, and source trail are taking shape now.</p>
-                    <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/docs/nova-scotia-tax-sale-book">See the work in progress <span aria-hidden="true">↗</span></a>
+                    <p class="tax-status tax-status-active">Available now</p>
+                    <h3>EPUB text edition</h3>
+                    <p>The complete public text, selected cover, source appendix, and careful boundary between screening evidence and unresolved questions.</p>
+                    <a href="/taxsale/beyond-the-tax-sale-packet.epub" download>Download the EPUB <span aria-hidden="true">↓</span></a>
                   </article>
                   <article class="tax-format-card reveal">
                     <p class="tax-format-number">02</p>
-                    <p class="tax-status">Planned after manuscript</p>
+                    <p class="tax-status">In production · not public</p>
                     <h3>Audiobook</h3>
-                    <p>A chaptered, spoken-first edition for the road, a walk, or the workbench. No finished public audiobook exists yet.</p>
+                    <p>A chaptered edition for the road, a walk, or the workbench. No finished public audiobook is available yet.</p>
                   </article>
                   <article class="tax-format-card reveal">
                     <p class="tax-format-number">03</p>
-                    <p class="tax-status">Planned after visuals</p>
+                    <p class="tax-status">Planned · not public</p>
                     <h3>Video edition</h3>
-                    <p>Maps, packet anatomy, and process diagrams paced to the same grounded narration. No finished public video exists yet.</p>
+                    <p>Maps, packet anatomy, and process diagrams paced to the same grounded narration. No finished public video is available yet.</p>
                   </article>
                 </div>
+                <a class="tax-text-link tax-development-link" href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/docs/nova-scotia-tax-sale-book">Open the public development packet and sources <span aria-hidden="true">↗</span></a>
               </div>
             </section>
 
