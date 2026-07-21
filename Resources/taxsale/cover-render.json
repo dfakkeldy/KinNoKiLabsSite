@@ -1,0 +1,39 @@
+{
+  "brand_mark": {
+    "source": "brand-mark.png",
+    "source_sha256": "240d17d0fd37d0611dd9557f1407134149cd0841b503aff56f369721934dfdde"
+  },
+  "candidate": {
+    "direction_name": "The Packet Lifts",
+    "id": "packet-lifts"
+  },
+  "colour_mode": "RGB",
+  "dimensions": [
+    1600,
+    2560
+  ],
+  "font_manifest_sha256": "5c905e1ab6642b14d341a450be01e12a54f541a775e0e63410765ae87e11947f",
+  "font_manifest_version": 1,
+  "fonts": {
+    "display-condensed": "e74b750df582c608f35db467b711b2b60d2217618e85e60b72b42dfd00446cab",
+    "geometric-sans": "acad6de1fc93436f5c0f1f4137751ef04f1aea3063e7036535970ffcfbd79f72",
+    "technical-mono": "ac27abd6450a64dd94467580a02fe6235156d5b92f2926ebbc8e7489df64e0be"
+  },
+  "output": "cover.png",
+  "output_sha256": "fffaf3037b43f6341a822cb004a0a4d1829e8ef56df80c753400471ffe53ddf6",
+  "receipt_version": 1,
+  "renderer_version": 2,
+  "schema_version": 1,
+  "source_art": "source-art.png",
+  "source_art_sha256": "bd8aa65d8172722bb38a352272e04445954bbeea271f0384581403118ddd85af",
+  "spec": "cover-spec.json",
+  "spec_sha256": "913194f7b0c39eb04728982f9cfa0f452db4ee42b3119596420adce27a113299",
+  "thumbnail": "cover-thumbnail.png",
+  "thumbnail_dimensions": [
+    160,
+    256
+  ],
+  "thumbnail_sha256": "53766aead277386a0bfde4bf73074c3077a76d1121a128544e098472133c98a3",
+  "variant": "portrait",
+  "warnings": []
+}
