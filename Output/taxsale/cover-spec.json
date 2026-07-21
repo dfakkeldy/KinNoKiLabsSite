@@ -1,0 +1,18 @@
+{
+  "schema_version": 2,
+  "variant": "portrait",
+  "candidate": {"id": "packet-lifts", "direction_name": "The Packet Lifts"},
+  "canvas": {"width": 1600, "height": 2560, "background": "#102638", "safe_margin": 96},
+  "art": {"path": "source-art.png", "mode": "bleed", "box": [0, 0, 1600, 2560], "anchor": "center", "opacity": 1, "blend_mode": "normal"},
+  "layers": [
+    {"kind": "text", "role": "label", "text": "NOVA SCOTIA PUBLIC GUIDE", "font_id": "technical-mono", "size": 28, "line_height": 34, "tracking": 4, "colour": "#59C3C3", "contrast_against": "#102638", "opacity": 1, "box": [100, 105, 1050, 52], "align": "left", "rotation": 0, "baseline_shift": 0},
+    {"kind": "text", "role": "title", "title_order": 1, "text": "BEYOND THE", "font_id": "display-condensed", "size": 142, "line_height": 148, "tracking": 1, "colour": "#F4E9D2", "contrast_against": "#102638", "opacity": 1, "box": [96, 220, 1080, 170], "align": "left", "rotation": 0, "baseline_shift": 0},
+    {"kind": "text", "role": "title", "title_order": 2, "text": "TAX-SALE", "font_id": "display-condensed", "size": 170, "line_height": 178, "tracking": 1, "colour": "#EF684C", "contrast_against": "#102638", "opacity": 1, "box": [96, 380, 1150, 205], "align": "left", "rotation": 0, "baseline_shift": 0},
+    {"kind": "text", "role": "title", "title_order": 3, "text": "PACKET", "font_id": "display-condensed", "size": 182, "line_height": 190, "tracking": 1, "colour": "#F4E9D2", "contrast_against": "#102638", "opacity": 1, "box": [96, 565, 1020, 220], "align": "left", "rotation": 0, "baseline_shift": 0},
+    {"kind": "line", "start": [100, 830], "end": [600, 830], "width": 8, "colour": "#59C3C3", "opacity": 1, "purpose": "evidence-chain accent"},
+    {"kind": "text", "role": "subtitle", "text": "How Nova Scotia Municipal\nAuctions Really Work", "font_id": "geometric-sans", "size": 42, "line_height": 52, "tracking": 0, "colour": "#F4E9D2", "contrast_against": "#102638", "opacity": 1, "box": [100, 875, 900, 130], "align": "left", "rotation": 0, "baseline_shift": 0},
+    {"kind": "text", "role": "author", "text": "DAN FAKKELDY", "font_id": "technical-mono", "size": 38, "line_height": 44, "tracking": 3, "colour": "#F4E9D2", "contrast_against": "#102638", "opacity": 1, "box": [100, 2375, 850, 65], "align": "left", "rotation": 0, "baseline_shift": 0},
+    {"kind": "brand_mark", "path": "brand-mark.png", "box": [1330, 100, 170, 170], "opacity": 0.92, "blend_mode": "normal", "purpose": "identify KinNoKi Labs as publisher"}
+  ],
+  "metadata": {"title": "Beyond the Tax-Sale Packet", "subtitle": "How Nova Scotia Municipal Auctions Really Work", "author": "Dan Fakkeldy", "label": "Nova Scotia Public Guide"}
+}
