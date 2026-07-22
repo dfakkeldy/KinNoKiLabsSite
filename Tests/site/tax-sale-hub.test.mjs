@@ -38,7 +38,7 @@ test('keeps current posted dates tied to official municipal sources', () => {
   assert.match(generated, /https:\/\/cbrm\.ns\.ca\/business\/property-sales-management\/tax-sales\//);
   assert.match(generated, /https:\/\/invernesscounty\.ca\/services\/finance-taxation\/tax-sales\//);
   assert.match(generated, /67 advertised rows · 68 unique PIDs mapped/);
-  assert.match(generated, /45 advertised rows · 47 unique PIDs mapped/);
+  assert.match(generated, /40 advertised rows · 5 withdrawn rows · 40 active PIDs mapped/);
   assert.match(generated, /Posted does not mean final\./);
 });
 
