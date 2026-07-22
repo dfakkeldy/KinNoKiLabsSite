@@ -527,7 +527,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                       <p class="tax-status">Posted · Public auction</p>
                       <h3>Municipality of the County of Inverness</h3>
                       <p><strong>Tuesday, August 11 at 9:30 a.m.</strong><br>St. Peter’s Parish Hall, 260 Main Street, Port Hood</p>
-                      <p class="tax-date-detail">45 advertised rows · 47 unique PIDs mapped</p>
+                      <p class="tax-date-detail">40 advertised rows · 5 withdrawn rows · 40 active PIDs mapped</p>
                     </div>
                     <div class="tax-date-actions">
                       <a href="https://invernesscounty.ca/services/finance-taxation/tax-sales/">Official Inverness page <span aria-hidden="true">↗</span></a>
