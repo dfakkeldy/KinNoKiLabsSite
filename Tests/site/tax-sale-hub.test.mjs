@@ -43,9 +43,13 @@ test('keeps current posted dates tied to official municipal sources', () => {
 });
 
 test('shows truthful format status and connects the existing app page', () => {
-  assert.match(generated, /Public EPUB · available now/);
+  assert.match(generated, /Public EPUB \+ audiobook · available now/);
   assert.match(generated, /EPUB text edition/);
-  assert.match(generated, /No finished public audiobook is available yet\./);
+  assert.match(generated, /href="\/listen\/\?book=beyond-the-tax-sale-packet"/);
+  assert.match(
+    generated,
+    /This edition has passed package and audio checks\. The creator's full listening review is still underway\./,
+  );
   assert.match(generated, /No finished public video is available yet\./);
   assert.match(generated, /\/apps\/nsmarksthespot\/map\//);
   assert.match(generated, /\/images\/taxsale\/og\.png/);

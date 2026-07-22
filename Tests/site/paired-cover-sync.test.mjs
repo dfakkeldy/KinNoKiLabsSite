@@ -18,6 +18,7 @@ const slugs = [
   'is-there-anyone-in-here', 'claude-platform-01-the-message',
   'claude-platform-02-thinking-and-reliable-responses',
   'claude-platform-03-giving-claude-tools',
+  'beyond-the-tax-sale-packet',
 ];
 const candidates = {
   'an-unsettling-conversation': 'cut-in-the-page',
@@ -37,6 +38,7 @@ const candidates = {
   'claude-platform-01-the-message': 'route-and-return',
   'claude-platform-02-thinking-and-reliable-responses': 'event-by-event',
   'claude-platform-03-giving-claude-tools': 'application-keeps-key',
+  'beyond-the-tax-sale-packet': 'packet-lifts',
 };
 const recoverySlugs = new Set([
   'you-are-the-architect', 'the-bug-is-a-clue', 'tests-first',
@@ -211,7 +213,7 @@ test('paired cover sync fails closed for every reviewed negative contract', asyn
     try {
       const first = invoke(f);
       assert.equal(first.status, 0, first.stderr);
-      assert.match(first.stdout, /17 portrait covers and 16 square player derivatives/);
+      assert.match(first.stdout, /18 portrait covers and 17 square player derivatives/);
       const provenance = JSON.parse(readFileSync(path.join(f.output, 'learn/paired-cover-provenance.json')));
       assert.equal(provenance.books['an-unsettling-conversation'].receiptKind, 'cover-selection-v2');
       assert.equal(provenance.books['you-are-the-architect'].receiptKind, 'legacy-cover-pair-v1');

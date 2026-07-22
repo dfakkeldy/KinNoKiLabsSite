@@ -28,6 +28,7 @@ const expectedBooks = [
   'claude-platform-01-the-message',
   'claude-platform-02-thinking-and-reliable-responses',
   'claude-platform-03-giving-claude-tools',
+  'beyond-the-tax-sale-packet',
 ];
 const expectedPlayable = [...expectedBooks];
 const expectedAnchorCounts = new Map([
@@ -48,6 +49,7 @@ const expectedAnchorCounts = new Map([
   ['claude-platform-01-the-message', 571],
   ['claude-platform-02-thinking-and-reliable-responses', 346],
   ['claude-platform-03-giving-claude-tools', 822],
+  ['beyond-the-tax-sale-packet', 612],
 ]);
 // Covers are NOT all one shape: approved player books with paired art are square
 // because Tools/sync-paired-cover-assets.sh re-derives them from the paired
@@ -125,6 +127,7 @@ test('public-first-listen books disclose their edition while legacy books remain
     'claude-platform-01-the-message',
     'claude-platform-02-thinking-and-reliable-responses',
     'claude-platform-03-giving-claude-tools',
+    'beyond-the-tax-sale-packet',
   ]);
   for (const book of catalog.books) {
     if (firstListenSlugs.has(book.slug)) {

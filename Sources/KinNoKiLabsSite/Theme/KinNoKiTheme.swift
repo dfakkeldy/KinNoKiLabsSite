@@ -470,7 +470,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                 <div class="tax-hero-copy">
                   <p class="tax-kicker">KinNoKi Labs · Nova Scotia field desk</p>
                   <h1 id="tax-hero-title">Nova Scotia<br><em>tax sales, mapped.</em></h1>
-                  <p class="tax-lede">One quick place for posted municipal dates, the live parcel map, and the public EPUB of <cite>Beyond the Tax-Sale Packet</cite>.</p>
+                  <p class="tax-lede">One quick place for posted municipal dates, the live parcel map, and the public text and audio editions of <cite>Beyond the Tax-Sale Packet</cite>.</p>
                   <div class="tax-actions">
                     <a class="tax-button tax-button-solid" href="/apps/nsmarksthespot/map/">Open the live map <span aria-hidden="true">↗</span></a>
                     <a class="tax-button tax-button-line" href="#dates">See posted dates <span aria-hidden="true">↓</span></a>
@@ -567,14 +567,14 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                 <div class="tax-guide-feature reveal">
                   <img class="tax-book-cover" src="/taxsale/cover.png" alt="Cover of Beyond the Tax-Sale Packet by Dan Fakkeldy" width="1600" height="2560" loading="lazy" decoding="async">
                   <div class="tax-guide-copy">
-                    <p class="tax-kicker">Public EPUB · available now</p>
+                    <p class="tax-kicker">Public EPUB + audiobook · available now</p>
                     <h2 id="tax-guide-heading"><em>Beyond the<br>Tax-Sale Packet</em></h2>
                     <p class="tax-large-copy">A thirteen-chapter guide to how Nova Scotia municipal tax sales work—and how to research carefully without mistaking a notice, assessment, or map for an answer.</p>
                     <div class="tax-actions tax-guide-actions">
                       <a class="tax-button tax-button-solid" href="/taxsale/beyond-the-tax-sale-packet.epub" download>Download the EPUB <span aria-hidden="true">↓</span></a>
-                      <a class="tax-button tax-button-line" href="/tools/epub-reader/">Open the on-device reader <span aria-hidden="true">→</span></a>
+                      <a class="tax-button tax-button-line" href="/listen/?book=beyond-the-tax-sale-packet">Listen in the Listening Room <span aria-hidden="true">→</span></a>
                     </div>
-                    <p class="tax-guide-meta">Text edition · 13 chapters · educational information only</p>
+                    <p class="tax-guide-meta">Text + audio · 13 chapters · 3:57:36 · educational information only</p>
                   </div>
                 </div>
 
@@ -585,12 +585,15 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                     <h3>EPUB text edition</h3>
                     <p>The complete public text, selected cover, source appendix, and careful boundary between screening evidence and unresolved questions.</p>
                     <a href="/taxsale/beyond-the-tax-sale-packet.epub" download>Download the EPUB <span aria-hidden="true">↓</span></a>
+                    <a href="/tools/epub-reader/">Open the on-device reader <span aria-hidden="true">→</span></a>
                   </article>
                   <article class="tax-format-card reveal">
                     <p class="tax-format-number">02</p>
-                    <p class="tax-status">In production · not public</p>
+                    <p class="tax-status tax-status-active">Available now</p>
                     <h3>Audiobook</h3>
-                    <p>A chaptered edition for the road, a walk, or the workbench. No finished public audiobook is available yet.</p>
+                    <p>A chaptered edition for the road, a walk, or the workbench, with synced text in the Listening Room.</p>
+                    <p>This edition has passed package and audio checks. The creator's full listening review is still underway.</p>
+                    <a href="/listen/?book=beyond-the-tax-sale-packet">Open the Listening Room <span aria-hidden="true">→</span></a>
                   </article>
                   <article class="tax-format-card reveal">
                     <p class="tax-format-number">03</p>

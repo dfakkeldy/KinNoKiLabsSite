@@ -93,6 +93,7 @@ is-there-anyone-in-here|Is There Anyone in Here?|One Language Model Examines the
 claude-platform-01-the-message|The Message|Conversations, Content Blocks, and the Messages API|Codex (GPT-5)
 claude-platform-02-thinking-and-reliable-responses|Making Claude Think and Respond Reliably|Reasoning, Multimodal Inputs, Structured Output, and Streaming|Codex (GPT-5)
 claude-platform-03-giving-claude-tools|Giving Claude Tools|Contracts, Agent Loops, and Controlled Action|Codex (GPT-5)
+beyond-the-tax-sale-packet|Beyond the Tax-Sale Packet|How Nova Scotia Municipal Auctions Really Work|Dan Fakkeldy
 EOF
 )"
 
@@ -114,16 +115,18 @@ the-new-deal
 is-there-anyone-in-here
 claude-platform-01-the-message
 claude-platform-02-thinking-and-reliable-responses
-claude-platform-03-giving-claude-tools"
+claude-platform-03-giving-claude-tools
+beyond-the-tax-sale-packet"
 
 # These editions were authorized under the public-first-listen contract. Their
 # publication receipts are mandatory and must pass the verifier shipped in the
 # exact BOOKS_REPO checkout before any of their assets enter the staging tree.
 PUBLICATION_REQUIRED="claude-platform-01-the-message
 claude-platform-02-thinking-and-reliable-responses
-claude-platform-03-giving-claude-tools"
+claude-platform-03-giving-claude-tools
+beyond-the-tax-sale-packet"
 
-EXPECTED_BOOK_COUNT=17
+EXPECTED_BOOK_COUNT=18
 listen_catalog_transaction_init "$OUT_DIR"
 
 # BEGIN VALIDATE_SERIES
