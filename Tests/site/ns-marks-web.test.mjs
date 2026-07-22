@@ -14,7 +14,7 @@ import { spawnSync } from 'node:child_process';
 
 const projectRoot = new URL('../../', import.meta.url);
 const syncTool = new URL('../../Tools/sync-ns-marks-web.mjs', import.meta.url);
-const expectedNsMarksCommit = '323e34e6229457a83b4f2ef22fcd6220ca66cdfe';
+const expectedNsMarksCommit = 'c2a4850e17580f9e22c3e48b596bc2b963ccca6e';
 
 function run(command, args, cwd) {
   const result = spawnSync(command, args, { cwd, encoding: 'utf8' });
