@@ -1,0 +1,206 @@
+name: Promote NS Marks Web
+
+on:
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: promote-ns-marks-web
+  cancel-in-progress: false
+
+env:
+  NS_MARKS_REPOSITORY: https://github.com/dfakkeldy/ns-marks-the-spot
+
+jobs:
+  detect:
+    name: Detect accepted web changes
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.prepare.outputs.changed }}
+      source_commit: ${{ steps.prepare.outputs.source_commit }}
+
+    steps:
+      - name: Check out KinNoKi source
+        uses: actions/checkout@v4
+
+      - name: Hold while a deployment PR is already open
+        id: existing
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          existing_pr="$(
+            gh pr list \
+              --repo "$GITHUB_REPOSITORY" \
+              --state open \
+              --json headRefName,url \
+              --jq '.[] | select(.headRefName | startswith("automation/ns-marks-web-")) | .url' |
+              head -n 1
+          )"
+          if [ -n "$existing_pr" ]; then
+            echo "Holding for existing deployment PR: $existing_pr"
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fetch NS Marks history without file blobs
+        if: steps.existing.outputs.found != 'true'
+        env:
+          SOURCE_PATH: ${{ runner.temp }}/ns-marks-source
+        run: |
+          pinned_commit="$(
+            node -p "JSON.parse(require('fs').readFileSync('Tools/ns-marks-web-source.json')).commit"
+          )"
+          git init -q "$SOURCE_PATH"
+          git -C "$SOURCE_PATH" remote add origin "$NS_MARKS_REPOSITORY"
+          git -C "$SOURCE_PATH" fetch --filter=blob:none --no-tags origin \
+            "+refs/heads/nightly:refs/remotes/origin/nightly"
+          git -C "$SOURCE_PATH" fetch --filter=blob:none --no-tags origin "$pinned_commit"
+          git -C "$SOURCE_PATH" sparse-checkout init --no-cone
+          {
+            echo "/web/"
+            echo "/docs/assets/app-icon.svg"
+          } > "$SOURCE_PATH/.git/info/sparse-checkout"
+          git -C "$SOURCE_PATH" checkout -q --detach origin/nightly
+
+      - name: Resolve promotion
+        id: prepare
+        if: steps.existing.outputs.found != 'true'
+        env:
+          SOURCE_PATH: ${{ runner.temp }}/ns-marks-source
+        run: |
+          node Tools/prepare-ns-marks-web-promotion.mjs \
+            --source "$SOURCE_PATH" \
+            --github-output "$GITHUB_OUTPUT"
+
+  promote:
+    name: Build exact bundle and open deployment PR
+    needs: detect
+    if: needs.detect.outputs.changed == 'true'
+    runs-on: macos-15
+
+    steps:
+      - name: Check out KinNoKi source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Fetch sparse NS Marks web source
+        env:
+          SOURCE_PATH: ${{ runner.temp }}/ns-marks-source
+        run: |
+          pinned_commit="$(
+            node -p "JSON.parse(require('fs').readFileSync('Tools/ns-marks-web-source.json')).commit"
+          )"
+          git init -q "$SOURCE_PATH"
+          git -C "$SOURCE_PATH" remote add origin "$NS_MARKS_REPOSITORY"
+          git -C "$SOURCE_PATH" fetch --filter=blob:none --no-tags origin \
+            "+refs/heads/nightly:refs/remotes/origin/nightly"
+          git -C "$SOURCE_PATH" fetch --filter=blob:none --no-tags origin "$pinned_commit"
+          git -C "$SOURCE_PATH" sparse-checkout init --no-cone
+          {
+            echo "/web/"
+            echo "/docs/assets/app-icon.svg"
+          } > "$SOURCE_PATH/.git/info/sparse-checkout"
+          git -C "$SOURCE_PATH" checkout -q --detach origin/nightly
+
+      - name: Pin accepted source
+        id: prepare
+        env:
+          SOURCE_PATH: ${{ runner.temp }}/ns-marks-source
+        run: |
+          node Tools/prepare-ns-marks-web-promotion.mjs \
+            --source "$SOURCE_PATH" \
+            --github-output "$GITHUB_OUTPUT"
+
+      - name: Build exact NS Marks map bundle
+        if: steps.prepare.outputs.changed == 'true'
+        env:
+          NS_MARKS_REPO: ${{ runner.temp }}/ns-marks-source
+        run: make sync-ns-marks-web
+
+      - name: Regenerate KinNoKi output
+        if: steps.prepare.outputs.changed == 'true'
+        run: make generate PUBLISH_BIN="swift run KinNoKiLabsSite"
+
+      - name: Run complete site test suite
+        if: steps.prepare.outputs.changed == 'true'
+        run: make test
+
+      - name: Open exact-pin deployment PR
+        if: steps.prepare.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_COMMIT: ${{ steps.prepare.outputs.source_commit }}
+        run: |
+          short_commit="${SOURCE_COMMIT:0:12}"
+          branch="automation/ns-marks-web-$short_commit"
+
+          existing_pr="$(
+            gh pr list \
+              --repo "$GITHUB_REPOSITORY" \
+              --state open \
+              --head "$branch" \
+              --json url \
+              --jq '.[0].url // empty'
+          )"
+          if [ -n "$existing_pr" ]; then
+            echo "Deployment PR already exists: $existing_pr"
+            exit 0
+          fi
+
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+            echo "::error::Refusing to overwrite existing automation branch $branch"
+            exit 1
+          fi
+
+          git switch -c "$branch"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            Tools/ns-marks-web-source.json \
+            Resources/apps/nsmarksthespot/map \
+            Output/apps/nsmarksthespot/map
+
+          if git diff --cached --quiet; then
+            echo "::error::Promotion changed the source pin but produced no deployable bundle diff."
+            exit 1
+          fi
+
+          git commit -m "chore(site): promote NS Marks web $short_commit"
+          git push origin "$branch"
+
+          pr_body="$RUNNER_TEMP/ns-marks-promotion-pr.md"
+          {
+            echo "## Source"
+            echo
+            echo "- NS Marks nightly commit: \`$SOURCE_COMMIT\`"
+            echo "- Trigger: accepted changes under \`web/\` or the shared app icon"
+            echo
+            echo "## Automated verification"
+            echo
+            echo "- exact clean source checkout"
+            echo "- lockfile-pinned map build"
+            echo "- deterministic KinNoKi generation"
+            echo "- complete KinNoKi test suite"
+            echo "- committed Resources/Output source-receipt parity"
+            echo
+            echo "This PR prepares the deployment but does not merge itself."
+          } > "$pr_body"
+
+          gh pr create \
+            --repo "$GITHUB_REPOSITORY" \
+            --base main \
+            --head "$branch" \
+            --title "chore(site): promote NS Marks web $short_commit" \
+            --body-file "$pr_body"

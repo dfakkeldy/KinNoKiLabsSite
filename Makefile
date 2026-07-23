@@ -10,6 +10,8 @@
 #   make listen-catalog  Regenerate Resources/listen/books.json + per-book
 #                        assets from local checkouts (Tools/build-listen-catalog.sh)
 
+PUBLISH_BIN ?= publish
+
 .PHONY: publish preview generate clean test test-listen test-games test-tools test-site listen-catalog paired-covers sync-ns-marks-web
 
 generate:
@@ -19,7 +21,7 @@ generate:
 		KINNOKI_RSS_DATE_EPOCH="$$1" \
 		KINNOKI_APPS_SECTION_DATE_EPOCH="$$2" \
 		KINNOKI_POSTS_SECTION_DATE_EPOCH="$$3" \
-		publish generate
+		$(PUBLISH_BIN) generate
 
 publish: generate
 	git add -A
