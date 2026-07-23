@@ -186,6 +186,8 @@ test('promotion workflow polls cheaply and preserves the review gate', () => {
     /promote:[\s\S]*if: needs\.detect\.outputs\.changed == 'true'[\s\S]*runs-on: macos-15/,
   );
   assert.match(workflow, /pull-requests: write/);
+  assert.match(workflow, /startswith\("automation\/ns-marks-web-"\)/);
+  assert.match(workflow, /Holding for existing deployment PR/);
   assert.match(workflow, /make generate PUBLISH_BIN="swift run KinNoKiLabsSite"/);
   assert.match(workflow, /gh pr create/);
   assert.doesNotMatch(workflow, /gh pr merge|--auto/);

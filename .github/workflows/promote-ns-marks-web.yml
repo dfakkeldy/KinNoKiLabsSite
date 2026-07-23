@@ -28,7 +28,28 @@ jobs:
       - name: Check out KinNoKi source
         uses: actions/checkout@v4
 
+      - name: Hold while a deployment PR is already open
+        id: existing
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          existing_pr="$(
+            gh pr list \
+              --repo "$GITHUB_REPOSITORY" \
+              --state open \
+              --json headRefName,url \
+              --jq '.[] | select(.headRefName | startswith("automation/ns-marks-web-")) | .url' |
+              head -n 1
+          )"
+          if [ -n "$existing_pr" ]; then
+            echo "Holding for existing deployment PR: $existing_pr"
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Fetch NS Marks history without file blobs
+        if: steps.existing.outputs.found != 'true'
         env:
           SOURCE_PATH: ${{ runner.temp }}/ns-marks-source
         run: |
@@ -49,6 +70,7 @@ jobs:
 
       - name: Resolve promotion
         id: prepare
+        if: steps.existing.outputs.found != 'true'
         env:
           SOURCE_PATH: ${{ runner.temp }}/ns-marks-source
         run: |
