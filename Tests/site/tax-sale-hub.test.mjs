@@ -27,13 +27,24 @@ test('publishes the short Nova Scotia tax-sale hub route', () => {
   assert.match(generated, /<h1 id="tax-hero-title">Nova Scotia<br><em>tax sales, mapped\.<\/em><\/h1>/);
 });
 
-test('keeps current posted dates tied to official municipal sources', () => {
-  assert.match(generated, /Tuesday, July 21 at 11:00 a\.m\./);
+test('keeps only upcoming posted dates in the current sale desk', () => {
+  assert.doesNotMatch(generated, /Tuesday, July 21 at 11:00 a\.m\./);
+  assert.doesNotMatch(generated, /CBRM · 11:00 a\.m\./);
   assert.match(generated, /Tuesday, August 11 at 9:30 a\.m\./);
-  assert.match(generated, /https:\/\/cbrm\.ns\.ca\/business\/property-sales-management\/tax-sales\//);
   assert.match(generated, /https:\/\/invernesscounty\.ca\/services\/finance-taxation\/tax-sales\//);
-  assert.match(generated, /67 advertised rows · 68 unique PIDs mapped/);
   assert.match(generated, /40 advertised rows · 5 withdrawn rows · 40 active PIDs mapped/);
+  assert.match(generated, /<strong>40<\/strong> advertised rows/);
+  assert.match(generated, /<strong>40<\/strong> active mapped PIDs/);
+  assert.doesNotMatch(generated, /CBRM \+ Inverness County notices/);
+  assert.match(generated, /<span>Mapped now<\/span><strong>Inverness County current notice<\/strong>/);
+  assert.match(
+    generated,
+    /<span>Past event source<\/span><strong>CBRM tax-sales page<\/strong>/,
+  );
+  assert.equal(
+    generated.match(/class="tax-date-card reveal"/g)?.length,
+    1,
+  );
   assert.match(generated, /Posted does not mean final\./);
 });
 
