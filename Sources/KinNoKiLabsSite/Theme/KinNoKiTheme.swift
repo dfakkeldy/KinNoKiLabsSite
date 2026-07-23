@@ -574,7 +574,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                       <a class="tax-button tax-button-solid" href="/taxsale/beyond-the-tax-sale-packet.epub" download>Download the EPUB <span aria-hidden="true">↓</span></a>
                       <a class="tax-button tax-button-line" href="/listen/?book=beyond-the-tax-sale-packet">Listen in the Listening Room <span aria-hidden="true">→</span></a>
                     </div>
-                    <p class="tax-guide-meta">Text + audio · 13 chapters · 3:57:36 · educational information only</p>
+            <p class="tax-guide-meta">Text + audio · 13 chapters · 54 figures · 4:12:50 · educational information only</p>
                   </div>
                 </div>
 
@@ -583,7 +583,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                     <p class="tax-format-number">01</p>
                     <p class="tax-status tax-status-active">Available now</p>
                     <h3>EPUB text edition</h3>
-                    <p>The complete public text, selected cover, source appendix, and careful boundary between screening evidence and unresolved questions.</p>
+            <p>The complete public text, selected cover, 54 public-safe figures, source appendix, and careful boundary between screening evidence and unresolved questions.</p>
                     <a href="/taxsale/beyond-the-tax-sale-packet.epub" download>Download the EPUB <span aria-hidden="true">↓</span></a>
                     <a href="/tools/epub-reader/">Open the on-device reader <span aria-hidden="true">→</span></a>
                   </article>
@@ -591,8 +591,8 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                     <p class="tax-format-number">02</p>
                     <p class="tax-status tax-status-active">Available now</p>
                     <h3>Audiobook</h3>
-                    <p>A chaptered edition for the road, a walk, or the workbench, with synced text in the Listening Room.</p>
-                    <p>This edition has passed package and audio checks. The creator's full listening review is still underway.</p>
+            <p>A creator-listened chaptered edition for the road, a walk, or the workbench, with synced text and figures in the Listening Room.</p>
+            <p>This edition has passed package and audio checks. The creator completed the full listening review and approved this edition for publication.</p>
                     <a href="/listen/?book=beyond-the-tax-sale-packet">Open the Listening Room <span aria-hidden="true">→</span></a>
                   </article>
                   <article class="tax-format-card reveal">

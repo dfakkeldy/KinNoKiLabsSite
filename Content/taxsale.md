@@ -6,4 +6,4 @@ image: /images/taxsale/og.png
 
 # Nova Scotia Tax Sale Hub
 
-Official dates, a live parcel map, and careful public text and audio editions—with full listening and video work clearly separated.
+Official dates, a live parcel map, and a creator-listened public visual ebook and audiobook—with unfinished video work clearly separated.

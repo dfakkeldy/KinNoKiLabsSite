@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "sourceCommit": "ad0725b7e8c56a0a775504287d8c8301518fd8ec",
+  "sourceCommit": "4cedf19540bc128edc7561333a95facddb05e31a",
   "books": {
     "an-unsettling-conversation": {
       "receiptKind": "cover-selection-v2", "receiptPath": "cover-selection.json", "receiptSha256": "e03af343c74d4ebbf83dcb67610616e3fcae536dc74ed964ef92fd6ea6607839", "candidateId": "cut-in-the-page",

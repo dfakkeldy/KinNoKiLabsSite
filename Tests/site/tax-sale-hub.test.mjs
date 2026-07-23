@@ -1,6 +1,5 @@
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import test from 'node:test';
 
 const content = readFileSync(new URL('../../Content/taxsale.md', import.meta.url), 'utf8');
@@ -12,16 +11,12 @@ const theme = readFileSync(
 const generated = readFileSync(new URL('../../Output/taxsale/index.html', import.meta.url), 'utf8');
 const styles = readFileSync(new URL('../../Resources/styles.css', import.meta.url), 'utf8');
 const generatedStyles = readFileSync(new URL('../../Output/styles.css', import.meta.url), 'utf8');
-const publicEpub = readFileSync(
-  new URL('../../Resources/taxsale/beyond-the-tax-sale-packet.epub', import.meta.url),
-);
-const generatedEpub = readFileSync(
-  new URL('../../Output/taxsale/beyond-the-tax-sale-packet.epub', import.meta.url),
-);
+const redirects = readFileSync(new URL('../../Resources/_redirects', import.meta.url), 'utf8');
+const generatedRedirects = readFileSync(new URL('../../Output/_redirects', import.meta.url), 'utf8');
+const publicEpub = new URL('../../Resources/taxsale/beyond-the-tax-sale-packet.epub', import.meta.url);
+const generatedEpub = new URL('../../Output/taxsale/beyond-the-tax-sale-packet.epub', import.meta.url);
 const publicCover = readFileSync(new URL('../../Resources/taxsale/cover.png', import.meta.url));
 const generatedCover = readFileSync(new URL('../../Output/taxsale/cover.png', import.meta.url));
-
-const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 
 test('publishes the short Nova Scotia tax-sale hub route', () => {
   assert.match(content, /title: Nova Scotia Tax Sale Hub/);
@@ -48,7 +43,7 @@ test('shows truthful format status and connects the existing app page', () => {
   assert.match(generated, /href="\/listen\/\?book=beyond-the-tax-sale-packet"/);
   assert.match(
     generated,
-    /This edition has passed package and audio checks\. The creator's full listening review is still underway\./,
+    /This edition has passed package and audio checks\. The creator completed the full listening review and approved this edition for publication\./,
   );
   assert.match(generated, /No finished public video is available yet\./);
   assert.match(generated, /\/apps\/nsmarksthespot\/map\//);
@@ -56,13 +51,17 @@ test('shows truthful format status and connects the existing app page', () => {
   assert.match(appContent, /\[Nova Scotia Tax Sale Hub\]\(\/taxsale\/\)/);
 });
 
-test('publishes the exact approved EPUB and selected cover as first-party downloads', () => {
+test('publishes the exact approved EPUB through a stable first-party redirect', () => {
   assert.match(generated, /href="\/taxsale\/beyond-the-tax-sale-packet\.epub" download/);
   assert.match(generated, /src="\/taxsale\/cover\.png"/);
   assert.match(generated, /href="\/tools\/epub-reader\/"/);
-  assert.equal(sha256(publicEpub), '40049b5e7bac13657d5b1417fc1dbac25f6c3d02587c3c484e2e49dc73003bd0');
-  assert.equal(sha256(publicCover), 'fffaf3037b43f6341a822cb004a0a4d1829e8ef56df80c753400471ffe53ddf6');
-  assert.deepEqual(generatedEpub, publicEpub);
+  const expectedRedirect =
+    '/taxsale/beyond-the-tax-sale-packet.epub https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/4cedf19540bc128edc7561333a95facddb05e31a/books/beyond-the-tax-sale-packet/beyond-the-tax-sale-packet.epub 302';
+  assert.match(redirects, new RegExp(`^${expectedRedirect}$`, 'm'));
+  assert.equal(generatedRedirects, redirects);
+  assert.equal(existsSync(publicEpub), false, 'oversized EPUB stays out of the Pages artifact');
+  assert.equal(existsSync(generatedEpub), false, 'generated Pages artifact stays below the file limit');
+  assert.equal(publicCover.length > 0, true);
   assert.deepEqual(generatedCover, publicCover);
 });
 
