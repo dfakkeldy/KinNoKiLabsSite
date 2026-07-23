@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "source": {
     "repository": "dfakkeldy/explainer-audiobooks",
-    "commit": "ad0725b7e8c56a0a775504287d8c8301518fd8ec"
+    "commit": "4cedf19540bc128edc7561333a95facddb05e31a"
   },
   "books": {
     "an-unsettling-conversation": {
