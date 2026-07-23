@@ -475,23 +475,19 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                     <a class="tax-button tax-button-solid" href="/apps/nsmarksthespot/map/">Open the live map <span aria-hidden="true">↗</span></a>
                     <a class="tax-button tax-button-line" href="#dates">See posted dates <span aria-hidden="true">↓</span></a>
                   </div>
-                  <p class="tax-refreshed">Municipal notices re-checked July 19, 2026</p>
+                  <p class="tax-refreshed">Municipal notices re-checked July 23, 2026</p>
                 </div>
 
                 <aside class="tax-desk" aria-label="Current tax-sale desk summary">
                   <div class="tax-desk-label"><span>Current desk</span><span>NS / 2026</span></div>
                   <div class="tax-desk-date">
-                    <span class="tax-desk-day">21</span>
-                    <div><strong>July</strong><small>CBRM · 11:00 a.m.</small></div>
-                  </div>
-                  <div class="tax-desk-date">
                     <span class="tax-desk-day">11</span>
                     <div><strong>August</strong><small>Inverness County · 9:30 a.m.</small></div>
                   </div>
                   <div class="tax-desk-rule"></div>
-                  <p><strong>112</strong> advertised rows</p>
-                  <p><strong>115</strong> unique mapped PIDs</p>
-                  <small>Counts reflect the two dated notices currently reconciled into the map. Lists can change.</small>
+                  <p><strong>40</strong> advertised rows</p>
+                  <p><strong>40</strong> active mapped PIDs</p>
+                  <small>Counts reflect the current Inverness notice. Five withdrawn rows are retained as status evidence and excluded from current parcel mapping.</small>
                 </aside>
               </div>
             </section>
@@ -501,26 +497,12 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                 <div class="tax-section-intro reveal">
                   <div>
                     <p class="tax-kicker">Posted dates</p>
-                    <h2 id="tax-dates-heading">What municipalities<br><em>have announced.</em></h2>
+                    <h2 id="tax-dates-heading">What is still<br><em>coming up.</em></h2>
                   </div>
-                  <p>These are the current official notices tracked in the map—not a promise that every advertised property will still be offered. Always open the municipal source again before acting.</p>
+                  <p>This is the current official notice tracked in the map—not a promise that every advertised property will still be offered. Always open the municipal source again before acting.</p>
                 </div>
 
                 <div class="tax-date-list">
-                  <article class="tax-date-card reveal">
-                    <div class="tax-date-calendar" aria-hidden="true"><span>JUL</span><strong>21</strong><small>2026</small></div>
-                    <div class="tax-date-copy">
-                      <p class="tax-status tax-status-soon">Posted · Public auction</p>
-                      <h3>Cape Breton Regional Municipality</h3>
-                      <p><strong>Tuesday, July 21 at 11:00 a.m.</strong><br>Centre 200 main concourse, Sydney</p>
-                      <p class="tax-date-detail">67 advertised rows · 68 unique PIDs mapped</p>
-                    </div>
-                    <div class="tax-date-actions">
-                      <a href="https://cbrm.ns.ca/business/property-sales-management/tax-sales/">Official CBRM page <span aria-hidden="true">↗</span></a>
-                      <a href="/apps/nsmarksthespot/map/">View mapped parcels <span aria-hidden="true">→</span></a>
-                    </div>
-                  </article>
-
                   <article class="tax-date-card reveal">
                     <div class="tax-date-calendar" aria-hidden="true"><span>AUG</span><strong>11</strong><small>2026</small></div>
                     <div class="tax-date-copy">
@@ -552,7 +534,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                 <div class="tax-split-copy reveal">
                   <p class="tax-large-copy">Search an eight-digit PID or Nova Scotia civic address, open a mapped tax-sale parcel, and compare it with roads, water, aerial imagery, Crown land, and municipal context.</p>
                   <ul class="tax-facts">
-                    <li><span>Mapped now</span><strong>CBRM + Inverness County notices</strong></li>
+                    <li><span>Mapped now</span><strong>Inverness County current notice</strong></li>
                     <li><span>Search</span><strong>PID, civic address, or visible parcel</strong></li>
                     <li><span>Privacy</span><strong>No owner names; no location upload</strong></li>
                     <li><span>Boundary</span><strong>Approximate context, never a legal survey</strong></li>
@@ -614,7 +596,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                 </div>
                 <div class="tax-source-list reveal">
                   <a href="https://nslegislature.ca/sites/default/files/legc/statutes/municipal%20government.pdf"><span>Provincial law</span><strong>Nova Scotia Municipal Government Act</strong><b aria-hidden="true">↗</b></a>
-                  <a href="https://cbrm.ns.ca/business/property-sales-management/tax-sales/"><span>Current notice</span><strong>CBRM tax-sales page</strong><b aria-hidden="true">↗</b></a>
+                  <a href="https://cbrm.ns.ca/business/property-sales-management/tax-sales/"><span>Past event source</span><strong>CBRM tax-sales page</strong><b aria-hidden="true">↗</b></a>
                   <a href="https://invernesscounty.ca/services/finance-taxation/tax-sales/"><span>Current notice</span><strong>Inverness County tax-sales page</strong><b aria-hidden="true">↗</b></a>
                   <a href="https://www.novascotia.ca/sign-property-online"><span>Land records</span><strong>Nova Scotia Property Online</strong><b aria-hidden="true">↗</b></a>
                 </div>
