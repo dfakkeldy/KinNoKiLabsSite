@@ -118,9 +118,9 @@ claude-platform-02-thinking-and-reliable-responses
 claude-platform-03-giving-claude-tools
 beyond-the-tax-sale-packet"
 
-# These editions were authorized under the public-first-listen contract. Their
-# publication receipts are mandatory and must pass the verifier shipped in the
-# exact BOOKS_REPO checkout before any of their assets enter the staging tree.
+# These editions require a governed publication receipt (first-listen or
+# creator-accepted final). The receipt must pass the verifier shipped in the
+# exact BOOKS_REPO checkout before any assets enter the staging tree.
 PUBLICATION_REQUIRED="claude-platform-01-the-message
 claude-platform-02-thinking-and-reliable-responses
 claude-platform-03-giving-claude-tools

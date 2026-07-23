@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "generated": "2026-07-22T12:07:58Z",
+  "generated": "2026-07-23T10:43:19Z",
   "source": {
     "repo": "dfakkeldy/explainer-audiobooks",
-    "commit": "ad0725b7e8c56a0a775504287d8c8301518fd8ec"
+    "commit": "4cedf19540bc128edc7561333a95facddb05e31a"
   },
   "series": [
     {
@@ -42,7 +42,7 @@
       "durationSeconds": 19948.928000,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/ad0725b7e8c56a0a775504287d8c8301518fd8ec/books/an-unsettling-conversation/an-unsettling-conversation.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/4cedf19540bc128edc7561333a95facddb05e31a/books/an-unsettling-conversation/an-unsettling-conversation.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -144,7 +144,7 @@
       "durationSeconds": 13943.338667,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/ad0725b7e8c56a0a775504287d8c8301518fd8ec/books/jspace-inside-the-machine/jspace-inside-the-machine.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/4cedf19540bc128edc7561333a95facddb05e31a/books/jspace-inside-the-machine/jspace-inside-the-machine.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -246,7 +246,7 @@
       "durationSeconds": 21039.530667,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/ad0725b7e8c56a0a775504287d8c8301518fd8ec/books/echo-from-the-inside/echo-from-the-inside.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/4cedf19540bc128edc7561333a95facddb05e31a/books/echo-from-the-inside/echo-from-the-inside.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -373,7 +373,7 @@
       "durationSeconds": 19201.792000,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/ad0725b7e8c56a0a775504287d8c8301518fd8ec/books/why-it-feels-right/why-it-feels-right.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/4cedf19540bc128edc7561333a95facddb05e31a/books/why-it-feels-right/why-it-feels-right.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -500,7 +500,7 @@
       "durationSeconds": 20296.149333,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/ad0725b7e8c56a0a775504287d8c8301518fd8ec/books/you-are-the-architect/you-are-the-architect.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/4cedf19540bc128edc7561333a95facddb05e31a/books/you-are-the-architect/you-are-the-architect.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -637,7 +637,7 @@
       "durationSeconds": 21571.541333,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/ad0725b7e8c56a0a775504287d8c8301518fd8ec/books/the-bug-is-a-clue/the-bug-is-a-clue.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/4cedf19540bc128edc7561333a95facddb05e31a/books/the-bug-is-a-clue/the-bug-is-a-clue.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -759,7 +759,7 @@
       "durationSeconds": 9751.168000,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/ad0725b7e8c56a0a775504287d8c8301518fd8ec/books/tests-first/tests-first.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/4cedf19540bc128edc7561333a95facddb05e31a/books/tests-first/tests-first.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -846,7 +846,7 @@
       "durationSeconds": 17941.077333,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/ad0725b7e8c56a0a775504287d8c8301518fd8ec/books/git-happens/git-happens.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/4cedf19540bc128edc7561333a95facddb05e31a/books/git-happens/git-happens.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -968,7 +968,7 @@
       "durationSeconds": 11561.088000,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/ad0725b7e8c56a0a775504287d8c8301518fd8ec/books/findable/findable.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/4cedf19540bc128edc7561333a95facddb05e31a/books/findable/findable.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -1050,7 +1050,7 @@
       "durationSeconds": 13378.645333,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/ad0725b7e8c56a0a775504287d8c8301518fd8ec/books/the-voice-in-the-machine/the-voice-in-the-machine.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/4cedf19540bc128edc7561333a95facddb05e31a/books/the-voice-in-the-machine/the-voice-in-the-machine.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -1142,7 +1142,7 @@
       "durationSeconds": 11140.181333,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/ad0725b7e8c56a0a775504287d8c8301518fd8ec/books/chicken-predators/chicken-predators.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/4cedf19540bc128edc7561333a95facddb05e31a/books/chicken-predators/chicken-predators.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -1259,7 +1259,7 @@
       "durationSeconds": 7377.962667,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/ad0725b7e8c56a0a775504287d8c8301518fd8ec/books/rodents-in-the-walls/rodents-in-the-walls.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/4cedf19540bc128edc7561333a95facddb05e31a/books/rodents-in-the-walls/rodents-in-the-walls.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -1339,7 +1339,7 @@
       "durationSeconds": 6942.336000,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/ad0725b7e8c56a0a775504287d8c8301518fd8ec/books/the-new-deal/the-new-deal.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/4cedf19540bc128edc7561333a95facddb05e31a/books/the-new-deal/the-new-deal.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -1421,7 +1421,7 @@
       "durationSeconds": 6616.490667,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/ad0725b7e8c56a0a775504287d8c8301518fd8ec/books/is-there-anyone-in-here/is-there-anyone-in-here.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/4cedf19540bc128edc7561333a95facddb05e31a/books/is-there-anyone-in-here/is-there-anyone-in-here.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -1508,7 +1508,7 @@
       "durationSeconds": 7409.450667,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/ad0725b7e8c56a0a775504287d8c8301518fd8ec/books/claude-platform-01-the-message/claude-platform-01-the-message.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/4cedf19540bc128edc7561333a95facddb05e31a/books/claude-platform-01-the-message/claude-platform-01-the-message.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -1609,7 +1609,7 @@
       "durationSeconds": 5316.266667,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/ad0725b7e8c56a0a775504287d8c8301518fd8ec/books/claude-platform-02-thinking-and-reliable-responses/claude-platform-02-thinking-and-reliable-responses.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/4cedf19540bc128edc7561333a95facddb05e31a/books/claude-platform-02-thinking-and-reliable-responses/claude-platform-02-thinking-and-reliable-responses.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -1715,7 +1715,7 @@
       "durationSeconds": 16026.197333,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/ad0725b7e8c56a0a775504287d8c8301518fd8ec/books/claude-platform-03-giving-claude-tools/claude-platform-03-giving-claude-tools.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/4cedf19540bc128edc7561333a95facddb05e31a/books/claude-platform-03-giving-claude-tools/claude-platform-03-giving-claude-tools.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
@@ -1823,93 +1823,93 @@
       "coverAlt": "Cover of Beyond the Tax-Sale Packet",
       "coverWidth": 768,
       "coverHeight": 768,
-      "durationSeconds": 14256.597333,
+      "durationSeconds": 15170.090667,
       "audio": {
         "status": "available",
-        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/ad0725b7e8c56a0a775504287d8c8301518fd8ec/books/beyond-the-tax-sale-packet/beyond-the-tax-sale-packet.m4b",
+        "url": "https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/4cedf19540bc128edc7561333a95facddb05e31a/books/beyond-the-tax-sale-packet/beyond-the-tax-sale-packet.m4b",
         "mimeType": "audio/mp4"
       },
       "chapters": [
         {
           "title": "ch. 1: The Last Scene First",
           "start": 0.000000,
-          "end": 906.335000
+          "end": 930.565000
         },
         {
           "title": "ch. 2: What the Notice Says—and Does Not Say",
-          "start": 906.335000,
-          "end": 2195.425000
+          "start": 930.565000,
+          "end": 2243.560000
         },
         {
           "title": "ch. 3: The Six-Month Door",
-          "start": 2195.425000,
-          "end": 3053.495000
+          "start": 2243.560000,
+          "end": 3117.550000
         },
         {
           "title": "ch. 4: Give the Parcel a Biography",
-          "start": 3053.495000,
-          "end": 4141.890000
+          "start": 3117.550000,
+          "end": 4298.220000
         },
         {
           "title": "ch. 5: The Map Is a Question Machine",
-          "start": 4141.890000,
-          "end": 5363.270000
+          "start": 4298.220000,
+          "end": 5998.420000
         },
         {
           "title": "ch. 6: The Driveway That May Not Be a Right-of-Way",
-          "start": 5363.270000,
-          "end": 6377.885000
+          "start": 5998.420000,
+          "end": 7047.525000
         },
         {
           "title": "ch. 7: The Things a Map Cannot Smell",
-          "start": 6377.885000,
-          "end": 7485.910000
+          "start": 7047.525000,
+          "end": 8219.879000
         },
         {
           "title": "ch. 8: Title Is Not Possession",
-          "start": 7485.910000,
-          "end": 8487.300000
+          "start": 8219.879000,
+          "end": 9253.910000
         },
         {
           "title": "ch. 9: The Number You Decide Before the Room",
-          "start": 8487.300000,
-          "end": 9617.040000
+          "start": 9253.910000,
+          "end": 10415.465000
         },
         {
           "title": "ch. 10: When the Card Goes Up",
-          "start": 9617.040000,
-          "end": 10787.670000
+          "start": 10415.465000,
+          "end": 11603.315000
         },
         {
           "title": "ch. 11: The Certificate-Holder Months",
-          "start": 10787.670000,
-          "end": 11976.025000
+          "start": 11603.315000,
+          "end": 12800.530000
         },
         {
           "title": "ch. 12: The Deed Is a Beginning",
-          "start": 11976.025000,
-          "end": 13268.490000
+          "start": 12800.530000,
+          "end": 14127.570000
         },
         {
           "title": "ch. 13: A File That Knows Its Limits",
-          "start": 13268.490000,
-          "end": 14256.597000
+          "start": 14127.570000,
+          "end": 15170.090000
         }
       ],
       "text": {
         "blocks": "books/beyond-the-tax-sale-packet/blocks.json"
       },
       "visuals": {
-        "figures": 0
+        "figures": 54
       },
       "alignment": {
         "sidecar": "books/beyond-the-tax-sale-packet/alignment.json",
         "hasWordTimings": true
       },
       "edition": {
-        "status": "public-first-listen",
-        "humanListeningStatus": "pending",
-        "disclosure": "This edition has passed package and audio checks. The creator's full listening review is still underway."
+        "status": "governed-final",
+        "humanListeningStatus": "accepted",
+        "disclosure": "This edition has passed package and audio checks. The creator completed the full listening review and approved this edition for publication."
       },
       "links": {
         "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/beyond-the-tax-sale-packet",

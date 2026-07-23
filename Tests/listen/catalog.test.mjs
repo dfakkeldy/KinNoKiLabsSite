@@ -10,6 +10,8 @@ const seriesSource = JSON.parse(
 );
 const FIRST_LISTEN_DISCLOSURE =
   "This edition has passed package and audio checks. The creator's full listening review is still underway.";
+const GOVERNED_FINAL_DISCLOSURE =
+  'This edition has passed package and audio checks. The creator completed the full listening review and approved this edition for publication.';
 const expectedBooks = [
   'an-unsettling-conversation',
   'jspace-inside-the-machine',
@@ -49,7 +51,7 @@ const expectedAnchorCounts = new Map([
   ['claude-platform-01-the-message', 571],
   ['claude-platform-02-thinking-and-reliable-responses', 346],
   ['claude-platform-03-giving-claude-tools', 822],
-  ['beyond-the-tax-sale-packet', 612],
+  ['beyond-the-tax-sale-packet', 735],
 ]);
 // Covers are NOT all one shape: approved player books with paired art are square
 // because Tools/sync-paired-cover-assets.sh re-derives them from the paired
@@ -127,10 +129,15 @@ test('public-first-listen books disclose their edition while legacy books remain
     'claude-platform-01-the-message',
     'claude-platform-02-thinking-and-reliable-responses',
     'claude-platform-03-giving-claude-tools',
-    'beyond-the-tax-sale-packet',
   ]);
   for (const book of catalog.books) {
-    if (firstListenSlugs.has(book.slug)) {
+    if (book.slug === 'beyond-the-tax-sale-packet') {
+      assert.deepEqual(book.edition, {
+        status: 'governed-final',
+        humanListeningStatus: 'accepted',
+        disclosure: GOVERNED_FINAL_DISCLOSURE,
+      });
+    } else if (firstListenSlugs.has(book.slug)) {
       assert.deepEqual(book.edition, {
         status: 'public-first-listen',
         humanListeningStatus: 'pending',
@@ -188,7 +195,8 @@ test('playable books declare interior figure counts with resolvable catalog-rela
   assert.deepEqual(playable.map((book) => book.slug), expectedPlayable);
 
   for (const book of playable) {
-    assert.deepEqual(book.visuals, { figures: 0 }, `${book.slug} is cover-only today`);
+    const expectedFigures = book.slug === 'beyond-the-tax-sale-packet' ? 54 : 0;
+    assert.deepEqual(book.visuals, { figures: expectedFigures }, `${book.slug} figure count`);
 
     const blocks = JSON.parse(readFileSync(new URL(book.text.blocks, listenRoot), 'utf8')).blocks;
     const imageBlocks = blocks.filter((block) => block.kind === 'image');

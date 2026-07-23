@@ -48,7 +48,7 @@ test('shows truthful format status and connects the existing app page', () => {
   assert.match(generated, /href="\/listen\/\?book=beyond-the-tax-sale-packet"/);
   assert.match(
     generated,
-    /This edition has passed package and audio checks\. The creator's full listening review is still underway\./,
+    /This edition has passed package and audio checks\. The creator completed the full listening review and approved this edition for publication\./,
   );
   assert.match(generated, /No finished public video is available yet\./);
   assert.match(generated, /\/apps\/nsmarksthespot\/map\//);
@@ -60,7 +60,7 @@ test('publishes the exact approved EPUB and selected cover as first-party downlo
   assert.match(generated, /href="\/taxsale\/beyond-the-tax-sale-packet\.epub" download/);
   assert.match(generated, /src="\/taxsale\/cover\.png"/);
   assert.match(generated, /href="\/tools\/epub-reader\/"/);
-  assert.equal(sha256(publicEpub), '40049b5e7bac13657d5b1417fc1dbac25f6c3d02587c3c484e2e49dc73003bd0');
+  assert.equal(sha256(publicEpub), 'b2399f3850e98050fe58e913ba1bd8cfd1cc5a86331b4b3a4f884959f82d666d');
   assert.equal(sha256(publicCover), 'fffaf3037b43f6341a822cb004a0a4d1829e8ef56df80c753400471ffe53ddf6');
   assert.deepEqual(generatedEpub, publicEpub);
   assert.deepEqual(generatedCover, publicCover);
