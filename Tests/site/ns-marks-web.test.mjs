@@ -145,6 +145,17 @@ test('committed and generated map routes carry the pinned source receipt byte-fo
   assert.deepEqual(outputIndex, resourceIndex);
 });
 
+test('the short /map URL redirects to the pinned online map route', () => {
+  const expectedRedirect = '/map /apps/nsmarksthespot/map/ 301';
+  for (const root of ['Resources', 'Output']) {
+    const redirects = readFileSync(
+      new URL(`../../${root}/_redirects`, import.meta.url),
+      'utf8',
+    );
+    assert.match(redirects, new RegExp(`^${expectedRedirect}$`, 'm'));
+  }
+});
+
 test('KinNoKi app surfaces lead to the internal product page and online map', () => {
   const content = readFileSync(
     new URL('../../Content/apps/nsmarksthespot.md', import.meta.url),
