@@ -1,16 +1,17 @@
 # About KinNoKi Labs
 
-**KinNoKi Labs** is a solo independent studio building focused Apple-platform apps and practical software systems for real-world workflows.
+**KinNoKi Labs** is a solo independent studio solving messy technical and operational problems for real-world work.
 
 ## What I Do
 
-I build native applications for Apple platforms — iOS, macOS, and watchOS — with an emphasis on clarity, performance, and craftsmanship.
+I work across documents, data, spreadsheets, websites, automation, integrations, knowledge systems, and custom software. The technology follows the problem rather than defining it.
 
-I also help small businesses turn repeated operational work into reviewable tools, checklists, knowledge systems, and automation. The same operator-first approach behind the apps applies there too: understand the real work, find the painful handoff, and build the smallest useful system around it.
+I also build native applications for Apple platforms. Apple work is proof of technical depth and an optional specialty, not the boundary of the studio.
 
 ## My Approach
 
-- **Swift-first.** I use Swift across the stack, from apps to server-side tooling.
+- **Problem-first.** Understand the real work and the painful handoff before choosing a tool.
+- **Broad technical range.** Repair what exists, connect the right pieces, and build only when it is justified.
 - **Pragmatic design.** I don't chase trends. I build interfaces and workflows that feel obvious in daily use.
 - **Reviewable systems.** I favor small systems that show where every answer came from — not black boxes — especially when business decisions carry real cost.
 - **Open source.** I share what I learn. The apps and several supporting tools are public on GitHub.
