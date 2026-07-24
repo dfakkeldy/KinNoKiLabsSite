@@ -1,0 +1,77 @@
+{
+  "sheets": [
+    {
+      "name": "Read Me",
+      "headers": ["Item", "Detail"],
+      "rows": [
+        ["Purpose", "Illustrative tender review workbook — not a bid, estimate, or compliance conclusion."],
+        ["Disclaimer", "Planning aid only. Verify all requirements, deadlines, documents, and addenda at the linked official procurement source before acting or bidding."],
+        ["How to use", "Copy this workbook for each opportunity. Fill in only what the official documents state."],
+        ["Checked-on date", "Record the date every fact was last verified at the official source."],
+        ["Addenda", "Check for new addenda before every action. An addendum can change deadlines, scope, or requirements."]
+      ]
+    },
+    {
+      "name": "Compliance Matrix",
+      "headers": ["Ref", "Requirement (from official source)", "Section/Page", "Planned response", "Status", "Notes", "Checked-on date"],
+      "rows": [
+        ["R-001", "", "", "", "Open", "", ""],
+        ["R-002", "", "", "", "Open", "", ""]
+      ]
+    },
+    {
+      "name": "Review Calendar",
+      "headers": ["Milestone", "Target date", "Owner", "Status", "Notes"],
+      "rows": [
+        ["Read all documents", "", "", "Open", ""],
+        ["Submit clarification questions", "", "", "Open", "Before the official deadline"],
+        ["Complete compliance matrix", "", "", "Open", ""],
+        ["Internal review", "", "", "Open", ""],
+        ["Final addenda check", "", "", "Open", "Day before closing"],
+        ["Closing date/time (verified)", "", "", "—", "Recheck the official source"]
+      ]
+    },
+    {
+      "name": "Document Checklist",
+      "headers": ["Document", "Section/Appendix", "Read?", "Date read", "Notes"],
+      "rows": [
+        ["Official notice", "", "No", "", ""],
+        ["Scope of work", "", "No", "", ""],
+        ["Terms and conditions", "", "No", "", ""],
+        ["Pricing form", "", "No", "", ""],
+        ["Submission instructions", "", "No", "", ""]
+      ]
+    },
+    {
+      "name": "Addenda Log",
+      "headers": ["Addendum #", "Date posted", "Summary", "Affected requirements", "Reviewed?"],
+      "rows": [
+        ["1", "", "", "", "No"]
+      ]
+    },
+    {
+      "name": "Questions Log",
+      "headers": ["#", "Question", "Date submitted", "Official response", "Response date", "Status"],
+      "rows": [
+        ["Q-001", "", "", "", "", "Open"]
+      ]
+    },
+    {
+      "name": "RFQ Tracker",
+      "headers": ["Line", "Description", "Quantity", "Unit", "Notes", "Checked-on date"],
+      "rows": [
+        ["L-001", "", "", "", "", ""]
+      ]
+    },
+    {
+      "name": "Estimate Scaffold",
+      "headers": ["Cost category", "Internal placeholder", "Notes", "Not a bid figure"],
+      "rows": [
+        ["Labour", "", "Planning placeholder only", "Yes"],
+        ["Materials", "", "Planning placeholder only", "Yes"],
+        ["Subcontractors", "", "Planning placeholder only", "Yes"],
+        ["Overhead", "", "Planning placeholder only", "Yes"]
+      ]
+    }
+  ]
+}

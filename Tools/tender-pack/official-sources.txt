@@ -1,0 +1,29 @@
+Official source index — Tender Starter Showcase
+================================================
+
+> Planning aid only. Verify all requirements, deadlines, documents, and addenda at the linked official procurement source before acting or bidding.
+
+This file lists authoritative sources for the tender records shown in the
+Tender Starter Showcase. Each link points to the official procurement system,
+never to a redistributed or copied document.
+
+Primary procurement portal
+--------------------------
+https://procurement-portal.novascotia.ca/tenders
+
+Official notices (checked on 2026-07-24)
+----------------------------------------
+Each tender detail page is linked directly from the showcase card and brief.
+Open the official notice to confirm the current closing time, documents,
+and addenda before acting.
+
+Verification discipline
+-----------------------
+1. Open the official notice.
+2. Confirm the current closing date/time and timezone.
+3. Download and read the current documents.
+4. Check for addenda posted after the initial notice.
+5. Record the checked-on date.
+
+This pack contains original KinNoKi summaries and templates only.
+No official tender document is copied or redistributed.
