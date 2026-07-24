@@ -361,7 +361,8 @@ if (packBytes) {
     assert.match(head, /^%PDF/);
     assert.match(full, /\/StructTreeRoot/);
     assert.match(full, /\/MarkInfo/);
-    assert.match(full, /\/Lang/);
+    // pypdf may serialize the hyphen as the octal escape \055.
+    assert.match(full, /\/Lang\s*\(en(?:-|\\055)CA\)/);
     assert.match(full, /pdfuaid:part/);
   });
 }
