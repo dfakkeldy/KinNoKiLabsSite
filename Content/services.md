@@ -1,52 +1,54 @@
 ---
-description: KinNoKi Labs helps small businesses turn repeated operational work into practical software, checklists, knowledge systems, and automation.
+description: KinNoKi Labs helps small businesses untangle technical and operational problems across documents, data, websites, existing tools, automation, and custom software.
 ---
 # Services
 
-KinNoKi Labs helps small businesses turn repeated operational work into practical software, checklists, knowledge systems, and automation. The work starts with the real workflow: the quotes, job folders, forms, emails, spreadsheets, supplier notes, and decisions that already keep the business moving.
+KinNoKi Labs helps small businesses solve messy technical and operational problems. The problem may look like a spreadsheet nobody trusts, a website that no longer fits, repeated data entry, scattered job files, or several tools that do not line up.
 
-I build small, reviewable systems around that work so owners and operators can find what matters, reuse what already exists, and make better decisions with less scrambling.
+The technology follows the problem: clean up what exists, connect the right pieces, and build something new only when it earns its place.
 
-## Workflow Audits
+## Technical Workflow Diagnostic
 
-A workflow audit is a fixed diagnostic for one operational problem. The output is a clear map of how the work happens today, where time or money leaks out, and what a first useful automation would look like.
+A diagnostic is a fixed engagement around one concrete problem. I trace how the work actually moves across people, documents, data, and tools; identify the costly handoff; and recommend the smallest worthwhile improvement.
 
-The recommendation can also be no build. Some workflows need a better checklist, a cleaner source of truth, or a simpler handoff before software is worth the cost.
+The recommendation can be cleanup, a clearer source of truth, a better spreadsheet, or no build at all. Custom software is not the default answer.
 
-## Single-Workflow Automation Builds
+## Systems Cleanup and Automation
 
-When a workflow is ready, I build around one narrow job at a time: a quote packet, a bid-room checklist, a reporting handoff, a release pipeline, or another repeated process with a clear owner.
+I improve the tools a business already uses before replacing them. That may mean reorganizing files, repairing a spreadsheet or website, connecting forms to the right records, reducing duplicate entry, or automating a repeated handoff.
 
-The goal is not a vague transformation project. The goal is a scoped tool that can be reviewed, approved, and improved while the business keeps running.
+The goal is one visible improvement that the business can understand, review, and operate while the work keeps moving.
 
-## Reliable Company Knowledge Bases
+## Practical Tools and Knowledge Systems
 
-Most businesses already have valuable knowledge. It is just scattered across old jobs, spreadsheets, emails, PDFs, quotes, forms, supplier notes, and people's heads.
+When cleanup and connection are not enough, I can build a focused browser tool, dashboard, searchable company knowledge base, mobile companion, or custom software around the actual job.
 
-I build reliable company knowledge bases that make that knowledge easier to find, reuse, and review before important decisions. Reliable means source-linked, owner-controlled, and auditable. AI can help with search, extraction, drafts, and reminders, but the system should still show where information came from and leave high-stakes decisions to people.
+Reliable systems remain source-linked, owner-controlled, and reviewable. AI may help with search, extraction, drafts, and reminders, but the system still shows where information came from and leaves high-stakes decisions to people.
 
-That kind of business memory can make money in practical ways:
+## What This Can Improve
 
-- faster quoting and bid/no-bid decisions because old assumptions, prices, and supplier notes are easier to find;
-- fewer missed requirements because forms, due dates, compliance documents, and checklists are tied back to real jobs;
-- less owner bottleneck because repeated decisions and document patterns stop living only in one person's memory;
-- less rework because the next job starts from reviewed prior knowledge instead of a blank spreadsheet or copied document;
-- better delegation and onboarding because staff can see the company's preferred way to estimate, document, report, and close out work;
-- better follow-through after winning work because schedules, reporting obligations, safety paperwork, and closeout requirements stay connected.
+- faster answers because the current information is easier to find;
+- fewer missed handoffs and less repeated data entry;
+- a clearer source of truth for files, prices, forms, and decisions;
+- less owner bottleneck and easier delegation;
+- less rework because the next job starts from reviewed prior knowledge;
+- tools that fit the work instead of forcing the work around the tool.
 
-## Examples of Workflows
+## Examples
 
-- Estimate, quote, and bid-room support.
-- Lost-bid learning where winning amounts, bid tabs, or debrief data are legitimately available.
-- Compliance paperwork and safety or reporting reuse.
-- Supplier, pricing, and old-job memory.
-- Document source-of-truth cleanup for teams with too many almost-final files.
-- Apple-platform rescue work, release-pipeline cleanup, and TestFlight/App Store shipping support.
+- Spreadsheet and data cleanup.
+- Document, file, and source-of-truth systems.
+- Forms, reporting, and operational handoffs.
+- Websites and small browser tools.
+- Integrations and workflow automation.
+- Dashboards and reliable company knowledge bases.
+- Mobile or custom software when a build is justified.
+- Apple release support when that is the actual problem.
 
 ## How Engagements Start
 
-Most work starts with a paid diagnostic. You and I pick one workflow, map the current reality, identify the first useful improvement, and decide whether a build is worth doing.
+Most work starts with a paid diagnostic. You show me the problem in the tools and artifacts you already use. I map the current reality, identify the smallest useful improvement, and explain the options in plain language.
 
-If there is a clear return, the next step is a scoped first build. I favor fixed pricing where possible, working in a way that doesn't need everyone free at the same time, and human review for important business decisions.
+If there is a clear return, the next step is a scoped implementation with fixed pricing where possible, a documented handoff, and human review for decisions that carry real cost.
 
-Want to talk through a workflow? Email [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com).
+You do not need to know what kind of software you need. Start with the problem: [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com).

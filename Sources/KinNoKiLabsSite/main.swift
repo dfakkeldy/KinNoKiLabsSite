@@ -23,7 +23,7 @@ struct KinNoKiLabsSite: Website {
     // Update these properties to configure your website:
     var url = URL(string: "https://kinnokilabs.com")!
     var name = "KinNoKi Labs"
-    var description = "We build focused Apple-platform apps and practical software systems for messy real-world work."
+    var description = "KinNoKi Labs solves messy technical and operational problems with practical systems, automation, and custom software."
     var language: Language { .english }
     var imagePath: Path? { nil }
 }

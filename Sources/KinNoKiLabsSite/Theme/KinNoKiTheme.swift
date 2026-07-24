@@ -756,9 +756,9 @@ private func homeMain() -> Node<HTML.BodyContext> {
           <div class="fade"></div>
         </div>
         <div class="hero-copy">
-          <p class="eyebrow">Independent Apple-platform studio · Nova Scotia</p>
+          <p class="eyebrow">Independent technical studio · Nova Scotia</p>
           <h1>Building Tools<br><span class="hero-metal">That Make Sense.</span></h1>
-          <p class="hero-sub">Focused Apple-platform apps and practical software systems for messy real-world work — built by one person who lives inside the workflows they fix.</p>
+          <p class="hero-sub">I solve messy technical and operational problems — from spreadsheets, documents, websites, and disconnected tools to automation and custom software when it earns its place.</p>
           <div class="hero-ctas">
             <a class="btn btn-gray" href="/apps">Explore the apps</a>
             <a class="btn btn-gold" href="/services">Work with me</a>
@@ -770,7 +770,7 @@ private func homeMain() -> Node<HTML.BodyContext> {
             <span class="dot" aria-hidden="true"></span>
             <a class="link-quiet" href="https://github.com/dfakkeldy" target="_blank" rel="noopener">Open source on GitHub</a>
             <span class="dot" aria-hidden="true"></span>
-            <span>Swift-first</span>
+            <span>Built around real workflows</span>
           </div>
         </div>
       </section>
@@ -872,12 +872,12 @@ private func homeMain() -> Node<HTML.BodyContext> {
         <div class="bento-tint split-services" style="padding:clamp(28px,4.5vw,52px);">
           <div>
             <p class="eyebrow">Services</p>
-            <h2 style="font-weight:600;font-size:clamp(26px,3.2vw,36px);line-height:1.15;letter-spacing:-0.02em;margin:0 0 14px;text-wrap:balance;">I also turn repeated paperwork into working systems.</h2>
-            <p style="font-size:16px;color:var(--text-muted);margin:0 0 22px;max-width:56ch;text-wrap:pretty;">For small businesses drowning in quotes, job folders, forms, and supplier notes — small, reviewable software built around the workflow you already run.</p>
+            <h2 style="font-weight:600;font-size:clamp(26px,3.2vw,36px);line-height:1.15;letter-spacing:-0.02em;margin:0 0 14px;text-wrap:balance;">I untangle the technical mess behind the work.</h2>
+            <p style="font-size:16px;color:var(--text-muted);margin:0 0 22px;max-width:56ch;text-wrap:pretty;">When spreadsheets, forms, job folders, websites, and software stop lining up, I map what is really happening and make the smallest useful fix.</p>
             <div style="display:flex;flex-direction:column;gap:9px;">
-              <div style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:500;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:color-mix(in srgb, var(--gold-500) 75%, var(--text));flex:none;"><path d="m9 18 6-6-6-6"></path></svg>Workflow audits — a fixed diagnostic for one problem</div>
-              <div style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:500;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:color-mix(in srgb, var(--gold-500) 75%, var(--text));flex:none;"><path d="m9 18 6-6-6-6"></path></svg>Single-workflow automation builds</div>
-              <div style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:500;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:color-mix(in srgb, var(--gold-500) 75%, var(--text));flex:none;"><path d="m9 18 6-6-6-6"></path></svg>Reliable, source-linked company knowledge bases</div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:500;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:color-mix(in srgb, var(--gold-500) 75%, var(--text));flex:none;"><path d="m9 18 6-6-6-6"></path></svg>Technical workflow diagnostic — one problem, clearly mapped</div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:500;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:color-mix(in srgb, var(--gold-500) 75%, var(--text));flex:none;"><path d="m9 18 6-6-6-6"></path></svg>Systems cleanup, integrations &amp; automation</div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:500;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:color-mix(in srgb, var(--gold-500) 75%, var(--text));flex:none;"><path d="m9 18 6-6-6-6"></path></svg>Knowledge bases, dashboards &amp; right-sized software</div>
             </div>
           </div>
           <div style="display:flex;flex-direction:column;align-items:flex-start;gap:14px;">
@@ -964,54 +964,74 @@ private func appsMain() -> Node<HTML.BodyContext> {
 private func servicesMain() -> Node<HTML.BodyContext> {
     .raw("""
     <main class="site-main" style="max-width:1120px;margin:0 auto;padding:clamp(48px,7vw,80px) clamp(16px,4vw,32px) 24px;">
-      <p class="eyebrow">Services</p>
-      <h1 style="font-weight:650;font-size:clamp(34px,4.5vw,52px);line-height:1.08;letter-spacing:-0.025em;margin:0 0 16px;max-width:20ch;text-wrap:balance;">Repeated operational work, turned into practical software.</h1>
-      <p style="font-size:17px;color:var(--text-muted);max-width:66ch;margin:0 0 10px;text-wrap:pretty;">The work starts with the real workflow: the quotes, job folders, forms, emails, spreadsheets, supplier notes, and decisions that already keep your business moving.</p>
-      <p style="font-size:17px;color:var(--text-muted);max-width:66ch;margin:0 0 44px;text-wrap:pretty;">I build small, reviewable systems around that work — so owners and operators can find what matters, reuse what already exists, and make better decisions with less scrambling.</p>
+      <section class="services-hero-grid">
+        <div>
+          <p class="eyebrow">Technical problem-solving</p>
+          <h1 style="font-weight:650;font-size:clamp(34px,4.5vw,52px);line-height:1.08;letter-spacing:-0.025em;margin:0 0 16px;max-width:20ch;text-wrap:balance;">When the tools stop lining up, I make the work make sense.</h1>
+          <p style="font-size:17px;color:var(--text-muted);max-width:66ch;margin:0 0 10px;text-wrap:pretty;">The problem may look like a spreadsheet nobody trusts, a website that no longer fits, repeated data entry, scattered job files, or several tools that do not talk to one another.</p>
+          <p style="font-size:17px;color:var(--text-muted);max-width:66ch;margin:0;text-wrap:pretty;">I trace how the work actually moves, fix the smallest valuable bottleneck first, and leave behind something your team can understand and operate.</p>
+        </div>
+        <div class="system-map" aria-label="Examples of disconnected business information brought into one working system">
+          <p class="system-map-label">What’s tangled?</p>
+          <div class="system-map-nodes">
+            <span class="system-map-node">Spreadsheets &amp; data</span>
+            <span class="system-map-node">Documents &amp; job files</span>
+            <span class="system-map-node">Email &amp; forms</span>
+            <span class="system-map-node">Websites &amp; tools</span>
+          </div>
+          <div class="system-map-connector" aria-hidden="true"></div>
+          <div class="system-map-result">
+            <span>One useful outcome</span>
+            <strong>A system people can understand</strong>
+          </div>
+        </div>
+      </section>
 
       <div class="reveal offer-grid">
         <div class="offer-card">
           <div class="offer-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></div>
-          <h2 style="font-weight:600;font-size:20px;letter-spacing:-0.015em;margin:0 0 8px;">Workflow Audits</h2>
-          <p style="font-size:15px;line-height:1.6;color:var(--text-muted);margin:0 0 10px;">A fixed diagnostic for one operational problem. The output is a clear map of how the work happens today, where time or money leaks out, and what a first useful automation would look like.</p>
-          <p style="font-size:14px;line-height:1.55;color:var(--text-muted);margin:0;"><strong style="color:var(--text);font-weight:600;">The recommendation can be no build.</strong> Some workflows need a better checklist or a cleaner source of truth before software is worth the cost.</p>
+          <h2 style="font-weight:600;font-size:20px;letter-spacing:-0.015em;margin:0 0 8px;">Technical Workflow Diagnostic</h2>
+          <p style="font-size:15px;line-height:1.6;color:var(--text-muted);margin:0 0 10px;">A fixed engagement around one concrete problem. I trace the people, documents, data, and tools involved, find the costly handoff, and explain the options in plain language.</p>
+          <p style="font-size:14px;line-height:1.55;color:var(--text-muted);margin:0;"><strong style="color:var(--text);font-weight:600;">The recommendation can be no build.</strong> Cleanup, a better spreadsheet, or a clearer source of truth may solve the problem before custom software is justified.</p>
         </div>
         <div class="offer-card">
           <div class="offer-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></div>
-          <h2 style="font-weight:600;font-size:20px;letter-spacing:-0.015em;margin:0 0 8px;">Single-Workflow Automation Builds</h2>
-          <p style="font-size:15px;line-height:1.6;color:var(--text-muted);margin:0 0 10px;">One narrow job at a time: a quote packet, a bid-room checklist, a reporting handoff, a release pipeline — a repeated process with a clear owner.</p>
-          <p style="font-size:14px;line-height:1.55;color:var(--text-muted);margin:0;"><strong style="color:var(--text);font-weight:600;">Not a vague transformation project.</strong> A scoped tool that can be reviewed, approved, and improved while the business keeps running.</p>
+          <h2 style="font-weight:600;font-size:20px;letter-spacing:-0.015em;margin:0 0 8px;">Systems Cleanup &amp; Automation</h2>
+          <p style="font-size:15px;line-height:1.6;color:var(--text-muted);margin:0 0 10px;">Improve what you already use: organize files, repair a spreadsheet or website, connect forms to the right records, reduce duplicate entry, or automate a repeated handoff.</p>
+          <p style="font-size:14px;line-height:1.55;color:var(--text-muted);margin:0;"><strong style="color:var(--text);font-weight:600;">One visible improvement at a time.</strong> The business keeps running, and the people doing the work can review what changed.</p>
         </div>
         <div class="offer-card">
           <div class="offer-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></div>
-          <h2 style="font-weight:600;font-size:20px;letter-spacing:-0.015em;margin:0 0 8px;">Reliable Company Knowledge Bases</h2>
-          <p style="font-size:15px;line-height:1.6;color:var(--text-muted);margin:0 0 10px;">Your knowledge is already valuable — just scattered across old jobs, spreadsheets, emails, PDFs, and people's heads. I make it findable, reusable, and reviewable before important decisions.</p>
-          <p style="font-size:14px;line-height:1.55;color:var(--text-muted);margin:0;"><strong style="color:var(--text);font-weight:600;">Reliable means source-linked.</strong> AI helps with search, extraction, and drafts — but the system shows where information came from, and high-stakes decisions stay with people.</p>
+          <h2 style="font-weight:600;font-size:20px;letter-spacing:-0.015em;margin:0 0 8px;">Practical Tools &amp; Knowledge Systems</h2>
+          <p style="font-size:15px;line-height:1.6;color:var(--text-muted);margin:0 0 10px;">When cleanup is not enough, I can build a focused browser tool, dashboard, searchable company knowledge base, mobile companion, or custom software around the actual job.</p>
+          <p style="font-size:14px;line-height:1.55;color:var(--text-muted);margin:0;"><strong style="color:var(--text);font-weight:600;">The platform follows the work.</strong> New software earns its place by solving a defined problem, staying reviewable, and leaving your business in control.</p>
         </div>
       </div>
 
       <section class="reveal" style="margin-bottom:clamp(48px,7vw,72px);">
         <p class="eyebrow">Why it pays</p>
-        <h2 style="font-weight:600;font-size:clamp(24px,3vw,32px);letter-spacing:-0.02em;margin:0 0 24px;max-width:24ch;text-wrap:balance;">Business memory makes money in practical ways.</h2>
+        <h2 style="font-weight:600;font-size:clamp(24px,3vw,32px);letter-spacing:-0.02em;margin:0 0 24px;max-width:24ch;text-wrap:balance;">Less friction in the system means more room for the work.</h2>
         <div class="check-list">
-          <div class="row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><p style="margin:0;font-size:15px;"><strong style="font-weight:600;">Faster quoting</strong> <span style="color:var(--text-muted);">— old assumptions, prices, and supplier notes are easier to find for bid/no-bid calls.</span></p></div>
-          <div class="row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><p style="margin:0;font-size:15px;"><strong style="font-weight:600;">Fewer missed requirements</strong> <span style="color:var(--text-muted);">— forms, due dates, and compliance docs tied back to real jobs.</span></p></div>
+          <div class="row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><p style="margin:0;font-size:15px;"><strong style="font-weight:600;">Faster answers</strong> <span style="color:var(--text-muted);">— the current file, number, or decision is easier to find and trust.</span></p></div>
+          <div class="row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><p style="margin:0;font-size:15px;"><strong style="font-weight:600;">Fewer missed handoffs</strong> <span style="color:var(--text-muted);">— forms, files, due dates, and follow-up stay connected.</span></p></div>
           <div class="row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><p style="margin:0;font-size:15px;"><strong style="font-weight:600;">Less owner bottleneck</strong> <span style="color:var(--text-muted);">— repeated decisions stop living only in one person's memory.</span></p></div>
-          <div class="row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><p style="margin:0;font-size:15px;"><strong style="font-weight:600;">Less rework</strong> <span style="color:var(--text-muted);">— the next job starts from reviewed prior knowledge, not a blank spreadsheet.</span></p></div>
-          <div class="row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><p style="margin:0;font-size:15px;"><strong style="font-weight:600;">Better delegation</strong> <span style="color:var(--text-muted);">— staff can see the company's preferred way to estimate, document, and close out work.</span></p></div>
-          <div class="row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><p style="margin:0;font-size:15px;"><strong style="font-weight:600;">Better follow-through</strong> <span style="color:var(--text-muted);">— schedules, safety paperwork, and closeout requirements stay connected after the win.</span></p></div>
+          <div class="row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><p style="margin:0;font-size:15px;"><strong style="font-weight:600;">Less duplicate entry</strong> <span style="color:var(--text-muted);">— the same information stops being copied between disconnected tools.</span></p></div>
+          <div class="row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><p style="margin:0;font-size:15px;"><strong style="font-weight:600;">Clearer delegation</strong> <span style="color:var(--text-muted);">— people can see the expected process and the source behind it.</span></p></div>
+          <div class="row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><p style="margin:0;font-size:15px;"><strong style="font-weight:600;">Less rework</strong> <span style="color:var(--text-muted);">— the next task starts from reviewed knowledge instead of a blank page.</span></p></div>
         </div>
       </section>
 
       <section class="reveal" style="margin-bottom:clamp(48px,7vw,72px);">
-        <p class="eyebrow">Workflows I take on</p>
+        <p class="eyebrow">Problems I take on</p>
         <div class="chip-row">
-          <span class="chip">Estimate, quote &amp; bid-room support</span>
-          <span class="chip">Lost-bid learning</span>
-          <span class="chip">Compliance &amp; safety paperwork reuse</span>
-          <span class="chip">Supplier, pricing &amp; old-job memory</span>
-          <span class="chip">Document source-of-truth cleanup</span>
-          <span class="chip">Apple-platform rescue &amp; release pipelines</span>
+          <span class="chip">Spreadsheet &amp; data cleanup</span>
+          <span class="chip">Document &amp; file systems</span>
+          <span class="chip">Forms, reporting &amp; handoffs</span>
+          <span class="chip">Websites &amp; browser tools</span>
+          <span class="chip">Integrations &amp; automation</span>
+          <span class="chip">Dashboards &amp; knowledge bases</span>
+          <span class="chip">Mobile or custom software</span>
+          <span class="chip chip-optional">Apple release support — when that is the actual problem</span>
         </div>
       </section>
 
@@ -1019,15 +1039,15 @@ private func servicesMain() -> Node<HTML.BodyContext> {
         <div>
           <h2 style="font-weight:600;font-size:clamp(24px,3vw,32px);letter-spacing:-0.02em;margin:0 0 20px;">How engagements start</h2>
           <div style="display:flex;flex-direction:column;gap:16px;">
-            <div class="step"><span class="num">01</span><p style="margin:0;font-size:15.5px;"><strong style="font-weight:600;">A paid diagnostic.</strong> <span style="color:var(--text-muted);">You and I pick one workflow, map the current reality, and identify the first useful improvement.</span></p></div>
-            <div class="step"><span class="num">02</span><p style="margin:0;font-size:15.5px;"><strong style="font-weight:600;">Decide if a build is worth it.</strong> <span style="color:var(--text-muted);">If there's a clear return, the next step is a scoped first build — fixed pricing where possible.</span></p></div>
-            <div class="step"><span class="num">03</span><p style="margin:0;font-size:15.5px;"><strong style="font-weight:600;">Keep humans in the loop.</strong> <span style="color:var(--text-muted);">Async-friendly work, and human review for decisions that carry real cost.</span></p></div>
+            <div class="step"><span class="num">01</span><p style="margin:0;font-size:15.5px;"><strong style="font-weight:600;">Show me the problem.</strong> <span style="color:var(--text-muted);">Start with the workarounds, files, screens, and repeated frustrations — not a software shopping list.</span></p></div>
+            <div class="step"><span class="num">02</span><p style="margin:0;font-size:15.5px;"><strong style="font-weight:600;">Map the real system.</strong> <span style="color:var(--text-muted);">I trace how the work moves and identify the smallest useful improvement.</span></p></div>
+            <div class="step"><span class="num">03</span><p style="margin:0;font-size:15.5px;"><strong style="font-weight:600;">Implement and hand it back.</strong> <span style="color:var(--text-muted);">Fixed scope where possible, documented clearly, with human review for decisions that carry real cost.</span></p></div>
           </div>
         </div>
         <div style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:14px;">
-          <p style="font-size:16px;font-weight:500;margin:0;">Want to talk through a workflow?</p>
+          <p style="font-size:16px;font-weight:500;margin:0;">Have a technical mess you keep working around?</p>
           <a class="btn btn-gold" href="mailto:hello@kinnokilabs.com">hello@kinnokilabs.com</a>
-          <p style="font-size:13.5px;color:var(--text-muted);margin:0;">Plain email. No call required.</p>
+          <p style="font-size:13.5px;color:var(--text-muted);margin:0;">You do not need to know what kind of software you need. Plain email; no call required.</p>
         </div>
       </section>
     </main>
@@ -1040,18 +1060,18 @@ private func aboutMain() -> Node<HTML.BodyContext> {
       <div style="max-width:720px;">
         <p class="eyebrow">About</p>
         <h1 style="font-weight:650;font-size:clamp(34px,4.5vw,52px);line-height:1.08;letter-spacing:-0.025em;margin:0 0 16px;">A solo studio with dirt on its boots.</h1>
-        <p style="font-size:17px;color:var(--text-muted);margin:0 0 10px;text-wrap:pretty;"><strong style="color:var(--text);font-weight:600;">KinNoKi Labs</strong> is one person building focused Apple-platform apps — iOS, macOS, and watchOS — and practical software systems for real-world workflows, from Cape Breton, Nova Scotia.</p>
-        <p style="font-size:17px;color:var(--text-muted);margin:0 0 44px;text-wrap:pretty;">The same operator-first approach runs through everything: understand the real work, find the painful handoff, and build the smallest useful system around it.</p>
+        <p style="font-size:17px;color:var(--text-muted);margin:0 0 10px;text-wrap:pretty;"><strong style="color:var(--text);font-weight:600;">KinNoKi Labs</strong> is one person solving messy technical and operational problems from Cape Breton, Nova Scotia — across documents, data, websites, automation, and custom software.</p>
+        <p style="font-size:17px;color:var(--text-muted);margin:0 0 44px;text-wrap:pretty;">The Apple apps are visible proof of that work, not the boundary of it. The same approach runs through everything: understand the real work, find the painful handoff, and make the smallest useful improvement.</p>
       </div>
 
       <div class="reveal about-grid">
         <div class="about-card">
-          <h2 style="font-weight:600;font-size:17px;letter-spacing:-0.01em;margin:0 0 6px;">Swift-first</h2>
-          <p style="font-size:14.5px;line-height:1.55;color:var(--text-muted);margin:0;">Swift across the stack, from apps to server-side tooling — even this site is generated by Swift.</p>
+          <h2 style="font-weight:600;font-size:17px;letter-spacing:-0.01em;margin:0 0 6px;">Problem-first</h2>
+          <p style="font-size:14.5px;line-height:1.55;color:var(--text-muted);margin:0;">Understand the real work and the painful handoff before choosing a tool or platform.</p>
         </div>
         <div class="about-card">
-          <h2 style="font-weight:600;font-size:17px;letter-spacing:-0.01em;margin:0 0 6px;">Pragmatic design</h2>
-          <p style="font-size:14.5px;line-height:1.55;color:var(--text-muted);margin:0;">I don't chase trends. I build interfaces and workflows that feel obvious in daily use.</p>
+          <h2 style="font-weight:600;font-size:17px;letter-spacing:-0.01em;margin:0 0 6px;">Broad technical range</h2>
+          <p style="font-size:14.5px;line-height:1.55;color:var(--text-muted);margin:0;">Repair what exists, connect the right pieces, and build something new only when the problem justifies it.</p>
         </div>
         <div class="about-card">
           <h2 style="font-weight:600;font-size:17px;letter-spacing:-0.01em;margin:0 0 6px;">Reviewable systems</h2>
