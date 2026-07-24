@@ -45,6 +45,10 @@ Reliable systems remain source-linked, owner-controlled, and reviewable. AI may 
 - Mobile or custom software when a build is justified.
 - Apple release support when that is the actual problem.
 
+## Proof of Work
+
+See a public tender turned into a practical starting workflow in the [Tender Starter Showcase](/tenders/).
+
 ## How Engagements Start
 
 Most work starts with a paid diagnostic. You show me the problem in the tools and artifacts you already use. I map the current reality, identify the smallest useful improvement, and explain the options in plain language.
