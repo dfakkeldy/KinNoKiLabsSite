@@ -64,13 +64,14 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
                 .body(.class("page-section"), siteHeader(active: "/posts"), postsListMain(section), siteFooter())
             )
         case .tenders:
+            let records = try section.items.map { try TenderRecord(item: $0) }
             return HTML(
                 .lang(context.site.language),
                 siteHead(for: section, context: context, titleOverride: "Tender Starter Showcase"),
                 .body(
                     .class("page-section page-tenders"),
                     siteHeader(active: "/services"),
-                    .main(.class("tender-main")),
+                    tenderShowcaseMain(records: records),
                     siteFooter()
                 )
             )
@@ -89,7 +90,7 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
                 siteHeader(active: isTender ? "/services" : active),
                 .if(item.sectionID == .apps,
                     isEcho ? echoDetailMain() : appItemMain(item),
-                    else: postDetailMain(item)),
+                    else: isTender ? tenderDetailMain(record: try TenderRecord(item: item)) : postDetailMain(item)),
                 siteFooter()
             )
         )
