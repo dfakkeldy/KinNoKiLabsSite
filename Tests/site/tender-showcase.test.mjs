@@ -150,30 +150,38 @@ test('routes the tender section and items in the theme', () => {
 
 const EXPECTED_TENDER_RECORDS = {
   'hrm-autobody-painting-service.md': {
+    tenderID: 'HRM-2026-0311',
     title: 'Autobody and Painting Services for HRM Light-Duty Vehicles (Halifax Location)',
     category: 'Services',
+    closingAt: '2026-08-13T14:00:59-03:00',
     noticeURL: 'https://procurement-portal.novascotia.ca/tenders/HRM-2026-0311',
     documentsURL:
       'https://halifax.bidsandtenders.ca/Module/Tenders/en/Tender/Detail/45c893f6-58cd-4ae0-9ae9-20c997bac53e',
   },
   'hrm-cds-dvds-goods.md': {
+    tenderID: 'HRM-2026-0372',
     title: "Standing Offer for the Supply & Delivery of CD's & DVD's",
     category: 'Goods',
+    closingAt: '2026-08-12T14:00:59-03:00',
     noticeURL: 'https://procurement-portal.novascotia.ca/tenders/HRM-2026-0372',
     documentsURL:
       'https://halifax.bidsandtenders.ca/Module/Tenders/en/Tender/Detail/01b4409a-8391-4417-8e89-cd90af6948aa',
   },
   'hrm-street-recap-construction.md': {
+    tenderID: 'HRM-2026-1026',
     title:
       'Prince Arthur Ave, Hershey Rd, Clyde St, and Montebello Dr - Street Recap. Intersection Reconfigurations, Traffic Calming and Sidewalk Renewals',
     category: 'Construction',
+    closingAt: '2026-08-10T14:00:59-03:00',
     noticeURL: 'https://procurement-portal.novascotia.ca/tenders/HRM-2026-1026',
     documentsURL:
       'https://halifax.bidsandtenders.ca/Module/Tenders/en/Tender/Detail/b9edd22c-c23c-4a47-aada-587159f9ca58',
   },
   'nslc-agency-store-service.md': {
+    tenderID: 'NSLC27-09',
     title: 'NSLC Agency Store - Cornwallis',
     category: 'Services',
+    closingAt: '2026-08-13T14:00:00-03:00',
     noticeURL: 'https://procurement-portal.novascotia.ca/tenders/NSLC27-09',
     documentsURL: 'https://procurement-portal.novascotia.ca/tenders/NSLC27-09',
   },
@@ -340,6 +348,10 @@ if (packBytes) {
 
     assert.match(text, new RegExp(DISCLAIMER.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
     for (const expected of Object.values(EXPECTED_TENDER_RECORDS)) {
+      assert.match(
+        text,
+        new RegExp(escapeRegex(`${expected.tenderID} — ${expected.title}`)),
+      );
       assert.match(text, new RegExp(expected.noticeURL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
       if (expected.documentsURL !== expected.noticeURL) {
         assert.match(

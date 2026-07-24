@@ -10,7 +10,7 @@ deliveryRegion: Nova Scotia
 publishedAt: 2026-07-24T00:00:00-03:00
 closingAt: 2026-08-13T14:00:00-03:00
 firstAddedAt: 2026-07-24T12:00:00-03:00
-checkedAt: 2026-07-24T12:00:00-03:00
+checkedAt: 2026-07-24T17:38:13-03:00
 documentAccess: Public detail readable on the Nova Scotia Procurement Portal. The official document package is hosted directly on the portal. Verify at the official source before acting.
 addendaURL: https://procurement-portal.novascotia.ca/tenders/NSLC27-09
 addendaStatus: No separate addendum attachment appeared in the portal record at review time on 2026-07-24. Recheck the official source before acting.
