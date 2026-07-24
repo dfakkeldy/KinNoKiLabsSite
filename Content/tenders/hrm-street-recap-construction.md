@@ -7,12 +7,12 @@ procurementSystem: Nova Scotia Procurement Portal
 category: Construction
 deliveryRegion: Halifax Regional Municipality
 publishedAt: 2026-07-24T00:00:00-03:00
-closingAt: 2026-08-10T00:00:00-03:00
+closingAt: 2026-08-10T14:00:00-03:00
 firstAddedAt: 2026-07-24T12:00:00-03:00
 checkedAt: 2026-07-24T12:00:00-03:00
-documentAccess: Public notice visible on the procurement portal. Linked documents must be opened and verified at the official source before acting.
+documentAccess: Public detail readable on the Nova Scotia Procurement Portal. Bid documents are accessible through the HRM Bids and Tenders page (halifax.bidsandtenders.ca); a free account may be required to download the full package. Verify at the official source before acting.
 addendaURL: https://procurement-portal.novascotia.ca/tenders/HRM-2026-1026
-addendaStatus: Checked at the official source on 2026-07-24. No addenda were visible at that time. Verify again before acting.
+addendaStatus: No separate addendum attachment appeared in the portal record at review time on 2026-07-24. Recheck the official source before acting.
 lifecycle: current
 noticeURL: https://procurement-portal.novascotia.ca/tenders/HRM-2026-1026
 documentsURL: https://procurement-portal.novascotia.ca/tenders/HRM-2026-1026
@@ -21,7 +21,7 @@ featuredPack: true
 
 ## What the official source says
 
-Halifax Regional Municipality posted this Request for Proposal (Construction) on 2026-07-24. The title describes street recapitalization, intersection reconfigurations, traffic calming, and sidewalk renewals at various locations. The closing date shown by the procurement portal is 2026-08-10 at 00:00 Atlantic time. The official notice page is the authoritative source for scope, documents, and any addenda.
+Halifax Regional Municipality posted this Request for Proposal (Construction) on 2026-07-24. The title describes street recapitalization, intersection reconfigurations, traffic calming, and sidewalk renewals at various locations. The closing date shown by the procurement portal is 2026-08-10 at 2:00 PM Atlantic time. The official notice page is the authoritative source for scope, documents, and any addenda.
 
 ## Who might examine this opportunity
 
