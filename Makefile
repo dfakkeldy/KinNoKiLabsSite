@@ -12,7 +12,7 @@
 
 PUBLISH_BIN ?= publish
 
-.PHONY: publish preview generate clean test test-listen test-games test-tools test-site listen-catalog paired-covers sync-ns-marks-web
+.PHONY: publish preview generate clean test test-listen test-games test-tools test-site listen-catalog paired-covers sync-ns-marks-web tender-pack
 
 generate:
 	@generation_epochs="$$(node Tools/prepare-deterministic-publish.mjs)" && \
@@ -21,6 +21,7 @@ generate:
 		KINNOKI_RSS_DATE_EPOCH="$$1" \
 		KINNOKI_APPS_SECTION_DATE_EPOCH="$$2" \
 		KINNOKI_POSTS_SECTION_DATE_EPOCH="$$3" \
+		KINNOKI_TENDERS_SECTION_DATE_EPOCH="$$4" \
 		$(PUBLISH_BIN) generate
 
 publish: generate
@@ -36,6 +37,7 @@ preview:
 		KINNOKI_RSS_DATE_EPOCH="$$1" \
 		KINNOKI_APPS_SECTION_DATE_EPOCH="$$2" \
 		KINNOKI_POSTS_SECTION_DATE_EPOCH="$$3" \
+		KINNOKI_TENDERS_SECTION_DATE_EPOCH="$$4" \
 		publish run
 
 clean:
@@ -63,3 +65,10 @@ paired-covers:
 
 sync-ns-marks-web:
 	node Tools/sync-ns-marks-web.mjs
+
+TENDER_PACK_PYTHON ?= python3
+TENDER_PACK_SOFFICE ?= soffice
+
+tender-pack:
+	TENDER_PACK_SOFFICE="$(TENDER_PACK_SOFFICE)" \
+	$(TENDER_PACK_PYTHON) Tools/build-tender-demo-pack.py

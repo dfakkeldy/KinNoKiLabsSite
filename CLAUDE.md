@@ -65,6 +65,32 @@ receipt/parity failure stop promotion.
 - **Echo Listening Room** — `/listen` is a hand-authored static app (not theme-generated): `Resources/listen/index.html` + `listen.css` + `listen-core.js` (DOM-free ports of Echo's `WordTokenizer`, `WordTimingInterpolator`, and `VisualListeningCueResolver` — keep these in step with the native semantics) + `listen.js` (DOM/audio/MediaSession glue). It streams one book at a time, selected by `?book=<slug>`, and reads the generated `books.json` catalog. Playback position, speed, and theme stay in that browser's `localStorage`; nothing is uploaded. Run `make test-listen` after changes.
 - **`Tests/listen/`** — Node tests cover the pure cue/timing logic, a fake-DOM drive of `listen.js` (including the figure stage and library grid), WCAG contrast of the player tokens, the catalog contract, and the builder's transaction semantics.
 
+### Tender Starter Showcase
+
+- **`Content/tenders/`** is manually curated and source-bounded — a proof-of-work
+  showcase, not a live tender directory. Each record is a Markdown file with
+  verified frontmatter (source facts) and five H2 analysis sections (editorial
+  analysis). Source facts and KinNoKi analysis are kept strictly separate.
+- **Lifecycle states** (`TenderLifecycle` in `TenderShowcase.swift`): `current`,
+  `closing-soon`, `closed-demo`, `withdrawn`, `superseded`, `source-unavailable`,
+  `addenda-unchecked`. Only `current`, `closing-soon`, and `addenda-unchecked`
+  appear in the "Current examples" grid.
+- **Ten-day first-add rule:** a current entry must have had at least ten calendar
+  days remaining between `firstAddedAt` and `closingAt` when first added.
+  Recheck this against the official notice immediately before the content commit.
+- **Official-link / addenda recheck:** every published URL points to the official
+  procurement source (never to a redistributed document). Recheck the closing
+  date/time, timezone, documents link, and addenda state before each refresh.
+  Update `checkedAt` when you do.
+- **`make tender-pack`** rebuilds the demonstration ZIP from
+  `Tools/tender-pack/` sources. The pack contains original KinNoKi summaries and
+  templates only — no official tender document is ever copied or redistributed.
+  The PDF is tagged and PDF/UA-compliant; the XLSX has eight review-tracking
+  sheets.
+- **Commit `Content/` before `make generate`** — the deterministic preflight
+  rejects dirty Content. Never edit `Output/` manually.
+- Tender items are excluded from the public RSS feed (apps and posts only).
+
 ### Listening Room catalog contract
 
 - **`Resources/listen/books.json` and everything under `Resources/listen/books/` are GENERATED** — never hand-edit them. `make listen-catalog` (`Tools/build-listen-catalog.sh`) rebuilds both from a local `dfakkeldy/explainer-audiobooks` checkout (`BOOKS_REPO`) plus Echo's `echo-cli export-blocks` (`ECHO_CLI`; `--no-blocks` skips captions for dev). It stages through `Tools/lib/listen-catalog-transaction.sh` (atomic swap + rollback) and fails closed on any validation miss.

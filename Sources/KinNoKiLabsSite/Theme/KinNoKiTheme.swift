@@ -63,21 +63,34 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
                 siteHead(for: section, context: context, titleOverride: "Posts"),
                 .body(.class("page-section"), siteHeader(active: "/posts"), postsListMain(section), siteFooter())
             )
+        case .tenders:
+            let records = try section.items.map { try TenderRecord(item: $0) }
+            return HTML(
+                .lang(context.site.language),
+                siteHead(for: section, context: context, titleOverride: "Tender Starter Showcase"),
+                .body(
+                    .class("page-section page-tenders"),
+                    siteHeader(active: "/services"),
+                    tenderShowcaseMain(records: records),
+                    siteFooter()
+                )
+            )
         }
     }
 
     func makeItemHTML(for item: Item<Site>, context: PublishingContext<Site>) throws -> HTML {
         let isEcho = item.path.string == "apps/echo"
         let active = item.sectionID == .posts ? "/posts" : "/apps"
+        let isTender = item.sectionID == .tenders
         return HTML(
             .lang(context.site.language),
             siteHead(for: item, context: context),
             .body(
-                .class("page-item"),
-                siteHeader(active: active),
+                .class(isTender ? "page-item page-tender-detail" : "page-item"),
+                siteHeader(active: isTender ? "/services" : active),
                 .if(item.sectionID == .apps,
                     isEcho ? echoDetailMain() : appItemMain(item),
-                    else: postDetailMain(item)),
+                    else: isTender ? tenderDetailMain(record: try TenderRecord(item: item)) : postDetailMain(item)),
                 siteFooter()
             )
         )
@@ -1007,6 +1020,15 @@ private func servicesMain() -> Node<HTML.BodyContext> {
           <p style="font-size:14px;line-height:1.55;color:var(--text-muted);margin:0;"><strong style="color:var(--text);font-weight:600;">The platform follows the work.</strong> New software earns its place by solving a defined problem, staying reviewable, and leaving your business in control.</p>
         </div>
       </div>
+
+      <section class="reveal tender-proof-callout">
+        <div>
+          <p class="eyebrow">Proof of work</p>
+          <h2>See a public tender turned into a practical starting workflow.</h2>
+          <p>The Tender Starter Showcase demonstrates source-linked review, visible questions, and reusable bid-preparation structure without pretending to replace the official notice.</p>
+        </div>
+        <a class="btn btn-outline" href="/tenders/">Explore the Tender Starter Showcase</a>
+      </section>
 
       <section class="reveal" style="margin-bottom:clamp(48px,7vw,72px);">
         <p class="eyebrow">Why it pays</p>

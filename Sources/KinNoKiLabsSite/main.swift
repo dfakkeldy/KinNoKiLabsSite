@@ -8,6 +8,7 @@ struct KinNoKiLabsSite: Website {
         // Add the sections that you want your website to contain here:
         case posts
         case apps
+        case tenders
     }
 
     struct ItemMetadata: WebsiteItemMetadata {
@@ -18,6 +19,23 @@ struct KinNoKiLabsSite: Website {
         var featured: Bool?     // homepage flagship slot
         var iconAlt: String?    // only when the generic "<title> app icon" alt isn't enough
         var status: String?     // rendered as a .status-chip on the app's item page (e.g. "TestFlight beta — open")
+        // Tender showcase fields (apps and posts omit all of these).
+        var tenderID: String?
+        var issuer: String?
+        var procurementSystem: String?
+        var category: String?
+        var deliveryRegion: String?
+        var publishedAt: String?       // ISO 8601 with offset
+        var closingAt: String?         // ISO 8601 with offset
+        var firstAddedAt: String?      // ISO 8601 with offset
+        var checkedAt: String?         // ISO 8601 with offset
+        var documentAccess: String?
+        var addendaURL: String?
+        var addendaStatus: String?
+        var lifecycle: String?         // TenderLifecycle raw value
+        var noticeURL: String?
+        var documentsURL: String?
+        var featuredPack: Bool?
     }
 
     // Update these properties to configure your website:
@@ -78,7 +96,7 @@ try site.publish(using: [
     .sortItems(by: \.date, order: .descending),
     .generateHTML(withTheme: .kinNoKi),
     .generateRSSFeed(
-        including: Set(KinNoKiLabsSite.SectionID.allCases),
+        including: Set([KinNoKiLabsSite.SectionID.apps, .posts]),
         date: rssDate
     ),
     .generateSiteMap()

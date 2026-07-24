@@ -57,6 +57,32 @@ receipt/parity failure stop promotion.
 - **Web Tools** — `/tools` is the hub for `/tools/qr-code`, `/tools/epub-reader`, `/tools/dilution`, `/tools/contrast`, `/tools/word-count`, `/tools/unit-converter`, and `/tools/passphrase`. Theme-routed pages load `Resources/tools/ui.js`, which dynamically imports only that page's DOM-free engine and `*-ui.js` controller; `core.js` provides shared browser-safe UI, storage, connectivity, and service-worker helpers. A `/tools/`-scoped service worker plus `manifest.webmanifest` precaches the hub, all seven utilities, and required assets for offline use and installation. Preferences use the single localStorage key `kinnoki-tools:v1`; the on-device EPUB library uses IndexedDB database `kinnoki-tools-epub`; nothing is uploaded. `wordlist.js` includes the Electronic Frontier Foundation Large Wordlist under CC BY 3.0 with source attribution in the file and passphrase page. Run `make test-tools` after Web Tools changes.
 - **`Tests/games/`** — Node tests cover the pure game engines, DOM controllers, accessibility behavior, and generated routes (`hub-six-games.test.mjs` covers all six Arcade Hall cards). Run them with `make test-games` after game changes; generate the site before running route assertions directly.
 
+### Tender Starter Showcase
+
+- **`Content/tenders/`** is manually curated and source-bounded — a proof-of-work
+  showcase, not a live tender directory. Each record is a Markdown file with
+  verified frontmatter (source facts) and five H2 analysis sections (editorial
+  analysis). Source facts and KinNoKi analysis are kept strictly separate.
+- **Lifecycle states** (`TenderLifecycle` in `TenderShowcase.swift`): `current`,
+  `closing-soon`, `closed-demo`, `withdrawn`, `superseded`, `source-unavailable`,
+  `addenda-unchecked`. Only `current`, `closing-soon`, and `addenda-unchecked`
+  appear in the "Current examples" grid.
+- **Ten-day first-add rule:** a current entry must have had at least ten calendar
+  days remaining between `firstAddedAt` and `closingAt` when first added.
+  Recheck this against the official notice immediately before the content commit.
+- **Official-link / addenda recheck:** every published URL points to the official
+  procurement source (never to a redistributed document). Recheck the closing
+  date/time, timezone, documents link, and addenda state before each refresh.
+  Update `checkedAt` when you do.
+- **`make tender-pack`** rebuilds the demonstration ZIP from
+  `Tools/tender-pack/` sources. The pack contains original KinNoKi summaries and
+  templates only — no official tender document is ever copied or redistributed.
+  The PDF is tagged and PDF/UA-compliant; the XLSX has eight review-tracking
+  sheets.
+- **Commit `Content/` before `make generate`** — the deterministic preflight
+  rejects dirty Content. Never edit `Output/` manually.
+- Tender items are excluded from the public RSS feed (apps and posts only).
+
 ### Publish Conventions
 
 - **Generation dates are deterministic and `make` is the supported entry point.** `make generate` and `make preview` run `Tools/prepare-deterministic-publish.mjs`, which first fails without modifying files when `Content/` has tracked or untracked changes, then normalizes every clean `Content/**/*.md` modification time to its last Git commit. It fixes the build timezone to `America/Halifax` and passes Git-derived RSS and section-root dates into Publish. The preflight removes only Publish 0.8's derived RSS cache file because that cache key omits the explicit date and can otherwise replay stale feed bytes. This keeps every sitemap and feed date identical across days and worktrees without hand-editing `Output/`; direct `publish generate` intentionally fails closed.
