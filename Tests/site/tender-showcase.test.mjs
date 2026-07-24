@@ -148,6 +148,55 @@ test('routes the tender section and items in the theme', () => {
 // Content records
 // ---------------------------------------------------------------------------
 
+const EXPECTED_TENDER_RECORDS = {
+  'hrm-autobody-painting-service.md': {
+    title: 'Autobody and Painting Services for HRM Light-Duty Vehicles (Halifax Location)',
+    category: 'Services',
+    noticeURL: 'https://procurement-portal.novascotia.ca/tenders/HRM-2026-0311',
+    documentsURL:
+      'https://halifax.bidsandtenders.ca/Module/Tenders/en/Tender/Detail/45c893f6-58cd-4ae0-9ae9-20c997bac53e',
+  },
+  'hrm-cds-dvds-goods.md': {
+    title: "Standing Offer for the Supply & Delivery of CD's & DVD's",
+    category: 'Goods',
+    noticeURL: 'https://procurement-portal.novascotia.ca/tenders/HRM-2026-0372',
+    documentsURL:
+      'https://halifax.bidsandtenders.ca/Module/Tenders/en/Tender/Detail/01b4409a-8391-4417-8e89-cd90af6948aa',
+  },
+  'hrm-street-recap-construction.md': {
+    title:
+      'Prince Arthur Ave, Hershey Rd, Clyde St, and Montebello Dr - Street Recap. Intersection Reconfigurations, Traffic Calming and Sidewalk Renewals',
+    category: 'Construction',
+    noticeURL: 'https://procurement-portal.novascotia.ca/tenders/HRM-2026-1026',
+    documentsURL:
+      'https://halifax.bidsandtenders.ca/Module/Tenders/en/Tender/Detail/b9edd22c-c23c-4a47-aada-587159f9ca58',
+  },
+  'nslc-agency-store-service.md': {
+    title: 'NSLC Agency Store - Cornwallis',
+    category: 'Services',
+    noticeURL: 'https://procurement-portal.novascotia.ca/tenders/NSLC27-09',
+    documentsURL: 'https://procurement-portal.novascotia.ca/tenders/NSLC27-09',
+  },
+};
+
+function frontmatterValue(content, key) {
+  return content.match(new RegExp(`^${key}:\\s*(.+)$`, 'm'))?.[1]?.trim();
+}
+
+test('locks every public tender title and authoritative source fact', () => {
+  assert.deepEqual(tenderFiles, Object.keys(EXPECTED_TENDER_RECORDS).sort());
+  for (const file of tenderFiles) {
+    const content = readFileSync(
+      new URL(`../../Content/tenders/${file}`, import.meta.url),
+      'utf8',
+    );
+    const expected = EXPECTED_TENDER_RECORDS[file];
+    for (const [key, value] of Object.entries(expected)) {
+      assert.equal(frontmatterValue(content, key), value, `${file}: ${key}`);
+    }
+  }
+});
+
 test('publishes three to five tender source records', () => {
   assert.ok(
     tenderFiles.length >= 3 && tenderFiles.length <= 5,

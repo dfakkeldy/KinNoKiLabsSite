@@ -1,10 +1,11 @@
 ---
+title: NSLC Agency Store - Cornwallis
 description: A source-linked starting brief for a current Nova Scotia professional service tender.
 date: 2026-07-24 12:00
 tenderID: NSLC27-09
 issuer: Nova Scotia Liquor Corporation
 procurementSystem: Nova Scotia Procurement Portal
-category: Professional service
+category: Services
 deliveryRegion: Nova Scotia
 publishedAt: 2026-07-24T00:00:00-03:00
 closingAt: 2026-08-13T14:00:00-03:00

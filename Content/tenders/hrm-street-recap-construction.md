@@ -1,4 +1,5 @@
 ---
+title: Prince Arthur Ave, Hershey Rd, Clyde St, and Montebello Dr - Street Recap. Intersection Reconfigurations, Traffic Calming and Sidewalk Renewals
 description: A source-linked starting brief for a current Nova Scotia public construction tender.
 date: 2026-07-24 12:00
 tenderID: HRM-2026-1026
@@ -15,7 +16,7 @@ addendaURL: https://procurement-portal.novascotia.ca/tenders/HRM-2026-1026
 addendaStatus: No separate addendum attachment appeared in the portal record at review time on 2026-07-24. Recheck the official source before acting.
 lifecycle: current
 noticeURL: https://procurement-portal.novascotia.ca/tenders/HRM-2026-1026
-documentsURL: https://procurement-portal.novascotia.ca/tenders/HRM-2026-1026
+documentsURL: https://halifax.bidsandtenders.ca/Module/Tenders/en/Tender/Detail/b9edd22c-c23c-4a47-aada-587159f9ca58
 featuredPack: true
 ---
 

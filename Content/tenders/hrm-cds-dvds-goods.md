@@ -1,4 +1,5 @@
 ---
+title: Standing Offer for the Supply & Delivery of CD's & DVD's
 description: A source-linked starting brief for a current Nova Scotia goods tender.
 date: 2026-07-24 12:00
 tenderID: HRM-2026-0372
@@ -15,7 +16,7 @@ addendaURL: https://procurement-portal.novascotia.ca/tenders/HRM-2026-0372
 addendaStatus: No separate addendum attachment appeared in the portal record at review time on 2026-07-24. Recheck the official source before acting.
 lifecycle: current
 noticeURL: https://procurement-portal.novascotia.ca/tenders/HRM-2026-0372
-documentsURL: https://procurement-portal.novascotia.ca/tenders/HRM-2026-0372
+documentsURL: https://halifax.bidsandtenders.ca/Module/Tenders/en/Tender/Detail/01b4409a-8391-4417-8e89-cd90af6948aa
 featuredPack: false
 ---
 
