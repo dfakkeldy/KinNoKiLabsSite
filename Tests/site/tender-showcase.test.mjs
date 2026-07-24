@@ -266,14 +266,13 @@ test('includes reduced-motion, focus-visible, and print rules for tenders', () =
 // ---------------------------------------------------------------------------
 
 const packPath = new URL('../../Resources/tenders/tender-starter-example.zip', import.meta.url);
+const packBytes = existsSync(packPath) ? readFileSync(packPath) : null;
 
 test('ships a demonstration pack as a committed resource', () => {
   assert.equal(existsSync(packPath), true, 'tender-starter-example.zip must exist in Resources/tenders/');
 });
 
-if (existsSync(packPath)) {
-  const packBytes = readFileSync(packPath);
-
+if (packBytes) {
   test('pack contains exactly three named entries with no official tender documents', () => {
     // Minimal central-directory reader (stored + deflate entries).
     const entries = readZipEntries(packBytes);
