@@ -1,4 +1,4 @@
-/* Echo Listening Room — pure logic ports (no DOM, no fetch).
+/* Echo Listening Room — pure logic ports and presentation policy (no DOM, no fetch).
    JS ports of Echo's Shared/WordTokenizer.swift,
    Shared/WordTimingInterpolator.swift and
    Shared/VisualListeningCueResolver.swift (Echo PR #417), so the web
@@ -112,6 +112,25 @@
       }
     }
     return { activeWordIndex: activeWordIndex, alreadyHeardWordCount: alreadyHeardWordCount };
+  }
+
+  /* The web Listening Room intentionally presents karaoke one display word
+     ahead of the timing cursor for every book. The word under the cursor joins
+     the heard wash so the visual progress remains contiguous. At the end of a
+     block the active cue stays on its final word instead of disappearing. */
+  const KARAOKE_WORD_LEAD = 1;
+  function presentedWordProgress(wordRows, time) {
+    const progress = wordProgress(wordRows, time);
+    if (progress.activeWordIndex === null) return progress;
+
+    const activeWordIndex = Math.min(
+      progress.activeWordIndex + KARAOKE_WORD_LEAD,
+      wordRows.length - 1
+    );
+    return {
+      activeWordIndex: activeWordIndex,
+      alreadyHeardWordCount: Math.max(progress.alreadyHeardWordCount, activeWordIndex),
+    };
   }
 
   /* ── Visual cue resolution (VisualListeningCueResolver port) ── */
@@ -355,7 +374,7 @@
     if (subtitleBlock) {
       const wordRows = input.wordsByBlockId.get(subtitleBlock.id);
       if (wordRows && wordRows.length > 0) {
-        const progress = wordProgress(wordRows, input.time);
+        const progress = presentedWordProgress(wordRows, input.time);
         subtitleCue = {
           blockId: subtitleBlock.id,
           text: subtitleBlock.text,

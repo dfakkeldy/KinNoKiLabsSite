@@ -128,16 +128,25 @@ test('latest applicable figure wins on overlap', () => {
   assert.equal(s.imageCue.blockId, 'imgB');
 });
 
-test('cover-only book yields null imageCue but live captions', () => {
+test('all books render karaoke one word ahead with a contiguous heard wash', () => {
   const blocks = [{ id: 't1', kind: 'paragraph', text: 'one two three', chapterIndex: 0, sequenceIndex: 0 }];
   const rows = [{ start: 0, end: 3, blockId: 't1', chapterIndex: 0, sequenceIndex: 0 }];
   const wordsByBlockId = new Map([['t1', core.interpolateWords('one two three', 0, 3)]]);
   const s = core.resolveSnapshot({ blocks, rows, wordsByBlockId, time: 1.6, syncPoint: 'midpoint' });
   assert.equal(s.imageCue, null);
   assert.equal(s.subtitleCue.blockId, 't1');
-  assert.equal(s.subtitleCue.activeWordIndex, 1);
-  assert.equal(s.subtitleCue.alreadyHeardWordCount, 1);
+  assert.equal(s.subtitleCue.activeWordIndex, 2);
+  assert.equal(s.subtitleCue.alreadyHeardWordCount, 2);
   assert.equal(s.activeBlockId, 't1');
+});
+
+test('one-word karaoke lead clamps to the final word', () => {
+  const blocks = [{ id: 't1', kind: 'paragraph', text: 'one two three', chapterIndex: 0, sequenceIndex: 0 }];
+  const rows = [{ start: 0, end: 3, blockId: 't1', chapterIndex: 0, sequenceIndex: 0 }];
+  const wordsByBlockId = new Map([['t1', core.interpolateWords('one two three', 0, 3)]]);
+  const s = core.resolveSnapshot({ blocks, rows, wordsByBlockId, time: 2.6, syncPoint: 'begin' });
+  assert.equal(s.subtitleCue.activeWordIndex, 2);
+  assert.equal(s.subtitleCue.alreadyHeardWordCount, 2);
 });
 
 test('subtitle falls back to full block text without word timing', () => {
