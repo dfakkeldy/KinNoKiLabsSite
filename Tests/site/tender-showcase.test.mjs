@@ -367,6 +367,18 @@ if (packBytes) {
   });
 }
 
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function escapeHtml(value) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 // ---------------------------------------------------------------------------
 // Generated-route expectations (RED until Task 8 generates Output)
 // ---------------------------------------------------------------------------
@@ -394,6 +406,24 @@ test('generates a detail page for each tender record', () => {
     assert.match(detail, /tender-fact-grid/);
     assert.match(detail, /tender-disclaimer/);
     assert.match(detail, /<time datetime="/);
+  }
+});
+
+test('generated tender pages use human titles and exact official links', () => {
+  const hub = readFileSync(outputHub, 'utf8');
+  for (const [file, expected] of Object.entries(EXPECTED_TENDER_RECORDS)) {
+    const slug = file.replace(/\.md$/, '');
+    const detail = readFileSync(
+      new URL(`../../Output/tenders/${slug}/index.html`, import.meta.url),
+      'utf8',
+    );
+    const htmlTitle = escapeHtml(expected.title);
+    assert.match(hub, new RegExp(escapeRegex(`<h3>${htmlTitle}</h3>`)));
+    assert.match(detail, new RegExp(escapeRegex(`<h1>${htmlTitle}</h1>`)));
+    assert.match(detail, new RegExp(escapeRegex(`<dd>${escapeHtml(expected.category)}</dd>`)));
+    assert.match(detail, new RegExp(escapeRegex(`href="${escapeHtml(expected.noticeURL)}"`)));
+    assert.match(detail, new RegExp(escapeRegex(`href="${escapeHtml(expected.documentsURL)}"`)));
+    assert.doesNotMatch(detail, new RegExp(`<h1>${escapeRegex(slug)}</h1>`));
   }
 });
 

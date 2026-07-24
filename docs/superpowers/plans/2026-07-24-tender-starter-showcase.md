@@ -874,3 +874,17 @@ https://kinnokilabs.com/tenders/tender-starter-example.zip
 - [ ] The deterministic Publish preflight and generated Output discipline are
   respected.
 - [ ] PR/deployment/local verification boundaries remain explicit.
+
+## Acceptance Requirements (amended 2026-07-24 by PR #69 remediation)
+
+- Every tender record has a reviewed human-readable `title` (no filename
+  fallbacks in source or generated HTML).
+- Source categories match the authoritative portal exactly.
+- `documentsURL` uses the direct official document destination when the portal
+  exposes one (Halifax Bids and Tenders detail page), not the notice page.
+- `official-sources.txt` includes each canonical notice and every stable direct
+  documents URL.
+- PDF catalog `/Lang` must equal `en-CA`, not merely exist.
+- Independent numbered lists must restart at 1.
+- Two isolated pack builds must be byte-identical, including PDF and XLSX
+  payloads (fixed inner-container timestamps, not just outer ZIP timestamps).
