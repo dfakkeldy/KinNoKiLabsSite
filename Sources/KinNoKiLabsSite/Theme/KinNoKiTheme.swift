@@ -63,18 +63,30 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
                 siteHead(for: section, context: context, titleOverride: "Posts"),
                 .body(.class("page-section"), siteHeader(active: "/posts"), postsListMain(section), siteFooter())
             )
+        case .tenders:
+            return HTML(
+                .lang(context.site.language),
+                siteHead(for: section, context: context, titleOverride: "Tender Starter Showcase"),
+                .body(
+                    .class("page-section page-tenders"),
+                    siteHeader(active: "/services"),
+                    .main(.class("tender-main")),
+                    siteFooter()
+                )
+            )
         }
     }
 
     func makeItemHTML(for item: Item<Site>, context: PublishingContext<Site>) throws -> HTML {
         let isEcho = item.path.string == "apps/echo"
         let active = item.sectionID == .posts ? "/posts" : "/apps"
+        let isTender = item.sectionID == .tenders
         return HTML(
             .lang(context.site.language),
             siteHead(for: item, context: context),
             .body(
-                .class("page-item"),
-                siteHeader(active: active),
+                .class(isTender ? "page-item page-tender-detail" : "page-item"),
+                siteHeader(active: isTender ? "/services" : active),
                 .if(item.sectionID == .apps,
                     isEcho ? echoDetailMain() : appItemMain(item),
                     else: postDetailMain(item)),

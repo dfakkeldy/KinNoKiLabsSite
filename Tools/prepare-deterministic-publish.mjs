@@ -56,4 +56,5 @@ function latestEpoch(paths, context) {
 const feedEpoch = latestEpoch(['Content/apps', 'Content/posts'], 'RSS content');
 const appsEpoch = latestEpoch(['Content/apps'], 'apps section');
 const postsEpoch = latestEpoch(['Content/posts'], 'posts section');
-process.stdout.write(`${feedEpoch} ${appsEpoch} ${postsEpoch}`);
+const tendersEpoch = latestEpoch(['Content/tenders'], 'tenders section');
+process.stdout.write(`${feedEpoch} ${appsEpoch} ${postsEpoch} ${tendersEpoch}`);
