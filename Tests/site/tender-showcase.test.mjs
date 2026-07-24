@@ -332,13 +332,22 @@ if (packBytes) {
     }
   });
 
-  test('official-sources.txt contains the disclaimer and HTTPS links', () => {
+  test('official-sources.txt names every notice and direct HRM document source', () => {
     const entries = readZipEntries(packBytes);
-    const txt = entries.find((e) => e.name === 'official-sources.txt');
+    const txt = entries.find((entry) => entry.name === 'official-sources.txt');
     assert.ok(txt, 'official-sources.txt must be in the pack');
     const text = txt.data.toString('utf8');
+
     assert.match(text, new RegExp(DISCLAIMER.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
-    assert.match(text, /https:\/\//);
+    for (const expected of Object.values(EXPECTED_TENDER_RECORDS)) {
+      assert.match(text, new RegExp(expected.noticeURL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+      if (expected.documentsURL !== expected.noticeURL) {
+        assert.match(
+          text,
+          new RegExp(expected.documentsURL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),
+        );
+      }
+    }
     assert.doesNotMatch(text, /file:\/\//);
     assert.doesNotMatch(text, /\/Users\//);
   });
