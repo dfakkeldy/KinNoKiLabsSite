@@ -87,7 +87,7 @@ test('generation preflight uses Git dates, ignores later Tools-only commits for 
     git(fixture, ['init', '-q']);
     git(fixture, ['config', 'user.name', 'Test']);
     git(fixture, ['config', 'user.email', 'test@example.com']);
-    for (const name of ['Content/index.md', 'Content/apps/echo.md', 'Content/posts/index.md']) {
+    for (const name of ['Content/index.md', 'Content/apps/echo.md', 'Content/posts/index.md', 'Content/tenders/example.md']) {
       mkdirSync(dirname(join(fixture, name)), { recursive: true });
       writeFileSync(join(fixture, name), `# ${basename(name)}\n`);
     }
@@ -112,8 +112,8 @@ test('generation preflight uses Git dates, ignores later Tools-only commits for 
 
     assert.deepEqual(
       run(),
-      [expectedFeedEpoch, expectedFeedEpoch, expectedFeedEpoch],
-      'preflight must provide deterministic RSS, apps-section, and posts-section dates',
+      [expectedFeedEpoch, expectedFeedEpoch, expectedFeedEpoch, expectedFeedEpoch],
+      'preflight must provide RSS, apps-section, posts-section, and tenders-section dates',
     );
     assert.equal(existsSync(cache), false, 'stale Publish RSS cache must be removed');
     for (const file of contentFiles(join(fixture, 'Content'))) {
@@ -125,7 +125,7 @@ test('generation preflight uses Git dates, ignores later Tools-only commits for 
     utimesSync(join(fixture, 'Content/tools.md'), new Date('2040-01-01T00:00:00Z'), new Date('2040-01-01T00:00:00Z'));
     assert.deepEqual(
       run(),
-      [expectedFeedEpoch, expectedFeedEpoch, expectedFeedEpoch],
+      [expectedFeedEpoch, expectedFeedEpoch, expectedFeedEpoch, expectedFeedEpoch],
       'a repeat run must return the same generation dates',
     );
     assert.equal(
@@ -145,7 +145,7 @@ test('generation preflight fails before mutation for dirty or untracked Content'
         git(fixture, ['init', '-q']);
         git(fixture, ['config', 'user.name', 'Test']);
         git(fixture, ['config', 'user.email', 'test@example.com']);
-        for (const name of ['Content/index.md', 'Content/apps/echo.md', 'Content/posts/index.md']) {
+        for (const name of ['Content/index.md', 'Content/apps/echo.md', 'Content/posts/index.md', 'Content/tenders/example.md']) {
           mkdirSync(dirname(join(fixture, name)), { recursive: true });
           writeFileSync(join(fixture, name), `# ${basename(name)}\n`);
         }
