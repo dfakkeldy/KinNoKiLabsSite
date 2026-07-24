@@ -200,7 +200,7 @@ test('includes exactly one featured pack', () => {
 });
 
 test('contains no AllSteel or Van Zutphen references anywhere in source', () => {
-  const allSource = [main, showcase, theme, styles].join('\n');
+  let allSource = [main, showcase, theme, styles].join('\n');
   for (const file of tenderFiles) {
     allSource += '\n' + readFileSync(new URL(`../../Content/tenders/${file}`, import.meta.url), 'utf8');
   }
