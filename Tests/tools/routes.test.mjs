@@ -5,7 +5,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 const toolPages = [
   {
     route: 'tools', pageID: 'hub', title: 'Tools — KinNoKi Labs',
-    description: 'Seven small web utilities from KinNoKi Labs — QR codes, EPUB reading, dilution math, contrast checks and more. Offline-capable; everything stays on your device.',
+    description: 'Eight useful web tools from KinNoKi Labs — including Turn Timer, EPUB reading, QR codes, dilution math and more. Offline-capable; everything stays on your device.',
   },
   {
     route: 'tools/qr-code', pageID: 'qr-code', title: 'QR Code Generator — KinNoKi Labs',
@@ -135,6 +135,37 @@ test('every tools resource is copied byte-for-byte to generated output', () => {
     const source = readFileSync(new URL(`../../Resources/tools/${relative}`, import.meta.url));
     const output = readFileSync(new URL(`../../Output/tools/${relative}`, import.meta.url));
     assert.deepEqual(output, source, `${relative} must be copied without modification`);
+  }
+});
+
+test('Turn Timer is an exact pinned production build with relative assets', () => {
+  const source = JSON.parse(
+    readFileSync(new URL('../../Resources/tools/turn-timer/source.json', import.meta.url), 'utf8'),
+  );
+  assert.deepEqual(source, {
+    repository: 'https://github.com/dfakkeldy/VisualTimer.git',
+    commit: '395062ba1b08ad3d99cf16dca2ecbe651cbf0f66',
+    publicPath: '/tools/turn-timer/',
+  });
+
+  const html = readFileSync(
+    new URL('../../Output/tools/turn-timer/index.html', import.meta.url),
+    'utf8',
+  );
+  assert.match(html, /<title>Turn Timer<\/title>/);
+  assert.match(html, /(?:src|href)="\.\/assets\//);
+  assert.doesNotMatch(html, /(?:src|href)="\/assets\//);
+  assert.doesNotMatch(html, /\/src\/main/);
+
+  const assetPaths = [...html.matchAll(/(?:src|href)="(\.\/assets\/[^"]+)"/g)]
+    .map((match) => match[1].replace('./', ''));
+  assert.ok(assetPaths.length >= 2);
+  for (const assetPath of assetPaths) {
+    assert.equal(
+      existsSync(new URL(`../../Output/tools/turn-timer/${assetPath}`, import.meta.url)),
+      true,
+      `${assetPath} must exist in the generated Turn Timer app`,
+    );
   }
 });
 

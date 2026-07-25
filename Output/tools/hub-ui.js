@@ -8,6 +8,7 @@ export const TOOLS = Object.freeze([
   Object.freeze({ id: 'word-count', title: 'Word Counter', tagline: 'Counts plus reading and narration time.', href: '/tools/word-count' }),
   Object.freeze({ id: 'unit-converter', title: 'Unit Converter', tagline: 'Length to data sizes, converted live.', href: '/tools/unit-converter' }),
   Object.freeze({ id: 'passphrase', title: 'Passphrase Generator', tagline: 'Strong passphrases, generated locally.', href: '/tools/passphrase' }),
+  Object.freeze({ id: 'turn-timer', title: 'Turn Timer', tagline: 'Visual turns, routines, and reusable countdowns.', href: '/tools/turn-timer/' }),
 ]);
 
 export function renderToolsHub(root) {

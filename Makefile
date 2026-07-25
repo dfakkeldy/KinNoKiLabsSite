@@ -12,7 +12,7 @@
 
 PUBLISH_BIN ?= publish
 
-.PHONY: publish preview generate clean test test-listen test-games test-tools test-site listen-catalog paired-covers sync-ns-marks-web tender-pack
+.PHONY: publish preview generate clean test test-listen test-games test-tools test-site listen-catalog paired-covers sync-ns-marks-web sync-turn-timer-web tender-pack
 
 generate:
 	@generation_epochs="$$(node Tools/prepare-deterministic-publish.mjs)" && \
@@ -65,6 +65,9 @@ paired-covers:
 
 sync-ns-marks-web:
 	node Tools/sync-ns-marks-web.mjs
+
+sync-turn-timer-web:
+	node Tools/sync-turn-timer-web.mjs
 
 TENDER_PACK_PYTHON ?= python3
 TENDER_PACK_SOFFICE ?= soffice

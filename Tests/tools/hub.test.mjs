@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { FixtureElement } from '../games/dom-fixture.mjs';
 import { TOOLS, renderToolsHub } from '../../Resources/tools/hub-ui.js';
 
-test('catalogue is frozen, seven tools, approved order and hrefs', () => {
+test('catalogue is frozen, eight tools, approved order and hrefs', () => {
   assert.equal(Object.isFrozen(TOOLS), true);
   assert.deepEqual(TOOLS.map(({ id, href }) => ({ id, href })), [
     { id: 'qr-code', href: '/tools/qr-code' },
@@ -14,6 +14,7 @@ test('catalogue is frozen, seven tools, approved order and hrefs', () => {
     { id: 'word-count', href: '/tools/word-count' },
     { id: 'unit-converter', href: '/tools/unit-converter' },
     { id: 'passphrase', href: '/tools/passphrase' },
+    { id: 'turn-timer', href: '/tools/turn-timer/' },
   ]);
   for (const tool of TOOLS) {
     assert.equal(typeof tool.title, 'string');
@@ -28,7 +29,7 @@ test('hub mounts one card per tool with title link', () => {
   renderToolsHub(root);
   const cards = root.children.filter((child) => (child.getAttribute('class') ?? '').includes('tool-hub-grid'))
     .flatMap((grid) => grid.children);
-  assert.equal(cards.length, 7);
+  assert.equal(cards.length, 8);
   assert.equal(cards[0].getAttribute('class'), 'tool-card');
   assert.deepEqual(cards.map((card) => {
     const titleLink = card.querySelector('h2 a');
