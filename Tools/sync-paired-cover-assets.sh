@@ -35,6 +35,7 @@ is-there-anyone-in-here
 claude-platform-01-the-message
 claude-platform-02-thinking-and-reliable-responses
 claude-platform-03-giving-claude-tools
+claude-platform-04-tools-claude-can-operate
 beyond-the-tax-sale-packet"
 PLAYER_SLUGS="an-unsettling-conversation
 jspace-inside-the-machine
@@ -52,6 +53,7 @@ is-there-anyone-in-here
 claude-platform-01-the-message
 claude-platform-02-thinking-and-reliable-responses
 claude-platform-03-giving-claude-tools
+claude-platform-04-tools-claude-can-operate
 beyond-the-tax-sale-packet"
 
 sha256() { shasum -a 256 "$1" | awk '{print $1}'; }

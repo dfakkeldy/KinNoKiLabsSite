@@ -18,6 +18,10 @@
         {
           "number": 3,
           "book": "claude-platform-03-giving-claude-tools"
+        },
+        {
+          "number": 4,
+          "book": "claude-platform-04-tools-claude-can-operate"
         }
       ]
     }
