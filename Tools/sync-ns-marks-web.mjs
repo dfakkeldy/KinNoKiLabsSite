@@ -21,12 +21,8 @@ function fail(message) {
   throw new Error(message);
 }
 
-function run(command, args, cwd, environment = {}) {
-  const result = spawnSync(command, args, {
-    cwd,
-    encoding: 'utf8',
-    env: { ...process.env, ...environment },
-  });
+function run(command, args, cwd) {
+  const result = spawnSync(command, args, { cwd, encoding: 'utf8' });
   if (result.status !== 0) {
     fail([
       `${command} ${args.join(' ')} failed in ${cwd}`,
@@ -61,23 +57,10 @@ function defaultSourcePath() {
 
 function readConfig(path) {
   const config = JSON.parse(readFileSync(path, 'utf8'));
-  let fletcherTileBaseUrl;
-  try {
-    fletcherTileBaseUrl = new URL(config.fletcherTileBaseUrl);
-  } catch {
-    fail(`Invalid NS Marks web source config: ${path}`);
-  }
   if (
     typeof config.repository !== 'string'
     || !/^[0-9a-f]{40}$/.test(config.commit)
     || config.publicPath !== '/apps/nsmarksthespot/map/'
-    || fletcherTileBaseUrl.protocol !== 'https:'
-    || fletcherTileBaseUrl.username
-    || fletcherTileBaseUrl.password
-    || fletcherTileBaseUrl.pathname !== '/'
-    || fletcherTileBaseUrl.search
-    || fletcherTileBaseUrl.hash
-    || config.fletcherTileBaseUrl.endsWith('/')
   ) {
     fail(`Invalid NS Marks web source config: ${path}`);
   }
@@ -158,9 +141,7 @@ function main() {
 
   const web = join(source, 'web');
   run('npm', ['ci'], web);
-  run('npm', ['run', 'build'], web, {
-    VITE_FLETCHER_TILE_BASE_URL: config.fletcherTileBaseUrl,
-  });
+  run('npm', ['run', 'build'], web);
   const dist = join(web, 'dist');
   validateBuild(dist);
   installBuild(dist, destination, config);

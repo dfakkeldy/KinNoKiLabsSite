@@ -1,6 +1,5 @@
 {
   "repository": "https://github.com/dfakkeldy/ns-marks-the-spot",
-  "commit": "5ddb49a61e6346fdc04221042df97389a1fdc9d8",
-  "publicPath": "/apps/nsmarksthespot/map/",
-  "fletcherTileBaseUrl": "https://tiles.kinnokilabs.com"
+  "commit": "9de052db744c3f658b8dbdfcf763acb9f3df74f6",
+  "publicPath": "/apps/nsmarksthespot/map/"
 }
