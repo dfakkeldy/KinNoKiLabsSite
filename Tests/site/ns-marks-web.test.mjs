@@ -5,6 +5,7 @@ import {
   mkdtempSync,
   mkdirSync,
   readFileSync,
+  readdirSync,
   rmSync,
   writeFileSync,
 } from 'node:fs';
@@ -142,6 +143,13 @@ test('committed and generated map routes carry the pinned source receipt byte-fo
     assert.match(index, /(?:src|href)="\.\/assets\//);
     assert.doesNotMatch(index, /(?:src|href)="\/assets\//);
     assert.deepEqual(receipt, sourceConfig);
+
+    const bundledJavaScript = readdirSync(new URL('assets/', route))
+      .filter((name) => name.endsWith('.js'))
+      .map((name) => readFileSync(new URL(`assets/${name}`, route), 'utf8'))
+      .join('\n');
+    assert.match(bundledJavaScript, /https:\/\/tiles\.kinnokilabs\.com/);
+    assert.match(bundledJavaScript, /fletcher-direct-rumsey-20260726\.1/);
   }
 
   const resourceIndex = readFileSync(
