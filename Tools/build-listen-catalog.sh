@@ -93,6 +93,7 @@ is-there-anyone-in-here|Is There Anyone in Here?|One Language Model Examines the
 claude-platform-01-the-message|The Message|Conversations, Content Blocks, and the Messages API|Codex (GPT-5)
 claude-platform-02-thinking-and-reliable-responses|Making Claude Think and Respond Reliably|Reasoning, Multimodal Inputs, Structured Output, and Streaming|Codex (GPT-5)
 claude-platform-03-giving-claude-tools|Giving Claude Tools|Contracts, Agent Loops, and Controlled Action|Codex (GPT-5)
+claude-platform-04-tools-claude-can-operate|Tools Claude Can Operate|Managed Tools, Sandboxes, and Delegated Execution|Claude Opus 5
 beyond-the-tax-sale-packet|Beyond the Tax-Sale Packet|How Nova Scotia Municipal Auctions Really Work|Dan Fakkeldy
 EOF
 )"
@@ -116,6 +117,7 @@ is-there-anyone-in-here
 claude-platform-01-the-message
 claude-platform-02-thinking-and-reliable-responses
 claude-platform-03-giving-claude-tools
+claude-platform-04-tools-claude-can-operate
 beyond-the-tax-sale-packet"
 
 # These editions require a governed publication receipt (first-listen or
@@ -124,9 +126,10 @@ beyond-the-tax-sale-packet"
 PUBLICATION_REQUIRED="claude-platform-01-the-message
 claude-platform-02-thinking-and-reliable-responses
 claude-platform-03-giving-claude-tools
+claude-platform-04-tools-claude-can-operate
 beyond-the-tax-sale-packet"
 
-EXPECTED_BOOK_COUNT=18
+EXPECTED_BOOK_COUNT=19
 listen_catalog_transaction_init "$OUT_DIR"
 
 # BEGIN VALIDATE_SERIES
@@ -489,7 +492,12 @@ while IFS='|' read -r slug title subtitle written_by; do
       visuals_json='null'
     else
       [ -n "$ECHO_CLI" ] || { echo "error: ECHO_CLI is not set (or pass --no-blocks). See Tools/build-listen-catalog.sh header." >&2; exit 1; }
-      $ECHO_CLI export-blocks --epub "$book_dir/$slug.epub" --out "$asset_dir/blocks.json"
+      # Quoted: the canonical Echo install path lives under
+      # ~/Library/Application Support/Echo/..., and an unquoted expansion
+      # word-splits on that space, so bash execs a truncated path and the
+      # child dies with a CoreFoundation fork-safety segfault rather than a
+      # legible "command not found".
+      "$ECHO_CLI" export-blocks --epub "$book_dir/$slug.epub" --out "$asset_dir/blocks.json"
       # echo-cli emits imagePath as an absolute path into its transient
       # per-run asset cache (leaks $HOME + a fresh UUID every rebuild);
       # only the asset name is meaningful downstream, so keep just that.
