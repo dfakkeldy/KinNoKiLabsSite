@@ -5,7 +5,6 @@ import {
   mkdtempSync,
   mkdirSync,
   readFileSync,
-  readdirSync,
   rmSync,
   writeFileSync,
 } from 'node:fs';
@@ -50,7 +49,7 @@ function makeFixture() {
     import { mkdirSync, writeFileSync } from 'node:fs';
     mkdirSync('dist/assets', { recursive: true });
     writeFileSync('dist/index.html', '<script type="module" src="./assets/app.js"></script>');
-    writeFileSync('dist/assets/app.js', process.env.VITE_FLETCHER_TILE_BASE_URL);
+    writeFileSync('dist/assets/app.js', 'console.log("map")');
   `);
 
   run('git', ['init', '-q'], source);
@@ -70,7 +69,6 @@ test('sync tool builds the pinned NS Marks commit into a self-contained static r
       repository: 'https://github.com/dfakkeldy/ns-marks-the-spot',
       commit: fixture.commit,
       publicPath: '/apps/nsmarksthespot/map/',
-      fletcherTileBaseUrl: 'https://tiles.kinnokilabs.com',
     }));
 
     const result = spawnSync(process.execPath, [
@@ -83,17 +81,12 @@ test('sync tool builds the pinned NS Marks commit into a self-contained static r
     assert.equal(result.status, 0, result.stderr);
     assert.equal(existsSync(join(fixture.destination, 'index.html')), true);
     assert.equal(existsSync(join(fixture.destination, 'assets/app.js')), true);
-    assert.equal(
-      readFileSync(join(fixture.destination, 'assets/app.js'), 'utf8'),
-      'https://tiles.kinnokilabs.com',
-    );
     assert.deepEqual(
       JSON.parse(readFileSync(join(fixture.destination, 'source.json'), 'utf8')),
       {
         repository: 'https://github.com/dfakkeldy/ns-marks-the-spot',
         commit: fixture.commit,
         publicPath: '/apps/nsmarksthespot/map/',
-        fletcherTileBaseUrl: 'https://tiles.kinnokilabs.com',
       },
     );
   } finally {
@@ -109,7 +102,6 @@ test('sync tool rejects a checkout that does not match the pinned commit', () =>
       repository: 'https://github.com/dfakkeldy/ns-marks-the-spot',
       commit: '0'.repeat(40),
       publicPath: '/apps/nsmarksthespot/map/',
-      fletcherTileBaseUrl: 'https://tiles.kinnokilabs.com',
     }));
 
     const result = spawnSync(process.execPath, [
@@ -134,7 +126,6 @@ test('committed and generated map routes carry the pinned source receipt byte-fo
   ));
   assert.match(sourceConfig.commit, /^[0-9a-f]{40}$/);
   assert.equal(sourceConfig.publicPath, '/apps/nsmarksthespot/map/');
-  assert.equal(sourceConfig.fletcherTileBaseUrl, 'https://tiles.kinnokilabs.com');
 
   for (const root of ['Resources', 'Output']) {
     const route = new URL(`../../${root}/apps/nsmarksthespot/map/`, import.meta.url);
@@ -143,13 +134,6 @@ test('committed and generated map routes carry the pinned source receipt byte-fo
     assert.match(index, /(?:src|href)="\.\/assets\//);
     assert.doesNotMatch(index, /(?:src|href)="\/assets\//);
     assert.deepEqual(receipt, sourceConfig);
-
-    const bundledJavaScript = readdirSync(new URL('assets/', route))
-      .filter((name) => name.endsWith('.js'))
-      .map((name) => readFileSync(new URL(`assets/${name}`, route), 'utf8'))
-      .join('\n');
-    assert.match(bundledJavaScript, /https:\/\/tiles\.kinnokilabs\.com/);
-    assert.match(bundledJavaScript, /fletcher-direct-rumsey-20260726\.1/);
   }
 
   const resourceIndex = readFileSync(
