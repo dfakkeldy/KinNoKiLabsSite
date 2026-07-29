@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "publishedPage": "/gis/",
+  "reviewedAt": "2026-07-29",
+  "privacyRule": "No client name, address, parcel identifier, exact private geometry, private correspondence, or private source file is published.",
+  "items": [
+    {
+      "id": "field-classification-2013",
+      "year": 2013,
+      "publishedAsset": "/images/gis/field-classification-2013.webp",
+      "sourceSha256": "de56b92bd3f13e85a1e1fe03ae460d9d39fced5046242cb37fea17c707d58645",
+      "authorshipEvidence": "Contemporary sent correspondence describes the requested edits, the colour categories applied, and an uncertainty-led revision; the source PDF reports ArcMap 10.1.",
+      "transformation": "Entirely redrawn with invented geometry. Removed all names, exact geometry, area values, locations, and base layers.",
+      "visibleLayerRights": "Original KinNoKi Labs SVG artwork only; no third-party map layer is visible.",
+      "publicationDecision": "Publish reconstruction; retain original privately."
+    },
+    {
+      "id": "aerial-mosaic-2015",
+      "year": 2015,
+      "publishedAsset": "/images/gis/aerial-mosaic-2015.webp",
+      "sourceSha256": "2fd32a3b1e74af9d7d6631c8adbd3f0814b58e9db09d263491d265e35343be1c",
+      "authorshipEvidence": "Contemporary sent correspondence identifies the images as captured by the creator on a flight and describes the attached mosaic as a first attempt.",
+      "transformation": "Tightly cropped to a non-identifying forest-and-stream area; removed structures, industrial activity, edges, labels, and location context.",
+      "visibleLayerRights": "Creator-captured aerial photographs and creator-produced mosaic only.",
+      "publicationDecision": "Publish cropped derivative; retain full mosaic privately."
+    },
+    {
+      "id": "visibility-analysis-2023",
+      "year": 2023,
+      "publishedAsset": "/images/gis/visibility-analysis-2023.webp",
+      "sourceSha256": "33c50eeeb9ebfa12086e9588ec212cb47b48cdf7fda7e96f24027135c602e7f6",
+      "authorshipEvidence": "Contemporary sent correspondence explains the grid, model question, adjustable parameters, processing approach, and iterative script development; the source PDF identifies QGIS 3.30.",
+      "transformation": "Entirely redrawn with invented regional geometry and synthetic classifications. Removed exact geography, utilities, base imagery, and project results.",
+      "visibleLayerRights": "Original KinNoKi Labs SVG artwork only; no third-party map layer is visible.",
+      "publicationDecision": "Publish reconstruction; retain original privately."
+    },
+    {
+      "id": "planting-review-2023",
+      "year": 2023,
+      "publishedAsset": "/images/gis/planting-review-2023.webp",
+      "sourceSha256": "33144c5cabcf8943c321c79ae0c068cc8e67ff8ea0b4f104e7f16cf64e362cbd",
+      "authorshipEvidence": "Contemporary sent correspondence describes the field tally method, interpretation question, observations, photographs, and follow-up; the source PDF identifies QGIS 3.32.",
+      "transformation": "Entirely redrawn with invented treatment geometry and sample points. Removed landowner, exact plot pattern, counts, outcome, imagery, and location.",
+      "visibleLayerRights": "Original KinNoKi Labs SVG artwork only; no third-party map layer is visible.",
+      "publicationDecision": "Publish reconstruction; retain original privately."
+    },
+    {
+      "id": "ns-marks-product-2026",
+      "year": 2026,
+      "publishedAsset": "/images/gis/ns-marks-product-2026.webp",
+      "sourceSha256": "7310815108b51465bdcbc4460ecfeb71ed4111f33fba8192bd7904f436f4983b",
+      "authorshipEvidence": "Acceptance capture is committed in the exact public NS Marks The Spot source revision represented by the website's published source receipt.",
+      "transformation": "Cropped to the product interface and public map extent. No private imported map content is displayed.",
+      "visibleLayerRights": "NS Marks The Spot interface under the repository MIT licence; OpenStreetMap background with visible OpenStreetMap contributor attribution; user-imported GeoPDF appears only as metadata and an extent outline.",
+      "publicationDecision": "Publish cropped acceptance capture."
+    }
+  ]
+}
