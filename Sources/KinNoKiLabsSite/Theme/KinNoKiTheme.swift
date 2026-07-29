@@ -701,7 +701,16 @@ private func appItemMain(_ item: Item<KinNoKiLabsSite>) -> Node<HTML.BodyContext
                 )
             )
         ),
-        .article(.class("prose"), item.body.node)
+        .article(.class("prose"), item.body.node),
+        .if(
+            item.path.string == "apps/nsmarksthespot",
+            .aside(
+                .class("app-case-study-callout"),
+                .p(.class("eyebrow"), .text("Built from field experience")),
+                .p(.text("NS Marks The Spot continues a mapping practice that began with forestry field maps, aerial mosaics, and spatial screening work.")),
+                .a(.class("row-link"), .href("/gis/"), .text("Read the GIS case study →"))
+            )
+        )
     )
 }
 

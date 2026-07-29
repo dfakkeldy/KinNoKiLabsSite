@@ -6,10 +6,6 @@ import {
 import test from 'node:test';
 
 const content = readFileSync(new URL('../../Content/gis.md', import.meta.url), 'utf8');
-const nsMarksContent = readFileSync(
-  new URL('../../Content/apps/nsmarksthespot.md', import.meta.url),
-  'utf8',
-);
 const theme = readFileSync(
   new URL('../../Sources/KinNoKiLabsSite/Theme/KinNoKiTheme.swift', import.meta.url),
   'utf8',
@@ -126,10 +122,9 @@ test('records authorship, transformation, and visible-layer rights for every exa
 test('cross-links the case study from services, apps, and NS Marks The Spot', () => {
   assert.match(generatedServices, /href="\/gis\/">Explore the GIS case study/);
   assert.match(generatedApps, /href="\/gis\/">GIS case study/);
-  assert.match(nsMarksContent, /\[From Field Maps to Mapping Products\]\(\/gis\/\)/);
   assert.match(
     generatedNsMarks,
-    /href="\/gis\/">From Field Maps to Mapping Products<\/a>/,
+    /href="\/gis\/">Read the GIS case study/,
   );
   assert.match(generated, /href="\/services">See all services<\/a>/);
   assert.match(generated, /href="\/apps">Explore the apps<\/a>/);

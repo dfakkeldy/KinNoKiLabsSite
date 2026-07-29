@@ -548,6 +548,8 @@ body.font-opendyslexic .font-toggle { color: var(--gold-text); border-color: col
 .app-hero { display: flex; align-items: center; gap: 20px; margin: 8px 0 32px; }
 .app-hero-icon { width: 88px; height: 88px; border-radius: var(--radius-icon); box-shadow: 0 2px 12px rgba(0, 0, 0, 0.22); object-fit: contain; flex: none; }
 .app-monogram { display: inline-flex; align-items: center; justify-content: center; background: var(--fill); font-weight: 600; font-size: 40px; color: var(--gold-text); }
+.app-case-study-callout { margin-top: 34px; padding: 22px; border: 1px solid color-mix(in srgb, #5e8467 55%, var(--separator)); border-radius: var(--radius-card); background: color-mix(in srgb, #5e8467 9%, var(--surface)); }
+.app-case-study-callout p:not(.eyebrow) { margin: 0 0 14px; color: var(--text-muted); font-size: .94rem; line-height: 1.6; }
 
 /* ── Posts list + tag lists ─────────────────────────── */
 .post-list { display: flex; flex-direction: column; gap: 12px; }
