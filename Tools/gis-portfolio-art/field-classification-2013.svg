@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Generalized field-status mapping reconstruction</title>
+  <desc id="desc">Abstract land shapes use yellow, blue, pink, and grey to show different paperwork and review states. The geometry is invented and contains no client location.</desc>
+  <rect width="1600" height="1000" fill="#eef1e9"/>
+  <g fill="none" stroke="#c4cec2" stroke-width="3" opacity=".8">
+    <path d="M-40 170C170 52 305 78 492 178S848 302 1042 205s373-66 611 35"/>
+    <path d="M-25 282c225-98 369-55 520 45s346 108 536 13 375-58 625 47"/>
+    <path d="M-46 795c214-121 397-105 546-15s318 99 510 18 381-92 632 14"/>
+    <path d="M-20 894c235-92 386-66 535 8s322 93 506 21 362-54 601 21"/>
+  </g>
+  <g stroke="#27332e" stroke-width="7" stroke-linejoin="round">
+    <path d="M176 235 445 172 602 294 545 522 292 568 140 410Z" fill="#edcd63"/>
+    <path d="M602 294 826 222 996 342 938 565 722 620 545 522Z" fill="#4e8fd7"/>
+    <path d="m292 568 253-46 177 98-22 222-303 38-170-145Z" fill="#df62c9"/>
+    <path d="m722 620 216-55 187 124-55 197-370-44Z" fill="#a9b1ad"/>
+    <path d="m996 342 245-98 212 111-48 249-280 85-187-124Z" fill="#5e8467"/>
+  </g>
+  <path d="M74 681c245-97 484-187 731-96 272 100 464-6 727-139" fill="none" stroke="#ffffff" stroke-width="15" opacity=".9"/>
+  <path d="M74 681c245-97 484-187 731-96 272 100 464-6 727-139" fill="none" stroke="#5f6b66" stroke-width="4" stroke-dasharray="16 15"/>
+  <g transform="translate(1040 68)">
+    <rect width="485" height="235" rx="22" fill="#17201c" opacity=".94"/>
+    <text x="34" y="48" fill="#ffffff" font-family="system-ui, sans-serif" font-size="24" font-weight="700">FIELD STATUS</text>
+    <g font-family="system-ui, sans-serif" font-size="21" fill="#eef1e9">
+      <rect x="34" y="76" width="24" height="24" rx="4" fill="#edcd63"/><text x="74" y="96">record confirmed</text>
+      <rect x="34" y="117" width="24" height="24" rx="4" fill="#4e8fd7"/><text x="74" y="137">not yet confirmed</text>
+      <rect x="34" y="158" width="24" height="24" rx="4" fill="#df62c9"/><text x="74" y="178">new field note</text>
+      <rect x="34" y="199" width="24" height="24" rx="4" fill="#a9b1ad"/><text x="74" y="219">needs review</text>
+    </g>
+  </g>
+  <g transform="translate(72 68)" font-family="system-ui, sans-serif">
+    <text fill="#27332e" font-size="25" font-weight="700" letter-spacing="3">2013 · GENERALIZED RECONSTRUCTION</text>
+    <text y="48" fill="#5f6b66" font-size="22">Invented geometry · no basemap · no names or location</text>
+  </g>
+</svg>

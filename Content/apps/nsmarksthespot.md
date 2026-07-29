@@ -29,5 +29,9 @@ NS Marks The Spot turns archival Nova Scotia maps into a practical companion for
 
 The code is public on GitHub, structured around a map-engine boundary so the interface can stay steady while the renderer evolves.
 
+## Built from field experience
+
+NS Marks The Spot continues a mapping practice that began with forestry field maps, aerial mosaics, and spatial screening work. Read the public-safe case study: [From Field Maps to Mapping Products](/gis/).
+
 ---
 [Open Online Map](/apps/nsmarksthespot/map/) | [Nova Scotia Tax Sale Hub](/taxsale/) | [Project Site](https://dfakkeldy.github.io/ns-marks-the-spot/) | [View Source Code on GitHub](https://github.com/dfakkeldy/ns-marks-the-spot) | [Get Help & Support](/nsmarksthespot-help)

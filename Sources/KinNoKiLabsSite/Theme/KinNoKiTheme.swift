@@ -100,6 +100,7 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
         let main: Node<HTML.BodyContext>
         let active: String
         let isTaxSale = page.path.string == "taxsale"
+        let isGIS = page.path.string == "gis"
         let toolsHead = page.path.string == "tools" || page.path.string.hasPrefix("tools/")
         switch page.path.string {
         case "games":             main = gamesMain(page: "hub");         active = "/games"
@@ -124,6 +125,7 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
         case "tools/unit-converter": main = toolsMain(page: "unit-converter"); active = "/tools"
         case "tools/passphrase":     main = toolsMain(page: "passphrase");     active = "/tools"
         case "services":          main = servicesMain();                  active = "/services"
+        case "gis":               main = gisCaseStudyMain();              active = "/services"
         case "learn":             main = learnMain();                     active = ""
         case "taxsale":           main = taxSaleHubMain();                active = ""
         case "about":             main = aboutMain();                     active = "/about"
@@ -133,7 +135,12 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
         return HTML(
             .lang(context.site.language),
             siteHead(for: page, context: context, toolsHead: toolsHead),
-            .body(.class(isTaxSale ? "page-page page-tax-sale" : "page-page"), siteHeader(active: active), main, siteFooter())
+            .body(
+                .class(isTaxSale ? "page-page page-tax-sale" : isGIS ? "page-page page-gis" : "page-page"),
+                siteHeader(active: active),
+                main,
+                siteFooter()
+            )
         )
     }
 
@@ -969,7 +976,7 @@ private func appsMain() -> Node<HTML.BodyContext> {
           </div>
         </a>
       </div>
-      <p style="font-size:13.5px;color:var(--text-quaternary);margin:28px 0 0;">Cards lead to each app's public home. Source for everything is on <a class="link-quiet" href="https://github.com/dfakkeldy" target="_blank" rel="noopener">GitHub</a>.</p>
+      <p style="font-size:13.5px;color:var(--text-quaternary);margin:28px 0 0;">Cards lead to each app's public home. Source for everything is on <a class="link-quiet" href="https://github.com/dfakkeldy" target="_blank" rel="noopener">GitHub</a>. For the field experience behind NS Marks The Spot, read the <a class="link-quiet" href="/gis/">GIS case study</a>.</p>
     </main>
     """)
 }
@@ -1023,6 +1030,15 @@ private func servicesMain() -> Node<HTML.BodyContext> {
 
       <section class="reveal tender-proof-callout">
         <div>
+          <p class="eyebrow">GIS proof of work</p>
+          <h2>Thirteen years from field maps to mapping products.</h2>
+          <p>See how imperfect records, imagery, field observations, and public data became useful maps — with uncertainty and proof boundaries kept visible.</p>
+        </div>
+        <a class="btn btn-outline" href="/gis/">Explore the GIS case study</a>
+      </section>
+
+      <section class="reveal tender-proof-callout">
+        <div>
           <p class="eyebrow">Proof of work</p>
           <h2>See a public tender turned into a practical starting workflow.</h2>
           <p>The Tender Starter Showcase demonstrates source-linked review, visible questions, and reusable bid-preparation structure without pretending to replace the official notice.</p>
@@ -1070,6 +1086,178 @@ private func servicesMain() -> Node<HTML.BodyContext> {
           <p style="font-size:16px;font-weight:500;margin:0;">Have a technical mess you keep working around?</p>
           <a class="btn btn-gold" href="mailto:hello@kinnokilabs.com">hello@kinnokilabs.com</a>
           <p style="font-size:13.5px;color:var(--text-muted);margin:0;">You do not need to know what kind of software you need. Plain email; no call required.</p>
+        </div>
+      </section>
+    </main>
+    """)
+}
+
+private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
+    .raw("""
+    <main class="gis-main" aria-labelledby="gis-title">
+      <header class="gis-hero">
+        <div class="gis-hero-copy">
+          <p class="eyebrow">GIS case study · 2013–2026</p>
+          <h1 id="gis-title">From field maps to<br><em>mapping products.</em></h1>
+          <p class="gis-lead">More than a decade turning field observations, forestry records, imagery, public data, and rural infrastructure questions into maps people can actually use.</p>
+          <blockquote>The work is not making a pretty map. It is turning imperfect real-world information into a useful, understandable decision tool.</blockquote>
+        </div>
+        <aside class="gis-scope-note">
+          <span>What you are seeing</span>
+          <strong>Five public-safe views</strong>
+          <p>Original client work stays private. Reconstructed examples use invented geometry; the two documentary crops were checked for identifying detail and visible-layer rights.</p>
+        </aside>
+      </header>
+
+      <nav class="gis-timeline-nav" aria-label="Case study timeline">
+        <ol>
+          <li><a href="#gis-2013"><span>2013</span>Field status</a></li>
+          <li><a href="#gis-2015"><span>2015</span>Aerial mosaic</a></li>
+          <li><a href="#gis-2023-visibility"><span>2023</span>Visibility screen</a></li>
+          <li><a href="#gis-2023-field"><span>2023</span>Field review</a></li>
+          <li><a href="#gis-2026"><span>2026</span>Mapping product</a></li>
+        </ol>
+      </nav>
+
+      <section class="gis-transect" aria-label="Thirteen years of practical GIS work">
+        <article class="gis-stop reveal" id="gis-2013">
+          <div class="gis-marker" aria-hidden="true"><span>2013</span></div>
+          <figure class="gis-figure">
+            <img src="/images/gis/field-classification-2013.webp" width="1440" height="900" fetchpriority="high" decoding="async" alt="Generalized map reconstruction with invented land shapes coloured yellow, blue, pink, green, and grey for different field and paperwork states.">
+            <figcaption><span>Public-safe reconstruction</span> Invented geometry; no basemap, names, areas, or client location.</figcaption>
+          </figure>
+          <div class="gis-stop-copy">
+            <p class="gis-era">ArcMap 10.1 · Forestry operations</p>
+            <h2>Field status, made legible</h2>
+            <div class="gis-brief">
+              <div><h3>Problem</h3><p>A forestry job held areas in several paperwork states. The map needed to distinguish confirmed, new, and unresolved information without pretending uncertain records were settled.</p></div>
+              <div><h3>Inputs</h3><p>Working GIS layers, property-reference information, previous mail-outs, and field notes that still needed checking.</p></div>
+              <div><h3>Method</h3><p>Revised colour categories in ArcMap and carried uncertainty into the legend instead of smoothing it away.</p></div>
+              <div><h3>Output</h3><p>A field and office reference map with a deliberately visible “needs review” state.</p></div>
+            </div>
+            <div class="gis-boundary">
+              <p><strong>It supported:</strong> reconciling the map and paperwork before follow-up.</p>
+              <p><strong>It did not establish:</strong> survey boundaries, title, Crown status, or present-day conditions.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="gis-stop gis-stop-reverse reveal" id="gis-2015">
+          <div class="gis-marker" aria-hidden="true"><span>2015</span></div>
+          <figure class="gis-figure">
+            <img src="/images/gis/aerial-mosaic-2015.webp" width="1440" height="900" loading="lazy" decoding="async" alt="Cropped winter aerial mosaic showing a winding stream through snow-covered forest, with visible seams between the creator's source photographs.">
+            <figcaption><span>Creator-captured imagery</span> Tight crop from the original mosaic; structures and location context removed.</figcaption>
+          </figure>
+          <div class="gis-stop-copy">
+            <p class="gis-era">Field capture · Raster stitching</p>
+            <h2>A first aerial mosaic</h2>
+            <div class="gis-brief">
+              <div><h3>Problem</h3><p>See a whole flown area rather than a folder of disconnected frames.</p></div>
+              <div><h3>Inputs</h3><p>Camera images captured by Dan during a flight over the work area.</p></div>
+              <div><h3>Method</h3><p>Stitched overlapping frames into one continuous, zoomable PDF while keeping the imperfect first-pass seams visible.</p></div>
+              <div><h3>Output</h3><p>A continuous winter mosaic that made terrain and image coverage easier to review.</p></div>
+            </div>
+            <div class="gis-boundary">
+              <p><strong>It supported:</strong> reviewing coverage, stitch quality, and broad terrain relationships.</p>
+              <p><strong>It did not establish:</strong> survey-grade position, orthophoto accuracy, or current conditions.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="gis-stop reveal" id="gis-2023-visibility">
+          <div class="gis-marker" aria-hidden="true"><span>2023</span></div>
+          <figure class="gis-figure gis-figure-dark">
+            <img src="/images/gis/visibility-analysis-2023.webp" width="1440" height="900" loading="lazy" decoding="async" alt="Generalized dark regional shape containing a regular point grid classified green, yellow, orange, and red for relative modelled visibility.">
+            <figcaption><span>Public-safe reconstruction</span> Invented geography and classes; utilities, addresses, basemap, and exact results removed.</figcaption>
+          </figure>
+          <div class="gis-stop-copy">
+            <p class="gis-era">QGIS 3.30 · Scripted spatial analysis</p>
+            <h2>A regional question, screened spatially</h2>
+            <div class="gis-brief">
+              <div><h3>Problem</h3><p>Compare where a hypothetical 200-metre turbine might be visible from fewer or more buildings across a large candidate area.</p></div>
+              <div><h3>Inputs</h3><p>A regular candidate-point grid, land-screening geometry, and modelled building-visibility counts.</p></div>
+              <div><h3>Method</h3><p>QGIS plus an adjustable scripted analysis developed iteratively from the plain-language question.</p></div>
+              <div><h3>Output</h3><p>A classified regional screening map that made relative patterns visible.</p></div>
+            </div>
+            <div class="gis-boundary">
+              <p><strong>It supported:</strong> comparing parameters and focusing further research.</p>
+              <p><strong>It did not establish:</strong> wind resource, siting approval, grid access, land rights, environmental suitability, or project viability.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="gis-stop gis-stop-reverse reveal" id="gis-2023-field">
+          <div class="gis-marker" aria-hidden="true"><span>2023</span></div>
+          <figure class="gis-figure">
+            <img src="/images/gis/planting-review-2023.webp" width="1440" height="900" loading="lazy" decoding="async" alt="Generalized planting review reconstruction with invented green treatment blocks, white field access line, and green or red observation points.">
+            <figcaption><span>Public-safe reconstruction</span> Invented treatment blocks and sample points; landowner, counts, outcome, imagery, and location removed.</figcaption>
+          </figure>
+          <div class="gis-stop-copy">
+            <p class="gis-era">QGIS 3.32 · Field verification</p>
+            <h2>Field observations, returned as a decision map</h2>
+            <div class="gis-brief">
+              <div><h3>Problem</h3><p>Turn a planting inspection and its tally into a clear account of what was observed and where follow-up might be needed.</p></div>
+              <div><h3>Inputs</h3><p>Field plot observations, tree-condition counts, photographs, and a treatment boundary.</p></div>
+              <div><h3>Method</h3><p>Reviewed how the tally should be interpreted, connected observations back to the map, and kept the field evidence alongside the summary.</p></div>
+              <div><h3>Output</h3><p>A plot map and companion tally for review and follow-up.</p></div>
+            </div>
+            <div class="gis-boundary">
+              <p><strong>It supported:</strong> reviewing a historical, sample-based field outcome and locating areas to revisit.</p>
+              <p><strong>It did not establish:</strong> a whole-site inventory, a current condition, or a result independent of the agreed tally method.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="gis-stop reveal" id="gis-2026">
+          <div class="gis-marker" aria-hidden="true"><span>2026</span></div>
+          <figure class="gis-figure gis-product-figure">
+            <img src="/images/gis/ns-marks-product-2026.webp" width="1440" height="900" loading="lazy" decoding="async" alt="NS Marks The Spot browser interface showing a public OpenStreetMap background, a locally imported USGS GeoPDF listed in the map layers panel, and its extent outlined over the map.">
+            <figcaption><span>Product acceptance capture</span> Local import UI over OpenStreetMap; imported GeoPDF content is not displayed.</figcaption>
+          </figure>
+          <div class="gis-stop-copy">
+            <p class="gis-era">Native + browser mapping · Product engineering</p>
+            <h2>The map became a product</h2>
+            <div class="gis-brief">
+              <div><h3>Problem</h3><p>Historical scans, public records, and field position arrive in different formats — often with weak connectivity, privacy constraints, and source-specific licence terms.</p></div>
+              <div><h3>Inputs</h3><p>Official and public sources, user-owned images and GeoPDFs, and the local context a researcher brings to the map.</p></div>
+              <div><h3>Method</h3><p>Offline-first native tiles; browser georeferencing with embedded GeoPDF frames or manual control points; local-file handling, source receipts, and licence gates.</p></div>
+              <div><h3>Output</h3><p><a href="/apps/nsmarksthespot/">NS Marks The Spot</a> as an iPhone companion and an <a href="/apps/nsmarksthespot/map/">open browser map</a>.</p></div>
+            </div>
+            <div class="gis-boundary">
+              <p><strong>It supports:</strong> source-linked research, field orientation, and better questions about historical geography.</p>
+              <p><strong>It does not establish:</strong> survey position, title, access, present road or trail condition, tax-sale status, or legal advice.</p>
+            </div>
+            <p class="gis-rights-note">Capture from the exact public <a href="https://github.com/dfakkeldy/ns-marks-the-spot" target="_blank" rel="noopener">NS Marks The Spot source</a>. The visible background retains <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributor attribution</a>; the listed USGS GeoPDF is represented only by metadata and an extent outline.</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="gis-practice reveal" aria-labelledby="gis-practice-title">
+        <p class="eyebrow">The practice behind the pictures</p>
+        <h2 id="gis-practice-title">A map earns trust at its edges.</h2>
+        <div class="gis-practice-grid">
+          <div><span>01</span><h3>Start with the decision</h3><p>Choose data, scale, and output from what someone needs to understand or do next.</p></div>
+          <div><span>02</span><h3>Carry uncertainty</h3><p>Unknown, unresolved, and source-limited information stays visible instead of being polished into certainty.</p></div>
+          <div><span>03</span><h3>Protect the source</h3><p>Private artifacts stay private; public layers keep their attribution and licence conditions.</p></div>
+          <div><span>04</span><h3>State the boundary</h3><p>Every useful map also says what it cannot prove and which official source must be checked.</p></div>
+        </div>
+      </section>
+
+      <aside class="gis-disclaimer reveal" aria-label="GIS case study limitation">
+        <strong>Portfolio, not authority.</strong>
+        <p>These examples demonstrate mapping practice and product development. They are not proof of title, boundary, access, value, permissions, condition, service, regulatory approval, or current source status. Verify high-stakes decisions with the relevant official source and qualified professional.</p>
+      </aside>
+
+      <section class="gis-cta reveal">
+        <div>
+          <p class="eyebrow">Have a map-shaped problem?</p>
+          <h2>Bring the messy source material.</h2>
+          <p>Start with the field notes, old PDF, public dataset, or repeated question. The first job is to work out what the evidence can honestly support.</p>
+        </div>
+        <div class="gis-cta-actions">
+          <a class="btn btn-gold" href="mailto:hello@kinnokilabs.com?subject=GIS%20project%20question">Discuss a GIS problem</a>
+          <a class="row-link" href="/services">See all services</a>
+          <a class="row-link" href="/apps">Explore the apps</a>
         </div>
       </section>
     </main>

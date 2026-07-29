@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Generalized regional visibility screening reconstruction</title>
+  <desc id="desc">An invented regional silhouette holds a regular point grid classified from lower to higher relative visibility. It is not an exact project map.</desc>
+  <defs>
+    <pattern id="grid" width="74" height="74" patternUnits="userSpaceOnUse">
+      <path d="M74 0H0V74" fill="none" stroke="#51605a" stroke-width="2" opacity=".38"/>
+    </pattern>
+    <clipPath id="region">
+      <path d="M212 166c150-75 265-15 368 30 105 46 173-59 296-42 121 17 120 118 242 143 129 27 236-38 324 70 68 83-14 163-91 204-81 42-56 132-153 183-91 48-184-10-282 33-119 52-176-22-276-42-129-25-257 48-351-42-82-78-15-167 31-236 51-77-66-184-108-301Z"/>
+    </clipPath>
+  </defs>
+  <rect width="1600" height="1000" fill="#101714"/>
+  <path d="M212 166c150-75 265-15 368 30 105 46 173-59 296-42 121 17 120 118 242 143 129 27 236-38 324 70 68 83-14 163-91 204-81 42-56 132-153 183-91 48-184-10-282 33-119 52-176-22-276-42-129-25-257 48-351-42-82-78-15-167 31-236 51-77-66-184-108-301Z" fill="#24312b" stroke="#6c7c74" stroke-width="7"/>
+  <rect x="150" y="105" width="1330" height="760" fill="url(#grid)" clip-path="url(#region)"/>
+  <g clip-path="url(#region)" stroke="#101714" stroke-width="5">
+    <g fill="#67b989">
+      <circle cx="290" cy="253" r="18"/><circle cx="364" cy="253" r="18"/><circle cx="438" cy="253" r="18"/><circle cx="512" cy="253" r="18"/>
+      <circle cx="290" cy="327" r="18"/><circle cx="364" cy="327" r="18"/><circle cx="438" cy="327" r="18"/><circle cx="512" cy="327" r="18"/>
+      <circle cx="364" cy="401" r="18"/><circle cx="438" cy="401" r="18"/><circle cx="512" cy="401" r="18"/><circle cx="586" cy="401" r="18"/>
+      <circle cx="438" cy="475" r="18"/><circle cx="512" cy="475" r="18"/><circle cx="586" cy="475" r="18"/>
+    </g>
+    <g fill="#edcd63">
+      <circle cx="586" cy="253" r="18"/><circle cx="660" cy="253" r="18"/><circle cx="734" cy="253" r="18"/><circle cx="808" cy="253" r="18"/>
+      <circle cx="586" cy="327" r="18"/><circle cx="660" cy="327" r="18"/><circle cx="734" cy="327" r="18"/><circle cx="808" cy="327" r="18"/><circle cx="882" cy="327" r="18"/>
+      <circle cx="660" cy="401" r="18"/><circle cx="734" cy="401" r="18"/><circle cx="808" cy="401" r="18"/><circle cx="882" cy="401" r="18"/>
+      <circle cx="660" cy="475" r="18"/><circle cx="734" cy="475" r="18"/><circle cx="808" cy="475" r="18"/>
+    </g>
+    <g fill="#e89956">
+      <circle cx="956" cy="327" r="18"/><circle cx="1030" cy="327" r="18"/><circle cx="1104" cy="327" r="18"/>
+      <circle cx="882" cy="401" r="18"/><circle cx="956" cy="401" r="18"/><circle cx="1030" cy="401" r="18"/><circle cx="1104" cy="401" r="18"/><circle cx="1178" cy="401" r="18"/>
+      <circle cx="882" cy="475" r="18"/><circle cx="956" cy="475" r="18"/><circle cx="1030" cy="475" r="18"/><circle cx="1104" cy="475" r="18"/>
+      <circle cx="956" cy="549" r="18"/><circle cx="1030" cy="549" r="18"/>
+    </g>
+    <g fill="#d66a5f">
+      <circle cx="512" cy="549" r="18"/><circle cx="586" cy="549" r="18"/><circle cx="660" cy="549" r="18"/><circle cx="734" cy="549" r="18"/><circle cx="808" cy="549" r="18"/>
+      <circle cx="586" cy="623" r="18"/><circle cx="660" cy="623" r="18"/><circle cx="734" cy="623" r="18"/><circle cx="808" cy="623" r="18"/><circle cx="882" cy="623" r="18"/>
+      <circle cx="660" cy="697" r="18"/><circle cx="734" cy="697" r="18"/><circle cx="808" cy="697" r="18"/>
+    </g>
+  </g>
+  <g transform="translate(1018 684)">
+    <rect width="485" height="223" rx="22" fill="#eef1e9"/>
+    <text x="32" y="48" fill="#27332e" font-family="system-ui, sans-serif" font-size="23" font-weight="700">RELATIVE SCREENING CLASSES</text>
+    <g font-family="system-ui, sans-serif" font-size="20" fill="#27332e">
+      <circle cx="47" cy="87" r="11" fill="#67b989"/><text x="75" y="94">lower modelled exposure</text>
+      <circle cx="47" cy="126" r="11" fill="#edcd63"/><text x="75" y="133">middle range</text>
+      <circle cx="47" cy="165" r="11" fill="#e89956"/><text x="75" y="172">higher range</text>
+      <circle cx="47" cy="204" r="11" fill="#d66a5f"/><text x="75" y="211">review priority</text>
+    </g>
+  </g>
+  <g transform="translate(72 68)" font-family="system-ui, sans-serif">
+    <text fill="#eef1e9" font-size="25" font-weight="700" letter-spacing="3">2023 · GENERALIZED RECONSTRUCTION</text>
+    <text y="48" fill="#a9b6af" font-size="22">Invented geography · no utilities, addresses, or exact results</text>
+  </g>
+</svg>

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Generalized planting review map reconstruction</title>
+  <desc id="desc">Invented treatment blocks and sample points show how field observations can return as a review map without exposing a landowner, location, plot pattern, counts, or result.</desc>
+  <rect width="1600" height="1000" fill="#e9eee7"/>
+  <g fill="none" stroke="#c5cec2" stroke-width="3">
+    <path d="M-20 189c191-81 334-72 492 27s329 128 520 60 373-94 628 34"/>
+    <path d="M-28 810c203-110 359-82 503-11s314 108 493 38 383-89 663 38"/>
+  </g>
+  <g stroke="#28362f" stroke-width="7" stroke-linejoin="round">
+    <path d="m167 279 348-132 221 177-88 244-378 30-143-172Z" fill="#6f9b75"/>
+    <path d="m736 324 300-141 281 150-57 280-306 91-306-136Z" fill="#5e8467"/>
+    <path d="m270 598 378-30 306 136-64 190-442 35-241-169Z" fill="#80a87f"/>
+  </g>
+  <path d="M81 725c240-108 388-172 610-120 241 57 455 76 814-114" fill="none" stroke="#fff" stroke-width="17" opacity=".95"/>
+  <path d="M81 725c240-108 388-172 610-120 241 57 455 76 814-114" fill="none" stroke="#68736e" stroke-width="4" stroke-dasharray="18 15"/>
+  <g stroke="#ffffff" stroke-width="7">
+    <circle cx="337" cy="335" r="22" fill="#275d45"/><circle cx="454" cy="294" r="22" fill="#275d45"/>
+    <circle cx="554" cy="401" r="22" fill="#be4d3c"/><circle cx="393" cy="489" r="22" fill="#275d45"/>
+    <circle cx="824" cy="351" r="22" fill="#275d45"/><circle cx="974" cy="308" r="22" fill="#be4d3c"/>
+    <circle cx="1125" cy="429" r="22" fill="#275d45"/><circle cx="935" cy="530" r="22" fill="#275d45"/>
+    <circle cx="480" cy="687" r="22" fill="#275d45"/><circle cx="612" cy="759" r="22" fill="#be4d3c"/>
+    <circle cx="756" cy="719" r="22" fill="#275d45"/><circle cx="838" cy="811" r="22" fill="#275d45"/>
+  </g>
+  <g transform="translate(1032 700)">
+    <rect width="493" height="207" rx="22" fill="#17201c" opacity=".95"/>
+    <text x="32" y="48" fill="#ffffff" font-family="system-ui, sans-serif" font-size="23" font-weight="700">FIELD REVIEW</text>
+    <g font-family="system-ui, sans-serif" font-size="21" fill="#eef1e9">
+      <circle cx="48" cy="91" r="12" fill="#275d45" stroke="#fff" stroke-width="4"/><text x="80" y="98">observation recorded</text>
+      <circle cx="48" cy="136" r="12" fill="#be4d3c" stroke="#fff" stroke-width="4"/><text x="80" y="143">follow-up indicated</text>
+      <path d="M34 177h30" stroke="#fff" stroke-width="7"/><text x="80" y="184">field access line</text>
+    </g>
+  </g>
+  <g transform="translate(72 68)" font-family="system-ui, sans-serif">
+    <text fill="#27332e" font-size="25" font-weight="700" letter-spacing="3">2023 · GENERALIZED RECONSTRUCTION</text>
+    <text y="48" fill="#5f6b66" font-size="22">Invented geometry · no landowner, imagery, counts, or location</text>
+  </g>
+</svg>
