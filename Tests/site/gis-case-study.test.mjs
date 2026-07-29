@@ -66,7 +66,8 @@ test('publishes five chronological examples with explicit evidence boundaries', 
   }
   assert.equal(generated.match(/<strong>It supported:<\/strong>/g)?.length, 4);
   assert.equal(generated.match(/<strong>It supports:<\/strong>/g)?.length, 1);
-  assert.equal(generated.match(/<strong>It did not establish:<\/strong>/g)?.length, 5);
+  assert.equal(generated.match(/<strong>It did not establish:<\/strong>/g)?.length, 4);
+  assert.equal(generated.match(/<strong>It does not establish:<\/strong>/g)?.length, 1);
 });
 
 test('keeps the portfolio limitation and public-safe transformations visible', () => {
