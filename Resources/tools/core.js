@@ -141,5 +141,8 @@ export function connectToolsConnectivity(root, target = globalThis) {
 
 export function registerToolsServiceWorker(container = globalThis.navigator?.serviceWorker) {
   if (!container?.register) return;
-  container.register('/tools/sw.js', { scope: '/tools/' }).catch(() => {});
+  container.register('/tools/sw.js', {
+    scope: '/tools/',
+    updateViaCache: 'none',
+  }).catch(() => {});
 }
