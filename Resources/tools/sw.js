@@ -3,6 +3,7 @@ const CACHE_PREFIX = 'kinnoki-tools-';
 const PRECACHE = [
   '/tools/',
   '/tools/contrast/',
+  '/tools/click-counter/',
   '/tools/dilution/',
   '/tools/epub-reader/',
   '/tools/passphrase/',
@@ -11,6 +12,8 @@ const PRECACHE = [
   '/tools/word-count/',
   '/tools/contrast-ui.js',
   '/tools/contrast.js',
+  '/tools/click-counter-ui.js',
+  '/tools/click-counter.js',
   '/tools/core.js',
   '/tools/dilution-ui.js',
   '/tools/dilution.js',

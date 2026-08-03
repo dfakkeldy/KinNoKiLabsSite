@@ -1540,6 +1540,81 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .tool-connectivity-status:not(:empty) { margin-top: 12px; }
 .tool-offline-chip { display: inline-flex; align-items: center; min-height: 28px; padding: 4px 10px; color: var(--game-text-accent); background: var(--fill-2); border: 1px solid var(--gold-hairline); border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 600; }
 
+.tool-back-link {
+  display: inline-block;
+  margin-bottom: 24px;
+  color: var(--game-text-accent);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+.click-counter { max-width: 820px; gap: clamp(22px, 4vw, 34px); }
+.click-counter-fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+.click-counter-fieldset legend,
+.click-counter-target label { margin-bottom: 10px; color: var(--game-text-primary); font-size: 1rem; font-weight: 700; }
+.click-counter-presets {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid var(--separator);
+  border-radius: 10px;
+}
+.click-counter-preset {
+  min-width: 0;
+  min-height: 52px;
+  color: var(--game-text-primary);
+  background: var(--surface);
+  border: 0;
+  border-right: 1px solid var(--separator);
+  border-radius: 0;
+  font: 600 1rem/1 var(--font-sans);
+}
+.click-counter-preset:last-child { border-right: 0; }
+.click-counter-preset[aria-pressed="true"] {
+  position: relative;
+  z-index: 1;
+  color: var(--game-text-accent);
+  background: var(--fill-2);
+  border-color: var(--gold-500);
+  box-shadow: inset 0 0 0 2px var(--gold-500);
+}
+.click-counter-preset:hover { color: var(--game-text-accent); background: var(--fill-2); }
+.click-counter-preset:focus-visible { position: relative; z-index: 2; outline: 3px solid var(--gold-500); outline-offset: -3px; }
+.click-counter-target input { min-height: 58px; font-size: 1.2rem; }
+.click-counter-result {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  min-height: 132px;
+  padding: 18px 20px;
+  text-align: center;
+}
+.click-counter-result.tool-error { align-content: center; }
+.click-counter-value {
+  color: var(--game-text-primary);
+  font-size: clamp(3rem, 9vw, 5.5rem);
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+.click-counter-number { color: var(--game-text-accent); }
+.click-counter-equation { margin: 0; color: var(--game-text-secondary); font-size: 1rem; }
+.click-counter-actions { justify-content: center; }
+.click-counter-actions button { min-width: 160px; }
+.click-counter-copy { color: var(--game-text-accent) !important; border-color: var(--gold-500) !important; }
+.click-counter-copy-status,
+.click-counter-local-note { min-height: 1.4em; margin: -12px 0 0; text-align: center; }
+.click-counter-copy-status { color: var(--game-text-accent); font-weight: 600; }
+.click-counter-local-note { color: var(--game-text-secondary); font-size: 0.85rem; }
+
+@media (max-width: 640px) {
+  .click-counter-presets { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .click-counter-preset { border-bottom: 1px solid var(--separator); }
+  .click-counter-preset:nth-child(3n) { border-right: 0; }
+  .click-counter-preset:nth-child(n + 4) { border-bottom: 0; }
+  .click-counter-actions { flex-direction: column; }
+  .click-counter-actions button { width: 100%; }
+}
+
 .tool-form input:not([type="checkbox"]),
 .tool-form textarea,
 .tool-form select,

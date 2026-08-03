@@ -5,7 +5,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 const toolPages = [
   {
     route: 'tools', pageID: 'hub', title: 'Tools — KinNoKi Labs',
-    description: 'Eight useful web tools from KinNoKi Labs — including Turn Timer, EPUB reading, QR codes, dilution math and more. Offline-capable; everything stays on your device.',
+    description: 'Nine useful web tools from KinNoKi Labs — including Turn Timer, EPUB reading, QR codes, click counting and more. Offline-capable; everything stays on your device.',
   },
   {
     route: 'tools/qr-code', pageID: 'qr-code', title: 'QR Code Generator — KinNoKi Labs',
@@ -30,6 +30,10 @@ const toolPages = [
   {
     route: 'tools/unit-converter', pageID: 'unit-converter', title: 'Unit Converter — KinNoKi Labs',
     description: 'Convert common units from length and mass to data sizes.',
+  },
+  {
+    route: 'tools/click-counter', pageID: 'click-counter', title: 'Click Counter — KinNoKi Labs',
+    description: 'Convert a target number into proportional whole clicks on a 60-click scale.',
   },
   {
     route: 'tools/passphrase', pageID: 'passphrase', title: 'Passphrase Generator — KinNoKi Labs',
