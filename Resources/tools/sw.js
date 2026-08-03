@@ -1,4 +1,4 @@
-const CACHE = 'kinnoki-tools-v1';
+const CACHE = 'kinnoki-tools-v2';
 const CACHE_PREFIX = 'kinnoki-tools-';
 const PRECACHE = [
   '/tools/',
