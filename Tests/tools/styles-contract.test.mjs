@@ -44,3 +44,7 @@ test('tool and EPUB interactive controls have the 44px touch-target contract', (
     assert.match(declarationsFor(selector), /min-height\s*:\s*44px/u, `${selector} needs a 44px target`);
   }
 });
+
+test('tool tabs leave visible space before the following form', () => {
+  assert.match(declarationsFor('.tool-tabs + .tool-form'), /margin-top\s*:\s*12px/u);
+});

@@ -58,6 +58,37 @@ test('mounts accessible modes and calculates a general dilution', () => withTool
   assert.equal(announcements.at(-1), result.textContent);
 }));
 
+test('labels both sides of the general dilution parts ratio', () => withTool(({ fixture, announcements }) => {
+  setInput(fixture.root, 'stockPercent', '99');
+  setInput(fixture.root, 'targetPercent', '70');
+  setInput(fixture.root, 'totalMl', '1000');
+
+  const result = fixture.root.querySelector('.tool-result-strong');
+  assert.ok(result);
+  assert.match(result.textContent, /707\.1 ml stock solution/);
+  assert.match(result.textContent, /292\.9 ml water/);
+  assert.match(result.textContent, /About 2\.4 parts 99% stock solution \+ 1 part water/);
+  assert.equal(announcements.at(-1), result.textContent);
+}));
+
+test('explains that an equal-strength target needs no water', () => withTool(({ fixture }) => {
+  setInput(fixture.root, 'stockPercent', '70');
+  setInput(fixture.root, 'targetPercent', '70');
+  setInput(fixture.root, 'totalMl', '500');
+
+  assert.match(fixture.root.querySelector('.tool-result-strong').textContent, /No water needed/);
+}));
+
+test('uses singular part labels when a near-even ratio rounds to one', () => withTool(({ fixture }) => {
+  setInput(fixture.root, 'stockPercent', '100');
+  setInput(fixture.root, 'targetPercent', '51');
+  setInput(fixture.root, 'totalMl', '100');
+
+  const result = fixture.root.querySelector('.tool-result-strong').textContent;
+  assert.match(result, /About 1 part 100% stock solution \+ 1 part water/);
+  assert.doesNotMatch(result, /1 parts/);
+}));
+
 test('shows the exact stronger-than-stock error', () => withTool(({ fixture, announcements }) => {
   setInput(fixture.root, 'stockPercent', '3');
   setInput(fixture.root, 'targetPercent', '30');
