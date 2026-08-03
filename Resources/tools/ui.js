@@ -16,6 +16,7 @@ const controllers = {
   contrast: () => import('./contrast-ui.js').then(({ renderContrastTool }) => renderContrastTool(root)),
   'word-count': () => import('./word-count-ui.js').then(({ renderWordCountTool }) => renderWordCountTool(root)),
   'unit-converter': () => import('./unit-convert-ui.js').then(({ renderUnitTool }) => renderUnitTool(root)),
+  'click-counter': () => import('./click-counter-ui.js').then(({ renderClickCounterTool }) => renderClickCounterTool(root)),
   passphrase: () => import('./passphrase-ui.js').then(({ renderPassphraseTool }) => renderPassphraseTool(root)),
 };
 

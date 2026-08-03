@@ -48,3 +48,18 @@ test('tool and EPUB interactive controls have the 44px touch-target contract', (
 test('tool tabs leave visible space before the following form', () => {
   assert.match(declarationsFor('.tool-tabs + .tool-form'), /margin-top\s*:\s*12px/u);
 });
+
+test('click counter preserves the focused result layout and responsive preset grid', () => {
+  for (const selector of [
+    '.click-counter',
+    '.click-counter-presets',
+    '.click-counter-preset',
+    '.click-counter-result',
+    '.click-counter-value',
+  ]) {
+    assert.notEqual(declarationsFor(selector), '', `${selector} must be styled`);
+  }
+  assert.match(declarationsFor('.click-counter-preset'), /min-height\s*:\s*(?:4[4-9]|[5-9]\d)px/u);
+  assert.match(declarationsFor('.click-counter-preset[aria-pressed="true"]'), /border-color\s*:\s*var\(--gold-500\)/u);
+  assert.match(css, /@media[^{}]*\(max-width:\s*640px\)[\s\S]*?\.click-counter-presets\s*\{/u);
+});

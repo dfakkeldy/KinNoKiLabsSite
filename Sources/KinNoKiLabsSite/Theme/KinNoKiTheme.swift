@@ -123,6 +123,7 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
         case "tools/contrast":       main = toolsMain(page: "contrast");       active = "/tools"
         case "tools/word-count":     main = toolsMain(page: "word-count");     active = "/tools"
         case "tools/unit-converter": main = toolsMain(page: "unit-converter"); active = "/tools"
+        case "tools/click-counter":   main = toolsMain(page: "click-counter");   active = "/tools"
         case "tools/passphrase":     main = toolsMain(page: "passphrase");     active = "/tools"
         case "services":          main = servicesMain();                  active = "/services"
         case "gis":               main = gisCaseStudyMain();              active = "/services"
