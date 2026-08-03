@@ -154,14 +154,14 @@ test('worker installs atomically, activates its own cache version, and leaves un
   const install = waitableEvent();
   worker.handlers.get('install')(install);
   await install.done();
-  assert.deepEqual(worker.opened, ['kinnoki-tools-v1']);
+  assert.deepEqual(worker.opened, ['kinnoki-tools-v2']);
   assert.deepEqual(worker.added.sort(), precacheEntries(workerSource).sort());
   assert.equal(worker.context.self.skipped, true);
 
   const activate = waitableEvent();
   worker.handlers.get('activate')(activate);
   await activate.done();
-  assert.deepEqual(worker.deleted, ['kinnoki-tools-v0']);
+  assert.deepEqual(worker.deleted, ['kinnoki-tools-v0', 'kinnoki-tools-v1']);
   assert.equal(worker.context.self.clients.claimed, true);
 });
 
@@ -240,7 +240,7 @@ test('offline navigation normalization and hub fallback stay inside the tools sc
   assert.equal(await response, cachedPage);
   assert.deepEqual(worker.cacheMatches, ['/tools/word-count/']);
   assert.deepEqual(worker.globalMatches, []);
-  assert.deepEqual(worker.opened, ['kinnoki-tools-v1']);
+  assert.deepEqual(worker.opened, ['kinnoki-tools-v2']);
 
   worker.cacheMatches.length = 0;
   worker.opened.length = 0;
@@ -256,7 +256,7 @@ test('offline navigation normalization and hub fallback stay inside the tools sc
   assert.equal(await response, hub);
   assert.deepEqual(worker.cacheMatches, ['/tools/missing/', '/tools/']);
   assert.deepEqual(worker.globalMatches, []);
-  assert.deepEqual(worker.opened, ['kinnoki-tools-v1']);
+  assert.deepEqual(worker.opened, ['kinnoki-tools-v2']);
 
   worker.cacheMatches.length = 0;
   worker.opened.length = 0;
@@ -267,7 +267,7 @@ test('offline navigation normalization and hub fallback stay inside the tools sc
   assert.deepEqual(await response, { type: 'error', status: 0 });
   assert.deepEqual(worker.cacheMatches, ['/about']);
   assert.deepEqual(worker.globalMatches, []);
-  assert.deepEqual(worker.opened, ['kinnoki-tools-v1']);
+  assert.deepEqual(worker.opened, ['kinnoki-tools-v2']);
 });
 
 test('connectivity chip mounts once, unmounts online, and remounts in hub and tool shells', () => {
