@@ -35,6 +35,15 @@ export function computeGeneral({ stockPercent, targetPercent, totalMl }) {
   return { concentrateMl, waterMl: totalMl - concentrateMl };
 }
 
+export function computeMixParts({ concentrateMl, waterMl }) {
+  if (!positive(concentrateMl) || !Number.isFinite(waterMl) || waterMl < 0) return null;
+  if (waterMl === 0) return { concentrateParts: 1, waterParts: 0 };
+  if (concentrateMl <= waterMl) {
+    return { concentrateParts: 1, waterParts: waterMl / concentrateMl };
+  }
+  return { concentrateParts: concentrateMl / waterMl, waterParts: 1 };
+}
+
 export function computeRatio({ parts, totalMl }) {
   if (![parts, totalMl].every(positive)) return { error: 'invalid' };
   const concentrateMl = totalMl / (1 + parts);

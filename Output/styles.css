@@ -1528,8 +1528,10 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .tool-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .tool-result { padding: 18px 20px; background: var(--surface); border: 1px solid var(--separator); border-radius: 12px; }
 .tool-result-strong { color: var(--game-text-accent); font-weight: 700; }
+.tool-parts-result { display: block; margin-top: 8px; color: var(--game-text-primary); font-weight: 500; }
 .tool-error { padding: 18px 20px; color: #ef8d87; background: color-mix(in srgb, #9e3733 24%, var(--surface)); border: 1px solid #ef8d87; border-left-width: 4px; border-radius: 12px; }
 .tool-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.tool-tabs + .tool-form { margin-top: 12px; }
 .tool-tab { min-height: 44px; padding: 8px 12px; color: var(--game-text-secondary); background: var(--surface-2); border: 1px solid var(--separator); border-radius: 9px; font: inherit; }
 .tool-tab.is-active { color: var(--game-text-primary); border-color: var(--gold-500); }
 .qr-stage { max-width: 320px; padding: 16px; background: #fff; border-radius: 12px; }

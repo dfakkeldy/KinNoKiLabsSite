@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  VOLUME_UNITS, computeDose, computeGeneral, computeRatio,
+  VOLUME_UNITS, computeDose, computeGeneral, computeMixParts, computeRatio,
   convertVolume, partsToPercent, percentToParts, roundMl,
 } from '../../Resources/tools/dilution.js';
 
@@ -13,6 +13,21 @@ test('general: 3% target from 30% stock into 500 ml', () => {
 test('general: target stronger than stock is an error, not a clamp', () => {
   assert.deepEqual(computeGeneral({ stockPercent: 3, targetPercent: 30, totalMl: 500 }),
     { error: 'target-exceeds-stock' });
+});
+
+test('mix parts normalize the smaller ingredient to one part', () => {
+  assert.deepEqual(computeMixParts({ concentrateMl: 70, waterMl: 29 }), {
+    concentrateParts: 70 / 29,
+    waterParts: 1,
+  });
+  assert.deepEqual(computeMixParts({ concentrateMl: 10, waterMl: 90 }), {
+    concentrateParts: 1,
+    waterParts: 9,
+  });
+  assert.deepEqual(computeMixParts({ concentrateMl: 100, waterMl: 0 }), {
+    concentrateParts: 1,
+    waterParts: 0,
+  });
 });
 
 test('general: zero/negative/non-finite inputs are invalid', () => {

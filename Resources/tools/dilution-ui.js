@@ -9,7 +9,9 @@ import {
   toolPrefs,
   toolShell,
 } from './core.js';
-import { computeDose, computeGeneral, computeRatio, convertVolume, roundMl } from './dilution.js';
+import {
+  computeDose, computeGeneral, computeMixParts, computeRatio, convertVolume, roundMl,
+} from './dilution.js';
 
 const MODES = Object.freeze([
   Object.freeze({ id: 'general', label: 'General' }),
@@ -23,6 +25,10 @@ const ERROR_COPY = Object.freeze({
 });
 
 const amount = (value) => `${formatNumber(roundMl(value))} ml`;
+const partAmount = (value) => {
+  const displayed = formatNumber(value, 1);
+  return `${displayed} ${Number(displayed) === 1 ? 'part' : 'parts'}`;
+};
 
 const numericInput = (doc, { id, name, label, value = '', onInput }) => {
   const input = element('input', {
@@ -46,15 +52,25 @@ const resultDisplay = (doc, announce) => {
     result.replaceChildren(text);
     announce(text);
   };
-  const mix = ({ concentrateMl, waterMl }) => {
-    const text = `Mix ${amount(concentrateMl)} concentrate + ${amount(waterMl)} water`;
+  const mix = ({ concentrateMl, waterMl }, { stockPercent = null } = {}) => {
+    const sourceLabel = stockPercent === null ? 'concentrate' : 'stock solution';
+    const parts = stockPercent === null ? null : computeMixParts({ concentrateMl, waterMl });
+    const partsText = parts?.waterParts === 0
+      ? `No water needed — use the ${formatNumber(stockPercent)}% stock solution as-is.`
+      : parts
+        ? `About ${partAmount(parts.concentrateParts)} ${formatNumber(stockPercent)}% stock solution + ${partAmount(parts.waterParts)} water.`
+        : null;
+    const text = `Mix ${amount(concentrateMl)} ${sourceLabel} + ${amount(waterMl)} water${partsText ? ` ${partsText}` : ''}`;
     result.setAttribute('class', 'tool-result-strong');
     result.replaceChildren(
       element('span', { text: 'Mix ', ownerDocument: doc }),
       element('strong', { text: amount(concentrateMl), ownerDocument: doc }),
-      element('span', { text: ' concentrate + ', ownerDocument: doc }),
+      element('span', { text: ` ${sourceLabel} + `, ownerDocument: doc }),
       element('strong', { text: amount(waterMl), ownerDocument: doc }),
       element('span', { text: ' water', ownerDocument: doc }),
+      ...(partsText ? [element('span', {
+        class: 'tool-parts-result', text: ` ${partsText}`, ownerDocument: doc,
+      })] : []),
     );
     announce(text);
   };
@@ -97,7 +113,9 @@ export function renderDilutionTool(root, deps = {}) {
         targetPercent: parseDecimal(values.targetPercent),
         totalMl: parseDecimal(values.totalMl),
       });
-      if (result.error) display.error(result.error); else display.mix(result);
+      if (result.error) display.error(result.error); else display.mix(result, {
+        stockPercent: parseDecimal(values.stockPercent),
+      });
     };
     const field = (id, name, label) => numericInput(doc, {
       id, name, label, value: values[name],
