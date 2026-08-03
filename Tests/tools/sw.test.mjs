@@ -62,21 +62,40 @@ function loadWorker() {
   const opened = [];
   const deleted = [];
   const added = [];
+  const addedRequests = [];
   const puts = [];
+  const fetches = [];
   const cacheMatches = [];
   const globalMatches = [];
   const cache = {
-    async addAll(urls) { added.push(...urls); },
+    async addAll(requests) {
+      addedRequests.push(...requests);
+      added.push(...requests.map((request) => new URL(
+        typeof request === 'string' ? request : request.url,
+        'https://kinnokilabs.com',
+      ).pathname));
+    },
     async put(key, response) { puts.push({ key, response }); },
     async match(key) { cacheMatches.push(key); return null; },
   };
   const context = {
     URL,
+    Request: class {
+      constructor(url, options = {}) {
+        this.url = String(url);
+        this.cache = options.cache;
+      }
+    },
     Response: { error: () => ({ type: 'error', status: 0 }) },
-    fetch: async () => ({ ok: true, type: 'basic', clone() { return this; } }),
+    fetch: async (request, options) => {
+      fetches.push({ request, options });
+      return { ok: true, type: 'basic', clone() { return this; } };
+    },
     caches: {
       async open(name) { opened.push(name); return cache; },
-      async keys() { return ['kinnoki-tools-v0', 'kinnoki-tools-v1', 'unrelated-v3']; },
+      async keys() {
+        return ['kinnoki-tools-v0', 'kinnoki-tools-v1', 'kinnoki-tools-v2', 'unrelated-v3'];
+      },
       async delete(name) { deleted.push(name); return true; },
       async match(key) { globalMatches.push(key); return null; },
     },
@@ -90,7 +109,8 @@ function loadWorker() {
   };
   if (workerSource) runInNewContext(workerSource, context, { filename: 'sw.js' });
   return {
-    handlers, context, cache, opened, deleted, added, puts, cacheMatches, globalMatches,
+    handlers, context, cache, opened, deleted, added, addedRequests, fetches, puts,
+    cacheMatches, globalMatches,
   };
 }
 
@@ -154,14 +174,17 @@ test('worker installs atomically, activates its own cache version, and leaves un
   const install = waitableEvent();
   worker.handlers.get('install')(install);
   await install.done();
-  assert.deepEqual(worker.opened, ['kinnoki-tools-v2']);
+  assert.deepEqual(worker.opened, ['kinnoki-tools-v3']);
   assert.deepEqual(worker.added.sort(), precacheEntries(workerSource).sort());
+  assert.ok(worker.addedRequests.every((request) => request?.cache === 'reload'));
   assert.equal(worker.context.self.skipped, true);
 
   const activate = waitableEvent();
   worker.handlers.get('activate')(activate);
   await activate.done();
-  assert.deepEqual(worker.deleted, ['kinnoki-tools-v0', 'kinnoki-tools-v1']);
+  assert.deepEqual(worker.deleted, [
+    'kinnoki-tools-v0', 'kinnoki-tools-v1', 'kinnoki-tools-v2',
+  ]);
   assert.equal(worker.context.self.clients.claimed, true);
 });
 
@@ -222,6 +245,23 @@ test('a successful network response survives rejected cache open and cache write
   }
 });
 
+test('worker network requests bypass the browser HTTP cache', async () => {
+  const worker = loadWorker();
+  let response;
+  const request = {
+    method: 'GET', url: 'https://kinnokilabs.com/tools/dilution.js', mode: 'same-origin',
+  };
+  worker.handlers.get('fetch')({
+    request,
+    respondWith(value) { response = value; },
+  });
+
+  assert.equal((await response).ok, true);
+  assert.equal(worker.fetches.length, 1);
+  assert.equal(worker.fetches[0].request, request);
+  assert.equal(worker.fetches[0].options.cache, 'reload');
+});
+
 test('offline navigation normalization and hub fallback stay inside the tools scope', async () => {
   const worker = loadWorker();
   assert.ok(worker.handlers.get('fetch'), 'fetch handler must be registered');
@@ -240,7 +280,7 @@ test('offline navigation normalization and hub fallback stay inside the tools sc
   assert.equal(await response, cachedPage);
   assert.deepEqual(worker.cacheMatches, ['/tools/word-count/']);
   assert.deepEqual(worker.globalMatches, []);
-  assert.deepEqual(worker.opened, ['kinnoki-tools-v2']);
+  assert.deepEqual(worker.opened, ['kinnoki-tools-v3']);
 
   worker.cacheMatches.length = 0;
   worker.opened.length = 0;
@@ -256,7 +296,7 @@ test('offline navigation normalization and hub fallback stay inside the tools sc
   assert.equal(await response, hub);
   assert.deepEqual(worker.cacheMatches, ['/tools/missing/', '/tools/']);
   assert.deepEqual(worker.globalMatches, []);
-  assert.deepEqual(worker.opened, ['kinnoki-tools-v2']);
+  assert.deepEqual(worker.opened, ['kinnoki-tools-v3']);
 
   worker.cacheMatches.length = 0;
   worker.opened.length = 0;
@@ -267,7 +307,7 @@ test('offline navigation normalization and hub fallback stay inside the tools sc
   assert.deepEqual(await response, { type: 'error', status: 0 });
   assert.deepEqual(worker.cacheMatches, ['/about']);
   assert.deepEqual(worker.globalMatches, []);
-  assert.deepEqual(worker.opened, ['kinnoki-tools-v2']);
+  assert.deepEqual(worker.opened, ['kinnoki-tools-v3']);
 });
 
 test('connectivity chip mounts once, unmounts online, and remounts in hub and tool shells', () => {

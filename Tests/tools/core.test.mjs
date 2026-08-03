@@ -163,9 +163,14 @@ test('watchConnectivity reports changes and disposes both registered listeners',
 
 test('registerToolsServiceWorker uses the fixed tools route and ignores unavailable containers', async () => {
   const registrations = [];
-  registerToolsServiceWorker({ register(path) { registrations.push(path); return Promise.resolve(); } });
+  registerToolsServiceWorker({
+    register(path, options) { registrations.push({ path, options }); return Promise.resolve(); },
+  });
   registerToolsServiceWorker();
 
   await Promise.resolve();
-  assert.deepEqual(registrations, ['/tools/sw.js']);
+  assert.deepEqual(registrations, [{
+    path: '/tools/sw.js',
+    options: { scope: '/tools/', updateViaCache: 'none' },
+  }]);
 });

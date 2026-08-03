@@ -1,4 +1,4 @@
-const CACHE = 'kinnoki-tools-v2';
+const CACHE = 'kinnoki-tools-v3';
 const CACHE_PREFIX = 'kinnoki-tools-';
 const PRECACHE = [
   '/tools/',
@@ -43,7 +43,11 @@ const PRECACHE = [
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
-    await cache.addAll(PRECACHE);
+    const requests = PRECACHE.map((path) => new Request(
+      new URL(path, self.location.origin),
+      { cache: 'reload' },
+    ));
+    await cache.addAll(requests);
     await self.skipWaiting();
   })());
 });
@@ -88,7 +92,7 @@ self.addEventListener('fetch', (event) => {
   event.respondWith((async () => {
     let fresh;
     try {
-      fresh = await fetch(request);
+      fresh = await fetch(request, { cache: 'reload' });
     } catch {
       return offlineResponse(request);
     }
