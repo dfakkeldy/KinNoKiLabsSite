@@ -498,7 +498,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                     <a class="tax-button tax-button-solid" href="/apps/nsmarksthespot/map/">Open the live map <span aria-hidden="true">↗</span></a>
                     <a class="tax-button tax-button-line" href="#dates">See posted dates <span aria-hidden="true">↓</span></a>
                   </div>
-                  <p class="tax-refreshed">Municipal notices re-checked July 23, 2026</p>
+                  <p class="tax-refreshed">Inverness notice re-checked August 7, 2026 · Middleton snapshot August 4 · Annapolis snapshot July 23</p>
                 </div>
 
                 <aside class="tax-desk" aria-label="Current tax-sale desk summary">
@@ -508,9 +508,9 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                     <div><strong>August</strong><small>Inverness County · 9:30 a.m.</small></div>
                   </div>
                   <div class="tax-desk-rule"></div>
-                  <p><strong>40</strong> advertised rows</p>
-                  <p><strong>40</strong> active mapped PIDs</p>
-                  <small>Counts reflect the current Inverness notice. Five withdrawn rows are retained as status evidence and excluded from current parcel mapping.</small>
+                  <p><strong>35</strong> advertised rows</p>
+                  <p><strong>35</strong> active mapped PIDs</p>
+                  <small>Counts reflect the current Inverness notice. Ten withdrawn rows are retained as status evidence and excluded from current parcel mapping. The live map also tracks four active PIDs from Middleton and Annapolis, for 39 current mapped PIDs across three notices.</small>
                 </aside>
               </div>
             </section>
@@ -522,7 +522,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                     <p class="tax-kicker">Posted dates</p>
                     <h2 id="tax-dates-heading">What is still<br><em>coming up.</em></h2>
                   </div>
-                  <p>This is the current official notice tracked in the map—not a promise that every advertised property will still be offered. Always open the municipal source again before acting.</p>
+                  <p>These are the three current notices tracked in the map—not a promise that every advertised property will still be offered. Always open each municipal source again before acting.</p>
                 </div>
 
                 <div class="tax-date-list">
@@ -532,11 +532,37 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                       <p class="tax-status">Posted · Public auction</p>
                       <h3>Municipality of the County of Inverness</h3>
                       <p><strong>Tuesday, August 11 at 9:30 a.m.</strong><br>St. Peter’s Parish Hall, 260 Main Street, Port Hood</p>
-                      <p class="tax-date-detail">40 advertised rows · 5 withdrawn rows · 40 active PIDs mapped</p>
+                      <p class="tax-date-detail">35 advertised rows · 10 withdrawn rows · 35 active PIDs mapped</p>
                     </div>
                     <div class="tax-date-actions">
                       <a href="https://invernesscounty.ca/services/finance-taxation/tax-sales/">Official Inverness page <span aria-hidden="true">↗</span></a>
                       <a href="/apps/nsmarksthespot/map/">View mapped parcels <span aria-hidden="true">→</span></a>
+                    </div>
+                  </article>
+                  <article class="tax-date-card reveal">
+                    <div class="tax-date-calendar" aria-hidden="true"><span>AUG</span><strong>20</strong><small>2026</small></div>
+                    <div class="tax-date-copy">
+                      <p class="tax-status">Posted · Public auction</p>
+                      <h3>Town of Middleton</h3>
+                      <p><strong>Thursday, August 20 at 10:00 a.m.</strong><br>Town Hall Council Chambers, 131 Commercial Street, Middleton</p>
+                      <p class="tax-date-detail">3 advertised rows · 0 withdrawn rows · 3 active PIDs mapped</p>
+                    </div>
+                    <div class="tax-date-actions">
+                      <a href="https://www.discovermiddleton.ca/property-tax-sale-information">Official Middleton page <span aria-hidden="true">↗</span></a>
+                      <a href="/apps/nsmarksthespot/map/">View mapped parcels <span aria-hidden="true">→</span></a>
+                    </div>
+                  </article>
+                  <article class="tax-date-card reveal">
+                    <div class="tax-date-calendar" aria-hidden="true"><span>AUG</span><strong>31</strong><small>2026</small></div>
+                    <div class="tax-date-copy">
+                      <p class="tax-status">Posted · Sealed tender</p>
+                      <h3>Municipality of the County of Annapolis</h3>
+                      <p><strong>Monday, August 31; tenders close at 1:00 p.m.</strong><br>752 St George Street, Annapolis Royal</p>
+                      <p class="tax-date-detail">1 advertised row · 0 withdrawn rows · 1 active PID mapped</p>
+                    </div>
+                    <div class="tax-date-actions">
+                      <a href="https://annapoliscounty.ca/tax-finance/tax-sale">Official Annapolis page <span aria-hidden="true">↗</span></a>
+                      <a href="/apps/nsmarksthespot/map/">View mapped parcel <span aria-hidden="true">→</span></a>
                     </div>
                   </article>
                 </div>
@@ -557,7 +583,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                 <div class="tax-split-copy reveal">
                   <p class="tax-large-copy">Search an eight-digit PID or Nova Scotia civic address, open a mapped tax-sale parcel, and compare it with roads, water, aerial imagery, Crown land, and municipal context.</p>
                   <ul class="tax-facts">
-                    <li><span>Mapped now</span><strong>Inverness County current notice</strong></li>
+                    <li><span>Mapped now</span><strong>Three current municipal notices · 39 active PIDs</strong></li>
                     <li><span>Search</span><strong>PID, civic address, or visible parcel</strong></li>
                     <li><span>Privacy</span><strong>No owner names; no location upload</strong></li>
                     <li><span>Boundary</span><strong>Approximate context, never a legal survey</strong></li>
