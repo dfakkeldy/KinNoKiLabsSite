@@ -31,19 +31,28 @@ test('keeps only upcoming posted dates in the current sale desk', () => {
   assert.doesNotMatch(generated, /Tuesday, July 21 at 11:00 a\.m\./);
   assert.doesNotMatch(generated, /CBRM · 11:00 a\.m\./);
   assert.match(generated, /Tuesday, August 11 at 9:30 a\.m\./);
+  assert.match(generated, /Thursday, August 20 at 10:00 a\.m\./);
+  assert.match(generated, /Monday, August 31; tenders close at 1:00 p\.m\./);
   assert.match(generated, /https:\/\/invernesscounty\.ca\/services\/finance-taxation\/tax-sales\//);
-  assert.match(generated, /40 advertised rows · 5 withdrawn rows · 40 active PIDs mapped/);
-  assert.match(generated, /<strong>40<\/strong> advertised rows/);
-  assert.match(generated, /<strong>40<\/strong> active mapped PIDs/);
+  assert.match(generated, /https:\/\/www\.discovermiddleton\.ca\/property-tax-sale-information/);
+  assert.match(generated, /https:\/\/annapoliscounty\.ca\/tax-finance\/tax-sale/);
+  assert.match(generated, /35 advertised rows · 10 withdrawn rows · 35 active PIDs mapped/);
+  assert.match(generated, /3 advertised rows · 0 withdrawn rows · 3 active PIDs mapped/);
+  assert.match(generated, /1 advertised row · 0 withdrawn rows · 1 active PID mapped/);
+  assert.match(generated, /<strong>35<\/strong> advertised rows/);
+  assert.match(generated, /<strong>35<\/strong> active mapped PIDs/);
+  assert.match(generated, /39 current mapped PIDs across three notices/);
+  assert.match(generated, /Three current municipal notices · 39 active PIDs/);
+  assert.match(generated, /Inverness notice re-checked August 7, 2026 · Middleton snapshot August 4 · Annapolis snapshot July 23/);
   assert.doesNotMatch(generated, /CBRM \+ Inverness County notices/);
-  assert.match(generated, /<span>Mapped now<\/span><strong>Inverness County current notice<\/strong>/);
+  assert.match(generated, /<span>Mapped now<\/span><strong>Three current municipal notices · 39 active PIDs<\/strong>/);
   assert.match(
     generated,
     /<span>Past event source<\/span><strong>CBRM tax-sales page<\/strong>/,
   );
   assert.equal(
     generated.match(/class="tax-date-card reveal"/g)?.length,
-    1,
+    3,
   );
   assert.match(generated, /Posted does not mean final\./);
 });
