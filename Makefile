@@ -7,12 +7,14 @@
 #   make generate        Generate Output/ only (no commit, no push)
 #   make clean           Remove Swift build artifacts
 #   make test-listen     Run the Listening Room pure-logic tests (node, dev-only)
+#   make test-fiction    Run the Fiction Listening Room catalog, player, and
+#                        route tests (routes need a generated Output/)
 #   make listen-catalog  Regenerate Resources/listen/books.json + per-book
 #                        assets from local checkouts (Tools/build-listen-catalog.sh)
 
 PUBLISH_BIN ?= publish
 
-.PHONY: publish preview generate clean test test-listen test-games test-tools test-site listen-catalog paired-covers sync-ns-marks-web sync-turn-timer-web tender-pack
+.PHONY: publish preview generate clean test test-listen test-fiction test-games test-tools test-site listen-catalog paired-covers sync-ns-marks-web sync-turn-timer-web tender-pack
 
 generate:
 	@generation_epochs="$$(node Tools/prepare-deterministic-publish.mjs)" && \
@@ -43,10 +45,13 @@ preview:
 clean:
 	swift package clean
 
-test: test-listen test-games test-tools test-site
+test: test-listen test-fiction test-games test-tools test-site
 
 test-listen:
 	node --test Tests/listen/*.test.mjs
+
+test-fiction:
+	node --test Tests/fiction/*.test.mjs
 
 test-games:
 	node --test Tests/games/*.test.mjs

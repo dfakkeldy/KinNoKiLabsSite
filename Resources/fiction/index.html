@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Echo Listening Room — KinNoKi Labs</title>
-  <meta name="description" content="Stream a sample learning audiobook with Echo-style read-along captions, right in your browser. No install, no signup.">
-  <link rel="canonical" href="https://kinnokilabs.com/listen/">
-  <meta property="og:title" content="Echo Listening Room — KinNoKi Labs">
-  <meta property="og:description" content="Stream a sample learning audiobook with Echo-style read-along captions, right in your browser.">
-  <meta property="og:url" content="https://kinnokilabs.com/listen/">
+  <title>Fiction Listening Room — KinNoKi Labs</title>
+  <meta name="description" content="Original novels written for the ear — free in your browser, with word-synced read-along captions. No signup, no DRM.">
+  <link rel="canonical" href="https://kinnokilabs.com/fiction/">
+  <meta property="og:title" content="Fiction Listening Room — KinNoKi Labs">
+  <meta property="og:description" content="Original novels written for the ear — free in your browser, with word-synced read-along captions.">
+  <meta property="og:url" content="https://kinnokilabs.com/fiction/">
   <meta property="og:image" content="https://kinnokilabs.com/logo.png">
   <link rel="icon" href="/logo.png">
   <script>
@@ -20,10 +20,16 @@
     } catch (e) { document.documentElement.setAttribute('data-theme', 'dark'); }
   </script>
   <link rel="stylesheet" href="/styles.css">
-  <link rel="stylesheet" href="listen.css">
+  <!-- The room chrome, player layout and caption material are shared with
+       /listen verbatim; fiction.css only adds the shelf and the
+       awaiting-narration state. -->
+  <link rel="stylesheet" href="/listen/listen.css">
+  <link rel="stylesheet" href="fiction.css">
   <script src="/site.js" defer></script>
-  <script src="listen-core.js" defer></script>
-  <script src="listen.js" defer></script>
+  <!-- Same DOM-free port of Echo's tokenizer / timing / cue resolver that
+       drives /listen, so both rooms track one set of semantics. -->
+  <script src="/listen/listen-core.js" defer></script>
+  <script src="fiction.js" defer></script>
 </head>
 <body>
 
@@ -34,7 +40,7 @@
       <span>KinNoKi Labs</span>
     </a>
     <nav class="room-bar-nav" aria-label="Site">
-      <a class="room-back" href="/learn">&larr; Learn</a>
+      <a class="room-back" href="/listen/">&larr; <span class="room-back-full">Listening&nbsp;Room</span><span class="room-back-short" aria-hidden="true">Listen</span></a>
       <button class="font-toggle" type="button" aria-label="Toggle OpenDyslexic font" aria-pressed="false">Aa</button>
       <button class="theme-toggle" type="button" aria-label="Toggle light or dark theme">
         <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
@@ -46,24 +52,21 @@
   <main class="room-main">
     <div class="room-glow" aria-hidden="true"></div>
 
-    <p class="eyebrow room-eyebrow">Echo Listening Room</p>
+    <p class="eyebrow room-eyebrow fiction-eyebrow">Fiction Listening Room</p>
+    <p class="fiction-intro">Original novels written for the ear — streaming free, with word-synced
+      read-along captions, right in your browser.</p>
 
-    <section class="room" aria-label="Audiobook player">
+    <section class="room" id="player" aria-label="Audiobook player">
       <div class="room-side">
         <figure class="room-cover-frame">
-          <img id="cover" alt="" width="480" height="768">
+          <img id="cover" alt="" width="600" height="600">
         </figure>
         <div class="room-meta">
-          <p id="bookSeries" class="book-series" hidden></p>
-          <p id="seriesProgress" class="series-progress" hidden></p>
-          <nav class="series-navigation" aria-label="Published volumes in this series" hidden>
-            <a id="seriesPrevious" class="series-link" hidden></a>
-            <a id="seriesNext" class="series-link" hidden></a>
-          </nav>
-          <p id="editionStatus" class="edition-status" hidden></p>
+          <p id="bookForm" class="book-series"></p>
           <h1 id="bookTitle">&nbsp;</h1>
           <p id="bookSubtitle" class="room-subtitle" hidden></p>
           <p id="bookByline" class="room-byline"></p>
+          <p id="editionNote" class="edition-status" hidden></p>
         </div>
         <details class="room-chapters">
           <summary>Chapters <span id="chapterCount" class="room-chapter-count"></span></summary>
@@ -78,8 +81,9 @@
           <span id="chapterNow">&nbsp;</span>
         </p>
 
-        <!-- Slideshow stage: listen.js shows the current figure cue from
-             listen-core's resolver here. Cover-only books never unhide it. -->
+        <!-- Slideshow stage, same contract as /listen: fiction.js only
+             unhides it when the resolver returns a figure cue, so
+             unillustrated books run captions alone. -->
         <figure id="figurePanel" class="room-figure" hidden>
           <img id="figureImg" alt="" decoding="async">
           <figcaption id="figureCaption" hidden></figcaption>
@@ -93,13 +97,13 @@
           <p id="captionText" class="visually-hidden"></p>
         </div>
 
-        <p id="status" class="room-status" role="status" aria-live="polite">Loading the book&hellip;</p>
+        <p id="status" class="room-status" role="status" aria-live="polite">Loading the shelf&hellip;</p>
 
         <nav id="selectedFormats" class="room-formats" aria-label="Other formats for this book" hidden></nav>
 
         <div class="room-transport" aria-label="Playback controls">
           <div class="room-buttons">
-            <button id="back30" class="room-skip" type="button" aria-label="Back 30 seconds">
+            <button id="back30" class="room-skip" type="button" aria-label="Back 30 seconds" disabled>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path></svg>
               <span aria-hidden="true">30</span>
             </button>
@@ -107,11 +111,11 @@
               <svg id="iconPlay" width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
               <svg id="iconPause" width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"></path></svg>
             </button>
-            <button id="fwd30" class="room-skip" type="button" aria-label="Forward 30 seconds">
+            <button id="fwd30" class="room-skip" type="button" aria-label="Forward 30 seconds" disabled>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"></path><path d="M21 4v5h-5"></path></svg>
               <span aria-hidden="true">30</span>
             </button>
-            <button id="speed" class="room-speed" type="button" aria-label="Playback speed">1&times;</button>
+            <button id="speed" class="room-speed" type="button" aria-label="Playback speed" disabled>1&times;</button>
           </div>
           <div class="room-scrub">
             <input id="scrubber" type="range" min="0" max="0" step="0.1" value="0"
@@ -127,40 +131,37 @@
 
     <p id="emptyState" class="room-empty" role="status" aria-live="polite" hidden></p>
 
-    <section class="room-cta bento-tint reveal" aria-label="About Echo">
+    <section class="room-cta bento-tint reveal" aria-label="Free to keep">
       <div>
-        <h2>Like listening this way?</h2>
-        <p>Echo does this with your whole audiobook library — word-perfect read-along, one-tap flashcards, and a study system built on the real science of memory.</p>
+        <h2>Free to stream. Free to keep.</h2>
+        <p>No signup, no DRM. Listen here with word-perfect captions, or take the EPUB with you —
+          and the chaptered M4B once narration lands. Like listening this way?
+          <a href="/apps/echo">Echo</a> does it with your whole audiobook library.</p>
       </div>
-      <a class="btn btn-gold" href="/echo-beta">Join the TestFlight beta</a>
+      <a class="btn btn-gold" href="https://github.com/dfakkeldy/explainer-audiobooks" target="_blank" rel="noopener">Get the books on GitHub</a>
     </section>
 
-    <section id="seriesShelves" class="room-library" aria-labelledby="seriesLibraryTitle" hidden>
-      <h2 id="seriesLibraryTitle">Series</h2>
-      <div id="seriesLibrary"></div>
+    <section class="fiction-shelf" aria-labelledby="shelfTitle">
+      <h2 id="shelfTitle">On the fiction shelf</h2>
+      <p id="shelfSub" class="fiction-shelf-sub"></p>
+      <ul id="shelf"></ul>
     </section>
 
-    <section id="moreBooksShelf" class="room-library" aria-labelledby="moreBooksTitle">
-      <h2 id="moreBooksTitle">More books</h2>
-      <p class="room-library-sub">Choose another narrated book, or open any title as an EPUB or readable Markdown.</p>
-      <ul id="library"></ul>
-    </section>
-
-    <p id="honesty" class="room-honesty"></p>
+    <p class="room-honesty">Every novel here is written by a frontier AI lead writer under Dan
+      Fakkeldy&rsquo;s fiction workflow — one model per manuscript, staged revision, human review —
+      then narrated with Echo voices.
+      <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/docs/how-these-were-made.md" target="_blank" rel="noopener">Read how these books are made</a>.</p>
 
     <noscript>
-      <p class="room-noscript">The Listening Room needs JavaScript to stream and caption the book.
-      You can still <a href="https://github.com/dfakkeldy/explainer-audiobooks">browse the library on GitHub</a>
-      and download the EPUBs.</p>
+      <p class="room-noscript">The Fiction Listening Room needs JavaScript to stream and caption a book.
+      You can still <a href="https://github.com/dfakkeldy/explainer-audiobooks">browse the library on GitHub</a>.</p>
     </noscript>
   </main>
 
   <footer class="room-foot">
     <a href="/">KinNoKi Labs</a>
     <span aria-hidden="true">·</span>
-    <a href="/learn">Learning audiobooks</a>
-    <span aria-hidden="true">·</span>
-    <a href="/fiction/">Fiction</a>
+    <a href="/listen/">Echo Listening Room</a>
     <span aria-hidden="true">·</span>
     <a href="/privacy">Privacy</a>
   </footer>
