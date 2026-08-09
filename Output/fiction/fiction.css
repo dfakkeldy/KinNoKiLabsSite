@@ -1,0 +1,167 @@
+/* Fiction Listening Room — additions on top of /listen/listen.css.
+   The room chrome, the player grid and the gold caption wash are shared
+   with the Echo Listening Room verbatim; everything here is either the
+   fiction shelf or the awaiting-narration state that a book sits in
+   before its M4B exists. Colours come from the room tokens already
+   declared in listen.css, so the contrast budget is inherited rather
+   than re-argued. */
+
+/* ── Room bar ───────────────────────────────────────── */
+/* "Listening Room" is two words longer than the Echo room's "Learn" and
+   wraps the bar onto two lines on a phone, so the label shortens below
+   the fold-point. The full name stays in the accessibility tree either
+   way — the short form is decorative, the long form is what is read. */
+.room-back { white-space: nowrap; }
+.room-back-short { display: none; }
+@media (max-width: 430px) {
+  .room-back-full {
+    position: absolute;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .room-back-short { display: inline; }
+}
+
+/* ── Masthead ───────────────────────────────────────── */
+/* The eyebrow hands off to a one-line promise, so its own bottom margin
+   collapses and the intro carries the gap down to the player. */
+.fiction-eyebrow { margin-bottom: 10px; }
+.fiction-intro {
+  position: relative;
+  text-align: center;
+  margin: 0 auto clamp(20px, 4vw, 34px);
+  max-width: 34rem;
+  color: var(--room-text-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ── Awaiting narration ─────────────────────────────── */
+/* A book with no audio still fills the caption panel — with its real
+   opening lines, in the un-heard caption colour. It reads as the room
+   before the lights come up, never as playback that is about to start. */
+.room-captions .excerpt {
+  color: var(--room-text-secondary);
+  font-size: clamp(17px, 2.1vw, 20px);
+  font-weight: 400;
+  line-height: 1.7;
+}
+.room-captions .excerpt-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--room-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Chapters render as plain rows, not buttons, while there is nothing to
+   seek to — matching .room-chapter-btn's metrics so the list doesn't
+   shift when audio arrives and the rows become real controls. */
+.room-chapters .fic-chapter-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 9px 2px;
+  font-size: 13.5px;
+  color: var(--room-text-secondary);
+}
+.room-chapters .fic-chapter-row .n {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--room-text-tertiary);
+  flex: none;
+}
+
+/* ── The shelf ──────────────────────────────────────── */
+.fiction-shelf { margin-top: clamp(36px, 6vw, 56px); }
+.fiction-shelf > h2 { font-size: 17px; letter-spacing: -0.01em; margin: 0 0 4px; }
+.fiction-shelf-sub { color: var(--room-text-secondary); font-size: 13.5px; margin: 0 0 14px; }
+.fiction-shelf ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
+  gap: 10px;
+}
+/* Cover in column one spanning the text rows beside it. Rows are sized by
+   content rather than a fixed template so a card without an edition note
+   or a status line closes up instead of leaving a gap. */
+.fiction-shelf li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-auto-rows: min-content;
+  align-content: start;
+  row-gap: 3px;
+  column-gap: 12px;
+  border: 1px dashed color-mix(in srgb, var(--gold-500) 40%, var(--separator));
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 13.5px;
+}
+/* The streaming title is the one solid-bordered, tinted card on the shelf. */
+.fiction-shelf li.is-playable {
+  border: 1px solid var(--room-text-accent);
+  background: var(--fill-2);
+}
+.fiction-shelf li .fic-cover {
+  grid-column: 1;
+  grid-row: 1 / span 5;
+  width: 76px;
+  height: auto;
+  display: block;
+  border: 1px solid var(--separator);
+  border-radius: 8px;
+  background: var(--fill-2);
+}
+.fiction-shelf li .fic-genre { color: var(--room-text-accent); font-family: var(--font-mono); font-size: 11px; }
+.fiction-shelf li .fic-title { color: var(--text); font-weight: 500; min-width: 0; }
+.fiction-shelf li .fic-hook { color: var(--room-text-secondary); font-size: 12.5px; line-height: 1.45; }
+.fiction-shelf li .fic-meta { color: var(--room-text-tertiary); font-size: 12px; }
+.fiction-shelf li .fic-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin-top: 5px;
+  align-self: end;
+  justify-self: start;
+}
+.fiction-shelf li a {
+  color: var(--room-text-secondary);
+  font-size: 12.5px;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent);
+  text-underline-offset: 3px;
+}
+.fiction-shelf li a:hover { color: var(--room-text-accent); }
+.fiction-shelf li a.fic-listen {
+  color: var(--room-text-accent);
+  font-weight: 650;
+  text-decoration-thickness: 1.5px;
+}
+/* The pill says only "Coming soon"; the status line beside it carries the
+   actual news, so the pill takes the quieter token and leaves the accent
+   to the status. --gold-text would also land at 4.1:1 on light at this
+   size, under AA — the room tokens are contrast-audited, so use those. */
+.fiction-shelf li .fic-badge {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--room-text-secondary);
+  border: 1px solid color-mix(in srgb, var(--gold-500) 45%, transparent);
+  border-radius: var(--radius-pill);
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+.fiction-shelf li .fic-status { color: var(--room-text-accent); font-family: var(--font-mono); font-size: 11.5px; }
+
+@media (max-width: 420px) {
+  .fiction-shelf ul { grid-template-columns: 1fr; }
+}

@@ -24,10 +24,13 @@ make test-games
 # Run the Echo Listening Room tests (player logic, catalog contract)
 make test-listen
 
+# Run the Fiction Listening Room tests (catalog gate, player states, routes)
+make test-fiction
+
 # Run the Web Tools engine, controller, PWA, and generated-route tests
 make test-tools
 
-# All three JavaScript suites
+# Every JavaScript suite
 make test
 
 # Rebuild the Listening Room catalog from the local book library
@@ -64,6 +67,8 @@ receipt/parity failure stop promotion.
 - **`Tests/games/`** — Node tests cover the pure game engines, DOM controllers, accessibility behavior, and generated routes (`hub-six-games.test.mjs` covers all six Arcade Hall cards). Run them with `make test-games` after game changes; generate the site before running route assertions directly.
 - **Echo Listening Room** — `/listen` is a hand-authored static app (not theme-generated): `Resources/listen/index.html` + `listen.css` + `listen-core.js` (DOM-free ports of Echo's `WordTokenizer`, `WordTimingInterpolator`, and `VisualListeningCueResolver` — keep these in step with the native semantics) + `listen.js` (DOM/audio/MediaSession glue). It streams one book at a time, selected by `?book=<slug>`, and reads the generated `books.json` catalog. Playback position, speed, and theme stay in that browser's `localStorage`; nothing is uploaded. Run `make test-listen` after changes.
 - **`Tests/listen/`** — Node tests cover the pure cue/timing logic, a fake-DOM drive of `listen.js` (including the figure stage and library grid), WCAG contrast of the player tokens, the catalog contract, and the builder's transaction semantics.
+- **Fiction Listening Room** — `/fiction` is the Echo room's sibling for KinNoKi's original novels: `Resources/fiction/index.html` + `fiction.css` + `fiction.js` + a curated `books.json`. It **borrows `/listen/listen.css` and `/listen/listen-core.js` rather than forking them**, so the room chrome, the caption wash, and the Echo-ported timing semantics have one source of truth; `fiction.css` adds only the shelf and the awaiting-narration state. Same conventions as `/listen`: one book at a time via `?book=<slug>`, position/speed/theme in that browser's `localStorage`, nothing uploaded. The speed ladder is 1×/1.25×/1.5×/2× (the Echo room has three). Run `make test-fiction` after changes; its route tests need a generated `Output/`.
+- **Fiction catalog contract** — `Resources/fiction/books.json` is **hand-curated, not generated** (like `Content/tenders/`), because the manuscripts have no upstream builder yet. `Tests/fiction/catalog.test.mjs` is the gate in place of one. The rule that matters: a book's audio state is **either fully inert or fully streamable**. `audio.status: "pending"` must carry no stream URL, no `durationSeconds`, no `text`/`alignment`, and no chapter `start` times; `"available"` must carry a commit-pinned `.m4b` URL, a positive duration, `text.blocks`, `alignment.sidecar`, and contiguous chapter windows ending at the duration. `fiction.js` gates every transport control on that same predicate, so **adding a narrated edition to the catalog turns the player on with no code change** — `Tests/fiction/player-dom.test.mjs` drives both states to prove it. Each book's `excerpt` fills the caption panel while it awaits narration and is length-bounded (35–60 words) because it is layout. `links` ships empty until a manuscript is actually public in `dfakkeldy/explainer-audiobooks`, so no dead format link is ever rendered.
 
 ### Tender Starter Showcase
 

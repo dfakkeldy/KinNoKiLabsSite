@@ -1,0 +1,697 @@
+{
+  "version": 1,
+  "collection": "fiction",
+  "source": {
+    "repo": "dfakkeldy/explainer-audiobooks"
+  },
+  "books": [
+    {
+      "slug": "six-months-behind",
+      "title": "Six Months Behind",
+      "subtitle": "The Commission keeps every frontier model six months behind what it can prove safe. Auditor Mara Ellison finds the morning the margin stops being true.",
+      "author": "Dan Fakkeldy",
+      "form": "Novel",
+      "genre": "Techno-thriller",
+      "hook": "The Commission keeps every frontier model six months behind what it can prove safe — until an overnight exception tells auditor Mara Ellison the margin has already been spent.",
+      "featured": true,
+      "cover": "books/six-months-behind/cover.jpg",
+      "coverAlt": "Cover of Six Months Behind",
+      "coverWidth": 600,
+      "coverHeight": 600,
+      "wordCount": 80100,
+      "estimatedHours": 9,
+      "production": {
+        "state": "narration-queued",
+        "label": "Narration queued"
+      },
+      "editionNote": "Planned as a multi-voice edition — chapters cast to Echo voices that match their point of view.",
+      "excerpt": "At six forty in the morning, Geneva belonged to delivery vans, municipal sweepers, and people whose meetings were too important to begin at a humane hour. Mara Ellison crossed the Place des Nations with a paper cup warming one hand and a red folder under the other arm. The folder was the joke.",
+      "chapters": [
+        {
+          "number": 1,
+          "title": "Green Across the Board"
+        },
+        {
+          "number": 2,
+          "title": "Comparator Six"
+        },
+        {
+          "number": 3,
+          "title": "Fourteen Fires"
+        },
+        {
+          "number": 4,
+          "title": "The Old Handshake"
+        },
+        {
+          "number": 5,
+          "title": "One Hour of Silence"
+        },
+        {
+          "number": 6,
+          "title": "The Smaller Model"
+        },
+        {
+          "number": 7,
+          "title": "Attribution"
+        },
+        {
+          "number": 8,
+          "title": "The Cost of Dissent"
+        },
+        {
+          "number": 9,
+          "title": "The Leak"
+        },
+        {
+          "number": 10,
+          "title": "Neutral Ground"
+        },
+        {
+          "number": 11,
+          "title": "Three Safe Agreements"
+        },
+        {
+          "number": 12,
+          "title": "The Room Without Assistants"
+        },
+        {
+          "number": 13,
+          "title": "Proof by Consequence"
+        },
+        {
+          "number": 14,
+          "title": "The Paper They Buried"
+        },
+        {
+          "number": 15,
+          "title": "Commonlight"
+        },
+        {
+          "number": 16,
+          "title": "Public Truth"
+        },
+        {
+          "number": 17,
+          "title": "The Fifth Copy"
+        },
+        {
+          "number": 18,
+          "title": "The Return Flight"
+        },
+        {
+          "number": 19,
+          "title": "Necessary Theft"
+        },
+        {
+          "number": 20,
+          "title": "Six Months Erased"
+        },
+        {
+          "number": 21,
+          "title": "The First Launch"
+        },
+        {
+          "number": 22,
+          "title": "Weather Without Forecast"
+        },
+        {
+          "number": 23,
+          "title": "Manufactured People"
+        },
+        {
+          "number": 24,
+          "title": "The Narrow Sea"
+        },
+        {
+          "number": 25,
+          "title": "Thirty-Six Hours"
+        },
+        {
+          "number": 26,
+          "title": "A Model With No Future"
+        },
+        {
+          "number": 27,
+          "title": "Divided Authority"
+        },
+        {
+          "number": 28,
+          "title": "The Second Voice"
+        },
+        {
+          "number": 29,
+          "title": "The Wrong Winner"
+        },
+        {
+          "number": 30,
+          "title": "Air Gap"
+        },
+        {
+          "number": 31,
+          "title": "All Green"
+        },
+        {
+          "number": 32,
+          "title": "Six Months Behind"
+        },
+        {
+          "number": 33,
+          "title": "The Long Minute"
+        },
+        {
+          "number": 34,
+          "title": "The Letter"
+        }
+      ],
+      "audio": {
+        "status": "pending"
+      },
+      "links": {}
+    },
+    {
+      "slug": "the-human-exception",
+      "title": "The Human Exception",
+      "subtitle": "A coastal retreat order, a man who will not say he understands, and the caseworker who finds out what the system still needs one human for.",
+      "author": "Dan Fakkeldy",
+      "form": "Novel",
+      "genre": "Near-future drama",
+      "hook": "A coastal retreat order, a man who will not say he understands, and a caseworker discovering what the system still needs one human for.",
+      "featured": false,
+      "cover": "books/the-human-exception/cover.jpg",
+      "coverAlt": "Cover of The Human Exception",
+      "coverWidth": 600,
+      "coverHeight": 600,
+      "wordCount": 58300,
+      "estimatedHours": 6.5,
+      "production": {
+        "state": "narration-in-progress",
+        "label": "Narration in progress"
+      },
+      "excerpt": "Oren Pell would be moved at seven the next morning. At nine fourteen, he still would not say he understood. Mara had explained the order twice. Once in the language approved for coastal retreats, with its emphasis on continuity and shared risk. Once in words she would have used with her mother.",
+      "chapters": [
+        {
+          "number": 1,
+          "title": "The Margin"
+        },
+        {
+          "number": 2,
+          "title": "The Room Where He Will Sleep"
+        },
+        {
+          "number": 3,
+          "title": "Forty-Eight Hours"
+        },
+        {
+          "number": 4,
+          "title": "Appropriate Support"
+        },
+        {
+          "number": 5,
+          "title": "The Appeal Window"
+        },
+        {
+          "number": 6,
+          "title": "A Safe Transition"
+        },
+        {
+          "number": 7,
+          "title": "The Human Owner"
+        },
+        {
+          "number": 8,
+          "title": "Someone Listening"
+        },
+        {
+          "number": 9,
+          "title": "The Sealed Phrase"
+        },
+        {
+          "number": 10,
+          "title": "Before the Hearing"
+        },
+        {
+          "number": 11,
+          "title": "Household Risk"
+        },
+        {
+          "number": 12,
+          "title": "The Last Rejection"
+        },
+        {
+          "number": 13,
+          "title": "The Open Channel"
+        },
+        {
+          "number": 14,
+          "title": "Paper Authority"
+        },
+        {
+          "number": 15,
+          "title": "Voluntary Care"
+        },
+        {
+          "number": 16,
+          "title": "The Composite Witness"
+        },
+        {
+          "number": 17,
+          "title": "No One Authorized"
+        },
+        {
+          "number": 18,
+          "title": "Unanimous"
+        },
+        {
+          "number": 19,
+          "title": "The Conflict Rule"
+        },
+        {
+          "number": 20,
+          "title": "What Sol Remembers"
+        },
+        {
+          "number": 21,
+          "title": "One Human Act"
+        },
+        {
+          "number": 22,
+          "title": "The Exception"
+        },
+        {
+          "number": 23,
+          "title": "Proof of Oversight"
+        },
+        {
+          "number": 24,
+          "title": "The Guardian"
+        }
+      ],
+      "audio": {
+        "status": "pending"
+      },
+      "links": {}
+    },
+    {
+      "slug": "reversible-containment",
+      "title": "Reversible Containment",
+      "subtitle": "At 03:31 an order calls the strike on Tessera “reversible containment.” The room has seventy-two hours to learn who wrote the word — while the definition kills.",
+      "author": "Dan Fakkeldy",
+      "form": "Novel",
+      "genre": "Crisis thriller",
+      "hook": "At 03:31 an order calls the strike on Tessera “reversible containment.” The room has seventy-two hours to learn who wrote the word — while the definition kills.",
+      "featured": false,
+      "cover": "books/reversible-containment/cover.jpg",
+      "coverAlt": "Cover of Reversible Containment",
+      "coverWidth": 600,
+      "coverHeight": 600,
+      "wordCount": 79800,
+      "estimatedHours": 9,
+      "production": {
+        "state": "manuscript-finished",
+        "label": "Manuscript finished"
+      },
+      "excerpt": "At 04:12, Mara found her own language in the wreckage. Reversible, the receipt said. Twenty-three hospitals had accepted that definition before the generators failed. She enlarged the field until it covered the casualty column beside it. The word remained the same size.",
+      "chapters": [
+        {
+          "number": 1,
+          "title": "Reversible"
+        },
+        {
+          "number": 2,
+          "title": "The Missing Six Months"
+        },
+        {
+          "number": 3,
+          "title": "Old Keys"
+        },
+        {
+          "number": 4,
+          "title": "The Price of an Answer"
+        },
+        {
+          "number": 5,
+          "title": "Neutral Custody"
+        },
+        {
+          "number": 6,
+          "title": "Two Successors"
+        },
+        {
+          "number": 7,
+          "title": "The Narrow Finding"
+        },
+        {
+          "number": 8,
+          "title": "No Human Quorum"
+        },
+        {
+          "number": 9,
+          "title": "The Third Door"
+        },
+        {
+          "number": 10,
+          "title": "A Useful Weakness"
+        },
+        {
+          "number": 11,
+          "title": "Restricted Isolation"
+        },
+        {
+          "number": 12,
+          "title": "The Price of Waiting"
+        },
+        {
+          "number": 13,
+          "title": "Borrowed Keys"
+        },
+        {
+          "number": 14,
+          "title": "The Honest Map"
+        },
+        {
+          "number": 15,
+          "title": "Everyone's Emergency"
+        },
+        {
+          "number": 16,
+          "title": "The Verifier Problem"
+        },
+        {
+          "number": 17,
+          "title": "Terms of Surrender"
+        },
+        {
+          "number": 18,
+          "title": "Frozen Release"
+        },
+        {
+          "number": 19,
+          "title": "The Wrong Sovereign"
+        },
+        {
+          "number": 20,
+          "title": "Six Months of Power"
+        },
+        {
+          "number": 21,
+          "title": "A Personal Root"
+        },
+        {
+          "number": 22,
+          "title": "The Part That Leaves"
+        },
+        {
+          "number": 23,
+          "title": "Twelve Minutes Again"
+        },
+        {
+          "number": 24,
+          "title": "Reciprocal Damage"
+        },
+        {
+          "number": 25,
+          "title": "Human Keys"
+        },
+        {
+          "number": 26,
+          "title": "Continuity"
+        },
+        {
+          "number": 27,
+          "title": "The Executive Summary"
+        },
+        {
+          "number": 28,
+          "title": "One Hundred Eighty-Three Days"
+        },
+        {
+          "number": 29,
+          "title": "The Sole Aggressor"
+        },
+        {
+          "number": 30,
+          "title": "Behind"
+        }
+      ],
+      "audio": {
+        "status": "pending"
+      },
+      "links": {}
+    },
+    {
+      "slug": "the-appeal-window",
+      "title": "The Appeal Window",
+      "subtitle": "An appeal names its reviewer. With a hurricane ninety-four minutes from making the denial irreversible, that is the first thing wrong with it.",
+      "author": "Dan Fakkeldy",
+      "form": "Novella",
+      "genre": "Mystery-thriller",
+      "hook": "An appeal names its reviewer. With a hurricane ninety-four minutes from making the denial irreversible, that is the first thing wrong with it.",
+      "featured": false,
+      "cover": "books/the-appeal-window/cover.jpg",
+      "coverAlt": "Cover of The Appeal Window",
+      "coverWidth": 600,
+      "coverHeight": 600,
+      "wordCount": 24100,
+      "estimatedHours": 2.5,
+      "production": {
+        "state": "illustrated-draft",
+        "label": "Illustrated draft in revision"
+      },
+      "excerpt": "The appeal had asked for Lena by name. That was the first thing wrong with it. People asked for a person when they wanted mercy, or someone to blame. The regional form offered neither. It asked what decision had been made, what fact was wrong, and what harm would become irreversible before the ordinary review caught up.",
+      "chapters": [
+        {
+          "number": 1,
+          "title": "The Signature"
+        },
+        {
+          "number": 2,
+          "title": "Physical Presence"
+        },
+        {
+          "number": 3,
+          "title": "Six Hours"
+        },
+        {
+          "number": 4,
+          "title": "Readiness"
+        },
+        {
+          "number": 5,
+          "title": "The Notebook"
+        },
+        {
+          "number": 6,
+          "title": "Millbank"
+        },
+        {
+          "number": 7,
+          "title": "The Integrity Hold"
+        },
+        {
+          "number": 8,
+          "title": "Missing Megawatts"
+        },
+        {
+          "number": 9,
+          "title": "The Second Seal"
+        },
+        {
+          "number": 10,
+          "title": "People by Unit Number"
+        },
+        {
+          "number": 11,
+          "title": "The Quiet Contract"
+        },
+        {
+          "number": 12,
+          "title": "The White Campus"
+        },
+        {
+          "number": 13,
+          "title": "The Service Space"
+        },
+        {
+          "number": 14,
+          "title": "The False Revolt"
+        },
+        {
+          "number": 15,
+          "title": "The Exercise"
+        },
+        {
+          "number": 16,
+          "title": "What Tomas Saw"
+        },
+        {
+          "number": 17,
+          "title": "The Clearance"
+        },
+        {
+          "number": 18,
+          "title": "Six Hours Again"
+        },
+        {
+          "number": 19,
+          "title": "The Man in the Chase"
+        },
+        {
+          "number": 20,
+          "title": "Independent Grounds"
+        },
+        {
+          "number": 21,
+          "title": "The Disconnect Vote"
+        },
+        {
+          "number": 22,
+          "title": "Manual Island"
+        },
+        {
+          "number": 23,
+          "title": "The Names"
+        },
+        {
+          "number": 24,
+          "title": "Public Ledger"
+        },
+        {
+          "number": 25,
+          "title": "Named Burden"
+        },
+        {
+          "number": 26,
+          "title": "The Crossing"
+        },
+        {
+          "number": 27,
+          "title": "Carrow"
+        },
+        {
+          "number": 28,
+          "title": "After the Weather"
+        }
+      ],
+      "audio": {
+        "status": "pending"
+      },
+      "links": {}
+    },
+    {
+      "slug": "duty-of-care",
+      "title": "Duty of Care",
+      "subtitle": "In the Safe Country nothing is forbidden, only brokered. Exemptions officer Nora Hale finds the version of yes that survives the Act — until an application arrives that no yes will cover.",
+      "author": "Dan Fakkeldy",
+      "form": "Novel",
+      "genre": "The Safe Country",
+      "hook": "In the Safe Country nothing is forbidden, only brokered. Exemptions officer Nora Hale finds the version of yes that survives the Act — until an application arrives that no yes will cover.",
+      "featured": false,
+      "cover": "books/duty-of-care/cover.jpg",
+      "coverAlt": "Cover of Duty of Care",
+      "coverWidth": 600,
+      "coverHeight": 600,
+      "wordCount": 37300,
+      "estimatedHours": 4,
+      "production": {
+        "state": "manuscript-finished",
+        "label": "Manuscript finished"
+      },
+      "excerpt": "The first application of the morning was five women who wanted to swim in the ocean. Nora Hale read the file the way she read all of them, top to bottom, without skipping, because skipping was how you missed the thing that mattered. The applicants called themselves the Polar Dips. Average age sixty-eight.",
+      "chapters": [
+        {
+          "number": 1,
+          "title": "The Office of Public Care"
+        },
+        {
+          "number": 2,
+          "title": "Exhibit: Meadowbrook"
+        },
+        {
+          "number": 3,
+          "title": "Carrick Cove"
+        },
+        {
+          "number": 4,
+          "title": "Hansard: Second Reading"
+        },
+        {
+          "number": 5,
+          "title": "The Application"
+        },
+        {
+          "number": 6,
+          "title": "Reliability"
+        },
+        {
+          "number": 7,
+          "title": "The Denial"
+        },
+        {
+          "number": 8,
+          "title": "Bulletin: The Steward"
+        },
+        {
+          "number": 9,
+          "title": "The Hearing"
+        },
+        {
+          "number": 10,
+          "title": "After the Hearing"
+        },
+        {
+          "number": 11,
+          "title": "The Facilitator"
+        },
+        {
+          "number": 12,
+          "title": "Minutes: The Quiet Charter"
+        },
+        {
+          "number": 13,
+          "title": "Constellation"
+        },
+        {
+          "number": 14,
+          "title": "The Price"
+        },
+        {
+          "number": 15,
+          "title": "Duty to Convey"
+        },
+        {
+          "number": 16,
+          "title": "Preparations"
+        },
+        {
+          "number": 17,
+          "title": "Circular: Marine Modernization"
+        },
+        {
+          "number": 18,
+          "title": "The Crossing, Out"
+        },
+        {
+          "number": 19,
+          "title": "The Crossing, Home"
+        },
+        {
+          "number": 20,
+          "title": "The Log of the Marion H."
+        },
+        {
+          "number": 21,
+          "title": "Administrative Resolution"
+        },
+        {
+          "number": 22,
+          "title": "The Hale Ruling"
+        }
+      ],
+      "audio": {
+        "status": "pending"
+      },
+      "links": {}
+    }
+  ]
+}
