@@ -1,12 +1,17 @@
 /* Drives Resources/fiction/fiction.js against a fake DOM.
 
-   Two states matter. Today every book is awaiting narration, and the room
-   must say so without pretending the transport works. The other state is
-   the one this page was built for: the same code, the same catalog shape,
-   with a narrated edition added — the transport comes alive, chapters
-   become seek targets and the captions light up word by word. Testing
-   both is what makes "add the audio fields and it just works" a claim
-   rather than a hope. */
+   Two states matter, and the shelf now holds both. Four books are still
+   awaiting narration, and the room must say so without pretending the
+   transport works. The Human Exception is narrated, and the same code
+   drives a live transport, seekable chapters and word-by-word captions —
+   fiction.js was never edited to make that happen, which is the whole
+   claim of the catalog contract.
+
+   The inert path is therefore tested against a synthetic all-pending
+   catalog rather than the published one: with a streaming book on the
+   shelf, the room rightly opens on it, and reconstructing the state the
+   shelf had last week is the only way to keep covering the path the four
+   remaining books still take. */
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -38,10 +43,33 @@ const NARRATED_ANCHORS = [
   { blockId: 'b2', timestamp: 10 },
 ];
 
-/* The published catalog with one book promoted to a complete narrated
-   edition — exactly the diff a real narration drop would make. */
-function withNarratedBook(slug = 'six-months-behind') {
+/* The shelf as it stood before any narration landed: every book inert,
+   every streaming field stripped back off. Reverting a book this way is
+   the exact inverse of what Tools/stage-fiction-book.mjs writes, so it
+   keeps describing the state the un-narrated books are really in. */
+function allPending() {
   const catalog = structuredClone(publishedCatalog);
+  for (const book of catalog.books) {
+    if (book.audio.status !== 'available') continue;
+    book.audio = { status: 'pending' };
+    book.production = { state: 'narration-in-progress', label: 'Narration in progress' };
+    delete book.durationSeconds;
+    delete book.text;
+    delete book.alignment;
+    delete book.editionNote;
+    for (const chapter of book.chapters) {
+      delete chapter.start;
+      delete chapter.end;
+    }
+  }
+  return catalog;
+}
+
+/* An all-pending shelf with one book promoted to a complete narrated
+   edition, on a short synthetic timeline — exactly the diff a narration
+   drop makes, small enough to assert caption-level behaviour against. */
+function withNarratedBook(slug = 'six-months-behind') {
+  const catalog = allPending();
   const book = catalog.books.find((candidate) => candidate.slug === slug);
   book.durationSeconds = 20;
   book.audio = {
@@ -181,11 +209,12 @@ async function bootPlayer({
 }
 
 const el = (harness, id) => harness.elements.get(id);
+const bootAwaiting = (options = {}) => bootPlayer({ catalog: allPending(), ...options });
 
-/* ── Awaiting narration: today's published state ───────── */
+/* ── Awaiting narration: the path four books are still on ─ */
 
 test('opens on the featured book and names it honestly', async () => {
-  const harness = await bootPlayer();
+  const harness = await bootAwaiting();
   assert.equal(harness.room.hidden, false);
   assert.equal(el(harness, 'bookTitle').textContent, 'Six Months Behind');
   assert.equal(harness.document.title,
@@ -197,7 +226,7 @@ test('opens on the featured book and names it honestly', async () => {
 });
 
 test('the transport stays dead while there is nothing to play', async () => {
-  const harness = await bootPlayer();
+  const harness = await bootAwaiting();
   for (const id of ['playPause', 'scrubber', 'back30', 'fwd30', 'speed']) {
     assert.equal(el(harness, id).disabled, true, `${id} must stay disabled`);
   }
@@ -208,7 +237,7 @@ test('the transport stays dead while there is nothing to play', async () => {
 });
 
 test('the caption panel carries the real opening lines, labelled as such', async () => {
-  const harness = await bootPlayer();
+  const harness = await bootAwaiting();
   const words = el(harness, 'captionWords');
   const excerpt = publishedCatalog.books[0].excerpt;
 
@@ -223,7 +252,7 @@ test('the caption panel carries the real opening lines, labelled as such', async
 });
 
 test('status reports the production state instead of implying playback', async () => {
-  const harness = await bootPlayer();
+  const harness = await bootAwaiting();
   const status = el(harness, 'status').textContent;
   assert.match(status, /^Narration queued —/);
   assert.match(status, /no audio to stream yet/);
@@ -231,7 +260,7 @@ test('status reports the production state instead of implying playback', async (
 });
 
 test('chapters list as plain rows, not controls, until they can be seeked', async () => {
-  const harness = await bootPlayer();
+  const harness = await bootAwaiting();
   const list = el(harness, 'chapterList');
   assert.equal(el(harness, 'chapterCount').textContent, '(34)');
   assert.equal(list.children.length, 34);
@@ -246,7 +275,7 @@ test('chapters list as plain rows, not controls, until they can be seeked', asyn
 });
 
 test('every shelf card renders with its coming-soon state', async () => {
-  const harness = await bootPlayer();
+  const harness = await bootAwaiting();
   const cards = el(harness, 'shelf').children;
   assert.equal(cards.length, 5);
 
@@ -268,21 +297,21 @@ test('every shelf card renders with its coming-soon state', async () => {
   assert.match(el(harness, 'shelfSub').textContent, /^Nothing is narrated yet/);
 });
 
-test('no dead format links ship while the manuscripts are unpublished', async () => {
-  const harness = await bootPlayer();
+test('a book with no published manuscript renders no format nav at all', async () => {
+  const harness = await bootAwaiting();
   assert.equal(el(harness, 'selectedFormats').hidden, true);
   assert.equal(el(harness, 'selectedFormats').children.length, 0);
 });
 
 test('an explicit ?book= opens that title', async () => {
-  const harness = await bootPlayer({ search: '?book=duty-of-care' });
+  const harness = await bootAwaiting({ search: '?book=duty-of-care' });
   assert.equal(el(harness, 'bookTitle').textContent, 'Duty of Care');
   assert.equal(el(harness, 'chapterCount').textContent, '(22)');
   assert.match(el(harness, 'status').textContent, /^Manuscript finished —/);
 });
 
 test('an unknown ?book= falls back to the featured title and says so', async () => {
-  const harness = await bootPlayer({ search: '?book=not-a-book' });
+  const harness = await bootAwaiting({ search: '?book=not-a-book' });
   assert.equal(el(harness, 'bookTitle').textContent, 'Six Months Behind');
   assert.equal(el(harness, 'status').textContent,
     'That book isn’t on the fiction shelf — showing Six Months Behind instead.');
@@ -303,7 +332,104 @@ test('an empty shelf hides the player rather than showing an empty instrument', 
   assert.match(el(harness, 'emptyState').textContent, /shelf is empty/);
 });
 
-/* ── Narrated: the state this room was built to reach ──── */
+/* ── The published shelf, exactly as it ships ──────────── */
+/* These run against Resources/fiction/books.json itself. They are the
+   proof that the contract paid off: The Human Exception was added to the
+   catalog and nothing in fiction.js changed. */
+
+const HUMAN_EXCEPTION = publishedCatalog.books.find((book) => book.slug === 'the-human-exception');
+
+test('the room opens on the narrated book, not the featured one', async () => {
+  const harness = await bootPlayer();
+  assert.equal(el(harness, 'bookTitle').textContent, 'The Human Exception');
+  assert.equal(harness.document.title,
+    'The Human Exception — Fiction Listening Room — KinNoKi Labs');
+  // Real runtime, not the "≈N h once narrated" estimate.
+  assert.equal(el(harness, 'bookByline').textContent,
+    'by Dan Fakkeldy · 24 chapters · ~58.3k words · 7:53:23');
+  assert.equal(el(harness, 'editionNote').hidden, false);
+  assert.match(el(harness, 'editionNote').textContent, /first listen/i);
+});
+
+test('the published stream is wired from the release asset', async () => {
+  const harness = await bootPlayer();
+  assert.equal(harness.audio.loadCalls, 1);
+  assert.equal(harness.audio.children.length, 1);
+  assert.equal(harness.audio.children[0].src, HUMAN_EXCEPTION.audio.url);
+  // GitHub serves the asset as application/octet-stream, so the element
+  // has to carry the real type or Safari will not touch it.
+  assert.equal(harness.audio.children[0].type, 'audio/mp4');
+  assert.deepEqual(harness.requestedUrls.slice(1).sort(), [
+    'books/the-human-exception/alignment.json',
+    'books/the-human-exception/blocks.json',
+  ]);
+});
+
+test('all twenty-four published chapters become seek controls', async () => {
+  const harness = await bootPlayer();
+  harness.audio.duration = HUMAN_EXCEPTION.durationSeconds;
+  harness.audio.dispatch('loadedmetadata');
+
+  assert.equal(el(harness, 'chapterCount').textContent, '(24)');
+  const buttons = descendants(el(harness, 'chapterList'), (node) => node.tagName === 'BUTTON');
+  assert.equal(buttons.length, 24);
+  assert.match(buttons[0].renderedText, /The Margin0:00/);
+  assert.equal(el(harness, 'timeTotal').textContent, '7:53:23');
+
+  buttons[23].dispatch('click');
+  assert.ok(Math.abs(harness.audio.currentTime - 26894.535) < 0.001, 'seeks into the last chapter');
+  assert.equal(el(harness, 'chapterNow').textContent, 'ch. 24 — The Guardian');
+});
+
+test('the published book offers its manuscript in every format it has', async () => {
+  const harness = await bootPlayer();
+  const links = el(harness, 'selectedFormats');
+  assert.equal(links.hidden, false);
+  assert.deepEqual(links.children.map((link) => link.textContent),
+    ['Read as Markdown', 'EPUB', 'Book folder']);
+  for (const link of links.children) {
+    assert.equal(link.target, '_blank');
+    assert.equal(link.rel, 'noopener');
+    assert.match(link.href, /^https:\/\/github\.com\/dfakkeldy\/explainer-audiobooks\//);
+  }
+});
+
+test('the published shelf marks the streaming title and counts it', async () => {
+  const harness = await bootPlayer();
+  const cards = el(harness, 'shelf').children;
+  assert.equal(cards.length, 5);
+  const streaming = cards[1];
+  assert.equal(streaming.classList.contains('is-playable'), true);
+  assert.equal(streaming.getAttribute('aria-current'), 'page', 'and it is the one on stage');
+  assert.equal(descendants(streaming, (node) => node.className === 'fic-badge').length, 0);
+  assert.match(el(harness, 'shelfSub').textContent, /^One novel is streaming now/);
+
+  // The other four keep saying so, plainly.
+  for (const card of [cards[0], cards[2], cards[3], cards[4]]) {
+    assert.equal(card.classList.contains('is-playable'), false);
+    assert.equal(descendants(card, (node) => node.className === 'fic-badge')[0].textContent, 'Coming soon');
+  }
+});
+
+test('an unknown ?book= now falls back to the streaming title and says so', async () => {
+  const harness = await bootPlayer({ search: '?book=not-a-book' });
+  assert.equal(el(harness, 'bookTitle').textContent, 'The Human Exception');
+  assert.equal(el(harness, 'status').textContent,
+    'That book isn’t on the fiction shelf — playing The Human Exception instead.');
+  assert.equal(el(harness, 'status').classList.contains('error'), true);
+});
+
+test('an un-narrated title still opens inert while another book streams', async () => {
+  const harness = await bootPlayer({ search: '?book=six-months-behind' });
+  assert.equal(el(harness, 'bookTitle').textContent, 'Six Months Behind');
+  for (const id of ['playPause', 'scrubber', 'back30', 'fwd30', 'speed']) {
+    assert.equal(el(harness, id).disabled, true, `${id} must stay disabled`);
+  }
+  assert.equal(harness.audio.loadCalls, 0, 'the other book’s stream is never fetched');
+  assert.match(el(harness, 'status').textContent, /^Narration queued —/);
+});
+
+/* ── Narrated mechanics, on a short synthetic timeline ─── */
 
 test('a narrated edition takes the stage over the featured book', async () => {
   const harness = await bootPlayer({ catalog: withNarratedBook('duty-of-care') });

@@ -10,8 +10,11 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
+import { createRequire } from 'node:module';
 
+const require = createRequire(import.meta.url);
+const core = require('../../Resources/listen/listen-core.js');
 const fictionRoot = new URL('../../Resources/fiction/', import.meta.url);
 const catalog = JSON.parse(readFileSync(new URL('books.json', fictionRoot), 'utf8'));
 
@@ -34,6 +37,12 @@ const productionStates = new Set([
   'narration-in-progress',
   'manuscript-finished',
   'illustrated-draft',
+  // Narrated and streaming. `first-listen` is the honest interim state:
+  // the package and audio checks passed, the human reading and listening
+  // reviews have not closed yet. Tools/stage-fiction-book.mjs picks
+  // between the two from the source receipt.
+  'first-listen',
+  'published',
 ]);
 const formatKeys = ['read', 'epub', 'folder'];
 
@@ -124,8 +133,13 @@ for (const book of catalog.books) {
       return;
     }
 
-    assert.match(audio.url, /^https:\/\/raw\.githubusercontent\.com\/dfakkeldy\/explainer-audiobooks\/[0-9a-f]{40}\//,
-      'a streaming URL is pinned to an exact source commit');
+    /* Pinned to something immutable, either way: a commit SHA when the
+       M4B is committed, or a release tag when it is attached to a release
+       (the fiction M4Bs are 100 MB+, so they ship as release assets). */
+    const commitPinned = /^https:\/\/raw\.githubusercontent\.com\/dfakkeldy\/explainer-audiobooks\/[0-9a-f]{40}\//;
+    const releasePinned = /^https:\/\/github\.com\/dfakkeldy\/explainer-audiobooks\/releases\/download\/[A-Za-z0-9._-]+\//;
+    assert.ok(commitPinned.test(audio.url) || releasePinned.test(audio.url),
+      `streaming URL must be pinned to a commit or a release tag, got ${audio.url}`);
     assert.ok(audio.url.endsWith('.m4b'));
     assert.equal(typeof audio.mimeType, 'string');
     assert.ok(book.durationSeconds > 0);
@@ -143,6 +157,64 @@ for (const book of catalog.books) {
     assert.ok(Math.abs(previousEnd - book.durationSeconds) < 1,
       'the last chapter ends at the audio duration');
   });
+
+  /* A streaming book ships a read-along package too, and the karaoke
+     captions are only as good as the join between them: every sidecar
+     anchor has to name a block that exists and carry that block's exact
+     words. Tools/stage-fiction-book.mjs proves this before it writes the
+     catalog; this re-proves it against what actually shipped, because the
+     two files travel independently once they are in Resources. */
+  if (book.audio.status === 'available') {
+    test(`${book.slug} read-along package reconciles with its sidecar`, () => {
+      const blocksFile = new URL(book.text.blocks, fictionRoot);
+      const sidecarFile = new URL(book.alignment.sidecar, fictionRoot);
+      assert.ok(existsSync(blocksFile), `${book.text.blocks} is missing`);
+      assert.ok(existsSync(sidecarFile), `${book.alignment.sidecar} is missing`);
+
+      const blocks = JSON.parse(readFileSync(blocksFile, 'utf8')).blocks;
+      const anchors = JSON.parse(readFileSync(sidecarFile, 'utf8'));
+      assert.ok(blocks.length > 0);
+      assert.ok(anchors.length > 0);
+
+      const byId = new Map(blocks.map((block) => [block.id, block]));
+      assert.equal(byId.size, blocks.length, 'block ids are unique');
+
+      const unresolved = anchors.filter((anchor) => !byId.has(anchor.blockId));
+      assert.equal(unresolved.length, 0,
+        `${unresolved.length} anchors name blocks that do not exist, first ${unresolved[0]?.blockId}`);
+
+      let mismatched = 0;
+      for (const anchor of anchors) {
+        if (!anchor.words || anchor.words.length === 0) continue;
+        const spoken = anchor.words.map((word) => word.word).join(' ');
+        if (spoken !== byId.get(anchor.blockId).text) mismatched += 1;
+      }
+      assert.equal(mismatched, 0, `${mismatched} anchors disagree with their block text`);
+
+      // Every figure the slideshow could raise must be on disk.
+      for (const block of blocks.filter((candidate) => candidate.kind === 'image')) {
+        assert.ok(existsSync(new URL(block.imagePath, fictionRoot)),
+          `${block.imagePath} is referenced by ${block.id} but not published`);
+      }
+
+      // And the player's own timeline builder must keep all of it.
+      const timeline = core.buildTimeline(anchors, blocks, book.durationSeconds);
+      assert.equal(timeline.droppedAnchorCount, 0, 'the player drops no anchors');
+      assert.equal(timeline.rows.length, anchors.length);
+      assert.ok(timeline.rows.at(-1).end <= book.durationSeconds + 1,
+        'the last caption row ends within the audio');
+    });
+  }
+
+  /* Streaming before the human reviews close is allowed, but it has to be
+     said on the page — editionNote is what says it. */
+  if (book.production.state === 'first-listen') {
+    test(`${book.slug} discloses that its human review is still open`, () => {
+      assert.equal(typeof book.editionNote, 'string');
+      assert.match(book.editionNote, /first listen/i);
+      assert.match(book.editionNote, /review/i);
+    });
+  }
 }
 
 test('the shelf is honest about narration while no book is streamable', () => {
