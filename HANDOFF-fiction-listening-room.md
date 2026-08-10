@@ -30,3 +30,32 @@ Branch claude/fiction-listening-room-b6bf60 — PR open.
 Next: add format links to Resources/fiction/books.json once the manuscripts
 are public in dfakkeldy/explainer-audiobooks, then `make generate && make test-fiction`.
 ```
+
+## 2026-08-09 — The Human Exception is live
+
+Done:
+- `Tools/stage-fiction-book.mjs` stages one narrated book from the public
+  explainer-audiobooks package: verifies receipt hashes and public gates,
+  derives blocks.json from the EPUB spine, and proves all 3,523 sidecar
+  anchors resolve and match their block text before writing.
+- The Human Exception now streams — 24 chapters, 7:53:23, from the GitHub
+  **release asset** (the M4B is 123 MB, too big for the repo). `fiction.js`
+  was not touched; the catalog contract turned the player on by itself.
+- Contract widened for release-tag-pinned URLs; production states gained
+  `first-listen`/`published`; the inert player tests now run against a
+  synthetic all-pending catalog and new tests drive the real one.
+- 68 fiction tests + full `make test` pass. Verified live in-browser:
+  real range-streamed playback, word-level karaoke off the real sidecar,
+  chapter seeking, speed ladder, position memory, both themes, 375/1280.
+
+Next:
+- Close the human reading/listening review, then re-run the stager so
+  `production.state` flips to `published` and the first-listen note drops.
+- Stage the other four books the same way as narration lands.
+
+Resume:
+```
+Worktree /Users/dfakkeldy/Developer/KinNoKiLabsSite/.claude/worktrees/fiction-listening-room-b6bf60
+Branch claude/fiction-listening-room-b6bf60 — PR #101 open.
+Next: node Tools/stage-fiction-book.mjs <slug> && make generate && make test
+```

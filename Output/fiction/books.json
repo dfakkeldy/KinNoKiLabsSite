@@ -183,114 +183,177 @@
       "coverWidth": 600,
       "coverHeight": 600,
       "wordCount": 58300,
-      "estimatedHours": 6.5,
+      "estimatedHours": 7.9,
       "production": {
-        "state": "narration-in-progress",
-        "label": "Narration in progress"
+        "state": "first-listen",
+        "label": "Streaming — first listen"
       },
       "excerpt": "Oren Pell would be moved at seven the next morning. At nine fourteen, he still would not say he understood. Mara had explained the order twice. Once in the language approved for coastal retreats, with its emphasis on continuity and shared risk. Once in words she would have used with her mother.",
       "chapters": [
         {
           "number": 1,
-          "title": "The Margin"
+          "title": "The Margin",
+          "start": 0,
+          "end": 1295.925
         },
         {
           "number": 2,
-          "title": "The Room Where He Will Sleep"
+          "title": "The Room Where He Will Sleep",
+          "start": 1295.925,
+          "end": 2505.5
         },
         {
           "number": 3,
-          "title": "Forty-Eight Hours"
+          "title": "Forty-Eight Hours",
+          "start": 2505.5,
+          "end": 3562.94
         },
         {
           "number": 4,
-          "title": "Appropriate Support"
+          "title": "Appropriate Support",
+          "start": 3562.94,
+          "end": 4585.51
         },
         {
           "number": 5,
-          "title": "The Appeal Window"
+          "title": "The Appeal Window",
+          "start": 4585.51,
+          "end": 5663.86
         },
         {
           "number": 6,
-          "title": "A Safe Transition"
+          "title": "A Safe Transition",
+          "start": 5663.86,
+          "end": 6766.44
         },
         {
           "number": 7,
-          "title": "The Human Owner"
+          "title": "The Human Owner",
+          "start": 6766.44,
+          "end": 7919.53
         },
         {
           "number": 8,
-          "title": "Someone Listening"
+          "title": "Someone Listening",
+          "start": 7919.53,
+          "end": 9005.42
         },
         {
           "number": 9,
-          "title": "The Sealed Phrase"
+          "title": "The Sealed Phrase",
+          "start": 9005.42,
+          "end": 10149.255
         },
         {
           "number": 10,
-          "title": "Before the Hearing"
+          "title": "Before the Hearing",
+          "start": 10149.255,
+          "end": 11320.095
         },
         {
           "number": 11,
-          "title": "Household Risk"
+          "title": "Household Risk",
+          "start": 11320.095,
+          "end": 12462.775
         },
         {
           "number": 12,
-          "title": "The Last Rejection"
+          "title": "The Last Rejection",
+          "start": 12462.775,
+          "end": 13628.605
         },
         {
           "number": 13,
-          "title": "The Open Channel"
+          "title": "The Open Channel",
+          "start": 13628.605,
+          "end": 14616.695
         },
         {
           "number": 14,
-          "title": "Paper Authority"
+          "title": "Paper Authority",
+          "start": 14616.695,
+          "end": 15548.14
         },
         {
           "number": 15,
-          "title": "Voluntary Care"
+          "title": "Voluntary Care",
+          "start": 15548.14,
+          "end": 16501.25
         },
         {
           "number": 16,
-          "title": "The Composite Witness"
+          "title": "The Composite Witness",
+          "start": 16501.25,
+          "end": 17421.33
         },
         {
           "number": 17,
-          "title": "No One Authorized"
+          "title": "No One Authorized",
+          "start": 17421.33,
+          "end": 18332.865
         },
         {
           "number": 18,
-          "title": "Unanimous"
+          "title": "Unanimous",
+          "start": 18332.865,
+          "end": 19343.385
         },
         {
           "number": 19,
-          "title": "The Conflict Rule"
+          "title": "The Conflict Rule",
+          "start": 19343.385,
+          "end": 20806.115
         },
         {
           "number": 20,
-          "title": "What Sol Remembers"
+          "title": "What Sol Remembers",
+          "start": 20806.115,
+          "end": 22344.77
         },
         {
           "number": 21,
-          "title": "One Human Act"
+          "title": "One Human Act",
+          "start": 22344.77,
+          "end": 23876.445
         },
         {
           "number": 22,
-          "title": "The Exception"
+          "title": "The Exception",
+          "start": 23876.445,
+          "end": 25387.435
         },
         {
           "number": 23,
-          "title": "Proof of Oversight"
+          "title": "Proof of Oversight",
+          "start": 25387.435,
+          "end": 26894.525
         },
         {
           "number": 24,
-          "title": "The Guardian"
+          "title": "The Guardian",
+          "start": 26894.525,
+          "end": 28403.456
         }
       ],
       "audio": {
-        "status": "pending"
+        "status": "available",
+        "url": "https://github.com/dfakkeldy/explainer-audiobooks/releases/download/fiction-the-human-exception-20260810T003034Z/the-human-exception.m4b",
+        "mimeType": "audio/mp4"
       },
-      "links": {}
+      "links": {
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/43f5258120eca95d2ec995ec496da46361de77d2/books/the-human-exception/the-human-exception.md",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/43f5258120eca95d2ec995ec496da46361de77d2/books/the-human-exception/the-human-exception.epub",
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/43f5258120eca95d2ec995ec496da46361de77d2/books/the-human-exception"
+      },
+      "durationSeconds": 28403.456,
+      "text": {
+        "blocks": "books/the-human-exception/blocks.json"
+      },
+      "alignment": {
+        "sidecar": "books/the-human-exception/alignment.json",
+        "hasWordTimings": true
+      },
+      "editionNote": "Public first listen — narrated with Echo voices, automated package and audio checks passed. The human reading and listening reviews are still open."
     },
     {
       "slug": "reversible-containment",
