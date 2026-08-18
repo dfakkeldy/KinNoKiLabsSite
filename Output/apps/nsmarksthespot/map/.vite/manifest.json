@@ -12,7 +12,7 @@
     "name": "pako.esm"
   },
   "index.html": {
-    "file": "assets/index-BUHpIqmN.js",
+    "file": "assets/index-v2vrhPPZ.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
@@ -54,7 +54,7 @@
     ]
   },
   "node_modules/geotiff/dist-module/compression/lerc.js": {
-    "file": "assets/lerc-Cu_TqIQG.js",
+    "file": "assets/lerc-BjQr2ya0.js",
     "name": "lerc",
     "src": "node_modules/geotiff/dist-module/compression/lerc.js",
     "isDynamicEntry": true,
@@ -101,7 +101,7 @@
     ]
   },
   "node_modules/pdfjs-dist/build/pdf.mjs": {
-    "file": "assets/pdf-CJvXGg4c.js",
+    "file": "assets/pdf-CR9W8-Yz.js",
     "name": "pdf",
     "src": "node_modules/pdfjs-dist/build/pdf.mjs",
     "isDynamicEntry": true,
@@ -120,7 +120,7 @@
     "isDynamicEntry": true
   },
   "src/userMaps/parsers/parseGeoPdfAuto.ts": {
-    "file": "assets/parseGeoPdfAuto-BweRe702.js",
+    "file": "assets/parseGeoPdfAuto-DGBHuswK.js",
     "name": "parseGeoPdfAuto",
     "src": "src/userMaps/parsers/parseGeoPdfAuto.ts",
     "isDynamicEntry": true,
