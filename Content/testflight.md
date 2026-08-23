@@ -12,7 +12,7 @@ You can also [learn more about Turn Timer](/apps/visualtimer).
 
 ## Echo
 
-Echo is an audiobook player that helps you remember what you heard with word-perfect read-along, one-tap flashcards, and private study tools.
+An audiobook player built for studying, not just listening.
 
 [Join the Echo beta on TestFlight](https://testflight.apple.com/join/Zu9rzg59)
 

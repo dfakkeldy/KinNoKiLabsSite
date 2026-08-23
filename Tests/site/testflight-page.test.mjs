@@ -16,6 +16,7 @@ test('publishes the TestFlight page with the public Turn Timer and Echo betas', 
     /href="https:\/\/testflight\.apple\.com\/join\/s7w4YGWU"/,
   );
   assert.match(html, /<h2>Echo<\/h2>/);
+  assert.match(html, /An audiobook player built for studying, not just listening\./);
   assert.match(
     html,
     /href="https:\/\/testflight\.apple\.com\/join\/Zu9rzg59"/,
