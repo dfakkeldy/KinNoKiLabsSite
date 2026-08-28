@@ -7,41 +7,64 @@
     "file": "assets/basedecoder-B9MSveFr.js",
     "name": "basedecoder"
   },
+  "_browser-D2DSDVPX.js": {
+    "file": "assets/browser-D2DSDVPX.js",
+    "name": "browser",
+    "imports": [
+      "_rolldown-runtime-Bh1tDfsg.js"
+    ]
+  },
+  "_es-DI-oXF75.js": {
+    "file": "assets/es-DI-oXF75.js",
+    "name": "es",
+    "imports": [
+      "_rolldown-runtime-Bh1tDfsg.js"
+    ]
+  },
+  "_globals-YdvHr6fO.js": {
+    "file": "assets/globals-YdvHr6fO.js",
+    "name": "globals"
+  },
   "_pako.esm-CKAy9xRv.js": {
     "file": "assets/pako.esm-CKAy9xRv.js",
     "name": "pako.esm"
   },
+  "_rolldown-runtime-Bh1tDfsg.js": {
+    "file": "assets/rolldown-runtime-Bh1tDfsg.js",
+    "name": "rolldown-runtime"
+  },
   "index.html": {
-    "file": "assets/index-B0rzkFnu.js",
+    "file": "assets/index-Dorq97Vn.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
+    "imports": [
+      "_rolldown-runtime-Bh1tDfsg.js"
+    ],
     "dynamicImports": [
       "src/data/invernessHydroPotential.json",
-      "node_modules/geotiff/dist-module/compression/raw.js",
-      "node_modules/geotiff/dist-module/compression/lzw.js",
-      "node_modules/geotiff/dist-module/compression/jpeg.js",
-      "node_modules/geotiff/dist-module/compression/deflate.js",
-      "node_modules/geotiff/dist-module/compression/packbits.js",
-      "node_modules/geotiff/dist-module/compression/lerc.js",
-      "node_modules/geotiff/dist-module/compression/webimage.js",
-      "src/userMaps/parsers/parseGeoPdfAuto.ts"
+      "src/userMaps/vector/edit/EditableVectorLayer.tsx",
+      "src/userMaps/parsers/geoTiffSource.ts",
+      "src/userMaps/parsers/parseGeoPdfAuto.ts",
+      "src/userMaps/vector/parsers/shapefileZipSource.ts",
+      "src/components/print/PrintPreview.tsx",
+      "src/print/pdf/ExportDialog.tsx"
     ],
     "css": [
-      "assets/index-9ipui5w0.css"
+      "assets/index-D8mg-BTo.css"
     ],
     "assets": [
       "assets/app-icon-BBr7QGUC.svg"
     ]
   },
   "node_modules/geotiff/dist-module/compression/deflate.js": {
-    "file": "assets/deflate-BmA-yNE8.js",
+    "file": "assets/deflate-BozfHi3H.js",
     "name": "deflate",
     "src": "node_modules/geotiff/dist-module/compression/deflate.js",
     "isDynamicEntry": true,
     "imports": [
-      "_basedecoder-B9MSveFr.js",
-      "_pako.esm-CKAy9xRv.js"
+      "_pako.esm-CKAy9xRv.js",
+      "_basedecoder-B9MSveFr.js"
     ]
   },
   "node_modules/geotiff/dist-module/compression/jpeg.js": {
@@ -54,14 +77,15 @@
     ]
   },
   "node_modules/geotiff/dist-module/compression/lerc.js": {
-    "file": "assets/lerc-vymI8Ahq.js",
+    "file": "assets/lerc-YVW2KHNa.js",
     "name": "lerc",
     "src": "node_modules/geotiff/dist-module/compression/lerc.js",
     "isDynamicEntry": true,
     "imports": [
+      "_rolldown-runtime-Bh1tDfsg.js",
+      "_pako.esm-CKAy9xRv.js",
       "_basedecoder-B9MSveFr.js",
-      "index.html",
-      "_pako.esm-CKAy9xRv.js"
+      "_globals-YdvHr6fO.js"
     ]
   },
   "node_modules/geotiff/dist-module/compression/lzw.js": {
@@ -101,7 +125,7 @@
     ]
   },
   "node_modules/pdfjs-dist/build/pdf.mjs": {
-    "file": "assets/pdf-BNKyZv7-.js",
+    "file": "assets/pdf-CLL6Ccxh.js",
     "name": "pdf",
     "src": "node_modules/pdfjs-dist/build/pdf.mjs",
     "isDynamicEntry": true,
@@ -113,25 +137,91 @@
     "file": "assets/pdf.worker.min-DEtVeC4l.mjs",
     "src": "node_modules/pdfjs-dist/build/pdf.worker.min.mjs"
   },
+  "src/components/print/PrintPreview.tsx": {
+    "file": "assets/PrintPreview-C4HQ_fsN.js",
+    "name": "PrintPreview",
+    "src": "src/components/print/PrintPreview.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_rolldown-runtime-Bh1tDfsg.js",
+      "index.html",
+      "_browser-D2DSDVPX.js"
+    ]
+  },
   "src/data/invernessHydroPotential.json": {
     "file": "assets/invernessHydroPotential-B-PpQR9l.js",
     "name": "invernessHydroPotential",
     "src": "src/data/invernessHydroPotential.json",
     "isDynamicEntry": true
   },
+  "src/print/pdf/ExportDialog.tsx": {
+    "file": "assets/ExportDialog-DTggUtui.js",
+    "name": "ExportDialog",
+    "src": "src/print/pdf/ExportDialog.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_rolldown-runtime-Bh1tDfsg.js",
+      "index.html",
+      "_browser-D2DSDVPX.js",
+      "_es-DI-oXF75.js"
+    ]
+  },
+  "src/userMaps/parsers/geoTiffSource.ts": {
+    "file": "assets/geoTiffSource-Bxyxv7lH.js",
+    "name": "geoTiffSource",
+    "src": "src/userMaps/parsers/geoTiffSource.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "_rolldown-runtime-Bh1tDfsg.js",
+      "index.html",
+      "_globals-YdvHr6fO.js"
+    ],
+    "dynamicImports": [
+      "node_modules/geotiff/dist-module/compression/raw.js",
+      "node_modules/geotiff/dist-module/compression/lzw.js",
+      "node_modules/geotiff/dist-module/compression/jpeg.js",
+      "node_modules/geotiff/dist-module/compression/deflate.js",
+      "node_modules/geotiff/dist-module/compression/packbits.js",
+      "node_modules/geotiff/dist-module/compression/lerc.js",
+      "node_modules/geotiff/dist-module/compression/webimage.js"
+    ]
+  },
   "src/userMaps/parsers/parseGeoPdfAuto.ts": {
-    "file": "assets/parseGeoPdfAuto-bO1yw808.js",
+    "file": "assets/parseGeoPdfAuto-Dv-vZM1a.js",
     "name": "parseGeoPdfAuto",
     "src": "src/userMaps/parsers/parseGeoPdfAuto.ts",
     "isDynamicEntry": true,
     "imports": [
-      "index.html"
+      "index.html",
+      "_es-DI-oXF75.js"
     ],
     "dynamicImports": [
       "node_modules/pdfjs-dist/build/pdf.mjs"
     ],
     "assets": [
       "assets/pdf.worker.min-DEtVeC4l.mjs"
+    ]
+  },
+  "src/userMaps/vector/edit/EditableVectorLayer.tsx": {
+    "file": "assets/EditableVectorLayer-TbV0qTu4.js",
+    "name": "EditableVectorLayer",
+    "src": "src/userMaps/vector/edit/EditableVectorLayer.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_rolldown-runtime-Bh1tDfsg.js",
+      "index.html"
+    ],
+    "css": [
+      "assets/EditableVectorLayer-Dy_futJD.css"
+    ]
+  },
+  "src/userMaps/vector/parsers/shapefileZipSource.ts": {
+    "file": "assets/shapefileZipSource-B4j7oI7I.js",
+    "name": "shapefileZipSource",
+    "src": "src/userMaps/vector/parsers/shapefileZipSource.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html"
     ]
   }
 }
