@@ -34,7 +34,7 @@
     "name": "rolldown-runtime"
   },
   "index.html": {
-    "file": "assets/index-B-UlZSxs.js",
+    "file": "assets/index-BDRNAaOR.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
@@ -51,7 +51,7 @@
       "src/print/pdf/ExportDialog.tsx"
     ],
     "css": [
-      "assets/index-D8mg-BTo.css"
+      "assets/index-DZCuE082.css"
     ],
     "assets": [
       "assets/app-icon-BBr7QGUC.svg"
@@ -125,7 +125,7 @@
     ]
   },
   "node_modules/pdfjs-dist/build/pdf.mjs": {
-    "file": "assets/pdf-CRYUTZor.js",
+    "file": "assets/pdf-3vPZqZ52.js",
     "name": "pdf",
     "src": "node_modules/pdfjs-dist/build/pdf.mjs",
     "isDynamicEntry": true,
@@ -138,7 +138,7 @@
     "src": "node_modules/pdfjs-dist/build/pdf.worker.min.mjs"
   },
   "src/components/print/PrintPreview.tsx": {
-    "file": "assets/PrintPreview-C4McpE36.js",
+    "file": "assets/PrintPreview-CU5tH5ku.js",
     "name": "PrintPreview",
     "src": "src/components/print/PrintPreview.tsx",
     "isDynamicEntry": true,
@@ -155,7 +155,7 @@
     "isDynamicEntry": true
   },
   "src/print/pdf/ExportDialog.tsx": {
-    "file": "assets/ExportDialog-SY-7mg1F.js",
+    "file": "assets/ExportDialog-C4jqEqAR.js",
     "name": "ExportDialog",
     "src": "src/print/pdf/ExportDialog.tsx",
     "isDynamicEntry": true,
@@ -167,7 +167,7 @@
     ]
   },
   "src/userMaps/parsers/geoTiffSource.ts": {
-    "file": "assets/geoTiffSource-Cx2UKAk_.js",
+    "file": "assets/geoTiffSource-DMcbb69b.js",
     "name": "geoTiffSource",
     "src": "src/userMaps/parsers/geoTiffSource.ts",
     "isDynamicEntry": true,
@@ -187,7 +187,7 @@
     ]
   },
   "src/userMaps/parsers/parseGeoPdfAuto.ts": {
-    "file": "assets/parseGeoPdfAuto-XSOc6D1-.js",
+    "file": "assets/parseGeoPdfAuto-DrIFYDF-.js",
     "name": "parseGeoPdfAuto",
     "src": "src/userMaps/parsers/parseGeoPdfAuto.ts",
     "isDynamicEntry": true,
@@ -203,7 +203,7 @@
     ]
   },
   "src/userMaps/vector/edit/EditableVectorLayer.tsx": {
-    "file": "assets/EditableVectorLayer-DxDUshwD.js",
+    "file": "assets/EditableVectorLayer-Cs-3I6TJ.js",
     "name": "EditableVectorLayer",
     "src": "src/userMaps/vector/edit/EditableVectorLayer.tsx",
     "isDynamicEntry": true,
@@ -216,7 +216,7 @@
     ]
   },
   "src/userMaps/vector/parsers/shapefileZipSource.ts": {
-    "file": "assets/shapefileZipSource-Db-Sj3mb.js",
+    "file": "assets/shapefileZipSource-DctIhC0c.js",
     "name": "shapefileZipSource",
     "src": "src/userMaps/vector/parsers/shapefileZipSource.ts",
     "isDynamicEntry": true,
