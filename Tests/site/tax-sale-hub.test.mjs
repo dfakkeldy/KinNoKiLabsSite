@@ -28,24 +28,29 @@ test('publishes the short Nova Scotia tax-sale hub route', () => {
 });
 
 test('keeps only upcoming posted dates in the current sale desk', () => {
-  assert.doesNotMatch(generated, /Tuesday, July 21 at 11:00 a\.m\./);
-  assert.doesNotMatch(generated, /CBRM · 11:00 a\.m\./);
-  assert.match(generated, /Tuesday, August 11 at 9:30 a\.m\./);
-  assert.match(generated, /Thursday, August 20 at 10:00 a\.m\./);
+  assert.doesNotMatch(generated, /Inverness County · 9:30 a\.m\./);
+  assert.doesNotMatch(generated, /35 advertised rows/);
+  assert.doesNotMatch(generated, /39 current mapped PIDs/);
+  assert.match(generated, /August<\/strong><small>Annapolis County · tenders close 1:00 p\.m\.<\/small>/);
+  assert.match(generated, /<strong>1<\/strong> advertised row/);
+  assert.match(generated, /<strong>1<\/strong> active mapped PID/);
+  assert.match(generated, /36 current mapped PIDs across three notices/);
   assert.match(generated, /Monday, August 31; tenders close at 1:00 p\.m\./);
-  assert.match(generated, /https:\/\/invernesscounty\.ca\/services\/finance-taxation\/tax-sales\//);
-  assert.match(generated, /https:\/\/www\.discovermiddleton\.ca\/property-tax-sale-information/);
+  assert.match(generated, /Monday, September 14; tenders close at 12:00 noon/);
+  assert.match(generated, /Tuesday, September 15; tenders close at 10:00 a\.m\./);
   assert.match(generated, /https:\/\/annapoliscounty\.ca\/tax-finance\/tax-sale/);
-  assert.match(generated, /35 advertised rows · 10 withdrawn rows · 35 active PIDs mapped/);
-  assert.match(generated, /3 advertised rows · 0 withdrawn rows · 3 active PIDs mapped/);
+  assert.match(generated, /https:\/\/victoriacounty\.com\/residents\/property-taxation-services\/tax-sales\//);
+  assert.match(generated, /https:\/\/www\.halifax\.ca\/home-property\/property-taxes\/tax-sale/);
   assert.match(generated, /1 advertised row · 0 withdrawn rows · 1 active PID mapped/);
-  assert.match(generated, /<strong>35<\/strong> advertised rows/);
-  assert.match(generated, /<strong>35<\/strong> active mapped PIDs/);
-  assert.match(generated, /39 current mapped PIDs across three notices/);
-  assert.match(generated, /Three current municipal notices · 39 active PIDs/);
-  assert.match(generated, /Inverness notice re-checked August 7, 2026 · Middleton snapshot August 4 · Annapolis snapshot July 23/);
+  assert.match(generated, /7 advertised rows · 2 opaque source rows excluded · 7 active PIDs mapped/);
+  assert.match(generated, /29 advertised rows · 0 withdrawn rows · 28 of 30 PIDs mapped \(2 lack provincial parcel geometry\)/);
+  assert.match(generated, /Annapolis snapshot July 23, 2026 · Halifax snapshot August 18 · Victoria snapshot August 20/);
   assert.doesNotMatch(generated, /CBRM \+ Inverness County notices/);
-  assert.match(generated, /<span>Mapped now<\/span><strong>Three current municipal notices · 39 active PIDs<\/strong>/);
+  assert.match(generated, /<span>Mapped now<\/span><strong>Three current municipal notices · 36 active PIDs<\/strong>/);
+  assert.match(
+    generated,
+    /<span>Current notice<\/span><strong>Halifax tax-sale page<\/strong>/,
+  );
   assert.match(
     generated,
     /<span>Past event source<\/span><strong>CBRM tax-sales page<\/strong>/,
@@ -55,6 +60,27 @@ test('keeps only upcoming posted dates in the current sale desk', () => {
     3,
   );
   assert.match(generated, /Posted does not mean final\./);
+});
+
+test('presents passed sale dates as past without claiming outcomes', () => {
+  assert.equal(
+    generated.match(/class="tax-date-card tax-date-past reveal"/g)?.length,
+    2,
+  );
+  assert.equal(generated.match(/Sale date passed · Verify results/g)?.length, 2);
+  assert.match(generated, /Advertised for Tuesday, August 11 at 9:30 a\.m\./);
+  assert.match(generated, /Advertised for Thursday, August 20 at 10:00 a\.m\./);
+  assert.equal(
+    generated.match(
+      /A past date is not evidence of outcome—verify results and current status with the municipality\./g,
+    )?.length,
+    2,
+  );
+  assert.match(generated, /Last notice snapshot August 10: 27 advertised rows · 18 withdrawn rows/);
+  assert.match(generated, /Last notice snapshot August 18: 2 advertised rows · 0 withdrawn rows/);
+  assert.match(generated, /https:\/\/invernesscounty\.ca\/services\/finance-taxation\/tax-sales\//);
+  assert.match(generated, /https:\/\/www\.discovermiddleton\.ca\/property-tax-sale-information/);
+  assert.doesNotMatch(generated, /\b(?:un)?sold\b/i);
 });
 
 test('shows truthful format status and connects the existing app page', () => {

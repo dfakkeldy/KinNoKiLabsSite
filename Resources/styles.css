@@ -1941,6 +1941,9 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .tax-status-active::before,
 .tax-status-soon::before { content: '●'; }
 .tax-date-actions { display: grid; gap: 14px; justify-items: start; }
+.tax-past-heading { margin: clamp(60px, 9vw, 110px) 0 0; color: var(--tax-muted); font: 0.65rem var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; }
+.tax-past-list { margin-top: 24px; }
+.tax-date-card.tax-date-past .tax-date-calendar { border-top-color: var(--tax-line); opacity: 0.55; }
 .tax-date-actions a,
 .tax-format-card a { color: var(--tax-accent-strong); font-size: 0.82rem; font-weight: 650; text-decoration: none; border-bottom: 1px solid currentColor; }
 .tax-date-actions a:hover,
