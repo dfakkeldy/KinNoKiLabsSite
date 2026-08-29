@@ -4,15 +4,15 @@ description: Historical Nova Scotia maps, lined up with the map in your hand.
 image: /images/apps/nsmarksthespot.svg
 accent: #12343b
 tagline: Historical maps, live in your pocket.
-platforms: iPhone
-status: TestFlight — v1.0 candidate
+platforms: Browser, iPhone
+status: Live browser map
 ---
 
 NS Marks The Spot lets you slide Nova Scotia's Fletcher maps over today's landscape and see old roads, lakes, and landmarks line up under your thumb.
 
 ## Where it stands
 
-NS Marks The Spot is a v1.0 candidate. TestFlight builds are running and App Store readiness work is in progress — it is not on the App Store yet.
+The current product focus is the **browser map**, live at [/apps/nsmarksthespot/map/](/apps/nsmarksthespot/map/). It draws your live location (GPS) in the browser and keeps that reading on-device. The native iPhone app is a separate surface with TestFlight builds; it is not on the App Store.
 
 ## Every slider pull is a little time travel
 
@@ -22,6 +22,7 @@ NS Marks The Spot turns archival Nova Scotia maps into a practical companion for
 
 - **Georeferenced history:** Historical raster tiles sit exactly where they belong over the modern map.
 - **Instant transparency:** A dedicated overlay control fades the old map over the new one, so you can compare them on the spot.
+- **Live location:** Optional browser GPS places you on the same map — the reading stays in that browser.
 - **POI discoveries:** Waterfalls and other points of interest can appear as clean vector layers.
 - **Offline-first tiles:** Disk and memory caching keep panning smooth when the best places have weak signal.
 

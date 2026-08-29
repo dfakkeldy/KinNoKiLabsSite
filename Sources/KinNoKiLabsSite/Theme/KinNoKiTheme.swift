@@ -870,7 +870,7 @@ private func homeMain() -> Node<HTML.BodyContext> {
             <img src="/images/apps/echo.png" alt="Echo app icon — an infinity symbol in silver and gold" style="width:84px;height:84px;border-radius:22.37%;box-shadow:0 2px 10px rgba(0,0,0,0.25);margin-bottom:22px;">
             <h2 style="font-weight:600;font-size:clamp(28px,3.4vw,38px);line-height:1.12;letter-spacing:-0.02em;margin:0 0 8px;">Echo</h2>
             <p style="font-size:16.5px;font-weight:500;color:var(--gold-text);margin:0 0 14px;">For Every Mind — turn listening into learning.</p>
-            <p style="font-size:16px;color:var(--text-muted);margin:0 0 22px;text-wrap:pretty;">The audiobook player that helps you remember what you heard. Built on a mail route: 956 commits in nine weeks, for an AuDHD brain that learns in stolen, interrupted minutes.</p>
+            <p style="font-size:16px;color:var(--text-muted);margin:0 0 22px;text-wrap:pretty;">The audiobook player that helps you remember what you heard. Built on a mail route, nights and weekends, for an AuDHD brain that learns in stolen, interrupted minutes.</p>
             <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
               <div style="display:flex;align-items:baseline;gap:10px;">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:color-mix(in srgb, var(--gold-500) 75%, var(--text));flex:none;transform:translateY(2px);"><path d="M20 6 9 17l-5-5"></path></svg>
@@ -878,7 +878,7 @@ private func homeMain() -> Node<HTML.BodyContext> {
               </div>
               <div style="display:flex;align-items:baseline;gap:10px;">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:color-mix(in srgb, var(--gold-500) 75%, var(--text));flex:none;transform:translateY(2px);"><path d="M20 6 9 17l-5-5"></path></svg>
-                <p style="margin:0;font-size:15px;"><strong style="font-weight:600;">One-tap flashcards.</strong> <span style="color:var(--text-muted);">Spaced repetition (SM-2) with the narrator's audio attached.</span></p>
+                <p style="margin:0;font-size:15px;"><strong style="font-weight:600;">One-tap flashcards.</strong> <span style="color:var(--text-muted);">Spaced repetition (FSRS / FSRS-4.5) with the narrator's audio attached.</span></p>
               </div>
               <div style="display:flex;align-items:baseline;gap:10px;">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:color-mix(in srgb, var(--gold-500) 75%, var(--text));flex:none;transform:translateY(2px);"><path d="M20 6 9 17l-5-5"></path></svg>
@@ -912,7 +912,7 @@ private func homeMain() -> Node<HTML.BodyContext> {
       <section class="reveal" style="max-width:1120px;margin:0 auto;padding:clamp(48px,7vw,88px) clamp(16px,4vw,32px) 0;">
         <p class="eyebrow">Also in the lab</p>
         <div class="card-grid">
-          <a class="app-card" href="https://dfakkeldy.github.io/MacroMark/" target="_blank" rel="noopener">
+          <a class="app-card" href="/apps/macromark/">
             <div class="app-icon" style="width:60px;height:60px;background:linear-gradient(180deg,#3d9bff,#1f7ae8);display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
               <img src="/images/apps/macromark.png" alt="MacroMark app icon" style="width:74%;height:74%;object-fit:contain;">
             </div>
@@ -926,13 +926,13 @@ private func homeMain() -> Node<HTML.BodyContext> {
           <a class="app-card" href="/apps/nsmarksthespot/">
             <img class="app-icon" src="/images/apps/nsmarksthespot.svg" alt="NS Marks The Spot app icon">
             <h3>NS Marks The Spot</h3>
-            <p>Historical Nova Scotia maps, lined up with the map in your hand.</p>
+            <p>Historical Nova Scotia maps in the browser, lined up with the map in your hand.</p>
             <div class="app-card-meta">
-              <span class="status-chip">TestFlight</span>
-              <span class="platforms">iPhone</span>
+              <span class="status-chip">Live map</span>
+              <span class="platforms">Browser · iPhone</span>
             </div>
           </a>
-          <a class="app-card" href="https://dfakkeldy.github.io/Routey/" target="_blank" rel="noopener">
+          <a class="app-card" href="/apps/routey/">
             <img class="app-icon" src="/images/apps/routey.png" alt="Routey app icon — a route line connecting three stops">
             <h3>Routey</h3>
             <p>Offline-first route support for rural delivery workflows.</p>
@@ -941,13 +941,13 @@ private func homeMain() -> Node<HTML.BodyContext> {
               <span class="platforms">iPhone</span>
             </div>
           </a>
-          <a class="app-card" href="https://dfakkeldy.github.io/VisualTimer/" target="_blank" rel="noopener">
+          <a class="app-card" href="/apps/visualtimer/">
             <img class="app-icon" src="/images/apps/turntimer.png" alt="Turn Timer app icon — an orange progress ring">
             <h3>Turn Timer</h3>
             <p>Visual rounds for countdowns, turns, routines, and reusable sequences.</p>
             <div class="app-card-meta">
               <span class="status-chip">TestFlight</span>
-              <span class="platforms">iPhone</span>
+              <span class="platforms">iPhone · Browser</span>
             </div>
           </a>
         </div>
@@ -1004,7 +1004,7 @@ private func appsMain() -> Node<HTML.BodyContext> {
       </a>
 
       <div class="reveal card-grid">
-        <a class="app-card" href="https://dfakkeldy.github.io/MacroMark/" target="_blank" rel="noopener">
+        <a class="app-card" href="/apps/macromark/">
           <div class="app-icon" style="width:60px;height:60px;background:linear-gradient(180deg,#3d9bff,#1f7ae8);display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
             <img src="/images/apps/macromark.png" alt="MacroMark app icon" style="width:74%;height:74%;object-fit:contain;">
           </div>
@@ -1019,13 +1019,13 @@ private func appsMain() -> Node<HTML.BodyContext> {
         <a class="app-card" href="/apps/nsmarksthespot/">
           <img class="app-icon" src="/images/apps/nsmarksthespot.svg" alt="NS Marks The Spot app icon">
           <h3>NS Marks The Spot</h3>
-          <p>Slide Nova Scotia's archival Fletcher maps over today's landscape — old roads, gold mines, and shorelines line up under your thumb. Offline-first tiles for places with weak signal.</p>
+          <p>The live product is the browser map — archival Fletcher sheets over today's landscape, with optional GPS. The native iPhone app is a separate surface and is not on the App Store.</p>
           <div class="app-card-meta">
-            <span class="status-chip">TestFlight — v1.0 candidate</span>
-            <span class="platforms">iPhone</span>
+            <span class="status-chip">Live browser map</span>
+            <span class="platforms">Browser · iPhone</span>
           </div>
         </a>
-        <a class="app-card" href="https://dfakkeldy.github.io/Routey/" target="_blank" rel="noopener">
+        <a class="app-card" href="/apps/routey/">
           <img class="app-icon" src="/images/apps/routey.png" alt="Routey app icon — a route line connecting three stops">
           <h3>Routey</h3>
           <p>Offline-first route support for rural mail carriers, built in my own delivery truck. OCR label scanning, a master route list, and a daily-run flow that survives dead zones.</p>
@@ -1034,13 +1034,13 @@ private func appsMain() -> Node<HTML.BodyContext> {
             <span class="platforms">iPhone</span>
           </div>
         </a>
-        <a class="app-card" href="https://dfakkeldy.github.io/VisualTimer/" target="_blank" rel="noopener">
+        <a class="app-card" href="/apps/visualtimer/">
           <img class="app-icon" src="/images/apps/turntimer.png" alt="Turn Timer app icon — an orange progress ring">
           <h3>Turn Timer</h3>
-          <p>An Apple-native visual sequence timer — one-tap visual countdowns plus reusable sequences for game nights, routines, classrooms, and kitchens.</p>
+          <p>An Apple-native visual sequence timer — one-tap visual countdowns plus reusable sequences. A React PWA lives at /tools/turn-timer/.</p>
           <div class="app-card-meta">
             <span class="status-chip">TestFlight</span>
-            <span class="platforms">iPhone</span>
+            <span class="platforms">iPhone · Browser</span>
           </div>
         </a>
       </div>
@@ -1565,7 +1565,7 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
             <span style="font-size:12px;font-weight:600;color:#dcc389;border:1px solid rgba(201,162,75,0.45);border-radius:999px;padding:3px 11px;">Open source · GPL-3.0</span>
           </div>
           <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:14px;">
-            <a class="btn btn-gold" href="/echo-beta">Join the TestFlight beta</a>
+            <a class="btn btn-gold" href="https://testflight.apple.com/join/Zu9rzg59">Join the TestFlight beta</a>
             <a href="https://github.com/dfakkeldy/Echo" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;font-size:14.5px;font-weight:500;color:rgba(245,245,247,0.65);text-decoration:none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>View source</a>
           </div>
         </div>
@@ -1601,7 +1601,7 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
       <section class="reveal" style="max-width:720px;margin:0 auto;padding:clamp(48px,7vw,80px) clamp(20px,5vw,32px) 0;">
         <p class="eyebrow">Built on a mail route</p>
         <p style="font-size:clamp(17px,2.1vw,19px);line-height:1.65;margin:0 0 16px;text-wrap:pretty;">I deliver mail — in and out of the car thirty times a shift, an aux cable, an Apple Watch, and an AuDHD brain that learns from non-fiction audiobooks in stolen, interrupted minutes. No app would loop a single chapter until it stuck, stay ready on a watch after a long pause, or remember <em>why</em> a bookmark was made three driveways ago.</p>
-        <p style="font-size:clamp(17px,2.1vw,19px);line-height:1.65;color:var(--text-muted);margin:0;text-wrap:pretty;">So I built it: <strong style="color:var(--text);font-weight:600;">956 commits in nine weeks</strong>, nights and weekends around a full delivery route — an app that treats audiobooks the way students treat textbooks. And if you're just here to listen? You never have to make a single flashcard.</p>
+        <p style="font-size:clamp(17px,2.1vw,19px);line-height:1.65;color:var(--text-muted);margin:0;text-wrap:pretty;">So I built it, nights and weekends around a full delivery route — an app that treats audiobooks the way students treat textbooks. And if you're just here to listen? You never have to make a single flashcard.</p>
       </section>
 
       <section class="reveal" style="max-width:880px;margin:0 auto;padding:clamp(48px,7vw,80px) clamp(20px,5vw,32px) 0;">
@@ -1621,16 +1621,17 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
         <div class="feature-grid">
           <div class="feature-card"><h3>Smart Rewind</h3><p>Hit play and Echo has already rewound — a little after a short pause, more after hours. Interruptions stop costing you context.</p></div>
           <div class="feature-card"><h3>Chapter Looping</h3><p>Repeat one chapter until you own it — the feature Echo was born for. Or loop the exact passage between two bookmarks.</p></div>
-          <div class="feature-card"><h3>Built-in Spaced Repetition</h3><p>An Anki-style flashcard system (SM-2) with the narrator's audio on the cards — daily review, hands-free on Apple Watch.</p></div>
+          <div class="feature-card"><h3>Built-in Spaced Repetition</h3><p>An Anki-style flashcard system with FSRS / FSRS-4.5 scheduling and the narrator's audio on the cards — daily review, hands-free on Apple Watch.</p></div>
           <div class="feature-card"><h3>Synced EPUB Reader</h3><p>Text scrolls with the narration. Tap a paragraph to jump the audio; search the book and leap to the spoken moment.</p></div>
           <div class="feature-card"><h3>Voice &amp; Photo Bookmarks</h3><p>Hold a button and speak your thought, or attach a photo of where you are — memos play back inline when the narration returns there.</p></div>
           <div class="feature-card"><h3>A Watch Remote You Design</h3><p>Up to 25 buttons across 5 pages, Digital Crown scrubbing, plus a Pomodoro focus timer on your wrist.</p></div>
           <div class="feature-card"><h3>Built for CarPlay</h3><p>Full Now Playing plus a browseable library — with in-dash buttons to bookmark, record a memo, or mark a passage on the road.</p></div>
           <div class="feature-card"><h3>Pitch-Corrected Speed</h3><p>Narrators sound human at 1.25× — zero pitch distortion, and every book remembers its own speed.</p></div>
           <div class="feature-card"><h3>Dyslexia-Friendly by Design</h3><p>Lexend and OpenDyslexic built in, Dynamic Type, VoiceOver labels. Designed for interrupted, neurodivergent attention first.</p></div>
-          <div class="feature-card feature-card-soon"><h3>Mark Now, Card Later <span class="soon-pill">Coming in 1.0</span></h3><p>One tap marks a passage without stopping the narration; the Card Inbox turns marks into flashcards when you have the bandwidth.</p></div>
-          <div class="feature-card feature-card-soon"><h3>Second-Brain Export <span class="soon-pill">Coming in 1.0</span></h3><p>One tap exports a book's bookmarks, notes, memos, photos, and flashcards as clean Markdown — straight into Obsidian, Logseq, or Notion.</p></div>
-          <div class="feature-card feature-card-soon"><h3>On-Device AI Narration <span class="soon-pill">Coming in 1.0</span></h3><p>Natural narration for text-only EPUBs, generated entirely on your device — no cloud, no API calls. Books never recorded can still be heard.</p></div>
+          <div class="feature-card"><h3>Mark Now, Card Later</h3><p>One tap marks a passage without stopping the narration; the Card Inbox turns marks into flashcards when you have the bandwidth.</p></div>
+          <div class="feature-card"><h3>Second-Brain Export</h3><p>One tap exports a book's bookmarks, notes, memos, photos, and flashcards as clean Markdown — straight into Obsidian, Logseq, or Notion.</p></div>
+          <div class="feature-card"><h3>On-Device AI Narration</h3><p>Natural narration for text-only EPUBs, generated entirely on your device — no cloud, no API calls. Books never recorded can still be heard.</p></div>
+          <div class="feature-card feature-card-soon"><h3>Insights That Are Real <span class="soon-pill">Coming in 1.0</span></h3><p>Listening time, streaks, chapter coverage, retention curves — honest numbers from your actual listening, never from a server.</p></div>
         </div>
       </section>
 
@@ -1640,6 +1641,7 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
           <div class="principle-card"><h3>Open source</h3><p>GPL-3.0, public on GitHub — the whole app.</p></div>
           <div class="principle-card"><h3>No locked files</h3><p>Built around DRM-free files you own and can see.</p></div>
           <div class="principle-card"><h3>For Every Mind</h3><p>Designed for interrupted, neurodivergent attention first.</p></div>
+          <div class="principle-card"><h3>Echo Pro, once</h3><p>Optional power features as a one-time unlock. No subscription.</p></div>
         </div>
       </section>
 
@@ -1656,8 +1658,9 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
               <a class="echo-cta-link" href="/echo-manual">User manual</a>
               <a class="echo-cta-link" href="/echo-devlog">Devlog</a>
               <a class="echo-cta-link" href="/echo-help">Help &amp; support</a>
+              <a class="echo-cta-link" href="/echo-beta">Beta guide</a>
             </div>
-            <a class="btn btn-gold" href="/echo-beta">Join the TestFlight beta</a>
+            <a class="btn btn-gold" href="https://testflight.apple.com/join/Zu9rzg59">Join the TestFlight beta</a>
           </div>
         </div>
       </section>

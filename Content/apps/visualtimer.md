@@ -8,7 +8,11 @@ platforms: iPhone
 status: TestFlight
 ---
 
-Turn Timer is an Apple-native visual sequence timer — TestFlight builds are running and it's being prepared for App Store release. It keeps the one-tap visual countdown from the first version and adds reusable sequence structure for game nights, routines, classrooms, kitchens, meetings, and other real-world countdowns.
+Turn Timer is an Apple-native visual sequence timer — TestFlight builds are running. It is not on the App Store yet. It keeps the one-tap visual countdown from the first version and adds reusable sequence structure for game nights, routines, classrooms, kitchens, meetings, and other real-world countdowns.
+
+A React PWA of the same timer lives on this site at [/tools/turn-timer/](/tools/turn-timer/) — installable in the browser, no App Store required.
+
+[Join the Turn Timer beta on TestFlight](https://testflight.apple.com/join/s7w4YGWU), also listed on [/testflight/](/testflight/).
 
 ## Build Log
 
