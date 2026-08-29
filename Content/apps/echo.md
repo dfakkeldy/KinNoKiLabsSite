@@ -51,7 +51,7 @@ A growing crowd of apps will sync your audiobook to your ebook, on your device. 
 - **Decks, Tags & Anki Import** 🚧 **Coming in 1.0:** Organize cards into decks, edit any card, review per deck — and import real .apkg Anki decks, scheduling history included.
 - **Brain Dump** 🚧 **Coming in 1.0:** A thought hits mid-chapter? Park it — text or voice, even dictated from the watch — without pausing the book. Promote keepers to bookmarks or flashcards later.
 - **Context Memory** 🚧 **Coming in 1.0:** Opt in and Echo quietly notes *where* you were — on bookmarks, sessions, and chapter starts. Approximate, on-device, deletable.
-- **Insights That Are Real** 🚧 **Coming in 1.0:** Listening time, streaks, chapter coverage ("Ch 7 — 86%, heard 3×"), retention curves, review forecasts — honest numbers from your actual listening, never from a server.
+- **Insights That Are Real:** Listening time, streaks, chapter coverage ("Ch 7 — 86%, heard 3×"), retention curves, review forecasts — honest numbers from your actual listening, never from a server.
 - **Synced EPUB Reader:** The text scrolls with the narration, tap a paragraph to jump the audio, search the book and leap to the spoken moment.
 - **PDF Companions:** Diagrams and page-level material can sit beside the audio, so visual context appears when the narration needs it.
 - **On-Device Auto-Alignment:** Echo's speech recognition (WhisperKit + CoreML) aligns text to audio in tiers — chapter snap, drift detection, word-level repair. Entirely on your device.
@@ -84,4 +84,4 @@ A growing crowd of apps will sync your audiobook to your ebook, on your device. 
 - **[Help & Support](/echo-help)** — FAQs and contact
 
 ---
-[View Source Code on GitHub](https://github.com/dfakkeldy/Echo) | [Project Site](https://dfakkeldy.github.io/Echo/) | [Get Help & Support](/echo-help)
+[View Source Code on GitHub](https://github.com/dfakkeldy/Echo) | [Docs](https://dfakkeldy.github.io/Echo/) | [Get Help & Support](/echo-help)

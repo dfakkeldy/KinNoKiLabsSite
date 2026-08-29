@@ -1631,7 +1631,7 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
           <div class="feature-card"><h3>Mark Now, Card Later</h3><p>One tap marks a passage without stopping the narration; the Card Inbox turns marks into flashcards when you have the bandwidth.</p></div>
           <div class="feature-card"><h3>Second-Brain Export</h3><p>One tap exports a book's bookmarks, notes, memos, photos, and flashcards as clean Markdown — straight into Obsidian, Logseq, or Notion.</p></div>
           <div class="feature-card"><h3>On-Device AI Narration</h3><p>Natural narration for text-only EPUBs, generated entirely on your device — no cloud, no API calls. Books never recorded can still be heard.</p></div>
-          <div class="feature-card feature-card-soon"><h3>Insights That Are Real <span class="soon-pill">Coming in 1.0</span></h3><p>Listening time, streaks, chapter coverage, retention curves — honest numbers from your actual listening, never from a server.</p></div>
+          <div class="feature-card"><h3>Insights That Are Real</h3><p>Listening time, streaks, chapter coverage, retention curves — honest numbers from your actual listening, never from a server.</p></div>
         </div>
       </section>
 

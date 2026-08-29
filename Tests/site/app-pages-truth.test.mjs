@@ -34,13 +34,19 @@ test('Echo keeps Coming in 1.0 only for still-tagged nightly work', () => {
   assert.doesNotMatch(echo, /\*\*Second-Brain Export\*\* 🚧/);
   assert.match(echo, /\*\*On-Device AI Narration:\*\*/);
   assert.doesNotMatch(echo, /\*\*On-Device AI Narration\*\* 🚧/);
-  assert.match(echo, /\*\*Insights That Are Real\*\*.*Coming in 1\.0/);
+  assert.match(echo, /\*\*Insights That Are Real:\*\*/);
+  assert.doesNotMatch(echo, /\*\*Insights That Are Real\*\*.*Coming in 1\.0/);
+  assert.match(echo, /\[Docs\]\(https:\/\/dfakkeldy\.github\.io\/Echo\/\)/);
   assert.match(theme, /<h3>Mark Now, Card Later<\/h3>/);
   assert.doesNotMatch(
     theme,
     /Mark Now, Card Later <span class="soon-pill">Coming in 1\.0<\/span>/,
   );
-  assert.match(theme, /Insights That Are Real <span class="soon-pill">Coming in 1\.0<\/span>/);
+  assert.match(theme, /<h3>Insights That Are Real<\/h3>/);
+  assert.doesNotMatch(
+    theme,
+    /Insights That Are Real <span class="soon-pill">Coming in 1\.0<\/span>/,
+  );
 });
 
 test('NS Marks public copy leads with the live browser map and no App Store date', () => {
