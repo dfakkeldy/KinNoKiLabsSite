@@ -16,6 +16,10 @@ const theme = readFileSync(
   new URL('../../Sources/KinNoKiLabsSite/Theme/KinNoKiTheme.swift', import.meta.url),
   'utf8',
 );
+const generatedEcho = readFileSync(
+  new URL('../../Output/apps/echo/index.html', import.meta.url),
+  'utf8',
+);
 
 test('Echo public copy uses FSRS and drops the stale commit boast', () => {
   for (const source of [echo, theme]) {
@@ -45,6 +49,11 @@ test('Echo keeps Coming in 1.0 only for still-tagged nightly work', () => {
   assert.match(theme, /<h3>Insights That Are Real<\/h3>/);
   assert.doesNotMatch(
     theme,
+    /Insights That Are Real <span class="soon-pill">Coming in 1\.0<\/span>/,
+  );
+  assert.match(generatedEcho, /<h3>Insights That Are Real<\/h3>/);
+  assert.doesNotMatch(
+    generatedEcho,
     /Insights That Are Real <span class="soon-pill">Coming in 1\.0<\/span>/,
   );
 });
