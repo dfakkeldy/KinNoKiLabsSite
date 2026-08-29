@@ -17,12 +17,22 @@ import { spawnSync } from 'node:child_process';
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
+// Public object host for the Fletcher 1885 tile revisions (Cloudflare R2
+// bucket ns-marks-fletcher-tiles behind a custom domain). Baked into the
+// build here so local and CI syncs produce the same site; the revision
+// itself is pinned inside the map source, not here.
+const FLETCHER_TILE_BASE_URL = 'https://tiles.kinnokilabs.com';
+
 function fail(message) {
   throw new Error(message);
 }
 
-function run(command, args, cwd) {
-  const result = spawnSync(command, args, { cwd, encoding: 'utf8' });
+function run(command, args, cwd, extraEnv) {
+  const result = spawnSync(command, args, {
+    cwd,
+    encoding: 'utf8',
+    env: extraEnv ? { ...process.env, ...extraEnv } : process.env,
+  });
   if (result.status !== 0) {
     fail([
       `${command} ${args.join(' ')} failed in ${cwd}`,
@@ -141,7 +151,9 @@ function main() {
 
   const web = join(source, 'web');
   run('npm', ['ci'], web);
-  run('npm', ['run', 'build'], web);
+  run('npm', ['run', 'build'], web, {
+    VITE_FLETCHER_TILE_BASE_URL: FLETCHER_TILE_BASE_URL,
+  });
   const dist = join(web, 'dist');
   validateBuild(dist);
   installBuild(dist, destination, config);
