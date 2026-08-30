@@ -1,16 +1,16 @@
 /* Drives Resources/fiction/fiction.js against a fake DOM.
 
-   Two states matter, and the shelf now holds both. Four books are still
+   Two states matter, and the shelf now holds both. Three books are still
    awaiting narration, and the room must say so without pretending the
-   transport works. The Human Exception is narrated, and the same code
-   drives a live transport, seekable chapters and word-by-word captions —
-   fiction.js was never edited to make that happen, which is the whole
-   claim of the catalog contract.
+   transport works. The Human Exception and Reversible Containment stream,
+   and the same code drives a live transport, seekable chapters and
+   word-by-word captions — fiction.js was never edited to make that happen,
+   which is the whole claim of the catalog contract.
 
    The inert path is therefore tested against a synthetic all-pending
    catalog rather than the published one: with a streaming book on the
    shelf, the room rightly opens on it, and reconstructing the state the
-   shelf had last week is the only way to keep covering the path the four
+   shelf had last week is the only way to keep covering the path the three
    remaining books still take. */
 
 import test from 'node:test';
@@ -334,10 +334,12 @@ test('an empty shelf hides the player rather than showing an empty instrument', 
 
 /* ── The published shelf, exactly as it ships ──────────── */
 /* These run against Resources/fiction/books.json itself. They are the
-   proof that the contract paid off: The Human Exception was added to the
-   catalog and nothing in fiction.js changed. */
+   proof that the contract paid off: each narrated title was added to the
+   catalog and nothing in fiction.js changed. The first streaming book
+   in shelf order still holds the default stage. */
 
 const HUMAN_EXCEPTION = publishedCatalog.books.find((book) => book.slug === 'the-human-exception');
+const REVERSIBLE_CONTAINMENT = publishedCatalog.books.find((book) => book.slug === 'reversible-containment');
 
 test('the room opens on the narrated book, not the featured one', async () => {
   const harness = await bootPlayer();
@@ -394,20 +396,47 @@ test('the published book offers its manuscript in every format it has', async ()
   }
 });
 
-test('the published shelf marks the streaming title and counts it', async () => {
+test('the published shelf marks both streaming titles and counts them', async () => {
   const harness = await bootPlayer();
   const cards = el(harness, 'shelf').children;
   assert.equal(cards.length, 5);
-  const streaming = cards[1];
-  assert.equal(streaming.classList.contains('is-playable'), true);
-  assert.equal(streaming.getAttribute('aria-current'), 'page', 'and it is the one on stage');
-  assert.equal(descendants(streaming, (node) => node.className === 'fic-badge').length, 0);
-  assert.match(el(harness, 'shelfSub').textContent, /^One novel is streaming now/);
+  const humanException = cards[1];
+  const reversible = cards[2];
+  assert.equal(humanException.classList.contains('is-playable'), true);
+  assert.equal(reversible.classList.contains('is-playable'), true);
+  assert.equal(humanException.getAttribute('aria-current'), 'page',
+    'the first streaming book in shelf order holds the stage');
+  assert.equal(descendants(humanException, (node) => node.className === 'fic-badge').length, 0);
+  assert.equal(descendants(reversible, (node) => node.className === 'fic-badge').length, 0);
+  assert.match(el(harness, 'shelfSub').textContent, /^2 novels are streaming now/);
 
-  // The other four keep saying so, plainly.
-  for (const card of [cards[0], cards[2], cards[3], cards[4]]) {
+  for (const card of [cards[0], cards[3], cards[4]]) {
     assert.equal(card.classList.contains('is-playable'), false);
     assert.equal(descendants(card, (node) => node.className === 'fic-badge')[0].textContent, 'Coming soon');
+  }
+});
+
+test('?book=reversible-containment streams the first-listen package', async () => {
+  const harness = await bootPlayer({ search: '?book=reversible-containment' });
+  assert.equal(el(harness, 'bookTitle').textContent, 'Reversible Containment');
+  assert.equal(harness.document.title,
+    'Reversible Containment — Fiction Listening Room — KinNoKi Labs');
+  assert.equal(el(harness, 'bookByline').textContent,
+    'by Dan Fakkeldy · 30 chapters · ~79.8k words · 9:56:19');
+  assert.equal(el(harness, 'editionNote').hidden, false);
+  assert.match(el(harness, 'editionNote').textContent, /first listen/i);
+  assert.match(el(harness, 'editionNote').textContent, /review/i);
+  assert.equal(harness.audio.loadCalls, 1);
+  assert.equal(harness.audio.children[0].src, REVERSIBLE_CONTAINMENT.audio.url);
+  assert.equal(harness.audio.children[0].type, 'audio/mp4');
+  assert.deepEqual(harness.requestedUrls.slice(1).sort(), [
+    'books/reversible-containment/alignment.json',
+    'books/reversible-containment/blocks.json',
+  ]);
+  const links = el(harness, 'selectedFormats');
+  assert.equal(links.hidden, false);
+  for (const link of links.children) {
+    assert.match(link.href, /c03c1d0c760e64790cdae5fa60984662682aaacb/);
   }
 });
 

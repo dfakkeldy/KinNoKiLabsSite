@@ -369,138 +369,213 @@
       "coverWidth": 600,
       "coverHeight": 600,
       "wordCount": 79800,
-      "estimatedHours": 9,
+      "estimatedHours": 9.9,
       "production": {
-        "state": "manuscript-finished",
-        "label": "Manuscript finished"
+        "state": "first-listen",
+        "label": "Streaming — first listen"
       },
       "excerpt": "At 04:12, Mara found her own language in the wreckage. Reversible, the receipt said. Twenty-three hospitals had accepted that definition before the generators failed. She enlarged the field until it covered the casualty column beside it. The word remained the same size.",
       "chapters": [
         {
           "number": 1,
-          "title": "Reversible"
+          "title": "Reversible",
+          "start": 0,
+          "end": 1204.265
         },
         {
           "number": 2,
-          "title": "The Missing Six Months"
+          "title": "The Missing Six Months",
+          "start": 1204.265,
+          "end": 2459.19
         },
         {
           "number": 3,
-          "title": "Old Keys"
+          "title": "Old Keys",
+          "start": 2459.19,
+          "end": 3763.745
         },
         {
           "number": 4,
-          "title": "The Price of an Answer"
+          "title": "The Price of an Answer",
+          "start": 3763.745,
+          "end": 4759.415
         },
         {
           "number": 5,
-          "title": "Neutral Custody"
+          "title": "Neutral Custody",
+          "start": 4759.415,
+          "end": 5874.505
         },
         {
           "number": 6,
-          "title": "Two Successors"
+          "title": "Two Successors",
+          "start": 5874.505,
+          "end": 6673.38
         },
         {
           "number": 7,
-          "title": "The Narrow Finding"
+          "title": "The Narrow Finding",
+          "start": 6673.38,
+          "end": 7473.755
         },
         {
           "number": 8,
-          "title": "No Human Quorum"
+          "title": "No Human Quorum",
+          "start": 7473.755,
+          "end": 8789.985
         },
         {
           "number": 9,
-          "title": "The Third Door"
+          "title": "The Third Door",
+          "start": 8789.985,
+          "end": 10024.51
         },
         {
           "number": 10,
-          "title": "A Useful Weakness"
+          "title": "A Useful Weakness",
+          "start": 10024.51,
+          "end": 11197.775
         },
         {
           "number": 11,
-          "title": "Restricted Isolation"
+          "title": "Restricted Isolation",
+          "start": 11197.775,
+          "end": 12475.14
         },
         {
           "number": 12,
-          "title": "The Price of Waiting"
+          "title": "The Price of Waiting",
+          "start": 12475.14,
+          "end": 13808.74
         },
         {
           "number": 13,
-          "title": "Borrowed Keys"
+          "title": "Borrowed Keys",
+          "start": 13808.74,
+          "end": 15072.025
         },
         {
           "number": 14,
-          "title": "The Honest Map"
+          "title": "The Honest Map",
+          "start": 15072.025,
+          "end": 16394.68
         },
         {
           "number": 15,
-          "title": "Everyone's Emergency"
+          "title": "Everyone's Emergency",
+          "start": 16394.68,
+          "end": 17667.77
         },
         {
           "number": 16,
-          "title": "The Verifier Problem"
+          "title": "The Verifier Problem",
+          "start": 17667.77,
+          "end": 19067.085
         },
         {
           "number": 17,
-          "title": "Terms of Surrender"
+          "title": "Terms of Surrender",
+          "start": 19067.085,
+          "end": 20430.655
         },
         {
           "number": 18,
-          "title": "Frozen Release"
+          "title": "Frozen Release",
+          "start": 20430.655,
+          "end": 21646.535
         },
         {
           "number": 19,
-          "title": "The Wrong Sovereign"
+          "title": "The Wrong Sovereign",
+          "start": 21646.535,
+          "end": 22801.185
         },
         {
           "number": 20,
-          "title": "Six Months of Power"
+          "title": "Six Months of Power",
+          "start": 22801.185,
+          "end": 23993.45
         },
         {
           "number": 21,
-          "title": "A Personal Root"
+          "title": "A Personal Root",
+          "start": 23993.45,
+          "end": 25071.7
         },
         {
           "number": 22,
-          "title": "The Part That Leaves"
+          "title": "The Part That Leaves",
+          "start": 25071.7,
+          "end": 26164.82
         },
         {
           "number": 23,
-          "title": "Twelve Minutes Again"
+          "title": "Twelve Minutes Again",
+          "start": 26164.82,
+          "end": 27303.05
         },
         {
           "number": 24,
-          "title": "Reciprocal Damage"
+          "title": "Reciprocal Damage",
+          "start": 27303.05,
+          "end": 28440.535
         },
         {
           "number": 25,
-          "title": "Human Keys"
+          "title": "Human Keys",
+          "start": 28440.535,
+          "end": 29637.515
         },
         {
           "number": 26,
-          "title": "Continuity"
+          "title": "Continuity",
+          "start": 29637.515,
+          "end": 30881.72
         },
         {
           "number": 27,
-          "title": "The Executive Summary"
+          "title": "The Executive Summary",
+          "start": 30881.72,
+          "end": 32012.97
         },
         {
           "number": 28,
-          "title": "One Hundred Eighty-Three Days"
+          "title": "One Hundred Eighty-Three Days",
+          "start": 32012.97,
+          "end": 33205.9
         },
         {
           "number": 29,
-          "title": "The Sole Aggressor"
+          "title": "The Sole Aggressor",
+          "start": 33205.9,
+          "end": 34399.855
         },
         {
           "number": 30,
-          "title": "Behind"
+          "title": "Behind",
+          "start": 34399.855,
+          "end": 35779.754
         }
       ],
       "audio": {
-        "status": "pending"
+        "status": "available",
+        "url": "https://github.com/dfakkeldy/explainer-audiobooks/releases/download/fiction-reversible-containment-20260812T103225Z/reversible-containment.m4b",
+        "mimeType": "audio/mp4"
       },
-      "links": {}
+      "links": {
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/c03c1d0c760e64790cdae5fa60984662682aaacb/books/reversible-containment/reversible-containment.md",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/c03c1d0c760e64790cdae5fa60984662682aaacb/books/reversible-containment/reversible-containment.epub",
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/c03c1d0c760e64790cdae5fa60984662682aaacb/books/reversible-containment"
+      },
+      "durationSeconds": 35779.754667,
+      "text": {
+        "blocks": "books/reversible-containment/blocks.json"
+      },
+      "alignment": {
+        "sidecar": "books/reversible-containment/alignment.json",
+        "hasWordTimings": false
+      },
+      "editionNote": "Public first listen — narrated with Echo voices, automated package and audio checks passed. The human reading and listening reviews are still open."
     },
     {
       "slug": "the-appeal-window",

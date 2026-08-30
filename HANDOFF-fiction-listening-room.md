@@ -53,9 +53,29 @@ Next:
   `production.state` flips to `published` and the first-listen note drops.
 - Stage the other four books the same way as narration lands.
 
+## 2026-08-30 — Reversible Containment is live
+
+Done:
+- Staged from explainer-audiobooks merge `c03c1d0c760e64790cdae5fa60984662682aaacb`
+  (PR #100) via `Tools/stage-fiction-book.mjs reversible-containment`. Receipt
+  hashes, public gates, and chapter windows from the release M4B all verified.
+  Human reading and listening reviews are still pending, so the entry stays
+  `first-listen` with the existing disclosure copy.
+- 30 chapters, 9:56:19, from the GitHub release asset
+  `fiction-reversible-containment-20260812T103225Z/reversible-containment.m4b`.
+  `fiction.js` was not touched; the catalog contract turned the player on.
+- The sidecar omits `words` on 75 blocks Echo did not speak (mostly fenced
+  policy dumps). The stager now skips those for the spoken-text proof the
+  same way `catalog.test.mjs` already did; they still have to resolve to a
+  block. `hasWordTimings` is therefore false even though 4,987 anchors carry
+  word timings and the player interpolates the rest.
+
+Next:
+- Close the human reading/listening review on both live titles, then re-run
+  the stager so `production.state` flips to `published`.
+- Stage the remaining three books the same way as narration lands.
+
 Resume:
 ```
-Worktree /Users/dfakkeldy/Developer/KinNoKiLabsSite/.claude/worktrees/fiction-listening-room-b6bf60
-Branch claude/fiction-listening-room-b6bf60 — PR #101 open.
-Next: node Tools/stage-fiction-book.mjs <slug> && make generate && make test
+node Tools/stage-fiction-book.mjs <slug> && make generate && make test
 ```
