@@ -170,8 +170,14 @@ if (unresolved.length > 0) {
 
 let mismatches = 0;
 let firstMismatch = null;
+let spokenCount = 0;
 for (const anchor of anchors) {
   const block = byId.get(anchor.blockId);
+  /* Echo omits `words` on blocks it did not speak (fenced policy dumps,
+     display-only labels). Those still have to resolve to a block; the
+     catalog test and the player skip the same way and interpolate. */
+  if (!Array.isArray(anchor.words) || anchor.words.length === 0) continue;
+  spokenCount += 1;
   const spoken = anchor.words.map((w) => w.word).join(' ');
   if (spoken !== block.text) {
     mismatches += 1;
@@ -182,7 +188,8 @@ if (mismatches > 0) {
   fail(`${mismatches} blocks disagree with what was narrated — ` +
     `${firstMismatch.id}: spoken "${firstMismatch.spoken}" vs block "${firstMismatch.text}"`);
 }
-console.log(`all ${anchors.length} anchors resolve and match their block text`);
+console.log(`all ${anchors.length} anchors resolve; ${spokenCount} match their block text` +
+  (spokenCount === anchors.length ? '' : ` (${anchors.length - spokenCount} timestamps only)`));
 
 const hasWordTimings = anchors.every((a) => Array.isArray(a.words) && a.words.length > 0 &&
   a.words.every((w) => typeof w.start === 'number' && typeof w.end === 'number'));
