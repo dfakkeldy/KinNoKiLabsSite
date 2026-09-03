@@ -20,6 +20,14 @@ const generatedEcho = readFileSync(
   new URL('../../Output/apps/echo/index.html', import.meta.url),
   'utf8',
 );
+const generatedNsMarks = readFileSync(
+  new URL('../../Output/apps/nsmarksthespot/index.html', import.meta.url),
+  'utf8',
+);
+const generatedApps = readFileSync(
+  new URL('../../Output/apps/index.html', import.meta.url),
+  'utf8',
+);
 
 test('Echo public copy uses FSRS and drops the stale commit boast', () => {
   for (const source of [echo, theme]) {
@@ -61,10 +69,18 @@ test('Echo keeps Coming in 1.0 only for still-tagged nightly work', () => {
 test('NS Marks public copy leads with the live browser map and no App Store date', () => {
   assert.match(nsMarks, /\[Open Online Map\]\(\/apps\/nsmarksthespot\/map\/\)/);
   assert.match(nsMarks, /current product focus is the \*\*browser map\*\*/);
-  assert.match(nsMarks, /live location \(GPS\)/);
+  assert.match(nsMarks, /position this device reports/);
+  assert.match(nsMarks, /\*\*Live location:\*\* Optional live location/);
+  assert.doesNotMatch(nsMarks, /GPS/i);
   assert.match(nsMarks, /not on the App Store/);
   assert.doesNotMatch(nsMarks, /13 Nov|November 2026/);
   assert.doesNotMatch(theme, /13 Nov|November 2026/);
+  assert.doesNotMatch(theme, /optional GPS/i);
+  assert.match(generatedNsMarks, /position this device reports/);
+  assert.match(generatedNsMarks, /Optional live location/);
+  assert.doesNotMatch(generatedNsMarks, /GPS/i);
+  assert.match(generatedApps, /optional live location/);
+  assert.doesNotMatch(generatedApps, /optional GPS/i);
 });
 
 test('homepage and apps cards point at on-site app pages', () => {
