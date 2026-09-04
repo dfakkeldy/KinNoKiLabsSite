@@ -1019,7 +1019,7 @@ private func appsMain() -> Node<HTML.BodyContext> {
         <a class="app-card" href="/apps/nsmarksthespot/">
           <img class="app-icon" src="/images/apps/nsmarksthespot.svg" alt="NS Marks The Spot app icon">
           <h3>NS Marks The Spot</h3>
-          <p>The live product is the browser map — archival Fletcher sheets over today's landscape, with optional GPS. The native iPhone app is a separate surface and is not on the App Store.</p>
+          <p>The live product is the browser map — archival Fletcher sheets over today's landscape, with optional live location. The native iPhone app is a separate surface and is not on the App Store.</p>
           <div class="app-card-meta">
             <span class="status-chip">Live browser map</span>
             <span class="platforms">Browser · iPhone</span>
