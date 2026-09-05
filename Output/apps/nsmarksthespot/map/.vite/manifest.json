@@ -29,17 +29,48 @@
     "file": "assets/pako.esm-CKAy9xRv.js",
     "name": "pako.esm"
   },
+  "_react-Dk4GeZMQ.js": {
+    "file": "assets/react-Dk4GeZMQ.js",
+    "name": "react",
+    "imports": [
+      "_rolldown-runtime-BHe-jwch.js"
+    ]
+  },
   "_rolldown-runtime-BHe-jwch.js": {
     "file": "assets/rolldown-runtime-BHe-jwch.js",
     "name": "rolldown-runtime"
   },
+  "_rumseyLicense-CjQkuTNM.js": {
+    "file": "assets/rumseyLicense-CjQkuTNM.js",
+    "name": "rumseyLicense",
+    "imports": [
+      "_rolldown-runtime-BHe-jwch.js",
+      "_react-Dk4GeZMQ.js"
+    ]
+  },
+  "atlas.html": {
+    "file": "assets/atlas-BG6sUOQR.js",
+    "name": "atlas",
+    "src": "atlas.html",
+    "isEntry": true,
+    "imports": [
+      "_rolldown-runtime-BHe-jwch.js",
+      "_rumseyLicense-CjQkuTNM.js",
+      "_react-Dk4GeZMQ.js"
+    ],
+    "css": [
+      "assets/atlas-Dq0OfaGM.css"
+    ]
+  },
   "index.html": {
-    "file": "assets/index-CsS41__i.js",
-    "name": "index",
+    "file": "assets/app-lp1JiuRF.js",
+    "name": "app",
     "src": "index.html",
     "isEntry": true,
     "imports": [
-      "_rolldown-runtime-BHe-jwch.js"
+      "_rolldown-runtime-BHe-jwch.js",
+      "_rumseyLicense-CjQkuTNM.js",
+      "_react-Dk4GeZMQ.js"
     ],
     "dynamicImports": [
       "src/data/invernessHydroPotential.json",
@@ -52,7 +83,7 @@
       "src/print/pdf/ExportDialog.tsx"
     ],
     "css": [
-      "assets/index-DgspR_mD.css"
+      "assets/app-DwOF8BSX.css"
     ],
     "assets": [
       "assets/app-icon-DRylzugs.svg"
@@ -126,7 +157,7 @@
     ]
   },
   "node_modules/pdfjs-dist/build/pdf.mjs": {
-    "file": "assets/pdf-CW5Fr5lP.js",
+    "file": "assets/pdf-C00K5boL.js",
     "name": "pdf",
     "src": "node_modules/pdfjs-dist/build/pdf.mjs",
     "isDynamicEntry": true,
@@ -139,12 +170,14 @@
     "src": "node_modules/pdfjs-dist/build/pdf.worker.min.mjs"
   },
   "src/components/print/PrintPreview.tsx": {
-    "file": "assets/PrintPreview-DcisOfZ3.js",
+    "file": "assets/PrintPreview-BXDrcoTi.js",
     "name": "PrintPreview",
     "src": "src/components/print/PrintPreview.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_rolldown-runtime-BHe-jwch.js",
+      "_rumseyLicense-CjQkuTNM.js",
+      "_react-Dk4GeZMQ.js",
       "index.html",
       "_browser-CXx9dInl.js"
     ]
@@ -156,19 +189,21 @@
     "isDynamicEntry": true
   },
   "src/print/pdf/ExportDialog.tsx": {
-    "file": "assets/ExportDialog-DRMG5UZ-.js",
+    "file": "assets/ExportDialog-BVZtn3uP.js",
     "name": "ExportDialog",
     "src": "src/print/pdf/ExportDialog.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_rolldown-runtime-BHe-jwch.js",
+      "_rumseyLicense-CjQkuTNM.js",
+      "_react-Dk4GeZMQ.js",
       "index.html",
       "_browser-CXx9dInl.js",
       "_es-CpfAp9_f.js"
     ]
   },
   "src/userMaps/parsers/geoTiffSource.ts": {
-    "file": "assets/geoTiffSource-C7QfA6F-.js",
+    "file": "assets/geoTiffSource-BGJ0CjCW.js",
     "name": "geoTiffSource",
     "src": "src/userMaps/parsers/geoTiffSource.ts",
     "isDynamicEntry": true,
@@ -188,7 +223,7 @@
     ]
   },
   "src/userMaps/parsers/parseGeoPdfAuto.ts": {
-    "file": "assets/parseGeoPdfAuto-DkU5BuZ2.js",
+    "file": "assets/parseGeoPdfAuto-BlXaFTop.js",
     "name": "parseGeoPdfAuto",
     "src": "src/userMaps/parsers/parseGeoPdfAuto.ts",
     "isDynamicEntry": true,
@@ -204,12 +239,13 @@
     ]
   },
   "src/userMaps/vector/edit/EditableVectorLayer.tsx": {
-    "file": "assets/EditableVectorLayer-C2ubYr88.js",
+    "file": "assets/EditableVectorLayer-CmXdcuC2.js",
     "name": "EditableVectorLayer",
     "src": "src/userMaps/vector/edit/EditableVectorLayer.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_rolldown-runtime-BHe-jwch.js",
+      "_react-Dk4GeZMQ.js",
       "index.html"
     ],
     "css": [
@@ -217,17 +253,19 @@
     ]
   },
   "src/userMaps/vector/edit/ParcelSnapTargetsLayer.tsx": {
-    "file": "assets/ParcelSnapTargetsLayer-YOS6rf3k.js",
+    "file": "assets/ParcelSnapTargetsLayer-CTWxBPAr.js",
     "name": "ParcelSnapTargetsLayer",
     "src": "src/userMaps/vector/edit/ParcelSnapTargetsLayer.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_rolldown-runtime-BHe-jwch.js",
+      "_rumseyLicense-CjQkuTNM.js",
+      "_react-Dk4GeZMQ.js",
       "index.html"
     ]
   },
   "src/userMaps/vector/parsers/shapefileZipSource.ts": {
-    "file": "assets/shapefileZipSource-URctXozD.js",
+    "file": "assets/shapefileZipSource-C3tmQXAb.js",
     "name": "shapefileZipSource",
     "src": "src/userMaps/vector/parsers/shapefileZipSource.ts",
     "isDynamicEntry": true,
