@@ -31,22 +31,23 @@ test('keeps only upcoming posted dates in the current sale desk', () => {
   assert.doesNotMatch(generated, /Inverness County · 9:30 a\.m\./);
   assert.doesNotMatch(generated, /35 advertised rows/);
   assert.doesNotMatch(generated, /39 current mapped PIDs/);
-  assert.match(generated, /August<\/strong><small>Annapolis County · tenders close 1:00 p\.m\.<\/small>/);
-  assert.match(generated, /<strong>1<\/strong> advertised row/);
-  assert.match(generated, /<strong>1<\/strong> active mapped PID/);
-  assert.match(generated, /36 current mapped PIDs across three notices/);
-  assert.match(generated, /Monday, August 31; tenders close at 1:00 p\.m\./);
+  assert.doesNotMatch(generated, /Annapolis County · tenders close 1:00 p\.m\./);
+  assert.match(generated, /September<\/strong><small>Victoria County · tenders close 12:00 noon<\/small>/);
+  assert.match(generated, /<strong>5<\/strong> advertised rows/);
+  assert.match(generated, /<strong>5<\/strong> active mapped PIDs/);
+  assert.match(generated, /25 current mapped PIDs across two notices/);
+  assert.doesNotMatch(generated, /Monday, August 31; tenders close at/);
   assert.match(generated, /Monday, September 14; tenders close at 12:00 noon/);
   assert.match(generated, /Tuesday, September 15; tenders close at 10:00 a\.m\./);
   assert.match(generated, /https:\/\/annapoliscounty\.ca\/tax-finance\/tax-sale/);
   assert.match(generated, /https:\/\/victoriacounty\.com\/residents\/property-taxation-services\/tax-sales\//);
   assert.match(generated, /https:\/\/www\.halifax\.ca\/home-property\/property-taxes\/tax-sale/);
-  assert.match(generated, /1 advertised row · 0 withdrawn rows · 1 active PID mapped/);
-  assert.match(generated, /7 advertised rows · 2 opaque source rows excluded · 7 active PIDs mapped/);
-  assert.match(generated, /29 advertised rows · 0 withdrawn rows · 28 of 30 PIDs mapped \(2 lack provincial parcel geometry\)/);
-  assert.match(generated, /Annapolis snapshot July 23, 2026 · Halifax snapshot August 18 · Victoria snapshot August 20/);
+  assert.doesNotMatch(generated, /1 advertised row · 0 withdrawn rows · 1 active PID mapped/);
+  assert.match(generated, /5 advertised rows · 4 opaque source rows excluded · 5 active PIDs mapped/);
+  assert.match(generated, /19 advertised rows · 0 withdrawn rows · 20 of 20 PIDs mapped/);
+  assert.match(generated, /Halifax and Victoria notices re-checked September 3, 2026 · Annapolis snapshot July 23/);
   assert.doesNotMatch(generated, /CBRM \+ Inverness County notices/);
-  assert.match(generated, /<span>Mapped now<\/span><strong>Three current municipal notices · 36 active PIDs<\/strong>/);
+  assert.match(generated, /<span>Mapped now<\/span><strong>Two current municipal notices · 25 active PIDs<\/strong>/);
   assert.match(
     generated,
     /<span>Current notice<\/span><strong>Halifax tax-sale page<\/strong>/,
@@ -57,7 +58,7 @@ test('keeps only upcoming posted dates in the current sale desk', () => {
   );
   assert.equal(
     generated.match(/class="tax-date-card reveal"/g)?.length,
-    3,
+    2,
   );
   assert.match(generated, /Posted does not mean final\./);
 });
@@ -65,16 +66,18 @@ test('keeps only upcoming posted dates in the current sale desk', () => {
 test('presents passed sale dates as past without claiming outcomes', () => {
   assert.equal(
     generated.match(/class="tax-date-card tax-date-past reveal"/g)?.length,
-    2,
+    3,
   );
-  assert.equal(generated.match(/Sale date passed · Verify results/g)?.length, 2);
+  assert.equal(generated.match(/Sale date passed · Verify results/g)?.length, 3);
+  assert.match(generated, /Advertised for Monday, August 31; tenders closed at 1:00 p\.m\./);
+  assert.match(generated, /Last notice snapshot July 23: 1 advertised row · 0 withdrawn rows/);
   assert.match(generated, /Advertised for Tuesday, August 11 at 9:30 a\.m\./);
   assert.match(generated, /Advertised for Thursday, August 20 at 10:00 a\.m\./);
   assert.equal(
     generated.match(
       /A past date is not evidence of outcome—verify results and current status with the municipality\./g,
     )?.length,
-    2,
+    3,
   );
   assert.match(generated, /Last notice snapshot August 10: 27 advertised rows · 18 withdrawn rows/);
   assert.match(generated, /Last notice snapshot August 18: 2 advertised rows · 0 withdrawn rows/);

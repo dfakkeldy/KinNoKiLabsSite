@@ -14,7 +14,7 @@ checkedAt: 2026-07-24T17:38:13-03:00
 documentAccess: Public detail readable on the Nova Scotia Procurement Portal. Bid documents are accessible through the HRM Bids and Tenders page (halifax.bidsandtenders.ca); a free account may be required to download the full package. Verify at the official source before acting.
 addendaURL: https://procurement-portal.novascotia.ca/tenders/HRM-2026-0372
 addendaStatus: No separate addendum attachment appeared in the portal record at review time on 2026-07-24. Recheck the official source before acting.
-lifecycle: current
+lifecycle: closed-demo
 noticeURL: https://procurement-portal.novascotia.ca/tenders/HRM-2026-0372
 documentsURL: https://halifax.bidsandtenders.ca/Module/Tenders/en/Tender/Detail/01b4409a-8391-4417-8e89-cd90af6948aa
 featuredPack: false
