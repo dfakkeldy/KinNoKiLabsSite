@@ -404,7 +404,10 @@ test('generates the tender showcase hub route', () => {
   assert.match(hub, /<link rel="canonical" href="https:\/\/kinnokilabs\.com\/tenders"\/>/);
   assert.match(hub, /<body class="page-section page-tenders">/);
   assert.match(hub, /Tender Starter Showcase/i);
-  assert.match(hub, /tender-current-grid/);
+  assert.ok(
+    /tender-current-grid/.test(hub) || /No current examples at this time\. Check back later\./.test(hub),
+    'hub must render the current grid or the truthful empty state',
+  );
 });
 
 test('generates a detail page for each tender record', () => {

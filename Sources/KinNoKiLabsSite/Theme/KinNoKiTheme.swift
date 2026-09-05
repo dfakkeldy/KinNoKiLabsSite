@@ -498,19 +498,19 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                     <a class="tax-button tax-button-solid" href="/apps/nsmarksthespot/map/">Open the live map <span aria-hidden="true">↗</span></a>
                     <a class="tax-button tax-button-line" href="#dates">See posted dates <span aria-hidden="true">↓</span></a>
                   </div>
-                  <p class="tax-refreshed">Annapolis snapshot July 23, 2026 · Halifax snapshot August 18 · Victoria snapshot August 20</p>
+                  <p class="tax-refreshed">Halifax and Victoria notices re-checked September 3, 2026 · Annapolis snapshot July 23</p>
                 </div>
 
                 <aside class="tax-desk" aria-label="Current tax-sale desk summary">
                   <div class="tax-desk-label"><span>Current desk</span><span>NS / 2026</span></div>
                   <div class="tax-desk-date">
-                    <span class="tax-desk-day">31</span>
-                    <div><strong>August</strong><small>Annapolis County · tenders close 1:00 p.m.</small></div>
+                    <span class="tax-desk-day">14</span>
+                    <div><strong>September</strong><small>Victoria County · tenders close 12:00 noon</small></div>
                   </div>
                   <div class="tax-desk-rule"></div>
-                  <p><strong>1</strong> advertised row</p>
-                  <p><strong>1</strong> active mapped PID</p>
-                  <small>Counts reflect the current Annapolis tender notice. The live map also tracks 7 advertised PIDs from the Victoria County tender and 30 from Halifax—28 of those have provincial parcel geometry—for 36 current mapped PIDs across three notices.</small>
+                  <p><strong>5</strong> advertised rows</p>
+                  <p><strong>5</strong> active mapped PIDs</p>
+                  <small>Counts reflect the current Victoria County tender notice; four opaque source rows are excluded. The live map also tracks 20 advertised PIDs from the Halifax tender, all with provincial parcel geometry, for 25 current mapped PIDs across two notices.</small>
                 </aside>
               </div>
             </section>
@@ -522,30 +522,17 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                     <p class="tax-kicker">Posted dates</p>
                     <h2 id="tax-dates-heading">What is still<br><em>coming up.</em></h2>
                   </div>
-                  <p>These are the three current notices tracked in the map—not a promise that every advertised property will still be offered. Always open each municipal source again before acting.</p>
+                  <p>These are the two current notices tracked in the map—not a promise that every advertised property will still be offered. Always open each municipal source again before acting.</p>
                 </div>
 
                 <div class="tax-date-list">
-                  <article class="tax-date-card reveal">
-                    <div class="tax-date-calendar" aria-hidden="true"><span>AUG</span><strong>31</strong><small>2026</small></div>
-                    <div class="tax-date-copy">
-                      <p class="tax-status">Posted · Sealed tender</p>
-                      <h3>Municipality of the County of Annapolis</h3>
-                      <p><strong>Monday, August 31; tenders close at 1:00 p.m.</strong><br>752 St George Street, Annapolis Royal</p>
-                      <p class="tax-date-detail">1 advertised row · 0 withdrawn rows · 1 active PID mapped</p>
-                    </div>
-                    <div class="tax-date-actions">
-                      <a href="https://annapoliscounty.ca/tax-finance/tax-sale">Official Annapolis page <span aria-hidden="true">↗</span></a>
-                      <a href="/apps/nsmarksthespot/map/">View mapped parcel <span aria-hidden="true">→</span></a>
-                    </div>
-                  </article>
                   <article class="tax-date-card reveal">
                     <div class="tax-date-calendar" aria-hidden="true"><span>SEP</span><strong>14</strong><small>2026</small></div>
                     <div class="tax-date-copy">
                       <p class="tax-status">Posted · Sealed tender</p>
                       <h3>Municipality of the County of Victoria</h3>
                       <p><strong>Monday, September 14; tenders close at 12:00 noon</strong><br>Municipal Administration Building, 495 Chebucto Street, Baddeck</p>
-                      <p class="tax-date-detail">7 advertised rows · 2 opaque source rows excluded · 7 active PIDs mapped</p>
+                      <p class="tax-date-detail">5 advertised rows · 4 opaque source rows excluded · 5 active PIDs mapped</p>
                     </div>
                     <div class="tax-date-actions">
                       <a href="https://victoriacounty.com/residents/property-taxation-services/tax-sales/">Official Victoria County page <span aria-hidden="true">↗</span></a>
@@ -558,7 +545,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                       <p class="tax-status">Posted · Sealed tender</p>
                       <h3>Halifax Regional Municipality</h3>
                       <p><strong>Tuesday, September 15; tenders close at 10:00 a.m.</strong><br>Online or Alderney Customer Service Centre, 40 Alderney Drive, Dartmouth</p>
-                      <p class="tax-date-detail">29 advertised rows · 0 withdrawn rows · 28 of 30 PIDs mapped (2 lack provincial parcel geometry)</p>
+                      <p class="tax-date-detail">19 advertised rows · 0 withdrawn rows · 20 of 20 PIDs mapped</p>
                     </div>
                     <div class="tax-date-actions">
                       <a href="https://www.halifax.ca/home-property/property-taxes/tax-sale">Official Halifax page <span aria-hidden="true">↗</span></a>
@@ -574,6 +561,19 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
 
                 <h3 class="tax-past-heading" id="tax-past-heading">Past sale dates · outcomes not recorded here</h3>
                 <div class="tax-date-list tax-past-list" aria-labelledby="tax-past-heading">
+                  <article class="tax-date-card tax-date-past reveal">
+                    <div class="tax-date-calendar" aria-hidden="true"><span>AUG</span><strong>31</strong><small>2026</small></div>
+                    <div class="tax-date-copy">
+                      <p class="tax-status">Sale date passed · Verify results</p>
+                      <h3>Municipality of the County of Annapolis</h3>
+                      <p><strong>Advertised for Monday, August 31; tenders closed at 1:00 p.m.</strong><br>752 St George Street, Annapolis Royal</p>
+                      <p>The advertised sale date has passed. A past date is not evidence of outcome—verify results and current status with the municipality.</p>
+                      <p class="tax-date-detail">Last notice snapshot July 23: 1 advertised row · 0 withdrawn rows</p>
+                    </div>
+                    <div class="tax-date-actions">
+                      <a href="https://annapoliscounty.ca/tax-finance/tax-sale">Official Annapolis page <span aria-hidden="true">↗</span></a>
+                    </div>
+                  </article>
                   <article class="tax-date-card tax-date-past reveal">
                     <div class="tax-date-calendar" aria-hidden="true"><span>AUG</span><strong>11</strong><small>2026</small></div>
                     <div class="tax-date-copy">
@@ -613,7 +613,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                 <div class="tax-split-copy reveal">
                   <p class="tax-large-copy">Search an eight-digit PID or Nova Scotia civic address, open a mapped tax-sale parcel, and compare it with roads, water, aerial imagery, Crown land, and municipal context.</p>
                   <ul class="tax-facts">
-                    <li><span>Mapped now</span><strong>Three current municipal notices · 36 active PIDs</strong></li>
+                    <li><span>Mapped now</span><strong>Two current municipal notices · 25 active PIDs</strong></li>
                     <li><span>Search</span><strong>PID, civic address, or visible parcel</strong></li>
                     <li><span>Privacy</span><strong>No owner names; no location upload</strong></li>
                     <li><span>Boundary</span><strong>Approximate context, never a legal survey</strong></li>
@@ -854,7 +854,7 @@ private func homeMain() -> Node<HTML.BodyContext> {
           <div class="proof-strip">
             <span>5 apps in development</span>
             <span class="dot" aria-hidden="true"></span>
-            <span>4 in TestFlight beta</span>
+            <span>5 in TestFlight</span>
             <span class="dot" aria-hidden="true"></span>
             <a class="link-quiet" href="https://github.com/dfakkeldy" target="_blank" rel="noopener">Open source on GitHub</a>
             <span class="dot" aria-hidden="true"></span>
@@ -919,14 +919,14 @@ private func homeMain() -> Node<HTML.BodyContext> {
             <h3>MacroMark</h3>
             <p>Apple Watch voice capture for people whose notes live in Markdown.</p>
             <div class="app-card-meta">
-              <span class="status-chip neutral">In development</span>
+              <span class="status-chip">Internal TestFlight</span>
               <span class="platforms">Watch · iPhone</span>
             </div>
           </a>
           <a class="app-card" href="/apps/nsmarksthespot/">
             <img class="app-icon" src="/images/apps/nsmarksthespot.svg" alt="NS Marks The Spot app icon">
             <h3>NS Marks The Spot</h3>
-            <p>Historical Nova Scotia maps in the browser, lined up with the map in your hand.</p>
+            <p>Nova Scotia parcels, dated tax-sale notices, and Fletcher’s 1880s sheets on one source-linked browser map.</p>
             <div class="app-card-meta">
               <span class="status-chip">Live map</span>
               <span class="platforms">Browser · iPhone</span>
@@ -988,7 +988,7 @@ private func appsMain() -> Node<HTML.BodyContext> {
     <main class="site-main" style="max-width:1120px;margin:0 auto;padding:clamp(48px,7vw,80px) clamp(16px,4vw,32px) 24px;">
       <p class="eyebrow">Apps</p>
       <h1 style="font-weight:650;font-size:clamp(34px,4.5vw,52px);line-height:1.08;letter-spacing:-0.025em;margin:0 0 14px;">Five apps, honestly statused.</h1>
-      <p style="font-size:17px;color:var(--text-muted);max-width:62ch;margin:0 0 40px;text-wrap:pretty;">Four have TestFlight builds running; none are on the App Store yet. Getting them there — review prep, metadata, polish — is the current work. Every one is open source.</p>
+      <p style="font-size:17px;color:var(--text-muted);max-width:62ch;margin:0 0 40px;text-wrap:pretty;">All five have TestFlight builds running — Echo and Turn Timer as public betas, the rest internal — and none are on the App Store yet. Getting them there — review prep, metadata, polish — is the current work. Every one is open source.</p>
 
       <a class="reveal echo-row" href="/apps/echo" style="background:var(--surface);border:1px solid color-mix(in srgb, var(--gold-500) 28%, var(--separator));border-radius:24px;padding:clamp(24px,3.5vw,40px);margin-bottom:14px;text-decoration:none;color:var(--text);">
         <img src="/images/apps/echo.png" alt="Echo app icon" style="width:96px;height:96px;border-radius:22.37%;box-shadow:0 2px 12px rgba(0,0,0,0.25);">
@@ -1012,14 +1012,14 @@ private func appsMain() -> Node<HTML.BodyContext> {
           <p style="margin:0 0 8px;flex:none;">Tap your Watch complication, speak, lower your wrist — the note lands in today's Markdown file, ready for Obsidian or Logseq.</p>
           <p style="font-size:13.5px;">Verbal Macros turn speech into structure: say "Task" and get <span style="font-family:var(--font-mono);font-size:12.5px;background:var(--fill-2);border-radius:5px;padding:1px 6px;">- [ ]</span></p>
           <div class="app-card-meta">
-            <span class="status-chip neutral">In development toward V1.0</span>
+            <span class="status-chip">Internal TestFlight</span>
             <span class="platforms">Watch · iPhone</span>
           </div>
         </a>
         <a class="app-card" href="/apps/nsmarksthespot/">
           <img class="app-icon" src="/images/apps/nsmarksthespot.svg" alt="NS Marks The Spot app icon">
           <h3>NS Marks The Spot</h3>
-          <p>The live product is the browser map — archival Fletcher sheets over today's landscape, with optional live location. The native iPhone app is a separate surface and is not on the App Store.</p>
+          <p>The live product is the browser map — parcel search by PID or civic address, dated municipal tax-sale notices on live parcel geometry, provincial reference layers, and Fletcher’s 1880s sheets as an optional overlay, with optional live location. The native iPhone app is a separate offline companion in TestFlight, not on the App Store.</p>
           <div class="app-card-meta">
             <span class="status-chip">Live browser map</span>
             <span class="platforms">Browser · iPhone</span>

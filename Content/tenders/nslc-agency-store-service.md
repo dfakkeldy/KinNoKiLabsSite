@@ -14,7 +14,7 @@ checkedAt: 2026-07-24T17:38:13-03:00
 documentAccess: Public detail readable on the Nova Scotia Procurement Portal. The official document package is hosted directly on the portal. Verify at the official source before acting.
 addendaURL: https://procurement-portal.novascotia.ca/tenders/NSLC27-09
 addendaStatus: No separate addendum attachment appeared in the portal record at review time on 2026-07-24. Recheck the official source before acting.
-lifecycle: current
+lifecycle: closed-demo
 noticeURL: https://procurement-portal.novascotia.ca/tenders/NSLC27-09
 documentsURL: https://procurement-portal.novascotia.ca/tenders/NSLC27-09
 featuredPack: false
