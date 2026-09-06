@@ -78,7 +78,7 @@
     ]
   },
   "index.html": {
-    "file": "assets/app-BTWNlJkP.js",
+    "file": "assets/app-Ct8_MQHh.js",
     "name": "app",
     "src": "index.html",
     "isEntry": true,
@@ -99,7 +99,7 @@
       "src/print/pdf/ExportDialog.tsx"
     ],
     "css": [
-      "assets/app-KlMd_Rmq.css"
+      "assets/app-DEciGFJ-.css"
     ],
     "assets": [
       "assets/app-icon-DRylzugs.svg"
@@ -173,7 +173,7 @@
     ]
   },
   "node_modules/pdfjs-dist/build/pdf.mjs": {
-    "file": "assets/pdf-LK9EalRE.js",
+    "file": "assets/pdf-CY88u41l.js",
     "name": "pdf",
     "src": "node_modules/pdfjs-dist/build/pdf.mjs",
     "isDynamicEntry": true,
@@ -186,7 +186,7 @@
     "src": "node_modules/pdfjs-dist/build/pdf.worker.min.mjs"
   },
   "src/atlas/AtlasBasemapLayer.tsx": {
-    "file": "assets/AtlasBasemapLayer-DfZxzqHm.js",
+    "file": "assets/AtlasBasemapLayer-BPnz8Rfl.js",
     "name": "AtlasBasemapLayer",
     "src": "src/atlas/AtlasBasemapLayer.tsx",
     "isDynamicEntry": true,
@@ -207,7 +207,7 @@
     ]
   },
   "src/components/print/PrintPreview.tsx": {
-    "file": "assets/PrintPreview-D1YsnyfB.js",
+    "file": "assets/PrintPreview-BiVK3_Ud.js",
     "name": "PrintPreview",
     "src": "src/components/print/PrintPreview.tsx",
     "isDynamicEntry": true,
@@ -226,7 +226,7 @@
     "isDynamicEntry": true
   },
   "src/print/pdf/ExportDialog.tsx": {
-    "file": "assets/ExportDialog-D68ECTsq.js",
+    "file": "assets/ExportDialog-DBl6Vg1y.js",
     "name": "ExportDialog",
     "src": "src/print/pdf/ExportDialog.tsx",
     "isDynamicEntry": true,
@@ -243,7 +243,7 @@
     ]
   },
   "src/userMaps/parsers/geoTiffSource.ts": {
-    "file": "assets/geoTiffSource-n6MysTAH.js",
+    "file": "assets/geoTiffSource-CSb-zvuy.js",
     "name": "geoTiffSource",
     "src": "src/userMaps/parsers/geoTiffSource.ts",
     "isDynamicEntry": true,
@@ -263,7 +263,7 @@
     ]
   },
   "src/userMaps/parsers/parseGeoPdfAuto.ts": {
-    "file": "assets/parseGeoPdfAuto-BChFcBAj.js",
+    "file": "assets/parseGeoPdfAuto-BGgxEHGE.js",
     "name": "parseGeoPdfAuto",
     "src": "src/userMaps/parsers/parseGeoPdfAuto.ts",
     "isDynamicEntry": true,
@@ -279,7 +279,7 @@
     ]
   },
   "src/userMaps/vector/edit/EditableVectorLayer.tsx": {
-    "file": "assets/EditableVectorLayer-DfAvby1N.js",
+    "file": "assets/EditableVectorLayer-D85Y7yXs.js",
     "name": "EditableVectorLayer",
     "src": "src/userMaps/vector/edit/EditableVectorLayer.tsx",
     "isDynamicEntry": true,
@@ -293,7 +293,7 @@
     ]
   },
   "src/userMaps/vector/edit/ParcelSnapTargetsLayer.tsx": {
-    "file": "assets/ParcelSnapTargetsLayer-j5H8HE8v.js",
+    "file": "assets/ParcelSnapTargetsLayer-BNsgr0o4.js",
     "name": "ParcelSnapTargetsLayer",
     "src": "src/userMaps/vector/edit/ParcelSnapTargetsLayer.tsx",
     "isDynamicEntry": true,
@@ -305,7 +305,7 @@
     ]
   },
   "src/userMaps/vector/parsers/shapefileZipSource.ts": {
-    "file": "assets/shapefileZipSource-CsluPRhE.js",
+    "file": "assets/shapefileZipSource-CC8_HDW7.js",
     "name": "shapefileZipSource",
     "src": "src/userMaps/vector/parsers/shapefileZipSource.ts",
     "isDynamicEntry": true,
