@@ -156,6 +156,23 @@ test('the short /map URL redirects to the pinned online map route', () => {
   }
 });
 
+test('the short /poker URL opens the map in its Poker setup', () => {
+  // The map picks Poker from `theme`, not from layers: Poker and Explore Nova
+  // Scotia draw the same single layer, so a layer-only link cannot say which
+  // one was meant.
+  const expectedRedirect = '/poker /apps/nsmarksthespot/map/?theme=poker 301';
+  for (const root of ['Resources', 'Output']) {
+    const redirects = readFileSync(
+      new URL(`../../${root}/_redirects`, import.meta.url),
+      'utf8',
+    );
+    assert.ok(
+      redirects.split('\n').includes(expectedRedirect),
+      `${root}/_redirects is missing: ${expectedRedirect}`,
+    );
+  }
+});
+
 test('KinNoKi app surfaces lead to the internal product page and online map', () => {
   const content = readFileSync(
     new URL('../../Content/apps/nsmarksthespot.md', import.meta.url),
