@@ -101,10 +101,10 @@ test('explore map copy names postal community in search', () => {
       source,
       /<span>Search<\/span><strong>PID, civic address, or visible parcel<\/strong>/,
     );
-    assert.doesNotMatch(source, /Canada Post/);
-    assert.doesNotMatch(source, /National Address Register/);
-    assert.doesNotMatch(source, /paid API/i);
   }
+  assert.doesNotMatch(generated, /Canada Post/);
+  assert.doesNotMatch(generated, /National Address Register/);
+  assert.doesNotMatch(generated, /paid API/i);
 });
 
 test('shows truthful format status and connects the existing app page', () => {

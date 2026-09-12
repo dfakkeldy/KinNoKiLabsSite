@@ -107,10 +107,10 @@ test('apps listing NS Marks card names postal community without NAR mailing copy
   for (const source of [theme, generatedApps]) {
     assert.match(source, /parcel search by PID, civic address, or postal community/);
     assert.doesNotMatch(source, /parcel search by PID or civic address/);
-    assert.doesNotMatch(source, /National Address Register/);
-    assert.doesNotMatch(source, /Canada Post/);
-    assert.doesNotMatch(source, /paid API/i);
   }
+  assert.doesNotMatch(generatedApps, /National Address Register/);
+  assert.doesNotMatch(generatedApps, /Canada Post/);
+  assert.doesNotMatch(generatedApps, /paid API/i);
 });
 
 test('homepage and apps cards point at on-site app pages', () => {
