@@ -83,6 +83,26 @@ test('NS Marks public copy leads with the live browser map and no App Store date
   assert.doesNotMatch(generatedApps, /optional GPS/i);
 });
 
+test('NS Marks search copy includes postal communities and labelled mailing addresses', () => {
+  for (const source of [nsMarks, generatedNsMarks]) {
+    assert.match(source, /PID, civic address, or postal community/);
+    assert.match(
+      source,
+      /postal candidate becomes selectable only when it resolves to one live provincial civic point/,
+    );
+    assert.match(
+      source,
+      /separately labelled mailing address from Statistics Canada's free National Address Register \(June 2026\)/,
+    );
+    assert.match(source, /distinct from the provincial civic address/);
+    assert.match(source, /Boundaries are approximate context, never a legal survey/);
+    assert.doesNotMatch(source, /Search a parcel by PID or civic address,/);
+    assert.doesNotMatch(source, /Canada Post/);
+    assert.doesNotMatch(source, /paid API/i);
+    assert.doesNotMatch(source, /dede523126274be0e34f086ede7b2aafff130431/);
+  }
+});
+
 test('homepage and apps cards point at on-site app pages', () => {
   assert.match(theme, /class="app-card" href="\/apps\/macromark\/"/);
   assert.match(theme, /class="app-card" href="\/apps\/routey\/"/);

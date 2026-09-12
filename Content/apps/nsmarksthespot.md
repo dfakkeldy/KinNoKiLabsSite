@@ -8,7 +8,7 @@ platforms: Browser, iPhone
 status: Live browser map
 ---
 
-NS Marks The Spot is a Nova Scotia map for property research and local history. Search a parcel by PID or civic address, read dated municipal tax-sale notices against live parcel geometry, switch on provincial reference layers, and slide Hugh Fletcher's 1880s geological sheets over today's landscape.
+NS Marks The Spot is a Nova Scotia map for property research and local history. Search a parcel by PID, civic address, or postal community, read dated municipal tax-sale notices against live parcel geometry, switch on provincial reference layers, and slide Hugh Fletcher's 1880s geological sheets over today's landscape.
 
 ## Where it stands
 
@@ -16,7 +16,7 @@ The current product focus is the **browser map**, live at [/apps/nsmarksthespot/
 
 ## What the map does
 
-- **Parcel search:** Enter an eight-digit PID or a Nova Scotia civic address, or tap a visible parcel, and open its provincial boundary in context. Boundaries are approximate context, never a legal survey.
+- **Parcel search:** Enter an eight-digit PID or a Nova Scotia civic address, or tap a visible parcel, and open its provincial boundary in context. Search also recognizes postal communities; a postal candidate becomes selectable only when it resolves to one live provincial civic point. When matched, the parcel inspector can show a separately labelled mailing address from Statistics Canada's free National Address Register (June 2026), distinct from the provincial civic address. Boundaries are approximate context, never a legal survey.
 - **Tax-sale notices:** Municipal tax-sale listings are catalogued as dated snapshots, each pinned to its notice and source document, and mapped against live parcel geometry. No owner names are shown. The [Nova Scotia Tax Sale Hub](/taxsale/) keeps the posted dates in one place.
 - **Reference layers:** Provincial aerial imagery, property boundaries, Crown land, flood-risk areas, water, roads, contours, geology and mineral records, well-water screening zones, and municipal zoning where a municipality publishes it — each with its own source, licence gate, and attribution.
 - **Historical sheets:** Twenty-four Fletcher sheets, independently georeferenced from David Rumsey Map Collection scans, sit as an optional overlay with an opacity control. A sheet can sit a few hundred metres off modern ground, and the layer says so; it is context, not evidence.
