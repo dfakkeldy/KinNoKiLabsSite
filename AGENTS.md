@@ -91,3 +91,19 @@ receipt/parity failure stop promotion.
 - **Item metadata** can be added via frontmatter in content files (YAML between `---` delimiters) and parsed into `ItemMetadata`.
 - **Themes** wrap the site in HTML structure. Custom themes are created by conforming to `Theme` with an `HTMLFactory` (see `Theme/KinNoKiTheme.swift`). Note: `resourcePaths` on `Theme` is only for resources bundled inside a theme package — project-level assets in `Resources/` are copied automatically by Publish.
 - **Publishing steps** are customizable via `publish(using:)` instead of the default `.publish()` call (e.g., to add plugins, custom deployment, or pipeline steps).
+
+## Repository delivery
+
+- Requested repository changes finish with a ready PR and auto-merge on green
+  required CI, using the supported merge method and respecting branch protections.
+  If native auto-merge is unavailable, merge the verified PR head normally after
+  reported checks pass. If CI is absent or blocked, leave the ready PR and report
+  that limitation once. Do not ask for another merge approval for ordinary work.
+- Use a task branch from the current remote default branch and preserve unrelated
+  work. Instruction-only changes need a diff check, not site regeneration.
+- Verify changed browser behavior with available browser tools. Do not require
+  the user's iPhone, append device acceptance checklists, or block later work
+  while waiting for user testing. Physical-device testing is optional when offered.
+- Source merge and live deployment are separate facts. Keep the existing pinned
+  source and deployment workflow; this rule does not authorize unrelated public
+  publishing or change what the promotion automation itself does.
