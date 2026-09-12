@@ -611,10 +611,10 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                   <h2 id="tax-map-heading">From notice row<br>to <em>parcel context.</em></h2>
                 </div>
                 <div class="tax-split-copy reveal">
-                  <p class="tax-large-copy">Search an eight-digit PID or Nova Scotia civic address, open a mapped tax-sale parcel, and compare it with roads, water, aerial imagery, Crown land, and municipal context.</p>
+                  <p class="tax-large-copy">Search an eight-digit PID, Nova Scotia civic address, or postal community, open a mapped tax-sale parcel, and compare it with roads, water, aerial imagery, Crown land, and municipal context.</p>
                   <ul class="tax-facts">
                     <li><span>Mapped now</span><strong>Two current municipal notices · 25 active PIDs</strong></li>
-                    <li><span>Search</span><strong>PID, civic address, or visible parcel</strong></li>
+                    <li><span>Search</span><strong>PID, civic address, postal community, or visible parcel</strong></li>
                     <li><span>Privacy</span><strong>No owner names; no location upload</strong></li>
                     <li><span>Boundary</span><strong>Approximate context, never a legal survey</strong></li>
                   </ul>
@@ -1019,7 +1019,7 @@ private func appsMain() -> Node<HTML.BodyContext> {
         <a class="app-card" href="/apps/nsmarksthespot/">
           <img class="app-icon" src="/images/apps/nsmarksthespot.svg" alt="NS Marks The Spot app icon">
           <h3>NS Marks The Spot</h3>
-          <p>The live product is the browser map — parcel search by PID or civic address, dated municipal tax-sale notices on live parcel geometry, provincial reference layers, and Fletcher’s 1880s sheets as an optional overlay, with optional live location. The native iPhone app is a separate offline companion in TestFlight, not on the App Store.</p>
+          <p>The live product is the browser map — parcel search by PID, civic address, or postal community, dated municipal tax-sale notices on live parcel geometry, provincial reference layers, and Fletcher’s 1880s sheets as an optional overlay, with optional live location. The native iPhone app is a separate offline companion in TestFlight, not on the App Store.</p>
           <div class="app-card-meta">
             <span class="status-chip">Live browser map</span>
             <span class="platforms">Browser · iPhone</span>

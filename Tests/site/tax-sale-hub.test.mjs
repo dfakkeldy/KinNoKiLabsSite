@@ -86,6 +86,27 @@ test('presents passed sale dates as past without claiming outcomes', () => {
   assert.doesNotMatch(generated, /\b(?:un)?sold\b/i);
 });
 
+test('explore map copy names postal community in search', () => {
+  for (const source of [theme, generated]) {
+    assert.match(
+      source,
+      /Search an eight-digit PID, Nova Scotia civic address, or postal community, open a mapped tax-sale parcel/,
+    );
+    assert.match(
+      source,
+      /<span>Search<\/span><strong>PID, civic address, postal community, or visible parcel<\/strong>/,
+    );
+    assert.doesNotMatch(source, /Search an eight-digit PID or Nova Scotia civic address,/);
+    assert.doesNotMatch(
+      source,
+      /<span>Search<\/span><strong>PID, civic address, or visible parcel<\/strong>/,
+    );
+    assert.doesNotMatch(source, /Canada Post/);
+    assert.doesNotMatch(source, /National Address Register/);
+    assert.doesNotMatch(source, /paid API/i);
+  }
+});
+
 test('shows truthful format status and connects the existing app page', () => {
   assert.match(generated, /Public EPUB \+ audiobook · available now/);
   assert.match(generated, /EPUB text edition/);

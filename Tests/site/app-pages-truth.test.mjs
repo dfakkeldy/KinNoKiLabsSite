@@ -103,6 +103,16 @@ test('NS Marks search copy includes postal communities and labelled mailing addr
   }
 });
 
+test('apps listing NS Marks card names postal community without NAR mailing copy', () => {
+  for (const source of [theme, generatedApps]) {
+    assert.match(source, /parcel search by PID, civic address, or postal community/);
+    assert.doesNotMatch(source, /parcel search by PID or civic address/);
+    assert.doesNotMatch(source, /National Address Register/);
+    assert.doesNotMatch(source, /Canada Post/);
+    assert.doesNotMatch(source, /paid API/i);
+  }
+});
+
 test('homepage and apps cards point at on-site app pages', () => {
   assert.match(theme, /class="app-card" href="\/apps\/macromark\/"/);
   assert.match(theme, /class="app-card" href="\/apps\/routey\/"/);
