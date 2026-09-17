@@ -32,7 +32,7 @@ kinnokilabs.com is a static site with no accounts, no analytics, and no advertis
 - **Web Tools** (/tools): Preferences stay in browser storage on that device. The EPUB reader keeps the books you import in a browser database on that device only.
 - **Games** (/games): Progress, records, and sound preferences stay in that browser.
 - **Listening Rooms** (/listen and /fiction): Playback position, speed, and theme stay in that browser. Audio and text stream from public GitHub URLs when you press play.
-- **NS Marks The Spot browser map:** Maps you import, saved setups, and any position this device reports stay in that browser. Map tiles and layer data are fetched from the public sources named in each layer's attribution; those requests carry only the ordinary information any web request carries. Tax-sale listings never show owner names.
+- **NS Marks The Spot browser map:** Maps you import, saved setups, and any position this device reports stay in that browser. Map tiles and layer data are fetched from the public sources named in each layer's attribution; those requests carry only the ordinary information any web request carries. Tax-sale listings never show owner names. The Poker pocket at /poker keeps address search, driveway traces, and its offline pack in that browser only; no resident names. Aerial imagery is not stored offline. Clearing this site's data removes it.
 
 ## Contact Us
 If you have any questions or concerns about this Privacy Policy, please contact us at [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com).
