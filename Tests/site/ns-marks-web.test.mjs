@@ -158,9 +158,12 @@ test('the short /map URL redirects to the pinned online map route', () => {
 });
 
 test('the short /poker URL serves the dedicated persistent app without redirecting', () => {
+  // Pages 308s *.html to the extension-less path. Rewriting to poker.html
+  // therefore sends the browser to /apps/nsmarksthespot/map/poker and
+  // breaks the /poker service-worker scope. Proxy the canonical path.
   const expectedRewrites = [
-    '/poker /apps/nsmarksthespot/map/poker.html 200',
-    '/poker/ /apps/nsmarksthespot/map/poker.html 200',
+    '/poker /apps/nsmarksthespot/map/poker 200',
+    '/poker/ /apps/nsmarksthespot/map/poker 200',
   ];
   for (const root of ['Resources', 'Output']) {
     const redirects = readFileSync(
@@ -174,6 +177,7 @@ test('the short /poker URL serves the dedicated persistent app without redirecti
       );
     }
     assert.doesNotMatch(redirects, /theme=poker 301/);
+    assert.doesNotMatch(redirects, /\/poker\.html 200/);
   }
 });
 
