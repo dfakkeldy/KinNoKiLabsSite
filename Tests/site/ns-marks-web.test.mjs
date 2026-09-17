@@ -158,20 +158,64 @@ test('the short /map URL redirects to the pinned online map route', () => {
 });
 
 test('the short /poker URL serves the dedicated persistent app without redirecting', () => {
-  const expectedRedirect = '/poker /apps/nsmarksthespot/map/poker 200';
+  // Pages 308s *.html to the extension-less path. Rewriting to poker.html
+  // therefore sends the browser to /apps/nsmarksthespot/map/poker and
+  // breaks the /poker service-worker scope. Proxy the canonical path.
+  const expectedRewrites = [
+    '/poker /apps/nsmarksthespot/map/poker 200',
+    '/poker/ /apps/nsmarksthespot/map/poker 200',
+  ];
   for (const root of ['Resources', 'Output']) {
     const redirects = readFileSync(
       new URL(`../../${root}/_redirects`, import.meta.url),
       'utf8',
     );
-    assert.ok(
-      redirects.split('\n').includes(expectedRedirect),
-      `${root}/_redirects is missing: ${expectedRedirect}`,
-    );
+    for (const expectedRewrite of expectedRewrites) {
+      assert.ok(
+        redirects.split('\n').includes(expectedRewrite),
+        `${root}/_redirects is missing: ${expectedRewrite}`,
+      );
+    }
+    assert.doesNotMatch(redirects, /theme=poker 301/);
+    assert.doesNotMatch(redirects, /\/poker\.html 200/);
+  }
+});
+
+test('sync tool stamps Poker shell base href to the published map path', () => {
+  const fixture = makeFixture();
+  try {
+    const config = join(fixture.root, 'source.json');
+    writeFileSync(config, JSON.stringify({
+      repository: 'https://github.com/dfakkeldy/ns-marks-the-spot',
+      commit: fixture.commit,
+      publicPath: '/apps/nsmarksthespot/map/',
+    }));
+
+    const result = spawnSync(process.execPath, [
+      syncTool.pathname,
+      '--config', config,
+      '--source', fixture.source,
+      '--destination', fixture.destination,
+    ], { encoding: 'utf8' });
+
+    assert.equal(result.status, 0, result.stderr);
+    const poker = readFileSync(join(fixture.destination, 'poker.html'), 'utf8');
+    assert.match(poker, /<base href="\/apps\/nsmarksthespot\/map\/" \/>/);
+    assert.doesNotMatch(poker, /<base href="\.\/" \/>/);
+  } finally {
+    rmSync(fixture.root, { recursive: true, force: true });
   }
 });
 
 test('Poker has the pinned asset base and narrowly authorized worker scope', () => {
+  const resourceHeaders = readFileSync(new URL('../../Resources/_headers', import.meta.url), 'utf8');
+  const outputHeaders = readFileSync(new URL('../../Output/_headers', import.meta.url), 'utf8');
+  assert.equal(outputHeaders, resourceHeaders);
+  assert.match(
+    resourceHeaders,
+    /\/apps\/nsmarksthespot\/map\/poker-sw\.js\n  Service-Worker-Allowed: \/poker/,
+  );
+
   for (const root of ['Resources', 'Output']) {
     const shell = readFileSync(new URL(`../../${root}/apps/nsmarksthespot/map/poker.html`, import.meta.url), 'utf8');
     assert.ok(shell.includes('<base href="/apps/nsmarksthespot/map/" />'));
@@ -179,6 +223,21 @@ test('Poker has the pinned asset base and narrowly authorized worker scope', () 
     assert.match(headers, /\/apps\/nsmarksthespot\/map\/poker-sw\.js\n  Service-Worker-Allowed: \/poker/);
     const manifest = JSON.parse(readFileSync(new URL(`../../${root}/apps/nsmarksthespot/map/poker.webmanifest`, import.meta.url), 'utf8'));
     assert.equal(new URL(manifest.start_url, 'https://kinnokilabs.com/apps/nsmarksthespot/map/poker.webmanifest').pathname, '/poker');
+  }
+});
+
+test('privacy names the Poker pocket as browser-local storage', () => {
+  const privacy = readFileSync(new URL('../../Content/privacy.md', import.meta.url), 'utf8');
+  const generated = readFileSync(new URL('../../Output/privacy/index.html', import.meta.url), 'utf8');
+  for (const [label, source] of [['Content/privacy.md', privacy], ['Output/privacy/index.html', generated]]) {
+    assert.match(source, /Poker pocket at \/poker/, `${label} must name the Poker pocket route`);
+    assert.match(source, /address search/, `${label} must mention address search`);
+    assert.match(source, /driveway traces/, `${label} must mention driveway traces`);
+    assert.match(source, /offline pack/, `${label} must mention the offline pack`);
+    assert.match(source, /that browser only/, `${label} must keep Poker data in that browser`);
+    assert.match(source, /no resident names/i, `${label} must say resident names are not stored`);
+    assert.match(source, /[Aa]erial.{0,80}not stored offline/, `${label} must say aerial is not stored offline`);
+    assert.match(source, /[Cc]learing.{0,40}(?:site )?data/, `${label} must say clearing site data removes it`);
   }
 });
 
