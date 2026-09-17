@@ -1,0 +1,3 @@
+/apps/nsmarksthespot/map/poker-sw.js
+  Service-Worker-Allowed: /poker
+  Cache-Control: no-cache
