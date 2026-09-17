@@ -102,6 +102,13 @@ function installBuild(dist, destination, config) {
     for (const entry of readdirSync(dist)) {
       cpSync(join(dist, entry), join(staging, entry), { recursive: true });
     }
+    // /poker is a rewrite, so its shell needs the map bundle's asset base.
+    const pokerShell = join(staging, 'poker.html');
+    if (existsSync(pokerShell)) {
+      const html = readFileSync(pokerShell, 'utf8');
+      if (!html.includes('<base href="./" />')) fail('Poker shell must declare its relative asset base');
+      writeFileSync(pokerShell, html.replace('<base href="./" />', `<base href="${config.publicPath}" />`));
+    }
     writeFileSync(join(staging, 'source.json'), `${JSON.stringify(config, null, 2)}\n`);
 
     if (existsSync(backup)) {

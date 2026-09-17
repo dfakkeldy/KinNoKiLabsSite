@@ -50,6 +50,7 @@ function makeFixture() {
     mkdirSync('dist/assets', { recursive: true });
     writeFileSync('dist/index.html', '<script type="module" src="./assets/app.js"></script>');
     writeFileSync('dist/assets/app.js', 'console.log("map")');
+    writeFileSync('dist/poker.html', '<base href="./" /><script type="module" src="./assets/app.js"></script>');
   `);
 
   run('git', ['init', '-q'], source);
@@ -156,11 +157,8 @@ test('the short /map URL redirects to the pinned online map route', () => {
   }
 });
 
-test('the short /poker URL opens the map in its Poker setup', () => {
-  // The map picks Poker from `theme`, not from layers: Poker and Explore Nova
-  // Scotia draw the same single layer, so a layer-only link cannot say which
-  // one was meant.
-  const expectedRedirect = '/poker /apps/nsmarksthespot/map/?theme=poker 301';
+test('the short /poker URL serves the dedicated persistent app without redirecting', () => {
+  const expectedRedirect = '/poker /apps/nsmarksthespot/map/poker.html 200';
   for (const root of ['Resources', 'Output']) {
     const redirects = readFileSync(
       new URL(`../../${root}/_redirects`, import.meta.url),
@@ -170,6 +168,17 @@ test('the short /poker URL opens the map in its Poker setup', () => {
       redirects.split('\n').includes(expectedRedirect),
       `${root}/_redirects is missing: ${expectedRedirect}`,
     );
+  }
+});
+
+test('Poker has the pinned asset base and narrowly authorized worker scope', () => {
+  for (const root of ['Resources', 'Output']) {
+    const shell = readFileSync(new URL(`../../${root}/apps/nsmarksthespot/map/poker.html`, import.meta.url), 'utf8');
+    assert.ok(shell.includes('<base href="/apps/nsmarksthespot/map/" />'));
+    const headers = readFileSync(new URL(`../../${root}/_headers`, import.meta.url), 'utf8');
+    assert.match(headers, /\/apps\/nsmarksthespot\/map\/poker-sw\.js\n  Service-Worker-Allowed: \/poker/);
+    const manifest = JSON.parse(readFileSync(new URL(`../../${root}/apps/nsmarksthespot/map/poker.webmanifest`, import.meta.url), 'utf8'));
+    assert.equal(new URL(manifest.start_url, 'https://kinnokilabs.com/apps/nsmarksthespot/map/poker.webmanifest').pathname, '/poker');
   }
 });
 
