@@ -158,7 +158,7 @@ test('the short /map URL redirects to the pinned online map route', () => {
 });
 
 test('the short /poker URL serves the dedicated persistent app without redirecting', () => {
-  const expectedRedirect = '/poker /apps/nsmarksthespot/map/poker.html 200';
+  const expectedRedirect = '/poker /apps/nsmarksthespot/map/poker 200';
   for (const root of ['Resources', 'Output']) {
     const redirects = readFileSync(
       new URL(`../../${root}/_redirects`, import.meta.url),
