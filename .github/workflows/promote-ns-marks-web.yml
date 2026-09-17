@@ -170,7 +170,9 @@ jobs:
           git add \
             Tools/ns-marks-web-source.json \
             Resources/apps/nsmarksthespot/map \
-            Output/apps/nsmarksthespot/map
+            Output/apps/nsmarksthespot/map \
+            Output/_redirects \
+            Output/_headers
 
           if git diff --cached --quiet; then
             echo "::error::Promotion changed the source pin but produced no deployable bundle diff."
