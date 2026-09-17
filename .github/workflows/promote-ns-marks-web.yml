@@ -14,12 +14,14 @@ jobs:
           node-version: "22"
       - name: Generate website from committed sources
         run: make generate PUBLISH_BIN="swift run KinNoKiLabsSite"
+      - name: Restore the normal workflow before verification
+        run: git show 14a3b8678e8fb004413c5b320fe1fa52bee236df:.github/workflows/promote-ns-marks-web.yml > .github/workflows/promote-ns-marks-web.yml
       - name: Verify generated website
         run: make test
       - name: Save generated output on the task branch
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Output
+          git add Output .github/workflows/promote-ns-marks-web.yml
           git commit -m "fix(site): regenerate canonical Poker rewrite"
           git push
