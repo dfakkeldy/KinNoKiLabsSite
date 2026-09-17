@@ -1,6 +1,6 @@
 
-const CACHE = 'ns-poker-f2d7247960ec25a3';
-const URLS = ["poker.html","poker.webmanifest","poker/data.json.gz","poker/source.json","app-icon-180.png","app-icon-512.png","assets/poker-CJr_ggX1.js","assets/rolldown-runtime-aKtaBQYM.js","assets/browser-_rMFpHeB.js","assets/react-lCSYwAWP.js","assets/mailingAddresses-CMxW9HV0.js","assets/hooks-nxDzfu7f.js","assets/Tooltip-BtSDdO2w.js","assets/mailingAddresses-vh-t_kPv.css","assets/palette-KdQ2P1Up.js","assets/poker-B3VH3zhr.css"].map(path => new URL(path, self.location.href).href);
+const CACHE = 'ns-poker-60a37cdf80504e7f';
+const URLS = ["poker.html","poker.webmanifest","poker/data.json.gz","poker/source.json","app-icon-180.png","app-icon-512.png","assets/poker-DcLf7r7J.js","assets/rolldown-runtime-aKtaBQYM.js","assets/browser-_rMFpHeB.js","assets/react-lCSYwAWP.js","assets/mailingAddresses-CMxW9HV0.js","assets/hooks-nxDzfu7f.js","assets/Tooltip-BtSDdO2w.js","assets/mailingAddresses-vh-t_kPv.css","assets/palette-KdQ2P1Up.js","assets/poker-Ba5cLBPN.css"].map(path => new URL(path, self.location.href).href);
 const SHELL = new URL('poker.html', self.location.href).href;
 async function validCache(cache) {
   try {
