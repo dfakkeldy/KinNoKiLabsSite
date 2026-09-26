@@ -275,7 +275,7 @@
     "src": "node_modules/pdfjs-dist/build/pdf.worker.min.mjs"
   },
   "poker.html": {
-    "file": "assets/poker-CtLntgBP.js",
+    "file": "assets/poker-xNl0x1e7.js",
     "name": "poker",
     "src": "poker.html",
     "isEntry": true,
@@ -287,7 +287,7 @@
       "_palette-KdQ2P1Up.js"
     ],
     "css": [
-      "assets/poker-nEjJTRWS.css"
+      "assets/poker-BM3UeVhH.css"
     ]
   },
   "src/atlas/AtlasBasemapLayer.tsx": {

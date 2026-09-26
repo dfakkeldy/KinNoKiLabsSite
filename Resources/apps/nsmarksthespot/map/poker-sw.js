@@ -1,6 +1,6 @@
 
-const CACHE = 'ns-poker-c57419a0192bc899';
-const URLS = ["poker.html","poker.webmanifest","poker/data.json.gz","poker/source.json","app-icon-180.png","app-icon-512.png","assets/poker-CtLntgBP.js","assets/rolldown-runtime-aKtaBQYM.js","assets/browser-DUD-Eqdb.js","assets/react-lCSYwAWP.js","assets/browserLocation-C2YiHkFb.js","assets/palette-KdQ2P1Up.js","assets/browserLocation-vh-t_kPv.css","assets/poker-nEjJTRWS.css"].map(path => new URL(path, self.location.href).href);
+const CACHE = 'ns-poker-06130a6040deb2ca';
+const URLS = ["poker.html","poker.webmanifest","poker/data.json.gz","poker/source.json","app-icon-180.png","app-icon-512.png","assets/poker-xNl0x1e7.js","assets/rolldown-runtime-aKtaBQYM.js","assets/browser-DUD-Eqdb.js","assets/react-lCSYwAWP.js","assets/browserLocation-C2YiHkFb.js","assets/palette-KdQ2P1Up.js","assets/browserLocation-vh-t_kPv.css","assets/poker-BM3UeVhH.css"].map(path => new URL(path, self.location.href).href);
 const SHELL = new URL('poker.html', self.location.href).href;
 async function validCache(cache) {
   try {
