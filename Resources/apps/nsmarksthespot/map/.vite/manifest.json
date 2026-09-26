@@ -1,6 +1,6 @@
 {
-  "_Tooltip-BtSDdO2w.js": {
-    "file": "assets/Tooltip-BtSDdO2w.js",
+  "_Tooltip-DrLitdon.js": {
+    "file": "assets/Tooltip-DrLitdon.js",
     "name": "Tooltip",
     "imports": [
       "_rolldown-runtime-aKtaBQYM.js",
@@ -28,15 +28,15 @@
       "_react-lCSYwAWP.js"
     ]
   },
-  "_browserLocation-CHw_Q_Wl.js": {
-    "file": "assets/browserLocation-CHw_Q_Wl.js",
+  "_browserLocation-I7NM-k4h.js": {
+    "file": "assets/browserLocation-I7NM-k4h.js",
     "name": "browserLocation",
     "imports": [
       "_rolldown-runtime-aKtaBQYM.js",
       "_browser-_rMFpHeB.js",
       "_react-lCSYwAWP.js",
       "_hooks-nxDzfu7f.js",
-      "_Tooltip-BtSDdO2w.js"
+      "_Tooltip-DrLitdon.js"
     ],
     "css": [
       "assets/browserLocation-vh-t_kPv.css"
@@ -182,7 +182,7 @@
     ]
   },
   "index.html": {
-    "file": "assets/app-YiFVQxkn.js",
+    "file": "assets/app-YMoJ6h-U.js",
     "name": "app",
     "src": "index.html",
     "isEntry": true,
@@ -190,12 +190,12 @@
       "_rolldown-runtime-aKtaBQYM.js",
       "_browser-_rMFpHeB.js",
       "_react-lCSYwAWP.js",
-      "_browserLocation-CHw_Q_Wl.js",
+      "_browserLocation-I7NM-k4h.js",
       "_fletcherLayer-C8zIaoJm.js",
       "_rumseyLicense-Dd9h7MYW.js",
       "_palette-KdQ2P1Up.js",
       "_hooks-nxDzfu7f.js",
-      "_Tooltip-BtSDdO2w.js",
+      "_Tooltip-DrLitdon.js",
       "_reliefMath-Ca1Co6Vs.js"
     ],
     "dynamicImports": [
@@ -283,7 +283,7 @@
     ]
   },
   "node_modules/pdfjs-dist/build/pdf.mjs": {
-    "file": "assets/pdf-DeMQZeu3.js",
+    "file": "assets/pdf-CUqzTzmy.js",
     "name": "pdf",
     "src": "node_modules/pdfjs-dist/build/pdf.mjs",
     "isDynamicEntry": true,
@@ -296,7 +296,7 @@
     "src": "node_modules/pdfjs-dist/build/pdf.worker.min.mjs"
   },
   "poker.html": {
-    "file": "assets/poker-CTkYteXa.js",
+    "file": "assets/poker-DclmKaDQ.js",
     "name": "poker",
     "src": "poker.html",
     "isEntry": true,
@@ -304,13 +304,13 @@
       "_rolldown-runtime-aKtaBQYM.js",
       "_browser-_rMFpHeB.js",
       "_react-lCSYwAWP.js",
-      "_browserLocation-CHw_Q_Wl.js",
+      "_browserLocation-I7NM-k4h.js",
       "_palette-KdQ2P1Up.js",
       "_hooks-nxDzfu7f.js",
-      "_Tooltip-BtSDdO2w.js"
+      "_Tooltip-DrLitdon.js"
     ],
     "css": [
-      "assets/poker-DjUNzTkT.css"
+      "assets/poker-nEjJTRWS.css"
     ]
   },
   "src/atlas/AtlasBasemapLayer.tsx": {
@@ -338,7 +338,7 @@
     ]
   },
   "src/components/FletcherFeaturesLayer.tsx": {
-    "file": "assets/FletcherFeaturesLayer-C_9_0Oey.js",
+    "file": "assets/FletcherFeaturesLayer-BB4CKJsC.js",
     "name": "FletcherFeaturesLayer",
     "src": "src/components/FletcherFeaturesLayer.tsx",
     "isDynamicEntry": true,
@@ -347,7 +347,7 @@
       "_browser-_rMFpHeB.js",
       "_react-lCSYwAWP.js",
       "_hooks-nxDzfu7f.js",
-      "_Tooltip-BtSDdO2w.js",
+      "_Tooltip-DrLitdon.js",
       "index.html",
       "_historicalSymbols-Bo8GihSz.js"
     ],
@@ -356,7 +356,7 @@
     ]
   },
   "src/components/print/PrintPreview.tsx": {
-    "file": "assets/PrintPreview-B7mMexce.js",
+    "file": "assets/PrintPreview-DiZFj3SN.js",
     "name": "PrintPreview",
     "src": "src/components/print/PrintPreview.tsx",
     "isDynamicEntry": true,
@@ -364,7 +364,7 @@
       "_rolldown-runtime-aKtaBQYM.js",
       "_browser-_rMFpHeB.js",
       "_react-lCSYwAWP.js",
-      "_browserLocation-CHw_Q_Wl.js",
+      "_browserLocation-I7NM-k4h.js",
       "_fletcherLayer-C8zIaoJm.js",
       "_rumseyLicense-Dd9h7MYW.js",
       "index.html",
@@ -378,7 +378,7 @@
     "isDynamicEntry": true
   },
   "src/print/pdf/ExportDialog.tsx": {
-    "file": "assets/ExportDialog-MJTxKzd9.js",
+    "file": "assets/ExportDialog-CDeVTqCS.js",
     "name": "ExportDialog",
     "src": "src/print/pdf/ExportDialog.tsx",
     "isDynamicEntry": true,
@@ -396,7 +396,7 @@
     ]
   },
   "src/terrain/ResearchTerrainLayer.tsx": {
-    "file": "assets/ResearchTerrainLayer-UIRXznmR.js",
+    "file": "assets/ResearchTerrainLayer-sArvTYPD.js",
     "name": "ResearchTerrainLayer",
     "src": "src/terrain/ResearchTerrainLayer.tsx",
     "isDynamicEntry": true,
@@ -415,7 +415,7 @@
     ]
   },
   "src/userMaps/parsers/geoTiffSource.ts": {
-    "file": "assets/geoTiffSource-C1VKaN68.js",
+    "file": "assets/geoTiffSource-BIwhMPkU.js",
     "name": "geoTiffSource",
     "src": "src/userMaps/parsers/geoTiffSource.ts",
     "isDynamicEntry": true,
@@ -435,7 +435,7 @@
     ]
   },
   "src/userMaps/parsers/parseGeoPdfAuto.ts": {
-    "file": "assets/parseGeoPdfAuto-BKEz0Ycd.js",
+    "file": "assets/parseGeoPdfAuto-pdAbqmZv.js",
     "name": "parseGeoPdfAuto",
     "src": "src/userMaps/parsers/parseGeoPdfAuto.ts",
     "isDynamicEntry": true,
@@ -451,14 +451,14 @@
     ]
   },
   "src/userMaps/vector/edit/EditableVectorLayer.tsx": {
-    "file": "assets/EditableVectorLayer-Sy19PiSP.js",
+    "file": "assets/EditableVectorLayer-CVNWw7wi.js",
     "name": "EditableVectorLayer",
     "src": "src/userMaps/vector/edit/EditableVectorLayer.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_rolldown-runtime-aKtaBQYM.js",
       "_react-lCSYwAWP.js",
-      "_browserLocation-CHw_Q_Wl.js",
+      "_browserLocation-I7NM-k4h.js",
       "_hooks-nxDzfu7f.js",
       "index.html"
     ],
@@ -467,21 +467,21 @@
     ]
   },
   "src/userMaps/vector/edit/ParcelSnapTargetsLayer.tsx": {
-    "file": "assets/ParcelSnapTargetsLayer-DGnSAaaW.js",
+    "file": "assets/ParcelSnapTargetsLayer-DdBUjdah.js",
     "name": "ParcelSnapTargetsLayer",
     "src": "src/userMaps/vector/edit/ParcelSnapTargetsLayer.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_rolldown-runtime-aKtaBQYM.js",
       "_react-lCSYwAWP.js",
-      "_browserLocation-CHw_Q_Wl.js",
+      "_browserLocation-I7NM-k4h.js",
       "_fletcherLayer-C8zIaoJm.js",
       "_hooks-nxDzfu7f.js",
       "index.html"
     ]
   },
   "src/userMaps/vector/parsers/shapefileZipSource.ts": {
-    "file": "assets/shapefileZipSource-BhLqvh-y.js",
+    "file": "assets/shapefileZipSource-cFa6JKP6.js",
     "name": "shapefileZipSource",
     "src": "src/userMaps/vector/parsers/shapefileZipSource.ts",
     "isDynamicEntry": true,
