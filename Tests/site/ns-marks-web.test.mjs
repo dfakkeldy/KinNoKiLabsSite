@@ -51,6 +51,7 @@ function makeFixture() {
     writeFileSync('dist/index.html', '<script type="module" src="./assets/app.js"></script>');
     writeFileSync('dist/assets/app.js', 'console.log("map")');
     writeFileSync('dist/poker.html', '<base href="./" /><script type="module" src="./assets/app.js"></script>');
+    writeFileSync('dist/rhodena.html', '<base href="./" /><script type="module" src="./assets/app.js"></script>');
   `);
 
   run('git', ['init', '-q'], source);
@@ -181,6 +182,36 @@ test('the short /poker URL serves the dedicated persistent app without redirecti
   }
 });
 
+test('the short /rhodena URL serves the focused Rhodena map without redirecting', () => {
+  // Same shape as /poker: proxy the extension-less canonical path so the
+  // address bar and share links keep the short URL.
+  const expectedRewrites = [
+    '/rhodena /apps/nsmarksthespot/map/rhodena 200',
+    '/rhodena/ /apps/nsmarksthespot/map/rhodena 200',
+  ];
+  // Output/ is regenerated from Resources/ by `make generate`.
+  for (const root of ['Resources', 'Output']) {
+    const redirects = readFileSync(
+      new URL(`../../${root}/_redirects`, import.meta.url),
+      'utf8',
+    );
+    for (const expectedRewrite of expectedRewrites) {
+      assert.ok(
+        redirects.split('\n').includes(expectedRewrite),
+        `${root}/_redirects is missing: ${expectedRewrite}`,
+      );
+    }
+    assert.doesNotMatch(redirects, /\/rhodena\.html 200/);
+
+    // The pinned copy gains rhodena.html with the NS Marks source that adds it.
+    const shell = new URL(`../../${root}/apps/nsmarksthespot/map/rhodena.html`, import.meta.url);
+    if (existsSync(shell)) {
+      const html = readFileSync(shell, 'utf8');
+      assert.ok(html.includes('<base href="/apps/nsmarksthespot/map/" />'), `${root} Rhodena shell must use the published asset base`);
+    }
+  }
+});
+
 test('sync tool stamps Poker shell base href to the published map path', () => {
   const fixture = makeFixture();
   try {
@@ -199,9 +230,11 @@ test('sync tool stamps Poker shell base href to the published map path', () => {
     ], { encoding: 'utf8' });
 
     assert.equal(result.status, 0, result.stderr);
-    const poker = readFileSync(join(fixture.destination, 'poker.html'), 'utf8');
-    assert.match(poker, /<base href="\/apps\/nsmarksthespot\/map\/" \/>/);
-    assert.doesNotMatch(poker, /<base href="\.\/" \/>/);
+    for (const file of ['poker.html', 'rhodena.html']) {
+      const shell = readFileSync(join(fixture.destination, file), 'utf8');
+      assert.match(shell, /<base href="\/apps\/nsmarksthespot\/map\/" \/>/, file);
+      assert.doesNotMatch(shell, /<base href="\.\/" \/>/, file);
+    }
   } finally {
     rmSync(fixture.root, { recursive: true, force: true });
   }
