@@ -24,6 +24,13 @@ The current product focus is the **browser map**, live at [/apps/nsmarksthespot/
 - **Your maps:** Import a GeoPDF, GeoTIFF, shapefile, or GeoJSON and keep it on your device. Nothing is uploaded.
 - **Exports:** Print a PDF map or export a source-linked evidence note for a parcel.
 
+## Rhodena Wind
+
+The proposed turbine map has a focused page at [/rhodena](/rhodena) — a short URL, the same pattern as /poker. It is the research map with a Rhodena focus, titled **Rhodena Wind — proposed turbine map**. The full map stays at [/apps/nsmarksthespot/map/](/apps/nsmarksthespot/map/). This is not a separate offline pocket app: there is no service worker or offline pack.
+
+- **Sight lines:** From a chosen viewpoint on the viewshed, an eye-level (~1.7 m) line runs to each assessed 200 m tip in the viewshed colours. It stays solid until bare earth first obstructs it, then a ridge mark and a dotted remainder. Those breaks use the same terrain samples, curvature, and refraction as the viewshed. Trees, buildings, and the final design are not in the model; the line is drawn to tip height, not the hub. Near-threshold results stay amber. Unassessed or out-of-range turbines get no line. The layout is the provisional proposed layout.
+- **Map | Aerial:** A switch under the 3D control. Aerial imagery still opens the Province licence gate before it turns on.
+
 ## Every slider pull is a little time travel
 
 Fade between the old survey and the current map to trace where a road bent, where a shoreline shifted, or where a name survived. The old sheets mark what today's maps forgot — gold mines, foundries, schools — sitting close to where they used to be under the modern roads and woods.
@@ -33,4 +40,4 @@ Fade between the old survey and the current map to trace where a road bent, wher
 The code is public on GitHub under the MIT licence, structured around a map-engine boundary so the interface can stay steady while the renderer evolves. Map imagery keeps its own licences and attribution, layer by layer.
 
 ---
-[Open Online Map](/apps/nsmarksthespot/map/) | [Nova Scotia Tax Sale Hub](/taxsale/) | [Project Site](https://dfakkeldy.github.io/ns-marks-the-spot/) | [View Source Code on GitHub](https://github.com/dfakkeldy/ns-marks-the-spot) | [Get Help & Support](/nsmarksthespot-help)
+[Open Online Map](/apps/nsmarksthespot/map/) | [Rhodena Wind](/rhodena) | [Nova Scotia Tax Sale Hub](/taxsale/) | [Project Site](https://dfakkeldy.github.io/ns-marks-the-spot/) | [View Source Code on GitHub](https://github.com/dfakkeldy/ns-marks-the-spot) | [Get Help & Support](/nsmarksthespot-help)
