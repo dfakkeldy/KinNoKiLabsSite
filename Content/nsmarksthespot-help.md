@@ -8,6 +8,8 @@ I haven't written the FAQ yet. If something in the app is confusing, email me â€
 
 ## Contact
 
+The focused Rhodena Wind map is at [/rhodena](/rhodena).
+
 Hit a bug, or have a feature request? Get in touch:
 
 - **Email Support:** [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com)

@@ -12,6 +12,10 @@ const visualTimer = readFileSync(
   'utf8',
 );
 const echoBeta = readFileSync(new URL('../../Content/echo-beta.md', import.meta.url), 'utf8');
+const nsMarksHelp = readFileSync(
+  new URL('../../Content/nsmarksthespot-help.md', import.meta.url),
+  'utf8',
+);
 const theme = readFileSync(
   new URL('../../Sources/KinNoKiLabsSite/Theme/KinNoKiTheme.swift', import.meta.url),
   'utf8',
@@ -81,6 +85,42 @@ test('NS Marks public copy leads with the live browser map and no App Store date
   assert.doesNotMatch(generatedNsMarks, /GPS/i);
   assert.match(generatedApps, /optional live location/);
   assert.doesNotMatch(generatedApps, /optional GPS/i);
+});
+
+test('NS Marks public copy names the focused Rhodena page, sight lines, and Map | Aerial bounds', () => {
+  assert.match(nsMarks, /## Rhodena Wind/);
+  assert.match(nsMarks, /\[\/rhodena\]\(\/rhodena\)/);
+  assert.match(nsMarks, /\[\/apps\/nsmarksthespot\/map\/\]\(\/apps\/nsmarksthespot\/map\/\)/);
+  assert.match(nsMarks, /\*\*Sight lines:\*\*/);
+  assert.match(nsMarks, /\*\*Map \| Aerial:\*\*/);
+  assert.match(nsMarks, /\[Rhodena Wind\]\(\/rhodena\)/);
+  assert.match(nsMarksHelp, /The focused Rhodena Wind map is at \[\/rhodena\]\(\/rhodena\)\./);
+  assert.match(nsMarksHelp, /I haven't written the FAQ yet/);
+  assert.match(generatedNsMarks, /<h2>Rhodena Wind<\/h2>/);
+  assert.match(generatedNsMarks, /href="\/rhodena">\/rhodena</);
+  assert.match(generatedNsMarks, /href="\/rhodena">Rhodena Wind</);
+  assert.match(generatedNsMarks, /<strong>Sight lines:<\/strong>/);
+  assert.match(generatedNsMarks, /<strong>Map \| Aerial:<\/strong>/);
+  for (const source of [nsMarks, generatedNsMarks]) {
+    assert.match(source, /Rhodena Wind — proposed turbine map/);
+    assert.match(source, /same pattern as \/poker/);
+    assert.match(source, /research map with a Rhodena focus/);
+    assert.match(source, /no service worker or offline pack/);
+    assert.match(source, /eye-level \(~1\.7 m\)/);
+    assert.match(source, /assessed 200 m tip/);
+    assert.match(source, /viewshed colours/);
+    assert.match(source, /bare earth first obstructs/);
+    assert.match(source, /ridge mark and a dotted remainder/);
+    assert.match(source, /trees, buildings, and the final design are not in the model/i);
+    assert.match(source, /tip height, not the hub/);
+    assert.match(source, /provisional proposed layout/);
+    assert.match(source, /Near-threshold results stay amber/);
+    assert.match(source, /Unassessed or out-of-range turbines get no line/);
+    assert.match(source, /under the 3D control/);
+    assert.match(source, /Province licence gate/);
+    assert.doesNotMatch(source, /native parity/i);
+    assert.doesNotMatch(source, /GPS/i);
+  }
 });
 
 test('NS Marks search copy includes postal communities and labelled mailing addresses', () => {
