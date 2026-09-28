@@ -90,30 +90,37 @@ test('NS Marks public copy leads with the live browser map and no App Store date
 test('NS Marks public copy names the focused Rhodena page, sight lines, and Map | Aerial bounds', () => {
   assert.match(nsMarks, /## Rhodena Wind/);
   assert.match(nsMarks, /\[\/rhodena\]\(\/rhodena\)/);
-  assert.match(nsMarks, /Rhodena Wind — proposed turbine map/);
-  assert.match(nsMarks, /same pattern as \/poker/);
   assert.match(nsMarks, /\[\/apps\/nsmarksthespot\/map\/\]\(\/apps\/nsmarksthespot\/map\/\)/);
-  assert.match(nsMarks, /research map with a Rhodena focus/);
-  assert.match(nsMarks, /no service worker or offline pack/);
   assert.match(nsMarks, /\*\*Sight lines:\*\*/);
-  assert.match(nsMarks, /eye-level \(~1\.7 m\)/);
-  assert.match(nsMarks, /assessed 200 m tip/);
-  assert.match(nsMarks, /viewshed colours/);
-  assert.match(nsMarks, /bare earth first obstructs/);
-  assert.match(nsMarks, /ridge mark and a dotted remainder/);
-  assert.match(nsMarks, /trees, buildings, and the final design are not in the model/i);
-  assert.match(nsMarks, /tip height, not the hub/);
-  assert.match(nsMarks, /provisional proposed layout/);
-  assert.match(nsMarks, /Near-threshold results stay amber/);
-  assert.match(nsMarks, /Unassessed or out-of-range turbines get no line/);
   assert.match(nsMarks, /\*\*Map \| Aerial:\*\*/);
-  assert.match(nsMarks, /under the 3D control/);
-  assert.match(nsMarks, /Province licence gate/);
   assert.match(nsMarks, /\[Rhodena Wind\]\(\/rhodena\)/);
   assert.match(nsMarksHelp, /The focused Rhodena Wind map is at \[\/rhodena\]\(\/rhodena\)\./);
   assert.match(nsMarksHelp, /I haven't written the FAQ yet/);
-  assert.doesNotMatch(nsMarks, /native parity/i);
-  assert.doesNotMatch(nsMarks, /GPS/i);
+  assert.match(generatedNsMarks, /<h2>Rhodena Wind<\/h2>/);
+  assert.match(generatedNsMarks, /href="\/rhodena">\/rhodena</);
+  assert.match(generatedNsMarks, /href="\/rhodena">Rhodena Wind</);
+  assert.match(generatedNsMarks, /<strong>Sight lines:<\/strong>/);
+  assert.match(generatedNsMarks, /<strong>Map \| Aerial:<\/strong>/);
+  for (const source of [nsMarks, generatedNsMarks]) {
+    assert.match(source, /Rhodena Wind — proposed turbine map/);
+    assert.match(source, /same pattern as \/poker/);
+    assert.match(source, /research map with a Rhodena focus/);
+    assert.match(source, /no service worker or offline pack/);
+    assert.match(source, /eye-level \(~1\.7 m\)/);
+    assert.match(source, /assessed 200 m tip/);
+    assert.match(source, /viewshed colours/);
+    assert.match(source, /bare earth first obstructs/);
+    assert.match(source, /ridge mark and a dotted remainder/);
+    assert.match(source, /trees, buildings, and the final design are not in the model/i);
+    assert.match(source, /tip height, not the hub/);
+    assert.match(source, /provisional proposed layout/);
+    assert.match(source, /Near-threshold results stay amber/);
+    assert.match(source, /Unassessed or out-of-range turbines get no line/);
+    assert.match(source, /under the 3D control/);
+    assert.match(source, /Province licence gate/);
+    assert.doesNotMatch(source, /native parity/i);
+    assert.doesNotMatch(source, /GPS/i);
+  }
 });
 
 test('NS Marks search copy includes postal communities and labelled mailing addresses', () => {
