@@ -1,4 +1,21 @@
 {
+  "_ErrorBoundary-CYcAXN35.js": {
+    "file": "assets/ErrorBoundary-CYcAXN35.js",
+    "name": "ErrorBoundary",
+    "imports": [
+      "_rolldown-runtime-aKtaBQYM.js",
+      "_browser-DUD-Eqdb.js",
+      "_react-lCSYwAWP.js",
+      "_palette-KdQ2P1Up.js"
+    ],
+    "css": [
+      "assets/ErrorBoundary-vh-t_kPv.css"
+    ]
+  },
+  "_ErrorBoundary-vh-t_kPv.css": {
+    "file": "assets/ErrorBoundary-vh-t_kPv.css",
+    "src": "_ErrorBoundary-vh-t_kPv.css"
+  },
   "_basedecoder-B9MSveFr.js": {
     "file": "assets/basedecoder-B9MSveFr.js",
     "name": "basedecoder"
@@ -17,23 +34,6 @@
       "_rolldown-runtime-aKtaBQYM.js",
       "_react-lCSYwAWP.js"
     ]
-  },
-  "_browserLocation-C2YiHkFb.js": {
-    "file": "assets/browserLocation-C2YiHkFb.js",
-    "name": "browserLocation",
-    "imports": [
-      "_rolldown-runtime-aKtaBQYM.js",
-      "_browser-DUD-Eqdb.js",
-      "_react-lCSYwAWP.js",
-      "_palette-KdQ2P1Up.js"
-    ],
-    "css": [
-      "assets/browserLocation-vh-t_kPv.css"
-    ]
-  },
-  "_browserLocation-vh-t_kPv.css": {
-    "file": "assets/browserLocation-vh-t_kPv.css",
-    "src": "_browserLocation-vh-t_kPv.css"
   },
   "_errors-BS1r1y7c.js": {
     "file": "assets/errors-BS1r1y7c.js",
@@ -142,14 +142,14 @@
     "file": "assets/styles-BbvOlDT-.css",
     "src": "_styles-BbvOlDT-.css"
   },
-  "_styles-DCAeh9NS.js": {
-    "file": "assets/styles-DCAeh9NS.js",
+  "_styles-DCA3tzb6.js": {
+    "file": "assets/styles-DCA3tzb6.js",
     "name": "styles",
     "imports": [
       "_rolldown-runtime-aKtaBQYM.js",
       "_browser-DUD-Eqdb.js",
       "_react-lCSYwAWP.js",
-      "_browserLocation-C2YiHkFb.js",
+      "_ErrorBoundary-CYcAXN35.js",
       "_fletcherLayer-Cx6Bc4fE.js",
       "_rumseyLicense-Psv3zNYg.js",
       "_palette-KdQ2P1Up.js",
@@ -212,7 +212,7 @@
     ]
   },
   "index.html": {
-    "file": "assets/app-HIkGgMyb.js",
+    "file": "assets/app-CRH3qqfA.js",
     "name": "app",
     "src": "index.html",
     "isEntry": true,
@@ -220,8 +220,8 @@
       "_rolldown-runtime-aKtaBQYM.js",
       "_browser-DUD-Eqdb.js",
       "_react-lCSYwAWP.js",
-      "_browserLocation-C2YiHkFb.js",
-      "_styles-DCAeh9NS.js"
+      "_ErrorBoundary-CYcAXN35.js",
+      "_styles-DCA3tzb6.js"
     ]
   },
   "node_modules/geotiff/dist-module/compression/deflate.js": {
@@ -292,12 +292,12 @@
     ]
   },
   "node_modules/pdfjs-dist/build/pdf.mjs": {
-    "file": "assets/pdf-_BewUr-C.js",
+    "file": "assets/pdf-eMyOKude.js",
     "name": "pdf",
     "src": "node_modules/pdfjs-dist/build/pdf.mjs",
     "isDynamicEntry": true,
     "imports": [
-      "_styles-DCAeh9NS.js"
+      "_styles-DCA3tzb6.js"
     ]
   },
   "node_modules/pdfjs-dist/build/pdf.worker.min.mjs": {
@@ -305,7 +305,7 @@
     "src": "node_modules/pdfjs-dist/build/pdf.worker.min.mjs"
   },
   "poker.html": {
-    "file": "assets/poker-xNl0x1e7.js",
+    "file": "assets/poker-CbRduC4K.js",
     "name": "poker",
     "src": "poker.html",
     "isEntry": true,
@@ -313,15 +313,15 @@
       "_rolldown-runtime-aKtaBQYM.js",
       "_browser-DUD-Eqdb.js",
       "_react-lCSYwAWP.js",
-      "_browserLocation-C2YiHkFb.js",
+      "_ErrorBoundary-CYcAXN35.js",
       "_palette-KdQ2P1Up.js"
     ],
     "css": [
-      "assets/poker-BM3UeVhH.css"
+      "assets/poker-IzrLbW15.css"
     ]
   },
   "rhodena.html": {
-    "file": "assets/rhodena-BXgddfVa.js",
+    "file": "assets/rhodena-D9zed8Ez.js",
     "name": "rhodena",
     "src": "rhodena.html",
     "isEntry": true,
@@ -329,22 +329,22 @@
       "_rolldown-runtime-aKtaBQYM.js",
       "_browser-DUD-Eqdb.js",
       "_react-lCSYwAWP.js",
-      "_browserLocation-C2YiHkFb.js",
-      "_styles-DCAeh9NS.js"
+      "_ErrorBoundary-CYcAXN35.js",
+      "_styles-DCA3tzb6.js"
     ],
     "css": [
       "assets/rhodena-ACdhXb2o.css"
     ]
   },
   "src/atlas/AtlasBasemapLayer.tsx": {
-    "file": "assets/AtlasBasemapLayer-CoLyt9LU.js",
+    "file": "assets/AtlasBasemapLayer-DSSvH3h1.js",
     "name": "AtlasBasemapLayer",
     "src": "src/atlas/AtlasBasemapLayer.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_rolldown-runtime-aKtaBQYM.js",
       "_react-lCSYwAWP.js",
-      "_browserLocation-C2YiHkFb.js",
+      "_ErrorBoundary-CYcAXN35.js",
       "_mapLibreRuntime-CBLqDlhJ.js",
       "_style-BudRBfo7.js",
       "_terrainStatus-7ozSMsyx.js"
@@ -361,7 +361,7 @@
     ]
   },
   "src/components/FletcherFeaturesLayer.tsx": {
-    "file": "assets/FletcherFeaturesLayer-BWtX1pYj.js",
+    "file": "assets/FletcherFeaturesLayer-DxCcP4oV.js",
     "name": "FletcherFeaturesLayer",
     "src": "src/components/FletcherFeaturesLayer.tsx",
     "isDynamicEntry": true,
@@ -369,8 +369,8 @@
       "_rolldown-runtime-aKtaBQYM.js",
       "_browser-DUD-Eqdb.js",
       "_react-lCSYwAWP.js",
-      "_browserLocation-C2YiHkFb.js",
-      "_styles-DCAeh9NS.js",
+      "_ErrorBoundary-CYcAXN35.js",
+      "_styles-DCA3tzb6.js",
       "_historicalSymbols-Bo8GihSz.js"
     ],
     "css": [
@@ -378,7 +378,7 @@
     ]
   },
   "src/components/print/PrintPreview.tsx": {
-    "file": "assets/PrintPreview-Ck7RcR6M.js",
+    "file": "assets/PrintPreview-DdSEmuTg.js",
     "name": "PrintPreview",
     "src": "src/components/print/PrintPreview.tsx",
     "isDynamicEntry": true,
@@ -386,9 +386,9 @@
       "_rolldown-runtime-aKtaBQYM.js",
       "_browser-DUD-Eqdb.js",
       "_react-lCSYwAWP.js",
-      "_browserLocation-C2YiHkFb.js",
+      "_ErrorBoundary-CYcAXN35.js",
       "_fletcherLayer-Cx6Bc4fE.js",
-      "_styles-DCAeh9NS.js",
+      "_styles-DCA3tzb6.js",
       "_rumseyLicense-Psv3zNYg.js",
       "_browser-BLJWD7WI.js"
     ]
@@ -400,7 +400,7 @@
     "isDynamicEntry": true
   },
   "src/print/pdf/ExportDialog.tsx": {
-    "file": "assets/ExportDialog-BMF1fcI2.js",
+    "file": "assets/ExportDialog-DCNrIqfP.js",
     "name": "ExportDialog",
     "src": "src/print/pdf/ExportDialog.tsx",
     "isDynamicEntry": true,
@@ -408,27 +408,27 @@
       "_rolldown-runtime-aKtaBQYM.js",
       "_browser-DUD-Eqdb.js",
       "_react-lCSYwAWP.js",
-      "_styles-DCAeh9NS.js",
+      "_styles-DCA3tzb6.js",
       "_webMercator-DblijZst.js",
       "_browser-BLJWD7WI.js",
       "_es-C7tNxqvU.js"
     ],
     "dynamicImports": [
-      "_styles-DCAeh9NS.js",
+      "_styles-DCA3tzb6.js",
       "src/atlas/renderAtlasImage.ts"
     ]
   },
   "src/terrain/ResearchTerrainLayer.tsx": {
-    "file": "assets/ResearchTerrainLayer-CSJgN0mR.js",
+    "file": "assets/ResearchTerrainLayer-Cidndpjt.js",
     "name": "ResearchTerrainLayer",
     "src": "src/terrain/ResearchTerrainLayer.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_rolldown-runtime-aKtaBQYM.js",
       "_react-lCSYwAWP.js",
-      "_browserLocation-C2YiHkFb.js",
+      "_ErrorBoundary-CYcAXN35.js",
       "_fletcherLayer-Cx6Bc4fE.js",
-      "_styles-DCAeh9NS.js",
+      "_styles-DCA3tzb6.js",
       "_rumseyLicense-Psv3zNYg.js",
       "_reliefMath-DyvQbBQd.js",
       "_mapLibreRuntime-CBLqDlhJ.js",
@@ -438,13 +438,13 @@
     ]
   },
   "src/userMaps/parsers/geoTiffSource.ts": {
-    "file": "assets/geoTiffSource-B3V-F8nY.js",
+    "file": "assets/geoTiffSource-BnxQ88Nz.js",
     "name": "geoTiffSource",
     "src": "src/userMaps/parsers/geoTiffSource.ts",
     "isDynamicEntry": true,
     "imports": [
       "_rolldown-runtime-aKtaBQYM.js",
-      "_styles-DCAeh9NS.js",
+      "_styles-DCA3tzb6.js",
       "_errors-BS1r1y7c.js",
       "_globals-YdvHr6fO.js"
     ],
@@ -459,12 +459,12 @@
     ]
   },
   "src/userMaps/parsers/parseGeoPdfAuto.ts": {
-    "file": "assets/parseGeoPdfAuto-DNd-vDmd.js",
+    "file": "assets/parseGeoPdfAuto-BBee9f-T.js",
     "name": "parseGeoPdfAuto",
     "src": "src/userMaps/parsers/parseGeoPdfAuto.ts",
     "isDynamicEntry": true,
     "imports": [
-      "_styles-DCAeh9NS.js",
+      "_styles-DCA3tzb6.js",
       "_sourceRect-C5lzvrgY.js",
       "_errors-BS1r1y7c.js",
       "_es-C7tNxqvU.js"
@@ -477,41 +477,41 @@
     ]
   },
   "src/userMaps/vector/edit/EditableVectorLayer.tsx": {
-    "file": "assets/EditableVectorLayer-D5QMyxOp.js",
+    "file": "assets/EditableVectorLayer-DHZsk150.js",
     "name": "EditableVectorLayer",
     "src": "src/userMaps/vector/edit/EditableVectorLayer.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_rolldown-runtime-aKtaBQYM.js",
       "_react-lCSYwAWP.js",
-      "_browserLocation-C2YiHkFb.js",
-      "_styles-DCAeh9NS.js"
+      "_ErrorBoundary-CYcAXN35.js",
+      "_styles-DCA3tzb6.js"
     ],
     "css": [
       "assets/EditableVectorLayer-Dy_futJD.css"
     ]
   },
   "src/userMaps/vector/edit/ParcelSnapTargetsLayer.tsx": {
-    "file": "assets/ParcelSnapTargetsLayer-DJT0GL4x.js",
+    "file": "assets/ParcelSnapTargetsLayer-Bg_16vdG.js",
     "name": "ParcelSnapTargetsLayer",
     "src": "src/userMaps/vector/edit/ParcelSnapTargetsLayer.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_rolldown-runtime-aKtaBQYM.js",
       "_react-lCSYwAWP.js",
-      "_browserLocation-C2YiHkFb.js",
+      "_ErrorBoundary-CYcAXN35.js",
       "_fletcherLayer-Cx6Bc4fE.js",
-      "_styles-DCAeh9NS.js"
+      "_styles-DCA3tzb6.js"
     ]
   },
   "src/userMaps/vector/parsers/shapefileZipSource.ts": {
-    "file": "assets/shapefileZipSource-C-CmDxy7.js",
+    "file": "assets/shapefileZipSource-CMdJjDTC.js",
     "name": "shapefileZipSource",
     "src": "src/userMaps/vector/parsers/shapefileZipSource.ts",
     "isDynamicEntry": true,
     "imports": [
       "_browser-DUD-Eqdb.js",
-      "_styles-DCAeh9NS.js",
+      "_styles-DCA3tzb6.js",
       "_errors-BS1r1y7c.js"
     ]
   },
