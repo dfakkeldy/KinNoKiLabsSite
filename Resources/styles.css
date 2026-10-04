@@ -2907,6 +2907,33 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .shakespeare-main :is(.shakespeare-hero, .shakespeare-watch-grid, .shakespeare-sources-grid, .shakespeare-album-card, .shakespeare-edition) > * { min-width: 0; }
 .shakespeare-byline { color: var(--shakespeare-secondary); margin-bottom: 24px; }
 .shakespeare-intro { color: var(--shakespeare-secondary); max-width: 600px; }
+.shakespeare-back-link,
+.shakespeare-related a,
+.shakespeare-work-card h2 a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 44px;
+  min-height: 44px;
+  max-width: 100%;
+}
+.shakespeare-back-link { margin-bottom: 24px; font-size: 15px; line-height: 22px; }
+.shakespeare-work-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.shakespeare-work-card {
+  min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--separator);
+  border-radius: 20px;
+  padding: 24px;
+}
+.shakespeare-work-card h2 a { text-decoration: none; align-items: baseline; }
+.shakespeare-work-card h2 a span { color: var(--shakespeare-accent); flex: 0 0 auto; }
+.shakespeare-formats { margin-top: 24px; font-size: 15px; line-height: 22px; }
+.shakespeare-formats > div { border-top: 1px solid var(--separator); padding-top: 14px; margin-top: 14px; }
+.shakespeare-formats dt { color: var(--shakespeare-muted); font-weight: 600; margin-bottom: 6px; }
+.shakespeare-formats dd { margin: 0; color: var(--shakespeare-secondary); }
+.shakespeare-release-status { max-width: 600px; }
+.shakespeare-related { border-top: 1px solid var(--separator); margin-top: 52px; padding-top: 20px; font-size: 15px; line-height: 22px; }
 .shakespeare-index {
   display: flex;
   flex-wrap: wrap;
@@ -3081,6 +3108,8 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   .shakespeare-edition { grid-template-columns: 120px minmax(0, 1fr); padding: 20px; gap: 16px; }
 }
 @media (max-width: 639px) {
+  .shakespeare-work-grid { grid-template-columns: minmax(0, 1fr); }
+  .shakespeare-work-card { padding: 20px; }
   .shakespeare-main { padding-top: 36px; font-size: 17px; line-height: 26px; }
   .shakespeare-main h1 { font-size: 36px; line-height: 42px; }
   .shakespeare-main h2 { font-size: 26px; line-height: 32px; }

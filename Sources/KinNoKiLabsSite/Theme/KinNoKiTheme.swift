@@ -101,7 +101,7 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
         let active: String
         let isTaxSale = page.path.string == "taxsale"
         let isGIS = page.path.string == "gis"
-        let isShakespeare = page.path.string == "shakespeare"
+        let isShakespeare = page.path.string == "shakespeare" || page.path.string.hasPrefix("shakespeare/")
         let toolsHead = page.path.string == "tools" || page.path.string.hasPrefix("tools/")
         switch page.path.string {
         case "games":             main = gamesMain(page: "hub");         active = "/games"
@@ -128,7 +128,13 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
         case "tools/passphrase":     main = toolsMain(page: "passphrase");     active = "/tools"
         case "services":          main = servicesMain();                  active = "/services"
         case "gis":               main = gisCaseStudyMain();              active = "/services"
-        case "shakespeare":       main = shakespeareMain();               active = ""
+        case "shakespeare":       main = shakespeareCollectionMain();     active = ""
+        case "shakespeare/merchant-of-venice":
+            main = shakespeareMerchantMain()
+            active = ""
+        case "shakespeare/a-midsummer-nights-dream":
+            main = shakespeareMidsummerMain()
+            active = ""
         case "learn":             main = learnMain();                     active = ""
         case "taxsale":           main = taxSaleHubMain();                active = ""
         case "about":             main = aboutMain();                     active = "/about"

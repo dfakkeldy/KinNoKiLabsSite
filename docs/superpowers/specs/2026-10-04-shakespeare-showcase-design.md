@@ -1,6 +1,8 @@
 # Shakespeare showcase: The Merchant of Venice
 
-Design proposal for `/shakespeare`, desktop and phone. Proposal only; implementation and publication are separate approvals.
+Approved visual design for the Shakespeare collection, desktop and phone. Production publication and release of pending assets remain separate approvals.
+
+Approved bounded expansion: `/shakespeare` is the collection index with Merchant and Midsummer work cards. The existing Merchant playbill lives at `/shakespeare/merchant-of-venice`; `/shakespeare/a-midsummer-nights-dream` is an honest in-progress work page. Work pages link back to the collection and to one another. Collection cards state available formats and release status; Midsummer exposes no media, book, audiobook or public project-repo link. The original playbill design, shared shell, accessibility controls and release gates remain in force.
 
 ## 1. Existing patterns, briefly
 
@@ -10,7 +12,7 @@ The studio already has what this page needs: a dark black/gold shell, Lexend thr
 
 The page reads top to bottom like a programme for one production. Sections are numbered as acts in a small gold eyebrow (I · Watch, II · Listen, III · Read), with Sources and Code as unnumbered end matter. Hairline rules in surface-2 separate sections like ledger lines, a quiet nod to the bond. Original motifs only: a Venetian pointed arch over canal ripples in the hero, a storyboard film panel with a bridge and moon for Watch, three small caskets on the album concept, and typographic covers for Read. No anime characters, no final art, no counterfeit thumbnails. Gold is used for eyebrows, status markers, rules and the primary listening action. Other text stays neutral so Listen on Suno is unmistakable; source, code and same-page links remain available.
 
-The existing shared header and footer remain the production shell. The mockups use a simplified concept mark and footer to illustrate the composition; they do not replace the current brand assets, footer copy or existing links. The hero eyebrow reads “Shakespeare · A KinNoKi Labs collection” so the root page frames a collection while featuring one real work. Future works will live at `/shakespeare/<work>`; nothing on the shelf is teased now.
+The existing shared header and footer remain the production shell. The original mockups use a simplified concept mark and footer to illustrate the Merchant composition; they do not replace the current brand assets, footer copy or existing links. The Merchant hero eyebrow reads “Shakespeare · A KinNoKi Labs collection”. The collection index uses the same typography, gold accents, surface cards and focus styling; it introduces two work cards without inventing Midsummer artwork or public assets.
 
 ## 3. Page structure and exact copy
 

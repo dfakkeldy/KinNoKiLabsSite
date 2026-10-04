@@ -1,9 +1,47 @@
 import Plot
 
-/// One featured work, with honest availability states, inside the shared site shell.
-func shakespeareMain() -> Node<HTML.BodyContext> {
+/// A small collection with each work's current availability inside the shared shell.
+func shakespeareCollectionMain() -> Node<HTML.BodyContext> {
     .raw(#"""
     <main class="shakespeare-main" aria-labelledby="shakespeare-title">
+      <header class="shakespeare-collection-header">
+        <p class="eyebrow">A KinNoKi Labs collection</p>
+        <h1 id="shakespeare-title">Shakespeare</h1>
+        <p class="shakespeare-intro">Songs, films and modern-English editions of Shakespeare, gathered here as each project becomes ready.</p>
+      </header>
+      <section class="shakespeare-section" aria-label="Works in the collection">
+        <div class="shakespeare-work-grid">
+          <article class="shakespeare-work-card" aria-labelledby="merchant-card-title">
+            <p class="eyebrow">I · On the shelf</p>
+            <h2 id="merchant-card-title"><a href="/shakespeare/merchant-of-venice/">The Merchant of Venice <span aria-hidden="true">→</span></a></h2>
+            <p class="shakespeare-status">Album available</p>
+            <p class="shakespeare-secondary">Original songs after the play, with an anime music video and two modern-English editions awaiting release.</p>
+            <dl class="shakespeare-formats">
+              <div><dt>Available</dt><dd>16-song album on Suno</dd></div>
+              <div><dt>Pending release</dt><dd>Anime music video · EPUB · M4B audiobook</dd></div>
+            </dl>
+          </article>
+          <article class="shakespeare-work-card" aria-labelledby="midsummer-card-title">
+            <p class="eyebrow">II · In the studio</p>
+            <h2 id="midsummer-card-title"><a href="/shakespeare/a-midsummer-nights-dream/">A Midsummer Night's Dream <span aria-hidden="true">→</span></a></h2>
+            <p class="shakespeare-status">In progress</p>
+            <p class="shakespeare-secondary">A new Shakespeare project in the studio. Its work page will gather the editions and media as they become ready.</p>
+            <dl class="shakespeare-formats">
+              <div><dt>Available</dt><dd>No public releases yet</dd></div>
+            </dl>
+          </article>
+        </div>
+      </section>
+    </main>
+    <script src="/shakespeare.js" defer></script>
+    """#)
+}
+
+/// The Merchant playbill preserves its verified links and pending release gates.
+func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
+    .raw(#"""
+    <main class="shakespeare-main" aria-labelledby="shakespeare-title">
+      <a class="shakespeare-back-link" href="/shakespeare/"><span aria-hidden="true">←</span> Shakespeare collection</a>
       <header class="shakespeare-hero">
         <div class="shakespeare-hero-copy">
           <p class="eyebrow">Shakespeare · A KinNoKi Labs collection</p>
@@ -126,6 +164,38 @@ func shakespeareMain() -> Node<HTML.BodyContext> {
         </ul>
       </section>
       <p id="shakespeare-new-tab" class="shakespeare-sr-only">Opens in a new tab</p>
+      <nav class="shakespeare-related" aria-label="More Shakespeare">
+        <a href="/shakespeare/a-midsummer-nights-dream/">A Midsummer Night's Dream <span aria-hidden="true">→</span></a>
+      </nav>
+    </main>
+    <script src="/shakespeare.js" defer></script>
+    """#)
+}
+
+/// No Midsummer media or project-source URLs are published before their release.
+func shakespeareMidsummerMain() -> Node<HTML.BodyContext> {
+    .raw(#"""
+    <main class="shakespeare-main" aria-labelledby="shakespeare-title">
+      <a class="shakespeare-back-link" href="/shakespeare/"><span aria-hidden="true">←</span> Shakespeare collection</a>
+      <header class="shakespeare-collection-header">
+        <p class="eyebrow">Shakespeare · In the studio</p>
+        <h1 id="shakespeare-title">A Midsummer Night's Dream</h1>
+        <p class="shakespeare-byline">by William Shakespeare</p>
+        <p class="shakespeare-intro">This project is in progress. Public editions, audio and other media will appear here when they are ready.</p>
+      </header>
+      <section id="project-status" class="shakespeare-section" aria-labelledby="project-status-title">
+        <h2 id="project-status-title">In progress</h2>
+        <p class="shakespeare-secondary">The project is being made in the studio. Release links will be added once the work, credits and licence are ready.</p>
+        <dl class="shakespeare-formats shakespeare-release-status">
+          <div><dt>Book editions</dt><dd>Release pending</dd></div>
+          <div><dt>Audiobook</dt><dd>Release pending</dd></div>
+          <div><dt>Video</dt><dd>Release pending</dd></div>
+          <div><dt>Project code</dt><dd>Publication pending</dd></div>
+        </dl>
+      </section>
+      <nav class="shakespeare-related" aria-label="More Shakespeare">
+        <a href="/shakespeare/merchant-of-venice/">The Merchant of Venice <span aria-hidden="true">→</span></a>
+      </nav>
     </main>
     <script src="/shakespeare.js" defer></script>
     """#)

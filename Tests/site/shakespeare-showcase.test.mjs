@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import test from 'node:test';
 
 const output = new URL('../../Output/', import.meta.url);
-const pageURL = new URL('shakespeare/index.html', output);
+const pageURL = new URL('shakespeare/merchant-of-venice/index.html', output);
 const html = existsSync(pageURL) ? readFileSync(pageURL, 'utf8') : '';
 const main = html.match(/<main\b[^>]*class="shakespeare-main"[^>]*>([\s\S]*?)<\/main>/)?.[1] ?? '';
 
@@ -11,12 +11,12 @@ function section(id) {
   return main.match(new RegExp(`<section\\b[^>]*id="${id}"[^>]*>([\\s\\S]*?)<\\/section>`))?.[1] ?? '';
 }
 
-test('the Shakespeare route generates its own page and discoverable metadata', () => {
+test('the Merchant work route generates its own page and discoverable metadata', () => {
   assert.ok(existsSync(pageURL), 'generate the Shakespeare page');
   assert.match(html, /<html lang="en">/);
   assert.match(html, /<body class="page-page page-shakespeare">/);
   assert.match(html, /<title>The Merchant of Venice — KinNoKi Labs<\/title>/);
-  assert.match(html, /rel="canonical" href="https:\/\/kinnokilabs\.com\/shakespeare"/);
+  assert.match(html, /rel="canonical" href="https:\/\/kinnokilabs\.com\/shakespeare\/merchant-of-venice"/);
   assert.match(html, /name="viewport" content="width=device-width, initial-scale=1"/);
   assert.match(html, /name="description" content="Original songs, an anime music video in production,/);
   assert.equal((main.match(/<h1\b/g) ?? []).length, 1);
