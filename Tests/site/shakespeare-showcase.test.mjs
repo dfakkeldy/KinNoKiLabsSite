@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import test from 'node:test';
 
 const output = new URL('../../Output/', import.meta.url);
@@ -35,29 +36,53 @@ test('the page index reaches five real sections in reading order', () => {
   assert.equal((section('read').match(/<h3\b/g) ?? []).length, 2);
 });
 
-test('uncleared video, editions and Merchant code expose no media actions', () => {
+test('the unfinished video and Merchant video code expose no media actions', () => {
   assert.match(section('watch'), /Video in production/);
   assert.doesNotMatch(section('watch'), /<(?:iframe|video|audio|button)\b|href=|\bdownload\b/i);
-  assert.equal((section('read').match(/Release pending/g) ?? []).length, 2);
-  assert.doesNotMatch(section('read'), /<(?:iframe|audio|button|a)\b|\bdownload\b/i);
   const pendingCode = section('code').match(/<li class="shakespeare-code-pending">([\s\S]*?)<\/li>/)?.[1] ?? '';
   assert.match(pendingCode, /Merchant project code/);
   assert.match(pendingCode, /Publication pending/);
   assert.doesNotMatch(pendingCode, /<(?:a|button)\b/);
-  assert.doesNotMatch(main, /href="#"|\bdisabled\b|aria-disabled|\/Users\/|file:|sediment:|youtube\.com|\.m4b["?]|\.epub["?]/i);
+  assert.doesNotMatch(main, /href="#"|\bdisabled\b|aria-disabled|\/Users\/|file:|sediment:|youtube\.com/i);
   assert.doesNotMatch(main, /<(?:script|iframe|audio|video)\b|class="[^"]*\breveal\b/i);
 });
 
-test('the only media action is the public Suno playlist and source links are explicit', () => {
+test('edition downloads point to the verified release assets with distinct edition labels', () => {
+  const read = section('read');
+  const downloads = [...read.matchAll(/<a\b[^>]*class="btn shakespeare-download"[^>]*href="([^"]+)"[^>]*>([^<]+)<\/a>/g)];
+  assert.deepEqual(downloads.map(match => [match[1], match[2]]), ['play', 'novel'].flatMap(edition => {
+    const slug = `merchant-of-venice-${edition}`;
+    const prefix = `https://github.com/dfakkeldy/explainer-audiobooks/releases/download/classic-${slug}-20261004T050000Z/${slug}`;
+    const label = edition === 'play' ? 'Play' : 'Novel';
+    return [[`${prefix}.epub`, `${label} EPUB`], [`${prefix}.m4b`, `${label} audiobook`]];
+  }));
+  assert.match(read, /EPUB 1\.6 MB · M4B 35\.9 MB/);
+  assert.match(read, /EPUB 1\.5 MB · M4B 32\.8 MB/);
+  assert.match(read, /2h 19m 14s/);
+  assert.match(read, /2h 06m 18s/);
+  assert.match(read, /human reading and listening review remain pending/);
+  assert.doesNotMatch(read, /Release pending|Cover concept|<(?:iframe|audio|button)\b/);
+});
+
+test('the public playlist, edition notices and source links are explicit', () => {
   const external = [...main.matchAll(/<a\b[^>]*href="(https:[^"]+)"[^>]*>/g)];
   assert.deepEqual(external.map(match => match[1]), [
     'https://suno.com/playlist/2a02c169-de0a-43e5-a6de-6184c804920f',
+    'https://github.com/dfakkeldy/explainer-audiobooks/releases/download/classic-merchant-of-venice-play-20261004T050000Z/merchant-of-venice-play.epub',
+    'https://github.com/dfakkeldy/explainer-audiobooks/releases/download/classic-merchant-of-venice-play-20261004T050000Z/merchant-of-venice-play.m4b',
+    'https://github.com/dfakkeldy/explainer-audiobooks/releases/tag/classic-merchant-of-venice-play-20261004T050000Z',
+    'https://github.com/dfakkeldy/explainer-audiobooks/releases/download/classic-merchant-of-venice-novel-20261004T050000Z/merchant-of-venice-novel.epub',
+    'https://github.com/dfakkeldy/explainer-audiobooks/releases/download/classic-merchant-of-venice-novel-20261004T050000Z/merchant-of-venice-novel.m4b',
+    'https://github.com/dfakkeldy/explainer-audiobooks/releases/tag/classic-merchant-of-venice-novel-20261004T050000Z',
     'https://shakespeare.mit.edu/merchant/full.html',
     'https://www.folger.edu/explore/shakespeares-works/the-merchant-of-venice/read/',
     'https://github.com/dfakkeldy/KinNoKiLabsSite',
     'https://github.com/dfakkeldy/explainer-audiobooks',
+    'https://github.com/dfakkeldy/explainer-audiobooks/tree/4bf38dd2b67ffb205344e4331b6dd78fc2668fb1/books/merchant-of-venice-play',
+    'https://github.com/dfakkeldy/explainer-audiobooks/tree/4bf38dd2b67ffb205344e4331b6dd78fc2668fb1/books/merchant-of-venice-novel',
   ]);
   for (const [tag] of external) {
+    if (tag.includes('/releases/download/')) continue;
     assert.match(tag, /target="_blank"/);
     assert.match(tag, /rel="noopener noreferrer"/);
     const noticeID = tag.match(/aria-describedby="([^"]+)"/)?.[1];
@@ -66,7 +91,8 @@ test('the only media action is the public Suno playlist and source links are exp
   }
   assert.match(section('listen'), /Listen on Suno/);
   assert.match(section('listen'), /16 songs/);
-  assert.match(section('sources'), /The licence for these new editions is still being settled/);
+  assert.match(section('sources'), /CC BY 4\.0 terms for the rights Dan holds/);
+  assert.match(section('sources'), /Each audiobook has its own recording reuse notice/);
   assert.match(section('sources'), /antisemitic prejudice and a coerced conversion/);
 });
 
@@ -97,5 +123,14 @@ test('all requested local assets are generated and concepts carry accessible lab
   }
   assert.match(section('watch'), /alt="Concept illustration: a Venetian bridge over water at night; video in production"/);
   assert.match(section('listen'), /Album art concept/);
-  assert.equal((section('read').match(/Cover concept/g) ?? []).length, 2);
+  for (const [name, sha] of [
+    ['merchant-play-cover.png', '41a4fde6d906ff4067075a053b9546ab10531494164a2d2abac97c52cc6cda32'],
+    ['merchant-novel-cover.png', '0e8bbb20492f776d4837ccae978cf497fdd00dfd70d045880a556d10cacb3e50'],
+  ]) {
+    const generated = readFileSync(new URL(`images/shakespeare/${name}`, output));
+    assert.deepEqual(generated, readFileSync(new URL(`../../Resources/images/shakespeare/${name}`, import.meta.url)));
+    assert.equal(createHash('sha256').update(generated).digest('hex'), sha, 'retain the approved cover bytes');
+  }
+  assert.match(section('read'), /alt="The Merchant of Venice, modern-English play: Shylock portrait cover"/);
+  assert.match(section('read'), /alt="The Merchant of Venice, modern-English novel: Shylock portrait cover"/);
 });

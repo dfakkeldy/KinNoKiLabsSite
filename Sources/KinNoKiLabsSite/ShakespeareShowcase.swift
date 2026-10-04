@@ -14,11 +14,11 @@ func shakespeareCollectionMain() -> Node<HTML.BodyContext> {
           <article class="shakespeare-work-card" aria-labelledby="merchant-card-title">
             <p class="eyebrow">I · On the shelf</p>
             <h2 id="merchant-card-title"><a href="/shakespeare/merchant-of-venice/">The Merchant of Venice <span aria-hidden="true">→</span></a></h2>
-            <p class="shakespeare-status">Album available</p>
-            <p class="shakespeare-secondary">Original songs after the play, with an anime music video and two modern-English editions awaiting release.</p>
+            <p class="shakespeare-status">Album and editions available</p>
+            <p class="shakespeare-secondary">Original songs after the play, two modern-English editions and their audiobooks, with an anime music video in production.</p>
             <dl class="shakespeare-formats">
-              <div><dt>Available</dt><dd>16-song album on Suno</dd></div>
-              <div><dt>Pending release</dt><dd>Anime music video · EPUB · M4B audiobook</dd></div>
+              <div><dt>Available</dt><dd>16-song album on Suno · Play and novel EPUBs · M4B audiobooks</dd></div>
+              <div><dt>Pending release</dt><dd>Anime music video</dd></div>
             </dl>
           </article>
           <article class="shakespeare-work-card" aria-labelledby="midsummer-card-title">
@@ -37,7 +37,7 @@ func shakespeareCollectionMain() -> Node<HTML.BodyContext> {
     """#)
 }
 
-/// The Merchant playbill preserves its verified links and pending release gates.
+/// The Merchant playbill links released editions and keeps the unfinished film pending.
 func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
     .raw(#"""
     <main class="shakespeare-main" aria-labelledby="shakespeare-title">
@@ -102,34 +102,32 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
       <section id="read" aria-labelledby="read-title" class="shakespeare-section">
         <p class="eyebrow">III · Read</p>
         <h2 id="read-title" class="shakespeare-sr-only">Read</h2>
-        <p class="shakespeare-secondary shakespeare-edition-intro">Two modern-English editions, each as an EPUB and a chaptered M4B audiobook.</p>
+        <p class="shakespeare-secondary shakespeare-edition-intro">Two modern-English editions, each as an EPUB and a chaptered M4B audiobook. These are public first-listen editions; human reading and listening review remain pending.</p>
         <div class="shakespeare-editions">
           <article class="shakespeare-edition">
-            <div class="shakespeare-cover" aria-hidden="true">
-              <span class="shakespeare-cover-title">The Merchant<br>of Venice</span>
-              <span class="shakespeare-cover-edition">Modern-English<br>play</span>
-              <span class="shakespeare-cover-caption">Cover concept</span>
-            </div>
+            <img class="shakespeare-cover" src="/images/shakespeare/merchant-play-cover.png" width="1024" height="1536" alt="The Merchant of Venice, modern-English play: Shylock portrait cover" loading="lazy">
             <div class="shakespeare-edition-copy">
               <h3>Modern-English play</h3>
-              <p class="shakespeare-small shakespeare-secondary">20 chapters · about 2h 19m audio</p>
-              <p class="shakespeare-small shakespeare-secondary">EPUB and chaptered M4B audiobook</p>
-              <p class="shakespeare-status">Release pending</p>
-              <p class="shakespeare-small shakespeare-muted">Files, sizes and durations are listed here when the edition is released.</p>
+              <p class="shakespeare-small shakespeare-secondary">20 chapters · 2h 19m 14s audio</p>
+              <p class="shakespeare-small shakespeare-secondary">EPUB 1.6 MB · M4B 35.9 MB</p>
+              <div class="shakespeare-action-row shakespeare-downloads">
+                <a class="btn shakespeare-download" href="https://github.com/dfakkeldy/explainer-audiobooks/releases/download/classic-merchant-of-venice-play-20261004T050000Z/merchant-of-venice-play.epub">Play EPUB</a>
+                <a class="btn shakespeare-download" href="https://github.com/dfakkeldy/explainer-audiobooks/releases/download/classic-merchant-of-venice-play-20261004T050000Z/merchant-of-venice-play.m4b">Play audiobook</a>
+              </div>
+              <p class="shakespeare-small shakespeare-muted shakespeare-edition-notice"><a href="https://github.com/dfakkeldy/explainer-audiobooks/releases/tag/classic-merchant-of-venice-play-20261004T050000Z" target="_blank" rel="noopener noreferrer" aria-describedby="shakespeare-new-tab">Play credits &amp; reuse <span aria-hidden="true">↗</span></a></p>
             </div>
           </article>
           <article class="shakespeare-edition">
-            <div class="shakespeare-cover" aria-hidden="true">
-              <span class="shakespeare-cover-title">The Merchant<br>of Venice</span>
-              <span class="shakespeare-cover-edition">Modern-English<br>novel</span>
-              <span class="shakespeare-cover-caption">Cover concept</span>
-            </div>
+            <img class="shakespeare-cover" src="/images/shakespeare/merchant-novel-cover.png" width="1024" height="1536" alt="The Merchant of Venice, modern-English novel: Shylock portrait cover" loading="lazy">
             <div class="shakespeare-edition-copy">
               <h3>Modern-English novel</h3>
-              <p class="shakespeare-small shakespeare-secondary">20 chapters · about 2h 06m audio</p>
-              <p class="shakespeare-small shakespeare-secondary">EPUB and chaptered M4B audiobook</p>
-              <p class="shakespeare-status">Release pending</p>
-              <p class="shakespeare-small shakespeare-muted">Files, sizes and durations are listed here when the edition is released.</p>
+              <p class="shakespeare-small shakespeare-secondary">20 chapters · 2h 06m 18s audio</p>
+              <p class="shakespeare-small shakespeare-secondary">EPUB 1.5 MB · M4B 32.8 MB</p>
+              <div class="shakespeare-action-row shakespeare-downloads">
+                <a class="btn shakespeare-download" href="https://github.com/dfakkeldy/explainer-audiobooks/releases/download/classic-merchant-of-venice-novel-20261004T050000Z/merchant-of-venice-novel.epub">Novel EPUB</a>
+                <a class="btn shakespeare-download" href="https://github.com/dfakkeldy/explainer-audiobooks/releases/download/classic-merchant-of-venice-novel-20261004T050000Z/merchant-of-venice-novel.m4b">Novel audiobook</a>
+              </div>
+              <p class="shakespeare-small shakespeare-muted shakespeare-edition-notice"><a href="https://github.com/dfakkeldy/explainer-audiobooks/releases/tag/classic-merchant-of-venice-novel-20261004T050000Z" target="_blank" rel="noopener noreferrer" aria-describedby="shakespeare-new-tab">Novel credits &amp; reuse <span aria-hidden="true">↗</span></a></p>
             </div>
           </article>
         </div>
@@ -145,7 +143,7 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
               <li><a href="https://www.folger.edu/explore/shakespeares-works/the-merchant-of-venice/read/" target="_blank" rel="noopener noreferrer" aria-describedby="shakespeare-new-tab">Reading reference — Folger Shakespeare Library <span aria-hidden="true">↗</span></a><span class="shakespeare-small shakespeare-muted">folger.edu</span></li>
             </ul>
             <p class="shakespeare-small shakespeare-secondary">Modern adaptation prepared with Codex for Dan Fakkeldy. Character narration is synthetic, voiced with Echo and Kokoro. Cover art is generated.</p>
-            <p class="shakespeare-small shakespeare-secondary shakespeare-rights">Shakespeare's text is in the public domain. The licence for these new editions is still being settled.</p>
+            <p class="shakespeare-small shakespeare-secondary shakespeare-rights">Shakespeare's text is in the public domain. The modern adaptation, original notes and selected covers carry CC BY 4.0 terms for the rights Dan holds. Each audiobook has its own recording reuse notice. Music, models, voice packs and software retain their separate terms; see each edition's credits and reuse files.</p>
           </div>
           <aside class="shakespeare-play-note" aria-labelledby="play-note-title">
             <h3 id="play-note-title">A note on the play</h3>
@@ -160,6 +158,8 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
         <ul class="shakespeare-code-links">
           <li><a href="https://github.com/dfakkeldy/KinNoKiLabsSite" target="_blank" rel="noopener noreferrer" aria-describedby="shakespeare-new-tab">Website source <span aria-hidden="true">↗</span></a><span class="shakespeare-small shakespeare-muted">KinNoKiLabsSite on GitHub</span></li>
           <li><a href="https://github.com/dfakkeldy/explainer-audiobooks" target="_blank" rel="noopener noreferrer" aria-describedby="shakespeare-new-tab">Production methods <span aria-hidden="true">↗</span></a><span class="shakespeare-small shakespeare-muted">explainer-audiobooks on GitHub</span></li>
+          <li><a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/4bf38dd2b67ffb205344e4331b6dd78fc2668fb1/books/merchant-of-venice-play" target="_blank" rel="noopener noreferrer" aria-describedby="shakespeare-new-tab">Play edition source <span aria-hidden="true">↗</span></a><span class="shakespeare-small shakespeare-muted">Adaptation, covers and publication manifest</span></li>
+          <li><a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/4bf38dd2b67ffb205344e4331b6dd78fc2668fb1/books/merchant-of-venice-novel" target="_blank" rel="noopener noreferrer" aria-describedby="shakespeare-new-tab">Novel edition source <span aria-hidden="true">↗</span></a><span class="shakespeare-small shakespeare-muted">Adaptation, covers and publication manifest</span></li>
           <li class="shakespeare-code-pending"><span>Merchant project code</span><span class="shakespeare-status">Publication pending</span></li>
         </ul>
       </section>

@@ -33,11 +33,13 @@ test('the collection links two real work cards with explicit availability and fo
   const cards = [...collection.main.matchAll(/<article\b[^>]*class="shakespeare-work-card"[^>]*>([\s\S]*?)<\/article>/g)].map(m => m[1]);
   assert.equal(cards.length, 2);
   assert.match(cards[0], /The Merchant of Venice/);
-  assert.match(cards[0], /Album available/);
+  assert.match(cards[0], /Album and editions available/);
   assert.match(cards[0], /16-song album on Suno/);
   assert.match(cards[0], /Pending release/);
   assert.match(cards[0], /EPUB/);
-  assert.match(cards[0], /M4B audiobook/);
+  assert.match(cards[0], /M4B audiobooks/);
+  const pending = cards[0].match(/<dt>Pending release<\/dt><dd>([^<]+)<\/dd>/)?.[1];
+  assert.equal(pending, 'Anime music video');
   assert.match(cards[1], /A Midsummer Night's Dream/);
   assert.match(cards[1], /In progress/);
   assert.match(cards[1], /No public releases yet/);

@@ -3027,7 +3027,10 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .shakespeare-action-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 24px; }
 .page-shakespeare .shakespeare-suno,
 .page-shakespeare .shakespeare-suno:hover,
-.page-shakespeare .shakespeare-suno:focus-visible {
+.page-shakespeare .shakespeare-suno:focus-visible,
+.page-shakespeare .shakespeare-download,
+.page-shakespeare .shakespeare-download:hover,
+.page-shakespeare .shakespeare-download:focus-visible {
   background: #f1d596;
   color: #1d1d1f;
   height: auto;
@@ -3045,20 +3048,18 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .shakespeare-editions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
 .shakespeare-edition { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 20px; align-items: start; }
 .page-shakespeare .shakespeare-cover {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 4px;
+  display: block;
+  width: 100%;
+  height: auto;
   aspect-ratio: 2 / 3;
   border: 1px solid #a68b5c;
   border-radius: 8px;
-  padding: 8px;
+  padding: 0;
   color: #f1d596;
   background: #1c1c1e;
 }
-.shakespeare-cover-title { font-size: 12px; line-height: 18px; font-weight: 600; }
-.shakespeare-cover-edition { font-size: 11px; line-height: 17px; }
-.shakespeare-cover-caption { font-size: 11px; line-height: 17px; }
+.shakespeare-downloads { margin-top: 18px; gap: 10px; }
+.shakespeare-edition-notice a { display: flex; align-items: center; min-height: 44px; width: fit-content; max-width: 100%; gap: 8px; }
 .shakespeare-edition-copy > p + p { margin-top: 10px; }
 .shakespeare-source-links,
 .shakespeare-code-links { list-style: none; }
@@ -3121,7 +3122,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   .shakespeare-action-row { align-items: flex-start; flex-direction: column; gap: 10px; }
   .shakespeare-suno { min-height: 44px; }
   .shakespeare-editions { grid-template-columns: minmax(0, 1fr); }
-  .shakespeare-edition { grid-template-columns: 120px minmax(0, 1fr); padding: 16px; }
+  .shakespeare-edition { grid-template-columns: 96px minmax(0, 1fr); padding: 16px; }
   .page-shakespeare .site-nav { gap: 8px; }
   .page-shakespeare .site-nav > div { gap: 8px !important; }
   .page-shakespeare .nav-brand { gap: 8px; font-size: 15px; min-width: 0; white-space: normal; line-height: 20px; }

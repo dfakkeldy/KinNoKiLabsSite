@@ -39,8 +39,8 @@ for (const [name, themeSelector, scope] of [
   });
 }
 
-test('Suno keeps readable text in default, hover and keyboard-focus states', () => {
-  const button = declarations('.page-shakespeare .shakespeare-suno,\n.page-shakespeare .shakespeare-suno:hover,\n.page-shakespeare .shakespeare-suno:focus-visible');
+test('Suno and downloads keep readable text in default, hover and keyboard-focus states', () => {
+  const button = declarations('.page-shakespeare .shakespeare-suno,\n.page-shakespeare .shakespeare-suno:hover,\n.page-shakespeare .shakespeare-suno:focus-visible,\n.page-shakespeare .shakespeare-download,\n.page-shakespeare .shakespeare-download:hover,\n.page-shakespeare .shakespeare-download:focus-visible');
   assert.equal(button.background, '#f1d596');
   assert.equal(button.color, '#1d1d1f');
   contrast(button.color, button.background, 4.5, 'Suno label');
