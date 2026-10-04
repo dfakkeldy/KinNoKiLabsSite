@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="840 110 440 320" width="440" height="320"><defs>
+<linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a68b5c" /><stop offset="0.5" stop-color="#f1d596" /><stop offset="1" stop-color="#997843" /></linearGradient>
+<linearGradient id="night" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c2c2e" /><stop offset="1" stop-color="#121214" /></linearGradient>
+</defs>
+<rect x="840" y="110" width="440" height="320" rx="20" fill="#1c1c1e" />
+<g fill="none" stroke="#c9a24b" stroke-opacity="0.45" stroke-width="1.2"><path d="M900 352q20-6 40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0" /><path d="M900 368q20-6 40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0" /><path d="M900 384q20-6 40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0" /></g>
+<path d="M930 400V260C930 200 1000 190 1040 165Q1050 158 1060 150Q1070 158 1080 165C1120 190 1190 200 1190 260V400" fill="none" stroke="#f1d596" stroke-width="1.8" />
+<path d="M944 400V262C944 212 1005 203 1045 178Q1052 172 1060 166Q1068 172 1075 178C1115 203 1176 212 1176 262V400" fill="none" stroke="#c9a24b" stroke-opacity="0.7" />
+<circle cx="1060" cy="222" r="12" fill="none" stroke="#c9a24b" stroke-opacity="0.8" />
+</svg>
