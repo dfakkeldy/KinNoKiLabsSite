@@ -127,5 +127,6 @@ func shakespeareMain() -> Node<HTML.BodyContext> {
       </section>
       <p id="shakespeare-new-tab" class="shakespeare-sr-only">Opens in a new tab</p>
     </main>
+    <script src="/shakespeare.js" defer></script>
     """#)
 }
