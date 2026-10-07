@@ -147,7 +147,7 @@ Echo speaks the same language — it uses the same SM-2 scheduling algorithm Ank
 
 **What it does:** Echo adjusts playback speed with proper pitch correction, so 1.25× sounds like a quicker human, not a cartoon. Speed is remembered per book.
 
-**The science: comprehension has a speed budget.** Time-compressed-speech studies show comprehension holds at moderate accelerations, then degrades — and *new, dense* material burns the budget fastest. Match speed to difficulty: cruise through familiar territory, slow down where ideas are thick.
+**The science: comprehension has a speed budget.** Time-compressed-speech studies show comprehension holds at moderate accelerations, then degrades as speed climbs (Murphy et al., 2021; Foulke & Sticht, 1969). Match speed to difficulty: cruise through familiar territory, slow down where ideas are thick.
 
 **How to use it:**
 
@@ -188,7 +188,7 @@ Echo speaks the same language — it uses the same SM-2 scheduling algorithm Ank
 
 **What it does:** A focus timer on your wrist, right inside the watch remote: set a work interval, get a persistent alarm when it ends, glance at progress without touching your phone.
 
-**The science:** The Pomodoro Technique operationalizes two well-supported ideas: sustained attention degrades over long unbroken stretches, and committing to a *defined, finite* interval lowers the activation energy to start — the hardest part for any brain, and famously so for ADHD brains.
+**The science:** The Pomodoro Technique builds on a well-supported finding: sustained attention degrades over long unbroken stretches, and brief breaks keep it from sliding (Ariga & Lleras, 2011).
 
 **How to use it:**
 
@@ -199,7 +199,7 @@ Echo speaks the same language — it uses the same SM-2 scheduling algorithm Ank
 
 **What it does:** Fade out and pause after a set time or at chapter's end — and tomorrow, Smart Rewind backs you up over the part you drifted through, automatically.
 
-**The science:** Sleep is when the hippocampus consolidates the day's learning — but material you heard *while falling asleep* was barely encoded to begin with. The honest combination is exactly what Echo does: stop playback when you fade, then re-cover that ground on resume.
+**The science:** Sleep is when the hippocampus consolidates the day's learning — but material you heard *while falling asleep* was barely encoded to begin with (Diekelmann & Born, 2010; Simon & Emmons, 1956). The honest combination is exactly what Echo does: stop playback when you fade, then re-cover that ground on resume.
 
 ## The Echo Method — putting it together
 
@@ -237,6 +237,11 @@ None of these steps is hard; the entire system is designed to run inside a life 
 - Zimmerman (2002). Becoming a self-regulated learner: An overview. *Theory Into Practice.*
 - Hattie & Timperley (2007). The power of feedback. *Review of Educational Research.*
 - Locke & Latham (2002). Building a practically useful theory of goal setting and task motivation. *American Psychologist.*
+- Foulke & Sticht (1969). Review of research on the intelligibility and comprehension of accelerated speech. *Psychological Bulletin.*
+- Murphy et al. (2021). Learning in double time: The effect of lecture video speed on immediate and delayed comprehension. *Applied Cognitive Psychology.*
+- Ariga & Lleras (2011). Brief and rare mental "breaks" keep you focused: Deactivation and reactivation of task goals preempt vigilance decrements. *Cognition.*
+- Simon & Emmons (1956). Responses to material presented during various levels of sleep. *Journal of Experimental Psychology.*
+- Diekelmann & Born (2010). The memory function of sleep. *Nature Reviews Neuroscience.*
 
 *Echo is not a medical device and makes no clinical claims — it's a media player built with care around how memory actually works.*
 
