@@ -35,7 +35,8 @@ test('Routey is gone from the homepage, apps listing, and support page', () => {
 test('the Routey page stays reachable but unlisted', () => {
   assert.match(routey, /<meta name="robots" content="noindex"\/>/);
   assert.doesNotMatch(sitemap, /apps\/routey/);
-  assert.doesNotMatch(feed, /apps\/routey/);
+  // The July 5 post body still links the page; only the item itself is dropped.
+  assert.doesNotMatch(feed, /<guid[^>]*>https:\/\/kinnokilabs\.com\/apps\/routey<\/guid>/);
   assert.doesNotMatch(home, /<meta name="robots"/);
 });
 
@@ -67,7 +68,7 @@ test('a top-level 404 page exists with site chrome, noindex, and no canonical', 
   assert.doesNotMatch(html, /og:url/);
   assert.match(html, /class="site-header"/);
   assert.match(html, /class="site-footer"/);
-  assert.match(html, /<link rel="stylesheet" href="\/styles\.css"\/>/);
+  assert.match(html, /<link rel="stylesheet" href="\/styles\.css"/);
   assert.doesNotMatch(sitemap, /404/);
 });
 

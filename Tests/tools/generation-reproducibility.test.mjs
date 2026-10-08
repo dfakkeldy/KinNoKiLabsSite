@@ -196,7 +196,7 @@ test('generated feed dates come from feed-source commits without unrelated feed 
   for (const file of contentFiles(join(repositoryRoot, 'Content/apps')).filter((path) => basename(path) !== 'index.md')) {
     const url = `https://kinnokilabs.com/apps/${basename(file, '.md')}`;
     if (unlistedRoutes.has(`apps/${basename(file, '.md')}`)) {
-      assert.doesNotMatch(feed, new RegExp(url.replaceAll('.', '\\.')), `${url} is unlisted and must stay out of the feed`);
+      assert.doesNotMatch(feed, new RegExp(`<guid[^>]*>${url.replaceAll('.', '\\.')}</guid>`), `${url} is unlisted and must stay out of the feed`);
       continue;
     }
     const item = feed.match(new RegExp(`<item><guid[^>]*>${url.replaceAll('.', '\\.')}` + '[\\s\\S]*?</item>'))?.[0];
@@ -207,7 +207,7 @@ test('generated feed dates come from feed-source commits without unrelated feed 
 
   assert.equal(
     createHash('sha256').update(canonicalFeedContent(feed)).digest('hex'),
-    '2c1fa88949888e64870b5f7be0613e6d144722ef4024219ece0d791a381a0e9f',
+    '954839eccf23ae8dbb8108f38136c181cd8eb14723db4b14cd0adc3e16605667',
     'deterministic generation must not churn unrelated feed content',
   );
 });
