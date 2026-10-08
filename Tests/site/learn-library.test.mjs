@@ -37,12 +37,6 @@ const approvedBooks = [
     runtime: '9 chapters · about 2.0 hours',
     description: 'A Western Cape Breton guide to identifying, excluding, repairing after, and safely cleaning up around squirrels and other rodents.',
   },
-  {
-    slug: 'the-new-deal',
-    title: 'The New Deal',
-    runtime: '9 chapters · about 1.9 hours',
-    description: 'A plain-language guide to the 2026 Canada Post and CUPW agreements, their restructuring context, and what the changes could mean for rural mail.',
-  },
 ];
 
 const cards = [...html.matchAll(/<article class="learn-book-card">([\s\S]*?)<\/article>/g)].map((match) => match[1]);
@@ -73,4 +67,10 @@ for (const book of approvedBooks) {
 test('private books remain absent from learn', () => {
   assert.doesNotMatch(html, /The Long Route/);
   assert.doesNotMatch(html, /The Living Knowledge Base/);
+});
+
+test('The New Deal is off the learn shelf (Dan, 2026-10-08)', () => {
+  assert.doesNotMatch(html, /The New Deal/);
+  assert.doesNotMatch(html, /the-new-deal/);
+  assert.equal(cards.length, approvedBooks.length);
 });

@@ -56,6 +56,17 @@ test('tender hub claims a tagged, accessible PDF and presents closed briefs as w
   assert.doesNotMatch(tenders, /showcase of current Nova Scotia/);
   assert.match(tenders, /closed worked examples/);
   assert.match(tenders, /Request a free custom preview/);
+  assert.match(tenders, /I can only do a limited number while testing\./);
+});
+
+test('about and services name Dan, with no photo of him', () => {
+  const about = read('Output/about/index.html');
+  const services = read('Output/services/index.html');
+  assert.match(about, /I'm Dan Fakkeldy\. <strong[^>]*>KinNoKi Labs<\/strong> is my one-person studio/);
+  assert.match(services, /I'm Dan Fakkeldy\. I trace how the work actually moves/);
+  for (const html of [about, services]) {
+    assert.doesNotMatch(html, /<img[^>]*alt="[^"]*\b(Dan Fakkeldy|portrait|headshot)\b/i);
+  }
 });
 
 test('a top-level 404 page exists with site chrome, noindex, and no canonical', () => {

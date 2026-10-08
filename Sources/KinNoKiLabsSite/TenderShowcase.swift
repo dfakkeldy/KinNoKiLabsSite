@@ -306,6 +306,7 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
             .class("tender-preview reveal"),
             .h2(.text("Free custom tender preview")),
             .p(.text("Send a public tender URL or ID, your company or work type, contact details, and a short fit explanation. You will receive a free one-page starting brief showing the same source-linked review workflow — no account, no upload, no obligation.")),
+            .p(.class("tender-source-note"), .text("I can only do a limited number while testing.")),
             .p(.class("tender-source-note"), .text("For a deeper fit analysis, the paid Tender-to-Bid Diagnostic expands the starting brief into a compliance check, question map, and document checklist for one specific opportunity.")),
             .a(
                 .class("btn btn-gold tender-request"),

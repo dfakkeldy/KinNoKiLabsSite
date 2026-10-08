@@ -1088,7 +1088,7 @@ private func servicesMain() -> Node<HTML.BodyContext> {
           <p class="eyebrow">Technical problem-solving</p>
           <h1 style="font-weight:650;font-size:clamp(34px,4.5vw,52px);line-height:1.08;letter-spacing:-0.025em;margin:0 0 16px;max-width:20ch;text-wrap:balance;">When the tools stop lining up, I make the work make sense.</h1>
           <p style="font-size:17px;color:var(--text-muted);max-width:66ch;margin:0 0 10px;text-wrap:pretty;">The problem may look like a spreadsheet nobody trusts, a website that no longer fits, repeated data entry, scattered job files, or several tools that do not talk to one another.</p>
-          <p style="font-size:17px;color:var(--text-muted);max-width:66ch;margin:0;text-wrap:pretty;">I trace how the work actually moves, fix the smallest valuable bottleneck first, and leave behind something your team can understand and operate.</p>
+          <p style="font-size:17px;color:var(--text-muted);max-width:66ch;margin:0;text-wrap:pretty;">I'm Dan Fakkeldy. I trace how the work actually moves, fix the smallest valuable bottleneck first, and leave behind something your team can understand and operate.</p>
         </div>
         <div class="system-map" aria-label="Examples of disconnected business information brought into one working system">
           <p class="system-map-label">What’s tangled?</p>
@@ -1369,7 +1369,7 @@ private func aboutMain() -> Node<HTML.BodyContext> {
       <div style="max-width:720px;">
         <p class="eyebrow">About</p>
         <h1 style="font-weight:650;font-size:clamp(34px,4.5vw,52px);line-height:1.08;letter-spacing:-0.025em;margin:0 0 16px;">A solo studio with dirt on its boots.</h1>
-        <p style="font-size:17px;color:var(--text-muted);margin:0 0 10px;text-wrap:pretty;"><strong style="color:var(--text);font-weight:600;">KinNoKi Labs</strong> is one person solving messy technical and operational problems from Cape Breton, Nova Scotia — across documents, data, websites, automation, and custom software.</p>
+        <p style="font-size:17px;color:var(--text-muted);margin:0 0 10px;text-wrap:pretty;">I'm Dan Fakkeldy. <strong style="color:var(--text);font-weight:600;">KinNoKi Labs</strong> is my one-person studio, solving messy technical and operational problems from Cape Breton, Nova Scotia — across documents, data, websites, automation, and custom software.</p>
         <p style="font-size:17px;color:var(--text-muted);margin:0 0 44px;text-wrap:pretty;">The Apple apps are visible proof of that work, not the boundary of it. The same approach runs through everything: understand the real work, find the painful handoff, and make the smallest useful improvement.</p>
       </div>
 
@@ -1528,20 +1528,6 @@ private func learnMain() -> Node<HTML.BodyContext> {
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/chicken-predators" target="_blank" rel="noopener">Book folder</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/chicken-predators/chicken-predators.epub">EPUB</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/chicken-predators/chicken-predators.md" target="_blank" rel="noopener">Read</a>
-            </div>
-          </article>
-
-          <article class="learn-book-card">
-            <img class="learn-book-cover" src="/learn/covers/the-new-deal.png" alt="Cover of The New Deal" width="1600" height="2560" loading="lazy" decoding="async">
-            <div>
-              <p class="learn-book-runtime">9 chapters · about 1.9 hours</p>
-              <h3>The New Deal</h3>
-              <p>A plain-language guide to the 2026 Canada Post and CUPW agreements, their restructuring context, and what the changes could mean for rural mail.</p>
-            </div>
-            <div class="learn-book-links">
-              <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/the-new-deal" target="_blank" rel="noopener">Book folder</a>
-              <a href="https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/the-new-deal/the-new-deal.epub">EPUB</a>
-              <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/the-new-deal/the-new-deal.md" target="_blank" rel="noopener">Read</a>
             </div>
           </article>
         </div>
