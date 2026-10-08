@@ -8,7 +8,6 @@ Stuck on something? Pick the app you need help with below.
 - **[MacroMark](/macromark-help)**
 - **[NS Marks The Spot](/nsmarksthespot-help)**
 - **[Turn Timer](/visualtimer-help)**
-- **[Routey](/apps/routey)** — no help page yet; for Routey questions, use the email below.
 
 ## General Inquiries
 

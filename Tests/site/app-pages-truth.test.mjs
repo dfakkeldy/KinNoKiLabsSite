@@ -155,7 +155,7 @@ test('apps listing NS Marks card names postal community without NAR mailing copy
 
 test('homepage and apps cards point at on-site app pages', () => {
   assert.match(theme, /class="app-card" href="\/apps\/macromark\/"/);
-  assert.match(theme, /class="app-card" href="\/apps\/routey\/"/);
+  assert.doesNotMatch(theme, /class="app-card" href="\/apps\/routey\/"/);
   assert.match(theme, /class="app-card" href="\/apps\/visualtimer\/"/);
   assert.doesNotMatch(theme, /dfakkeldy\.github\.io\/MacroMark/);
   assert.doesNotMatch(theme, /dfakkeldy\.github\.io\/Routey/);

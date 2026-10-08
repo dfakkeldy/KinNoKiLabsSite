@@ -191,9 +191,11 @@ private func siteHead<L: Location>(
     for location: L,
     context: PublishingContext<KinNoKiLabsSite>,
     titleOverride: String? = nil,
-    toolsHead: Bool = false
+    toolsHead: Bool = false,
+    isNotFound: Bool = false
 ) -> Node<HTML.DocumentContext> {
     let site = context.site
+    let isUnlisted = KinNoKiLabsSite.unlistedItemPaths.contains(location.path)
     let isIndex = location.path.string.isEmpty
     let baseTitle = titleOverride ?? location.title
     let pageTitle = isIndex ? site.name : "\(baseTitle) — \(site.name)"
@@ -218,7 +220,13 @@ private func siteHead<L: Location>(
         .element(named: "script", nodes: [.raw(noFlash)]),
         .element(named: "title", text: pageTitle),
         .meta(.name("description"), .content(description)),
-        .link(.attribute(named: "rel", value: "canonical"), .attribute(named: "href", value: url.absoluteString)),
+        // The 404 page is served at whatever URL missed, so it has no canonical home.
+        .if(!isNotFound,
+            .link(.attribute(named: "rel", value: "canonical"), .attribute(named: "href", value: url.absoluteString))
+        ),
+        .if(isNotFound || isUnlisted,
+            .meta(.name("robots"), .content("noindex"))
+        ),
         .link(.attribute(named: "rel", value: "icon"), .attribute(named: "href", value: "/logo.png")),
         .if(toolsHead,
             .link(
@@ -243,7 +251,9 @@ private func siteHead<L: Location>(
         .meta(.attribute(named: "property", value: "og:title"), .attribute(named: "content", value: pageTitle)),
         .meta(.attribute(named: "property", value: "og:description"), .attribute(named: "content", value: description)),
         .meta(.attribute(named: "property", value: "og:type"), .attribute(named: "content", value: "website")),
-        .meta(.attribute(named: "property", value: "og:url"), .attribute(named: "content", value: url.absoluteString)),
+        .if(!isNotFound,
+            .meta(.attribute(named: "property", value: "og:url"), .attribute(named: "content", value: url.absoluteString))
+        ),
         .meta(.attribute(named: "property", value: "og:image"), .attribute(named: "content", value: imageURL.absoluteString)),
         .meta(.name("twitter:card"), .content("summary_large_image"))
     )
@@ -423,6 +433,45 @@ private func siteFooter() -> Node<HTML.BodyContext> {
             )
         )
     )
+}
+
+// MARK: - 404 page
+
+/// Cloudflare Pages serves a top-level `404.html` with HTTP 404 for any
+/// unmatched route. Without one it treats the site as a single-page app and
+/// answers every unknown path with the homepage and HTTP 200.
+func makeNotFoundHTML(context: PublishingContext<KinNoKiLabsSite>) -> HTML {
+    let page = Page(path: "404", content: Content(
+        title: "Page not found",
+        description: "That page isn't on kinnokilabs.com."
+    ))
+    return HTML(
+        .lang(context.site.language),
+        siteHead(for: page, context: context, isNotFound: true),
+        .body(
+            .class("page-page page-not-found"),
+            siteHeader(active: ""),
+            notFoundMain(),
+            siteFooter()
+        )
+    )
+}
+
+private func notFoundMain() -> Node<HTML.BodyContext> {
+    .raw("""
+    <main class="site-main article-page" style="max-width:680px;min-height:40vh;">
+      <p class="eyebrow">404</p>
+      <h1 style="font-weight:650;font-size:clamp(30px,4vw,42px);line-height:1.12;letter-spacing:-0.025em;margin:0 0 12px;">That page isn't here.</h1>
+      <p style="font-size:16.5px;line-height:1.7;color:var(--text-muted);margin:0 0 28px;">The link may be old, or the address may have a typo. These are the main places to go from here.</p>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;">
+        <a class="support-row" href="/">Home <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-quaternary);"><path d="m9 18 6-6-6-6"></path></svg></a>
+        <a class="support-row" href="/services">Services <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-quaternary);"><path d="m9 18 6-6-6-6"></path></svg></a>
+        <a class="support-row" href="/apps">Apps <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-quaternary);"><path d="m9 18 6-6-6-6"></path></svg></a>
+        <a class="support-row" href="/posts">Posts <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-quaternary);"><path d="m9 18 6-6-6-6"></path></svg></a>
+      </div>
+      <p style="font-size:16px;line-height:1.7;color:var(--text-muted);margin:0;">Looking for something specific? Email <a class="link-quiet" href="mailto:hello@kinnokilabs.com">hello@kinnokilabs.com</a>.</p>
+    </main>
+    """)
 }
 
 // MARK: - Data-driven pages (posts, app items, prose)
@@ -852,11 +901,11 @@ private func homeMain() -> Node<HTML.BodyContext> {
             <a class="btn btn-gold" href="/services">Work with me</a>
           </div>
           <div class="proof-strip">
-            <span>5 apps in development</span>
+            <span>4 apps in development</span>
             <span class="dot" aria-hidden="true"></span>
-            <span>5 in TestFlight</span>
+            <span>4 in TestFlight</span>
             <span class="dot" aria-hidden="true"></span>
-            <a class="link-quiet" href="https://github.com/dfakkeldy" target="_blank" rel="noopener">Open source on GitHub</a>
+            <a class="link-quiet" href="https://github.com/dfakkeldy" target="_blank" rel="noopener">Source is public on GitHub; licences vary</a>
             <span class="dot" aria-hidden="true"></span>
             <span>Built around real workflows</span>
           </div>
@@ -932,15 +981,6 @@ private func homeMain() -> Node<HTML.BodyContext> {
               <span class="platforms">Browser · iPhone</span>
             </div>
           </a>
-          <a class="app-card" href="/apps/routey/">
-            <img class="app-icon" src="/images/apps/routey.png" alt="Routey app icon — a route line connecting three stops">
-            <h3>Routey</h3>
-            <p>Offline-first route support for rural delivery workflows.</p>
-            <div class="app-card-meta">
-              <span class="status-chip">TestFlight</span>
-              <span class="platforms">iPhone</span>
-            </div>
-          </a>
           <a class="app-card" href="/apps/visualtimer/">
             <img class="app-icon" src="/images/apps/turntimer.png" alt="Turn Timer app icon — an orange progress ring">
             <h3>Turn Timer</h3>
@@ -987,8 +1027,8 @@ private func appsMain() -> Node<HTML.BodyContext> {
     .raw("""
     <main class="site-main" style="max-width:1120px;margin:0 auto;padding:clamp(48px,7vw,80px) clamp(16px,4vw,32px) 24px;">
       <p class="eyebrow">Apps</p>
-      <h1 style="font-weight:650;font-size:clamp(34px,4.5vw,52px);line-height:1.08;letter-spacing:-0.025em;margin:0 0 14px;">Five apps, honestly statused.</h1>
-      <p style="font-size:17px;color:var(--text-muted);max-width:62ch;margin:0 0 40px;text-wrap:pretty;">All five have TestFlight builds running — Echo and Turn Timer as public betas, the rest internal — and none are on the App Store yet. Getting them there — review prep, metadata, polish — is the current work. Every one is open source.</p>
+      <h1 style="font-weight:650;font-size:clamp(34px,4.5vw,52px);line-height:1.08;letter-spacing:-0.025em;margin:0 0 14px;">Four apps, honestly statused.</h1>
+      <p style="font-size:17px;color:var(--text-muted);max-width:62ch;margin:0 0 40px;text-wrap:pretty;">All four have TestFlight builds running — Echo and Turn Timer as public betas, the rest internal — and none are on the App Store yet. Getting them there — review prep, metadata, polish — is the current work. Source is public on GitHub; licences vary.</p>
 
       <a class="reveal echo-row" href="/apps/echo" style="background:var(--surface);border:1px solid color-mix(in srgb, var(--gold-500) 28%, var(--separator));border-radius:24px;padding:clamp(24px,3.5vw,40px);margin-bottom:14px;text-decoration:none;color:var(--text);">
         <img src="/images/apps/echo.png" alt="Echo app icon" style="width:96px;height:96px;border-radius:22.37%;box-shadow:0 2px 12px rgba(0,0,0,0.25);">
@@ -1023,15 +1063,6 @@ private func appsMain() -> Node<HTML.BodyContext> {
           <div class="app-card-meta">
             <span class="status-chip">Live browser map</span>
             <span class="platforms">Browser · iPhone</span>
-          </div>
-        </a>
-        <a class="app-card" href="/apps/routey/">
-          <img class="app-icon" src="/images/apps/routey.png" alt="Routey app icon — a route line connecting three stops">
-          <h3>Routey</h3>
-          <p>Offline-first route support for rural mail carriers, built in my own delivery truck. OCR label scanning, a master route list, and a daily-run flow that survives dead zones.</p>
-          <div class="app-card-meta">
-            <span class="status-chip">Internal TestFlight</span>
-            <span class="platforms">iPhone</span>
           </div>
         </a>
         <a class="app-card" href="/apps/visualtimer/">
@@ -1387,7 +1418,7 @@ private func supportMain() -> Node<HTML.BodyContext> {
         <a class="support-row" href="/nsmarksthespot-help">NS Marks The Spot <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-quaternary);"><path d="m9 18 6-6-6-6"></path></svg></a>
         <a class="support-row" href="/visualtimer-help">Turn Timer <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-quaternary);"><path d="m9 18 6-6-6-6"></path></svg></a>
       </div>
-      <p style="font-size:16px;line-height:1.7;color:var(--text-muted);margin:0;">Routey has no help page yet — and for general inquiries, business opportunities, or feedback: <a class="link-quiet" href="mailto:hello@kinnokilabs.com">hello@kinnokilabs.com</a>.</p>
+      <p style="font-size:16px;line-height:1.7;color:var(--text-muted);margin:0;">For general inquiries, business opportunities, or feedback: <a class="link-quiet" href="mailto:hello@kinnokilabs.com">hello@kinnokilabs.com</a>.</p>
     </main>
     """)
 }

@@ -19,6 +19,8 @@ import { fileURLToPath } from 'node:url';
 
 const repositoryRoot = fileURLToPath(new URL('../../', import.meta.url));
 const preflightURL = new URL('../../Tools/prepare-deterministic-publish.mjs', import.meta.url);
+// Mirrors KinNoKiLabsSite.unlistedItemPaths: reachable pages kept out of the feed and sitemap.
+const unlistedRoutes = new Set(['apps/routey']);
 
 function git(cwd, args, env = {}) {
   return execFileSync('git', args, {
@@ -193,6 +195,10 @@ test('generated feed dates come from feed-source commits without unrelated feed 
 
   for (const file of contentFiles(join(repositoryRoot, 'Content/apps')).filter((path) => basename(path) !== 'index.md')) {
     const url = `https://kinnokilabs.com/apps/${basename(file, '.md')}`;
+    if (unlistedRoutes.has(`apps/${basename(file, '.md')}`)) {
+      assert.doesNotMatch(feed, new RegExp(url.replaceAll('.', '\\.')), `${url} is unlisted and must stay out of the feed`);
+      continue;
+    }
     const item = feed.match(new RegExp(`<item><guid[^>]*>${url.replaceAll('.', '\\.')}` + '[\\s\\S]*?</item>'))?.[0];
     assert.ok(item, `${url} must remain in the feed`);
     const itemDate = item.match(/<pubDate>([^<]+)<\/pubDate>/)?.[1];
@@ -222,6 +228,10 @@ test('generated sitemap last-modified dates come from each content file commit',
     const route = routeForContent(file);
     if (route === null || route === 'apps' || route === 'posts') continue;
     const url = `https://kinnokilabs.com/${route}`;
+    if (unlistedRoutes.has(route)) {
+      assert.equal(entries.has(url), false, `${url} is unlisted and must stay out of the sitemap`);
+      continue;
+    }
     const expected = halifaxCalendarDate(latestCommitEpoch([relative(repositoryRoot, file)]));
     assert.equal(entries.get(url), expected, `${url} must use ${relative(repositoryRoot, file)} history`);
   }
