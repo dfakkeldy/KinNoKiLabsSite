@@ -1,6 +1,6 @@
 # Building Echo — The Devlog
 
-Echo went from "I wonder if I could make an iOS app" to a four-platform audiobook study system in about eight weeks. This is the week-by-week story, reconstructed from the actual git history — **423 commits between April 19 and June 9, 2026**, written by a mail carrier with no prior Swift experience, in the hours around a full-time delivery route.
+Echo went from "I wonder if I could make an iOS app" to a four-platform audiobook study system in about eight weeks. This is the week-by-week story, reconstructed from the actual git history — **428 commits between April 19 and June 9, 2026**, written by a mail carrier with no prior Swift experience, in the hours around a full-time delivery route.
 
 It's all open source. You can audit every claim below: [github.com/dfakkeldy/Echo](https://github.com/dfakkeldy/Echo).
 
