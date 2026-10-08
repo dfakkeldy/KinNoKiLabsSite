@@ -31,6 +31,20 @@ a task branch and a PR instead.
   `/privacy`, and the guides render their Markdown bodies.
 - App item frontmatter values are unquoted (Ink splits on the first colon).
 
+## Sitemap, feed, and 404 (`main.swift`)
+
+- `KinNoKiLabsSite.unlistedItemPaths` lists item pages that stay reachable for
+  old links but get `noindex` and stay out of `sitemap.xml` and the RSS feed.
+  `apps/routey` is on it (Routey is discontinued). Add a page here instead of
+  deleting it when something still links to it.
+- `KinNoKiLabsSite.staticSitemapPaths` adds hand-authored static pages under
+  `Resources/` that Publish can't see (`/listen/`, the NS Marks map). Add new
+  static apps here. Generation fails if a listed page's `index.html` is
+  missing from `Output/`.
+- A publish step writes `Output/404.html` from the theme (`noindex`, no
+  canonical). Keep it: without a top-level `404.html`, Cloudflare Pages serves
+  the homepage with HTTP 200 for every unknown path.
+
 ## Generated or pinned content (don't hand-edit)
 
 - `Resources/listen/books.json` and `Resources/listen/books/`: rebuilt by
