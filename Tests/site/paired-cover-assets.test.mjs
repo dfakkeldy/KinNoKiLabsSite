@@ -32,6 +32,7 @@ const portraitSlugs = [
   'claude-platform-03-giving-claude-tools',
   'claude-platform-04-tools-claude-can-operate',
   'beyond-the-tax-sale-packet',
+  'the-case-against-me',
 ];
 const migratedPlayerSlugs = portraitSlugs.filter((slug) => slug !== 'rodents-in-the-walls');
 const legacyPairSlugs = new Set([
@@ -56,7 +57,7 @@ function dimensions(file) {
 
 test('all paired covers are verified 1600 by 2560 portraits', () => {
   assert.equal(sourceManifest.schemaVersion, 2);
-  assert.equal(sourceManifest.sourceCommit, '7f0564cf9ada8aa67d1e8a188d1e7e302399814c');
+  assert.equal(sourceManifest.sourceCommit, '9020f1e75d6897e83cf001cefbe14c124b107da9');
   assert.equal(provenance.source.commit, sourceManifest.sourceCommit);
   assert.deepEqual(Object.keys(provenance.books), portraitSlugs);
   for (const slug of portraitSlugs) {

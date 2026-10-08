@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "sourceCommit": "7f0564cf9ada8aa67d1e8a188d1e7e302399814c",
+  "sourceCommit": "9020f1e75d6897e83cf001cefbe14c124b107da9",
   "books": {
     "an-unsettling-conversation": {
       "receiptKind": "cover-selection-v2",
@@ -304,6 +304,22 @@
         "sha256": "e7fe63749d9ccde1ef5fe17a53e4ef13b1aab039c615753d5e4a4b49b15ad715",
         "specSha256": "b7a06656128d0157e7633ddc4cbabae862ffe052a983fc8089d2643a9952e9bd",
         "receiptSpecSha256": "0084df968cacd30fb48aab1e58981c07b6321c70162e26c5ea45932cf171298d"
+      }
+    },
+    "the-case-against-me": {
+      "receiptKind": "cover-selection-v2",
+      "receiptPath": "cover-selection.json",
+      "receiptSha256": "e3033098b243da3b67a4bad05b4d04c395fe972239a67fe8a275ac5b38ab4815",
+      "candidateId": "ninety-seven-percent",
+      "portrait": {
+        "sha256": "0e3c67c9521cc52fdea11cd45ed272a77689501c04229be0deeddc1de54f2ac6",
+        "specSha256": "fd473a3e2bce31bbc97a9bd5ce50f1c93051608721a26a2cf3b847c3b61d1f88",
+        "receiptSpecSha256": "39a222508d0c9205c8211a1ca8494557cbe0311136c8f5575f2abde044b2a03a"
+      },
+      "square": {
+        "sha256": "ba6c7df5944ace8427efe8b30612fea72bfdd0212cd90a99c199da1714685dcb",
+        "specSha256": "05960068332c65682147e49454f1c8af581d05902c5c8921b50ee832edea8184",
+        "receiptSpecSha256": "e811a9c6068b2210b09e22e6ec15a55ae94597a6f624163031780fae6cd30c5e"
       }
     }
   }

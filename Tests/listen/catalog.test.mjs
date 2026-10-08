@@ -32,6 +32,7 @@ const expectedBooks = [
   'claude-platform-03-giving-claude-tools',
   'claude-platform-04-tools-claude-can-operate',
   'beyond-the-tax-sale-packet',
+  'the-case-against-me',
 ];
 const expectedPlayable = [...expectedBooks];
 const expectedAnchorCounts = new Map([
@@ -54,6 +55,7 @@ const expectedAnchorCounts = new Map([
   ['claude-platform-03-giving-claude-tools', 822],
   ['claude-platform-04-tools-claude-can-operate', 699],
   ['beyond-the-tax-sale-packet', 735],
+  ['the-case-against-me', 320],
 ]);
 // Covers are NOT all one shape: approved player books with paired art are square
 // because Tools/sync-paired-cover-assets.sh re-derives them from the paired
