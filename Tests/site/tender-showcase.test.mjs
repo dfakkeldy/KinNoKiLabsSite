@@ -405,7 +405,7 @@ test('generates the tender showcase hub route', () => {
   assert.match(hub, /<body class="page-section page-tenders">/);
   assert.match(hub, /Tender Starter Showcase/i);
   assert.ok(
-    /tender-current-grid/.test(hub) || /No current examples at this time\. Check back later\./.test(hub),
+    /tender-current-grid/.test(hub) || /No open tenders are featured right now\. The briefs under Archived demonstrations below are closed worked examples/.test(hub),
     'hub must render the current grid or the truthful empty state',
   );
 });
