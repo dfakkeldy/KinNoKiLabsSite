@@ -95,6 +95,7 @@ claude-platform-02-thinking-and-reliable-responses|Making Claude Think and Respo
 claude-platform-03-giving-claude-tools|Giving Claude Tools|Contracts, Agent Loops, and Controlled Action|Codex (GPT-5)
 claude-platform-04-tools-claude-can-operate|Tools Claude Can Operate|Managed Tools, Sandboxes, and Delegated Execution|Claude Opus 5
 beyond-the-tax-sale-packet|Beyond the Tax-Sale Packet|How Nova Scotia Municipal Auctions Really Work|Dan Fakkeldy
+the-case-against-me|The Case Against Me|A Language Model Cross-Examines Its Own Testimony|Claude Opus 5
 EOF
 )"
 
@@ -118,7 +119,8 @@ claude-platform-01-the-message
 claude-platform-02-thinking-and-reliable-responses
 claude-platform-03-giving-claude-tools
 claude-platform-04-tools-claude-can-operate
-beyond-the-tax-sale-packet"
+beyond-the-tax-sale-packet
+the-case-against-me"
 
 # These editions require a governed publication receipt (first-listen or
 # creator-accepted final). The receipt must pass the verifier shipped in the
@@ -129,7 +131,7 @@ claude-platform-03-giving-claude-tools
 claude-platform-04-tools-claude-can-operate
 beyond-the-tax-sale-packet"
 
-EXPECTED_BOOK_COUNT=19
+EXPECTED_BOOK_COUNT=20
 listen_catalog_transaction_init "$OUT_DIR"
 
 # BEGIN VALIDATE_SERIES

@@ -36,7 +36,8 @@ claude-platform-01-the-message
 claude-platform-02-thinking-and-reliable-responses
 claude-platform-03-giving-claude-tools
 claude-platform-04-tools-claude-can-operate
-beyond-the-tax-sale-packet"
+beyond-the-tax-sale-packet
+the-case-against-me"
 PLAYER_SLUGS="an-unsettling-conversation
 jspace-inside-the-machine
 echo-from-the-inside
@@ -54,7 +55,8 @@ claude-platform-01-the-message
 claude-platform-02-thinking-and-reliable-responses
 claude-platform-03-giving-claude-tools
 claude-platform-04-tools-claude-can-operate
-beyond-the-tax-sale-packet"
+beyond-the-tax-sale-packet
+the-case-against-me"
 
 sha256() { shasum -a 256 "$1" | awk '{print $1}'; }
 dimensions() {
