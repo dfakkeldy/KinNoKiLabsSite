@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "source": {
     "repository": "dfakkeldy/explainer-audiobooks",
-    "commit": "7f0564cf9ada8aa67d1e8a188d1e7e302399814c"
+    "commit": "9020f1e75d6897e83cf001cefbe14c124b107da9"
   },
   "books": {
     "an-unsettling-conversation": {
@@ -440,6 +440,30 @@
       "square": {
         "sourceSha256": "350a78085825b8cadcf706d0be7355cc7020030b5cf86b90a5376aea3eeb707c",
         "derivativeSha256": "3cb4ab0179b4d3496b8c8072b8d8bef6285e81de7a169cbbc88656e59b81e814",
+        "sourceDimensions": [
+          2400,
+          2400
+        ],
+        "derivativeDimensions": [
+          768,
+          768
+        ]
+      }
+    },
+    "the-case-against-me": {
+      "receiptKind": "cover-selection-v2",
+      "receiptSchemaVersion": 2,
+      "selectionReceiptSha256": "e3033098b243da3b67a4bad05b4d04c395fe972239a67fe8a275ac5b38ab4815",
+      "portrait": {
+        "sourceSha256": "0e3c67c9521cc52fdea11cd45ed272a77689501c04229be0deeddc1de54f2ac6",
+        "dimensions": [
+          1600,
+          2560
+        ]
+      },
+      "square": {
+        "sourceSha256": "ba6c7df5944ace8427efe8b30612fea72bfdd0212cd90a99c199da1714685dcb",
+        "derivativeSha256": "3aa397c163edc9be71389035d6267200515d94ea5dd73bc9e7a6a82a9f177286",
         "sourceDimensions": [
           2400,
           2400

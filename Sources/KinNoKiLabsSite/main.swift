@@ -44,6 +44,18 @@ struct KinNoKiLabsSite: Website {
     var description = "KinNoKi Labs solves messy technical and operational problems with practical systems, automation, and custom software."
     var language: Language { .english }
     var imagePath: Path? { nil }
+
+    /// Item pages that stay reachable for old links but are kept out of the
+    /// sitemap and RSS feed and marked `noindex`. Routey was discontinued on
+    /// 2026-10-07; the July 5 post still links its page.
+    static let unlistedItemPaths: Set<Path> = ["apps/routey"]
+
+    /// Hand-authored static apps under Resources/ that Publish's sitemap
+    /// generator cannot see. Each path must have an `index.html` in Output/.
+    static let staticSitemapPaths: [Path] = [
+        "listen/",
+        "apps/nsmarksthespot/map/",
+    ]
 }
 
 private enum GenerationConfigurationError: LocalizedError {
@@ -83,6 +95,30 @@ private func applyDeterministicSectionDates(
     }
 }
 
+/// Appends `<url>` entries for static Resources routes to the generated
+/// sitemap. They carry no `<lastmod>`, which keeps generation deterministic.
+private func appendStaticSitemapEntries(_ paths: [Path]) -> PublishingStep<KinNoKiLabsSite> {
+    .step(named: "Append static routes to site map") { context in
+        let file = try context.outputFile(at: "sitemap.xml")
+        let xml = try file.readAsString()
+        let entries = try paths.map { path -> String in
+            _ = try context.outputFile(at: Path(path.string + "index.html"))
+            return "<url><loc>\(context.site.url(for: path).absoluteString)</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>"
+        }.joined()
+        guard let close = xml.range(of: "</urlset>", options: .backwards) else {
+            throw PublishingError(stepName: "Append static routes to site map", infoMessage: "sitemap.xml has no closing </urlset>")
+        }
+        try file.write(xml.replacingCharacters(in: close, with: entries + "</urlset>"))
+    }
+}
+
+private func generateNotFoundPage() -> PublishingStep<KinNoKiLabsSite> {
+    .step(named: "Generate 404 page") { context in
+        let html = makeNotFoundHTML(context: context)
+        try context.createOutputFile(at: "404.html").write(html.render())
+    }
+}
+
 let site = KinNoKiLabsSite()
 let rssDate = try deterministicDate(environmentKey: "KINNOKI_RSS_DATE_EPOCH")
 let sectionDates = try Dictionary(uniqueKeysWithValues: KinNoKiLabsSite.SectionID.allCases.map { id in
@@ -97,7 +133,10 @@ try site.publish(using: [
     .generateHTML(withTheme: .kinNoKi),
     .generateRSSFeed(
         including: Set([KinNoKiLabsSite.SectionID.apps, .posts]),
+        itemPredicate: Predicate { !KinNoKiLabsSite.unlistedItemPaths.contains($0.path) },
         date: rssDate
     ),
-    .generateSiteMap()
+    .generateSiteMap(excluding: KinNoKiLabsSite.unlistedItemPaths),
+    appendStaticSitemapEntries(KinNoKiLabsSite.staticSitemapPaths),
+    generateNotFoundPage()
 ])

@@ -14,3 +14,10 @@ make generate   # rebuild Output/ deterministically
 make preview    # generate and serve locally
 make test       # JavaScript suites (some route tests need a generated Output/)
 ```
+
+## License
+
+The site's source code is released under the [MIT License](LICENSE). Written
+content, images and other media are all rights reserved unless marked
+otherwise. Third-party material keeps its own licence. See [LICENSE](LICENSE)
+for exactly what is covered.

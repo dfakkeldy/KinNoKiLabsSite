@@ -244,7 +244,7 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
             .h1(.text("Tender Starter Showcase")),
             .p(
                 .class("tender-intro"),
-                .text("A manually curated showcase of current Nova Scotia public tender opportunities, each turned into a source-linked starting brief with visible questions and a reusable review workflow. This is a planning aid, not a live tender directory.")
+                .text("A manually curated showcase of Nova Scotia public tender opportunities, each turned into a source-linked starting brief with visible questions and a reusable review workflow. This is a planning aid, not a live tender directory.")
             )
         ),
         // 2. Current examples
@@ -254,7 +254,7 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
             .p(.class("tender-source-note"), .text("Each entry exposes its lifecycle state and the date it was last checked. Recheck the official source before acting.")),
             .if(
                 current.isEmpty,
-                .p(.class("tender-empty"), .text("No current examples at this time. Check back later.")),
+                .p(.class("tender-empty"), .text("No open tenders are featured right now. The briefs under Archived demonstrations below are closed worked examples: each was prepared for a real Nova Scotia tender that has since closed, and is kept to show the source-linked review workflow.")),
                 else: .div(
                     .class("tender-current-grid"),
                     .forEach(current) { card in
@@ -290,7 +290,7 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
             .p(.text("Download the original KinNoKi Tender Starter pack — a tagged accessible PDF guide, an editable review workbook, and a plain-text official-source index. It contains original summaries and templates only; no official tender documents are redistributed.")),
             .ul(
                 .class("tender-pack-list"),
-                .li(.text("tender-starter-guide.pdf — tagged, PDF/UA-compliant accessibility")),
+                .li(.text("tender-starter-guide.pdf — tagged, accessible PDF")),
                 .li(.text("tender-review-workbook.xlsx — eight review-tracking sheets")),
                 .li(.text("official-sources.txt — plain-text index of authoritative sources"))
             ),
@@ -306,6 +306,7 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
             .class("tender-preview reveal"),
             .h2(.text("Free custom tender preview")),
             .p(.text("Send a public tender URL or ID, your company or work type, contact details, and a short fit explanation. You will receive a free one-page starting brief showing the same source-linked review workflow — no account, no upload, no obligation.")),
+            .p(.class("tender-source-note"), .text("I can only do a limited number while testing.")),
             .p(.class("tender-source-note"), .text("For a deeper fit analysis, the paid Tender-to-Bid Diagnostic expands the starting brief into a compliance check, question map, and document checklist for one specific opportunity.")),
             .a(
                 .class("btn btn-gold tender-request"),
