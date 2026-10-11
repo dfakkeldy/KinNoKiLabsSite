@@ -34,11 +34,9 @@
   function applyTheme(t) {
     root.setAttribute('data-theme', t);
     try { localStorage.setItem('kinnoki-theme', t); } catch (e) {}
+    // styles.css shows the sun or moon icon from [data-theme].
     forEachElement(document.querySelectorAll('.theme-toggle'), function (btn) {
       btn.setAttribute('aria-pressed', t === 'dark' ? 'true' : 'false');
-      var sun = btn.querySelector('.icon-sun'), moon = btn.querySelector('.icon-moon');
-      if (sun) sun.style.display = t === 'dark' ? 'block' : 'none';
-      if (moon) moon.style.display = t === 'dark' ? 'none' : 'block';
     });
   }
   forEachElement(document.querySelectorAll('.theme-toggle'), function (btn) {
@@ -66,14 +64,43 @@
   /* ── Mobile menu ────────────────────────────────────── */
   var menu = document.querySelector('.mobile-menu');
   if (menu) {
-    forEachElement(document.querySelectorAll('.nav-burger'), function (btn) {
-      btn.addEventListener('click', function () { menu.classList.add('open'); });
+    var burgers = document.querySelectorAll('.nav-burger');
+    // Every DOM call below is guarded: older WebViews (and the unit-test
+    // doubles) may lack focus(), querySelector(), or a style object.
+    function focusFirst(el) {
+      if (el && typeof el.focus === 'function') el.focus();
+    }
+    function setMenuOpen(open, returnFocus) {
+      if (open) menu.classList.add('open'); else menu.classList.remove('open');
+      forEachElement(burgers, function (btn) {
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      if (document.body && document.body.style) document.body.style.overflow = open ? 'hidden' : '';
+      // Keep keyboard focus inside the open menu: the page behind it is inert.
+      // (Un-inert before focusing the burger, which lives in the header.)
+      forEachElement(document.querySelectorAll('body > header, body > main, body > footer'), function (el) {
+        if (typeof el.toggleAttribute === 'function') el.toggleAttribute('inert', open);
+      });
+      if (open && typeof menu.querySelector === 'function') focusFirst(menu.querySelector('.menu-close'));
+      if (!open && returnFocus) focusFirst(burgers[0]);
+    }
+    forEachElement(burgers, function (btn) {
+      btn.addEventListener('click', function () { setMenuOpen(true); });
     });
-    forEachElement(menu.querySelectorAll('.menu-close, nav a'), function (el) {
-      el.addEventListener('click', function () { menu.classList.remove('open'); });
+    forEachElement(menu.querySelectorAll('.menu-close, nav a, .mobile-menu-cta'), function (el) {
+      el.addEventListener('click', function () { setMenuOpen(false, el.classList && el.classList.contains && el.classList.contains('menu-close')); });
     });
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') menu.classList.remove('open');
+      if (!menu.classList.contains('open')) return;
+      if (e.key === 'Escape') { setMenuOpen(false, true); return; }
+      // Fallback for WebViews without `inert`: wrap Tab within the menu.
+      if (e.key === 'Tab' && typeof menu.querySelectorAll === 'function') {
+        var items = menu.querySelectorAll('a[href], button');
+        var first = items[0], last = items[items.length - 1];
+        if (!first || !last) return;
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); focusFirst(last); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); focusFirst(first); }
+      }
     });
   }
 
