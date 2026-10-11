@@ -215,8 +215,9 @@ private func factGrid(for record: TenderRecord) -> Node<HTML.BodyContext> {
                 )
             )
         ),
-        .div(.dt(.text("Document access")), .dd(.text(record.documentAccess))),
-        .div(.dt(.text("Addenda status")), .dd(.text(record.addendaStatus)))
+        // The two long-text facts span both columns so short rows stay paired.
+        .div(.class("tender-fact-wide"), .dt(.text("Document access")), .dd(.text(record.documentAccess))),
+        .div(.class("tender-fact-wide"), .dt(.text("Addenda status")), .dd(.text(record.addendaStatus)))
     )
 }
 
@@ -283,38 +284,7 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
                 )
             )
         ),
-        // 3. Featured demonstration
-        .section(
-            .class("tender-feature reveal"),
-            .h2(.text("Demonstration pack")),
-            .p(.text("Download the original KinNoKi Tender Starter pack — a tagged accessible PDF guide, an editable review workbook, and a plain-text official-source index. It contains original summaries and templates only; no official tender documents are redistributed.")),
-            .ul(
-                .class("tender-pack-list"),
-                .li(.text("tender-starter-guide.pdf — tagged, accessible PDF")),
-                .li(.text("tender-review-workbook.xlsx — eight review-tracking sheets")),
-                .li(.text("official-sources.txt — plain-text index of authoritative sources"))
-            ),
-            .a(
-                .class("btn btn-outline tender-download"),
-                .href("/tenders/tender-starter-example.zip"),
-                .attribute(named: "download", value: ""),
-                .text("Download the example pack (ZIP)")
-            )
-        ),
-        // 4. Free-preview invitation
-        .section(
-            .class("tender-preview reveal"),
-            .h2(.text("Free custom tender preview")),
-            .p(.text("Send a public tender URL or ID, your company or work type, contact details, and a short fit explanation. You will receive a free one-page starting brief showing the same source-linked review workflow — no account, no upload, no obligation.")),
-            .p(.class("tender-source-note"), .text("I can only do a limited number while testing.")),
-            .p(.class("tender-source-note"), .text("For a deeper fit analysis, the paid Tender-to-Bid Diagnostic expands the starting brief into a compliance check, question map, and document checklist for one specific opportunity.")),
-            .a(
-                .class("btn btn-gold tender-request"),
-                .href(tenderRequestHref),
-                .text("Request a free custom preview")
-            )
-        ),
-        // 5. Archived demonstrations
+        // 3. Archived demonstrations (the empty-state note above points here)
         .section(
             .class("tender-archive reveal"),
             .h2(.text("Archived demonstrations")),
@@ -335,6 +305,41 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
                 )
             )
         ),
+        // 4. What a visitor can take away: the pack and a free preview
+        .div(
+            .class("tender-offers"),
+            // Featured demonstration
+            .section(
+                .class("tender-feature reveal"),
+                .h2(.text("Demonstration pack")),
+                .p(.text("Download the original KinNoKi Tender Starter pack — a tagged accessible PDF guide, an editable review workbook, and a plain-text official-source index. It contains original summaries and templates only; no official tender documents are redistributed.")),
+                .ul(
+                    .class("tender-pack-list"),
+                    .li(.text("tender-starter-guide.pdf — tagged, accessible PDF")),
+                    .li(.text("tender-review-workbook.xlsx — eight review-tracking sheets")),
+                    .li(.text("official-sources.txt — plain-text index of authoritative sources"))
+                ),
+                .a(
+                    .class("btn btn-outline tender-download"),
+                    .href("/tenders/tender-starter-example.zip"),
+                    .attribute(named: "download", value: ""),
+                    .text("Download the example pack (ZIP)")
+                )
+            ),
+            // Free-preview invitation
+            .section(
+                .class("tender-preview reveal"),
+                .h2(.text("Free custom tender preview")),
+                .p(.text("Send a public tender URL or ID, your company or work type, contact details, and a short fit explanation. You will receive a free one-page starting brief showing the same source-linked review workflow — no account, no upload, no obligation.")),
+                .p(.class("tender-source-note"), .text("I can only do a limited number while testing.")),
+                .p(.class("tender-source-note"), .text("For a deeper fit analysis, the paid Tender-to-Bid Diagnostic expands the starting brief into a compliance check, question map, and document checklist for one specific opportunity.")),
+                .a(
+                    .class("btn btn-gold tender-request"),
+                    .href(tenderRequestHref),
+                    .text("Request a free custom preview")
+                )
+            )
+        ),
         disclaimerNode()
     )
 }
@@ -344,7 +349,7 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
 func tenderDetailMain(record: TenderRecord) -> Node<HTML.BodyContext> {
     .main(
         .class("tender-detail"),
-        .a(.class("tender-back"), .href("/tenders/"), .text("← Back to Tender Starter Showcase")),
+        .a(.class("back-link"), .href("/tenders/"), iconArrowBack(), .text("Tender Starter Showcase")),
         .p(.class("eyebrow"), .text("Tender Starter Showcase")),
         .h1(.text(record.item.title)),
         .div(

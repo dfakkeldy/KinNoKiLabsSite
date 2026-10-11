@@ -34,11 +34,9 @@
   function applyTheme(t) {
     root.setAttribute('data-theme', t);
     try { localStorage.setItem('kinnoki-theme', t); } catch (e) {}
+    // styles.css shows the sun or moon icon from [data-theme].
     forEachElement(document.querySelectorAll('.theme-toggle'), function (btn) {
       btn.setAttribute('aria-pressed', t === 'dark' ? 'true' : 'false');
-      var sun = btn.querySelector('.icon-sun'), moon = btn.querySelector('.icon-moon');
-      if (sun) sun.style.display = t === 'dark' ? 'block' : 'none';
-      if (moon) moon.style.display = t === 'dark' ? 'none' : 'block';
     });
   }
   forEachElement(document.querySelectorAll('.theme-toggle'), function (btn) {
@@ -66,14 +64,29 @@
   /* ── Mobile menu ────────────────────────────────────── */
   var menu = document.querySelector('.mobile-menu');
   if (menu) {
-    forEachElement(document.querySelectorAll('.nav-burger'), function (btn) {
-      btn.addEventListener('click', function () { menu.classList.add('open'); });
+    var burgers = document.querySelectorAll('.nav-burger');
+    // Every DOM call below is guarded: older WebViews (and the unit-test
+    // doubles) may lack focus(), querySelector(), or a style object.
+    function focusFirst(el) {
+      if (el && typeof el.focus === 'function') el.focus();
+    }
+    function setMenuOpen(open, returnFocus) {
+      if (open) menu.classList.add('open'); else menu.classList.remove('open');
+      forEachElement(burgers, function (btn) {
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      if (document.body && document.body.style) document.body.style.overflow = open ? 'hidden' : '';
+      if (open && typeof menu.querySelector === 'function') focusFirst(menu.querySelector('.menu-close'));
+      if (!open && returnFocus) focusFirst(burgers[0]);
+    }
+    forEachElement(burgers, function (btn) {
+      btn.addEventListener('click', function () { setMenuOpen(true); });
     });
-    forEachElement(menu.querySelectorAll('.menu-close, nav a'), function (el) {
-      el.addEventListener('click', function () { menu.classList.remove('open'); });
+    forEachElement(menu.querySelectorAll('.menu-close, nav a, .mobile-menu-cta'), function (el) {
+      el.addEventListener('click', function () { setMenuOpen(false, el.classList && el.classList.contains && el.classList.contains('menu-close')); });
     });
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') menu.classList.remove('open');
+      if (e.key === 'Escape' && menu.classList.contains('open')) setMenuOpen(false, true);
     });
   }
 
