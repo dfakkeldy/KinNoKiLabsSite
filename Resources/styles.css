@@ -1137,9 +1137,9 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 /* The hub head matches Learn and Tools (the shared page head). */
 .games-hero { max-width: 760px; margin: 0 0 var(--block-gap); }
 .games-hero h1 { font-weight: 650; font-size: var(--text-display); line-height: 1.06; letter-spacing: -0.028em; margin-bottom: 20px; }
-.games-hero > p:last-child { max-width: 62ch; margin: 0; color: var(--text-muted); font-size: var(--text-lede); line-height: 1.6; }
+.games-hero > p:last-child { max-width: 62ch; margin: 0; color: var(--game-text-secondary); font-size: var(--text-lede); line-height: 1.6; }
 .games-main .eyebrow { color: var(--game-text-accent); }
-.games-hero .eyebrow { color: var(--gold-text); margin-bottom: 16px; }
+.games-hero .eyebrow { margin-bottom: 16px; }
 .game-card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
