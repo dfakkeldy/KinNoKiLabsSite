@@ -1,0 +1,44 @@
+name: Site checks
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  generate-and-test:
+    runs-on: macos-15
+    timeout-minutes: 25
+    env:
+      EXPECTED_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: Check out the exact change
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify checked-out commit
+        run: |
+          actual_head="$(git rev-parse HEAD)"
+          test "$actual_head" = "$EXPECTED_HEAD"
+          echo "Checked head: $actual_head"
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Generate the site
+        run: make generate PUBLISH_BIN="swift run KinNoKiLabsSite"
+      - name: Test the site
+        run: make test
+      - name: Verify committed generated output
+        run: |
+          git diff --exit-code -- Output
+          untracked_output="$(git ls-files --others --exclude-standard Output)"
+          if [ -n "$untracked_output" ]; then
+            echo "Generated files are missing from the commit:"
+            echo "$untracked_output"
+            exit 1
+          fi

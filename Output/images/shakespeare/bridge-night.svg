@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="740 500 540 304" width="540" height="304"><defs>
+<linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a68b5c" /><stop offset="0.5" stop-color="#f1d596" /><stop offset="1" stop-color="#997843" /></linearGradient>
+<linearGradient id="night" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c2c2e" /><stop offset="1" stop-color="#121214" /></linearGradient>
+</defs>
+<rect x="740" y="500" width="540" height="304" rx="20" fill="url(#night)" stroke="#2c2c2e" />
+<path d="M760 690H820V660H850V690H900V650H915V690H960V670H1000V690H1060V655H1080V690H1140V668H1180V690H1260" fill="none" stroke="#3a3a3d" stroke-width="1.2" />
+<circle cx="1190" cy="560" r="20" fill="#f1d596" />
+<line x1="780" y1="640.5" x2="1040" y2="640.5" stroke="#c9a24b" />
+<path d="M800 760A110 110 0 0 1 1020 760" fill="none" stroke="#f1d596" stroke-width="1.6" />
+<g fill="none" stroke="#c9a24b" stroke-opacity="0.45" stroke-width="1.2"><path d="M760 722q25-6 50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0" /><path d="M760 738q25-6 50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0" /><path d="M760 754q25-6 50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0" /></g>
+<line x1="1190" y1="716" x2="1190" y2="760" stroke="#f1d596" stroke-opacity="0.6" stroke-dasharray="3 5" />
+<g fill="none" stroke="#a1a1a6" stroke-width="1.2"><path d="M754 528V514H768M1266 514H1252M1266 514V528M754 776V790H768M1266 790H1252M1266 790V776" /></g>
+</svg>
