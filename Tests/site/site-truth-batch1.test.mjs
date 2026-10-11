@@ -83,10 +83,19 @@ test('a top-level 404 page exists with site chrome, noindex, and no canonical', 
   assert.doesNotMatch(sitemap, /404/);
 });
 
-test('sitemap lists the static Listening Room and NS Marks map routes', () => {
-  for (const path of ['listen/', 'apps/nsmarksthespot/map/']) {
+test('sitemap lists the static Listening Rooms and NS Marks map routes', () => {
+  for (const path of ['listen/', 'fiction/', 'apps/nsmarksthespot/map/']) {
     assert.match(sitemap, new RegExp(`<loc>https://kinnokilabs\\.com/${path.replaceAll('/', '\\/')}</loc>`));
     assert.ok(existsSync(new URL(`../../Output/${path}index.html`, import.meta.url)), `${path} must be a real page`);
   }
   assert.match(sitemap, /<\/urlset>$/);
+});
+
+test('the footer site map links the Fiction Listening Room and Tax Sale Hub', () => {
+  assert.match(sitemap, /<loc>https:\/\/kinnokilabs\.com\/taxsale<\/loc>/);
+  for (const html of [home, apps, support, tenders]) {
+    const footer = html.slice(html.indexOf('class="site-footer"'));
+    assert.match(footer, /<a href="\/fiction\/">Fiction Listening Room<\/a>/);
+    assert.match(footer, /<a href="\/taxsale\/">Tax Sale Hub<\/a>/);
+  }
 });

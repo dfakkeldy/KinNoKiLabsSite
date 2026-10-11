@@ -38,7 +38,7 @@ a task branch and a PR instead.
   `apps/routey` is on it (Routey is discontinued). Add a page here instead of
   deleting it when something still links to it.
 - `KinNoKiLabsSite.staticSitemapPaths` adds hand-authored static pages under
-  `Resources/` that Publish can't see (`/listen/`, the NS Marks map). Add new
+  `Resources/` that Publish can't see (`/listen/`, `/fiction/`, the NS Marks map). Add new
   static apps here. Generation fails if a listed page's `index.html` is
   missing from `Output/`.
 - A publish step writes `Output/404.html` from the theme (`noindex`, no
