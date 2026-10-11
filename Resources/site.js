@@ -76,6 +76,11 @@
         btn.setAttribute('aria-expanded', open ? 'true' : 'false');
       });
       if (document.body && document.body.style) document.body.style.overflow = open ? 'hidden' : '';
+      // Keep keyboard focus inside the open menu: the page behind it is inert.
+      // (Un-inert before focusing the burger, which lives in the header.)
+      forEachElement(document.querySelectorAll('body > header, body > main, body > footer'), function (el) {
+        if (typeof el.toggleAttribute === 'function') el.toggleAttribute('inert', open);
+      });
       if (open && typeof menu.querySelector === 'function') focusFirst(menu.querySelector('.menu-close'));
       if (!open && returnFocus) focusFirst(burgers[0]);
     }
