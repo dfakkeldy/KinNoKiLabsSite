@@ -207,7 +207,6 @@ private func factGrid(for record: TenderRecord) -> Node<HTML.BodyContext> {
         .div(.dt(.text("Delivery region")), .dd(.text(record.deliveryRegion))),
         .div(.dt(.text("Published")), .dd(.text(formattedDate(record.publishedAt)))),
         .div(
-            .class("tender-fact-wide"),
             .dt(.text("Closing")),
             .dd(
                 .time(
@@ -216,10 +215,8 @@ private func factGrid(for record: TenderRecord) -> Node<HTML.BodyContext> {
                 )
             )
         ),
-        // Closing and the two long-text facts span both columns, so the six
-        // short facts above them pair up evenly.
-        .div(.class("tender-fact-wide"), .dt(.text("Document access")), .dd(.text(record.documentAccess))),
-        .div(.class("tender-fact-wide"), .dt(.text("Addenda status")), .dd(.text(record.addendaStatus)))
+        .div(.dt(.text("Document access")), .dd(.text(record.documentAccess))),
+        .div(.dt(.text("Addenda status")), .dd(.text(record.addendaStatus)))
     )
 }
 

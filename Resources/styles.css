@@ -765,7 +765,7 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
   border: 1px solid color-mix(in srgb, var(--gold-500) 28%, var(--separator));
   border-radius: var(--radius-bento);
   box-shadow: var(--shadow-card);
-  padding: clamp(24px, 3.5vw, 40px);
+  padding: clamp(24px, 3.5vw, 40px) clamp(22px, 3.5vw, 36px);
   margin-bottom: 12px;
   text-decoration: none;
   color: var(--text);
@@ -813,7 +813,10 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 .system-map-result strong { font-size: 14px; font-weight: 600; }
 .offer-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
 @media (min-width: 960px) {
-  .offer-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  /* Subgrid rows keep the three cards' parts (and the note rules) aligned. */
+  .offer-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: auto auto 1fr auto; }
+  .offer-card { display: grid; grid-row: span 4; grid-template-rows: subgrid; row-gap: 0; }
+  .offer-card .offer-note { margin-top: 0; align-self: start; }
 }
 .offer-card { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--separator); border-radius: var(--radius-card); box-shadow: var(--shadow-card); padding: clamp(24px, 3vw, 32px); }
 .offer-card h2 { font-weight: 600; font-size: 20px; line-height: 1.25; letter-spacing: -0.015em; margin: 0 0 10px; }
@@ -851,7 +854,13 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 }
 
 /* ── About approach cards + contact band ────────────── */
-.about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 16px; }
+.about-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+@media (min-width: 560px) {
+  .about-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1072px) {
+  .about-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
 .about-card { background: var(--surface); border: 1px solid var(--separator); border-radius: var(--radius-card); box-shadow: var(--shadow-card); padding: 26px; }
 .about-card h2 { font-weight: 600; font-size: 17.5px; letter-spacing: -0.01em; line-height: 1.25; margin: 0 0 8px; }
 .about-card p { font-size: 14.5px; line-height: 1.6; color: var(--text-muted); margin: 0; }
@@ -859,8 +868,8 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 .story-lead { font-size: var(--text-lede); line-height: 1.65; margin: 0 0 16px; max-width: 62ch; }
 .story-body { font-size: 17px; line-height: 1.7; color: var(--text-muted); margin: 0; max-width: 62ch; }
 /* About: the Background eyebrow becomes a side label under the first card,
-   and the text starts at the second card's edge. */
-@media (min-width: 900px) {
+   and the text starts at the second card's edge (only with four columns). */
+@media (min-width: 1072px) {
   .page > .story { max-width: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 16px; }
   .page > .story > .eyebrow { grid-column: 1; grid-row: 1 / span 2; margin-top: 6px; }
   .page > .story > p { grid-column: 2 / -1; }
@@ -1080,6 +1089,7 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 .prose ul, .prose ol { margin: 0 0 20px; padding-left: 1.25em; display: flex; flex-direction: column; gap: 8px; }
 .prose li { line-height: 1.7; padding-left: 4px; }
 .prose li::marker { color: var(--gold-text); }
+.prose ol { padding-left: 1.75em; }
 .prose ol li::marker { font-family: var(--font-mono); font-size: 0.88em; }
 .prose a { color: var(--text); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent); text-decoration-thickness: 1.5px; text-underline-offset: 4px; transition: color 0.15s ease, text-decoration-color 0.15s ease; }
 .prose a:hover { color: var(--gold-text); text-decoration-color: var(--gold-500); }
@@ -1087,7 +1097,7 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 .prose blockquote { margin: 0 0 24px; padding: 14px 18px; background: color-mix(in srgb, var(--gold-500) 6%, var(--surface)); border: 1px solid var(--gold-hairline); border-left: 3px solid color-mix(in srgb, var(--gold-500) 70%, transparent); border-radius: 12px; color: var(--text); font-size: 15.5px; line-height: 1.6; }
 .prose blockquote > :last-child { margin-bottom: 0; }
 .prose code { font-family: var(--font-mono); font-size: 0.88em; background: var(--fill-2); border-radius: 5px; padding: 1px 6px; }
-[data-theme="light"] .prose code { background: var(--surface); box-shadow: inset 0 0 0 1px var(--separator); }
+[data-theme="light"] .prose :not(pre) > code { background: var(--surface); box-shadow: inset 0 0 0 1px var(--separator); }
 .prose pre { background: var(--surface); border: 1px solid var(--separator); border-radius: 12px; padding: 16px 18px; overflow-x: auto; margin: 0 0 20px; font-size: 14px; line-height: 1.6; }
 .prose pre code { background: none; box-shadow: none; padding: 0; font-size: inherit; }
 .prose hr { border: none; border-top: 1px solid var(--separator); margin: 40px 0; }
@@ -1103,10 +1113,12 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
   margin: 0 auto;
   padding: var(--page-pad-top) var(--gutter) 24px;
 }
-.games-hero { max-width: 780px; margin: 0 auto clamp(36px, 5vw, 58px); text-align: center; }
-.games-hero h1 { font-size: clamp(2.4rem, 6vw, 4.8rem); letter-spacing: -0.045em; margin-bottom: 18px; }
-.games-hero > p:last-child { max-width: 650px; margin: 0 auto; color: var(--game-text-secondary); font-size: clamp(1rem, 2vw, 1.15rem); }
+/* The hub head matches Learn and Tools (the shared page head). */
+.games-hero { max-width: 760px; margin: 0 0 var(--block-gap); }
+.games-hero h1 { font-weight: 650; font-size: var(--text-display); line-height: 1.06; letter-spacing: -0.028em; margin-bottom: 20px; }
+.games-hero > p:last-child { max-width: 62ch; margin: 0; color: var(--text-muted); font-size: var(--text-lede); line-height: 1.6; }
 .games-main .eyebrow { color: var(--game-text-accent); }
+.games-hero .eyebrow { color: var(--gold-text); margin-bottom: 16px; }
 .game-card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
@@ -1908,8 +1920,6 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 }
 
 @media (max-width: 759px) {
-  .games-hero { text-align: left; }
-  .games-hero > p:last-child { margin-left: 0; }
   .game-card-grid { grid-template-columns: 1fr; }
   .game-card { min-height: 0; }
   .games-stats { grid-template-columns: 1fr; }
@@ -1998,12 +2008,12 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 
 /* ===== Tools (project addition) ===== */
 /* The hub lines up with every other page; single tools stay narrower. */
-.tools-main[data-tool-page="hub"] { max-width: var(--max-width); padding: var(--page-pad-top) var(--gutter) 24px; }
+.tools-main[data-tool-page="hub"] { max-width: var(--max-width); }
 .tools-main {
   max-width: 960px;
   min-height: 60vh;
   margin: 0 auto;
-  padding: clamp(48px, 7vw, 82px) clamp(16px, 4vw, 32px) 24px;
+  padding: var(--page-pad-top) var(--gutter) 24px;
 }
 .tools-live-region {
   position: absolute;
@@ -2017,7 +2027,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 }
 .tools-app { min-width: 0; }
 .tool-shell { max-width: 700px; margin-bottom: clamp(28px, 5vw, 48px); }
-.tool-shell h1 { font-size: clamp(2.4rem, 6vw, 4.8rem); letter-spacing: -0.045em; margin-bottom: 18px; }
+.tool-shell h1 { font-weight: 650; font-size: var(--text-display); line-height: 1.06; letter-spacing: -0.028em; margin-bottom: 20px; }
 .tool-lede { color: var(--game-text-secondary); font-size: clamp(1rem, 2vw, 1.15rem); }
 .tool-hub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
 @media (min-width: 700px) {
@@ -2046,7 +2056,6 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .tool-hub-grid .tool-card:focus-within { outline: 2px solid var(--gold-text); outline-offset: 2px; }
 .tool-hub-grid .tool-card h2 a:focus-visible { outline: none; }
 .tool-hub-grid .tool-card p { font-size: 15px; line-height: 1.5; }
-.tools-main[data-tool-page="hub"] .tool-shell h1 { font-weight: 650; font-size: var(--text-display); line-height: 1.06; letter-spacing: -0.028em; margin-bottom: 20px; }
 .tools-main[data-tool-page="hub"] .tool-lede { font-size: var(--text-lede); line-height: 1.6; color: var(--text-muted); max-width: 62ch; }
 .tools-main > .tool-privacy { margin-top: clamp(24px, 3vw, 32px); padding-top: 18px; border-top: 1px solid var(--separator); font-size: 14px; line-height: 1.55; color: var(--text-muted); }
 .tool-form { display: grid; gap: 16px; }
@@ -2283,7 +2292,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .tax-sale-main h3 { color: var(--tax-ink); }
 .tax-sale-main em { font-family: var(--tax-display); font-weight: 400; }
 .tax-sale-main cite { font-family: var(--tax-display); font-style: italic; }
-.tax-wrap { width: min(1180px, calc(100% - 40px)); margin-inline: auto; }
+.tax-wrap { width: min(calc(var(--max-width) - 2 * var(--gutter)), calc(100% - 2 * var(--gutter))); margin-inline: auto; }
 
 .tax-kicker {
   margin: 0 0 20px;
@@ -2610,7 +2619,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 }
 
 @media (max-width: 580px) {
-  .tax-wrap { width: min(100% - 28px, 1180px); }
+  .tax-wrap { width: calc(100% - 2 * var(--gutter)); }
   .tax-hero { padding: 62px 0 80px; }
   .tax-hero h1 { font-size: clamp(3.6rem, 18vw, 5.2rem); }
   .tax-lede { margin-top: 28px; }
@@ -2671,7 +2680,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   margin: 0 auto;
   padding: var(--page-pad-top) var(--gutter) 24px;
 }
-.tender-detail { max-width: 880px; }
+.tender-detail { max-width: calc(var(--narrow-width) + 2 * var(--gutter)); }
 
 .tender-main section,
 .tender-detail section { margin-bottom: var(--block-gap); }
@@ -2847,7 +2856,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .tender-offers { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr)); gap: 16px; margin-bottom: var(--block-gap); }
 .tender-main .tender-offers > section { display: flex; flex-direction: column; align-items: flex-start; margin: 0; }
 .tender-offers .btn { margin-top: auto; }
-.tender-offers h2 { font-size: clamp(21px, 2.4vw, 25px); }
+.tender-offers > section > h2 { font-size: clamp(21px, 2.4vw, 25px); }
 
 /* Download button */
 .tender-download {
@@ -2917,7 +2926,6 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   padding: 22px 24px;
   border: 1px dashed color-mix(in srgb, var(--text) 28%, transparent);
   border-radius: var(--radius-card);
-  max-width: 88ch;
 }
 
 /* Disclaimer */
@@ -2931,7 +2939,6 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   border-radius: 12px;
   margin-top: var(--block-gap);
   line-height: 1.5;
-  max-width: 88ch;
 }
 
 /* Detail page (its back link is the shared .back-link) */
@@ -2973,16 +2980,12 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   gap: 0 32px;
   margin: 0;
 }
-@media (min-width: 600px) {
-  .tender-fact-grid { grid-template-columns: 1fr 1fr; }
-}
 .tender-fact-grid > div {
   display: grid;
   grid-template-columns: 9.5rem minmax(0, 1fr);
   gap: 12px;
   font-size: 14.5px;
 }
-.tender-fact-grid > .tender-fact-wide { grid-column: 1 / -1; }
 .tender-fact-grid dt {
   color: var(--text-muted);
   min-width: 0;
@@ -3025,9 +3028,6 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 }
 
 /* Editorial analysis body */
-.tender-analysis.prose {
-  max-width: 70ch;
-}
 .tender-analysis.prose { margin-top: var(--block-gap); }
 .tender-analysis.prose h2 {
   font-weight: 600;
@@ -3048,6 +3048,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   padding-left: 22px;
   margin: 0 0 16px;
 }
+.tender-analysis.prose ol { padding-left: 1.75em; }
 
 /* Focus-visible (interactive tender elements) */
 .tender-card:focus-visible,
