@@ -42,13 +42,12 @@ const toolPages = [
 ];
 
 const expectedNavigation = [
-  ['/', 'Home'],
-  ['/games', 'Games'],
-  ['/tools', 'Tools'],
   ['/services', 'Services'],
   ['/apps', 'Apps'],
-  ['/posts', 'Posts'],
   ['/about', 'About'],
+  ['/learn', 'Learn'],
+  ['/games', 'Games'],
+  ['/tools', 'Tools'],
 ];
 
 function resourceFiles(directory = new URL('../../Resources/tools/', import.meta.url), prefix = '') {
@@ -110,7 +109,7 @@ for (const { route, pageID, title, description } of toolPages) {
     );
 
     const desktop = html.match(/<ul class="nav-links">([\s\S]*?)<\/ul>/)?.[1];
-    const mobile = html.match(/<div class="mobile-menu">[\s\S]*?<nav>([\s\S]*?)<\/nav>/)?.[1];
+    const mobile = html.match(/<div class="mobile-menu"[^>]*>[\s\S]*?<nav>([\s\S]*?)<\/nav>/)?.[1];
     for (const [name, markup] of [['desktop', desktop], ['mobile', mobile]]) {
       assert.notEqual(markup, undefined, `${name} navigation must exist`);
       assert.deepEqual(

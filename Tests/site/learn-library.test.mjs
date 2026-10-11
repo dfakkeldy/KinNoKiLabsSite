@@ -55,6 +55,7 @@ for (const book of approvedBooks) {
     assert.ok(card.includes(`<p>${book.description}</p>`));
 
     const expectedLinks = [
+      `<a href="/listen/?book=${book.slug}">Listen</a>`,
       `<a href="${publicLibrary}/tree/main/books/${book.slug}" target="_blank" rel="noopener">Book folder</a>`,
       `<a href="${publicLibrary}/raw/main/books/${book.slug}/${book.slug}.epub">EPUB</a>`,
       `<a href="${publicLibrary}/blob/main/books/${book.slug}/${book.slug}.md" target="_blank" rel="noopener">Read</a>`,

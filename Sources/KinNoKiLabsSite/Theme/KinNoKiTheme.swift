@@ -14,12 +14,12 @@ import Plot
 //     app-item pages, prose/markdown pages). These vary per page.
 //
 //   • `Node.raw(...)` for the *copy-locked marketing bodies* — Home, Apps,
-//     Echo detail, Services, About, Support. Their layout and copy are
-//     final ("prototype wins"), so they are emitted with the prototype's
-//     own inline styles for pixel-fidelity, using the production class
-//     hooks (.btn, .app-card, .reveal, .eyebrow, .bento…) so hover /
-//     reveal / theming still work. Marketing copy therefore lives in the
-//     theme by design; article-like content stays in Content/*.md.
+//     Echo detail, Services, About, Support. Their copy is final, so it
+//     lives in the theme by design; article-like content stays in
+//     Content/*.md. The markup carries semantic classes only (no inline
+//     styles): layout, spacing, and type come from the shared components
+//     in styles.css (.page, .page-head, .section, .band, cards…), so one
+//     stylesheet keeps every page consistent.
 //
 // Behavior (theme toggle, OpenDyslexic, mobile menu, reveal-on-scroll)
 // is wired by Resources/site.js against the classes emitted here.
@@ -42,7 +42,7 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
             siteHead(for: index, context: context),
             .body(
                 .class("page-home"),
-                siteHeader(active: "/"),
+                siteHeader(active: ""),
                 homeMain(),
                 siteFooter()
             )
@@ -55,13 +55,13 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
             return HTML(
                 .lang(context.site.language),
                 siteHead(for: section, context: context, titleOverride: "Apps"),
-                .body(.class("page-section"), siteHeader(active: "/apps"), appsMain(), siteFooter())
+                .body(.class("page-section"), siteHeader(active: navSection(for: section.path.string)), appsMain(), siteFooter())
             )
         case .posts:
             return HTML(
                 .lang(context.site.language),
                 siteHead(for: section, context: context, titleOverride: "Posts"),
-                .body(.class("page-section"), siteHeader(active: "/posts"), postsListMain(section), siteFooter())
+                .body(.class("page-section"), siteHeader(active: navSection(for: section.path.string)), postsListMain(section), siteFooter())
             )
         case .tenders:
             let records = try section.items.map { try TenderRecord(item: $0) }
@@ -70,7 +70,7 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
                 siteHead(for: section, context: context, titleOverride: "Tender Starter Showcase"),
                 .body(
                     .class("page-section page-tenders"),
-                    siteHeader(active: "/services"),
+                    siteHeader(active: navSection(for: section.path.string)),
                     tenderShowcaseMain(records: records),
                     siteFooter()
                 )
@@ -80,14 +80,13 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
 
     func makeItemHTML(for item: Item<Site>, context: PublishingContext<Site>) throws -> HTML {
         let isEcho = item.path.string == "apps/echo"
-        let active = item.sectionID == .posts ? "/posts" : "/apps"
         let isTender = item.sectionID == .tenders
         return HTML(
             .lang(context.site.language),
             siteHead(for: item, context: context),
             .body(
                 .class(isTender ? "page-item page-tender-detail" : "page-item"),
-                siteHeader(active: isTender ? "/services" : active),
+                siteHeader(active: navSection(for: item.path.string)),
                 .if(item.sectionID == .apps,
                     isEcho ? echoDetailMain() : appItemMain(item),
                     else: isTender ? tenderDetailMain(record: try TenderRecord(item: item)) : postDetailMain(item)),
@@ -98,48 +97,43 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
 
     func makePageHTML(for page: Page, context: PublishingContext<Site>) throws -> HTML {
         let main: Node<HTML.BodyContext>
-        let active: String
+        let active = navSection(for: page.path.string)
         let isTaxSale = page.path.string == "taxsale"
         let isGIS = page.path.string == "gis"
         let isShakespeare = page.path.string == "shakespeare" || page.path.string.hasPrefix("shakespeare/")
         let toolsHead = page.path.string == "tools" || page.path.string.hasPrefix("tools/")
         switch page.path.string {
-        case "games":             main = gamesMain(page: "hub");         active = "/games"
-        case "games/sudoku":      main = gamesMain(page: "sudoku");      active = "/games"
-        case "games/crossword":   main = gamesMain(page: "crossword");   active = "/games"
-        case "games/word-search": main = gamesMain(page: "word-search"); active = "/games"
+        case "games":             main = gamesMain(page: "hub")
+        case "games/sudoku":      main = gamesMain(page: "sudoku")
+        case "games/crossword":   main = gamesMain(page: "crossword")
+        case "games/word-search": main = gamesMain(page: "word-search")
         case "games/kinnoki-stack":
             main = gamesMain(page: "kinnoki-stack")
-            active = "/games"
         case "games/kinnoki-yard":
             main = gamesMain(page: "kinnoki-yard")
-            active = "/games"
         case "games/kinnoki-charts":
             main = gamesMain(page: "kinnoki-charts")
-            active = "/games"
-        case "tools":                main = toolsMain(page: "hub");            active = "/tools"
-        case "tools/qr-code":        main = toolsMain(page: "qr-code");        active = "/tools"
-        case "tools/epub-reader":    main = toolsMain(page: "epub-reader");    active = "/tools"
-        case "tools/dilution":       main = toolsMain(page: "dilution");       active = "/tools"
-        case "tools/contrast":       main = toolsMain(page: "contrast");       active = "/tools"
-        case "tools/word-count":     main = toolsMain(page: "word-count");     active = "/tools"
-        case "tools/unit-converter": main = toolsMain(page: "unit-converter"); active = "/tools"
-        case "tools/click-counter":   main = toolsMain(page: "click-counter");   active = "/tools"
-        case "tools/passphrase":     main = toolsMain(page: "passphrase");     active = "/tools"
-        case "services":          main = servicesMain();                  active = "/services"
-        case "gis":               main = gisCaseStudyMain();              active = "/services"
-        case "shakespeare":       main = shakespeareCollectionMain();     active = ""
+        case "tools":                main = toolsMain(page: "hub")
+        case "tools/qr-code":        main = toolsMain(page: "qr-code")
+        case "tools/epub-reader":    main = toolsMain(page: "epub-reader")
+        case "tools/dilution":       main = toolsMain(page: "dilution")
+        case "tools/contrast":       main = toolsMain(page: "contrast")
+        case "tools/word-count":     main = toolsMain(page: "word-count")
+        case "tools/unit-converter": main = toolsMain(page: "unit-converter")
+        case "tools/click-counter":   main = toolsMain(page: "click-counter")
+        case "tools/passphrase":     main = toolsMain(page: "passphrase")
+        case "services":          main = servicesMain()
+        case "gis":               main = gisCaseStudyMain()
+        case "shakespeare":       main = shakespeareCollectionMain()
         case "shakespeare/merchant-of-venice":
             main = shakespeareMerchantMain()
-            active = ""
         case "shakespeare/a-midsummer-nights-dream":
             main = shakespeareMidsummerMain()
-            active = ""
-        case "learn":             main = learnMain();                     active = ""
-        case "taxsale":           main = taxSaleHubMain();                active = ""
-        case "about":             main = aboutMain();                     active = "/about"
-        case "support":           main = supportMain();                   active = ""
-        default:                  main = proseMain(page);                  active = ""
+        case "learn":             main = learnMain()
+        case "taxsale":           main = taxSaleHubMain()
+        case "about":             main = aboutMain()
+        case "support":           main = supportMain()
+        default:                  main = proseMain(page)
         }
         return HTML(
             .lang(context.site.language),
@@ -159,11 +153,14 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
             siteHead(for: page, context: context, titleOverride: "Tags"),
             .body(
                 .class("page-tags"),
-                siteHeader(active: "/posts"),
+                siteHeader(active: ""),
                 .main(
-                    .class("site-main article-page"),
-                    .p(.class("eyebrow"), .text("Tags")),
-                    .h1(.style("font-weight:650;font-size:clamp(30px,4vw,42px);letter-spacing:-0.025em;margin:0 0 24px;"), .text("Everything, tagged.")),
+                    .class("site-main page page-narrow"),
+                    .header(
+                        .class("page-head"),
+                        .p(.class("eyebrow"), .text("Tags")),
+                        .h1(.class("page-title"), .text("Everything, tagged."))
+                    ),
                     .div(.class("chip-row"), .forEach(page.tags.sorted()) { tag in
                         .a(.class("chip"), .href(context.site.path(for: tag)), .text(tag.string))
                     })
@@ -180,11 +177,14 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
             siteHead(for: page, context: context, titleOverride: page.tag.string),
             .body(
                 .class("page-tag-detail"),
-                siteHeader(active: "/posts"),
+                siteHeader(active: ""),
                 .main(
-                    .class("site-main article-page"),
-                    .p(.class("eyebrow"), .text("Tagged")),
-                    .h1(.style("font-weight:650;font-size:clamp(30px,4vw,42px);letter-spacing:-0.025em;margin:0 0 28px;"), .text(page.tag.string)),
+                    .class("site-main page page-narrow"),
+                    .header(
+                        .class("page-head"),
+                        .p(.class("eyebrow"), .text("Tagged")),
+                        .h1(.class("page-title"), .text(page.tag.string))
+                    ),
                     .div(.class("post-list"), .forEach(items) { postCard($0) })
                 ),
                 siteFooter()
@@ -269,27 +269,60 @@ private func siteHead<L: Location>(
 
 // MARK: - Shared header + mobile menu
 
+/// One primary-navigation entry. `free` marks the no-cost destinations
+/// (Learn, Games, Tools), which sit after a hairline divider so the studio's
+/// paid work (Services) and its proof (Apps, About) read as one group.
+private struct NavItem {
+    let path: String
+    let title: String
+    var free = false
+}
+
+/// Primary navigation, in order. The brand mark links home, so there is no
+/// separate Home item; Posts, Support, and Privacy live in the footer.
+private let primaryNavigation: [NavItem] = [
+    NavItem(path: "/services", title: "Services"),
+    NavItem(path: "/apps", title: "Apps"),
+    NavItem(path: "/about", title: "About"),
+    NavItem(path: "/learn", title: "Learn", free: true),
+    NavItem(path: "/games", title: "Games", free: true),
+    NavItem(path: "/tools", title: "Tools", free: true),
+]
+
+/// The primary-nav item a page belongs to, decided in one place.
+/// Proof-of-work pages sit under Services; app guides and help under Apps.
+private func navSection(for path: String) -> String {
+    let first = path.split(separator: "/").first.map(String.init) ?? ""
+    switch first {
+    case "services", "gis", "tenders":
+        return "/services"
+    case "apps", "support", "taxsale", "testflight":
+        return "/apps"
+    case _ where first.hasPrefix("echo-") || first.hasSuffix("-help"):
+        return "/apps"
+    case "about", "learn", "games", "tools":
+        return "/" + first
+    default:
+        return ""
+    }
+}
+
 private func siteHeader(active: String) -> Node<HTML.BodyContext> {
     .group(
         .header(
             .class("site-header"),
             .nav(
                 .class("site-nav"),
+                .attribute(named: "aria-label", value: "Primary"),
                 brandLink(),
                 .div(
-                    .style("display:flex;align-items:center;gap:18px;"),
+                    .class("nav-actions"),
                     .ul(
                         .class("nav-links"),
-                        navLink("/", "Home", active),
-                        navLink("/games", "Games", active),
-                        navLink("/tools", "Tools", active),
-                        navLink("/services", "Services", active),
-                        navLink("/apps", "Apps", active),
-                        navLink("/posts", "Posts", active),
-                        navLink("/about", "About", active)
+                        .forEach(primaryNavigation) { navLink($0, active) }
                     ),
                     .div(
-                        .style("display:flex;align-items:center;gap:8px;"),
+                        .class("nav-toggles"),
                         fontToggle("Aa"),
                         themeToggle()
                     ),
@@ -297,6 +330,8 @@ private func siteHeader(active: String) -> Node<HTML.BodyContext> {
                         .class("nav-burger"),
                         .attribute(named: "type", value: "button"),
                         .attribute(named: "aria-label", value: "Open menu"),
+                        .attribute(named: "aria-controls", value: "site-menu"),
+                        .attribute(named: "aria-expanded", value: "false"),
                         iconMenu()
                     )
                 )
@@ -311,17 +346,22 @@ private func brandLink() -> Node<HTML.BodyContext> {
         .class("nav-brand"),
         .href("/"),
         .attribute(named: "aria-label", value: "KinNoKi Labs home"),
-        .img(.class("logo-on-dark"), .src("/images/brand/logo-mark.png"), .alt("")),
-        .img(.class("logo-on-light"), .src("/images/brand/logo-mark-light.png"), .alt("")),
+        brandMarks(),
         .span(.text("KinNoKi Labs"))
     )
 }
 
-private func navLink(_ path: String, _ title: String, _ active: String) -> Node<HTML.ListContext> {
-    if path == active {
-        return .li(.a(.href(path), .attribute(named: "aria-current", value: "page"), .text(title)))
-    }
-    return .li(.a(.href(path), .text(title)))
+/// Both logo variants are in the DOM; styles.css shows the one that suits
+/// the active theme.
+private func brandMarks<Ctx>() -> Node<Ctx> {
+    .raw(#"<img class="logo-on-dark" src="/images/brand/logo-mark.png" alt=""><img class="logo-on-light" src="/images/brand/logo-mark-light.png" alt="">"#)
+}
+
+private func navLink(_ item: NavItem, _ active: String) -> Node<HTML.ListContext> {
+    let link: Node<HTML.BodyContext> = item.path == active
+        ? .a(.href(item.path), .attribute(named: "aria-current", value: "page"), .text(item.title))
+        : .a(.href(item.path), .text(item.title))
+    return item.free ? .li(.class("nav-free"), link) : .li(link)
 }
 
 private func fontToggle(_ label: String) -> Node<HTML.BodyContext> {
@@ -348,95 +388,125 @@ private func themeToggle() -> Node<HTML.BodyContext> {
 private func mobileMenu(active: String) -> Node<HTML.BodyContext> {
     .div(
         .class("mobile-menu"),
+        .id("site-menu"),
+        .attribute(named: "role", value: "dialog"),
+        .attribute(named: "aria-modal", value: "true"),
+        .attribute(named: "aria-label", value: "Menu"),
         .div(
-            .style("display:flex;align-items:center;justify-content:space-between;height:64px;padding:0 16px 0 clamp(16px,4vw,32px);"),
-            .div(
-                .style("display:flex;align-items:center;gap:11px;"),
-                .img(.class("logo-on-dark"), .src("/images/brand/logo-mark.png"), .alt(""), .attribute(named: "style", value: "height:34px;width:34px;object-fit:contain;")),
-                .img(.class("logo-on-light"), .src("/images/brand/logo-mark-light.png"), .alt(""), .attribute(named: "style", value: "height:34px;width:34px;object-fit:contain;")),
-                .span(.style("font-weight:600;font-size:16.5px;letter-spacing:-0.01em;"), .text("KinNoKi Labs"))
+            .class("mobile-menu-bar"),
+            .a(
+                .class("mobile-menu-brand"),
+                .href("/"),
+                .attribute(named: "aria-label", value: "KinNoKi Labs home"),
+                brandMarks(),
+                .span(.text("KinNoKi Labs"))
             ),
             .button(
                 .class("menu-close"),
                 .attribute(named: "type", value: "button"),
                 .attribute(named: "aria-label", value: "Close menu"),
-                .style("height:44px;width:44px;display:inline-flex;align-items:center;justify-content:center;background:none;border:none;color:var(--text);cursor:pointer;"),
                 iconClose()
             )
         ),
+        // A bare <nav>: Tests/tools/routes.test.mjs locates this list by it.
         .nav(
-            mobileLink("/", "Home", active),
-            mobileLink("/games", "Games", active),
-            mobileLink("/tools", "Tools", active),
-            mobileLink("/services", "Services", active),
-            mobileLink("/apps", "Apps", active),
-            mobileLink("/posts", "Posts", active),
-            mobileLink("/about", "About", active),
+            .forEach(primaryNavigation) { mobileLink($0, active) },
             .button(
                 .class("font-toggle"),
                 .attribute(named: "type", value: "button"),
                 .attribute(named: "aria-label", value: "Toggle OpenDyslexic font"),
                 .attribute(named: "aria-pressed", value: "false"),
-                .style("margin-top:24px;height:44px;padding:0 18px;align-self:flex-start;gap:8px;"),
                 .text("Aa · OpenDyslexic")
             )
-        )
+        ),
+        .a(.class("btn btn-gold mobile-menu-cta"), .href("mailto:hello@kinnokilabs.com"), .text("hello@kinnokilabs.com"))
     )
 }
 
-private func mobileLink(_ path: String, _ title: String, _ active: String) -> Node<HTML.BodyContext> {
-    if path == active {
-        return .a(
-            .href(path),
-            .attribute(named: "aria-current", value: "page"),
-            .text(title),
-            iconChevronDim()
-        )
-    }
-    return .a(.href(path), .text(title), iconChevronDim())
+private func mobileLink(_ item: NavItem, _ active: String) -> Node<HTML.BodyContext> {
+    .a(
+        .if(item.free, .class("nav-free")),
+        .href(item.path),
+        .if(item.path == active, .attribute(named: "aria-current", value: "page")),
+        .text(item.title),
+        iconChevronDim()
+    )
 }
 
 // MARK: - Shared footer
+
+/// The footer doubles as the site map: every public page is one click away.
+private func footerColumn(_ heading: String, _ links: [(href: String, title: String)]) -> Node<HTML.BodyContext> {
+    .div(
+        .class("footer-col"),
+        // A <p>, not a heading, so the footer stays out of each page's outline.
+        .p(.class("footer-heading"), .text(heading)),
+        .ul(
+            .class("footer-list"),
+            .forEach(links) { link in
+                .li(.a(.href(link.href), .text(link.title)))
+            }
+        )
+    )
+}
 
 private func siteFooter() -> Node<HTML.BodyContext> {
     .footer(
         .class("site-footer"),
         .div(
             .class("inner"),
-            .div(
-                .style("display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:28px;margin-bottom:32px;"),
+            .nav(
+                .class("footer-grid"),
+                .attribute(named: "aria-label", value: "Footer"),
                 .div(
-                    .style("display:flex;align-items:center;gap:12px;"),
-                    .img(.class("logo-on-dark"), .src("/images/brand/logo-mark.png"), .alt(""), .attribute(named: "style", value: "height:40px;width:40px;object-fit:contain;")),
-                    .img(.class("logo-on-light"), .src("/images/brand/logo-mark-light.png"), .alt(""), .attribute(named: "style", value: "height:40px;width:40px;object-fit:contain;")),
-                    .div(
-                        .p(.style("font-weight:600;font-size:15.5px;letter-spacing:-0.01em;margin:0;"), .text("KinNoKi Labs")),
-                        .p(.style("font-size:13px;color:var(--text-muted);margin:0;"), .text("Building Tools That Make Sense."))
-                    )
+                    .class("footer-brand"),
+                    .a(
+                        .class("footer-brand-link"),
+                        .href("/"),
+                        .attribute(named: "aria-label", value: "KinNoKi Labs home"),
+                        brandMarks(),
+                        .span(.text("KinNoKi Labs"))
+                    ),
+                    .p(.class("footer-tagline"), .text("Building Tools That Make Sense.")),
+                    .a(.class("footer-email"), .href("mailto:hello@kinnokilabs.com"), .text("hello@kinnokilabs.com"))
                 ),
-                .div(
-                    .class("footer-links"),
-                    .a(.href("/apps"), .text("Apps")),
-                    .a(.href("/services"), .text("Services")),
-                    .a(.href("/learn"), .text("Learn")),
-                    .a(.href("/posts"), .text("Posts")),
-                    .a(.href("/about"), .text("About")),
-                    .a(.href("/privacy"), .text("Privacy")),
-                    .a(.href("/support"), .text("Support")),
-                    .raw(#"<a href="https://github.com/dfakkeldy" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>GitHub</a>"#),
-                    .a(.href("mailto:hello@kinnokilabs.com"), .text("hello@kinnokilabs.com"))
-                )
+                footerColumn("Work with me", [
+                    ("/services", "Services"),
+                    ("/gis/", "GIS case study"),
+                    ("/tenders/", "Tender Starter Showcase"),
+                ]),
+                footerColumn("Apps", [
+                    ("/apps/echo", "Echo"),
+                    ("/apps/macromark/", "MacroMark"),
+                    ("/apps/nsmarksthespot/", "NS Marks The Spot"),
+                    ("/apps/visualtimer/", "Turn Timer"),
+                    ("/support", "Support"),
+                ]),
+                footerColumn("Learn & play", [
+                    ("/learn", "Learning audiobooks"),
+                    ("/listen/", "Echo Listening Room"),
+                    ("/games", "Games"),
+                    ("/tools", "Tools"),
+                ]),
+                footerColumn("Studio", [
+                    ("/about", "About"),
+                    ("/posts", "Posts"),
+                    ("/privacy", "Privacy"),
+                ])
             ),
             .div(
                 .class("footer-legal"),
-                .raw(#"<p style="margin:0;">© 2026 KinNoKi Labs · Cape Breton, Nova Scotia · Generated with <a href="https://github.com/johnsundell/publish" target="_blank" rel="noopener">Publish</a></p>"#),
-                .button(
-                    .class("font-toggle"),
-                    .attribute(named: "type", value: "button"),
-                    .attribute(named: "aria-label", value: "Toggle OpenDyslexic font"),
-                    .attribute(named: "aria-pressed", value: "false"),
-                    .style("height:34px;padding:0 14px;gap:7px;"),
-                    .text("Aa · OpenDyslexic")
+                .raw(#"<p class="footer-copy"><span>© 2026 KinNoKi Labs</span><span class="sep" aria-hidden="true"> · </span><span>Cape Breton, Nova Scotia</span><span class="sep" aria-hidden="true"> · </span><span>Generated with <a href="https://github.com/johnsundell/publish" target="_blank" rel="noopener">Publish</a></span></p>"#),
+                .div(
+                    .class("footer-legal-links"),
+                    .raw(#"<a href="https://github.com/dfakkeldy" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>GitHub</a>"#),
+                    .button(
+                        .class("font-toggle"),
+                        .attribute(named: "type", value: "button"),
+                        .attribute(named: "aria-label", value: "Toggle OpenDyslexic font"),
+                        .attribute(named: "aria-pressed", value: "false"),
+                        .text("Aa · OpenDyslexic")
+                    )
                 )
             )
         )
@@ -467,17 +537,19 @@ func makeNotFoundHTML(context: PublishingContext<KinNoKiLabsSite>) -> HTML {
 
 private func notFoundMain() -> Node<HTML.BodyContext> {
     .raw("""
-    <main class="site-main article-page" style="max-width:680px;min-height:40vh;">
-      <p class="eyebrow">404</p>
-      <h1 style="font-weight:650;font-size:clamp(30px,4vw,42px);line-height:1.12;letter-spacing:-0.025em;margin:0 0 12px;">That page isn't here.</h1>
-      <p style="font-size:16.5px;line-height:1.7;color:var(--text-muted);margin:0 0 28px;">The link may be old, or the address may have a typo. These are the main places to go from here.</p>
-      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;">
-        <a class="support-row" href="/">Home <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-quaternary);"><path d="m9 18 6-6-6-6"></path></svg></a>
-        <a class="support-row" href="/services">Services <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-quaternary);"><path d="m9 18 6-6-6-6"></path></svg></a>
-        <a class="support-row" href="/apps">Apps <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-quaternary);"><path d="m9 18 6-6-6-6"></path></svg></a>
-        <a class="support-row" href="/posts">Posts <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-quaternary);"><path d="m9 18 6-6-6-6"></path></svg></a>
+    <main class="site-main page page-narrow">
+      <header class="page-head">
+        <p class="eyebrow">404</p>
+        <h1 class="page-title">That page isn't here.</h1>
+        <p class="page-lede">The link may be old, or the address may have a typo. These are the main places to go from here.</p>
+      </header>
+      <div class="row-list">
+        <a class="support-row" href="/">Home \(svgRowChevron)</a>
+        <a class="support-row" href="/services">Services \(svgRowChevron)</a>
+        <a class="support-row" href="/apps">Apps \(svgRowChevron)</a>
+        <a class="support-row" href="/learn">Learn \(svgRowChevron)</a>
       </div>
-      <p style="font-size:16px;line-height:1.7;color:var(--text-muted);margin:0;">Looking for something specific? Email <a class="link-quiet" href="mailto:hello@kinnokilabs.com">hello@kinnokilabs.com</a>.</p>
+      <p class="page-footnote">Looking for something specific? Email <a class="link-quiet" href="mailto:hello@kinnokilabs.com">hello@kinnokilabs.com</a>.</p>
     </main>
     """)
 }
@@ -768,10 +840,12 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
 
 private func postsListMain(_ section: Section<KinNoKiLabsSite>) -> Node<HTML.BodyContext> {
     .main(
-        .class("site-main"),
-        .style("max-width:760px;margin:0 auto;padding:clamp(48px,7vw,80px) clamp(20px,5vw,32px) 24px;min-height:40vh;"),
-        .p(.class("eyebrow"), .text("Posts")),
-        .h1(.style("font-weight:650;font-size:clamp(34px,4.5vw,48px);line-height:1.08;letter-spacing:-0.025em;margin:0 0 32px;"), .text("Studio notes.")),
+        .class("site-main page page-narrow"),
+        .header(
+            .class("page-head"),
+            .p(.class("eyebrow"), .text("Posts")),
+            .h1(.class("page-title"), .text("Studio notes."))
+        ),
         .div(.class("post-list"), .forEach(section.items.sorted { $0.date > $1.date }) { postCard($0) })
     )
 }
@@ -791,10 +865,10 @@ private func postCard(_ item: Item<KinNoKiLabsSite>) -> Node<HTML.BodyContext> {
 private func postDetailMain(_ item: Item<KinNoKiLabsSite>) -> Node<HTML.BodyContext> {
     .main(
         .class("site-main article-page"),
-        .style("max-width:680px;"),
         .a(.class("back-link"), .href("/posts"), iconArrowBack(), .text("All posts")),
-        .p(.class("post-kicker"), .style("color:var(--gold-text);margin-bottom:12px;"), .text(kicker(for: item))),
-        .article(.class("prose prose-post"), item.body.node)
+        .p(.class("eyebrow"), .text(kicker(for: item))),
+        .article(.class("prose prose-post"), item.body.node),
+        .a(.class("back-link post-end"), .href("/posts"), iconArrowBack(), .text("All posts"))
     )
 }
 
@@ -806,12 +880,13 @@ private func appItemMain(_ item: Item<KinNoKiLabsSite>) -> Node<HTML.BodyContext
             .class("app-hero"),
             appHeroIcon(item),
             .div(
-                .h1(.style("font-weight:650;font-size:clamp(30px,4vw,42px);letter-spacing:-0.02em;margin:0 0 8px;"), .text(item.title)),
+                .class("app-hero-copy"),
+                .h1(.class("app-hero-title"), .text(item.title)),
                 .unwrap(item.metadata.tagline) {
-                    .p(.style("font-size:17px;font-weight:500;color:var(--gold-text);margin:0 0 12px;"), .text($0))
+                    .p(.class("app-hero-tagline"), .text($0))
                 },
                 .div(
-                    .style("display:flex;flex-wrap:wrap;align-items:center;gap:8px;"),
+                    .class("app-hero-meta"),
                     .unwrap(item.metadata.status) { .span(.class("status-chip"), .text($0)) },
                     .unwrap(item.metadata.platforms) { .span(.class("platforms"), .text($0)) }
                 )
@@ -841,9 +916,27 @@ private func appHeroIcon(_ item: Item<KinNoKiLabsSite>) -> Node<HTML.BodyContext
     return .span(.class("app-hero-icon app-monogram"), .attribute(named: "aria-hidden", value: "true"), .text(String(item.title.prefix(1))))
 }
 
+/// Where a guide page sits, so it can link back up. Help pages return to
+/// Support (which lists them); Echo's guides return to Echo.
+private let pageParents: [String: (href: String, title: String)] = [
+    "echo-help": ("/support", "Support"),
+    "macromark-help": ("/support", "Support"),
+    "nsmarksthespot-help": ("/support", "Support"),
+    "visualtimer-help": ("/support", "Support"),
+    "echo-manual": ("/apps/echo", "Echo"),
+    "echo-learn": ("/apps/echo", "Echo"),
+    "echo-focus": ("/apps/echo", "Echo"),
+    "echo-beta": ("/apps/echo", "Echo"),
+    "echo-devlog": ("/apps/echo", "Echo"),
+    "testflight": ("/apps", "All apps"),
+]
+
 private func proseMain(_ page: Page) -> Node<HTML.BodyContext> {
     .main(
         .class("site-main article-page"),
+        .unwrap(pageParents[page.path.string]) { parent in
+            .a(.class("back-link"), .href(parent.href), iconArrowBack(), .text(parent.title))
+        },
         .article(.class("prose"), page.body.node)
     )
 }
@@ -865,11 +958,11 @@ private func formattedDate(_ date: Date) -> String {
 // MARK: - Chrome icons (inline Lucide SVGs)
 
 private func iconSun<Ctx>() -> Node<Ctx> {
-    .raw(#"<svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>"#)
+    .raw(#"<svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>"#)
 }
 
 private func iconMoon<Ctx>() -> Node<Ctx> {
-    .raw(#"<svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>"#)
+    .raw(#"<svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>"#)
 }
 
 private func iconMenu<Ctx>() -> Node<Ctx> {
@@ -881,14 +974,24 @@ private func iconClose<Ctx>() -> Node<Ctx> {
 }
 
 private func iconChevronDim<Ctx>() -> Node<Ctx> {
-    .raw(#"<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.35;"><path d="m9 18 6-6-6-6"></path></svg>"#)
+    .raw(#"<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron-dim" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>"#)
 }
 
-private func iconArrowBack<Ctx>() -> Node<Ctx> {
-    .raw(#"<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(180deg);"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>"#)
+/// Shared with TenderShowcase.swift for its back link.
+func iconArrowBack<Ctx>() -> Node<Ctx> {
+    .raw(#"<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>"#)
 }
 
-// MARK: - Marketing bodies (copy-locked; recreated from the design prototype)
+// MARK: - Marketing bodies (copy-locked; layout comes from styles.css classes)
+
+// MARK: - Inline icons shared by the marketing bodies (Lucide, stroke = currentColor)
+
+private let svgCheck = #"<svg class="icon-tick" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>"#
+private let svgChevron = #"<svg class="icon-tick" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>"#
+private let svgArrow = #"<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>"#
+private let svgMail = #"<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>"#
+private let svgRowChevron = #"<svg class="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>"#
+private let svgGitHub = #"<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>"#
 
 private func homeMain() -> Node<HTML.BodyContext> {
     .raw("""
@@ -905,74 +1008,79 @@ private func homeMain() -> Node<HTML.BodyContext> {
           <h1>Building Tools<br><span class="hero-metal">That Make Sense.</span></h1>
           <p class="hero-sub">I solve messy technical and operational problems — from spreadsheets, documents, websites, and disconnected tools to automation and custom software when it earns its place.</p>
           <div class="hero-ctas">
-            <a class="btn btn-gray" href="/apps">Explore the apps</a>
             <a class="btn btn-gold" href="/services">Work with me</a>
+            <a class="btn btn-gray" href="/apps">Explore the apps</a>
           </div>
-          <div class="proof-strip">
-            <span>4 apps in development</span>
-            <span class="dot" aria-hidden="true"></span>
-            <span>4 in TestFlight</span>
-            <span class="dot" aria-hidden="true"></span>
-            <a class="link-quiet" href="https://github.com/dfakkeldy" target="_blank" rel="noopener">Source is public on GitHub; licences vary</a>
-            <span class="dot" aria-hidden="true"></span>
-            <span>Built around real workflows</span>
-          </div>
+          <ul class="proof-strip">
+            <li><span>4 apps in development</span></li>
+            <li><span>4 in TestFlight</span></li>
+            <li><a class="link-quiet" href="https://github.com/dfakkeldy" target="_blank" rel="noopener">Source is public on GitHub; licences vary</a></li>
+            <li><span>Built around real workflows</span></li>
+          </ul>
         </div>
       </section>
 
-      <section class="reveal" style="max-width:1120px;margin:0 auto;padding:clamp(40px,6vw,72px) clamp(16px,4vw,32px) 0;">
+      <section class="section section-first reveal">
+        <div class="bento-tint split-services band home-services">
+          <div>
+            <p class="eyebrow">Services</p>
+            <h2 class="band-title">I untangle the technical mess behind the work.</h2>
+            <p class="band-lede">When spreadsheets, forms, job folders, websites, and software stop lining up, I map what is really happening and make the smallest useful fix.</p>
+            <div class="band-actions band-actions-row">
+              <a class="btn btn-gold" href="/services">See services</a>
+              <a class="row-link" href="mailto:hello@kinnokilabs.com">\(svgMail)hello@kinnokilabs.com</a>
+            </div>
+          </div>
+          <ul class="chevron-list offer-lines">
+            <li>\(svgChevron)Technical workflow diagnostic — one problem, clearly mapped</li>
+            <li>\(svgChevron)Systems cleanup, integrations &amp; automation</li>
+            <li>\(svgChevron)Knowledge bases, dashboards &amp; right-sized software</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section reveal">
         <p class="eyebrow">Flagship app</p>
         <div class="bento bento-gold split-flagship">
-          <div style="padding:clamp(28px,4.5vw,52px);display:flex;flex-direction:column;align-items:flex-start;min-width:0;">
-            <img src="/images/apps/echo.png" alt="Echo app icon — an infinity symbol in silver and gold" style="width:84px;height:84px;border-radius:22.37%;box-shadow:0 2px 10px rgba(0,0,0,0.25);margin-bottom:22px;">
-            <h2 style="font-weight:600;font-size:clamp(28px,3.4vw,38px);line-height:1.12;letter-spacing:-0.02em;margin:0 0 8px;">Echo</h2>
-            <p style="font-size:16.5px;font-weight:500;color:var(--gold-text);margin:0 0 14px;">For Every Mind — turn listening into learning.</p>
-            <p style="font-size:16px;color:var(--text-muted);margin:0 0 22px;text-wrap:pretty;">The audiobook player that helps you remember what you heard. Built on a mail route, nights and weekends, for an AuDHD brain that learns in stolen, interrupted minutes.</p>
-            <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
-              <div style="display:flex;align-items:baseline;gap:10px;">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:color-mix(in srgb, var(--gold-500) 75%, var(--text));flex:none;transform:translateY(2px);"><path d="M20 6 9 17l-5-5"></path></svg>
-                <p style="margin:0;font-size:15px;"><strong style="font-weight:600;">Word-perfect read-along.</strong> <span style="color:var(--text-muted);">True karaoke, tuned on-device to the real audio.</span></p>
-              </div>
-              <div style="display:flex;align-items:baseline;gap:10px;">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:color-mix(in srgb, var(--gold-500) 75%, var(--text));flex:none;transform:translateY(2px);"><path d="M20 6 9 17l-5-5"></path></svg>
-                <p style="margin:0;font-size:15px;"><strong style="font-weight:600;">One-tap flashcards.</strong> <span style="color:var(--text-muted);">Spaced repetition (FSRS / FSRS-4.5) with the narrator's audio attached.</span></p>
-              </div>
-              <div style="display:flex;align-items:baseline;gap:10px;">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:color-mix(in srgb, var(--gold-500) 75%, var(--text));flex:none;transform:translateY(2px);"><path d="M20 6 9 17l-5-5"></path></svg>
-                <p style="margin:0;font-size:15px;"><strong style="font-weight:600;">Smart Rewind.</strong> <span style="color:var(--text-muted);">Interruptions stop costing you context.</span></p>
-              </div>
-            </div>
-            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:26px;">
+          <div class="flagship-copy">
+            <img class="flagship-icon" src="/images/apps/echo.png" alt="Echo app icon — an infinity symbol in silver and gold">
+            <h2 class="flagship-title">Echo</h2>
+            <p class="flagship-tagline">For Every Mind — turn listening into learning.</p>
+            <p class="flagship-desc">The audiobook player that helps you remember what you heard. Built on a mail route, nights and weekends, for an AuDHD brain that learns in stolen, interrupted minutes.</p>
+            <ul class="tick-list">
+              <li>\(svgCheck)<p><strong>Word-perfect read-along.</strong> <span>True karaoke, tuned on-device to the real audio.</span></p></li>
+              <li>\(svgCheck)<p><strong>One-tap flashcards.</strong> <span>Spaced repetition (FSRS / FSRS-4.5) with the narrator's audio attached.</span></p></li>
+              <li>\(svgCheck)<p><strong>Smart Rewind.</strong> <span>Interruptions stop costing you context.</span></p></li>
+            </ul>
+            <div class="pill-row">
               <span class="badge-pill">iPhone</span>
               <span class="badge-pill">Apple Watch</span>
               <span class="badge-pill">Mac</span>
               <span class="badge-pill">CarPlay</span>
             </div>
-            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;">
+            <div class="flagship-actions">
               <a class="btn btn-gold btn-md" href="/apps/echo">Meet Echo</a>
               <a class="link-quiet" href="/echo-beta">Join the TestFlight beta</a>
               <a class="link-quiet" href="/learn">Sample learning audiobooks</a>
             </div>
           </div>
-          <div style="position:relative;background:#0a0a0c;min-height:400px;overflow:hidden;">
-            <div aria-hidden="true" style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 62% at 50% 46%, rgba(201,162,75,0.17), transparent 74%);"></div>
-            <div style="position:absolute;left:50%;transform:translateX(-50%);top:clamp(36px,5vw,56px);bottom:-80px;width:min(274px,76%);">
-              <div style="height:100%;background:#050506;border:1px solid rgba(255,255,255,0.14);border-bottom:none;border-radius:44px 44px 0 0;padding:9px 9px 0;box-shadow:0 30px 80px rgba(0,0,0,0.55), 0 0 70px rgba(201,162,75,0.10);">
-                <img src="/images/screenshots/echo/player-tinted.png" alt="Echo Now Playing screen — the player tinted from the book's cover art" style="width:100%;height:100%;object-fit:cover;object-position:top;border-radius:35px 35px 0 0;display:block;">
+          <div class="flagship-visual">
+            <div class="flagship-glow" aria-hidden="true"></div>
+            <div class="flagship-phone">
+              <div class="flagship-phone-frame">
+                <img src="/images/screenshots/echo/player-tinted.png" alt="Echo Now Playing screen — the player tinted from the book's cover art">
               </div>
             </div>
-            <div aria-hidden="true" style="position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.06);pointer-events:none;"></div>
+            <div class="flagship-edge" aria-hidden="true"></div>
           </div>
         </div>
       </section>
 
-      <section class="reveal" style="max-width:1120px;margin:0 auto;padding:clamp(48px,7vw,88px) clamp(16px,4vw,32px) 0;">
+      <section class="section reveal">
         <p class="eyebrow">Also in the lab</p>
         <div class="card-grid">
           <a class="app-card" href="/apps/macromark/">
-            <div class="app-icon" style="width:60px;height:60px;background:linear-gradient(180deg,#3d9bff,#1f7ae8);display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
-              <img src="/images/apps/macromark.png" alt="MacroMark app icon" style="width:74%;height:74%;object-fit:contain;">
-            </div>
+            <img class="app-icon" src="/images/apps/macromark.png" alt="MacroMark app icon">
             <h3>MacroMark</h3>
             <p>Apple Watch voice capture for people whose notes live in Markdown.</p>
             <div class="app-card-meta">
@@ -999,33 +1107,14 @@ private func homeMain() -> Node<HTML.BodyContext> {
             </div>
           </a>
         </div>
-        <div style="display:flex;justify-content:center;margin-top:22px;">
-          <a class="row-link" href="/apps">All apps, honestly statused <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a>
+        <div class="section-foot">
+          <a class="row-link" href="/apps">All apps, honestly statused \(svgArrow)</a>
         </div>
       </section>
 
-      <section class="reveal" style="max-width:1120px;margin:0 auto;padding:clamp(48px,7vw,88px) clamp(16px,4vw,32px) 0;">
-        <div class="bento-tint split-services" style="padding:clamp(28px,4.5vw,52px);">
-          <div>
-            <p class="eyebrow">Services</p>
-            <h2 style="font-weight:600;font-size:clamp(26px,3.2vw,36px);line-height:1.15;letter-spacing:-0.02em;margin:0 0 14px;text-wrap:balance;">I untangle the technical mess behind the work.</h2>
-            <p style="font-size:16px;color:var(--text-muted);margin:0 0 22px;max-width:56ch;text-wrap:pretty;">When spreadsheets, forms, job folders, websites, and software stop lining up, I map what is really happening and make the smallest useful fix.</p>
-            <div style="display:flex;flex-direction:column;gap:9px;">
-              <div style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:500;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:color-mix(in srgb, var(--gold-500) 75%, var(--text));flex:none;"><path d="m9 18 6-6-6-6"></path></svg>Technical workflow diagnostic — one problem, clearly mapped</div>
-              <div style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:500;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:color-mix(in srgb, var(--gold-500) 75%, var(--text));flex:none;"><path d="m9 18 6-6-6-6"></path></svg>Systems cleanup, integrations &amp; automation</div>
-              <div style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:500;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:color-mix(in srgb, var(--gold-500) 75%, var(--text));flex:none;"><path d="m9 18 6-6-6-6"></path></svg>Knowledge bases, dashboards &amp; right-sized software</div>
-            </div>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:14px;">
-            <a class="btn btn-gold" href="/services">See services</a>
-            <a class="row-link" href="mailto:hello@kinnokilabs.com"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>hello@kinnokilabs.com</a>
-          </div>
-        </div>
-      </section>
-
-      <section class="reveal" style="max-width:760px;margin:0 auto;padding:clamp(56px,8vw,104px) clamp(20px,5vw,32px);text-align:center;">
-        <p style="font-size:clamp(19px,2.4vw,24px);font-weight:400;line-height:1.5;letter-spacing:-0.01em;margin:0 0 18px;text-wrap:balance;">Built between shifts on a rural mail route in Nova Scotia — bid rooms before that. <span style="color:var(--text-muted);">The tools exist because the work demanded them.</span></p>
-        <a class="row-link" style="color:var(--gold-text);" href="/about">About the studio <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a>
+      <section class="closing reveal">
+        <p class="closing-quote">Built between shifts on a rural mail route in Nova Scotia — bid rooms before that. <span>The tools exist because the work demanded them.</span></p>
+        <a class="row-link row-link-gold" href="/about">About the studio \(svgArrow)</a>
       </section>
     </main>
     """)
@@ -1033,32 +1122,32 @@ private func homeMain() -> Node<HTML.BodyContext> {
 
 private func appsMain() -> Node<HTML.BodyContext> {
     .raw("""
-    <main class="site-main" style="max-width:1120px;margin:0 auto;padding:clamp(48px,7vw,80px) clamp(16px,4vw,32px) 24px;">
-      <p class="eyebrow">Apps</p>
-      <h1 style="font-weight:650;font-size:clamp(34px,4.5vw,52px);line-height:1.08;letter-spacing:-0.025em;margin:0 0 14px;">Four apps, honestly statused.</h1>
-      <p style="font-size:17px;color:var(--text-muted);max-width:62ch;margin:0 0 40px;text-wrap:pretty;">All four have TestFlight builds running — Echo and Turn Timer as public betas, the rest internal — and none are on the App Store yet. Getting them there — review prep, metadata, polish — is the current work. Source is public on GitHub; licences vary.</p>
+    <main class="site-main page">
+      <header class="page-head">
+        <p class="eyebrow">Apps</p>
+        <h1 class="page-title">Four apps, honestly statused.</h1>
+        <p class="page-lede">All four have TestFlight builds running — Echo and Turn Timer as public betas, the rest internal — and none are on the App Store yet. Getting them there — review prep, metadata, polish — is the current work. Source is public on GitHub; licences vary.</p>
+      </header>
 
-      <a class="reveal echo-row" href="/apps/echo" style="background:var(--surface);border:1px solid color-mix(in srgb, var(--gold-500) 28%, var(--separator));border-radius:24px;padding:clamp(24px,3.5vw,40px);margin-bottom:14px;text-decoration:none;color:var(--text);">
-        <img src="/images/apps/echo.png" alt="Echo app icon" style="width:96px;height:96px;border-radius:22.37%;box-shadow:0 2px 12px rgba(0,0,0,0.25);">
-        <div style="min-width:0;">
-          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:6px;">
-            <h2 style="font-weight:600;font-size:clamp(22px,2.6vw,28px);letter-spacing:-0.02em;margin:0;">Echo: Audiobook Study Player</h2>
+      <a class="reveal echo-row" href="/apps/echo">
+        <img class="echo-row-icon" src="/images/apps/echo.png" alt="Echo app icon">
+        <div class="echo-row-body">
+          <div class="echo-row-title">
+            <h2>Echo: Audiobook Study Player</h2>
             <span class="status-chip">TestFlight beta — open</span>
           </div>
-          <p style="font-size:15.5px;color:var(--text-muted);margin:0 0 10px;text-wrap:pretty;">An audiobook player built for studying, not just listening. Word-perfect read-along, one-tap flashcards, Smart Rewind, and a Watch remote you design.</p>
-          <span style="font-size:13px;color:var(--text-quaternary);">iPhone · Apple Watch · Mac · CarPlay · GPL-3.0</span>
+          <p>An audiobook player built for studying, not just listening. Word-perfect read-along, one-tap flashcards, Smart Rewind, and a Watch remote you design.</p>
+          <span class="platforms">iPhone · Apple Watch · Mac · CarPlay · GPL-3.0</span>
         </div>
-        <svg class="echo-row-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-quaternary);justify-self:end;"><path d="m9 18 6-6-6-6"></path></svg>
+        <svg class="echo-row-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
       </a>
 
-      <div class="reveal card-grid">
+      <div class="reveal app-list">
         <a class="app-card" href="/apps/macromark/">
-          <div class="app-icon" style="width:60px;height:60px;background:linear-gradient(180deg,#3d9bff,#1f7ae8);display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
-            <img src="/images/apps/macromark.png" alt="MacroMark app icon" style="width:74%;height:74%;object-fit:contain;">
-          </div>
+          <img class="app-icon" src="/images/apps/macromark.png" alt="MacroMark app icon">
           <h3>MacroMark</h3>
-          <p style="margin:0 0 8px;flex:none;">Tap your Watch complication, speak, lower your wrist — the note lands in today's Markdown file, ready for Obsidian or Logseq.</p>
-          <p style="font-size:13.5px;">Verbal Macros turn speech into structure: say "Task" and get <span style="font-family:var(--font-mono);font-size:12.5px;background:var(--fill-2);border-radius:5px;padding:1px 6px;">- [ ]</span></p>
+          <p class="app-card-lead">Tap your Watch complication, speak, lower your wrist — the note lands in today's Markdown file, ready for Obsidian or Logseq.</p>
+          <p class="app-card-note">Verbal Macros turn speech into structure: say "Task" and get <code>- [ ]</code></p>
           <div class="app-card-meta">
             <span class="status-chip">Internal TestFlight</span>
             <span class="platforms">Watch · iPhone</span>
@@ -1083,20 +1172,20 @@ private func appsMain() -> Node<HTML.BodyContext> {
           </div>
         </a>
       </div>
-      <p style="font-size:13.5px;color:var(--text-quaternary);margin:28px 0 0;">Cards lead to each app's public home. Source for everything is on <a class="link-quiet" href="https://github.com/dfakkeldy" target="_blank" rel="noopener">GitHub</a>. For the field experience behind NS Marks The Spot, read the <a class="link-quiet" href="/gis/">GIS case study</a>.</p>
+      <p class="page-footnote">Cards lead to each app's public home. Source for everything is on <a class="link-quiet" href="https://github.com/dfakkeldy" target="_blank" rel="noopener">GitHub</a>. For the field experience behind NS Marks The Spot, read the <a class="link-quiet" href="/gis/">GIS case study</a>.</p>
     </main>
     """)
 }
 
 private func servicesMain() -> Node<HTML.BodyContext> {
     .raw("""
-    <main class="site-main" style="max-width:1120px;margin:0 auto;padding:clamp(48px,7vw,80px) clamp(16px,4vw,32px) 24px;">
+    <main class="site-main page">
       <section class="services-hero-grid">
-        <div>
+        <div class="page-head page-head-flush">
           <p class="eyebrow">Technical problem-solving</p>
-          <h1 style="font-weight:650;font-size:clamp(34px,4.5vw,52px);line-height:1.08;letter-spacing:-0.025em;margin:0 0 16px;max-width:20ch;text-wrap:balance;">When the tools stop lining up, I make the work make sense.</h1>
-          <p style="font-size:17px;color:var(--text-muted);max-width:66ch;margin:0 0 10px;text-wrap:pretty;">The problem may look like a spreadsheet nobody trusts, a website that no longer fits, repeated data entry, scattered job files, or several tools that do not talk to one another.</p>
-          <p style="font-size:17px;color:var(--text-muted);max-width:66ch;margin:0;text-wrap:pretty;">I'm Dan Fakkeldy. I trace how the work actually moves, fix the smallest valuable bottleneck first, and leave behind something your team can understand and operate.</p>
+          <h1 class="page-title">When the tools stop lining up, I make the work make sense.</h1>
+          <p class="page-lede">The problem may look like a spreadsheet nobody trusts, a website that no longer fits, repeated data entry, scattered job files, or several tools that do not talk to one another.</p>
+          <p class="page-lede">I'm Dan Fakkeldy. I trace how the work actually moves, fix the smallest valuable bottleneck first, and leave behind something your team can understand and operate.</p>
         </div>
         <div class="system-map" aria-label="Examples of disconnected business information brought into one working system">
           <p class="system-map-label">What’s tangled?</p>
@@ -1116,57 +1205,26 @@ private func servicesMain() -> Node<HTML.BodyContext> {
 
       <div class="reveal offer-grid">
         <div class="offer-card">
-          <div class="offer-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></div>
-          <h2 style="font-weight:600;font-size:20px;letter-spacing:-0.015em;margin:0 0 8px;">Technical Workflow Diagnostic</h2>
-          <p style="font-size:15px;line-height:1.6;color:var(--text-muted);margin:0 0 10px;">A fixed engagement around one concrete problem. I trace the people, documents, data, and tools involved, find the costly handoff, and explain the options in plain language.</p>
-          <p style="font-size:14px;line-height:1.55;color:var(--text-muted);margin:0;"><strong style="color:var(--text);font-weight:600;">The recommendation can be no build.</strong> Cleanup, a better spreadsheet, or a clearer source of truth may solve the problem before custom software is justified.</p>
+          <div class="offer-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></div>
+          <h2>Technical Workflow Diagnostic</h2>
+          <p>A fixed engagement around one concrete problem. I trace the people, documents, data, and tools involved, find the costly handoff, and explain the options in plain language.</p>
+          <p class="offer-note"><strong>The recommendation can be no build.</strong> Cleanup, a better spreadsheet, or a clearer source of truth may solve the problem before custom software is justified.</p>
         </div>
         <div class="offer-card">
-          <div class="offer-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></div>
-          <h2 style="font-weight:600;font-size:20px;letter-spacing:-0.015em;margin:0 0 8px;">Systems Cleanup &amp; Automation</h2>
-          <p style="font-size:15px;line-height:1.6;color:var(--text-muted);margin:0 0 10px;">Improve what you already use: organize files, repair a spreadsheet or website, connect forms to the right records, reduce duplicate entry, or automate a repeated handoff.</p>
-          <p style="font-size:14px;line-height:1.55;color:var(--text-muted);margin:0;"><strong style="color:var(--text);font-weight:600;">One visible improvement at a time.</strong> The business keeps running, and the people doing the work can review what changed.</p>
+          <div class="offer-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></div>
+          <h2>Systems Cleanup &amp; Automation</h2>
+          <p>Improve what you already use: organize files, repair a spreadsheet or website, connect forms to the right records, reduce duplicate entry, or automate a repeated handoff.</p>
+          <p class="offer-note"><strong>One visible improvement at a time.</strong> The business keeps running, and the people doing the work can review what changed.</p>
         </div>
         <div class="offer-card">
-          <div class="offer-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></div>
-          <h2 style="font-weight:600;font-size:20px;letter-spacing:-0.015em;margin:0 0 8px;">Practical Tools &amp; Knowledge Systems</h2>
-          <p style="font-size:15px;line-height:1.6;color:var(--text-muted);margin:0 0 10px;">When cleanup is not enough, I can build a focused browser tool, dashboard, searchable company knowledge base, mobile companion, or custom software around the actual job.</p>
-          <p style="font-size:14px;line-height:1.55;color:var(--text-muted);margin:0;"><strong style="color:var(--text);font-weight:600;">The platform follows the work.</strong> New software earns its place by solving a defined problem, staying reviewable, and leaving your business in control.</p>
+          <div class="offer-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></div>
+          <h2>Practical Tools &amp; Knowledge Systems</h2>
+          <p>When cleanup is not enough, I can build a focused browser tool, dashboard, searchable company knowledge base, mobile companion, or custom software around the actual job.</p>
+          <p class="offer-note"><strong>The platform follows the work.</strong> New software earns its place by solving a defined problem, staying reviewable, and leaving your business in control.</p>
         </div>
       </div>
 
-      <section class="reveal tender-proof-callout">
-        <div>
-          <p class="eyebrow">GIS proof of work</p>
-          <h2>Thirteen years from field maps to mapping products.</h2>
-          <p>See how imperfect records, imagery, field observations, and public data became useful maps — with uncertainty and proof boundaries kept visible.</p>
-        </div>
-        <a class="btn btn-outline" href="/gis/">Explore the GIS case study</a>
-      </section>
-
-      <section class="reveal tender-proof-callout">
-        <div>
-          <p class="eyebrow">Proof of work</p>
-          <h2>See a public tender turned into a practical starting workflow.</h2>
-          <p>The Tender Starter Showcase demonstrates source-linked review, visible questions, and reusable bid-preparation structure without pretending to replace the official notice.</p>
-        </div>
-        <a class="btn btn-outline" href="/tenders/">Explore the Tender Starter Showcase</a>
-      </section>
-
-      <section class="reveal" style="margin-bottom:clamp(48px,7vw,72px);">
-        <p class="eyebrow">Why it pays</p>
-        <h2 style="font-weight:600;font-size:clamp(24px,3vw,32px);letter-spacing:-0.02em;margin:0 0 24px;max-width:24ch;text-wrap:balance;">Less friction in the system means more room for the work.</h2>
-        <div class="check-list">
-          <div class="row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><p style="margin:0;font-size:15px;"><strong style="font-weight:600;">Faster answers</strong> <span style="color:var(--text-muted);">— the current file, number, or decision is easier to find and trust.</span></p></div>
-          <div class="row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><p style="margin:0;font-size:15px;"><strong style="font-weight:600;">Fewer missed handoffs</strong> <span style="color:var(--text-muted);">— forms, files, due dates, and follow-up stay connected.</span></p></div>
-          <div class="row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><p style="margin:0;font-size:15px;"><strong style="font-weight:600;">Less owner bottleneck</strong> <span style="color:var(--text-muted);">— repeated decisions stop living only in one person's memory.</span></p></div>
-          <div class="row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><p style="margin:0;font-size:15px;"><strong style="font-weight:600;">Less duplicate entry</strong> <span style="color:var(--text-muted);">— the same information stops being copied between disconnected tools.</span></p></div>
-          <div class="row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><p style="margin:0;font-size:15px;"><strong style="font-weight:600;">Clearer delegation</strong> <span style="color:var(--text-muted);">— people can see the expected process and the source behind it.</span></p></div>
-          <div class="row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><p style="margin:0;font-size:15px;"><strong style="font-weight:600;">Less rework</strong> <span style="color:var(--text-muted);">— the next task starts from reviewed knowledge instead of a blank page.</span></p></div>
-        </div>
-      </section>
-
-      <section class="reveal" style="margin-bottom:clamp(48px,7vw,72px);">
+      <section class="reveal page-block scope-chips">
         <p class="eyebrow">Problems I take on</p>
         <div class="chip-row">
           <span class="chip">Spreadsheet &amp; data cleanup</span>
@@ -1180,19 +1238,54 @@ private func servicesMain() -> Node<HTML.BodyContext> {
         </div>
       </section>
 
-      <section class="reveal bento-tint split-services" style="padding:clamp(28px,4.5vw,52px);">
-        <div>
-          <h2 style="font-weight:600;font-size:clamp(24px,3vw,32px);letter-spacing:-0.02em;margin:0 0 20px;">How engagements start</h2>
-          <div style="display:flex;flex-direction:column;gap:16px;">
-            <div class="step"><span class="num">01</span><p style="margin:0;font-size:15.5px;"><strong style="font-weight:600;">Show me the problem.</strong> <span style="color:var(--text-muted);">Start with the workarounds, files, screens, and repeated frustrations — not a software shopping list.</span></p></div>
-            <div class="step"><span class="num">02</span><p style="margin:0;font-size:15.5px;"><strong style="font-weight:600;">Map the real system.</strong> <span style="color:var(--text-muted);">I trace how the work moves and identify the smallest useful improvement.</span></p></div>
-            <div class="step"><span class="num">03</span><p style="margin:0;font-size:15.5px;"><strong style="font-weight:600;">Implement and hand it back.</strong> <span style="color:var(--text-muted);">Fixed scope where possible, documented clearly, with human review for decisions that carry real cost.</span></p></div>
-          </div>
+      <section class="reveal page-block">
+        <div class="section-head">
+          <p class="eyebrow">Why it pays</p>
+          <h2 class="section-title">Less friction in the system means more room for the work.</h2>
         </div>
-        <div style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:14px;">
-          <p style="font-size:16px;font-weight:500;margin:0;">Have a technical mess you keep working around?</p>
+        <div class="check-list">
+          <div class="row">\(svgCheck)<p><strong>Faster answers</strong> <span>— the current file, number, or decision is easier to find and trust.</span></p></div>
+          <div class="row">\(svgCheck)<p><strong>Fewer missed handoffs</strong> <span>— forms, files, due dates, and follow-up stay connected.</span></p></div>
+          <div class="row">\(svgCheck)<p><strong>Less owner bottleneck</strong> <span>— repeated decisions stop living only in one person's memory.</span></p></div>
+          <div class="row">\(svgCheck)<p><strong>Less duplicate entry</strong> <span>— the same information stops being copied between disconnected tools.</span></p></div>
+          <div class="row">\(svgCheck)<p><strong>Clearer delegation</strong> <span>— people can see the expected process and the source behind it.</span></p></div>
+          <div class="row">\(svgCheck)<p><strong>Less rework</strong> <span>— the next task starts from reviewed knowledge instead of a blank page.</span></p></div>
+        </div>
+      </section>
+
+      <div class="proof-grid">
+        <section class="reveal tender-proof-callout">
+          <div>
+            <p class="eyebrow">GIS proof of work</p>
+            <h2>Thirteen years from field maps to mapping products.</h2>
+            <p>See how imperfect records, imagery, field observations, and public data became useful maps — with uncertainty and proof boundaries kept visible.</p>
+          </div>
+          <a class="btn btn-outline" href="/gis/">Explore the GIS case study</a>
+        </section>
+
+        <section class="reveal tender-proof-callout">
+          <div>
+            <p class="eyebrow">Proof of work</p>
+            <h2>See a public tender turned into a practical starting workflow.</h2>
+            <p>The Tender Starter Showcase demonstrates source-linked review, visible questions, and reusable bid-preparation structure without pretending to replace the official notice.</p>
+          </div>
+          <a class="btn btn-outline" href="/tenders/">Explore the Tender Starter Showcase</a>
+        </section>
+      </div>
+
+      <section class="reveal bento-tint split-services band">
+        <div>
+          <h2 class="band-title">How engagements start</h2>
+          <ol class="step-list">
+            <li class="step"><span class="num">01</span><p><strong>Show me the problem.</strong> <span>Start with the workarounds, files, screens, and repeated frustrations — not a software shopping list.</span></p></li>
+            <li class="step"><span class="num">02</span><p><strong>Map the real system.</strong> <span>I trace how the work moves and identify the smallest useful improvement.</span></p></li>
+            <li class="step"><span class="num">03</span><p><strong>Implement and hand it back.</strong> <span>Fixed scope where possible, documented clearly, with human review for decisions that carry real cost.</span></p></li>
+          </ol>
+        </div>
+        <div class="band-actions band-actions-panel">
+          <p class="band-prompt">Have a technical mess you keep working around?</p>
           <a class="btn btn-gold" href="mailto:hello@kinnokilabs.com">hello@kinnokilabs.com</a>
-          <p style="font-size:13.5px;color:var(--text-muted);margin:0;">You do not need to know what kind of software you need. Plain email; no call required.</p>
+          <p class="band-note">You do not need to know what kind of software you need. Plain email; no call required.</p>
         </div>
       </section>
     </main>
@@ -1373,42 +1466,45 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
 
 private func aboutMain() -> Node<HTML.BodyContext> {
     .raw("""
-    <main class="site-main" style="max-width:1120px;margin:0 auto;padding:clamp(48px,7vw,80px) clamp(16px,4vw,32px) 24px;">
-      <div style="max-width:720px;">
+    <main class="site-main page">
+      <header class="page-head">
         <p class="eyebrow">About</p>
-        <h1 style="font-weight:650;font-size:clamp(34px,4.5vw,52px);line-height:1.08;letter-spacing:-0.025em;margin:0 0 16px;">A solo studio with dirt on its boots.</h1>
-        <p style="font-size:17px;color:var(--text-muted);margin:0 0 10px;text-wrap:pretty;">I'm Dan Fakkeldy. <strong style="color:var(--text);font-weight:600;">KinNoKi Labs</strong> is my one-person studio, solving messy technical and operational problems from Cape Breton, Nova Scotia — across documents, data, websites, automation, and custom software.</p>
-        <p style="font-size:17px;color:var(--text-muted);margin:0 0 44px;text-wrap:pretty;">The Apple apps are visible proof of that work, not the boundary of it. The same approach runs through everything: understand the real work, find the painful handoff, and make the smallest useful improvement.</p>
-      </div>
+        <h1 class="page-title">A solo studio with dirt on its boots.</h1>
+        <p class="page-lede">I'm Dan Fakkeldy. <strong>KinNoKi Labs</strong> is my one-person studio, solving messy technical and operational problems from Cape Breton, Nova Scotia — across documents, data, websites, automation, and custom software.</p>
+        <p class="page-lede">The Apple apps are visible proof of that work, not the boundary of it. The same approach runs through everything: understand the real work, find the painful handoff, and make the smallest useful improvement.</p>
+      </header>
 
       <div class="reveal about-grid">
         <div class="about-card">
-          <h2 style="font-weight:600;font-size:17px;letter-spacing:-0.01em;margin:0 0 6px;">Problem-first</h2>
-          <p style="font-size:14.5px;line-height:1.55;color:var(--text-muted);margin:0;">Understand the real work and the painful handoff before choosing a tool or platform.</p>
+          <h2>Problem-first</h2>
+          <p>Understand the real work and the painful handoff before choosing a tool or platform.</p>
         </div>
         <div class="about-card">
-          <h2 style="font-weight:600;font-size:17px;letter-spacing:-0.01em;margin:0 0 6px;">Broad technical range</h2>
-          <p style="font-size:14.5px;line-height:1.55;color:var(--text-muted);margin:0;">Repair what exists, connect the right pieces, and build something new only when the problem justifies it.</p>
+          <h2>Broad technical range</h2>
+          <p>Repair what exists, connect the right pieces, and build something new only when the problem justifies it.</p>
         </div>
         <div class="about-card">
-          <h2 style="font-weight:600;font-size:17px;letter-spacing:-0.01em;margin:0 0 6px;">Reviewable systems</h2>
-          <p style="font-size:14.5px;line-height:1.55;color:var(--text-muted);margin:0;">Small systems that show where every answer came from — not black boxes — especially when decisions carry real cost.</p>
+          <h2>Reviewable systems</h2>
+          <p>Small systems that show where every answer came from — not black boxes — especially when decisions carry real cost.</p>
         </div>
         <div class="about-card">
-          <h2 style="font-weight:600;font-size:17px;letter-spacing:-0.01em;margin:0 0 6px;">Open source</h2>
-          <p style="font-size:14.5px;line-height:1.55;color:var(--text-muted);margin:0;">I share what I learn. The apps and several supporting tools are public on <a class="link-quiet" href="https://github.com/dfakkeldy" target="_blank" rel="noopener">GitHub</a>.</p>
+          <h2>Open source</h2>
+          <p>I share what I learn. The apps and several supporting tools are public on <a class="link-quiet" href="https://github.com/dfakkeldy" target="_blank" rel="noopener">GitHub</a>.</p>
         </div>
       </div>
 
-      <section class="reveal" style="max-width:720px;margin-bottom:clamp(48px,7vw,72px);">
+      <section class="reveal page-block story">
         <p class="eyebrow">Background</p>
-        <p style="font-size:clamp(17px,2.1vw,19px);line-height:1.65;margin:0 0 16px;text-wrap:pretty;">Before KinNoKi Labs, I spent years in bid rooms — estimates, tender paperwork, and the documents that follow a job around. These days I deliver a rural mail route, which is where several of these apps were born.</p>
-        <p style="font-size:clamp(17px,2.1vw,19px);line-height:1.65;color:var(--text-muted);margin:0;text-wrap:pretty;">That mix keeps the work honest. I know what it costs to quote work against a deadline with the numbers scattered across old jobs, and I know what a tool has to survive to earn its place on a busy day: spotty connectivity, repeated paperwork, and no patience for software that gets in the way.</p>
+        <p class="story-lead">Before KinNoKi Labs, I spent years in bid rooms — estimates, tender paperwork, and the documents that follow a job around. These days I deliver a rural mail route, which is where several of these apps were born.</p>
+        <p class="story-body">That mix keeps the work honest. I know what it costs to quote work against a deadline with the numbers scattered across old jobs, and I know what a tool has to survive to earn its place on a busy day: spotty connectivity, repeated paperwork, and no patience for software that gets in the way.</p>
       </section>
 
       <section class="reveal contact-band">
-        <p style="font-size:clamp(17px,2.2vw,20px);font-weight:500;margin:0;">Want to work together, or just say hello?</p>
-        <a class="btn btn-gold" href="mailto:hello@kinnokilabs.com">hello@kinnokilabs.com</a>
+        <p class="contact-band-text">Want to work together, or just say hello?</p>
+        <div class="contact-band-actions">
+          <a class="row-link" href="/services">See services \(svgArrow)</a>
+          <a class="btn btn-gold" href="mailto:hello@kinnokilabs.com">hello@kinnokilabs.com</a>
+        </div>
       </section>
     </main>
     """)
@@ -1416,17 +1512,19 @@ private func aboutMain() -> Node<HTML.BodyContext> {
 
 private func supportMain() -> Node<HTML.BodyContext> {
     .raw("""
-    <main class="site-main article-page" style="max-width:680px;min-height:40vh;">
-      <p class="eyebrow">Support</p>
-      <h1 style="font-weight:650;font-size:clamp(30px,4vw,42px);line-height:1.12;letter-spacing:-0.025em;margin:0 0 12px;">Stuck on something?</h1>
-      <p style="font-size:16.5px;line-height:1.7;color:var(--text-muted);margin:0 0 28px;">Pick the app you need help with, or email for anything else.</p>
-      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;">
-        <a class="support-row" href="/echo-help">Echo <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-quaternary);"><path d="m9 18 6-6-6-6"></path></svg></a>
-        <a class="support-row" href="/macromark-help">MacroMark <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-quaternary);"><path d="m9 18 6-6-6-6"></path></svg></a>
-        <a class="support-row" href="/nsmarksthespot-help">NS Marks The Spot <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-quaternary);"><path d="m9 18 6-6-6-6"></path></svg></a>
-        <a class="support-row" href="/visualtimer-help">Turn Timer <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-quaternary);"><path d="m9 18 6-6-6-6"></path></svg></a>
+    <main class="site-main page page-narrow">
+      <header class="page-head">
+        <p class="eyebrow">Support</p>
+        <h1 class="page-title">Stuck on something?</h1>
+        <p class="page-lede">Pick the app you need help with, or email for anything else.</p>
+      </header>
+      <div class="row-list">
+        <a class="support-row" href="/echo-help"><img class="app-icon support-row-icon" src="/images/apps/echo.png" alt="" width="36" height="36"><span>Echo</span>\(svgRowChevron)</a>
+        <a class="support-row" href="/macromark-help"><img class="app-icon support-row-icon" src="/images/apps/macromark.png" alt="" width="36" height="36"><span>MacroMark</span>\(svgRowChevron)</a>
+        <a class="support-row" href="/nsmarksthespot-help"><img class="app-icon support-row-icon" src="/images/apps/nsmarksthespot.svg" alt="" width="36" height="36"><span>NS Marks The Spot</span>\(svgRowChevron)</a>
+        <a class="support-row" href="/visualtimer-help"><img class="app-icon support-row-icon" src="/images/apps/turntimer.png" alt="" width="36" height="36"><span>Turn Timer</span>\(svgRowChevron)</a>
       </div>
-      <p style="font-size:16px;line-height:1.7;color:var(--text-muted);margin:0;">For general inquiries, business opportunities, or feedback: <a class="link-quiet" href="mailto:hello@kinnokilabs.com">hello@kinnokilabs.com</a>.</p>
+      <p class="page-footnote">For general inquiries, business opportunities, or feedback: <a class="link-quiet" href="mailto:hello@kinnokilabs.com">hello@kinnokilabs.com</a>.</p>
     </main>
     """)
 }
@@ -1454,9 +1552,9 @@ private func learnMain() -> Node<HTML.BodyContext> {
 
       <section class="reveal learn-section">
         <div class="contact-band">
-          <div style="max-width:46rem;">
+          <div class="contact-band-copy">
             <p class="learn-card-label">Echo Listening Room</p>
-            <p style="color:var(--text-muted);font-size:1rem;line-height:1.65;margin:0;">Stream a sample learning audiobook right here, with the same read-along captions Echo uses. No install, no signup.</p>
+            <p class="contact-band-lede">Stream a sample learning audiobook right here, with the same read-along captions Echo uses. No install, no signup.</p>
           </div>
           <a class="btn btn-gold" href="/listen/">Open the Listening Room</a>
         </div>
@@ -1478,6 +1576,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
               <p>A gentle tour of how a real iOS app is put together, taught through Echo's public source.</p>
             </div>
             <div class="learn-book-links">
+              <a href="/listen/?book=echo-from-the-inside">Listen</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/echo-from-the-inside" target="_blank" rel="noopener">Book folder</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/echo-from-the-inside/echo-from-the-inside.epub">EPUB</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/echo-from-the-inside/echo-from-the-inside.md" target="_blank" rel="noopener">Read</a>
@@ -1492,6 +1591,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
               <p>A plain-language guide to Apple design vocabulary and why some interfaces quietly feel better than others.</p>
             </div>
             <div class="learn-book-links">
+              <a href="/listen/?book=why-it-feels-right">Listen</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/why-it-feels-right" target="_blank" rel="noopener">Book folder</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/why-it-feels-right/why-it-feels-right.epub">EPUB</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/why-it-feels-right/why-it-feels-right.md" target="_blank" rel="noopener">Read</a>
@@ -1506,6 +1606,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
               <p>An honest beginner guide to getting a small app discovered without pretending marketing is magic.</p>
             </div>
             <div class="learn-book-links">
+              <a href="/listen/?book=findable">Listen</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/findable" target="_blank" rel="noopener">Book folder</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/findable/findable.epub">EPUB</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/findable/findable.md" target="_blank" rel="noopener">Read</a>
@@ -1519,6 +1620,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
               <p>A Western Cape Breton guide to identifying, excluding, repairing after, and safely cleaning up around squirrels and other rodents.</p>
             </div>
             <div class="learn-book-links">
+              <a href="/listen/?book=rodents-in-the-walls">Listen</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/rodents-in-the-walls" target="_blank" rel="noopener">Book folder</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/rodents-in-the-walls/rodents-in-the-walls.epub">EPUB</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/rodents-in-the-walls/rodents-in-the-walls.md" target="_blank" rel="noopener">Read</a>
@@ -1533,14 +1635,14 @@ private func learnMain() -> Node<HTML.BodyContext> {
               <p>A Cape Breton field guide to identifying what is taking your chickens, protecting the flock, and understanding the legal boundaries around wildlife.</p>
             </div>
             <div class="learn-book-links">
+              <a href="/listen/?book=chicken-predators">Listen</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/chicken-predators" target="_blank" rel="noopener">Book folder</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/chicken-predators/chicken-predators.epub">EPUB</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/chicken-predators/chicken-predators.md" target="_blank" rel="noopener">Read</a>
             </div>
           </article>
+          <a class="learn-library-tile" href="https://github.com/dfakkeldy/explainer-audiobooks" target="_blank" rel="noopener">Browse the public Explainer Audiobooks library \(svgArrow)</a>
         </div>
-
-        <p class="learn-library-link"><a class="row-link" href="https://github.com/dfakkeldy/explainer-audiobooks" target="_blank" rel="noopener">Browse the public Explainer Audiobooks library</a></p>
       </section>
 
       <section class="reveal learn-section learn-request-grid">
@@ -1574,75 +1676,81 @@ private func learnMain() -> Node<HTML.BodyContext> {
 private func echoDetailMain() -> Node<HTML.BodyContext> {
     .raw("""
     <main class="site-main">
-      <section class="band-dark" style="text-align:center;">
+      <section class="band-dark echo-hero">
         <div class="glow-top"></div>
-        <div style="position:relative;max-width:880px;margin:0 auto;padding:clamp(48px,7vw,88px) clamp(20px,5vw,32px) clamp(44px,6vw,72px);">
-          <a class="echo-back" href="/apps"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(180deg);"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>All apps</a>
-          <img src="/images/apps/echo.png" alt="Echo app icon — an infinity symbol in silver and gold" style="width:112px;height:112px;border-radius:22.37%;box-shadow:0 12px 44px rgba(201,162,75,0.28), 0 2px 10px rgba(0,0,0,0.5);display:block;margin:0 auto 26px;">
-          <h1 style="font-weight:650;font-size:clamp(38px,5.5vw,64px);line-height:1.05;letter-spacing:-0.025em;margin:0 0 12px;color:#f5f5f7;">Echo</h1>
-          <p style="font-size:clamp(17px,2.2vw,21px);font-weight:500;color:#dcc389;margin:0 0 16px;">For Every Mind — turn listening into learning.</p>
-          <p style="font-size:16.5px;line-height:1.6;color:rgba(245,245,247,0.65);max-width:560px;margin:0 auto 28px;text-wrap:pretty;">The audiobook player that helps you remember what you heard — word-perfect read-along, one-tap flashcards, and a study system built on the real science of memory.</p>
-          <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-bottom:30px;">
-            <span style="font-size:12px;font-weight:500;color:rgba(245,245,247,0.6);border:1px solid rgba(255,255,255,0.16);border-radius:999px;padding:3px 11px;">iPhone</span>
-            <span style="font-size:12px;font-weight:500;color:rgba(245,245,247,0.6);border:1px solid rgba(255,255,255,0.16);border-radius:999px;padding:3px 11px;">Apple Watch</span>
-            <span style="font-size:12px;font-weight:500;color:rgba(245,245,247,0.6);border:1px solid rgba(255,255,255,0.16);border-radius:999px;padding:3px 11px;">Mac</span>
-            <span style="font-size:12px;font-weight:500;color:rgba(245,245,247,0.6);border:1px solid rgba(255,255,255,0.16);border-radius:999px;padding:3px 11px;">CarPlay</span>
-            <span style="font-size:12px;font-weight:600;color:#dcc389;border:1px solid rgba(201,162,75,0.45);border-radius:999px;padding:3px 11px;">Open source · GPL-3.0</span>
+        <div class="echo-hero-inner">
+          <a class="echo-back" href="/apps"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>All apps</a>
+          <img class="echo-hero-icon" src="/images/apps/echo.png" alt="Echo app icon — an infinity symbol in silver and gold">
+          <h1 class="echo-hero-title">Echo</h1>
+          <p class="echo-hero-tagline">For Every Mind — turn listening into learning.</p>
+          <p class="echo-hero-lede">The audiobook player that helps you remember what you heard — word-perfect read-along, one-tap flashcards, and a study system built on the real science of memory.</p>
+          <div class="echo-hero-pills">
+            <span class="echo-pill">iPhone</span>
+            <span class="echo-pill">Apple Watch</span>
+            <span class="echo-pill">Mac</span>
+            <span class="echo-pill">CarPlay</span>
+            <span class="echo-pill echo-pill-gold">Open source · GPL-3.0</span>
           </div>
-          <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:14px;">
+          <div class="echo-hero-actions">
             <a class="btn btn-gold" href="https://testflight.apple.com/join/Zu9rzg59">Join the TestFlight beta</a>
-            <a href="https://github.com/dfakkeldy/Echo" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;font-size:14.5px;font-weight:500;color:rgba(245,245,247,0.65);text-decoration:none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>View source</a>
+            <a class="echo-source-link" href="https://github.com/dfakkeldy/Echo" target="_blank" rel="noopener">\(svgGitHub)View source</a>
           </div>
         </div>
       </section>
 
-      <section class="reveal" style="max-width:1080px;margin:0 auto;padding:clamp(40px,6vw,64px) clamp(16px,4vw,32px) 0;">
+      <section class="reveal echo-gallery">
         <div class="screens-grid">
-          <figure style="margin:0;display:flex;flex-direction:column;gap:12px;">
+          <figure class="screen-figure">
             <div class="screen-frame"><img src="/images/screenshots/echo/player-dark.png" alt="Echo Now Playing screen with chapter scrubber and large transport controls"></div>
             <figcaption class="screen-caption"><strong>Now Playing.</strong> Chapter scrubbing, 30-second hops, and transport buttons you lay out yourself.</figcaption>
           </figure>
-          <figure style="margin:clamp(0px,3vw,36px) 0 0;display:flex;flex-direction:column;gap:12px;">
+          <figure class="screen-figure">
             <div class="screen-frame"><img src="/images/screenshots/echo/player-tinted.png" alt="Echo Now Playing screen tinted orange from the cover of Emotional Design"></div>
             <figcaption class="screen-caption"><strong>Tints itself to your book.</strong> The whole player picks up the cover's color — here, <em>Emotional Design</em>.</figcaption>
           </figure>
-          <figure style="margin:0;display:flex;flex-direction:column;gap:12px;">
+          <figure class="screen-figure">
             <div class="screen-frame"><img src="/images/screenshots/echo/reader.png" alt="Echo's synced reader following the narration paragraph by paragraph"></div>
             <figcaption class="screen-caption"><strong>Word-perfect read-along.</strong> The text follows the narrator; tap any paragraph to jump the audio.</figcaption>
           </figure>
         </div>
-        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(14px,2.5vw,26px);margin-top:clamp(20px,3.5vw,34px);">
-          <figure style="margin:0;display:flex;flex-direction:column;gap:12px;width:min(238px,100%);">
+        <div class="watch-row">
+          <figure class="screen-figure watch-figure">
             <div class="screen-frame watch-frame"><img src="/images/screenshots/echo/watch-dark.jpeg" alt="Echo's Apple Watch remote — play, skip, and bookmark from the wrist"></div>
             <figcaption class="screen-caption"><strong>On your wrist.</strong> The Watch remote stays ready to play, even after a long pause.</figcaption>
           </figure>
-          <figure style="margin:0;display:flex;flex-direction:column;gap:12px;width:min(238px,100%);">
+          <figure class="screen-figure watch-figure">
             <div class="screen-frame watch-frame"><img src="/images/screenshots/echo/watch-tinted.jpeg" alt="Echo's Apple Watch remote tinted from the cover of Emotional Design"></div>
             <figcaption class="screen-caption"><strong>Tinted there too.</strong> The wrist UI picks up your book's color as well.</figcaption>
           </figure>
         </div>
       </section>
 
-      <section class="reveal" style="max-width:720px;margin:0 auto;padding:clamp(48px,7vw,80px) clamp(20px,5vw,32px) 0;">
+      <section class="reveal echo-section">
+        <div class="story">
         <p class="eyebrow">Built on a mail route</p>
-        <p style="font-size:clamp(17px,2.1vw,19px);line-height:1.65;margin:0 0 16px;text-wrap:pretty;">I deliver mail — in and out of the car thirty times a shift, an aux cable, an Apple Watch, and an AuDHD brain that learns from non-fiction audiobooks in stolen, interrupted minutes. No app would loop a single chapter until it stuck, stay ready on a watch after a long pause, or remember <em>why</em> a bookmark was made three driveways ago.</p>
-        <p style="font-size:clamp(17px,2.1vw,19px);line-height:1.65;color:var(--text-muted);margin:0;text-wrap:pretty;">So I built it, nights and weekends around a full delivery route — an app that treats audiobooks the way students treat textbooks. And if you're just here to listen? You never have to make a single flashcard.</p>
-      </section>
-
-      <section class="reveal" style="max-width:880px;margin:0 auto;padding:clamp(48px,7vw,80px) clamp(20px,5vw,32px) 0;">
-        <p class="eyebrow">Read-along is where most apps stop</p>
-        <h2 style="font-weight:600;font-size:clamp(26px,3.2vw,36px);line-height:1.15;letter-spacing:-0.02em;margin:0 0 24px;text-wrap:balance;">Sync gets you to the page. Echo gets it into your head.</h2>
-        <div style="display:flex;flex-direction:column;gap:12px;">
-          <div class="ladder-row"><span class="ladder-num" style="color:var(--text-quaternary);">01</span><p style="margin:0;font-size:15.5px;"><strong style="font-weight:600;">Chapter sync — table stakes.</strong> <span style="color:var(--text-muted);">Match your audiobook to your ebook chapter by chapter. A growing crowd of apps does this; Echo does too.</span></p></div>
-          <div class="ladder-row"><span class="ladder-num">02</span><p style="margin:0;font-size:15.5px;"><strong style="font-weight:600;">Word-perfect read-along.</strong> <span style="color:var(--text-muted);">Echo follows the narrator word by word — true karaoke, aligned on-device to the real audio (WhisperKit + CoreML), not snapped to the nearest chapter.</span></p></div>
-          <div class="ladder-row ladder-row-gold"><span class="ladder-num">03</span><p style="margin:0;font-size:15.5px;"><strong style="font-weight:600;">Turn it into memory.</strong> <span style="color:var(--text-muted);">One tap makes any passage a spaced-repetition flashcard with its audio snippet attached — reviewed on iPhone, Watch, and Mac until you own it.</span></p></div>
+        <p class="story-lead">I deliver mail — in and out of the car thirty times a shift, an aux cable, an Apple Watch, and an AuDHD brain that learns from non-fiction audiobooks in stolen, interrupted minutes. No app would loop a single chapter until it stuck, stay ready on a watch after a long pause, or remember <em>why</em> a bookmark was made three driveways ago.</p>
+        <p class="story-body">So I built it, nights and weekends around a full delivery route — an app that treats audiobooks the way students treat textbooks. And if you're just here to listen? You never have to make a single flashcard.</p>
         </div>
       </section>
 
-      <section class="reveal" style="max-width:1120px;margin:0 auto;padding:clamp(48px,7vw,80px) clamp(16px,4vw,32px) 0;">
-        <p class="eyebrow">What Echo does</p>
-        <h2 style="font-weight:600;font-size:clamp(26px,3.2vw,36px);line-height:1.15;letter-spacing:-0.02em;margin:0 0 8px;">A serious study system, out of the way until you want it.</h2>
-        <p style="font-size:15px;color:var(--text-muted);margin:0 0 28px;">Everything below is in the current TestFlight beta unless marked — Echo is in open development toward 1.0.</p>
+      <section class="reveal echo-section">
+        <div class="section-head">
+          <p class="eyebrow">Read-along is where most apps stop</p>
+          <h2 class="section-title">Sync gets you to the page. Echo gets it into your head.</h2>
+        </div>
+        <ol class="ladder">
+          <li class="ladder-row ladder-row-muted"><span class="ladder-num">01</span><p><strong>Chapter sync — table stakes.</strong> <span>Match your audiobook to your ebook chapter by chapter. A growing crowd of apps does this; Echo does too.</span></p></li>
+          <li class="ladder-row"><span class="ladder-num">02</span><p><strong>Word-perfect read-along.</strong> <span>Echo follows the narrator word by word — true karaoke, aligned on-device to the real audio (WhisperKit + CoreML), not snapped to the nearest chapter.</span></p></li>
+          <li class="ladder-row ladder-row-gold"><span class="ladder-num">03</span><p><strong>Turn it into memory.</strong> <span>One tap makes any passage a spaced-repetition flashcard with its audio snippet attached — reviewed on iPhone, Watch, and Mac until you own it.</span></p></li>
+        </ol>
+      </section>
+
+      <section class="reveal echo-section">
+        <div class="section-head">
+          <p class="eyebrow">What Echo does</p>
+          <h2 class="section-title">A serious study system, out of the way until you want it.</h2>
+          <p class="section-lede">Everything below is in the current TestFlight beta unless marked — Echo is in open development toward 1.0.</p>
+        </div>
         <div class="feature-grid">
           <div class="feature-card"><h3>Smart Rewind</h3><p>Hit play and Echo has already rewound — a little after a short pause, more after hours. Interruptions stop costing you context.</p></div>
           <div class="feature-card"><h3>Chapter Looping</h3><p>Repeat one chapter until you own it — the feature Echo was born for. Or loop the exact passage between two bookmarks.</p></div>
@@ -1660,7 +1768,7 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
         </div>
       </section>
 
-      <section class="reveal" style="max-width:1120px;margin:0 auto;padding:clamp(48px,7vw,80px) clamp(16px,4vw,32px) 0;">
+      <section class="reveal echo-section echo-section-tight">
         <div class="principles-grid">
           <div class="principle-card"><h3>Radically private</h3><p>No accounts, no analytics, no tracking, no servers.</p></div>
           <div class="principle-card"><h3>Open source</h3><p>GPL-3.0, public on GitHub — the whole app.</p></div>
@@ -1670,22 +1778,25 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
         </div>
       </section>
 
-      <section class="reveal" style="max-width:880px;margin:0 auto;padding:clamp(48px,7vw,80px) clamp(20px,5vw,32px) 24px;">
+      <section class="reveal echo-section echo-section-last">
         <div class="band-dark echo-cta">
           <div class="glow-bottom"></div>
-          <div style="position:relative;">
-            <h2 style="font-weight:600;font-size:clamp(24px,3vw,32px);letter-spacing:-0.02em;margin:0 0 10px;color:#f5f5f7;">Echo is in open beta right now.</h2>
-            <p style="font-size:15.5px;color:rgba(245,245,247,0.6);margin:0 0 24px;">TestFlight builds for iPhone, Apple Watch, Mac, and CarPlay — guides, test plans, and a devlog included.</p>
-            <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px 24px;margin-bottom:28px;font-size:13.5px;">
-              <a class="echo-cta-link" href="/echo-learn">Learning guide</a>
-              <a class="echo-cta-link" href="/learn">Sample learning audiobooks</a>
-              <a class="echo-cta-link" href="/echo-focus">Focus Field Guide</a>
+          <div class="echo-cta-inner">
+            <h2 class="echo-cta-title">Echo is in open beta right now.</h2>
+            <p class="echo-cta-lede">TestFlight builds for iPhone, Apple Watch, Mac, and CarPlay — guides, test plans, and a devlog included.</p>
+            <div class="echo-cta-actions">
+              <a class="btn btn-gold" href="https://testflight.apple.com/join/Zu9rzg59">Join the TestFlight beta</a>
+              <a class="echo-source-link" href="/listen/">Listen in your browser</a>
+            </div>
+            <div class="echo-cta-links">
               <a class="echo-cta-link" href="/echo-manual">User manual</a>
+              <a class="echo-cta-link" href="/echo-learn">Learning guide</a>
+              <a class="echo-cta-link" href="/echo-focus">Focus Field Guide</a>
+              <a class="echo-cta-link" href="/echo-beta">Beta guide</a>
               <a class="echo-cta-link" href="/echo-devlog">Devlog</a>
               <a class="echo-cta-link" href="/echo-help">Help &amp; support</a>
-              <a class="echo-cta-link" href="/echo-beta">Beta guide</a>
+              <a class="echo-cta-link" href="/learn">Sample learning audiobooks</a>
             </div>
-            <a class="btn btn-gold" href="https://testflight.apple.com/join/Zu9rzg59">Join the TestFlight beta</a>
           </div>
         </div>
       </section>

@@ -20,6 +20,7 @@ export function renderToolsHub(root) {
     element('p', { text: tool.tagline, ownerDocument: doc })));
   root.append(
     element('header', { class: 'tool-shell', ownerDocument: doc },
+      element('p', { class: 'eyebrow', text: 'Tools', ownerDocument: doc }),
       element('h1', { text: 'Web tools', ownerDocument: doc }),
       element('p', { class: 'tool-lede', text: 'Small, fast utilities. They load once, work offline, and keep everything on your device.', ownerDocument: doc }),
       element('div', { class: 'tool-connectivity-status', 'data-tool-connectivity': '', ownerDocument: doc })),

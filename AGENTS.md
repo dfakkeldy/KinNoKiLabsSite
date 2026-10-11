@@ -67,6 +67,19 @@ a task branch and a PR instead.
   fully available (release-asset `.m4b` URL, duration, text blocks, alignment
   sidecar, contiguous chapters).
 
+## Design system
+
+- Marketing pages emit semantic classes only, never inline `style=""`. Layout,
+  spacing and type come from the shared components in `Resources/styles.css`:
+  `.page` / `.page-narrow` / `.page-head`, `.section`, `.band`, the card classes,
+  and the type and spacing tokens in `:root`.
+- The top nav is `primaryNavigation` in `KinNoKiTheme.swift`, and which item is
+  active on each page comes from `navSection(for:)`. Route new pages there, not
+  through per-page literals. The footer (`.footer-grid` / `.footer-list`) is the
+  site map, so add public pages to it.
+- Light-theme text tokens (`--text-muted`, `--gold-text`) are tuned for WCAG
+  AA. Never use `--text-quaternary` for text, only for icons and chevrons.
+
 ## Browser apps
 
 - `/listen` and `/fiction` share `listen.css` and `listen-core.js`. Don't
