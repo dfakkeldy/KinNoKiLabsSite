@@ -485,6 +485,8 @@ private func siteFooter() -> Node<HTML.BodyContext> {
                 footerColumn("Learn & play", [
                     ("/learn", "Learning audiobooks"),
                     ("/listen/", "Echo Listening Room"),
+                    ("/fiction/", "Fiction Listening Room"),
+                    ("/taxsale/", "Tax Sale Hub"),
                     ("/games", "Games"),
                     ("/tools", "Tools"),
                 ]),

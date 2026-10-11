@@ -54,6 +54,7 @@ struct KinNoKiLabsSite: Website {
     /// generator cannot see. Each path must have an `index.html` in Output/.
     static let staticSitemapPaths: [Path] = [
         "listen/",
+        "fiction/",
         "apps/nsmarksthespot/map/",
     ]
 }
