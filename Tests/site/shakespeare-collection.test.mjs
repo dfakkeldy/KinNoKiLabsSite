@@ -41,7 +41,7 @@ test('the collection links two real work cards with explicit availability and fo
   const pending = cards[0].match(/<dt>Pending release<\/dt><dd>([^<]+)<\/dd>/)?.[1];
   assert.equal(pending, 'Anime music video');
   assert.match(cards[1], /A Midsummer Night's Dream/);
-  assert.match(cards[1], /In progress/);
+  assert.match(cards[1], /Edition complete · Release pending/);
   assert.match(cards[1], /No public releases yet/);
   const links = [...collection.main.matchAll(/<a\b[^>]*href="([^"]+)"[^>]*>/g)].map(m => m[1]);
   assert.deepEqual(links, ['/shakespeare/merchant-of-venice/', '/shakespeare/a-midsummer-nights-dream/']);
@@ -56,8 +56,10 @@ test('work pages return to the collection and connect to the other work', () => 
   }
 });
 
-test('Midsummer remains honest in progress with no media, download or public project-repo actions', () => {
-  assert.match(midsummer.main, /This project is in progress/);
+test('Midsummer separates the completed edition from pending public releases', () => {
+  assert.match(midsummer.main, /The edition is complete/);
+  assert.match(midsummer.main, /Public release pending/);
+  assert.doesNotMatch(midsummer.html, /in progress|being made in the studio/i);
   assert.match(midsummer.main, /Book editions/);
   assert.match(midsummer.main, /Audiobook/);
   assert.match(midsummer.main, /Video/);

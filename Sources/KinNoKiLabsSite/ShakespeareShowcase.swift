@@ -22,10 +22,10 @@ func shakespeareCollectionMain() -> Node<HTML.BodyContext> {
             </dl>
           </article>
           <article class="shakespeare-work-card" aria-labelledby="midsummer-card-title">
-            <p class="eyebrow">II · In the studio</p>
+            <p class="eyebrow">II · Edition complete</p>
             <h2 id="midsummer-card-title"><a href="/shakespeare/a-midsummer-nights-dream/">A Midsummer Night's Dream <span aria-hidden="true">→</span></a></h2>
-            <p class="shakespeare-status">In progress</p>
-            <p class="shakespeare-secondary">A new Shakespeare project in the studio. Its work page will gather the editions and media as they become ready.</p>
+            <p class="shakespeare-status">Edition complete · Release pending</p>
+            <p class="shakespeare-secondary">A completed edition of Shakespeare's comedy. Its work page will gather public editions and media as they are released.</p>
             <dl class="shakespeare-formats">
               <div><dt>Available</dt><dd>No public releases yet</dd></div>
             </dl>
@@ -178,14 +178,14 @@ func shakespeareMidsummerMain() -> Node<HTML.BodyContext> {
     <main class="shakespeare-main" aria-labelledby="shakespeare-title">
       <a class="shakespeare-back-link" href="/shakespeare/"><span aria-hidden="true">←</span> Shakespeare collection</a>
       <header class="shakespeare-collection-header">
-        <p class="eyebrow">Shakespeare · In the studio</p>
+        <p class="eyebrow">Shakespeare · Edition complete</p>
         <h1 id="shakespeare-title">A Midsummer Night's Dream</h1>
         <p class="shakespeare-byline">by William Shakespeare</p>
-        <p class="shakespeare-intro">This project is in progress. Public editions, audio and other media will appear here when they are ready.</p>
+        <p class="shakespeare-intro">The edition is complete. Public editions, audio and other media will appear here when they are released.</p>
       </header>
       <section id="project-status" class="shakespeare-section" aria-labelledby="project-status-title">
-        <h2 id="project-status-title">In progress</h2>
-        <p class="shakespeare-secondary">The project is being made in the studio. Release links will be added once the work, credits and licence are ready.</p>
+        <h2 id="project-status-title">Public release pending</h2>
+        <p class="shakespeare-secondary">The completed edition is awaiting public release. Links will be added as editions and media are released.</p>
         <dl class="shakespeare-formats shakespeare-release-status">
           <div><dt>Book editions</dt><dd>Release pending</dd></div>
           <div><dt>Audiobook</dt><dd>Release pending</dd></div>
