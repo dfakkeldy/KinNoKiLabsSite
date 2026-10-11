@@ -199,7 +199,7 @@ a { color: inherit; }
 /* Long labels wrap to two centred lines instead of overflowing a phone. */
 .btn { max-width: 100%; }
 @media (max-width: 559px) {
-  .btn { height: auto; min-height: 50px; padding-block: 12px; white-space: normal; text-align: center; line-height: 1.25; }
+  .btn { height: auto; min-height: 50px; padding-block: 12px; white-space: normal; overflow-wrap: anywhere; text-align: center; line-height: 1.25; }
   .btn-md { min-height: 44px; padding-block: 10px; }
 }
 
@@ -739,6 +739,14 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
   .footer-copy .sep { display: none; }
   .footer-copy > span { display: block; }
   .footer-list a { padding: 8px 0; }
+}
+
+/* New hover motion stays still for people who ask for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  .app-card, .post-card, .echo-row, .support-row, .tool-hub-grid .tool-card, .row-link svg, .back-link svg, .echo-row-chevron, .support-row .row-chevron { transition: none; }
+  .app-card:hover, .post-card:hover, .echo-row:hover, .support-row:hover, .tool-hub-grid .tool-card:hover,
+  .row-link:hover svg, .back-link:hover svg, .echo-row:hover .echo-row-chevron, .support-row:hover .row-chevron,
+  .btn-outline:hover, .btn-outline:active { transform: none; }
 }
 
 /* ── Reveal-on-scroll (progressive enhancement) ─────── */

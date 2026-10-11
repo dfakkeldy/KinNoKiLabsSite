@@ -91,7 +91,16 @@
       el.addEventListener('click', function () { setMenuOpen(false, el.classList && el.classList.contains && el.classList.contains('menu-close')); });
     });
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && menu.classList.contains('open')) setMenuOpen(false, true);
+      if (!menu.classList.contains('open')) return;
+      if (e.key === 'Escape') { setMenuOpen(false, true); return; }
+      // Fallback for WebViews without `inert`: wrap Tab within the menu.
+      if (e.key === 'Tab' && typeof menu.querySelectorAll === 'function') {
+        var items = menu.querySelectorAll('a[href], button');
+        var first = items[0], last = items[items.length - 1];
+        if (!first || !last) return;
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); focusFirst(last); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); focusFirst(first); }
+      }
     });
   }
 
