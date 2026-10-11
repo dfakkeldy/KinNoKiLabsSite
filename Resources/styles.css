@@ -68,7 +68,7 @@
   --narrow-width: 720px;
   --gutter: clamp(16px, 4vw, 32px);
   --page-pad-top: clamp(56px, 8vw, 104px);
-  --section-gap: clamp(72px, 10vw, 128px);
+  --section-gap: clamp(64px, 9vw, 112px);
   --block-gap: clamp(40px, 6vw, 64px);
   --radius-card: 20px;
   --radius-bento: 24px;
@@ -373,7 +373,9 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 /* One vertical rhythm: every block in a page sits one --block-gap below the last. */
 .page > * + * { margin-top: var(--block-gap); }
 .page > .page-footnote { margin-top: 28px; }
-.page > .scope-chips { margin-top: 28px; }
+.page > .scope-chips { margin-top: clamp(36px, 5vw, 48px); }
+/* The featured Echo row and the other apps read as one list. */
+.page > .echo-row + .app-list { margin-top: 0; }
 
 .page-head { max-width: 760px; }
 .page-head .eyebrow { margin-bottom: 16px; }
@@ -492,6 +494,9 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 /* Button on its own row, the two quiet links side by side beneath it. */
 .flagship-actions { display: grid; grid-template-columns: auto auto; justify-content: start; gap: 16px 22px; }
 .flagship-actions .btn { grid-column: 1 / -1; justify-self: start; }
+@media (max-width: 559px) {
+  .flagship-actions { grid-template-columns: 1fr; gap: 14px; }
+}
 .flagship-visual { position: relative; background: #0a0a0c; min-height: 440px; overflow: hidden; }
 .flagship-glow { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 62% at 50% 46%, rgba(201, 162, 75, 0.17), transparent 74%); }
 /* The frame's width follows its height at the screenshot's ratio, so the
@@ -614,8 +619,9 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 @media (max-width: 759px) {
   .app-list > .app-card { grid-template-columns: 52px minmax(0, 1fr); }
   .app-list > .app-card .app-icon { grid-row: auto; width: 52px; height: 52px; }
-  .app-list > .app-card > :not(.app-icon) { grid-column: 1 / -1; }
-  .app-list > .app-card h3 { grid-column: 2; grid-row: 1; align-self: center; margin: 0; }
+  .app-list > .app-card > :not(.app-icon):not(.app-card-meta),
+  .app-list > .app-card .app-card-meta { grid-column: 1 / -1; }
+  .app-list > .app-card > h3:not(.app-icon):not(.app-card-meta) { grid-column: 2; grid-row: 1; align-self: center; margin: 0; }
   .app-list > .app-card .app-card-meta { grid-row: auto; flex-direction: row; flex-wrap: wrap; margin-top: 16px; padding: 14px 0 0; border-left: 0; border-top: 1px solid var(--separator); }
   .app-list > .app-card p:first-of-type { margin-top: 14px; }
 }
@@ -695,7 +701,7 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 .band-dark .eyebrow { color: var(--gold-300); }
 
 /* ── Footer ─────────────────────────────────────────── */
-.site-footer { border-top: 1px solid var(--separator); margin-top: var(--section-gap); }
+.site-footer { border-top: 1px solid var(--separator); margin-top: clamp(56px, 8vw, 96px); }
 .site-footer .inner { max-width: var(--max-width); margin: 0 auto; padding: clamp(48px, 6vw, 72px) var(--gutter) 36px; }
 .footer-grid { display: grid; grid-template-columns: minmax(220px, 1.4fr) repeat(4, minmax(0, 1fr)); gap: 36px clamp(20px, 3vw, 40px); margin-bottom: clamp(40px, 5vw, 56px); }
 .footer-brand { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
@@ -2676,6 +2682,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   letter-spacing: -0.02em;
   margin: 0 0 10px;
 }
+.tender-archive > h2 { margin-bottom: 20px; }
 
 /* Hero (same scale as the shared .page-head) */
 .tender-hero {
