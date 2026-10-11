@@ -1465,7 +1465,7 @@ private func aboutMain() -> Node<HTML.BodyContext> {
         <p class="eyebrow">About</p>
         <h1 class="page-title">A solo studio with dirt on its boots.</h1>
         <p class="page-lede">I'm Dan Fakkeldy. <strong>KinNoKi Labs</strong> is my one-person studio, solving messy technical and operational problems from Cape Breton, Nova Scotia — across documents, data, websites, automation, and custom software.</p>
-        <p class="page-lede"><a class="link-quiet" href="/apps">The Apple apps</a> are visible proof of that work, not the boundary of it. The same approach runs through everything: understand the real work, find the painful handoff, and make the smallest useful improvement.</p>
+        <p class="page-lede">The Apple apps are visible proof of that work, not the boundary of it. The same approach runs through everything: understand the real work, find the painful handoff, and make the smallest useful improvement.</p>
       </header>
 
       <div class="reveal about-grid">

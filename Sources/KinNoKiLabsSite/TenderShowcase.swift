@@ -207,6 +207,7 @@ private func factGrid(for record: TenderRecord) -> Node<HTML.BodyContext> {
         .div(.dt(.text("Delivery region")), .dd(.text(record.deliveryRegion))),
         .div(.dt(.text("Published")), .dd(.text(formattedDate(record.publishedAt)))),
         .div(
+            .class("tender-fact-wide"),
             .dt(.text("Closing")),
             .dd(
                 .time(
@@ -215,7 +216,8 @@ private func factGrid(for record: TenderRecord) -> Node<HTML.BodyContext> {
                 )
             )
         ),
-        // The two long-text facts span both columns so short rows stay paired.
+        // Closing and the two long-text facts span both columns, so the six
+        // short facts above them pair up evenly.
         .div(.class("tender-fact-wide"), .dt(.text("Document access")), .dd(.text(record.documentAccess))),
         .div(.class("tender-fact-wide"), .dt(.text("Addenda status")), .dd(.text(record.addendaStatus)))
     )
@@ -322,7 +324,7 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
                 .a(
                     .class("btn btn-outline tender-download"),
                     .href("/tenders/tender-starter-example.zip"),
-                    .attribute(named: "download", value: ""),
+                    .attribute(named: "download"),
                     .text("Download the example pack (ZIP)")
                 )
             ),
@@ -349,7 +351,7 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
 func tenderDetailMain(record: TenderRecord) -> Node<HTML.BodyContext> {
     .main(
         .class("tender-detail"),
-        .a(.class("back-link"), .href("/tenders/"), iconArrowBack(), .text("Tender Starter Showcase")),
+        .a(.class("back-link"), .href("/tenders/"), iconArrowBack(), .text("Back to Tender Starter Showcase")),
         .p(.class("eyebrow"), .text("Tender Starter Showcase")),
         .h1(.text(record.item.title)),
         .div(
