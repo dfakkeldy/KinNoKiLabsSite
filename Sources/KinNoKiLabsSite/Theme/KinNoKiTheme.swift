@@ -100,6 +100,7 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
         let active = navSection(for: page.path.string)
         let isTaxSale = page.path.string == "taxsale"
         let isGIS = page.path.string == "gis"
+        let isShakespeare = page.path.string == "shakespeare" || page.path.string.hasPrefix("shakespeare/")
         let toolsHead = page.path.string == "tools" || page.path.string.hasPrefix("tools/")
         switch page.path.string {
         case "games":             main = gamesMain(page: "hub")
@@ -123,6 +124,11 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
         case "tools/passphrase":     main = toolsMain(page: "passphrase")
         case "services":          main = servicesMain()
         case "gis":               main = gisCaseStudyMain()
+        case "shakespeare":       main = shakespeareCollectionMain()
+        case "shakespeare/merchant-of-venice":
+            main = shakespeareMerchantMain()
+        case "shakespeare/a-midsummer-nights-dream":
+            main = shakespeareMidsummerMain()
         case "learn":             main = learnMain()
         case "taxsale":           main = taxSaleHubMain()
         case "about":             main = aboutMain()
@@ -133,7 +139,7 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
             .lang(context.site.language),
             siteHead(for: page, context: context, toolsHead: toolsHead),
             .body(
-                .class(isTaxSale ? "page-page page-tax-sale" : isGIS ? "page-page page-gis" : "page-page"),
+                .class(isTaxSale ? "page-page page-tax-sale" : isGIS ? "page-page page-gis" : isShakespeare ? "page-page page-shakespeare" : "page-page"),
                 siteHeader(active: active),
                 main,
                 siteFooter()

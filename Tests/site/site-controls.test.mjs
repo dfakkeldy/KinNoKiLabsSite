@@ -39,14 +39,15 @@ function legacyNodeList(items) {
   return collection;
 }
 
-function runSiteScript(savedFont) {
+function runSiteScript(savedFont, blockedStorage = false) {
   const fontButtons = [button(), button(), button()];
+  const themeButtons = [button(), button()];
   const body = { classList: classList() };
   const rootAttributes = new Map([['data-theme', 'dark']]);
   const storage = new Map([['kinnoki-dyslexic', savedFont ? 'true' : 'false']]);
   const localStorage = {
-    getItem(key) { return storage.get(key) ?? null; },
-    setItem(key, value) { storage.set(key, String(value)); },
+    getItem(key) { if (blockedStorage) throw new Error('Storage blocked'); return storage.get(key) ?? null; },
+    setItem(key, value) { if (blockedStorage) throw new Error('Storage blocked'); storage.set(key, String(value)); },
   };
   const document = {
     body,
@@ -58,6 +59,7 @@ function runSiteScript(savedFont) {
     querySelector() { return null; },
     querySelectorAll(selector) {
       if (selector === '.font-toggle') return fontButtons;
+      if (selector === '.theme-toggle') return themeButtons;
       return [];
     },
     addEventListener() {},
@@ -65,7 +67,7 @@ function runSiteScript(savedFont) {
   const window = { matchMedia: () => ({ matches: true }) };
 
   vm.runInNewContext(siteScript, { document, window, localStorage }, { filename: 'site.js' });
-  return { body, fontButtons, storage };
+  return { body, fontButtons, themeButtons, storage, rootAttributes };
 }
 
 test('saved OpenDyslexic state and every duplicate toggle stay synchronized', () => {
@@ -212,4 +214,16 @@ test('static and generated font controls start with deterministic pressed state'
     assert.ok(tags.length > 0, `${name} must render at least one font toggle`);
     assert.ok(tags.every((tag) => tag.includes('aria-pressed="false"')), `${name} font toggles must start false`);
   }
+});
+
+
+test('blocked storage still permits theme and font controls without losing handlers', () => {
+  const { body, fontButtons, themeButtons, rootAttributes } = runSiteScript(false, true);
+  assert.equal(body.classList.contains('font-opendyslexic'), false);
+  assert.doesNotThrow(() => fontButtons[2].click());
+  assert.equal(body.classList.contains('font-opendyslexic'), true);
+  assert.deepEqual(fontButtons.map((item) => item.getAttribute('aria-pressed')), ['true', 'true', 'true']);
+  assert.doesNotThrow(() => themeButtons[0].click());
+  assert.equal(rootAttributes.get('data-theme'), 'light');
+  assert.deepEqual(themeButtons.map((item) => item.getAttribute('aria-pressed')), ['false', 'false']);
 });
