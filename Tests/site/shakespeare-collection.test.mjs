@@ -76,7 +76,8 @@ test('all pages retain the shared controls, focus enhancement and unambiguous ID
     assert.match(html, /class="site-footer"/);
     assert.match(html, /class="theme-toggle"/);
     assert.match(html, /class="font-toggle"/);
-    assert.match(html, /src="\/shakespeare\.js" defer/);
+    assert.match(html, /src="\/shakespeare\.js\?v=20261012-shakespeare-film" defer/);
+    assert.match(html, /href="\/styles\.css\?v=20261012-shakespeare-film"/);
     assert.match(html, /<main[^>]*aria-labelledby="shakespeare-title"/);
     const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(m => m[1]);
     assert.equal(new Set(ids).size, ids.length, `${route} IDs must be unique`);

@@ -137,7 +137,7 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
         }
         return HTML(
             .lang(context.site.language),
-            siteHead(for: page, context: context, toolsHead: toolsHead),
+            siteHead(for: page, context: context, toolsHead: toolsHead, shakespeareHead: isShakespeare),
             .body(
                 .class(isTaxSale ? "page-page page-tax-sale" : isGIS ? "page-page page-gis" : isShakespeare ? "page-page page-shakespeare" : "page-page"),
                 siteHeader(active: active),
@@ -200,6 +200,7 @@ private func siteHead<L: Location>(
     context: PublishingContext<KinNoKiLabsSite>,
     titleOverride: String? = nil,
     toolsHead: Bool = false,
+    shakespeareHead: Bool = false,
     isNotFound: Bool = false
 ) -> Node<HTML.DocumentContext> {
     let site = context.site
@@ -248,7 +249,7 @@ private func siteHead<L: Location>(
                 .content("#000000")
             )
         ),
-        .stylesheet("/styles.css"),
+        .stylesheet(shakespeareHead ? "/styles.css?v=20261012-shakespeare-film" : "/styles.css"),
         .element(named: "script", nodes: [
             .attribute(named: "src", value: "/site.js?v=20260719"),
             // Non-empty value: Plot omits empty-valued attributes, and without
