@@ -55,8 +55,8 @@
     },
     {
       "id": "merchant-portia",
-      "description": "Word Is Bond film frame 2736 at 24 fps",
-      "sourceSHA256": "a0da754350eb627a3d7140349955787aef68597415e2941aa4e7c70e593c48fa",
+      "description": "Word Is Bond film frame 2592 at 24 fps: Portia at Belmont",
+      "sourceSHA256": "c980bd963109f1514f6a7eb74172121eabde8655f0d2c7da61411c2e9918aea7",
       "sourceDimensions": [
         1920,
         1080
@@ -66,15 +66,15 @@
           "file": "merchant-portia-640.webp",
           "width": 640,
           "height": 360,
-          "sizeBytes": 17104,
-          "sha256": "c21bbf9dab7a651f6168593eb736def26bb7e1fdf3a22faf044f89b3b69fabde"
+          "sizeBytes": 12680,
+          "sha256": "ebdd5a3c3c6520b2a4f82ff8028f5e78264b77f90618dba08c119afa8ef14602"
         },
         {
           "file": "merchant-portia-1280.webp",
           "width": 1280,
           "height": 720,
-          "sizeBytes": 40218,
-          "sha256": "cd3ffc1f11b116db8f81fb606342140b8f435a61efb05257aa4e1fea4c747262"
+          "sizeBytes": 31886,
+          "sha256": "3c02a4041a08bd305b0bb214c722b4d0bd6be0b7fee531486af968cbcdb18148"
         }
       ]
     }
