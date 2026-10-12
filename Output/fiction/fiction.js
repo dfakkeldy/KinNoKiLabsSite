@@ -138,7 +138,7 @@
 
   function renderBook() {
     document.title = book.title + ' — Fiction Listening Room — KinNoKi Labs';
-    els.bookForm.textContent = 'Original fiction · ' + book.form + ' · ' + book.genre;
+    els.bookForm.textContent = (book.collectionLabel || 'Original fiction') + ' · ' + book.form + ' · ' + book.genre;
     els.bookTitle.textContent = book.title;
     if (book.subtitle) { els.bookSubtitle.textContent = book.subtitle; els.bookSubtitle.hidden = false; }
     els.bookByline.textContent = bylineParts(book);
@@ -251,8 +251,8 @@
   function renderShelf(books) {
     var streaming = books.filter(isPlayable).length;
     els.shelfSub.textContent = streaming > 0
-      ? (streaming === 1 ? 'One novel is streaming now; the rest are in the works.' :
-         streaming + ' novels are streaming now; the rest are in the works.') +
+      ? (streaming === 1 ? 'One book is streaming now; the rest are in the works.' :
+         streaming + ' books are streaming now; the rest are in the works.') +
         ' Every finished title lands here first, free.'
       : 'Nothing is narrated yet — every finished title lands here first, free.';
     books.forEach(function (candidate) {

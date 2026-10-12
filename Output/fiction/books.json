@@ -830,6 +830,340 @@
         "status": "pending"
       },
       "links": {}
+    },
+    {
+      "author": "William Shakespeare",
+      "collectionLabel": "Shakespeare adaptation",
+      "genre": "Shakespeare",
+      "featured": false,
+      "coverWidth": 1024,
+      "coverHeight": 1536,
+      "estimatedHours": 2.3,
+      "production": {
+        "state": "first-listen",
+        "label": "Streaming — first listen"
+      },
+      "audio": {
+        "status": "available",
+        "url": "https://github.com/dfakkeldy/explainer-audiobooks/releases/download/classic-merchant-of-venice-play-20261004T050000Z/merchant-of-venice-play.m4b",
+        "mimeType": "audio/mp4"
+      },
+      "chapters": [
+        {
+          "number": 1,
+          "title": "Act I — Scene I. Venice. A street.",
+          "start": 0,
+          "end": 534.065
+        },
+        {
+          "number": 2,
+          "title": "Act I — Scene II: Belmont. A room in PORTIA'S house.",
+          "start": 534.065,
+          "end": 950.825
+        },
+        {
+          "number": 3,
+          "title": "Act I — Scene III. Venice. A public place.",
+          "start": 950.825,
+          "end": 1544.425
+        },
+        {
+          "number": 4,
+          "title": "Act II — Scene I. Belmont. A room in PORTIA'S house.",
+          "start": 1544.425,
+          "end": 1686.925
+        },
+        {
+          "number": 5,
+          "title": "Act II — Scene II. Venice. A street.",
+          "start": 1686.925,
+          "end": 2384.74
+        },
+        {
+          "number": 6,
+          "title": "Act II — Scene III. The same. A room in SHYLOCK'S house.",
+          "start": 2384.74,
+          "end": 2459.94
+        },
+        {
+          "number": 7,
+          "title": "Act II — Scene IV. The same. A street.",
+          "start": 2459.94,
+          "end": 2623.335
+        },
+        {
+          "number": 8,
+          "title": "Act II — Scene V. The same. Before SHYLOCK'S house.",
+          "start": 2623.335,
+          "end": 2822.155
+        },
+        {
+          "number": 9,
+          "title": "Act II — Scene VI. The same.",
+          "start": 2822.155,
+          "end": 3082.22
+        },
+        {
+          "number": 10,
+          "title": "Act II — Scene VII. Belmont. A room in PORTIA'S house.",
+          "start": 3082.22,
+          "end": 3295.215
+        },
+        {
+          "number": 11,
+          "title": "Act II — Scene VIII. Venice. A street.",
+          "start": 3295.215,
+          "end": 3466.23
+        },
+        {
+          "number": 12,
+          "title": "Act II — Scene IX. Belmont. A room in PORTIA'S house.",
+          "start": 3466.23,
+          "end": 3786.385
+        },
+        {
+          "number": 13,
+          "title": "Act III — Scene I. Venice. A street.",
+          "start": 3786.385,
+          "end": 4242.41
+        },
+        {
+          "number": 14,
+          "title": "Act III — Scene II. Belmont. A room in PORTIA'S house.",
+          "start": 4242.41,
+          "end": 5138.36
+        },
+        {
+          "number": 15,
+          "title": "Act III — Scene III. Venice. A street.",
+          "start": 5138.36,
+          "end": 5273.235
+        },
+        {
+          "number": 16,
+          "title": "Act III — Scene IV. Belmont. A room in PORTIA'S house.",
+          "start": 5273.235,
+          "end": 5499.565
+        },
+        {
+          "number": 17,
+          "title": "Act III — Scene V. The same. A garden.",
+          "start": 5499.565,
+          "end": 5803.685
+        },
+        {
+          "number": 18,
+          "title": "Act IV — Scene I. Venice. A court of justice.",
+          "start": 5803.685,
+          "end": 7279.115
+        },
+        {
+          "number": 19,
+          "title": "Act IV — Scene II. The same. A street.",
+          "start": 7279.115,
+          "end": 7362.045
+        },
+        {
+          "number": 20,
+          "title": "Act V — Scene I. Belmont. Avenue to PORTIA'S house.",
+          "start": 7362.045,
+          "end": 8354.218
+        }
+      ],
+      "links": {
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/4bf38dd2b67ffb205344e4331b6dd78fc2668fb1/books/merchant-of-venice-play/merchant-of-venice-play.md",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/4bf38dd2b67ffb205344e4331b6dd78fc2668fb1/books/merchant-of-venice-play/merchant-of-venice-play.epub",
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/4bf38dd2b67ffb205344e4331b6dd78fc2668fb1/books/merchant-of-venice-play"
+      },
+      "slug": "merchant-of-venice-play",
+      "title": "The Merchant of Venice — The Play",
+      "subtitle": "A modern-English play with the original acts, scenes and character voices.",
+      "form": "Play",
+      "hook": "A loan, a bond and a courtroom reckoning. Shakespeare’s story of mercy, prejudice and obligation in modern English.",
+      "cover": "books/merchant-of-venice-play/cover.png",
+      "coverAlt": "The Merchant of Venice, modern-English play: Shylock portrait cover",
+      "wordCount": 20569,
+      "excerpt": "Honestly, I don't know why I'm so sad. It wears me out. You say it wears on you. But how I caught it, found it, came by it; what it's made of, where it comes from—I still can't say.",
+      "durationSeconds": 8354.218667,
+      "text": {
+        "blocks": "books/merchant-of-venice-play/blocks.json"
+      },
+      "alignment": {
+        "sidecar": "books/merchant-of-venice-play/alignment.json",
+        "hasWordTimings": true
+      },
+      "source": {
+        "commit": "4bf38dd2b67ffb205344e4331b6dd78fc2668fb1",
+        "publicationSHA256": "bb4fc2b6b012d5773365fd365885e87a75274483570d66c498bc75a3c323bf85"
+      },
+      "editionNote": "Public first listen — modern-English adaptation prepared with OpenAI Codex for Dan Fakkeldy. Narration uses Echo/Kokoro synthetic voices. Human reading and listening reviews remain pending. The book folder contains the credits and separate text, cover and recording reuse notices."
+    },
+    {
+      "author": "William Shakespeare",
+      "collectionLabel": "Shakespeare adaptation",
+      "genre": "Shakespeare",
+      "featured": false,
+      "coverWidth": 1024,
+      "coverHeight": 1536,
+      "estimatedHours": 2.1,
+      "production": {
+        "state": "first-listen",
+        "label": "Streaming — first listen"
+      },
+      "audio": {
+        "status": "available",
+        "url": "https://github.com/dfakkeldy/explainer-audiobooks/releases/download/classic-merchant-of-venice-novel-20261004T050000Z/merchant-of-venice-novel.m4b",
+        "mimeType": "audio/mp4"
+      },
+      "chapters": [
+        {
+          "number": 1,
+          "title": "A Sad Part",
+          "start": 0,
+          "end": 510.13
+        },
+        {
+          "number": 2,
+          "title": "A Living Daughter’s Will",
+          "start": 510.13,
+          "end": 877.515
+        },
+        {
+          "number": 3,
+          "title": "A Pound of Flesh",
+          "start": 877.515,
+          "end": 1403.025
+        },
+        {
+          "number": 4,
+          "title": "The Prince’s Oath",
+          "start": 1403.025,
+          "end": 1539.915
+        },
+        {
+          "number": 5,
+          "title": "Conscience and the Devil",
+          "start": 1539.915,
+          "end": 2150.92
+        },
+        {
+          "number": 6,
+          "title": "A Secret Letter",
+          "start": 2150.92,
+          "end": 2224.275
+        },
+        {
+          "number": 7,
+          "title": "The Torchbearer",
+          "start": 2224.275,
+          "end": 2367.92
+        },
+        {
+          "number": 8,
+          "title": "The House’s Ears",
+          "start": 2367.92,
+          "end": 2569.315
+        },
+        {
+          "number": 9,
+          "title": "The Flight",
+          "start": 2569.315,
+          "end": 2809.34
+        },
+        {
+          "number": 10,
+          "title": "All That Glitters",
+          "start": 2809.34,
+          "end": 3011.87
+        },
+        {
+          "number": 11,
+          "title": "News at the Rialto",
+          "start": 3011.87,
+          "end": 3164.83
+        },
+        {
+          "number": 12,
+          "title": "As Much as He Deserves",
+          "start": 3164.83,
+          "end": 3465.645
+        },
+        {
+          "number": 13,
+          "title": "The Lesson of Revenge",
+          "start": 3465.645,
+          "end": 3872.295
+        },
+        {
+          "number": 14,
+          "title": "The Lead Chest",
+          "start": 3872.295,
+          "end": 4686.82
+        },
+        {
+          "number": 15,
+          "title": "The Course of Law",
+          "start": 4686.82,
+          "end": 4814.65
+        },
+        {
+          "number": 16,
+          "title": "Twenty Miles",
+          "start": 4814.65,
+          "end": 5031.61
+        },
+        {
+          "number": 17,
+          "title": "The Price of Pork",
+          "start": 5031.61,
+          "end": 5291.99
+        },
+        {
+          "number": 18,
+          "title": "Mercy and Justice",
+          "start": 5291.99,
+          "end": 6611.42
+        },
+        {
+          "number": 19,
+          "title": "The Second Ring",
+          "start": 6611.42,
+          "end": 6695.205
+        },
+        {
+          "number": 20,
+          "title": "On a Night Like This",
+          "start": 6695.205,
+          "end": 7577.557
+        }
+      ],
+      "links": {
+        "read": "https://github.com/dfakkeldy/explainer-audiobooks/blob/4bf38dd2b67ffb205344e4331b6dd78fc2668fb1/books/merchant-of-venice-novel/merchant-of-venice-novel.md",
+        "epub": "https://github.com/dfakkeldy/explainer-audiobooks/raw/4bf38dd2b67ffb205344e4331b6dd78fc2668fb1/books/merchant-of-venice-novel/merchant-of-venice-novel.epub",
+        "folder": "https://github.com/dfakkeldy/explainer-audiobooks/tree/4bf38dd2b67ffb205344e4331b6dd78fc2668fb1/books/merchant-of-venice-novel"
+      },
+      "slug": "merchant-of-venice-novel",
+      "title": "The Merchant of Venice — The Novel",
+      "subtitle": "A modern-English prose adaptation of Shakespeare’s play.",
+      "form": "Novel",
+      "hook": "A loan, a bond and a courtroom reckoning. Shakespeare’s story of mercy, prejudice and obligation in modern English.",
+      "cover": "books/merchant-of-venice-novel/cover.png",
+      "coverAlt": "The Merchant of Venice, modern-English novel: Shylock portrait cover",
+      "wordCount": 21253,
+      "excerpt": "In a street in Venice, Antonio kept company with Salarino and Salanio. “Honestly, I don't know why I'm so sad. It wears me out. You say it wears on you. But how I caught it, found it, came by it; what it's made of, where it comes from—I still can't say.”",
+      "durationSeconds": 7577.557333,
+      "text": {
+        "blocks": "books/merchant-of-venice-novel/blocks.json"
+      },
+      "alignment": {
+        "sidecar": "books/merchant-of-venice-novel/alignment.json",
+        "hasWordTimings": true
+      },
+      "source": {
+        "commit": "4bf38dd2b67ffb205344e4331b6dd78fc2668fb1",
+        "publicationSHA256": "ae7920012c5a1b3c555c50c6f21b67d6631557849710f31233f1b551a4c2255e"
+      },
+      "editionNote": "Public first listen — modern-English adaptation prepared with OpenAI Codex for Dan Fakkeldy. Narration uses Echo/Kokoro synthetic voices. Human reading and listening reviews remain pending. The book folder contains the credits and separate text, cover and recording reuse notices."
     }
   ]
 }

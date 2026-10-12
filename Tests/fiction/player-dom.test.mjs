@@ -277,10 +277,10 @@ test('chapters list as plain rows, not controls, until they can be seeked', asyn
 test('every shelf card renders with its coming-soon state', async () => {
   const harness = await bootAwaiting();
   const cards = el(harness, 'shelf').children;
-  assert.equal(cards.length, 5);
+  assert.equal(cards.length, 7);
 
   assert.equal(cards[0].getAttribute('aria-current'), 'page', 'the stage title is marked current');
-  for (const card of cards) {
+  for (const [index, card] of cards.entries()) {
     assert.equal(card.classList.contains('is-playable'), false);
     const badges = descendants(card, (node) => node.className === 'fic-badge');
     assert.equal(badges.length, 1);
@@ -289,8 +289,8 @@ test('every shelf card renders with its coming-soon state', async () => {
       'no card offers a listen link while nothing streams');
     const covers = descendants(card, (node) => node.className === 'fic-cover');
     assert.equal(covers.length, 1);
-    assert.equal(covers[0].getAttribute('width'), '600');
-    assert.equal(covers[0].getAttribute('height'), '600');
+    assert.equal(covers[0].getAttribute('width'), String(publishedCatalog.books[index].coverWidth));
+    assert.equal(covers[0].getAttribute('height'), String(publishedCatalog.books[index].coverHeight));
   }
   assert.equal(descendants(cards[1], (node) => node.className === 'fic-status')[0].textContent,
     'Narration in progress');
@@ -396,10 +396,10 @@ test('the published book offers its manuscript in every format it has', async ()
   }
 });
 
-test('the published shelf marks both streaming titles and counts them', async () => {
+test('the published shelf marks the streaming editions and counts them', async () => {
   const harness = await bootPlayer();
   const cards = el(harness, 'shelf').children;
-  assert.equal(cards.length, 5);
+  assert.equal(cards.length, 7);
   const humanException = cards[1];
   const reversible = cards[2];
   assert.equal(humanException.classList.contains('is-playable'), true);
@@ -408,7 +408,9 @@ test('the published shelf marks both streaming titles and counts them', async ()
     'the first streaming book in shelf order holds the stage');
   assert.equal(descendants(humanException, (node) => node.className === 'fic-badge').length, 0);
   assert.equal(descendants(reversible, (node) => node.className === 'fic-badge').length, 0);
-  assert.match(el(harness, 'shelfSub').textContent, /^2 novels are streaming now/);
+  assert.match(el(harness, 'shelfSub').textContent, /^4 books are streaming now/);
+  assert.equal(cards[5].classList.contains('is-playable'), true);
+  assert.equal(cards[6].classList.contains('is-playable'), true);
 
   for (const card of [cards[0], cards[3], cards[4]]) {
     assert.equal(card.classList.contains('is-playable'), false);
@@ -439,6 +441,38 @@ test('?book=reversible-containment streams the first-listen package', async () =
     assert.match(link.href, /c03c1d0c760e64790cdae5fa60984662682aaacb/);
   }
 });
+
+for (const slug of ['merchant-of-venice-play', 'merchant-of-venice-novel']) {
+  test(`?book=${slug} selects its real audio, cover, captions and seekable chapters`, async () => {
+    const selected = publishedCatalog.books.find(book => book.slug === slug);
+    const blocks = JSON.parse(readFileSync(new URL(selected.text.blocks, fictionRoot))).blocks;
+    const anchors = JSON.parse(readFileSync(new URL(selected.alignment.sidecar, fictionRoot)));
+    const harness = await bootPlayer({ search: `?book=${slug}`, blocks, anchors });
+    assert.equal(el(harness, 'bookTitle').textContent, selected.title);
+    assert.equal(el(harness, 'bookForm').textContent, `Shakespeare adaptation · ${selected.form} · ${selected.genre}`);
+    assert.match(el(harness, 'bookByline').textContent, /^by William Shakespeare · 20 chapters/);
+    assert.equal(el(harness, 'cover').src, selected.cover);
+    assert.equal(harness.audio.children[0].src, selected.audio.url);
+    assert.equal(harness.audio.children[0].type, 'audio/mp4');
+    assert.equal(harness.audio.playCalls, 0, 'opening a book never autoplays');
+    assert.match(el(harness, 'editionNote').textContent, /first listen.*reviews remain pending/);
+    assert.deepEqual(harness.requestedUrls.slice(1).sort(), [selected.alignment.sidecar, selected.text.blocks].sort());
+    harness.audio.duration = selected.durationSeconds;
+    harness.audio.dispatch('loadedmetadata');
+    assert.equal(el(harness, 'playPause').disabled, false);
+    const chapters = descendants(el(harness, 'chapterList'), node => node.tagName === 'BUTTON');
+    assert.equal(chapters.length, 20);
+    chapters[1].dispatch('click');
+    assert.ok(Math.abs(harness.audio.currentTime - selected.chapters[1].start - 0.01) < 0.001);
+    harness.audio.currentTime = anchors[0].timestamp + 0.01;
+    harness.audio.dispatch('timeupdate');
+    const firstBlock = blocks.find(block => block.id === anchors[0].blockId);
+    assert.equal(el(harness, 'captionText').textContent, firstBlock.text, 'display retains the accepted EPUB text');
+    const tokens = descendants(el(harness, 'captionWords'), node => node.className.startsWith('w'));
+    assert.equal(tokens.length, anchors[0].words.length, 'timed word indices still map to the displayed heading');
+    assert.equal(harness.debugLogs.length, 0);
+  });
+}
 
 test('an unknown ?book= now falls back to the streaming title and says so', async () => {
   const harness = await bootPlayer({ search: '?book=not-a-book' });
@@ -517,7 +551,7 @@ test('the shelf marks the streaming title and offers the others a listen link', 
   const listen = descendants(streaming, (node) => node.className === 'fic-listen');
   assert.equal(listen.length, 1);
   assert.equal(listen[0].href, '?book=six-months-behind');
-  assert.match(el(harness, 'shelfSub').textContent, /^One novel is streaming now/);
+  assert.match(el(harness, 'shelfSub').textContent, /^One book is streaming now/);
 });
 
 test('playback speed persists and cycles through the fiction ladder', async () => {

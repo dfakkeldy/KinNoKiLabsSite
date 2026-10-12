@@ -1,4 +1,4 @@
 ---
 title: The Merchant of Venice
-description: Original songs, an anime music video in production, and released modern-English play and novel editions with EPUBs and chaptered audiobooks.
+description: Original songs, artwork from Word Is Bond, and modern-English play and novel editions. Read an EPUB or listen along with chaptered audiobooks.
 ---

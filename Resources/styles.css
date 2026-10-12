@@ -3575,16 +3575,11 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .shakespeare-hero-art img,
 .shakespeare-film-panel img,
 .shakespeare-album-art img { display: block; width: 100%; height: auto; }
-.shakespeare-hero-art { max-width: 440px; justify-self: end; width: 100%; }
+.shakespeare-hero-art { max-width: 440px; justify-self: end; width: 100%; border-radius: 16px; overflow: hidden; }
 .page-shakespeare .shakespeare-art-caption {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  left: 10px;
-  width: fit-content;
-  max-width: calc(100% - 20px);
-  padding: 3px 7px;
-  border-radius: 4px;
+  position: static;
+  margin: 0;
+  padding: 8px 12px;
   color: #d1d1d6;
   background: #101012;
   font-size: 11px;
@@ -3626,7 +3621,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   border-radius: 20px;
   padding: 24px;
 }
-.shakespeare-album-card { display: grid; grid-template-columns: 216px minmax(0, 1fr); gap: 36px; align-items: center; }
+.shakespeare-album-card { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 36px; align-items: center; }
 .shakespeare-album-art { border-radius: 8px; overflow: hidden; }
 .shakespeare-album-wordmark {
   position: absolute;
@@ -3733,7 +3728,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   .shakespeare-section { margin-top: 36px; padding-top: 24px; }
   .shakespeare-index { gap: 4px 18px; }
   .shakespeare-album-card { grid-template-columns: minmax(0, 1fr); padding: 20px; gap: 24px; }
-  .shakespeare-album-art { width: 216px; max-width: 100%; justify-self: center; }
+  .shakespeare-album-art { width: 100%; max-width: 100%; justify-self: center; }
   .shakespeare-action-row { align-items: flex-start; flex-direction: column; gap: 10px; }
   .shakespeare-suno { min-height: 44px; }
   .shakespeare-editions { grid-template-columns: minmax(0, 1fr); }
