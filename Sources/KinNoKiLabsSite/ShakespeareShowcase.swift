@@ -87,8 +87,8 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
         <p class="eyebrow">II · Listen</p>
         <div class="shakespeare-album-card">
           <figure class="shakespeare-album-art">
-            <img src="/images/shakespeare/merchant-portia-1280.webp" srcset="/images/shakespeare/merchant-portia-640.webp 640w, /images/shakespeare/merchant-portia-1280.webp 1280w" sizes="(max-width: 639px) calc(100vw - 90px), 440px" width="1280" height="720" alt="Portia points to the lead casket in a scene from Word Is Bond" loading="lazy" decoding="async">
-            <figcaption class="shakespeare-art-caption">Portia and the lead casket · Film still</figcaption>
+            <img src="/images/shakespeare/merchant-portia-1280.webp?v=frame2592" srcset="/images/shakespeare/merchant-portia-640.webp?v=frame2592 640w, /images/shakespeare/merchant-portia-1280.webp?v=frame2592 1280w" sizes="(max-width: 639px) calc(100vw - 90px), 440px" width="1280" height="720" alt="Portia at Belmont at sunset in a scene from Word Is Bond" loading="lazy" decoding="async">
+            <figcaption class="shakespeare-art-caption">Portia at Belmont · Film still</figcaption>
           </figure>
           <div class="shakespeare-album-copy">
             <h2 id="listen-title">Merchants of Venice</h2>
