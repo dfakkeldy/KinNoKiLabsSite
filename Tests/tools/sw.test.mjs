@@ -379,7 +379,7 @@ test('connectivity lifecycle survives BFCache, refreshes on pageshow, and fully 
 
 test('only tools pages request the tools manifest and actual-color browser theme', () => {
   assert.match(themeSource, /let toolsHead = page\.path\.string == "tools"\s*\|\| page\.path\.string\.hasPrefix\("tools\/"\)/);
-  assert.match(themeSource, /siteHead\(for: page, context: context, toolsHead: toolsHead\)/);
+  assert.match(themeSource, /siteHead\(for: page, context: context, toolsHead: toolsHead(?:,|\))/);
   assert.match(themeSource, /\.if\(toolsHead,\s*\.link\([\s\S]*?rel[\s\S]*?manifest[\s\S]*?\/tools\/manifest\.webmanifest/);
   assert.match(themeSource, /\.if\(toolsHead,\s*\.meta\([\s\S]*?theme-color[\s\S]*?#000000/);
 });
