@@ -56,3 +56,24 @@
     }
   });
 })();
+
+/* Load the public film only when requested; the YouTube link also works without JavaScript. */
+(function () {
+  'use strict';
+  var player = document.getElementById('merchant-video');
+  var play = document.getElementById('merchant-video-play');
+  if (!player || !play) return;
+  play.hidden = false;
+  play.addEventListener('click', function () {
+    var frame = document.createElement('iframe');
+    frame.src = 'https://www.youtube-nocookie.com/embed/ikYvGMdBV2E?autoplay=1&playsinline=1&rel=0';
+    frame.title = 'Word Is Bond — The Merchant of Venice';
+    frame.width = '1280';
+    frame.height = '720';
+    frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+    frame.allowFullscreen = true;
+    frame.referrerPolicy = 'strict-origin-when-cross-origin';
+    player.replaceChildren(frame);
+    frame.focus();
+  }, { once: true });
+})();
