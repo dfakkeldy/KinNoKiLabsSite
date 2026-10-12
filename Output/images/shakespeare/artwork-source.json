@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "description": "Existing artwork resized and encoded for the approved Merchant showcase; no generated replacement art or film audio.",
+  "encoding": "cwebp -q 86 -m 6 -resize WIDTH HEIGHT; full frame, no crop",
+  "assets": [
+    {
+      "id": "merchant-shylock",
+      "description": "Existing generated Shylock portrait",
+      "sourceSHA256": "5812ac005003ae470a5760b248b27ad184725b1815fcc3c6d5048211e6e294eb",
+      "sourceDimensions": [
+        1920,
+        1080
+      ],
+      "derivatives": [
+        {
+          "file": "merchant-shylock-640.webp",
+          "width": 640,
+          "height": 360,
+          "sizeBytes": 10810,
+          "sha256": "6772575d6172212acfef6afd11513535b9b56c86cbbd2efb50cdb2673b73e8c8"
+        },
+        {
+          "file": "merchant-shylock-1280.webp",
+          "width": 1280,
+          "height": 720,
+          "sizeBytes": 25802,
+          "sha256": "bbd3f9bf538ed718d14b2da0373b45188fa9732f0853eae90924ee598e4bfb06"
+        }
+      ]
+    },
+    {
+      "id": "merchant-bond",
+      "description": "Word Is Bond film still at 96.5 seconds",
+      "sourceSHA256": "62f197ed104f54e69525cfe8aba4e239a69c8290de242bb5c0b77af9868431fe",
+      "sourceDimensions": [
+        1920,
+        1080
+      ],
+      "derivatives": [
+        {
+          "file": "merchant-bond-640.webp",
+          "width": 640,
+          "height": 360,
+          "sizeBytes": 21062,
+          "sha256": "1ca101d466f057597813d4f942a8fcec9860909be4f0d8c7442fbab867be7b98"
+        },
+        {
+          "file": "merchant-bond-1280.webp",
+          "width": 1280,
+          "height": 720,
+          "sizeBytes": 49010,
+          "sha256": "965ffc2cc0fe11dcda26da26f24f05284ed361cc6f276aa0c188b4c1cf020e64"
+        }
+      ]
+    },
+    {
+      "id": "merchant-portia",
+      "description": "Word Is Bond film frame 2736 at 24 fps",
+      "sourceSHA256": "a0da754350eb627a3d7140349955787aef68597415e2941aa4e7c70e593c48fa",
+      "sourceDimensions": [
+        1920,
+        1080
+      ],
+      "derivatives": [
+        {
+          "file": "merchant-portia-640.webp",
+          "width": 640,
+          "height": 360,
+          "sizeBytes": 17104,
+          "sha256": "c21bbf9dab7a651f6168593eb736def26bb7e1fdf3a22faf044f89b3b69fabde"
+        },
+        {
+          "file": "merchant-portia-1280.webp",
+          "width": 1280,
+          "height": 720,
+          "sizeBytes": 40218,
+          "sha256": "cd3ffc1f11b116db8f81fb606342140b8f435a61efb05257aa4e1fea4c747262"
+        }
+      ]
+    }
+  ]
+}
