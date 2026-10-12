@@ -24,6 +24,7 @@ function menuFixture() {
   menu.querySelectorAll = (selector) => selector === 'a[href], button' ? [close, home, font] : [close, home];
   document.querySelector = (selector) => selector === '.mobile-menu' ? menu : opener;
   document.querySelectorAll = () => background;
+  document.getElementById = () => null;
   document.body = { classList: { contains: () => true } };
   const path = new URL('../../Resources/shakespeare.js', import.meta.url);
   assert.ok(existsSync(path), 'The showcase menu enhancement must exist');

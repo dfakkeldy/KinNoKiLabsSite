@@ -19,7 +19,7 @@ test('the Merchant work route generates its own page and discoverable metadata',
   assert.match(html, /<title>The Merchant of Venice — KinNoKi Labs<\/title>/);
   assert.match(html, /rel="canonical" href="https:\/\/kinnokilabs\.com\/shakespeare\/merchant-of-venice"/);
   assert.match(html, /name="viewport" content="width=device-width, initial-scale=1"/);
-  assert.match(html, /name="description" content="Original songs, artwork from Word Is Bond,/);
+  assert.match(html, /name="description" content="Watch Word Is Bond, explore original songs,/);
   assert.equal((main.match(/<h1\b/g) ?? []).length, 1);
   assert.match(main, /<h1 id="shakespeare-title">The Merchant of Venice<\/h1>/);
   assert.match(html, /<main[^>]*aria-labelledby="shakespeare-title"/);
@@ -36,14 +36,20 @@ test('the page index reaches five real sections in reading order', () => {
   assert.equal((section('read').match(/<h3\b/g) ?? []).length, 2);
 });
 
-test('the video awaiting provenance and Merchant video code expose no media actions', () => {
-  assert.match(section('watch'), /Video player coming soon/);
-  assert.doesNotMatch(section('watch'), /<(?:iframe|video|audio|button)\b|href=|\bdownload\b/i);
+test('the film offers an on-demand player and a working YouTube fallback', () => {
+  assert.match(section('watch'), /id="merchant-video" class="shakespeare-video"/);
+  assert.match(section('watch'), /<button id="merchant-video-play"[^>]*type="button" hidden>/);
+  assert.match(section('watch'), /Play Word Is Bond/);
+  assert.match(section('watch'), /href="https:\/\/www\.youtube\.com\/watch\?v=ikYvGMdBV2E"/);
+  assert.doesNotMatch(section('watch'), /coming soon|will follow|<(?:iframe|video|audio)\b/i);
+});
+
+test('unpublished Merchant project code exposes no action and page load starts no media', () => {
   const pendingCode = section('code').match(/<li class="shakespeare-code-pending">([\s\S]*?)<\/li>/)?.[1] ?? '';
   assert.match(pendingCode, /Merchant project code/);
   assert.match(pendingCode, /Publication pending/);
   assert.doesNotMatch(pendingCode, /<(?:a|button)\b/);
-  assert.doesNotMatch(main, /href="#"|\bdisabled\b|aria-disabled|\/Users\/|file:|sediment:|youtube\.com/i);
+  assert.doesNotMatch(main, /href="#"|\bdisabled\b|aria-disabled|\/Users\/|file:|sediment:/i);
   assert.doesNotMatch(main, /<(?:script|iframe|audio|video)\b|class="[^"]*\breveal\b/i);
 });
 
@@ -68,6 +74,7 @@ test('edition buttons open the matching listening room and retain both release d
 test('the public playlist, edition notices and source links are explicit', () => {
   const external = [...main.matchAll(/<a\b[^>]*href="(https:[^"]+)"[^>]*>/g)];
   assert.deepEqual(external.map(match => match[1]), [
+    'https://www.youtube.com/watch?v=ikYvGMdBV2E',
     'https://suno.com/playlist/2a02c169-de0a-43e5-a6de-6184c804920f',
     'https://github.com/dfakkeldy/explainer-audiobooks/releases/download/classic-merchant-of-venice-play-20261004T050000Z/merchant-of-venice-play.epub',
     'https://github.com/dfakkeldy/explainer-audiobooks/releases/download/classic-merchant-of-venice-play-20261004T050000Z/merchant-of-venice-play.m4b',

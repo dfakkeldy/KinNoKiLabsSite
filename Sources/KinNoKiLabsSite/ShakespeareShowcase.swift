@@ -14,11 +14,10 @@ func shakespeareCollectionMain() -> Node<HTML.BodyContext> {
           <article class="shakespeare-work-card" aria-labelledby="merchant-card-title">
             <p class="eyebrow">I · On the shelf</p>
             <h2 id="merchant-card-title"><a href="/shakespeare/merchant-of-venice/">The Merchant of Venice <span aria-hidden="true">→</span></a></h2>
-            <p class="shakespeare-status">Album and editions available</p>
-            <p class="shakespeare-secondary">Original songs after the play, two modern-English editions and their audiobooks, and artwork from Word Is Bond.</p>
+            <p class="shakespeare-status">Film, album and editions available</p>
+            <p class="shakespeare-secondary">Watch Word Is Bond, explore original songs after the play, or listen along with two modern-English editions.</p>
             <dl class="shakespeare-formats">
-              <div><dt>Available</dt><dd>Album on Suno · Play and novel EPUBs · Online listening and M4B audiobooks</dd></div>
-              <div><dt>Coming soon</dt><dd>Word Is Bond video player</dd></div>
+              <div><dt>Available</dt><dd>Word Is Bond film · Album on Suno · Play and novel EPUBs · Online listening and M4B audiobooks</dd></div>
             </dl>
           </article>
           <article class="shakespeare-work-card" aria-labelledby="midsummer-card-title">
@@ -37,7 +36,7 @@ func shakespeareCollectionMain() -> Node<HTML.BodyContext> {
     """#)
 }
 
-/// The Merchant playbill links released editions; the film player awaits provenance verification.
+/// The Merchant playbill gathers the public film, album and released editions.
 func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
     .raw(#"""
     <main class="shakespeare-main" aria-labelledby="shakespeare-title">
@@ -47,7 +46,7 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
           <p class="eyebrow">Shakespeare · A KinNoKi Labs collection</p>
           <h1 id="shakespeare-title">The Merchant of Venice</h1>
           <p class="shakespeare-byline">by William Shakespeare</p>
-          <p class="shakespeare-intro">Original songs, artwork from Word Is Bond, and modern-English editions of the play. Read an edition, listen along, or explore the album.</p>
+          <p class="shakespeare-intro">Watch Word Is Bond, explore original songs, and read modern-English editions of the play. Listen along with either edition or explore the album.</p>
           <nav class="shakespeare-index" aria-label="On this page">
             <a href="#watch"><span aria-hidden="true">I</span> Watch</a>
             <a href="#listen"><span aria-hidden="true">II</span> Listen</a>
@@ -68,12 +67,18 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
           <div>
             <h2 id="watch-title">Word Is Bond</h2>
             <p class="shakespeare-secondary">An anime music video told from Shylock's side.</p>
-            <p class="shakespeare-status">Video player coming soon</p>
-            <p class="shakespeare-small shakespeare-muted">Artwork from Word Is Bond is shown here. The film player will follow.</p>
+            <p class="shakespeare-small shakespeare-muted">Select the film to load the YouTube player here.</p>
+            <div class="shakespeare-action-row">
+              <a class="btn shakespeare-download" href="https://www.youtube.com/watch?v=ikYvGMdBV2E" target="_blank" rel="noopener noreferrer" aria-describedby="youtube-new-tab">Watch on YouTube <span aria-hidden="true">↗</span></a>
+              <p id="youtube-new-tab" class="shakespeare-small shakespeare-muted">Opens youtube.com in a new tab</p>
+            </div>
           </div>
           <figure class="shakespeare-film-panel">
-            <img src="/images/shakespeare/merchant-bond-1280.webp" srcset="/images/shakespeare/merchant-bond-640.webp 640w, /images/shakespeare/merchant-bond-1280.webp 1280w" sizes="(max-width: 899px) calc(100vw - 48px), 540px" width="1280" height="720" alt="Shylock holds the sealed bond over a Venetian canal at sunset" loading="lazy" decoding="async">
-            <figcaption class="shakespeare-art-caption">Word Is Bond · Film still</figcaption>
+            <div id="merchant-video" class="shakespeare-video">
+              <img src="/images/shakespeare/merchant-bond-1280.webp" srcset="/images/shakespeare/merchant-bond-640.webp 640w, /images/shakespeare/merchant-bond-1280.webp 1280w" sizes="(max-width: 899px) calc(100vw - 48px), 540px" width="1280" height="720" alt="Shylock holds the sealed bond over a Venetian canal at sunset" loading="lazy" decoding="async">
+              <button id="merchant-video-play" class="shakespeare-video-play" type="button" hidden><span><span aria-hidden="true">▶</span> Play Word Is Bond</span></button>
+            </div>
+            <figcaption class="shakespeare-art-caption">Word Is Bond · Anime music video</figcaption>
           </figure>
         </div>
       </section>
