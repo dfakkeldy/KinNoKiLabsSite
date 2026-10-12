@@ -34,12 +34,12 @@ test('the collection links two real work cards with explicit availability and fo
   assert.equal(cards.length, 2);
   assert.match(cards[0], /The Merchant of Venice/);
   assert.match(cards[0], /Album and editions available/);
-  assert.match(cards[0], /16-song album on Suno/);
-  assert.match(cards[0], /Pending release/);
+  assert.match(cards[0], /Album on Suno/);
+  assert.match(cards[0], /Coming soon/);
   assert.match(cards[0], /EPUB/);
   assert.match(cards[0], /M4B audiobooks/);
-  const pending = cards[0].match(/<dt>Pending release<\/dt><dd>([^<]+)<\/dd>/)?.[1];
-  assert.equal(pending, 'Anime music video');
+  const pending = cards[0].match(/<dt>Coming soon<\/dt><dd>([^<]+)<\/dd>/)?.[1];
+  assert.equal(pending, 'Word Is Bond video player');
   assert.match(cards[1], /A Midsummer Night's Dream/);
   assert.match(cards[1], /Edition complete · Release pending/);
   assert.match(cards[1], /No public releases yet/);

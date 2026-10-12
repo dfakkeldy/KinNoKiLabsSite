@@ -12,6 +12,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { createRequire } from 'node:module';
+import { createHash } from 'node:crypto';
+import { matchesNarration } from '../../Tools/fiction-publication.mjs';
 
 const require = createRequire(import.meta.url);
 const core = require('../../Resources/listen/listen-core.js');
@@ -24,6 +26,8 @@ const expectedBooks = [
   'reversible-containment',
   'the-appeal-window',
   'duty-of-care',
+  'merchant-of-venice-play',
+  'merchant-of-venice-novel',
 ];
 const expectedChapterCounts = new Map([
   ['six-months-behind', 34],
@@ -31,6 +35,8 @@ const expectedChapterCounts = new Map([
   ['reversible-containment', 30],
   ['the-appeal-window', 28],
   ['duty-of-care', 22],
+  ['merchant-of-venice-play', 20],
+  ['merchant-of-venice-novel', 20],
 ]);
 const productionStates = new Set([
   'narration-queued',
@@ -64,7 +70,7 @@ for (const book of catalog.books) {
       assert.equal(typeof book[field], 'string', `${field} must be a string`);
       assert.ok(book[field].length > 0, `${field} must not be empty`);
     }
-    assert.equal(book.author, 'Dan Fakkeldy');
+    assert.equal(book.author, book.slug.startsWith('merchant-of-venice-') ? 'William Shakespeare' : 'Dan Fakkeldy');
     assert.ok(book.wordCount > 1000, 'wordCount is a real manuscript length');
     assert.ok(book.estimatedHours > 0);
     assert.ok(productionStates.has(book.production.state),
@@ -95,13 +101,20 @@ for (const book of catalog.books) {
   });
 
   test(`${book.slug} cover is on disk at the dimensions the catalog claims`, () => {
-    assert.equal(book.cover, `books/${book.slug}/cover.jpg`);
+    const classic = book.slug.startsWith('merchant-of-venice-');
+    assert.equal(book.cover, `books/${book.slug}/cover.${classic ? 'png' : 'jpg'}`);
     assert.ok(book.coverAlt.length > 0);
     const file = new URL(book.cover, fictionRoot);
     assert.ok(statSync(file).size > 1024, 'cover must be a real image');
     const bytes = readFileSync(file);
-    assert.equal(bytes.readUInt16BE(0), 0xffd8, 'cover must be a JPEG');
-    assert.deepEqual(jpegSize(bytes), { width: book.coverWidth, height: book.coverHeight });
+    if (classic) {
+      assert.equal(bytes.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
+      assert.deepEqual({ width: bytes.readUInt32BE(16), height: bytes.readUInt32BE(20) },
+        { width: book.coverWidth, height: book.coverHeight });
+    } else {
+      assert.equal(bytes.readUInt16BE(0), 0xffd8, 'cover must be a JPEG');
+      assert.deepEqual(jpegSize(bytes), { width: book.coverWidth, height: book.coverHeight });
+    }
   });
 
   test(`${book.slug} declares only format links that are canonical and live`, () => {
@@ -187,7 +200,7 @@ for (const book of catalog.books) {
       for (const anchor of anchors) {
         if (!anchor.words || anchor.words.length === 0) continue;
         const spoken = anchor.words.map((word) => word.word).join(' ');
-        if (spoken !== byId.get(anchor.blockId).text) mismatched += 1;
+        if (!matchesNarration(book.slug, byId.get(anchor.blockId), spoken)) mismatched += 1;
       }
       assert.equal(mismatched, 0, `${mismatched} anchors disagree with their block text`);
 
@@ -213,6 +226,25 @@ for (const book of catalog.books) {
       assert.equal(typeof book.editionNote, 'string');
       assert.match(book.editionNote, /first listen/i);
       assert.match(book.editionNote, /review/i);
+    });
+  }
+
+  if (book.slug.startsWith('merchant-of-venice-')) {
+    test(`${book.slug} preserves the accepted cover, alignment, source edition and rights receipt`, () => {
+      const receiptBytes = readFileSync(new URL(`books/${book.slug}/publication.json`, fictionRoot));
+      const receipt = JSON.parse(receiptBytes);
+      const digest = bytes => createHash('sha256').update(bytes).digest('hex');
+      assert.equal(book.source.commit, '4bf38dd2b67ffb205344e4331b6dd78fc2668fb1');
+      assert.equal(book.source.publicationSHA256, digest(receiptBytes));
+      assert.equal(receipt.permissionToPublish, true);
+      assert.equal(receipt.publicationStatus, 'public-first-listen');
+      assert.equal(receipt.licenses.recordingNotice, 'AUDIO-LICENSE.md');
+      assert.equal(digest(readFileSync(new URL(book.cover, fictionRoot))), receipt.files['cover.png'].sha256);
+      assert.equal(digest(readFileSync(new URL(book.alignment.sidecar, fictionRoot))),
+        receipt.files[`${book.slug}.alignment.json`].sha256);
+      assert.equal(book.audio.url, `https://github.com/dfakkeldy/explainer-audiobooks/releases/download/${receipt.release.tag}/${receipt.release.assetFile}`);
+      assert.match(book.editionNote, /synthetic voices/);
+      assert.match(book.editionNote, /reading and listening reviews remain pending/);
     });
   }
 }

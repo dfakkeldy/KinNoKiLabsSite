@@ -17,7 +17,8 @@
  *
  * Fails closed: a hash mismatch, an unresolved anchor, a block whose text
  * disagrees with what was spoken, or a non-public package stops the run
- * with nothing written.
+ * with nothing written. The accepted Merchant play has a narrowly checked
+ * act-heading spelling difference; display text and timing bytes stay intact.
  *
  * Env:
  *   BOOKS_REPO  local explainer-audiobooks checkout (default ~/Developer/explainer-audiobooks)
@@ -26,10 +27,11 @@
 
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { homedir } from 'node:os';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { homedir, tmpdir } from 'node:os';
 import path from 'node:path';
 import { inflateRawSync } from 'node:zlib';
+import { normalizePublication, matchesNarration } from './fiction-publication.mjs';
 
 const slug = process.argv[2];
 if (!slug || !/^[a-z0-9-]+$/.test(slug)) {
@@ -37,7 +39,14 @@ if (!slug || !/^[a-z0-9-]+$/.test(slug)) {
 }
 
 const repo = process.env.BOOKS_REPO || path.join(homedir(), 'Developer/explainer-audiobooks');
-const ref = process.env.BOOKS_REF || 'origin/main';
+const requestedRef = process.env.BOOKS_REF || 'origin/main';
+let ref;
+try {
+  ref = execFileSync('git', ['-C', repo, 'rev-parse', '--verify', `${requestedRef}^{commit}`],
+    { encoding: 'utf8' }).trim();
+} catch {
+  fail(`cannot resolve book source ref ${requestedRef}`);
+}
 const siteRoot = new URL('../', import.meta.url);
 const catalogPath = new URL('Resources/fiction/books.json', siteRoot);
 const assetDir = new URL(`Resources/fiction/books/${slug}/`, siteRoot);
@@ -60,19 +69,22 @@ const sha256 = (buffer) => createHash('sha256').update(buffer).digest('hex');
 
 /* ── The receipt gates everything else ─────────────────── */
 
-const receipt = JSON.parse(show('publication.json').toString('utf8'));
-if (receipt.slug !== slug) fail(`receipt slug ${receipt.slug} does not match ${slug}`);
-if (receipt.permissionToPublish !== true) fail('receipt does not grant permission to publish');
-if (receipt.classification !== 'public-safe') fail(`classification is ${receipt.classification}`);
-for (const [gate, value] of Object.entries(receipt.publicGate || {})) {
-  if (value !== true) fail(`public gate ${gate} is not satisfied`);
-}
+const catalog = JSON.parse(readFileSync(catalogPath, 'utf8'));
+const book = catalog.books.find((candidate) => candidate.slug === slug);
+if (!book) fail(`${slug} is not on the fiction shelf`);
+const receiptBytes = show('publication.json');
+let receipt;
+try { receipt = normalizePublication(JSON.parse(receiptBytes.toString('utf8')), slug); }
+catch (error) { fail(error.message); }
+const classic = receipt.packageKind === 'classic-adaptation';
+if (classic && book.cover !== `books/${slug}/cover.png`) fail('classic cover must retain its original PNG');
 
 const artifacts = {};
 for (const [name, entry] of Object.entries(receipt.artifacts)) {
   const bytes = show(entry.file);
   const digest = sha256(bytes);
   if (digest !== entry.sha256) fail(`${entry.file} hash ${digest} != receipt ${entry.sha256}`);
+  if (entry.sizeBytes !== undefined && bytes.length !== entry.sizeBytes) fail(`${entry.file} size does not match receipt`);
   artifacts[name] = bytes;
 }
 console.log(`receipt verified — ${Object.keys(artifacts).length} artifacts match their hashes`);
@@ -126,7 +138,7 @@ spine.forEach((idref, spineIndex) => {
     blocks.push({
       chapterIndex: null,
       id: `s${spineIndex}-b0`,
-      imagePath: `books/${slug}/cover.jpg`,
+      imagePath: book.cover,
       kind: 'image',
       sequenceIndex: sequenceIndex++,
       text: '',
@@ -179,7 +191,7 @@ for (const anchor of anchors) {
   if (!Array.isArray(anchor.words) || anchor.words.length === 0) continue;
   spokenCount += 1;
   const spoken = anchor.words.map((w) => w.word).join(' ');
-  if (spoken !== block.text) {
+  if (!matchesNarration(slug, block, spoken)) {
     mismatches += 1;
     firstMismatch ??= { id: anchor.blockId, spoken: spoken.slice(0, 80), text: block.text.slice(0, 80) };
   }
@@ -188,7 +200,7 @@ if (mismatches > 0) {
   fail(`${mismatches} blocks disagree with what was narrated — ` +
     `${firstMismatch.id}: spoken "${firstMismatch.spoken}" vs block "${firstMismatch.text}"`);
 }
-console.log(`all ${anchors.length} anchors resolve; ${spokenCount} match their block text` +
+console.log(`all ${anchors.length} anchors resolve; ${spokenCount} match their display words (including approved act-heading spelling)` +
   (spokenCount === anchors.length ? '' : ` (${anchors.length - spokenCount} timestamps only)`));
 
 const hasWordTimings = anchors.every((a) => Array.isArray(a.words) && a.words.length > 0 &&
@@ -203,13 +215,29 @@ const audioUrl =
 
 console.log(`probing ${release.assetFile} …`);
 let probe;
+let audioDirectory;
 try {
+  let probeInput = audioUrl;
+  if (classic) {
+    if (release.assetFile !== `${slug}.m4b` || !/^[a-f0-9]{64}$/.test(release.assetSHA256 || '')) {
+      throw new Error('classic receipt has no verifiable recording hash');
+    }
+    const audio = execFileSync('curl', ['--fail', '--location', '--silent', '--show-error',
+      '--max-time', '180', audioUrl], { maxBuffer: 512 * 1024 * 1024 });
+    if (sha256(audio) !== release.assetSHA256) throw new Error('release M4B hash does not match receipt');
+    audioDirectory = mkdtempSync(path.join(tmpdir(), 'fiction-stage-'));
+    probeInput = path.join(audioDirectory, release.assetFile);
+    writeFileSync(probeInput, audio);
+  }
   probe = JSON.parse(execFileSync('ffprobe',
-    ['-v', 'error', '-print_format', 'json', '-show_format', '-show_chapters', audioUrl],
+    ['-v', 'error', '-print_format', 'json', '-show_format', '-show_chapters', probeInput],
     { encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 }));
-} catch {
-  fail(`ffprobe could not read ${audioUrl} — is the release public?`);
+} catch (error) {
+  // Clean temporary audio before fail() exits; originals are never rewritten.
+  if (audioDirectory) rmSync(audioDirectory, { recursive: true, force: true });
+  fail(`could not verify/probe ${audioUrl}: ${error.message}`);
 }
+if (audioDirectory) rmSync(audioDirectory, { recursive: true, force: true });
 
 const durationSeconds = Number(probe.format?.duration);
 if (!(durationSeconds > 0)) fail('probe returned no duration');
@@ -247,10 +275,12 @@ mkdirSync(assetDir, { recursive: true });
 writeFileSync(new URL('blocks.json', assetDir),
   `${JSON.stringify({ blocks, source: { epub: `${slug}.epub` }, version: 1 }, null, 2)}\n`);
 writeFileSync(new URL('alignment.json', assetDir), artifacts.alignment);
-
-const catalog = JSON.parse(readFileSync(catalogPath, 'utf8'));
-const book = catalog.books.find((candidate) => candidate.slug === slug);
-if (!book) fail(`${slug} is not on the fiction shelf`);
+if (classic) {
+  writeFileSync(new URL('cover.png', assetDir), artifacts.cover);
+  writeFileSync(new URL('publication.json', assetDir), receiptBytes);
+  book.wordCount = blocks.filter(block => block.chapterIndex !== null)
+    .reduce((count, block) => count + block.wordCount, 0);
+}
 
 book.durationSeconds = durationSeconds;
 book.estimatedHours = Math.round((durationSeconds / 3600) * 10) / 10;
@@ -262,8 +292,9 @@ book.alignment = { sidecar: `books/${slug}/alignment.json`, hasWordTimings };
 /* The manuscript, EPUB and folder are public in the same package, pinned
    to the commit that published it so the bytes always match the receipt
    hashes verified above. */
-const commit = execFileSync('git', ['-C', repo, 'rev-parse', ref], { encoding: 'utf8' }).trim();
+const commit = ref;
 const blob = `https://github.com/dfakkeldy/explainer-audiobooks`;
+if (classic) book.source = { commit, publicationSHA256: sha256(receiptBytes) };
 book.links = {
   read: `${blob}/blob/${commit}/books/${slug}/${receipt.artifacts.manuscript.file}`,
   epub: `${blob}/raw/${commit}/books/${slug}/${receipt.artifacts.epub.file}`,
@@ -280,6 +311,11 @@ book.editionNote = reviewed
   ? 'Narrated with Echo voices. The creator completed the full reading and listening review.'
   : 'Public first listen — narrated with Echo voices, automated package and audio checks passed. ' +
     'The human reading and listening reviews are still open.';
+if (classic) {
+  book.editionNote = 'Public first listen — modern-English adaptation prepared with OpenAI Codex for Dan Fakkeldy. ' +
+    'Narration uses Echo/Kokoro synthetic voices. Human reading and listening reviews remain pending. ' +
+    'The book folder contains the credits and separate text, cover and recording reuse notices.';
+}
 
 writeFileSync(catalogPath, `${JSON.stringify(catalog, null, 2)}\n`);
 

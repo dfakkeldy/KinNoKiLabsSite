@@ -15,10 +15,10 @@ func shakespeareCollectionMain() -> Node<HTML.BodyContext> {
             <p class="eyebrow">I · On the shelf</p>
             <h2 id="merchant-card-title"><a href="/shakespeare/merchant-of-venice/">The Merchant of Venice <span aria-hidden="true">→</span></a></h2>
             <p class="shakespeare-status">Album and editions available</p>
-            <p class="shakespeare-secondary">Original songs after the play, two modern-English editions and their audiobooks, with an anime music video in production.</p>
+            <p class="shakespeare-secondary">Original songs after the play, two modern-English editions and their audiobooks, and artwork from Word Is Bond.</p>
             <dl class="shakespeare-formats">
-              <div><dt>Available</dt><dd>16-song album on Suno · Play and novel EPUBs · M4B audiobooks</dd></div>
-              <div><dt>Pending release</dt><dd>Anime music video</dd></div>
+              <div><dt>Available</dt><dd>Album on Suno · Play and novel EPUBs · Online listening and M4B audiobooks</dd></div>
+              <div><dt>Coming soon</dt><dd>Word Is Bond video player</dd></div>
             </dl>
           </article>
           <article class="shakespeare-work-card" aria-labelledby="midsummer-card-title">
@@ -37,7 +37,7 @@ func shakespeareCollectionMain() -> Node<HTML.BodyContext> {
     """#)
 }
 
-/// The Merchant playbill links released editions and keeps the unfinished film pending.
+/// The Merchant playbill links released editions; the film player awaits provenance verification.
 func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
     .raw(#"""
     <main class="shakespeare-main" aria-labelledby="shakespeare-title">
@@ -47,7 +47,7 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
           <p class="eyebrow">Shakespeare · A KinNoKi Labs collection</p>
           <h1 id="shakespeare-title">The Merchant of Venice</h1>
           <p class="shakespeare-byline">by William Shakespeare</p>
-          <p class="shakespeare-intro">Original songs, an anime music video in production, and modern-English editions of the play, made in the studio and gathered here as they are ready.</p>
+          <p class="shakespeare-intro">Original songs, artwork from Word Is Bond, and modern-English editions of the play. Read an edition, listen along, or explore the album.</p>
           <nav class="shakespeare-index" aria-label="On this page">
             <a href="#watch"><span aria-hidden="true">I</span> Watch</a>
             <a href="#listen"><span aria-hidden="true">II</span> Listen</a>
@@ -57,8 +57,8 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
           </nav>
         </div>
         <figure class="shakespeare-hero-art">
-          <img src="/images/shakespeare/venice-arch.svg" width="440" height="320" alt="Concept illustration: a Venetian pointed arch over canal ripples">
-          <figcaption class="shakespeare-art-caption">Concept illustration</figcaption>
+          <img src="/images/shakespeare/merchant-shylock-1280.webp" srcset="/images/shakespeare/merchant-shylock-640.webp 640w, /images/shakespeare/merchant-shylock-1280.webp 1280w" sizes="(max-width: 479px) calc(100vw - 48px), 440px" width="1280" height="720" alt="Shylock in the anime artwork for Word Is Bond" fetchpriority="high">
+          <figcaption class="shakespeare-art-caption">Shylock · Artwork from Word Is Bond</figcaption>
         </figure>
       </header>
 
@@ -68,12 +68,12 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
           <div>
             <h2 id="watch-title">Word Is Bond</h2>
             <p class="shakespeare-secondary">An anime music video told from Shylock's side.</p>
-            <p class="shakespeare-status">Video in production</p>
-            <p class="shakespeare-small shakespeare-muted">The film will appear here when it is released, with captions and a direct YouTube link.</p>
+            <p class="shakespeare-status">Video player coming soon</p>
+            <p class="shakespeare-small shakespeare-muted">Artwork from Word Is Bond is shown here. The film player will follow.</p>
           </div>
           <figure class="shakespeare-film-panel">
-            <img src="/images/shakespeare/bridge-night.svg" width="540" height="304" alt="Concept illustration: a Venetian bridge over water at night; video in production" loading="lazy">
-            <figcaption class="shakespeare-art-caption">Concept illustration · Video in production</figcaption>
+            <img src="/images/shakespeare/merchant-bond-1280.webp" srcset="/images/shakespeare/merchant-bond-640.webp 640w, /images/shakespeare/merchant-bond-1280.webp 1280w" sizes="(max-width: 899px) calc(100vw - 48px), 540px" width="1280" height="720" alt="Shylock holds the sealed bond over a Venetian canal at sunset" loading="lazy" decoding="async">
+            <figcaption class="shakespeare-art-caption">Word Is Bond · Film still</figcaption>
           </figure>
         </div>
       </section>
@@ -82,15 +82,13 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
         <p class="eyebrow">II · Listen</p>
         <div class="shakespeare-album-card">
           <figure class="shakespeare-album-art">
-            <img src="/images/shakespeare/caskets.svg" width="216" height="216" alt="Concept illustration: three caskets in gold, silver and lead" loading="lazy">
-            <p class="shakespeare-album-wordmark" aria-hidden="true">Merchants<br>of Venice</p>
-            <figcaption class="shakespeare-art-caption">Album art concept</figcaption>
+            <img src="/images/shakespeare/merchant-portia-1280.webp" srcset="/images/shakespeare/merchant-portia-640.webp 640w, /images/shakespeare/merchant-portia-1280.webp 1280w" sizes="(max-width: 639px) calc(100vw - 90px), 440px" width="1280" height="720" alt="Portia points to the lead casket in a scene from Word Is Bond" loading="lazy" decoding="async">
+            <figcaption class="shakespeare-art-caption">Portia and the lead casket · Film still</figcaption>
           </figure>
           <div class="shakespeare-album-copy">
             <h2 id="listen-title">Merchants of Venice</h2>
             <p class="shakespeare-secondary shakespeare-album-byline">An album by Dan</p>
-            <p>Fourteen original songs after Shakespeare, plus two bonus tracks.</p>
-            <p class="shakespeare-small shakespeare-muted">16 songs · Bonus tracks “Word Is Bond” and “The Bond”</p>
+            <p>Original songs after Shakespeare's play, including “Word Is Bond”.</p>
             <div class="shakespeare-action-row">
               <a class="btn shakespeare-suno" href="https://suno.com/playlist/2a02c169-de0a-43e5-a6de-6184c804920f" target="_blank" rel="noopener noreferrer" aria-describedby="suno-new-tab">Listen on Suno <span aria-hidden="true">↗</span></a>
               <p id="suno-new-tab" class="shakespeare-small shakespeare-muted">Opens suno.com in a new tab</p>
@@ -112,7 +110,8 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
               <p class="shakespeare-small shakespeare-secondary">EPUB 1.6 MB · M4B 35.9 MB</p>
               <div class="shakespeare-action-row shakespeare-downloads">
                 <a class="btn shakespeare-download" href="https://github.com/dfakkeldy/explainer-audiobooks/releases/download/classic-merchant-of-venice-play-20261004T050000Z/merchant-of-venice-play.epub">Play EPUB</a>
-                <a class="btn shakespeare-download" href="https://github.com/dfakkeldy/explainer-audiobooks/releases/download/classic-merchant-of-venice-play-20261004T050000Z/merchant-of-venice-play.m4b">Play audiobook</a>
+                <a class="btn shakespeare-download" href="/fiction/?book=merchant-of-venice-play">Play audiobook</a>
+                <a class="btn shakespeare-download" href="https://github.com/dfakkeldy/explainer-audiobooks/releases/download/classic-merchant-of-venice-play-20261004T050000Z/merchant-of-venice-play.m4b">Download play M4B</a>
               </div>
               <p class="shakespeare-small shakespeare-muted shakespeare-edition-notice"><a href="https://github.com/dfakkeldy/explainer-audiobooks/releases/tag/classic-merchant-of-venice-play-20261004T050000Z" target="_blank" rel="noopener noreferrer" aria-describedby="shakespeare-new-tab">Play credits &amp; reuse <span aria-hidden="true">↗</span></a></p>
             </div>
@@ -125,7 +124,8 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
               <p class="shakespeare-small shakespeare-secondary">EPUB 1.5 MB · M4B 32.8 MB</p>
               <div class="shakespeare-action-row shakespeare-downloads">
                 <a class="btn shakespeare-download" href="https://github.com/dfakkeldy/explainer-audiobooks/releases/download/classic-merchant-of-venice-novel-20261004T050000Z/merchant-of-venice-novel.epub">Novel EPUB</a>
-                <a class="btn shakespeare-download" href="https://github.com/dfakkeldy/explainer-audiobooks/releases/download/classic-merchant-of-venice-novel-20261004T050000Z/merchant-of-venice-novel.m4b">Novel audiobook</a>
+                <a class="btn shakespeare-download" href="/fiction/?book=merchant-of-venice-novel">Novel audiobook</a>
+                <a class="btn shakespeare-download" href="https://github.com/dfakkeldy/explainer-audiobooks/releases/download/classic-merchant-of-venice-novel-20261004T050000Z/merchant-of-venice-novel.m4b">Download novel M4B</a>
               </div>
               <p class="shakespeare-small shakespeare-muted shakespeare-edition-notice"><a href="https://github.com/dfakkeldy/explainer-audiobooks/releases/tag/classic-merchant-of-venice-novel-20261004T050000Z" target="_blank" rel="noopener noreferrer" aria-describedby="shakespeare-new-tab">Novel credits &amp; reuse <span aria-hidden="true">↗</span></a></p>
             </div>
