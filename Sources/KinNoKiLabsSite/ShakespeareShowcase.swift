@@ -32,7 +32,7 @@ func shakespeareCollectionMain() -> Node<HTML.BodyContext> {
         </div>
       </section>
     </main>
-    <script src="/shakespeare.js" defer></script>
+    <script src="/shakespeare.js?v=20261012-shakespeare-film" defer></script>
     """#)
 }
 
@@ -173,7 +173,7 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
         <a href="/shakespeare/a-midsummer-nights-dream/">A Midsummer Night's Dream <span aria-hidden="true">→</span></a>
       </nav>
     </main>
-    <script src="/shakespeare.js" defer></script>
+    <script src="/shakespeare.js?v=20261012-shakespeare-film" defer></script>
     """#)
 }
 
@@ -202,6 +202,6 @@ func shakespeareMidsummerMain() -> Node<HTML.BodyContext> {
         <a href="/shakespeare/merchant-of-venice/">The Merchant of Venice <span aria-hidden="true">→</span></a>
       </nav>
     </main>
-    <script src="/shakespeare.js" defer></script>
+    <script src="/shakespeare.js?v=20261012-shakespeare-film" defer></script>
     """#)
 }
