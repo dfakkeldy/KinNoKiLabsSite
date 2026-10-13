@@ -52,6 +52,7 @@ function makeFixture() {
     writeFileSync('dist/assets/app.js', 'console.log("map")');
     writeFileSync('dist/poker.html', '<base href="./" /><script type="module" src="./assets/app.js"></script>');
     writeFileSync('dist/rhodena.html', '<base href="./" /><script type="module" src="./assets/app.js"></script>');
+    writeFileSync('dist/fishing.html', '<base href="./" /><script type="module" src="./assets/app.js"></script>');
   `);
 
   run('git', ['init', '-q'], source);
@@ -230,7 +231,7 @@ test('sync tool stamps Poker shell base href to the published map path', () => {
     ], { encoding: 'utf8' });
 
     assert.equal(result.status, 0, result.stderr);
-    for (const file of ['poker.html', 'rhodena.html']) {
+    for (const file of ['poker.html', 'rhodena.html', 'fishing.html']) {
       const shell = readFileSync(join(fixture.destination, file), 'utf8');
       assert.match(shell, /<base href="\/apps\/nsmarksthespot\/map\/" \/>/, file);
       assert.doesNotMatch(shell, /<base href="\.\/" \/>/, file);
