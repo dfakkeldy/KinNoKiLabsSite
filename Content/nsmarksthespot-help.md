@@ -8,7 +8,7 @@ I haven't written the FAQ yet. If something in the app is confusing, email me â€
 
 ## Contact
 
-The focused Rhodena Wind map is at [/rhodena](/rhodena).
+The focused Rhodena Wind map is at [/rhodena](/rhodena). The fishing map is at [/fishmap](/fishmap); the static Strait and Bras d'Or Fishing Map stays at [/fishing/](/fishing/).
 
 Hit a bug, or have a feature request? Get in touch:
 
