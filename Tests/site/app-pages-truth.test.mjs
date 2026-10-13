@@ -123,6 +123,22 @@ test('NS Marks public copy names the focused Rhodena page, sight lines, and Map 
   }
 });
 
+test('NS Marks public copy names the fishing focus page at /fishmap, separate from the static /fishing/ guide', () => {
+  assert.match(nsMarks, /## Fishing/);
+  assert.match(nsMarks, /\[\/fishmap\]\(\/fishmap\)/);
+  assert.match(nsMarks, /\[Fishing\]\(\/fishmap\)/);
+  assert.match(nsMarks, /\(\/fishing\/\)/);
+  assert.match(nsMarksHelp, /The fishing map is at \[\/fishmap\]\(\/fishmap\)/);
+  assert.match(generatedNsMarks, /<h2>Fishing<\/h2>/);
+  for (const source of [nsMarks, generatedNsMarks]) {
+    assert.match(source, /research map with a fishing focus/);
+    assert.match(source, /same short-URL pattern as \/poker and \/rhodena/);
+    assert.match(source, /never says a season is open now/);
+    assert.match(source, /not permission to fish from the wharf/);
+    assert.doesNotMatch(source, /fish from the road allowance/i);
+  }
+});
+
 test('NS Marks search copy includes postal communities and labelled mailing addresses', () => {
   for (const source of [nsMarks, generatedNsMarks]) {
     assert.match(source, /PID, civic address, or postal community/);
