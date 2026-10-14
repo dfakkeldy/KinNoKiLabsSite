@@ -664,7 +664,7 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
   padding: 9px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22);
 }
-.screen-frame img { width: 100%; display: block; border-radius: 34px; }
+.screen-frame img { width: 100%; height: auto; display: block; border-radius: 34px; }
 .watch-row { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(14px, 2.5vw, 28px); margin-top: clamp(24px, 4vw, 40px); }
 .watch-figure { width: min(238px, 100%); }
 .watch-frame { border-radius: 54px; padding: 8px; }
