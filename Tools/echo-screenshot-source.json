@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "subject": "The Merchant of Venice — The Novel in Echo",
+  "locations": [
+    "/apps/echo/",
+    "/ (Now Playing image only)"
+  ],
+  "conversion": "Native PNG captures converted to lossless WebP at original dimensions; decoded RGBA bytes verified identical. No cropping, recolouring, compositing or generation.",
+  "assets": [
+    {
+      "role": "now-playing-and-homepage",
+      "resourcePath": "Resources/images/screenshots/echo/merchant-player.webp",
+      "sourcePNG": "01-merchant-now-playing.png",
+      "sourceSHA256": "8cfdd2cf9d2902e82885b4fb5ff1bd2afea8e867aa3cfce5b7b5bc317fb2e8de",
+      "webpSHA256": "6c3d6300b0900ff6b36f148aa61fd7639f1aa04cedea86033683de3d7a203aac",
+      "dimensions": [
+        1206,
+        2622
+      ],
+      "webpBytes": 1443180,
+      "decodedRGBASHA256": "0942be40361860c004995ff7ec8116d0c7db0ae64253fbf17eafc80fab4ce823",
+      "losslessRGBAMatchVerified": true,
+      "captureDate": "2026-10-12",
+      "captureProvenance": "iPhone 17 Pro Simulator; iOS 27.0 (24A5423a); en-US; preserved unsigned Debug Echo 1.0 (9), associated with source e33e5dfe89805d5861797884bf2538770c39193b.",
+      "appearanceEvidence": {
+        "themeColor": "Artwork",
+        "appearance": "Cover",
+        "vividAccent": false,
+        "verified": "live controls and preferences for Artwork/Cover; Vivid live checkbox0"
+      },
+      "synchronizedPlaybackObserved": false
+    },
+    {
+      "role": "audiobook-chapters",
+      "resourcePath": "Resources/images/screenshots/echo/merchant-chapters.webp",
+      "sourcePNG": "02-merchant-chapters.png",
+      "sourceSHA256": "edd50fb23ef701a15db0e44f6b1b3ec4511e30e35ea9648978f4fc9db33c107d",
+      "webpSHA256": "7b33d7b1c0667301ffc095d163ce6a89f4b8a6d9477082ba69176bdf480e531d",
+      "dimensions": [
+        1206,
+        2622
+      ],
+      "webpBytes": 279156,
+      "decodedRGBASHA256": "9e337b602bbc3bdceffb10e3585b17e4fc3ad248deea95a774769e66c993c704",
+      "losslessRGBAMatchVerified": true,
+      "captureDate": "2026-10-13",
+      "captureProvenance": "iPhone 17 Pro Simulator; iOS 27.0 (24A5423a); en-US; preserved unsigned Debug Echo 1.0 (9), associated with source e33e5dfe89805d5861797884bf2538770c39193b.",
+      "appearanceEvidence": {
+        "themeColor": "Artwork",
+        "appearance": "Cover",
+        "vividAccent": true,
+        "proof": "Persisted explicit keys plus originalOct12live controls; actual darkteal/cyan native view"
+      },
+      "synchronizedPlaybackObserved": false
+    },
+    {
+      "role": "novel-reader",
+      "resourcePath": "Resources/images/screenshots/echo/merchant-reader.webp",
+      "sourcePNG": "03-merchant-novel-reader.png",
+      "sourceSHA256": "27eb0505818cf41ce4cda1a1e1fb6819bb732d0217d2948e54added6a75de402",
+      "webpSHA256": "75a523cceb125916a2baf5d41f15082acb365e0304b175ae488af4f48943e20f",
+      "dimensions": [
+        1206,
+        2622
+      ],
+      "webpBytes": 210228,
+      "decodedRGBASHA256": "ccbd76164046e39383de133383f3ffa5d414f995294bef9a7ec1e47b52d8027c",
+      "losslessRGBAMatchVerified": true,
+      "captureDate": "2026-10-13",
+      "captureProvenance": "iPhone 17 Pro Simulator; iOS 27.0 (24A5423a); en-US; preserved unsigned Debug Echo 1.0 (9), associated with source e33e5dfe89805d5861797884bf2538770c39193b.",
+      "appearanceEvidence": {
+        "themeColor": "Artwork",
+        "appearance": "Cover",
+        "vividAccent": true,
+        "proof": "Explicit persisted preferences and originalOct12live controls; native teal header/footer and original square M4B thumbnail visible"
+      },
+      "synchronizedPlaybackObserved": false,
+      "viewportNote": "Actual scroll position clips adjacent paragraphs at top/bottom and shows native Return to current text control; no image edits or artificial masking. Optional reposition was refused by actual guard after this capture."
+    },
+    {
+      "role": "watch-playback",
+      "resourcePath": "Resources/images/screenshots/echo/merchant-watch-playback.webp",
+      "sourcePNG": "04-watch-playback.png",
+      "sourceSHA256": "ef0d535afd9b293f7d155c6d2c80b1b55c95d34efdf22ae36cbf352ee8e08612",
+      "webpSHA256": "154387627da9adb9a2efec203263ef70ad0134c53dbdcacc84706018af55182e",
+      "dimensions": [
+        416,
+        496
+      ],
+      "webpBytes": 54774,
+      "decodedRGBASHA256": "9cea79e50e91e374273880f4aa8036f83dea7820aa15d2312a671398ef2a403f",
+      "losslessRGBAMatchVerified": true,
+      "captureDate": "2026-10-08",
+      "captureProvenance": "Dan-supplied authentic physical Watch screenshot; archive contemporaneous source record; exact Watch model, installed source/build and locale unverified",
+      "appearanceEvidence": {
+        "themeColor": null,
+        "appearance": null,
+        "vividAccent": null,
+        "verified": false
+      },
+      "synchronizedPlaybackObserved": false
+    },
+    {
+      "role": "watch-volume",
+      "resourcePath": "Resources/images/screenshots/echo/merchant-watch-volume.webp",
+      "sourcePNG": "05-watch-volume.png",
+      "sourceSHA256": "84981c59e37eb06c3962489751214cc930c95b928cd9a8f534209710813cbd2c",
+      "webpSHA256": "dce8565d30ee5ebb980c780cfb32246df720d9a2bdb7488935ddf6bdf49e9d93",
+      "dimensions": [
+        416,
+        496
+      ],
+      "webpBytes": 59346,
+      "decodedRGBASHA256": "f4dc7a915c435d5803936c529333307ec5c6f5adec88d76994de2fe4bf60092a",
+      "losslessRGBAMatchVerified": true,
+      "captureDate": "2026-10-08",
+      "captureProvenance": "Dan-supplied authentic physical Watch screenshot; archive contemporaneous source record; exact Watch model, installed source/build and locale unverified",
+      "appearanceEvidence": {
+        "themeColor": null,
+        "appearance": null,
+        "vividAccent": null,
+        "verified": false
+      },
+      "synchronizedPlaybackObserved": false
+    }
+  ],
+  "bookIdentity": {
+    "originalM4BSHA256": "22d6147db56803f2f089cc5d846a7f9ae0f3ebb41f95ad9d481acd19f51e30ce",
+    "originalSquarePNG": {
+      "encodedSHA256": "fcebba8ea872a199abac8c54b93d966fe4c05aa6344fa4bdca3c0827e644c2c2",
+      "dimensions": [
+        2400,
+        2400
+      ],
+      "decodedRGBASHA256": "9a88058676c2382de90e825974e8886b56aff320bf991351a6e7143f4c4baf97"
+    },
+    "epubSHA256": "1ff0bd690c32cde73afbc3fa82aa851df542c389ba23f36234e0452808ac456d",
+    "editionMatch": "All 789 narrated block word sequences match the 20 EPUB chapters exactly.",
+    "epubCover": "The matching original Novel EPUB contains the later 1024×1536 Shylock portrait. It is preserved unchanged; the original square M4B cover is shown in the player and Watch images. Later portrait credits do not describe the square Venice arches."
+  },
+  "credits": {
+    "originalText": "William Shakespeare, The Merchant of Venice; underlying play in the public domain.",
+    "source": "https://shakespeare.mit.edu/merchant/full.html",
+    "modernEdition": "Modern-English adaptation and original notes prepared with OpenAI Codex for Dan Fakkeldy; distinct from the public-domain play.",
+    "modernEditionLicense": "Dan Fakkeldy offers the rights he holds in the modern adaptation and notes under CC BY 4.0.",
+    "licenseURL": "https://creativecommons.org/licenses/by/4.0/",
+    "originalSquareCover": "Venice-arches artwork generated with ChatGPT for Dan Fakkeldy, selected for this screenshot set. The later Shylock portrait artwork and its credits do not describe this square cover.",
+    "recording": "Synthesized recording produced by Dan Fakkeldy with Echo/Kokoro, with its separate recording-specific grant. No audio file is included in this screenshot set.",
+    "rightsBoundary": "The original play, modern adaptation, generated cover, recording and app have separate rights; no blanket public-domain claim is made."
+  },
+  "evidenceLimits": [
+    "Phone captures use preserved unsigned Simulator Debug Echo 1.0 (9), not current TestFlight or release acceptance.",
+    "All three phone views have Artwork/Cover verified. Now Playing has Vivid off; chapter and reader captures have Vivid on.",
+    "Watch captures are authentic supplied images. Exact Watch build/model/locale, enabled appearance settings, extraction algorithm execution and synchronized playback were not independently verified.",
+    "Reader is paused and scrolled away from the current playback text, retaining the native Return to current text control and clipping of adjacent paragraphs."
+  ]
+}
