@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**Effective Date:** October 12, 2026
+**Effective Date:** October 16, 2026
 
 KinNoKi Labs doesn't collect your data. This page spells out exactly what our apps do and don't do with it.
 
@@ -30,6 +30,7 @@ kinnokilabs.com is a static site with no accounts, no analytics, and no advertis
 
 - **Theme and font:** The dark/light theme and OpenDyslexic font toggles are remembered in that browser.
 - **Web Tools** (/tools): Preferences stay in browser storage on that device. The EPUB reader keeps the books you import in a browser database on that device only.
+- **Gas Price Watch** (/gas): Official prices and experimental estimates are downloaded from a public GitHub data feed, with a saved site snapshot as a fallback. Your zone choice stays in your browser and is not included in those requests. There are no accounts, location requests, submissions or trackers. GitHub and this site's hosting receive the ordinary connection information associated with serving a public web request.
 - **Games** (/games): Progress, records, and sound preferences stay in that browser.
 - **Shakespeare film** (/shakespeare/merchant-of-venice): The Word Is Bond film plays in YouTube's privacy-enhanced player (youtube-nocookie.com). Nothing from YouTube loads until you press Play. After that, the player is YouTube's, and Google's privacy policy covers it. The "Watch on YouTube" link opens youtube.com instead.
 - **Listening Rooms** (/listen and /fiction): Playback position, speed, and theme stay in that browser. Audio and text stream from public GitHub URLs when you press play.

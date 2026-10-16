@@ -174,7 +174,7 @@ test('worker installs atomically, activates its own cache version, and leaves un
   const install = waitableEvent();
   worker.handlers.get('install')(install);
   await install.done();
-  assert.deepEqual(worker.opened, ['kinnoki-tools-v3']);
+  assert.deepEqual(worker.opened, ['kinnoki-tools-v4']);
   assert.deepEqual(worker.added.sort(), precacheEntries(workerSource).sort());
   assert.ok(worker.addedRequests.every((request) => request?.cache === 'reload'));
   assert.equal(worker.context.self.skipped, true);
@@ -280,7 +280,7 @@ test('offline navigation normalization and hub fallback stay inside the tools sc
   assert.equal(await response, cachedPage);
   assert.deepEqual(worker.cacheMatches, ['/tools/word-count/']);
   assert.deepEqual(worker.globalMatches, []);
-  assert.deepEqual(worker.opened, ['kinnoki-tools-v3']);
+  assert.deepEqual(worker.opened, ['kinnoki-tools-v4']);
 
   worker.cacheMatches.length = 0;
   worker.opened.length = 0;
@@ -296,7 +296,7 @@ test('offline navigation normalization and hub fallback stay inside the tools sc
   assert.equal(await response, hub);
   assert.deepEqual(worker.cacheMatches, ['/tools/missing/', '/tools/']);
   assert.deepEqual(worker.globalMatches, []);
-  assert.deepEqual(worker.opened, ['kinnoki-tools-v3']);
+  assert.deepEqual(worker.opened, ['kinnoki-tools-v4']);
 
   worker.cacheMatches.length = 0;
   worker.opened.length = 0;
@@ -307,7 +307,7 @@ test('offline navigation normalization and hub fallback stay inside the tools sc
   assert.deepEqual(await response, { type: 'error', status: 0 });
   assert.deepEqual(worker.cacheMatches, ['/about']);
   assert.deepEqual(worker.globalMatches, []);
-  assert.deepEqual(worker.opened, ['kinnoki-tools-v3']);
+  assert.deepEqual(worker.opened, ['kinnoki-tools-v4']);
 });
 
 test('connectivity chip mounts once, unmounts online, and remounts in hub and tool shells', () => {

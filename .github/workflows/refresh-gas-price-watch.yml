@@ -1,0 +1,100 @@
+name: Refresh Gas Price Watch
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gas-price-watch-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out trusted updater source
+        uses: actions/checkout@v4
+        with:
+          path: source
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Check out the separate public data history
+        uses: actions/checkout@v4
+        with:
+          ref: gas-price-watch-data
+          path: gas-data
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node for model/report tests
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install the official-order PDF text reader
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends poppler-utils
+
+      - name: Select daily public-source cache
+        id: cache-date
+        run: echo "day=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache public source documents
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/gas-public-cache/sources
+          key: gas-public-sources-v1-${{ runner.os }}-${{ steps.cache-date.outputs.day }}
+          restore-keys: gas-public-sources-v1-${{ runner.os }}-
+
+      - name: Verify updater and model contracts
+        env:
+          PYTHONPATH: source/Tools/gas-price-watch:source/Tools/gas-price-watch/engine
+        run: python3 -m unittest discover -s source/Tools/gas-price-watch/tests -q
+
+      - name: Refresh prices and immutable predictions
+        id: refresh
+        continue-on-error: true
+        run: |
+          python3 source/Tools/gas-price-watch/hosted_refresh.py \
+            --cache-dir "$RUNNER_TEMP/gas-public-cache" \
+            --data-dir "$GITHUB_WORKSPACE/gas-data"
+
+      - name: Publish the refreshed snapshot or explicit failure state
+        if: ${{ always() && (steps.refresh.outcome == 'success' || steps.refresh.outcome == 'failure') }}
+        working-directory: gas-data
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          snapshot = json.loads(Path('latest.json').read_text())
+          assert snapshot['schema_version'] == 1
+          assert snapshot['status'] in ('ok', 'error')
+          assert snapshot['checked_at']
+          if snapshot['status'] == 'error':
+              assert snapshot['estimate'] is None
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- latest.json issued-forecasts
+          if git diff --cached --quiet; then
+            echo "No public data change."
+            exit 0
+          fi
+          git commit -m "chore(gas): refresh public prices"
+          git push origin HEAD:gas-price-watch-data
+
+      - name: Report a withheld or failed refresh
+        if: steps.refresh.outcome == 'failure'
+        run: |
+          echo "The updater withheld its forecast. The public failure state has been published."
+          exit 1

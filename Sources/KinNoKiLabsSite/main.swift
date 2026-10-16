@@ -57,6 +57,7 @@ struct KinNoKiLabsSite: Website {
         "fiction/",
         "apps/nsmarksthespot/map/",
         "fishing/",
+        "gas/",
     ]
 }
 

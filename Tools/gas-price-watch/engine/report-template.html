@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nova Scotia gas price calculator</title>
+<style>
+:root{color-scheme:light;--ink:#173b3b;--muted:#536966;--paper:#f5f4ed;--line:#d3ddd5;--accent:#b35b28;--white:#fffefa}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 system-ui,-apple-system,sans-serif}
+main{max-width:1100px;margin:auto;padding:42px 28px 80px}h1{font-size:clamp(30px,5vw,46px);line-height:1.12;letter-spacing:-1.5px;margin:10px 0 16px}h2{font-size:24px;letter-spacing:-.5px;margin:0 0 15px}h3{font-size:17px;margin:0 0 8px}p{margin:0 0 15px}.eyebrow{font-size:12px;font-weight:750;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted)}.intro{max-width:760px;color:var(--muted)}.meta{font-size:13px;color:var(--muted)}a{color:#176659;text-underline-offset:3px}a:hover{color:var(--accent)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:30px 0}.card,section{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:24px}.card .label{font-size:13px;font-weight:650;color:var(--muted)}.price{font-variant-numeric:tabular-nums;font-size:38px;font-weight:650;line-height:1.3;letter-spacing:-1px}.price small{font-size:14px;letter-spacing:0}.estimate{border-top:4px solid var(--accent);padding-top:21px}.estimate .price{color:#8b421c}.range{font-size:26px;letter-spacing:-.7px}section{margin:20px 0}.layout{display:grid;grid-template-columns:1fr 1fr;gap:28px}.controls{display:grid;grid-template-columns:1fr 1fr;gap:14px}label{display:block;font-size:13px;font-weight:650}input,select{display:block;width:100%;margin-top:5px;padding:10px 12px;border:1px solid #a6b9b0;border-radius:8px;background:white;color:var(--ink);font:inherit}input:focus,select:focus{outline:3px solid #8cb6a2;outline-offset:2px}.result{padding:24px;background:#eaf0e8;border-radius:12px}.result .price{font-size:42px}.error{color:#a02d23;font-weight:600}.note{border-left:3px solid #b35b28;padding:12px 16px;background:#fff5e9;font-size:14px;margin:16px 0}.scroll{overflow:auto}table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:14px}th,td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}th{font-size:12px;color:var(--muted);font-weight:650}th:first-child,td:first-child{text-align:left}tr:last-child td{border:0}.legend{display:flex;gap:22px;font-size:13px}.dot{display:inline-block;width:18px;height:3px;vertical-align:middle;margin-right:6px}.metrics{display:flex;flex-wrap:wrap;gap:26px;margin:16px 0}.metrics strong{display:block;font-size:27px}.formula{font:15px/1.8 ui-monospace,monospace;background:#edf1e9;padding:15px;border-radius:8px;overflow:auto}.sources{display:grid;gap:9px;font-size:14px}details{margin:14px 0}summary{cursor:pointer;font-weight:600}svg{width:100%;height:auto;display:block;margin:16px 0}.pill{display:inline-block;background:#e7eee6;border-radius:20px;padding:5px 10px;font-size:12px;font-weight:650}.footer{font-size:13px;color:var(--muted);margin-top:25px}#calc-error:empty{display:none}@media(max-width:760px){main{padding:26px 16px 50px}.cards{grid-template-columns:1fr}.layout{grid-template-columns:1fr}.card,section{padding:20px}.price{font-size:34px}.controls{gap:12px}.cards .card{padding:17px 20px}.card .meta{margin-bottom:0}}
+@media print{body{background:white}main{max-width:none;padding:0}.card,section{break-inside:avoid}.controls{display:none}a{color:inherit}.footer{display:none}}
+</style>
+<main>
+<div class="eyebrow">Nova Scotia · Regular self-serve gasoline</div>
+<h1>What goes into the gas price?</h1>
+<p class="intro">Current official prices, a rolling estimate using Halifax E10 rack prices, and an experimental interrupter watch. As daily quotes arrive, assumed days become observed days. Prices are Canadian dollars per litre unless marked ¢/L.</p>
+<div class="meta" id="stamp"></div>
+<div id="refresh-alert"></div>
+<div class="cards">
+ <div class="card"><div class="label">Official minimum · <span class="zone-label"></span></div><div class="price" id="official-price"></div><p class="meta" id="official-date"></p><a id="official-link">Read the price order</a></div>
+ <div class="card estimate"><div class="label"><span id="forecast-kind">Estimated next minimum</span> · <span class="zone-label"></span></div><div class="price" id="forecast-price"></div><p class="meta" id="forecast-date"></p><p class="meta" id="forecast-change"></p></div>
+ <div class="card"><div class="label" id="range-heading">Historical error reference</div><div class="price range" id="forecast-range"></div><p class="meta" id="range-note"></p><span class="pill" id="model-status">Model status</span></div>
+</div>
+<p class="meta" id="forecast-method"></p>
+<p class="meta" id="issued-status"></p>
+<section id="watch-section" hidden>
+<h2>Interrupter watch</h2>
+<p id="watch-summary"></p>
+<p class="meta" id="watch-evidence"></p>
+<p class="meta">The watch compares estimated supply-cost gaps before taxes with a six-cent reference. It uses only real daily quotes. The Board compares different market assessments with its benchmark and has discretion, so this signal does not confirm an official trigger.</p>
+<p class="meta" id="watch-performance"></p>
+<p class="meta"><a href="https://nserbt.ca/sites/default/files/Decision%20%28Interruption%29.pdf">Board guidance</a> describes a six-cent change generally sustained over two days, with scope to act on a very large one-day move.</p>
+</section>
+<section id="issued-section" hidden>
+<h2>Saved advance estimates</h2>
+<p class="meta">Zone 6 minimum prices are shown here; comparison details include every zone's minimum and maximum. A manual refresh scores each saved estimate against its matching official effective date. Several development records can refer to one pricing event; they do not count as independent successes.</p>
+<div class="scroll"><table><thead><tr><th>Effective date</th><th>Issued · Halifax time</th><th>Zone 6 estimate</th><th>Zone 6 actual</th><th>Error · ¢/L</th><th>Status</th></tr></thead><tbody id="issued-results"></tbody></table></div>
+<p><a href="data/issued-forecast-results.json">Saved comparison details</a></p>
+</section>
+<section id="reference-section" hidden>
+<h2>Reported forecasts for the next setting</h2>
+<p class="meta">These dated third-party predictions are saved for comparison and can disagree. They are separate from the calculator's research model and have not been confirmed by an official price order.</p>
+<div class="scroll"><table><thead><tr><th>Source</th><th>Effective date</th><th>Regular gasoline prediction</th></tr></thead><tbody id="references"></tbody></table></div>
+<p class="meta" id="reference-zone-note" style="margin-top:12px"></p>
+</section>
+<section>
+<h2>Calculate a scenario</h2>
+<p class="meta">Start with the latest published inputs or enter your own scenario. The benchmark and weekly adjustments are in cents per litre. Zone 6 covers Cape Breton, Victoria and Richmond counties, and part of Inverness County.</p>
+<div class="layout">
+ <form id="calculator"><div class="controls">
+  <label>Pricing zone<select id="zone"><option value="1">Zone 1</option><option value="2">Zone 2</option><option value="3">Zone 3</option><option value="4">Zone 4</option><option value="5">Zone 5</option><option value="6" selected>Zone 6</option></select></label>
+  <label>Effective date<input id="effective" type="date" min="2025-01-03" required></label>
+  <label>Benchmark · ¢/L<input id="benchmark" type="number" min="0.01" step="0.01" required></label>
+  <label>Forward correction · ¢/L<input id="forward" type="number" step="0.01" required></label>
+  <label>Clean-fuel adjustor · ¢/L<input id="clean" type="number" min="0" step="0.01" required></label>
+  <label>Retail adjustment · ¢/L<input id="credit" type="number" step="0.01" required></label>
+ </div></form>
+ <div class="result"><div class="label">Calculated minimum / maximum</div><div class="price" id="calculated"></div><p class="meta" id="calc-cents"></p><p class="error" id="calc-error" role="status"></p><table aria-label="Scenario breakdown"><tbody id="breakdown"></tbody></table></div>
+</div>
+<p class="meta" style="margin-top:18px">A scenario is arithmetic for the inputs supplied. The next benchmark, forward correction, clean-fuel adjustor and retail adjustment remain unknown until their source data or the price order is available.</p>
+</section>
+<section>
+<h2>All six zones</h2>
+<div class="scroll"><table><thead><tr><th>Zone</th><th>Official minimum</th><th>Official maximum</th><th>Estimated next minimum</th><th>Estimated next maximum</th></tr></thead><tbody id="zones"></tbody></table></div>
+<p class="meta" style="margin-top:12px">The regulated range allows stations to charge different prices. Promotions and discounts can affect the amount paid.</p>
+</section>
+<section>
+<h2>Retrospective test of the repaired estimate</h2>
+<div class="metrics" id="metrics"></div>
+<p class="meta" id="test-scope"></p>
+<div class="legend"><span><i class="dot" style="background:#173b3b"></i>Published minimum</span><span><i class="dot" style="background:#b35b28"></i>Estimated minimum</span></div>
+<svg id="chart" viewBox="0 0 960 260" role="img" aria-label="Published and estimated Zone 1 minimum prices for all gasoline settings in the fixed July to October test"></svg>
+<p class="meta" id="test-detail"></p>
+<p class="meta">Coefficients use only settings before July 1, 2026. The later test is retrospective and was not blinded: current archives were used and historical release vintages were not reconstructed. Interrupter dates were known for this price test; it does not test advance detection of an interruption. Historical errors do not guarantee tonight's accuracy. Saved advance estimates will be scored against official outcomes on a later refresh.</p>
+<p><a href="data/backtest.csv">Download the comparisons</a> · <a href="data/history.csv">Download all parsed prices</a></p>
+<div id="rolling-tests" hidden>
+<h3>Rolling estimates through the week</h3>
+<p class="meta">The later tests below cover regular Friday targets. Errors across intervening gasoline adjustments remain included. Earlier expanding-origin errors supply the displayed lead-time reference, not a guaranteed confidence interval.</p>
+<div class="scroll"><table><thead><tr><th>Estimate made</th><th>Test settings</th><th>Mean error · ¢/L</th><th>Largest miss · ¢/L</th><th>Earlier p90 · ¢/L</th></tr></thead><tbody id="rolling-test-rows"></tbody></table></div>
+</div>
+</section>
+<section>
+<h2>The formula</h2>
+<div class="formula">Wholesale = ROUND(benchmark + forward + clean fuel + wholesale margin<br> + transport + carbon charge + federal tax + provincial tax, 2)<br>Pump price = ROUND((wholesale + retail margin + retail adjustment) × (1 + HST), 1)</div>
+<p class="meta" style="margin-top:14px">These equations return cents per litre. Divide by 100 for dollars. The minimum and maximum use their respective retail margins.</p>
+<p>The official benchmark uses 90% New York Harbor CBOB and 10% Chicago ethanol daily spot assessments. Each day's blended high/low average is converted with its Bank of Canada USD/CAD rate, then the daily results are averaged.</p>
+<p>The automatic estimate uses changes in Halifax E10 rack prices to predict the combined benchmark, forward correction and clean-fuel subtotal. It applies known taxes and margins and carries the last retail adjustment. Rack prices are already in Canadian cents per litre. The earlier EIA conventional-gasoline estimate was withdrawn; its data and results are preserved for comparison.</p>
+<p class="meta">Commercial assessments and the Board's next forward correction are needed for an exact advance calculation. The clean-fuel adjustor currently uses Argus Canada CFR compliance costs. The Python calculator also accepts a CSV of daily CBOB and ethanol assessments.</p>
+<div id="interrupter"></div>
+</section>
+<section>
+<h2>Sources and verification</h2>
+<p id="audit-summary"></p>
+<div id="audit-issues"></div>
+<div class="sources" id="sources"></div>
+<details><summary>Rack observations and assumptions used for the estimate</summary><div class="scroll"><table><thead><tr><th>Window</th><th>Date</th><th>Halifax E10 · CAD ¢/L</th><th>Basis</th></tr></thead><tbody id="observations"></tbody></table></div></details>
+<details><summary>Assumptions and refresh status</summary><ul id="assumptions"></ul><p class="meta" id="fetch-status"></p></details>
+<p><a href="README.md">Formula, methods and operating instructions</a> · <a href="data/latest.json">Machine-readable results</a></p>
+</section>
+<p class="footer">To update this report, double-click <strong>Refresh Gas Prices.command</strong> in this folder. It downloads current public data, recalculates the results and opens the report. No recurring job is installed.</p>
+</main>
+<script>
+const data=__DATA__;
+const el=id=>document.getElementById(id);
+const money=c=>'$'+(Number(c)/100).toFixed(3);
+const text=(id,value)=>el(id).textContent=value;
+const fmtDate=d=>new Date(d+'T12:00:00').toLocaleDateString('en-CA',{year:'numeric',month:'short',day:'numeric'});
+const link=(parent,label,url)=>{const a=document.createElement('a');a.textContent=label;a.href=url;parent.append(a);return a};
+const row=(body,cells)=>{const tr=document.createElement('tr');cells.forEach(c=>{const td=document.createElement('td');td.textContent=c;tr.append(td)});body.append(tr)};
+const f=data.forecast||data.rolling_estimate,provisional=!!data.rolling_estimate;
+text('stamp','Report created '+new Date(data.generated_at).toLocaleString('en-CA',{timeZone:'America/Halifax',timeZoneName:'short'})+(data.rack_latest?' · Halifax E10 rack observations through '+fmtDate(data.rack_latest):''));
+if(data.fetch_errors.length){const div=document.createElement('div');div.className='note';div.textContent='Refresh incomplete'+(data.last_failed_refresh_at?' at '+new Date(data.last_failed_refresh_at).toLocaleString('en-CA',{timeZone:'America/Halifax',timeZoneName:'short'}):'')+'. Some sources could not be retrieved or verified. Saved observations and source errors are shown below.';el('refresh-alert').append(div)}
+el('official-link').href=data.current.source_url;
+text('official-date','Effective '+fmtDate(data.current.date));
+text('forecast-date',f?'For '+fmtDate(f.date):(data.last_failed_refresh_at?'Saved target ':'Next Friday ')+fmtDate(data.next_friday));
+text('range-note',f&&f.range_half_width?'±'+f.range_half_width+'¢/L: earlier expanding-origin error'+(provisional?' based on the latest real quote':'')+'. This is a historical reference, not a guaranteed range.':provisional?'No historical error band assigned to this opening or extrapolated estimate.':'Waiting for verified data.');
+text('model-status',f?(f.outside_training_features?.length?'Extrapolation · no error band':provisional?'Provisional · assumed quotes remain':'Complete window · live outcome pending'):'Estimate unavailable');
+text('forecast-kind',f?.outside_training_features?.length?'Extrapolated next minimum':provisional?'Provisional next minimum':'Estimated next minimum');
+if(f){let method='Supply-cost estimate uses the change in the period average ('+Number(f.mean_change).toFixed(2)+'¢/L) and latest posted rack quote ('+Number(f.latest_change).toFixed(2)+'¢/L).';if(provisional){const p=f.projection;method+=' '+p.observed_count+' of '+p.total_count+' quotes observed.';if(p.projected_count)method+=' '+p.projected_count+' unobserved dates hold the '+fmtDate(p.quote_date)+' quote of '+Number(p.quote_price).toFixed(2)+'¢/L.'}if(f.outside_training_features?.length)method+=' Current changes are outside fitted ranges; this is an extrapolation.';text('forecast-method',method+' Separate unpublished Board inputs are not claimed.');const scored=new Set((data.issued_forecast_results||[]).filter(r=>r.status==='scored').map(r=>r.date)).size;text('issued-status','Saved before the setting at '+new Date(f.issued_at).toLocaleString('en-CA',{timeZone:'America/Halifax',timeZoneName:'short'})+'. Model '+f.model_version+'. '+scored+' distinct advance pricing events scored so far.')}
+if(data.interrupter_watch){const w=data.interrupter_watch;el('watch-section').hidden=false;const messages={below_reference:'Current estimated supply gap is below the six-cent watch reference.',single_quote_move:'One observed quote produces an estimated supply gap beyond the six-cent reference. This is an early watch signal.',sustained_proxy_move:'Two observed quotes produce estimated supply gaps beyond the six-cent reference in the same direction. This is an experimental sustained signal.',waiting_for_quotes:'Waiting for real quotes after the latest gasoline setting.',unavailable:'Watch unavailable: '+(w.reason||'verified inputs are missing')};text('watch-summary',messages[w.status]||'Watch unavailable.');text('watch-evidence',(w.observations||[]).map(o=>o.date+': '+(Number(o.supply_gap)>0?'+':'')+Number(o.supply_gap).toFixed(2)+'¢/L estimated supply gap').join(' · ')+(w.regular_setting_next?' The next morning is the regular Friday setting.':''));const perf=data.evaluation.rolling?.watch.summary;if(perf)text('watch-performance','Exploratory test across '+data.evaluation.rolling.watch.cases.length+' quote-day decisions for the next calendar day: the early signal flagged '+perf.early.detected_events+' of '+perf.early.actual_events+' later interruptions, with '+perf.early.false_alert_days+' false-alert days. Requiring two quotes flagged '+perf.sustained.detected_events+' of '+perf.sustained.actual_events+', with '+perf.sustained.false_alert_days+' false-alert days.'+(perf.early.unresolved_target_dates?' '+perf.early.unresolved_target_dates+' unresolved target dates; '+perf.early.unresolved_alert_days+' early alerts await scoring.':'')+' These results do not establish a reliable timing prediction.')}
+if(data.issued_forecast_results?.length){el('issued-section').hidden=false;const scored=new Set(data.issued_forecast_results.filter(r=>r.status==='scored').map(r=>r.date)).size;if(!f)text('issued-status',scored+' distinct advance pricing events scored so far.');data.issued_forecast_results.forEach(r=>{const z=r.zones?.find(z=>z.zone===6),pending=r.predicted_zones?.find(z=>z.zone===6),predicted=z?.predicted_minimum??pending?.minimum??(f?.record_id===r.record_id?f.zones[5].minimum:null);row(el('issued-results'),[fmtDate(r.date),new Date(r.issued_at).toLocaleString('en-CA',{timeZone:'America/Halifax',timeZoneName:'short'}),predicted!=null?money(predicted):'See saved record',z?money(z.actual_minimum):'—',z?Number(z.minimum_error).toFixed(1):'—',r.status==='scored'?'Scored':'Pending'])})}
+if(!f){text('forecast-change',data.forecast_unavailable);text('forecast-price','Unavailable');text('forecast-range','Unavailable')}
+if(data.forecast_validation?.status==='research_only'){text('forecast-price','Withheld');text('range-heading','Live model status');text('forecast-range','Research only');text('range-note','The historical errors below do not establish a reliable live prediction or an uncertainty interval for the next setting.')}
+if(data.reference_forecasts?.length){el('reference-section').hidden=false;data.reference_forecasts.forEach(r=>{const tr=document.createElement('tr'),source=document.createElement('td'),effective=document.createElement('td'),prediction=document.createElement('td');link(source,r.source,r.source_url);effective.textContent=fmtDate(r.effective_date);const change=Number(r.gasoline_change_cents);prediction.textContent=(change<0?'Down ':'Up ')+Math.abs(change).toFixed(1)+'¢/L'+(r.zone1_minimum_cents?'; Halifax '+money(r.zone1_minimum_cents):'');tr.append(source,effective,prediction);el('references').append(tr)});const hawk=data.reference_forecasts.find(r=>r.source.includes('Hawk'));if(hawk)text('reference-zone-note',"Applying The Hawk's reported change to the current Zone 6 minimum gives approximately "+money(Number(data.current.zones[5].minimum)+Number(hawk.gasoline_change_cents))+'/L. This is an inference from its forecast, not an official new price.')}
+data.current.zones.forEach((z,i)=>row(el('zones'),['Zone '+z.zone,money(z.minimum),money(z.maximum),f?money(f.zones[i].minimum):'Unavailable',f?money(f.zones[i].maximum):'Unavailable']));
+const recent=data.evaluation.recent_summary,full=data.evaluation.summary,coverage=data.evaluation.coverage;
+[['Test average error',(full.mae||'—')+'¢/L'],['Largest test error',(full.max_error||'—')+'¢/L'],['Direction on changing settings',full.direction_cases?full.direction_correct+'/'+full.direction_cases:'—']].forEach(([label,value])=>{const div=document.createElement('div'),strong=document.createElement('strong'),small=document.createElement('span');strong.textContent=value;small.textContent=label;div.append(strong,small);el('metrics').append(div)});
+text('test-scope',coverage?coverage.available+' of '+coverage.total+' gasoline settings available, July 1–October 9, 2026: '+coverage.scheduled+' Fridays and '+coverage.other_settings+' other settings, including interrupters. '+coverage.unavailable+' unavailable.':'The repaired test could not be computed in this refresh.');
+if(data.evaluation.training_cv){const cv=data.evaluation.training_cv.summary,base=data.evaluation.persistence.summary,common=data.evaluation.legacy_common;text('test-detail','Earlier expanding-origin checks: '+cv.count+' estimates, '+cv.mae+'¢/L mean error and '+cv.max_error+'¢/L largest miss. Holding the last pump price in the later test gives '+base.mae+'¢/L mean error. On '+common.count+' later settings where both models were available, the repaired estimate averages '+common.repaired.mae+'¢/L error versus '+common.withdrawn_proxy.mae+'¢/L for the withdrawn proxy. These are Zone 1 minimum-price metrics; all-zone comparisons are saved in the data.')}
+if(data.evaluation.rolling){el('rolling-tests').hidden=false;const names={7:'Friday · 7 days ahead',6:'Saturday · 6 days ahead',5:'Sunday · 5 days ahead',4:'Monday · 4 days ahead',3:'Tuesday · 3 days ahead',2:'Wednesday · 2 days ahead',1:'Thursday · 1 day ahead'};for(const lead of [7,6,5,4,3,2,1]){const h=data.evaluation.rolling.horizons[String(lead)],s=h.summary;row(el('rolling-test-rows'),[names[lead],s.count+'/'+h.total,s.mae||'—',s.max_error||'—',h.earlier_summary.p90||'—'])}}
+const points=data.evaluation.cases.slice(-24),svg=el('chart'),ns='http://www.w3.org/2000/svg';
+const node=(tag,attrs,content)=>{const n=document.createElementNS(ns,tag);Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,v));if(content)n.textContent=content;svg.append(n);return n};
+if(points.length){const values=points.flatMap(p=>[Number(p.actual_minimum),Number(p.predicted_minimum)]),lo=Math.floor((Math.min(...values)-5)/10)*10,hi=Math.ceil((Math.max(...values)+5)/10)*10,x=i=>60+i*870/Math.max(1,points.length-1),y=v=>210-(v-lo)*170/(hi-lo);
+ for(let v=lo;v<=hi;v+=10){node('line',{x1:60,x2:930,y1:y(v),y2:y(v),stroke:'#e2e7de'});node('text',{x:47,y:y(v)+4,'text-anchor':'end',fill:'#536966','font-size':12},v+'¢')}
+ for(const [key,color] of [['actual_minimum','#173b3b'],['predicted_minimum','#b35b28']])node('polyline',{points:points.map((p,i)=>x(i)+','+y(Number(p[key]))).join(' '),fill:'none',stroke:color,'stroke-width':2.5});
+ points.forEach((p,i)=>{const c=node('circle',{cx:x(i),cy:y(Number(p.actual_minimum)),r:4,fill:'#173b3b'}),title=document.createElementNS(ns,'title');title.textContent=p.date+': published '+p.actual_minimum+'¢, estimated '+p.predicted_minimum+'¢';c.append(title)});
+ node('text',{x:60,y:244,fill:'#536966','font-size':12},points[0].date);node('text',{x:930,y:244,'text-anchor':'end',fill:'#536966','font-size':12},points.at(-1).date)
+}
+const audit=data.audit;
+text('audit-summary',audit.matching_orders+' of '+audit.orders+' parsed orders match the formula in all six zones. '+audit.matching_pump_prices+' of '+audit.pump_comparisons+' minimum/maximum pump-price comparisons match to 0.1¢/L. '+audit.rejected_orders.length+' additional order needs source review.');
+(audit.source_warnings||[]).forEach(issue=>{const div=document.createElement('div');div.className='note';div.append(document.createTextNode(issue.date+': '+issue.warning+' '));link(div,'Read the original order',issue.source_url);el('audit-issues').append(div)});
+audit.arithmetic_issues.forEach(issue=>{const div=document.createElement('div');div.className='note';const first=issue.mismatches.find(x=>x.field==='base_wholesale');div.append(document.createTextNode(issue.date+': component arithmetic and the published base wholesale price differ by '+(first?first.difference:'an unresolved amount')+'¢/L. The discrepancy is retained. '));link(div,'Read the original order',issue.source_url);el('audit-issues').append(div)});
+audit.rejected_orders.forEach(issue=>{const div=document.createElement('div');div.className='note';div.append(document.createTextNode(issue.date+': '+issue.reason+'. '));link(div,'Read the source',issue.source_url);el('audit-issues').append(div)});
+const sources=[['Current official price schedule',data.current.source_url],['Pricing regulations','https://novascotia.ca/just/regulations/regs/ppprice.htm'],['Kalibrate Halifax E10 daily rack history, 2026','https://charting.kalibrate.com/WPPS/E10/Wholesale/DAILY/2026/E10_Wholesale_DAILY_2026.xlsx'],['NRCan Halifax daily rack comparison','https://www2.nrcan-rncan.gc.ca/eneene/sources/pripri/wholesale_bycity_e.cfm?productID=9&locationID=39&frequency=D'],['Kalibrate rack methodology','https://charting.kalibrate.com/KentReports/Methodology'],['Current retail margins: May 2026 order','https://nserbt.ca/sites/default/files/NSEB%20Board%20Interim%20Order%20-%20Retail%20Gasoline%20Dealers%20Association%20M12800.pdf'],['Clean-fuel methodology: June 2026 order','https://nserbt.ca/sites/default/files/M12909%20-%20Interim%20Order.pdf']];
+sources.forEach(([label,url])=>{const div=document.createElement('div');link(div,label,url);el('sources').append(div)});
+if(f){for(const [label,window] of [['Previous',f.previous_rack_window],['Next',f.rack_window]])window.observations.forEach(o=>row(el('observations'),[label,o.date,o.price,o.projected?'Assumed unchanged':'Observed']));f.assumptions.forEach(a=>{const li=document.createElement('li');li.textContent=a;el('assumptions').append(li)});const div=document.createElement('div');div.className='note';div.textContent='An interrupter depends on the Board’s actual benchmark assessments and decision. This rack estimate does not establish whether the official trigger was reached.';el('interrupter').append(div)}
+text('fetch-status',data.fetch_errors.length?data.fetch_errors.map(x=>x.source+': '+x.error).join(' '):'Every current source was retrieved successfully for this refresh.');
+const initial=data.current;
+el('effective').value=initial.date;el('benchmark').value=initial.benchmark;el('forward').value=initial.forward;el('clean').value=initial.clean_fuel;el('credit').value=initial.credit_card;
+const cents=v=>Math.round(Number(v)*100);
+function calculate(){
+ const zone=Number(el('zone').value),date=el('effective').value;
+ document.querySelectorAll('.zone-label').forEach(n=>n.textContent='Zone '+zone);
+ const official=data.current.zones[zone-1];text('official-price',money(official.minimum));
+ if(f){const next=f.zones[zone-1],change=Number(next.minimum)-Number(official.minimum);text('forecast-price',money(next.minimum));text('forecast-change',(change>0?'+':'')+change.toFixed(1)+'¢/L from the current minimum');text('forecast-range',f.range_half_width?money(Number(next.minimum)-Number(f.range_half_width))+' to '+money(Number(next.minimum)+Number(f.range_half_width)):'Unavailable')}
+ el('breakdown').replaceChildren();
+ if(!el('calculator').checkValidity()||date<'2025-01-03'){text('calc-error','Enter a valid date and numeric inputs to two decimal places.');text('calculated','—');text('calc-cents','');return}
+ const b=cents(el('benchmark').value),fw=cents(el('forward').value),clean=cents(el('clean').value),cc=cents(el('credit').value),margin=date<'2026-01-09'?1384:1084,transport=[60,110,150,160,160,230][zone-1],carbon=date<'2025-04-01'?1761:0,prov=1550,hst=date<'2025-04-01'?15:14,minRetail=date<'2026-05-29'?540:710,maxRetail=date<'2026-05-29'?740:970;
+ const excise=date>='2026-04-20'&&date<='2027-01-31'?0:date>='2027-02-01'&&date<='2027-03-31'?500:1000,wholesale=b+fw+clean+margin+transport+carbon+excise+prov;
+ const min=Math.floor(((wholesale+minRetail+cc)*(100+hst)+500)/1000)/10,max=Math.floor(((wholesale+maxRetail+cc)*(100+hst)+500)/1000)/10;
+ if(min<=0||!Number.isFinite(min)){text('calc-error','The inputs produce a nonpositive price.');text('calculated','—');text('calc-cents','');return}
+ text('calc-error','');text('calculated',money(min)+' / '+money(max));text('calc-cents',min.toFixed(1)+'¢/L minimum · '+max.toFixed(1)+'¢/L maximum');
+ [['Benchmark',b],['Forward correction',fw],['Clean-fuel adjustor',clean],['Wholesale margin',margin],['Transport',transport],['Federal + provincial fuel taxes',excise+prov],['Carbon charge',carbon],['Wholesale selling price',wholesale],['Retail margin, minimum / maximum',minRetail/100+' / '+maxRetail/100],['Retail adjustment',cc]].forEach(([label,value])=>row(el('breakdown'),[label,typeof value==='number'?(value/100).toFixed(2)+'¢':value+'¢']));row(el('breakdown'),['HST',hst+'%'])
+}
+el('calculator').addEventListener('input',calculate);el('calculator').addEventListener('submit',e=>e.preventDefault());calculate();
+</script>
+</html>
