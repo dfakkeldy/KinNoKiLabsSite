@@ -16,7 +16,7 @@ The data directory is the checked-out public data branch. The cache directory sh
 
 Exit status is `0` when an active complete, provisional or extrapolated estimate passes verification. A withheld estimate or refresh failure returns `1` and writes a safe error payload. The publishing workflow must still publish that payload so readers see the withdrawal. Filesystem write failures also return `1`.
 
-On failure, the payload retains previously verified official prices, retrospective performance and issued forecast results. It clears both the estimate and watch. With no verified prior feed, `current` is `null`. Public JSON contains approved fields and public source URLs only; exception details and temporary paths stay out of it.
+On failure, the payload retains verified official prices, retrospective performance and issued forecast results. A market-source outage still publishes independently verified new Board prices and newly scored outcomes; Board-source failures retain the previous verified sections. It clears both the estimate and watch. With no verified prior feed, `current` is `null`. Public JSON contains approved fields and public source URLs only; exception details and temporary paths stay out of it.
 
 The engine downloads and parses the original public sources. Current Board pages, the current order, the current-year E10 workbook and NRCan confirmation must refresh successfully. Unused legacy EIA or FX diagnostics cannot block a valid E10 estimate. Missing observations within a required input window still fail verification. A missing unused past-year workbook does not require a production refit or block current windows.
 
@@ -52,7 +52,7 @@ An injected callback accepts `now` and `frozen_evaluation` keyword arguments and
 python3 -m unittest discover -s Tools/gas-price-watch/tests
 ```
 
-The suite contains 129 tests: 99 ported engine tests and 30 hosted-wrapper or frozen-model tests. Tests cover policy dates, holidays, leakage, missing quotes, projections, watch outcomes, time zones, frozen parameters, public field filtering, error fallback, unique event counts and immutable record conflicts. All mutations and issuance use temporary directories. Tests do not download sources or touch an existing private ledger.
+The suite contains 130 tests: 99 ported engine tests and 31 hosted-wrapper or frozen-model tests. Tests cover policy dates, holidays, leakage, missing quotes, projections, watch outcomes, time zones, frozen parameters, public field filtering, error fallback, unique event counts and immutable record conflicts. All mutations and issuance use temporary directories. Tests do not download sources or touch an existing private ledger.
 
 Ten of the original 109 tests are intentionally omitted: five report-interface tests for the old local HTML report, and five integration tests requiring downloaded vendor XLSX or HTML archives. Synthetic XLSX and HTML fixtures retain parser and validation coverage. The public page has its separate frontend tests; live source integration is a separate verification step.
 

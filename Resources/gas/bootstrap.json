@@ -1,11 +1,12 @@
 {
   "schema_version": 1,
-  "checked_at": "2026-10-16T03:20:01.113485+00:00",
+  "checked_at": "2026-10-16T03:26:57.925639+00:00",
   "status": "ok",
   "error": null,
   "current": {
     "date": "2026-10-16",
     "source_url": "https://nserbt.ca/sites/default/files/documents/gas/gasprice.pdf?1792120504",
+    "gasoline_setting_date": "2026-10-16",
     "zones": [
       {
         "zone": 1,
@@ -97,6 +98,7 @@
   },
   "watch": {
     "status": "waiting_for_quotes",
+    "anchor_date": "2026-10-16",
     "latest_gap": null,
     "reference_cents": "6",
     "direction": null,
@@ -229,7 +231,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-16T03:01:00+00:00",
-      "observed_at": "2026-10-16T03:20:00.487781+00:00",
+      "observed_at": "2026-10-16T03:26:57.439375+00:00",
       "input_fingerprint": "1f293aba9d6fd421f5846e0a77924b3ddbdec777b88c855b0420e62f6eb25798",
       "zones": [
         {
@@ -328,7 +330,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-16T03:01:00+00:00",
-      "observed_at": "2026-10-16T03:20:00.487781+00:00",
+      "observed_at": "2026-10-16T03:26:57.439375+00:00",
       "input_fingerprint": "9b5af1ba8e125c6cb1b024602098e60254c329bcfdc712e36a75e479b3721ffc",
       "zones": [
         {
@@ -427,7 +429,7 @@
       ],
       "status": "pending",
       "effective_at": "2026-10-23T03:01:00+00:00",
-      "observed_at": "2026-10-16T03:20:00.487781+00:00",
+      "observed_at": "2026-10-16T03:26:57.439375+00:00",
       "input_fingerprint": "9420acf7b246057e5ef854916e71511669736bdd2810f505fb9d3e7172dac5e2",
       "reason": "Target price is not yet effective"
     }

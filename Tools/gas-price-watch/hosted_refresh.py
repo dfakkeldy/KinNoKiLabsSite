@@ -452,11 +452,13 @@ def refresh_public(cache_dir: Path, data_dir: Path, *, now: datetime | None = No
                 generated = _aware(snapshot["generated_at"])
                 critical = {"prices.html", "historical-prices.html", "order-current.pdf", "rack/nrcan-halifax.html",
                             f"rack/e10-{checked.astimezone(HALIFAX).year}.xlsx"}
+                official_sources = {"prices.html", "historical-prices.html", "order-current.pdf"}
                 fresh = timedelta(0) <= checked - generated <= timedelta(hours=3)
                 verified = not any(row["source"] in critical for row in snapshot.get("fetch_errors", []))
-                if not fresh or not verified:
+                official_verified = not any(row["source"] in official_sources for row in snapshot.get("fetch_errors", []))
+                if not fresh or not official_verified:
                     payload = _fallback(previous, checked, frozen)
-                else:
+                elif verified:
                     # Valid pre-effective records remain real issuances even if
                     # a long refresh finishes after their publication deadline.
                     _append_ledger(ns_gas.DATA / "issued-forecasts", data_dir / "issued-forecasts", baseline)

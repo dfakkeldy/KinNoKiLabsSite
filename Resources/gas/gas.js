@@ -12,7 +12,7 @@ const messages = {
   official_pending: "Waiting for this Friday's official order before estimating the following week. Estimates and watch are hidden.",
   invalid_estimate: 'The estimate could not be validated. Estimates and watch are hidden; the last verified official order is shown below.',
 };
-const modeLabels = { complete: 'All quotes observed', provisional: 'Some quotes assumed', extrapolation: 'Quotes carried forward' };
+const modeLabels = { complete: 'All quotes observed', provisional: 'Some quotes assumed', extrapolation: 'Outside training range' };
 const count = (value) => Number.isInteger(value) && value >= 0 ? String(value) : 'Unavailable';
 
 export function mountGasWatch(root, { document = root.ownerDocument, window = globalThis.window, fetcher = globalThis.fetch, now = () => new Date() } = {}) {

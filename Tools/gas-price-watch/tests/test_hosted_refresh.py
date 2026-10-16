@@ -193,6 +193,20 @@ class HostedRefreshTests(unittest.TestCase):
         value["fetch_errors"].append({"source": "rack/nrcan-halifax.html", "error": "timeout"})
         self.assertEqual(self.refresh(value)["status"], "error")
 
+    def test_market_outage_retains_fresh_official_prices_and_newly_scored_outcomes(self):
+        self.refresh()
+        value = snapshot("2026-10-23", "2026-10-16", "2026-10-16T04:00:00+00:00")
+        value["current"]["zones"][0]["minimum"] = "189.5"
+        value["issued_forecast_results"] = [self.result("2026-10-16", "a", "scored")]
+        value["fetch_errors"] = [{"source": "rack/nrcan-halifax.html", "error": "timeout"}]
+        result = self.refresh(value, now=datetime(2026, 10, 16, 4, 1, tzinfo=timezone.utc))
+        self.assertEqual(result["status"], "error")
+        self.assertEqual(result["current"]["date"], "2026-10-16")
+        self.assertEqual(result["current"]["zones"][0]["minimum"], "189.5")
+        self.assertEqual(result["live_validation"], {"observed_events": 1, "pending_events": 0})
+        self.assertIsNone(result["estimate"])
+        self.assertIsNone(result["watch"])
+
     @staticmethod
     def result(target, fingerprint, status="pending", *, hour=12):
         result = dict(date=target, issued_at=(date.fromisoformat(target) - timedelta(days=1)).isoformat() + f"T{hour:02}:00:00+00:00",
