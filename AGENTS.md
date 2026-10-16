@@ -14,6 +14,7 @@ make test-games      # Arcade Hall   (/games)
 make test-tools      # Web Tools     (/tools)
 make test-listen     # Echo Listening Room (/listen)
 make test-fiction    # Fiction Listening Room (/fiction); needs a generated Output/
+make test-gas-price-watch  # Gas Price Watch (/gas/); JS + Python suites
 ```
 
 `make publish` runs `git add -A`, commits, and pushes the current branch. Use
@@ -38,9 +39,9 @@ a task branch and a PR instead.
   `apps/routey` is on it (Routey is discontinued). Add a page here instead of
   deleting it when something still links to it.
 - `KinNoKiLabsSite.staticSitemapPaths` adds hand-authored static pages under
-  `Resources/` that Publish can't see (`/listen/`, `/fiction/`, the NS Marks map). Add new
-  static apps here. Generation fails if a listed page's `index.html` is
-  missing from `Output/`.
+  `Resources/` that Publish can't see (`/listen/`, `/fiction/`, `/gas/`
+  (Gas Price Watch), the NS Marks map). Add new static apps here. Generation
+  fails if a listed page's `index.html` is missing from `Output/`.
 - A publish step writes `Output/404.html` from the theme (`noindex`, no
   canonical). Keep it: without a top-level `404.html`, Cloudflare Pages serves
   the homepage with HTTP 200 for every unknown path.
@@ -60,6 +61,13 @@ a task branch and a PR instead.
   `Tools/ns-marks-web-source.json` and promoted by
   `.github/workflows/promote-ns-marks-web.yml`, which opens a PR but never
   merges it.
+- Gas Price Watch: public page at `/gas/` from `Resources/gas/` (never
+  hand-edit `Output/gas/`); hourly updater is
+  `.github/workflows/refresh-gas-price-watch.yml`; public JSON/prediction
+  history lives on the separate `gas-price-watch-data` branch (excluded from
+  Cloudflare preview rebuilds); engine/docs under `Tools/gas-price-watch/`
+  (README + PUBLIC_CONTRACT.md). Hourly data updates do not rebuild the
+  website.
 - Fiction books: `Resources/fiction/books.json` is hand-curated, but add a
   narrated book only with `node Tools/stage-fiction-book.mjs <slug>`;
   `blocks.json` can't be written by hand. A book's audio is either fully
