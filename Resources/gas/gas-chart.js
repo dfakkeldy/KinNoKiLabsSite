@@ -30,7 +30,7 @@ export function renderComparison(root, points, { document = root.ownerDocument, 
   }
   root.replaceChildren();
   if (!points.length) {
-    root.append(el('p', 'gas-comparison-empty', 'The graph will appear when a saved prediction has a verified official outcome. Pending dates are listed below.'));
+    root.append(el('p', 'gas-comparison-empty', 'The graph will appear when a saved prediction has a verified official outcome. Pending dates are not plotted.'));
     return;
   }
   const newest = points.at(-1);

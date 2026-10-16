@@ -144,7 +144,7 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
       });
       node.append(detail('Errors at every lead time', [table('Rolling estimates, grouped by days before Friday', ['Lead time', 'Friday outcomes', 'Mean absolute error', 'Largest error'], rows)]));
     }
-    node.append(el('p', 'gas-section-note', `The original v2 test uses complete quote windows; its largest error was ${formatCents(complete?.max_error)}. Historical quote publication times have not been reconstructed, and these tests were not blinded. The complete-window test and the rolling test use different samples. Prospective outcomes are tracked separately below.`));
+    node.append(el('p', 'gas-section-note', `The original v2 test uses complete quote windows; its largest error was ${formatCents(complete?.max_error)}. Historical quote publication times have not been reconstructed, and these tests were not blinded. The complete-window test and the rolling test use different samples. The comparison above tracks saved predictions against official outcomes.`));
     return node;
   }
   function watchSection(view) {
