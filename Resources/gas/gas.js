@@ -282,5 +282,9 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
 
 if (typeof document !== 'undefined') {
   const root = document.querySelector('#gas-app');
-  if (root) mountGasWatch(root);
+  if (root) {
+    void mountGasWatch(root).ready.then(() => {
+      if (window.location.hash === '#gas-results') root.querySelector('#gas-results')?.scrollIntoView({ block: 'start' });
+    });
+  }
 }
