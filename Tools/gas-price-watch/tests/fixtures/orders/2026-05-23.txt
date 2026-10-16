@@ -1,0 +1,157 @@
+                                                Schedule “A”
+
+                                   Prices Prescribed for Petroleum Products
+                              under the Petroleum Products Pricing Act and the
+                                   Petroleum Products Pricing Regulations
+                               effective on and after 12:01 a.m. on May 23, 2026
+
+                           NOVA SCOTIA PETROLEUM PRICE SCHEDULE
+Petroleum Prices in Cents/Litre                                             Self-Service             Full-Service
+                                                                            Pump Prices              Pump Prices
+                                                                                  (Pump Prices Include HST)
+                                  Base      Federal           Wholesale
+                                Wholesale   Excise    Prov.    Selling
+                                  Price       Tax      Tax      Price     Min         Max          Min          Max
+            Zone 1
+ Regular Unleaded                141.44       0.0      15.5    156.94     185.6       187.9       185.6        999.9
+ Mid-Grade Unleaded              145.49       0.0      15.5    160.99     190.3       192.5       190.3        999.9
+ Premium Unleaded                149.54       0.0      15.5    165.04     194.9       197.2       194.9        999.9
+ Ultra-low Sulfur Diesel         169.83       0.0      15.4    185.23     218.1       220.4       218.1        999.9
+            Zone 2
+ Regular Unleaded                141.94       0.0      15.5    157.44     186.2       188.5       186.2        999.9
+ Mid-Grade Unleaded              145.99       0.0      15.5    161.49     190.8       193.1       190.8        999.9
+ Premium Unleaded                150.04       0.0      15.5    165.54     195.4       197.7       195.4        999.9
+ Ultra-low Sulfur Diesel         170.33       0.0      15.4    185.73     218.7       221.0       218.7        999.9
+            Zone 3
+ Regular Unleaded                142.34       0.0      15.5    157.84     186.7       188.9       186.7        999.9
+ Mid-Grade Unleaded              146.39       0.0      15.5    161.89     191.3       193.6       191.3        999.9
+ Premium Unleaded                150.44       0.0      15.5    165.94     195.9       198.2       195.9        999.9
+ Ultra-low Sulfur Diesel         170.73       0.0      15.4    186.13     219.1       221.4       219.1        999.9
+            Zone 4
+ Regular Unleaded                142.44       0.0      15.5    157.94     186.8       189.1       186.8        999.9
+ Mid-Grade Unleaded              146.49       0.0      15.5    161.99     191.4       193.7       191.4        999.9
+ Premium Unleaded                150.54       0.0      15.5    166.04     196.0       198.3       196.0        999.9
+ Ultra-low Sulfur Diesel         170.83       0.0      15.4    186.23     219.3       221.5       219.3        999.9
+            Zone 5
+ Regular Unleaded                142.44       0.0      15.5    157.94     186.8       189.1       186.8        999.9
+ Mid-Grade Unleaded              146.49       0.0      15.5    161.99     191.4       193.7       191.4        999.9
+ Premium Unleaded                150.54       0.0      15.5    166.04     196.0       198.3       196.0        999.9
+ Ultra-low Sulfur Diesel         170.83       0.0      15.4    186.23     219.3       221.5       219.3        999.9
+            Zone 6
+ Regular Unleaded                143.14       0.0      15.5    158.64     187.6       189.9       187.6        999.9
+ Mid-Grade Unleaded              147.19       0.0      15.5    162.69     192.2       194.5       192.2        999.9
+ Premium Unleaded                151.24       0.0      15.5    166.74     196.8       199.1       196.8        999.9
+ Ultra-low Sulfur Diesel         171.53       0.0      15.4    186.93     220.1       222.3       220.1        999.9
+ DECISION AND ORDER                                                            M12873
+
+
+                          NOVA SCOTIA ENERGY BOARD
+
+
+           IN THE MATTER OF THE PETROLEUM PRODUCTS PRICING ACT
+
+                                         - and -
+
+IN THE MATTER OF PRESCRIBING PRICES for Petroleum Products under Section
+14 of the Petroleum Products Pricing Act and Sections 16 to 19 of the Petroleum Products
+Pricing Regulations
+
+
+BEFORE:                    Steven Murphy, MBA, P.Eng., Member
+
+                               DECISION AND ORDER
+
+Under s. 16 of the Petroleum Products Pricing Regulations, the Board must prescribe a
+benchmark price for specified petroleum products every Friday. However, the Board may
+prescribe a benchmark price any time, and due to significant changes in the price of
+petroleum products, the Board has determined that it is appropriate to adjust its most
+recently prescribed weekly prices.
+
+The benchmark price prescribed by the Board is the average of the average of the daily
+high and low reported product prices (in Canadian cents) since the last benchmark price
+adjustment for the petroleum product.
+
+Under s. 17 and 18 of the Petroleum Products Pricing Regulations, the Board must also
+prescribe retail mark-ups and calculate wholesale margins considering any factors the
+Board finds relevant, including transportation adjustments. The Board last confirmed
+wholesale margins in its Decision, 2025 NSEB 14; retail mark-ups in its Decision, 2021
+NSUARB 50; and transportation adjustments in its Decision, 2016 NSUARB 168.
+
+Section 17 of the Petroleum Products Pricing Regulations also requires that the fixed
+wholesale price for each type of petroleum product include all taxes (taxes imposed under
+subsections 165(1) and 165(2) of the Excise Tax Act (Canada); carbon pricing, any fuel
+charges payable to His Majesty in right of Canada, a clean fuel adjustor amount set by
+the Board under s. 17A to address the financial and administrative burdens associated
+with the application of the Clean Fuel Regulations (Canada) or any other regulatory
+instrument made under the Canadian Environmental Protection Act, 1999 (Canada) and
+the Environmental Violations Administrative Monetary Penalties Act (Canada)). The
+Board last revised and set the clean fuel adjustor amount in its Decision, 2025 NSEB 14.
+
+
+
+
+Document: 330567
+                                        -2-
+
+
+At each price setting, the Board may apply a forward averaging correction, based on
+historical prices, to achieve revenue neutrality.
+
+At appropriate times of the year, the Board may also require an additional margin for
+winter blending of ultra-low-sulfur diesel oil.
+
+Based on the foregoing and other requirements in the Petroleum Products Pricing
+Act and Regulations, the Board finds it appropriate to prescribe the benchmark
+prices and adjustments in Table “A”, the credit card fee retail mark-up adjustments
+in Table “B”, the Clean Fuel Adjustor in Table “C”, and the prices for Petroleum
+Products in Schedule “A” effective on and after 12:01 A.M. Saturday, May 22, 2026:
+
+                                    TABLE “A”
+                                  (cents per litre)
+
+         Petroleum Product          Benchmark           Forward          Winter
+                                      Price           Averaging (+/-)   Blending
+   Regular Gasoline (Grade 1)          116.36             +4.60
+
+  Mid-grade Gasoline (Grade 2)         120.46             +4.55
+
+   Premium Gasoline (Grade 3)          124.56             +4.50
+
+
+                                    TABLE “B”
+                                  (cents per litre)
+
+                    Credit Card Fee Retail Mark-up Adjustment
+
+ Gasoline Minimum Self-Service and Full-Service                           +0.50
+
+ Gasoline Maximum Self-Service                                           +0.50
+
+
+
+                                    TABLE “C”
+                                  (cents per litre)
+
+                      Clean Fuel Regulations (CFR) Adjustor
+
+ Gasoline                                                                +9.04
+
+
+
+
+Document: 330567
+                                        -3-
+
+
+DATED at Halifax, Nova Scotia, this 22nd day of May 2026.
+
+
+
+
+                                       Clerk of the Board
+
+
+
+
+Document: 330567
+

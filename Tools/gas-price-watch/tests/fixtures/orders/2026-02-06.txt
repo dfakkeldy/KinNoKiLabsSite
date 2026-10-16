@@ -1,0 +1,172 @@
+                                                 Schedule “A”
+
+                                    Prices Prescribed for Petroleum Products
+                               under the Petroleum Products Pricing Act and the
+                                    Petroleum Products Pricing Regulations
+                              effective on and after 12:01 a.m. on February 6, 2026
+
+                           NOVA SCOTIA PETROLEUM PRICE SCHEDULE
+Petroleum Prices in Cents/Litre                                              Self-Service             Full-Service
+                                                                             Pump Prices              Pump Prices
+                                                                                   (Pump Prices Include HST)
+                                   Base      Federal           Wholesale
+                                 Wholesale   Excise    Prov.    Selling
+                                   Price       Tax      Tax      Price     Min         Max          Min          Max
+            Zone 1
+ Regular Unleaded                  88.55      10.0      15.5    114.05     136.4       138.7       136.4        999.9
+ Mid-Grade Unleaded                91.20      10.0      15.5    116.70     139.4       141.7       139.4        999.9
+ Premium Unleaded                  93.85      10.0      15.5    119.35     142.4       144.7       142.4        999.9
+ Ultra-low Sulfur Diesel          133.51       4.0      15.4    152.91     180.9       183.2       180.9        999.9
+            Zone 2
+ Regular Unleaded                  89.05      10.0      15.5    114.55     137.0       139.3       137.0        999.9
+ Mid-Grade Unleaded                91.70      10.0      15.5    117.20     140.0       142.3       140.0        999.9
+ Premium Unleaded                  94.35      10.0      15.5    119.85     143.0       145.3       143.0        999.9
+ Ultra-low Sulfur Diesel          134.01       4.0      15.4    153.41     181.5       183.8       181.5        999.9
+            Zone 3
+ Regular Unleaded                  89.45      10.0      15.5    114.95     137.4       139.7       137.4        999.9
+ Mid-Grade Unleaded                92.10      10.0      15.5    117.60     140.4       142.7       140.4        999.9
+ Premium Unleaded                  94.75      10.0      15.5    120.25     143.5       145.7       143.5        999.9
+ Ultra-low Sulfur Diesel          134.41       4.0      15.4    153.81     182.0       184.2       182.0        999.9
+            Zone 4
+ Regular Unleaded                  89.55      10.0      15.5    115.05     137.5       139.8       137.5        999.9
+ Mid-Grade Unleaded                92.20      10.0      15.5    117.70     140.6       142.8       140.6        999.9
+ Premium Unleaded                  94.85      10.0      15.5    120.35     143.6       145.9       143.6        999.9
+ Ultra-low Sulfur Diesel          134.51       4.0      15.4    153.91     182.1       184.3       182.1        999.9
+            Zone 5
+ Regular Unleaded                  89.55      10.0      15.5    115.05     137.5       139.8       137.5        999.9
+ Mid-Grade Unleaded                92.20      10.0      15.5    117.70     140.6       142.8       140.6        999.9
+ Premium Unleaded                  94.85      10.0      15.5    120.35     143.6       145.9       143.6        999.9
+ Ultra-low Sulfur Diesel          134.51       4.0      15.4    153.91     182.1       184.3       182.1        999.9
+            Zone 6
+ Regular Unleaded                  90.25      10.0      15.5    115.75     138.3       140.6       138.3        999.9
+ Mid-Grade Unleaded                92.90      10.0      15.5    118.40     141.4       143.6       141.4        999.9
+ Premium Unleaded                  95.55      10.0      15.5    121.05     144.4       146.7       144.4        999.9
+ Ultra-low Sulfur Diesel          135.21       4.0      15.4    154.61     182.9       185.1       182.9        999.9
+ DECISION AND ORDER                                                            M12697
+
+
+                          NOVA SCOTIA ENERGY BOARD
+
+
+           IN THE MATTER OF THE PETROLEUM PRODUCTS PRICING ACT
+
+
+                                         - and -
+
+
+IN THE MATTER OF PRESCRIBING PRICES for Petroleum Products under Section
+14 of the Petroleum Products Pricing Act and Sections 16 to 19 of the Petroleum Products
+Pricing Regulations
+
+
+BEFORE:                    M. Kathleen McManus, K.C., Ph.D., Member
+
+
+                               DECISION AND ORDER
+
+
+Under s. 16 of the Petroleum Products Pricing Regulations, the Board must prescribe a
+benchmark price for specified petroleum products every Friday.
+
+The benchmark price prescribed by the Board is the average of the average of the daily
+high and low reported product prices (in Canadian cents) since the last benchmark price
+adjustment for the petroleum product.
+
+Under s. 17 and 18 of the Petroleum Products Pricing Regulations, the Board must also
+prescribe retail mark-ups and calculate wholesale margins considering any factors the
+Board finds relevant, including transportation adjustments. The Board last confirmed
+wholesale margins in its Decision, 2025 NSEB 14; retail mark-ups in its Decision, 2021
+NSUARB 50; and transportation adjustments in its Decision, 2016 NSUARB 168.
+
+Section 17 of the Petroleum Products Pricing Regulations also requires that the fixed
+wholesale price for each type of petroleum product include all taxes (taxes imposed under
+subsections 165(1) and 165(2) of the Excise Tax Act (Canada); carbon pricing, any fuel
+charges payable to His Majesty in right of Canada, and a clean fuel adjustor amount set
+by the Board under s. 17A to address the financial and administrative burdens associated
+with the application of the Clean Fuel Regulations (Canada) or any other regulatory
+instrument made under the Canadian Environmental Protection Act, 1999 (Canada) and
+the Environmental Violations Administrative Monetary Penalties Act (Canada)). The
+Board last revised and set the clean fuel adjustor amount in its Decision, 2025 NSEB 14.
+
+
+
+
+Document: 327686
+                                          -2-
+
+
+The Board also issued an Order on September 12, 2022 [2022 NSUARB 140], approving
+an adjustment mechanism to retail mark-ups for gasoline and diesel oil to account for the
+impact of credit card fees charged to retailers.
+
+At each price setting, the Board may apply a forward averaging correction, based on
+historical prices, to achieve revenue neutrality.
+
+At appropriate times of the year, the Board may also require an additional margin for
+winter blending of ultra-low-sulfur diesel oil.
+
+Based on the foregoing and other requirements in the Petroleum Products Pricing
+Act and Regulations, the Board finds it appropriate to prescribe the benchmark
+prices and adjustments in Table “A”, the credit card fee retail mark-up adjustments
+in Table “B”, the Clean Fuel Adjustor in Table “C”, and the prices for Petroleum
+Products in Schedule “A” effective on and after 12:01 A.M. Friday, February 6, 2026:
+
+
+                                      TABLE “A”
+                                    (cents per litre)
+
+         Petroleum Product            Benchmark           Forward           Winter
+                                        Price           Averaging (+/-)    Blending
+   Regular Gasoline (Grade 1)            67.37              + 0.70
+
+  Mid-Grade Gasoline (Grade 2)           70.37              + 0.35
+
+   Premium Gasoline (Grade 3)            73.37                nil
+
+    Ultra-Low-Sulfur Diesel Oil          95.73              + 1.90          + 13.37
+
+
+
+
+Document: 327686
+                                         -3-
+
+
+                                     TABLE “B”
+                                   (cents per litre)
+
+                    Credit Card Fee Retail Mark-up Adjustment
+
+ Gasoline Minimum Self-Service and Full-Service                  + 0.20
+
+ Gasoline Maximum Self-Service                                   + 0.20
+
+ Ultra-Low-Sulfur Diesel Minimum Self-Service and Full-Service   + 0.40
+
+ Ultra-Low-Sulfur Diesel Maximum Self-Service                    + 0.40
+
+
+
+                                     TABLE “C”
+                                   (cents per litre)
+
+                      Clean Fuel Regulations (CFR) Adjustor
+
+ Gasoline                                                        + 9.04
+
+ Ultra-Low Sulfur Diesel                                         + 10.07
+
+
+
+DATED at Halifax, Nova Scotia, this 5th day of February 2026.
+
+
+
+
+                                        Clerk of the Board
+
+
+
+
+Document: 327686
+

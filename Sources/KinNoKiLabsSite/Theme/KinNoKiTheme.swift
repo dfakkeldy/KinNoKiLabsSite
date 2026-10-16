@@ -489,6 +489,7 @@ private func siteFooter() -> Node<HTML.BodyContext> {
                     ("/fiction/", "Fiction Listening Room"),
                     ("/taxsale/", "Tax Sale Hub"),
                     ("/fishing/", "Fishing map"),
+                    ("/gas/", "Gas Price Watch"),
                     ("/games", "Games"),
                     ("/tools", "Tools"),
                 ]),

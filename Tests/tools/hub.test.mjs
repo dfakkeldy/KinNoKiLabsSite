@@ -49,3 +49,14 @@ test('shared tools scaffold exposes the privacy disclosure to JavaScript users',
   assert.ok(disclosure >= 0, 'toolsMain must include the exact visible privacy disclosure');
   assert.ok(disclosure < noscript, 'privacy disclosure must appear outside noscript for JavaScript users');
 });
+
+test('hub links Gas Price Watch separately from the offline browser utilities', () => {
+  const document = { activeElement: null };
+  document.createElement = (tag) => new FixtureElement(tag, document);
+  const root = new FixtureElement('div', document);
+  renderToolsHub(root);
+  const live = root.children.find(child => child.getAttribute('class') === 'tool-live-data');
+  assert.ok(live);
+  assert.equal(live.querySelector('a').getAttribute('href'), '/gas/');
+  assert.match(live.textContent, /connection/i);
+});

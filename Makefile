@@ -14,7 +14,7 @@
 
 PUBLISH_BIN ?= publish
 
-.PHONY: publish preview generate clean test test-listen test-fiction test-games test-tools test-site listen-catalog paired-covers sync-ns-marks-web sync-turn-timer-web tender-pack
+.PHONY: publish preview generate clean test test-listen test-fiction test-games test-tools test-site test-gas-price-watch listen-catalog paired-covers sync-ns-marks-web sync-turn-timer-web tender-pack
 
 generate:
 	@generation_epochs="$$(node Tools/prepare-deterministic-publish.mjs)" && \
@@ -45,7 +45,7 @@ preview:
 clean:
 	swift package clean
 
-test: test-listen test-fiction test-games test-tools test-site
+test: test-listen test-fiction test-games test-tools test-site test-gas-price-watch
 
 test-listen:
 	node --test Tests/listen/*.test.mjs
@@ -61,6 +61,10 @@ test-tools:
 
 test-site:
 	node --test Tests/site/*.test.mjs
+
+test-gas-price-watch:
+	node --test Tests/gas/*.test.mjs
+	PYTHONPATH=Tools/gas-price-watch:Tools/gas-price-watch/engine python3 -m unittest discover -s Tools/gas-price-watch/tests -q
 
 listen-catalog:
 	Tools/build-listen-catalog.sh

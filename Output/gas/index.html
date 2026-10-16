@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nova Scotia Gas Price Watch | KinNoKi Labs</title>
+  <meta name="description" content="Official regular self-service gasoline prices in all six Nova Scotia zones, conditional Friday estimates, and an experimental interrupter watch. Sources and forecast results included.">
+  <meta name="theme-color" content="#000000">
+  <meta name="referrer" content="no-referrer">
+  <link rel="canonical" href="https://kinnokilabs.com/gas/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="KinNoKi Labs">
+  <meta property="og:title" content="Nova Scotia Gas Price Watch">
+  <meta property="og:description" content="Official prices, conditional Friday estimates, and the evidence behind them. All six Nova Scotia pricing zones.">
+  <meta property="og:url" content="https://kinnokilabs.com/gas/">
+  <meta property="og:image" content="https://kinnokilabs.com/logo.png">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/logo.png">
+  <script>
+    try {
+      var theme = localStorage.getItem('kinnoki-theme');
+      document.documentElement.setAttribute('data-theme', theme === 'light' ? 'light' : 'dark');
+    } catch (error) { document.documentElement.setAttribute('data-theme', 'dark'); }
+  </script>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="./gas.css">
+  <script src="/site.js" defer></script>
+  <script type="module" src="./gas.js"></script>
+</head>
+<body class="page-gas">
+  <a class="gas-skip" href="#main">Skip to gas prices</a>
+  <header class="site-header">
+    <nav class="site-nav gas-nav" aria-label="Site">
+      <a class="nav-brand" href="/" aria-label="KinNoKi Labs home">
+        <img class="logo-on-dark" src="/images/brand/logo-mark.png" width="34" height="34" alt="">
+        <img class="logo-on-light" src="/images/brand/logo-mark-light.png" width="34" height="34" alt="">
+        <span>KinNoKi Labs</span>
+      </a>
+      <div class="gas-nav-links">
+        <a href="/">Studio</a>
+        <a href="/tools/">Tools</a>
+        <button class="theme-toggle" type="button" aria-label="Toggle light or dark theme" aria-pressed="true">
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"></path></svg>
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+        </button>
+      </div>
+    </nav>
+  </header>
+  <main class="page gas-page" id="main">
+    <div class="page-head">
+      <p class="eyebrow">Nova Scotia · All six zones</p>
+      <h1 class="page-title">Gas Price Watch</h1>
+      <p class="page-lede">The official price today. A conditional estimate for Friday. See the sources, the assumptions, and how previous calls turned out.</p>
+    </div>
+    <div id="gas-app" class="gas-app">
+      <p class="gas-feed-status" role="status">Checking the latest public data…</p>
+    </div>
+    <noscript>
+      <p class="gas-notice">JavaScript is needed to check the data's age and display prices here. Read the <a href="https://nserbt.ca/nseb/mandates/gasoline-diesel-pricing/gasoline-diesel-prices-zone-map">official prices and pricing zone map</a> at the Nova Scotia Energy Board.</p>
+    </noscript>
+    <p class="page-footnote">No accounts, trackers, location requests or submissions. Your zone choice stays in this browser. Every zone uses the same public data feed.</p>
+  </main>
+  <footer class="site-footer">
+    <div class="inner gas-footer">
+      <a class="footer-brand-link" href="/">KinNoKi Labs</a>
+      <p class="footer-tagline">Small tools for everyday questions.</p>
+      <nav class="footer-legal-links" aria-label="Footer">
+        <a href="/tools/">More tools</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="https://fakkeldy.ca/">Made by Dan Fakkeldy</a>
+      </nav>
+      <button class="font-toggle" type="button" aria-label="Toggle OpenDyslexic font" aria-pressed="false">Aa · Reading font</button>
+    </div>
+  </footer>
+</body>
+</html>

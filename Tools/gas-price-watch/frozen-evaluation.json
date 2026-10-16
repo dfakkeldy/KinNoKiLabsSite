@@ -1,0 +1,6597 @@
+{
+  "parameters": {
+    "model_version": "halifax-e10-change-v2",
+    "fit_before": "2026-07-01",
+    "training_count": 86,
+    "training_first": "2025-01-17",
+    "training_last": "2026-06-26",
+    "coefficients": [
+      "0.056657803305",
+      "0.572106697388",
+      "0.394488244385"
+    ],
+    "training_fingerprint": "657405dcc55ff1e2715f1956df98fea2d709fa938457aa7514e4a33808027573",
+    "feature_bounds": {
+      "mean_change": [
+        "-9.14",
+        "8.60"
+      ],
+      "latest_change": [
+        "-9.90",
+        "9.70"
+      ]
+    },
+    "features": [
+      "intercept",
+      "period mean rack change",
+      "latest posted rack change"
+    ],
+    "units": "CAD cents per litre"
+  },
+  "cases": [
+    {
+      "date": "2026-07-03",
+      "predicted_minimum": "172.6",
+      "actual_minimum": "176.7",
+      "error": "-4.1",
+      "predicted_change": "3.7",
+      "actual_change": "7.8",
+      "kind": "scheduled Friday",
+      "predicted_supply": "116.68",
+      "actual_supply": "120.19",
+      "supply_error": "-3.51",
+      "assumed_credit_card": "0.7",
+      "actual_credit_card": "0.8",
+      "mean_change": "2.36",
+      "latest_change": "4.70",
+      "anchor_date": "2026-06-26",
+      "input_window_end": "2026-07-02",
+      "all_zone_minimum_errors": [
+        "-4.1",
+        "-4.1",
+        "-4.2",
+        "-4.1",
+        "-4.1",
+        "-4.1"
+      ],
+      "all_zone_maximum_errors": [
+        "-4.1",
+        "-4.1",
+        "-4.1",
+        "-4.1",
+        "-4.1",
+        "-4.1"
+      ],
+      "source_url": "https://nserbt.ca/sites/default/files/gasprice_337.pdf"
+    },
+    {
+      "date": "2026-07-10",
+      "predicted_minimum": "181.8",
+      "actual_minimum": "183.1",
+      "error": "-1.3",
+      "predicted_change": "5.1",
+      "actual_change": "6.4",
+      "kind": "scheduled Friday",
+      "predicted_supply": "124.63",
+      "actual_supply": "125.78",
+      "supply_error": "-1.15",
+      "assumed_credit_card": "0.8",
+      "actual_credit_card": "0.8",
+      "mean_change": "2.62",
+      "latest_change": "7.30",
+      "anchor_date": "2026-07-03",
+      "input_window_end": "2026-07-09",
+      "all_zone_minimum_errors": [
+        "-1.3",
+        "-1.3",
+        "-1.3",
+        "-1.3",
+        "-1.3",
+        "-1.3"
+      ],
+      "all_zone_maximum_errors": [
+        "-1.3",
+        "-1.3",
+        "-1.3",
+        "-1.3",
+        "-1.3",
+        "-1.3"
+      ],
+      "source_url": "https://nserbt.ca/sites/default/files/gasprice_338.pdf"
+    },
+    {
+      "date": "2026-07-17",
+      "predicted_minimum": "189.4",
+      "actual_minimum": "186.9",
+      "error": "2.5",
+      "predicted_change": "6.3",
+      "actual_change": "3.8",
+      "kind": "scheduled Friday",
+      "predicted_supply": "131.28",
+      "actual_supply": "128.97",
+      "supply_error": "2.31",
+      "assumed_credit_card": "0.8",
+      "actual_credit_card": "0.9",
+      "mean_change": "5.24",
+      "latest_change": "6.20",
+      "anchor_date": "2026-07-10",
+      "input_window_end": "2026-07-16",
+      "all_zone_minimum_errors": [
+        "2.5",
+        "2.5",
+        "2.5",
+        "2.5",
+        "2.5",
+        "2.5"
+      ],
+      "all_zone_maximum_errors": [
+        "2.5",
+        "2.5",
+        "2.6",
+        "2.5",
+        "2.5",
+        "2.5"
+      ],
+      "source_url": "https://nserbt.ca/sites/default/files/gasprice_342.pdf"
+    },
+    {
+      "date": "2026-07-24",
+      "predicted_minimum": "191.6",
+      "actual_minimum": "192.6",
+      "error": "-1.0",
+      "predicted_change": "4.7",
+      "actual_change": "5.7",
+      "kind": "scheduled Friday",
+      "predicted_supply": "133.09",
+      "actual_supply": "134.02",
+      "supply_error": "-0.93",
+      "assumed_credit_card": "0.9",
+      "actual_credit_card": "0.9",
+      "mean_change": "6.14",
+      "latest_change": "1.40",
+      "anchor_date": "2026-07-17",
+      "input_window_end": "2026-07-23",
+      "all_zone_minimum_errors": [
+        "-1.0",
+        "-1.1",
+        "-1.0",
+        "-1.1",
+        "-1.1",
+        "-1.1"
+      ],
+      "all_zone_maximum_errors": [
+        "-1.1",
+        "-1.0",
+        "-1.1",
+        "-1.0",
+        "-1.0",
+        "-1.0"
+      ],
+      "source_url": "https://nserbt.ca/sites/default/files/gasprice_343.pdf"
+    },
+    {
+      "date": "2026-07-31",
+      "predicted_minimum": "191.1",
+      "actual_minimum": "190.6",
+      "error": "0.5",
+      "predicted_change": "-1.5",
+      "actual_change": "-2.0",
+      "kind": "scheduled Friday",
+      "predicted_supply": "132.72",
+      "actual_supply": "132.21",
+      "supply_error": "0.51",
+      "assumed_credit_card": "0.9",
+      "actual_credit_card": "0.90",
+      "mean_change": "-1.26",
+      "latest_change": "-1.60",
+      "anchor_date": "2026-07-24",
+      "input_window_end": "2026-07-30",
+      "all_zone_minimum_errors": [
+        "0.5",
+        "0.6",
+        "0.6",
+        "0.6",
+        "0.6",
+        "0.6"
+      ],
+      "all_zone_maximum_errors": [
+        "0.6",
+        "0.6",
+        "0.6",
+        "0.5",
+        "0.5",
+        "0.5"
+      ],
+      "source_url": "https://nserbt.ca/sites/default/files/gasprice_344.pdf"
+    },
+    {
+      "date": "2026-08-05",
+      "predicted_minimum": "182.6",
+      "actual_minimum": "180.2",
+      "error": "2.4",
+      "predicted_change": "-8.0",
+      "actual_change": "-10.4",
+      "kind": "other gasoline setting",
+      "predicted_supply": "125.24",
+      "actual_supply": "123.21",
+      "supply_error": "2.03",
+      "assumed_credit_card": "0.90",
+      "actual_credit_card": "0.8",
+      "mean_change": "-6.4133333333333333333333333",
+      "latest_change": "-8.50",
+      "anchor_date": "2026-07-31",
+      "input_window_end": "2026-08-04",
+      "all_zone_minimum_errors": [
+        "2.4",
+        "2.5",
+        "2.4",
+        "2.4",
+        "2.4",
+        "2.4"
+      ],
+      "all_zone_maximum_errors": [
+        "2.5",
+        "2.4",
+        "2.4",
+        "2.4",
+        "2.4",
+        "2.4"
+      ],
+      "source_url": "https://nserbt.ca/sites/default/files/gasprice_345.pdf"
+    },
+    {
+      "date": "2026-08-07",
+      "predicted_minimum": "167.8",
+      "actual_minimum": "170.5",
+      "error": "-2.7",
+      "predicted_change": "-12.4",
+      "actual_change": "-9.7",
+      "kind": "scheduled Friday",
+      "predicted_supply": "112.31",
+      "actual_supply": "114.78",
+      "supply_error": "-2.47",
+      "assumed_credit_card": "0.8",
+      "actual_credit_card": "0.70",
+      "mean_change": "-11.9166666666666666666666667",
+      "latest_change": "-10.50",
+      "anchor_date": "2026-08-05",
+      "input_window_end": "2026-08-06",
+      "all_zone_minimum_errors": [
+        "-2.7",
+        "-2.7",
+        "-2.7",
+        "-2.7",
+        "-2.7",
+        "-2.7"
+      ],
+      "all_zone_maximum_errors": [
+        "-2.7",
+        "-2.7",
+        "-2.7",
+        "-2.7",
+        "-2.7",
+        "-2.7"
+      ],
+      "source_url": "https://nserbt.ca/sites/default/files/gasprice_346.pdf"
+    },
+    {
+      "date": "2026-08-12",
+      "predicted_minimum": "178.6",
+      "actual_minimum": "177.0",
+      "error": "1.6",
+      "predicted_change": "8.1",
+      "actual_change": "6.5",
+      "kind": "other gasoline setting",
+      "predicted_supply": "121.90",
+      "actual_supply": "120.43",
+      "supply_error": "1.47",
+      "assumed_credit_card": "0.70",
+      "actual_credit_card": "0.80",
+      "mean_change": "5.3833333333333333333333333",
+      "latest_change": "10.10",
+      "anchor_date": "2026-08-07",
+      "input_window_end": "2026-08-11",
+      "all_zone_minimum_errors": [
+        "1.6",
+        "1.5",
+        "1.6",
+        "1.6",
+        "1.6",
+        "1.6"
+      ],
+      "all_zone_maximum_errors": [
+        "1.5",
+        "1.6",
+        "1.6",
+        "1.6",
+        "1.6",
+        "1.6"
+      ],
+      "source_url": "https://nserbt.ca/sites/default/files/gasprice_347.pdf"
+    },
+    {
+      "date": "2026-08-14",
+      "predicted_minimum": "180.3",
+      "actual_minimum": "181.4",
+      "error": "-1.1",
+      "predicted_change": "3.3",
+      "actual_change": "4.4",
+      "kind": "scheduled Friday",
+      "predicted_supply": "123.34",
+      "actual_supply": "124.28",
+      "supply_error": "-0.94",
+      "assumed_credit_card": "0.80",
+      "actual_credit_card": "0.80",
+      "mean_change": "4.5666666666666666666666667",
+      "latest_change": "0.60",
+      "anchor_date": "2026-08-12",
+      "input_window_end": "2026-08-13",
+      "all_zone_minimum_errors": [
+        "-1.1",
+        "-1.1",
+        "-1.0",
+        "-1.0",
+        "-1.0",
+        "-1.0"
+      ],
+      "all_zone_maximum_errors": [
+        "-1.1",
+        "-1.0",
+        "-1.1",
+        "-1.1",
+        "-1.1",
+        "-1.1"
+      ],
+      "source_url": "https://nserbt.ca/sites/default/files/gasprice_348.pdf"
+    },
+    {
+      "date": "2026-08-21",
+      "predicted_minimum": "183.8",
+      "actual_minimum": "185.8",
+      "error": "-2.0",
+      "predicted_change": "2.4",
+      "actual_change": "4.4",
+      "kind": "scheduled Friday",
+      "predicted_supply": "126.37",
+      "actual_supply": "128.08",
+      "supply_error": "-1.71",
+      "assumed_credit_card": "0.80",
+      "actual_credit_card": "0.9",
+      "mean_change": "2.18",
+      "latest_change": "2.00",
+      "anchor_date": "2026-08-14",
+      "input_window_end": "2026-08-20",
+      "all_zone_minimum_errors": [
+        "-2.0",
+        "-2.1",
+        "-2.1",
+        "-2.1",
+        "-2.1",
+        "-2.1"
+      ],
+      "all_zone_maximum_errors": [
+        "-2.1",
+        "-2.1",
+        "-2.0",
+        "-2.0",
+        "-2.0",
+        "-2.0"
+      ],
+      "source_url": "https://nserbt.ca/sites/default/files/gasprice%20August%2021%202026.pdf"
+    },
+    {
+      "date": "2026-08-28",
+      "predicted_minimum": "188.5",
+      "actual_minimum": "188.5",
+      "error": "0.0",
+      "predicted_change": "2.7",
+      "actual_change": "2.7",
+      "kind": "scheduled Friday",
+      "predicted_supply": "130.42",
+      "actual_supply": "130.38",
+      "supply_error": "0.04",
+      "assumed_credit_card": "0.9",
+      "actual_credit_card": "0.9",
+      "mean_change": "1.72",
+      "latest_change": "3.30",
+      "anchor_date": "2026-08-21",
+      "input_window_end": "2026-08-27",
+      "all_zone_minimum_errors": [
+        "0.0",
+        "0.1",
+        "0.0",
+        "0.1",
+        "0.1",
+        "0.0"
+      ],
+      "all_zone_maximum_errors": [
+        "0.1",
+        "0.0",
+        "0.0",
+        "0.0",
+        "0.0",
+        "0.0"
+      ],
+      "source_url": "https://nserbt.ca/sites/default/files/gasprice_349.pdf"
+    },
+    {
+      "date": "2026-09-04",
+      "predicted_minimum": "195.4",
+      "actual_minimum": "192.5",
+      "error": "2.9",
+      "predicted_change": "6.9",
+      "actual_change": "4.0",
+      "kind": "scheduled Friday",
+      "predicted_supply": "136.50",
+      "actual_supply": "133.96",
+      "supply_error": "2.54",
+      "assumed_credit_card": "0.9",
+      "actual_credit_card": "0.9",
+      "mean_change": "7.08",
+      "latest_change": "5.10",
+      "anchor_date": "2026-08-28",
+      "input_window_end": "2026-09-03",
+      "all_zone_minimum_errors": [
+        "2.9",
+        "2.9",
+        "2.9",
+        "2.9",
+        "2.9",
+        "2.9"
+      ],
+      "all_zone_maximum_errors": [
+        "2.9",
+        "2.9",
+        "2.9",
+        "2.8",
+        "2.8",
+        "2.9"
+      ],
+      "source_url": "https://nserbt.ca/sites/default/files/gasprice_352.pdf"
+    },
+    {
+      "date": "2026-09-11",
+      "predicted_minimum": "191.3",
+      "actual_minimum": "190.2",
+      "error": "1.1",
+      "predicted_change": "-1.2",
+      "actual_change": "-2.3",
+      "kind": "scheduled Friday",
+      "predicted_supply": "132.88",
+      "actual_supply": "131.86",
+      "supply_error": "1.02",
+      "assumed_credit_card": "0.9",
+      "actual_credit_card": "0.9",
+      "mean_change": "0.22",
+      "latest_change": "-3.20",
+      "anchor_date": "2026-09-04",
+      "input_window_end": "2026-09-10",
+      "all_zone_minimum_errors": [
+        "1.1",
+        "1.2",
+        "1.1",
+        "1.2",
+        "1.2",
+        "1.2"
+      ],
+      "all_zone_maximum_errors": [
+        "1.2",
+        "1.1",
+        "1.2",
+        "1.1",
+        "1.1",
+        "1.1"
+      ],
+      "source_url": "https://nserbt.ca/sites/default/files/gasprice_353.pdf"
+    },
+    {
+      "date": "2026-09-18",
+      "predicted_minimum": "193.7",
+      "actual_minimum": "196.1",
+      "error": "-2.4",
+      "predicted_change": "3.5",
+      "actual_change": "5.9",
+      "kind": "scheduled Friday",
+      "predicted_supply": "134.94",
+      "actual_supply": "137.01",
+      "supply_error": "-2.07",
+      "assumed_credit_card": "0.9",
+      "actual_credit_card": "1.0",
+      "mean_change": "1.90",
+      "latest_change": "4.90",
+      "anchor_date": "2026-09-11",
+      "input_window_end": "2026-09-17",
+      "all_zone_minimum_errors": [
+        "-2.4",
+        "-2.5",
+        "-2.5",
+        "-2.5",
+        "-2.5",
+        "-2.5"
+      ],
+      "all_zone_maximum_errors": [
+        "-2.5",
+        "-2.5",
+        "-2.4",
+        "-2.4",
+        "-2.4",
+        "-2.4"
+      ],
+      "source_url": "https://nserbt.ca/sites/default/files/gasprice_355.pdf"
+    },
+    {
+      "date": "2026-09-25",
+      "predicted_minimum": "200.5",
+      "actual_minimum": "199.1",
+      "error": "1.4",
+      "predicted_change": "4.4",
+      "actual_change": "3.0",
+      "kind": "scheduled Friday",
+      "predicted_supply": "140.85",
+      "actual_supply": "139.62",
+      "supply_error": "1.23",
+      "assumed_credit_card": "1.0",
+      "actual_credit_card": "1.0",
+      "mean_change": "2.20",
+      "latest_change": "6.40",
+      "anchor_date": "2026-09-18",
+      "input_window_end": "2026-09-24",
+      "all_zone_minimum_errors": [
+        "1.4",
+        "1.4",
+        "1.4",
+        "1.4",
+        "1.4",
+        "1.4"
+      ],
+      "all_zone_maximum_errors": [
+        "1.4",
+        "1.4",
+        "1.4",
+        "1.4",
+        "1.4",
+        "1.4"
+      ],
+      "source_url": "https://nserbt.ca/sites/default/files/gasprice_357.pdf"
+    },
+    {
+      "date": "2026-09-30",
+      "predicted_minimum": "193.5",
+      "actual_minimum": "193.7",
+      "error": "-0.2",
+      "predicted_change": "-5.6",
+      "actual_change": "-5.4",
+      "kind": "other gasoline setting",
+      "predicted_supply": "134.69",
+      "actual_supply": "134.95",
+      "supply_error": "-0.26",
+      "assumed_credit_card": "1.0",
+      "actual_credit_card": "0.9",
+      "mean_change": "-2.30",
+      "latest_change": "-9.30",
+      "anchor_date": "2026-09-25",
+      "input_window_end": "2026-09-29",
+      "all_zone_minimum_errors": [
+        "-0.2",
+        "-0.1",
+        "-0.2",
+        "-0.2",
+        "-0.2",
+        "-0.2"
+      ],
+      "all_zone_maximum_errors": [
+        "-0.1",
+        "-0.2",
+        "-0.2",
+        "-0.2",
+        "-0.2",
+        "-0.2"
+      ],
+      "source_url": "https://nserbt.ca/sites/default/files/gasprice_358.pdf"
+    },
+    {
+      "date": "2026-10-02",
+      "predicted_minimum": "193.5",
+      "actual_minimum": "191.7",
+      "error": "1.8",
+      "predicted_change": "-0.2",
+      "actual_change": "-2.0",
+      "kind": "scheduled Friday",
+      "predicted_supply": "134.76",
+      "actual_supply": "133.20",
+      "supply_error": "1.56",
+      "assumed_credit_card": "0.9",
+      "actual_credit_card": "0.9",
+      "mean_change": "-2.85",
+      "latest_change": "3.50",
+      "anchor_date": "2026-09-30",
+      "input_window_end": "2026-10-01",
+      "all_zone_minimum_errors": [
+        "1.8",
+        "1.8",
+        "1.8",
+        "1.8",
+        "1.8",
+        "1.8"
+      ],
+      "all_zone_maximum_errors": [
+        "1.8",
+        "1.8",
+        "1.7",
+        "1.8",
+        "1.8",
+        "1.8"
+      ],
+      "source_url": "https://nserbt.ca/sites/default/files/gasprice_359.pdf"
+    },
+    {
+      "date": "2026-10-09",
+      "predicted_minimum": "192.4",
+      "actual_minimum": "192.9",
+      "error": "-0.5",
+      "predicted_change": "0.7",
+      "actual_change": "1.2",
+      "kind": "scheduled Friday",
+      "predicted_supply": "133.87",
+      "actual_supply": "134.25",
+      "supply_error": "-0.38",
+      "assumed_credit_card": "0.9",
+      "actual_credit_card": "0.90",
+      "mean_change": "3.41",
+      "latest_change": "-3.40",
+      "anchor_date": "2026-10-02",
+      "input_window_end": "2026-10-08",
+      "all_zone_minimum_errors": [
+        "-0.5",
+        "-0.4",
+        "-0.4",
+        "-0.4",
+        "-0.4",
+        "-0.4"
+      ],
+      "all_zone_maximum_errors": [
+        "-0.4",
+        "-0.4",
+        "-0.5",
+        "-0.5",
+        "-0.5",
+        "-0.5"
+      ],
+      "source_url": "https://nserbt.ca/sites/default/files/documents/gas/gasprice.pdf?1791515701"
+    }
+  ],
+  "excluded": [],
+  "summary": {
+    "count": 18,
+    "mae": "1.64",
+    "median": "1.50",
+    "p90": "2.9",
+    "max_error": "4.1",
+    "within_one_cent": 5,
+    "over_five_cents": 0,
+    "over_ten_cents": 0,
+    "direction_correct": 18,
+    "direction_cases": 18
+  },
+  "recent_summary": {
+    "count": 18,
+    "mae": "1.64",
+    "median": "1.50",
+    "p90": "2.9",
+    "max_error": "4.1",
+    "within_one_cent": 5,
+    "over_five_cents": 0,
+    "over_ten_cents": 0,
+    "direction_correct": 18,
+    "direction_cases": 18
+  },
+  "training_cv": {
+    "cases": [
+      {
+        "date": "2025-05-23",
+        "predicted_minimum": "145.0",
+        "actual_minimum": "145.0",
+        "error": "0.0",
+        "predicted_change": "0.0",
+        "actual_change": "0.0",
+        "kind": "scheduled Friday",
+        "predicted_supply": "81.69",
+        "actual_supply": "81.63",
+        "supply_error": "0.06",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.2",
+        "mean_change": "0.22",
+        "latest_change": "-2.20",
+        "anchor_date": "2025-05-16",
+        "input_window_end": "2025-05-22",
+        "all_zone_minimum_errors": [
+          "0.0",
+          "0.1",
+          "0.1",
+          "0.1",
+          "0.1",
+          "0.1"
+        ],
+        "all_zone_maximum_errors": [
+          "0.0",
+          "0.1",
+          "0.0",
+          "0.1",
+          "0.1",
+          "0.1"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_269.pdf"
+      },
+      {
+        "date": "2025-05-30",
+        "predicted_minimum": "141.4",
+        "actual_minimum": "141.6",
+        "error": "-0.2",
+        "predicted_change": "-3.6",
+        "actual_change": "-3.4",
+        "kind": "scheduled Friday",
+        "predicted_supply": "78.51",
+        "actual_supply": "78.65",
+        "supply_error": "-0.14",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.2",
+        "mean_change": "-3.56",
+        "latest_change": "-3.10",
+        "anchor_date": "2025-05-23",
+        "input_window_end": "2025-05-29",
+        "all_zone_minimum_errors": [
+          "-0.2",
+          "-0.1",
+          "-0.2",
+          "-0.1",
+          "-0.1",
+          "-0.1"
+        ],
+        "all_zone_maximum_errors": [
+          "-0.2",
+          "-0.1",
+          "-0.2",
+          "-0.2",
+          "-0.2",
+          "-0.2"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_270.pdf"
+      },
+      {
+        "date": "2025-06-06",
+        "predicted_minimum": "139.2",
+        "actual_minimum": "138.1",
+        "error": "1.1",
+        "predicted_change": "-2.4",
+        "actual_change": "-3.5",
+        "kind": "scheduled Friday",
+        "predicted_supply": "76.58",
+        "actual_supply": "75.64",
+        "supply_error": "0.94",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.2",
+        "mean_change": "-2.28",
+        "latest_change": "-3.20",
+        "anchor_date": "2025-05-30",
+        "input_window_end": "2025-06-05",
+        "all_zone_minimum_errors": [
+          "1.1",
+          "1.1",
+          "1.0",
+          "1.1",
+          "1.1",
+          "1.1"
+        ],
+        "all_zone_maximum_errors": [
+          "1.1",
+          "1.1",
+          "1.0",
+          "1.0",
+          "1.0",
+          "1.0"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_271.pdf"
+      },
+      {
+        "date": "2025-06-13",
+        "predicted_minimum": "139.5",
+        "actual_minimum": "139.3",
+        "error": "0.2",
+        "predicted_change": "1.4",
+        "actual_change": "1.2",
+        "kind": "scheduled Friday",
+        "predicted_supply": "76.79",
+        "actual_supply": "76.64",
+        "supply_error": "0.15",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.2",
+        "mean_change": "0.84",
+        "latest_change": "4.30",
+        "anchor_date": "2025-06-06",
+        "input_window_end": "2025-06-12",
+        "all_zone_minimum_errors": [
+          "0.2",
+          "0.1",
+          "0.2",
+          "0.2",
+          "0.2",
+          "0.2"
+        ],
+        "all_zone_maximum_errors": [
+          "0.1",
+          "0.2",
+          "0.2",
+          "0.2",
+          "0.2",
+          "0.2"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice%20-%2013%20June%202025.pdf"
+      },
+      {
+        "date": "2025-06-20",
+        "predicted_minimum": "143.5",
+        "actual_minimum": "145.7",
+        "error": "-2.2",
+        "predicted_change": "4.2",
+        "actual_change": "6.4",
+        "kind": "scheduled Friday",
+        "predicted_supply": "80.38",
+        "actual_supply": "82.23",
+        "supply_error": "-1.85",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.2",
+        "mean_change": "3.98",
+        "latest_change": "4.60",
+        "anchor_date": "2025-06-13",
+        "input_window_end": "2025-06-19",
+        "all_zone_minimum_errors": [
+          "-2.2",
+          "-2.1",
+          "-2.1",
+          "-2.1",
+          "-2.1",
+          "-2.1"
+        ],
+        "all_zone_maximum_errors": [
+          "-2.1",
+          "-2.1",
+          "-2.1",
+          "-2.1",
+          "-2.1",
+          "-2.1"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_273.pdf"
+      },
+      {
+        "date": "2025-06-27",
+        "predicted_minimum": "144.5",
+        "actual_minimum": "143.7",
+        "error": "0.8",
+        "predicted_change": "-1.2",
+        "actual_change": "-2.0",
+        "kind": "scheduled Friday",
+        "predicted_supply": "81.18",
+        "actual_supply": "80.51",
+        "supply_error": "0.67",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.2",
+        "mean_change": "-0.46",
+        "latest_change": "-7.70",
+        "anchor_date": "2025-06-20",
+        "input_window_end": "2025-06-26",
+        "all_zone_minimum_errors": [
+          "0.8",
+          "0.7",
+          "0.8",
+          "0.8",
+          "0.8",
+          "0.8"
+        ],
+        "all_zone_maximum_errors": [
+          "0.7",
+          "0.8",
+          "0.8",
+          "0.8",
+          "0.8",
+          "0.8"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_274.pdf"
+      },
+      {
+        "date": "2025-07-04",
+        "predicted_minimum": "140.0",
+        "actual_minimum": "140.1",
+        "error": "-0.1",
+        "predicted_change": "-3.7",
+        "actual_change": "-3.6",
+        "kind": "scheduled Friday",
+        "predicted_supply": "77.30",
+        "actual_supply": "77.37",
+        "supply_error": "-0.07",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.20",
+        "mean_change": "-4.28",
+        "latest_change": "1.90",
+        "anchor_date": "2025-06-27",
+        "input_window_end": "2025-07-03",
+        "all_zone_minimum_errors": [
+          "-0.1",
+          "-0.1",
+          "0.0",
+          "-0.1",
+          "-0.1",
+          "-0.1"
+        ],
+        "all_zone_maximum_errors": [
+          "-0.1",
+          "-0.1",
+          "-0.1",
+          "0.0",
+          "0.0",
+          "0.0"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_276.pdf"
+      },
+      {
+        "date": "2025-07-11",
+        "predicted_minimum": "143.1",
+        "actual_minimum": "143.6",
+        "error": "-0.5",
+        "predicted_change": "3.0",
+        "actual_change": "3.5",
+        "kind": "scheduled Friday",
+        "predicted_supply": "80.01",
+        "actual_supply": "80.43",
+        "supply_error": "-0.42",
+        "assumed_credit_card": "0.20",
+        "actual_credit_card": "0.2",
+        "mean_change": "2.70",
+        "latest_change": "2.60",
+        "anchor_date": "2025-07-04",
+        "input_window_end": "2025-07-10",
+        "all_zone_minimum_errors": [
+          "-0.5",
+          "-0.5",
+          "-0.4",
+          "-0.4",
+          "-0.4",
+          "-0.4"
+        ],
+        "all_zone_maximum_errors": [
+          "-0.5",
+          "-0.5",
+          "-0.5",
+          "-0.5",
+          "-0.5",
+          "-0.5"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_277.pdf"
+      },
+      {
+        "date": "2025-07-18",
+        "predicted_minimum": "144.6",
+        "actual_minimum": "144.1",
+        "error": "0.5",
+        "predicted_change": "1.0",
+        "actual_change": "0.5",
+        "kind": "scheduled Friday",
+        "predicted_supply": "81.32",
+        "actual_supply": "80.90",
+        "supply_error": "0.42",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.2",
+        "mean_change": "1.12",
+        "latest_change": "-1.10",
+        "anchor_date": "2025-07-11",
+        "input_window_end": "2025-07-17",
+        "all_zone_minimum_errors": [
+          "0.5",
+          "0.5",
+          "0.4",
+          "0.5",
+          "0.5",
+          "0.5"
+        ],
+        "all_zone_maximum_errors": [
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.4",
+          "0.4",
+          "0.4"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_278.pdf"
+      },
+      {
+        "date": "2025-07-25",
+        "predicted_minimum": "143.4",
+        "actual_minimum": "142.9",
+        "error": "0.5",
+        "predicted_change": "-0.7",
+        "actual_change": "-1.2",
+        "kind": "scheduled Friday",
+        "predicted_supply": "80.27",
+        "actual_supply": "79.81",
+        "supply_error": "0.46",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.2",
+        "mean_change": "-0.74",
+        "latest_change": "-0.80",
+        "anchor_date": "2025-07-18",
+        "input_window_end": "2025-07-24",
+        "all_zone_minimum_errors": [
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.6",
+          "0.6",
+          "0.6"
+        ],
+        "all_zone_maximum_errors": [
+          "0.5",
+          "0.6",
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.5"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gaspricejul2525.pdf"
+      },
+      {
+        "date": "2025-08-01",
+        "predicted_minimum": "144.8",
+        "actual_minimum": "145.7",
+        "error": "-0.9",
+        "predicted_change": "1.9",
+        "actual_change": "2.8",
+        "kind": "scheduled Friday",
+        "predicted_supply": "81.49",
+        "actual_supply": "82.25",
+        "supply_error": "-0.76",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.2",
+        "mean_change": "1.02",
+        "latest_change": "5.80",
+        "anchor_date": "2025-07-25",
+        "input_window_end": "2025-07-31",
+        "all_zone_minimum_errors": [
+          "-0.9",
+          "-0.9",
+          "-0.9",
+          "-0.8",
+          "-0.8",
+          "-0.8"
+        ],
+        "all_zone_maximum_errors": [
+          "-0.9",
+          "-0.8",
+          "-0.9",
+          "-0.9",
+          "-0.9",
+          "-0.9"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice%20-%201%20Aug%202025.pdf"
+      },
+      {
+        "date": "2025-08-08",
+        "predicted_minimum": "145.9",
+        "actual_minimum": "146.7",
+        "error": "-0.8",
+        "predicted_change": "0.2",
+        "actual_change": "1.0",
+        "kind": "scheduled Friday",
+        "predicted_supply": "82.46",
+        "actual_supply": "83.15",
+        "supply_error": "-0.69",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.2",
+        "mean_change": "0.94",
+        "latest_change": "-4.40",
+        "anchor_date": "2025-08-01",
+        "input_window_end": "2025-08-07",
+        "all_zone_minimum_errors": [
+          "-0.8",
+          "-0.8",
+          "-0.8",
+          "-0.7",
+          "-0.7",
+          "-0.7"
+        ],
+        "all_zone_maximum_errors": [
+          "-0.8",
+          "-0.8",
+          "-0.8",
+          "-0.8",
+          "-0.8",
+          "-0.8"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_279.pdf"
+      },
+      {
+        "date": "2025-08-15",
+        "predicted_minimum": "145.6",
+        "actual_minimum": "144.7",
+        "error": "0.9",
+        "predicted_change": "-1.1",
+        "actual_change": "-2.0",
+        "kind": "scheduled Friday",
+        "predicted_supply": "82.15",
+        "actual_supply": "81.40",
+        "supply_error": "0.75",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.20",
+        "mean_change": "-1.30",
+        "latest_change": "-0.30",
+        "anchor_date": "2025-08-08",
+        "input_window_end": "2025-08-14",
+        "all_zone_minimum_errors": [
+          "0.9",
+          "0.8",
+          "0.9",
+          "0.8",
+          "0.8",
+          "0.9"
+        ],
+        "all_zone_maximum_errors": [
+          "0.8",
+          "0.8",
+          "0.9",
+          "0.9",
+          "0.9",
+          "0.9"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_280.pdf"
+      },
+      {
+        "date": "2025-08-22",
+        "predicted_minimum": "145.9",
+        "actual_minimum": "145.6",
+        "error": "0.3",
+        "predicted_change": "1.2",
+        "actual_change": "0.9",
+        "kind": "scheduled Friday",
+        "predicted_supply": "82.46",
+        "actual_supply": "82.19",
+        "supply_error": "0.27",
+        "assumed_credit_card": "0.20",
+        "actual_credit_card": "0.20",
+        "mean_change": "0.80",
+        "latest_change": "2.30",
+        "anchor_date": "2025-08-15",
+        "input_window_end": "2025-08-21",
+        "all_zone_minimum_errors": [
+          "0.3",
+          "0.3",
+          "0.3",
+          "0.3",
+          "0.3",
+          "0.3"
+        ],
+        "all_zone_maximum_errors": [
+          "0.3",
+          "0.3",
+          "0.3",
+          "0.3",
+          "0.3",
+          "0.3"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_281.pdf"
+      },
+      {
+        "date": "2025-08-29",
+        "predicted_minimum": "147.5",
+        "actual_minimum": "147.9",
+        "error": "-0.4",
+        "predicted_change": "1.9",
+        "actual_change": "2.3",
+        "kind": "scheduled Friday",
+        "predicted_supply": "83.84",
+        "actual_supply": "84.16",
+        "supply_error": "-0.32",
+        "assumed_credit_card": "0.20",
+        "actual_credit_card": "0.2",
+        "mean_change": "1.80",
+        "latest_change": "0.50",
+        "anchor_date": "2025-08-22",
+        "input_window_end": "2025-08-28",
+        "all_zone_minimum_errors": [
+          "-0.4",
+          "-0.3",
+          "-0.4",
+          "-0.4",
+          "-0.4",
+          "-0.4"
+        ],
+        "all_zone_maximum_errors": [
+          "-0.3",
+          "-0.4",
+          "-0.4",
+          "-0.4",
+          "-0.4",
+          "-0.4"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_282.pdf"
+      },
+      {
+        "date": "2025-09-05",
+        "predicted_minimum": "150.8",
+        "actual_minimum": "151.9",
+        "error": "-1.1",
+        "predicted_change": "2.9",
+        "actual_change": "4.0",
+        "kind": "scheduled Friday",
+        "predicted_supply": "86.72",
+        "actual_supply": "87.58",
+        "supply_error": "-0.86",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.30",
+        "mean_change": "2.48",
+        "latest_change": "3.00",
+        "anchor_date": "2025-08-29",
+        "input_window_end": "2025-09-04",
+        "all_zone_minimum_errors": [
+          "-1.1",
+          "-1.1",
+          "-1.1",
+          "-1.1",
+          "-1.1",
+          "-1.1"
+        ],
+        "all_zone_maximum_errors": [
+          "-1.1",
+          "-1.1",
+          "-1.1",
+          "-1.1",
+          "-1.1",
+          "-1.1"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice%20-%20Sept.%205%2C%202025.pdf"
+      },
+      {
+        "date": "2025-09-12",
+        "predicted_minimum": "151.9",
+        "actual_minimum": "148.9",
+        "error": "3.0",
+        "predicted_change": "0.0",
+        "actual_change": "-3.0",
+        "kind": "scheduled Friday",
+        "predicted_supply": "87.57",
+        "actual_supply": "85.06",
+        "supply_error": "2.51",
+        "assumed_credit_card": "0.30",
+        "actual_credit_card": "0.20",
+        "mean_change": "-0.12",
+        "latest_change": "-0.20",
+        "anchor_date": "2025-09-05",
+        "input_window_end": "2025-09-11",
+        "all_zone_minimum_errors": [
+          "3.0",
+          "2.9",
+          "3.0",
+          "3.0",
+          "3.0",
+          "3.0"
+        ],
+        "all_zone_maximum_errors": [
+          "2.9",
+          "3.0",
+          "3.0",
+          "3.0",
+          "3.0",
+          "3.0"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_283.pdf"
+      },
+      {
+        "date": "2025-09-19",
+        "predicted_minimum": "144.4",
+        "actual_minimum": "144.9",
+        "error": "-0.5",
+        "predicted_change": "-4.5",
+        "actual_change": "-4.0",
+        "kind": "scheduled Friday",
+        "predicted_supply": "81.17",
+        "actual_supply": "81.54",
+        "supply_error": "-0.37",
+        "assumed_credit_card": "0.20",
+        "actual_credit_card": "0.2",
+        "mean_change": "-3.48",
+        "latest_change": "-7.50",
+        "anchor_date": "2025-09-12",
+        "input_window_end": "2025-09-18",
+        "all_zone_minimum_errors": [
+          "-0.5",
+          "-0.4",
+          "-0.4",
+          "-0.4",
+          "-0.4",
+          "-0.4"
+        ],
+        "all_zone_maximum_errors": [
+          "-0.5",
+          "-0.4",
+          "-0.4",
+          "-0.4",
+          "-0.4",
+          "-0.4"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gaspricesep19.pdf"
+      },
+      {
+        "date": "2025-09-26",
+        "predicted_minimum": "142.1",
+        "actual_minimum": "140.7",
+        "error": "1.4",
+        "predicted_change": "-2.8",
+        "actual_change": "-4.2",
+        "kind": "scheduled Friday",
+        "predicted_supply": "79.07",
+        "actual_supply": "77.90",
+        "supply_error": "1.17",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.2",
+        "mean_change": "-3.20",
+        "latest_change": "1.40",
+        "anchor_date": "2025-09-19",
+        "input_window_end": "2025-09-25",
+        "all_zone_minimum_errors": [
+          "1.4",
+          "1.3",
+          "1.4",
+          "1.3",
+          "1.3",
+          "1.3"
+        ],
+        "all_zone_maximum_errors": [
+          "1.3",
+          "1.3",
+          "1.4",
+          "1.4",
+          "1.4",
+          "1.4"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_284.pdf"
+      },
+      {
+        "date": "2025-10-03",
+        "predicted_minimum": "140.3",
+        "actual_minimum": "140.7",
+        "error": "-0.4",
+        "predicted_change": "-0.4",
+        "actual_change": "0.0",
+        "kind": "scheduled Friday",
+        "predicted_supply": "77.49",
+        "actual_supply": "77.90",
+        "supply_error": "-0.41",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.2",
+        "mean_change": "-0.14",
+        "latest_change": "-2.90",
+        "anchor_date": "2025-09-26",
+        "input_window_end": "2025-10-02",
+        "all_zone_minimum_errors": [
+          "-0.4",
+          "-0.5",
+          "-0.4",
+          "-0.5",
+          "-0.5",
+          "-0.5"
+        ],
+        "all_zone_maximum_errors": [
+          "-0.5",
+          "-0.5",
+          "-0.4",
+          "-0.4",
+          "-0.4",
+          "-0.4"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_285.pdf"
+      },
+      {
+        "date": "2025-10-10",
+        "predicted_minimum": "138.6",
+        "actual_minimum": "138.5",
+        "error": "0.1",
+        "predicted_change": "-2.1",
+        "actual_change": "-2.2",
+        "kind": "scheduled Friday",
+        "predicted_supply": "76.00",
+        "actual_supply": "75.92",
+        "supply_error": "0.08",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.2",
+        "mean_change": "-2.26",
+        "latest_change": "0.40",
+        "anchor_date": "2025-10-03",
+        "input_window_end": "2025-10-09",
+        "all_zone_minimum_errors": [
+          "0.1",
+          "0.1",
+          "0.1",
+          "0.1",
+          "0.1",
+          "0.1"
+        ],
+        "all_zone_maximum_errors": [
+          "0.1",
+          "0.1",
+          "0.1",
+          "0.1",
+          "0.1",
+          "0.1"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_286.pdf"
+      },
+      {
+        "date": "2025-10-17",
+        "predicted_minimum": "136.9",
+        "actual_minimum": "135.8",
+        "error": "1.1",
+        "predicted_change": "-1.6",
+        "actual_change": "-2.7",
+        "kind": "scheduled Friday",
+        "predicted_supply": "74.51",
+        "actual_supply": "73.61",
+        "supply_error": "0.90",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.20",
+        "mean_change": "-1.28",
+        "latest_change": "-3.00",
+        "anchor_date": "2025-10-10",
+        "input_window_end": "2025-10-16",
+        "all_zone_minimum_errors": [
+          "1.1",
+          "1.0",
+          "1.0",
+          "1.0",
+          "1.0",
+          "1.0"
+        ],
+        "all_zone_maximum_errors": [
+          "1.0",
+          "1.0",
+          "1.1",
+          "1.0",
+          "1.0",
+          "1.1"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_287.pdf"
+      },
+      {
+        "date": "2025-10-24",
+        "predicted_minimum": "133.2",
+        "actual_minimum": "135.8",
+        "error": "-2.6",
+        "predicted_change": "-2.6",
+        "actual_change": "0.0",
+        "kind": "scheduled Friday",
+        "predicted_supply": "71.27",
+        "actual_supply": "73.61",
+        "supply_error": "-2.34",
+        "assumed_credit_card": "0.20",
+        "actual_credit_card": "0.20",
+        "mean_change": "-2.46",
+        "latest_change": "-1.80",
+        "anchor_date": "2025-10-17",
+        "input_window_end": "2025-10-23",
+        "all_zone_minimum_errors": [
+          "-2.6",
+          "-2.7",
+          "-2.7",
+          "-2.7",
+          "-2.7",
+          "-2.7"
+        ],
+        "all_zone_maximum_errors": [
+          "-2.7",
+          "-2.7",
+          "-2.6",
+          "-2.7",
+          "-2.7",
+          "-2.6"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_288.pdf"
+      },
+      {
+        "date": "2025-10-31",
+        "predicted_minimum": "138.1",
+        "actual_minimum": "140.3",
+        "error": "-2.2",
+        "predicted_change": "2.3",
+        "actual_change": "4.5",
+        "kind": "scheduled Friday",
+        "predicted_supply": "75.59",
+        "actual_supply": "77.57",
+        "supply_error": "-1.98",
+        "assumed_credit_card": "0.20",
+        "actual_credit_card": "0.2",
+        "mean_change": "1.80",
+        "latest_change": "3.20",
+        "anchor_date": "2025-10-24",
+        "input_window_end": "2025-10-30",
+        "all_zone_minimum_errors": [
+          "-2.2",
+          "-2.2",
+          "-2.3",
+          "-2.3",
+          "-2.3",
+          "-2.3"
+        ],
+        "all_zone_maximum_errors": [
+          "-2.2",
+          "-2.3",
+          "-2.3",
+          "-2.3",
+          "-2.3",
+          "-2.3"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_290.pdf"
+      },
+      {
+        "date": "2025-11-07",
+        "predicted_minimum": "143.5",
+        "actual_minimum": "142.7",
+        "error": "0.8",
+        "predicted_change": "3.2",
+        "actual_change": "2.4",
+        "kind": "scheduled Friday",
+        "predicted_supply": "80.33",
+        "actual_supply": "79.65",
+        "supply_error": "0.68",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.2",
+        "mean_change": "2.84",
+        "latest_change": "1.60",
+        "anchor_date": "2025-10-31",
+        "input_window_end": "2025-11-06",
+        "all_zone_minimum_errors": [
+          "0.8",
+          "0.8",
+          "0.8",
+          "0.7",
+          "0.7",
+          "0.7"
+        ],
+        "all_zone_maximum_errors": [
+          "0.8",
+          "0.7",
+          "0.8",
+          "0.8",
+          "0.8",
+          "0.8"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_291.pdf"
+      },
+      {
+        "date": "2025-11-14",
+        "predicted_minimum": "145.3",
+        "actual_minimum": "145.1",
+        "error": "0.2",
+        "predicted_change": "2.6",
+        "actual_change": "2.4",
+        "kind": "scheduled Friday",
+        "predicted_supply": "81.90",
+        "actual_supply": "81.76",
+        "supply_error": "0.14",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.2",
+        "mean_change": "2.26",
+        "latest_change": "1.80",
+        "anchor_date": "2025-11-07",
+        "input_window_end": "2025-11-13",
+        "all_zone_minimum_errors": [
+          "0.2",
+          "0.2",
+          "0.2",
+          "0.1",
+          "0.1",
+          "0.1"
+        ],
+        "all_zone_maximum_errors": [
+          "0.2",
+          "0.1",
+          "0.2",
+          "0.2",
+          "0.2",
+          "0.2"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_292.pdf"
+      },
+      {
+        "date": "2025-11-21",
+        "predicted_minimum": "145.6",
+        "actual_minimum": "145.1",
+        "error": "0.5",
+        "predicted_change": "0.5",
+        "actual_change": "0.0",
+        "kind": "scheduled Friday",
+        "predicted_supply": "82.21",
+        "actual_supply": "81.76",
+        "supply_error": "0.45",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.20",
+        "mean_change": "0.52",
+        "latest_change": "-0.70",
+        "anchor_date": "2025-11-14",
+        "input_window_end": "2025-11-20",
+        "all_zone_minimum_errors": [
+          "0.5",
+          "0.5",
+          "0.6",
+          "0.5",
+          "0.5",
+          "0.5"
+        ],
+        "all_zone_maximum_errors": [
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.6",
+          "0.6",
+          "0.6"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_293.pdf"
+      },
+      {
+        "date": "2025-11-28",
+        "predicted_minimum": "140.5",
+        "actual_minimum": "139.0",
+        "error": "1.5",
+        "predicted_change": "-4.6",
+        "actual_change": "-6.1",
+        "kind": "scheduled Friday",
+        "predicted_supply": "77.69",
+        "actual_supply": "76.37",
+        "supply_error": "1.32",
+        "assumed_credit_card": "0.20",
+        "actual_credit_card": "0.2",
+        "mean_change": "-4.38",
+        "latest_change": "-3.40",
+        "anchor_date": "2025-11-21",
+        "input_window_end": "2025-11-27",
+        "all_zone_minimum_errors": [
+          "1.5",
+          "1.6",
+          "1.5",
+          "1.5",
+          "1.5",
+          "1.5"
+        ],
+        "all_zone_maximum_errors": [
+          "1.5",
+          "1.5",
+          "1.5",
+          "1.5",
+          "1.5",
+          "1.5"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_295.pdf"
+      },
+      {
+        "date": "2025-12-05",
+        "predicted_minimum": "137.6",
+        "actual_minimum": "136.0",
+        "error": "1.6",
+        "predicted_change": "-1.4",
+        "actual_change": "-3.0",
+        "kind": "scheduled Friday",
+        "predicted_supply": "75.20",
+        "actual_supply": "73.80",
+        "supply_error": "1.40",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.2",
+        "mean_change": "-0.98",
+        "latest_change": "-3.00",
+        "anchor_date": "2025-11-28",
+        "input_window_end": "2025-12-04",
+        "all_zone_minimum_errors": [
+          "1.6",
+          "1.6",
+          "1.6",
+          "1.6",
+          "1.6",
+          "1.6"
+        ],
+        "all_zone_maximum_errors": [
+          "1.6",
+          "1.6",
+          "1.5",
+          "1.6",
+          "1.6",
+          "1.6"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice12052025.pdf"
+      },
+      {
+        "date": "2025-12-12",
+        "predicted_minimum": "131.3",
+        "actual_minimum": "131.5",
+        "error": "-0.2",
+        "predicted_change": "-4.7",
+        "actual_change": "-4.5",
+        "kind": "scheduled Friday",
+        "predicted_supply": "69.67",
+        "actual_supply": "69.92",
+        "supply_error": "-0.25",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.1",
+        "mean_change": "-4.36",
+        "latest_change": "-2.90",
+        "anchor_date": "2025-12-05",
+        "input_window_end": "2025-12-11",
+        "all_zone_minimum_errors": [
+          "-0.2",
+          "-0.2",
+          "-0.1",
+          "-0.2",
+          "-0.2",
+          "-0.1"
+        ],
+        "all_zone_maximum_errors": [
+          "-0.2",
+          "-0.2",
+          "-0.2",
+          "-0.1",
+          "-0.1",
+          "-0.1"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_296.pdf"
+      },
+      {
+        "date": "2025-12-19",
+        "predicted_minimum": "127.4",
+        "actual_minimum": "126.0",
+        "error": "1.4",
+        "predicted_change": "-4.1",
+        "actual_change": "-5.5",
+        "kind": "scheduled Friday",
+        "predicted_supply": "66.31",
+        "actual_supply": "65.06",
+        "supply_error": "1.25",
+        "assumed_credit_card": "0.1",
+        "actual_credit_card": "0.10",
+        "mean_change": "-3.70",
+        "latest_change": "-3.40",
+        "anchor_date": "2025-12-12",
+        "input_window_end": "2025-12-18",
+        "all_zone_minimum_errors": [
+          "1.4",
+          "1.5",
+          "1.4",
+          "1.4",
+          "1.4",
+          "1.4"
+        ],
+        "all_zone_maximum_errors": [
+          "1.4",
+          "1.4",
+          "1.4",
+          "1.4",
+          "1.4",
+          "1.4"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_297.pdf"
+      },
+      {
+        "date": "2025-12-26",
+        "predicted_minimum": "125.9",
+        "actual_minimum": "127.5",
+        "error": "-1.6",
+        "predicted_change": "-0.1",
+        "actual_change": "1.5",
+        "kind": "scheduled Friday",
+        "predicted_supply": "64.96",
+        "actual_supply": "66.40",
+        "supply_error": "-1.44",
+        "assumed_credit_card": "0.10",
+        "actual_credit_card": "0.10",
+        "mean_change": "-0.30",
+        "latest_change": "1.10",
+        "anchor_date": "2025-12-19",
+        "input_window_end": "2025-12-25",
+        "all_zone_minimum_errors": [
+          "-1.6",
+          "-1.7",
+          "-1.6",
+          "-1.6",
+          "-1.6",
+          "-1.6"
+        ],
+        "all_zone_maximum_errors": [
+          "-1.7",
+          "-1.6",
+          "-1.6",
+          "-1.6",
+          "-1.6",
+          "-1.6"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_298.pdf"
+      },
+      {
+        "date": "2026-01-02",
+        "predicted_minimum": "127.2",
+        "actual_minimum": "127.5",
+        "error": "-0.3",
+        "predicted_change": "-0.3",
+        "actual_change": "0.0",
+        "kind": "scheduled Friday",
+        "predicted_supply": "66.16",
+        "actual_supply": "66.40",
+        "supply_error": "-0.24",
+        "assumed_credit_card": "0.10",
+        "actual_credit_card": "0.1",
+        "mean_change": "-0.18",
+        "latest_change": "-0.90",
+        "anchor_date": "2025-12-26",
+        "input_window_end": "2026-01-01",
+        "all_zone_minimum_errors": [
+          "-0.3",
+          "-0.3",
+          "-0.2",
+          "-0.2",
+          "-0.2",
+          "-0.2"
+        ],
+        "all_zone_maximum_errors": [
+          "-0.3",
+          "-0.2",
+          "-0.3",
+          "-0.3",
+          "-0.3",
+          "-0.3"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_299.pdf"
+      },
+      {
+        "date": "2026-01-09",
+        "predicted_minimum": "125.6",
+        "actual_minimum": "127.5",
+        "error": "-1.9",
+        "predicted_change": "-1.9",
+        "actual_change": "0.0",
+        "kind": "scheduled Friday",
+        "predicted_supply": "67.71",
+        "actual_supply": "69.40",
+        "supply_error": "-1.69",
+        "assumed_credit_card": "0.1",
+        "actual_credit_card": "0.1",
+        "mean_change": "1.22",
+        "latest_change": "1.40",
+        "anchor_date": "2026-01-02",
+        "input_window_end": "2026-01-08",
+        "all_zone_minimum_errors": [
+          "-1.9",
+          "-2.0",
+          "-1.9",
+          "-1.9",
+          "-1.9",
+          "-1.9"
+        ],
+        "all_zone_maximum_errors": [
+          "-1.9",
+          "-1.9",
+          "-1.9",
+          "-1.9",
+          "-1.9",
+          "-1.9"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice%20-%209%20Jan%202026.pdf"
+      },
+      {
+        "date": "2026-01-16",
+        "predicted_minimum": "132.4",
+        "actual_minimum": "132.4",
+        "error": "0.0",
+        "predicted_change": "4.9",
+        "actual_change": "4.9",
+        "kind": "scheduled Friday",
+        "predicted_supply": "73.67",
+        "actual_supply": "73.66",
+        "supply_error": "0.01",
+        "assumed_credit_card": "0.1",
+        "actual_credit_card": "0.1",
+        "mean_change": "3.92",
+        "latest_change": "5.30",
+        "anchor_date": "2026-01-09",
+        "input_window_end": "2026-01-15",
+        "all_zone_minimum_errors": [
+          "0.0",
+          "0.0",
+          "0.0",
+          "0.0",
+          "0.0",
+          "0.0"
+        ],
+        "all_zone_maximum_errors": [
+          "0.0",
+          "0.0",
+          "0.0",
+          "0.0",
+          "0.0",
+          "0.0"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_300.pdf"
+      },
+      {
+        "date": "2026-01-23",
+        "predicted_minimum": "132.9",
+        "actual_minimum": "133.0",
+        "error": "-0.1",
+        "predicted_change": "0.5",
+        "actual_change": "0.6",
+        "kind": "scheduled Friday",
+        "predicted_supply": "74.14",
+        "actual_supply": "74.27",
+        "supply_error": "-0.13",
+        "assumed_credit_card": "0.1",
+        "actual_credit_card": "0.1",
+        "mean_change": "0.32",
+        "latest_change": "0.80",
+        "anchor_date": "2026-01-16",
+        "input_window_end": "2026-01-22",
+        "all_zone_minimum_errors": [
+          "-0.1",
+          "-0.1",
+          "-0.2",
+          "-0.2",
+          "-0.2",
+          "-0.2"
+        ],
+        "all_zone_maximum_errors": [
+          "-0.1",
+          "-0.1",
+          "-0.2",
+          "-0.2",
+          "-0.2",
+          "-0.2"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_303.pdf"
+      },
+      {
+        "date": "2026-01-30",
+        "predicted_minimum": "134.6",
+        "actual_minimum": "134.5",
+        "error": "0.1",
+        "predicted_change": "1.6",
+        "actual_change": "1.5",
+        "kind": "scheduled Friday",
+        "predicted_supply": "75.62",
+        "actual_supply": "75.52",
+        "supply_error": "0.10",
+        "assumed_credit_card": "0.1",
+        "actual_credit_card": "0.1",
+        "mean_change": "1.40",
+        "latest_change": "0.30",
+        "anchor_date": "2026-01-23",
+        "input_window_end": "2026-01-29",
+        "all_zone_minimum_errors": [
+          "0.1",
+          "0.2",
+          "0.1",
+          "0.1",
+          "0.1",
+          "0.1"
+        ],
+        "all_zone_maximum_errors": [
+          "0.1",
+          "0.1",
+          "0.1",
+          "0.1",
+          "0.1",
+          "0.1"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_302.pdf"
+      },
+      {
+        "date": "2026-02-06",
+        "predicted_minimum": "135.8",
+        "actual_minimum": "136.4",
+        "error": "-0.6",
+        "predicted_change": "1.3",
+        "actual_change": "1.9",
+        "kind": "scheduled Friday",
+        "predicted_supply": "76.64",
+        "actual_supply": "77.11",
+        "supply_error": "-0.47",
+        "assumed_credit_card": "0.1",
+        "actual_credit_card": "0.20",
+        "mean_change": "0.84",
+        "latest_change": "2.10",
+        "anchor_date": "2026-01-30",
+        "input_window_end": "2026-02-05",
+        "all_zone_minimum_errors": [
+          "-0.6",
+          "-0.7",
+          "-0.6",
+          "-0.6",
+          "-0.6",
+          "-0.6"
+        ],
+        "all_zone_maximum_errors": [
+          "-0.7",
+          "-0.7",
+          "-0.6",
+          "-0.6",
+          "-0.6",
+          "-0.6"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_304.pdf"
+      },
+      {
+        "date": "2026-02-13",
+        "predicted_minimum": "138.5",
+        "actual_minimum": "138.0",
+        "error": "0.5",
+        "predicted_change": "2.1",
+        "actual_change": "1.6",
+        "kind": "scheduled Friday",
+        "predicted_supply": "78.93",
+        "actual_supply": "78.49",
+        "supply_error": "0.44",
+        "assumed_credit_card": "0.20",
+        "actual_credit_card": "0.20",
+        "mean_change": "1.90",
+        "latest_change": "0.50",
+        "anchor_date": "2026-02-06",
+        "input_window_end": "2026-02-12",
+        "all_zone_minimum_errors": [
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.5"
+        ],
+        "all_zone_maximum_errors": [
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.5"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_305.pdf"
+      },
+      {
+        "date": "2026-02-20",
+        "predicted_minimum": "136.8",
+        "actual_minimum": "136.2",
+        "error": "0.6",
+        "predicted_change": "-1.2",
+        "actual_change": "-1.8",
+        "kind": "scheduled Friday",
+        "predicted_supply": "77.45",
+        "actual_supply": "76.93",
+        "supply_error": "0.52",
+        "assumed_credit_card": "0.20",
+        "actual_credit_card": "0.20",
+        "mean_change": "-1.22",
+        "latest_change": "-0.40",
+        "anchor_date": "2026-02-13",
+        "input_window_end": "2026-02-19",
+        "all_zone_minimum_errors": [
+          "0.6",
+          "0.6",
+          "0.6",
+          "0.6",
+          "0.6",
+          "0.6"
+        ],
+        "all_zone_maximum_errors": [
+          "0.6",
+          "0.6",
+          "0.6",
+          "0.6",
+          "0.6",
+          "0.6"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_306.pdf"
+      },
+      {
+        "date": "2026-02-27",
+        "predicted_minimum": "138.0",
+        "actual_minimum": "138.8",
+        "error": "-0.8",
+        "predicted_change": "1.8",
+        "actual_change": "2.6",
+        "kind": "scheduled Friday",
+        "predicted_supply": "78.47",
+        "actual_supply": "79.18",
+        "supply_error": "-0.71",
+        "assumed_credit_card": "0.20",
+        "actual_credit_card": "0.20",
+        "mean_change": "1.64",
+        "latest_change": "0.20",
+        "anchor_date": "2026-02-20",
+        "input_window_end": "2026-02-26",
+        "all_zone_minimum_errors": [
+          "-0.8",
+          "-0.8",
+          "-0.8",
+          "-0.8",
+          "-0.8",
+          "-0.8"
+        ],
+        "all_zone_maximum_errors": [
+          "-0.8",
+          "-0.8",
+          "-0.8",
+          "-0.8",
+          "-0.8",
+          "-0.8"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_308.pdf"
+      },
+      {
+        "date": "2026-03-04",
+        "predicted_minimum": "144.2",
+        "actual_minimum": "147.7",
+        "error": "-3.5",
+        "predicted_change": "5.4",
+        "actual_change": "8.9",
+        "kind": "other gasoline setting",
+        "predicted_supply": "83.96",
+        "actual_supply": "87.01",
+        "supply_error": "-3.05",
+        "assumed_credit_card": "0.20",
+        "actual_credit_card": "0.2",
+        "mean_change": "4.02666666666666666666666667",
+        "latest_change": "8.10",
+        "anchor_date": "2026-02-27",
+        "input_window_end": "2026-03-03",
+        "all_zone_minimum_errors": [
+          "-3.5",
+          "-3.5",
+          "-3.5",
+          "-3.4",
+          "-3.4",
+          "-3.5"
+        ],
+        "all_zone_maximum_errors": [
+          "-3.5",
+          "-3.4",
+          "-3.5",
+          "-3.5",
+          "-3.5",
+          "-3.5"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_309.pdf"
+      },
+      {
+        "date": "2026-03-06",
+        "predicted_minimum": "155.9",
+        "actual_minimum": "152.7",
+        "error": "3.2",
+        "predicted_change": "8.2",
+        "actual_change": "5.0",
+        "kind": "scheduled Friday",
+        "predicted_supply": "94.23",
+        "actual_supply": "91.29",
+        "supply_error": "2.94",
+        "assumed_credit_card": "0.2",
+        "actual_credit_card": "0.30",
+        "mean_change": "7.28333333333333333333333333",
+        "latest_change": "3.90",
+        "anchor_date": "2026-03-04",
+        "input_window_end": "2026-03-05",
+        "all_zone_minimum_errors": [
+          "3.2",
+          "3.2",
+          "3.2",
+          "3.3",
+          "3.3",
+          "3.3"
+        ],
+        "all_zone_maximum_errors": [
+          "3.2",
+          "3.3",
+          "3.2",
+          "3.2",
+          "3.2",
+          "3.2"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_310.pdf"
+      },
+      {
+        "date": "2026-03-10",
+        "predicted_minimum": "160.9",
+        "actual_minimum": "162.0",
+        "error": "-1.1",
+        "predicted_change": "8.2",
+        "actual_change": "9.3",
+        "kind": "other gasoline setting",
+        "predicted_supply": "98.50",
+        "actual_supply": "99.47",
+        "supply_error": "-0.97",
+        "assumed_credit_card": "0.30",
+        "actual_credit_card": "0.30",
+        "mean_change": "7.00",
+        "latest_change": "7.30",
+        "anchor_date": "2026-03-06",
+        "input_window_end": "2026-03-09",
+        "all_zone_minimum_errors": [
+          "-1.1",
+          "-1.1",
+          "-1.1",
+          "-1.1",
+          "-1.1",
+          "-1.1"
+        ],
+        "all_zone_maximum_errors": [
+          "-1.1",
+          "-1.2",
+          "-1.1",
+          "-1.1",
+          "-1.1",
+          "-1.1"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_311.pdf"
+      },
+      {
+        "date": "2026-03-13",
+        "predicted_minimum": "162.5",
+        "actual_minimum": "162.0",
+        "error": "0.5",
+        "predicted_change": "0.5",
+        "actual_change": "0.0",
+        "kind": "scheduled Friday",
+        "predicted_supply": "99.91",
+        "actual_supply": "99.47",
+        "supply_error": "0.44",
+        "assumed_credit_card": "0.30",
+        "actual_credit_card": "0.3",
+        "mean_change": "0.2166666666666666666666667",
+        "latest_change": "0.80",
+        "anchor_date": "2026-03-10",
+        "input_window_end": "2026-03-12",
+        "all_zone_minimum_errors": [
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.5"
+        ],
+        "all_zone_maximum_errors": [
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.5"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_312.pdf"
+      },
+      {
+        "date": "2026-03-14",
+        "predicted_minimum": "169.9",
+        "actual_minimum": "168.7",
+        "error": "1.2",
+        "predicted_change": "7.9",
+        "actual_change": "6.7",
+        "kind": "other gasoline setting",
+        "predicted_supply": "106.37",
+        "actual_supply": "105.20",
+        "supply_error": "1.17",
+        "assumed_credit_card": "0.3",
+        "actual_credit_card": "0.4",
+        "mean_change": "6.9333333333333333333333333",
+        "latest_change": "5.50",
+        "anchor_date": "2026-03-13",
+        "input_window_end": "2026-03-13",
+        "all_zone_minimum_errors": [
+          "1.2",
+          "1.2",
+          "1.2",
+          "1.2",
+          "1.2",
+          "1.2"
+        ],
+        "all_zone_maximum_errors": [
+          "1.3",
+          "1.2",
+          "1.2",
+          "1.2",
+          "1.2",
+          "1.2"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_313.pdf"
+      },
+      {
+        "date": "2026-03-20",
+        "predicted_minimum": "173.8",
+        "actual_minimum": "174.4",
+        "error": "-0.6",
+        "predicted_change": "5.1",
+        "actual_change": "5.7",
+        "kind": "scheduled Friday",
+        "predicted_supply": "109.68",
+        "actual_supply": "110.26",
+        "supply_error": "-0.58",
+        "assumed_credit_card": "0.4",
+        "actual_credit_card": "0.4",
+        "mean_change": "4.15",
+        "latest_change": "5.20",
+        "anchor_date": "2026-03-14",
+        "input_window_end": "2026-03-19",
+        "all_zone_minimum_errors": [
+          "-0.6",
+          "-0.7",
+          "-0.6",
+          "-0.7",
+          "-0.7",
+          "-0.7"
+        ],
+        "all_zone_maximum_errors": [
+          "-0.7",
+          "-0.7",
+          "-0.6",
+          "-0.6",
+          "-0.6",
+          "-0.6"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_314.pdf"
+      },
+      {
+        "date": "2026-03-27",
+        "predicted_minimum": "175.6",
+        "actual_minimum": "175.8",
+        "error": "-0.2",
+        "predicted_change": "1.2",
+        "actual_change": "1.4",
+        "kind": "scheduled Friday",
+        "predicted_supply": "111.31",
+        "actual_supply": "111.46",
+        "supply_error": "-0.15",
+        "assumed_credit_card": "0.4",
+        "actual_credit_card": "0.4",
+        "mean_change": "1.79",
+        "latest_change": "-2.40",
+        "anchor_date": "2026-03-20",
+        "input_window_end": "2026-03-26",
+        "all_zone_minimum_errors": [
+          "-0.2",
+          "-0.2",
+          "-0.2",
+          "-0.1",
+          "-0.1",
+          "-0.1"
+        ],
+        "all_zone_maximum_errors": [
+          "-0.2",
+          "-0.1",
+          "-0.2",
+          "-0.2",
+          "-0.2",
+          "-0.2"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_315.pdf"
+      },
+      {
+        "date": "2026-03-31",
+        "predicted_minimum": "181.6",
+        "actual_minimum": "182.9",
+        "error": "-1.3",
+        "predicted_change": "5.8",
+        "actual_change": "7.1",
+        "kind": "other gasoline setting",
+        "predicted_supply": "116.56",
+        "actual_supply": "117.62",
+        "supply_error": "-1.06",
+        "assumed_credit_card": "0.4",
+        "actual_credit_card": "0.5",
+        "mean_change": "3.86",
+        "latest_change": "9.30",
+        "anchor_date": "2026-03-27",
+        "input_window_end": "2026-03-30",
+        "all_zone_minimum_errors": [
+          "-1.3",
+          "-1.3",
+          "-1.4",
+          "-1.4",
+          "-1.4",
+          "-1.4"
+        ],
+        "all_zone_maximum_errors": [
+          "-1.3",
+          "-1.3",
+          "-1.3",
+          "-1.3",
+          "-1.3",
+          "-1.3"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_316.pdf"
+      },
+      {
+        "date": "2026-04-03",
+        "predicted_minimum": "187.9",
+        "actual_minimum": "187.1",
+        "error": "0.8",
+        "predicted_change": "5.0",
+        "actual_change": "4.2",
+        "kind": "scheduled Friday",
+        "predicted_supply": "121.97",
+        "actual_supply": "121.28",
+        "supply_error": "0.69",
+        "assumed_credit_card": "0.5",
+        "actual_credit_card": "0.5",
+        "mean_change": "5.2666666666666666666666667",
+        "latest_change": "0.00",
+        "anchor_date": "2026-03-31",
+        "input_window_end": "2026-04-02",
+        "all_zone_minimum_errors": [
+          "0.8",
+          "0.8",
+          "0.8",
+          "0.8",
+          "0.8",
+          "0.8"
+        ],
+        "all_zone_maximum_errors": [
+          "0.8",
+          "0.8",
+          "0.8",
+          "0.8",
+          "0.8",
+          "0.8"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_317.pdf"
+      },
+      {
+        "date": "2026-04-10",
+        "predicted_minimum": "186.3",
+        "actual_minimum": "185.4",
+        "error": "0.9",
+        "predicted_change": "-0.8",
+        "actual_change": "-1.7",
+        "kind": "scheduled Friday",
+        "predicted_supply": "120.56",
+        "actual_supply": "119.82",
+        "supply_error": "0.74",
+        "assumed_credit_card": "0.5",
+        "actual_credit_card": "0.5",
+        "mean_change": "0.3733333333333333333333333",
+        "latest_change": "-5.00",
+        "anchor_date": "2026-04-03",
+        "input_window_end": "2026-04-09",
+        "all_zone_minimum_errors": [
+          "0.9",
+          "0.8",
+          "0.8",
+          "0.8",
+          "0.8",
+          "0.8"
+        ],
+        "all_zone_maximum_errors": [
+          "0.9",
+          "0.8",
+          "0.9",
+          "0.8",
+          "0.8",
+          "0.8"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_319.pdf"
+      },
+      {
+        "date": "2026-04-11",
+        "predicted_minimum": "177.1",
+        "actual_minimum": "178.7",
+        "error": "-1.6",
+        "predicted_change": "-8.3",
+        "actual_change": "-6.7",
+        "kind": "other gasoline setting",
+        "predicted_supply": "112.53",
+        "actual_supply": "113.91",
+        "supply_error": "-1.38",
+        "assumed_credit_card": "0.5",
+        "actual_credit_card": "0.5",
+        "mean_change": "-9.14",
+        "latest_change": "-0.80",
+        "anchor_date": "2026-04-10",
+        "input_window_end": "2026-04-10",
+        "all_zone_minimum_errors": [
+          "-1.6",
+          "-1.6",
+          "-1.6",
+          "-1.5",
+          "-1.5",
+          "-1.5"
+        ],
+        "all_zone_maximum_errors": [
+          "-1.6",
+          "-1.5",
+          "-1.6",
+          "-1.6",
+          "-1.6",
+          "-1.6"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_318.pdf"
+      },
+      {
+        "date": "2026-04-17",
+        "predicted_minimum": "180.3",
+        "actual_minimum": "178.7",
+        "error": "1.6",
+        "predicted_change": "1.6",
+        "actual_change": "0.0",
+        "kind": "scheduled Friday",
+        "predicted_supply": "115.28",
+        "actual_supply": "113.91",
+        "supply_error": "1.37",
+        "assumed_credit_card": "0.5",
+        "actual_credit_card": "0.5",
+        "mean_change": "1.475",
+        "latest_change": "0.60",
+        "anchor_date": "2026-04-11",
+        "input_window_end": "2026-04-16",
+        "all_zone_minimum_errors": [
+          "1.6",
+          "1.5",
+          "1.6",
+          "1.6",
+          "1.6",
+          "1.6"
+        ],
+        "all_zone_maximum_errors": [
+          "1.5",
+          "1.6",
+          "1.6",
+          "1.6",
+          "1.6",
+          "1.6"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_321.pdf"
+      },
+      {
+        "date": "2026-04-20",
+        "predicted_minimum": "175.0",
+        "actual_minimum": "167.2",
+        "error": "7.8",
+        "predicted_change": "-3.7",
+        "actual_change": "-11.5",
+        "kind": "other gasoline setting",
+        "predicted_supply": "120.64",
+        "actual_supply": "113.91",
+        "supply_error": "6.73",
+        "assumed_credit_card": "0.5",
+        "actual_credit_card": "0.4",
+        "mean_change": "6.425",
+        "latest_change": "7.30",
+        "anchor_date": "2026-04-17",
+        "input_window_end": "2026-04-19",
+        "all_zone_minimum_errors": [
+          "7.8",
+          "7.7",
+          "7.8",
+          "7.8",
+          "7.8",
+          "7.8"
+        ],
+        "all_zone_maximum_errors": [
+          "7.7",
+          "7.8",
+          "7.8",
+          "7.8",
+          "7.8",
+          "7.8"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_322.pdf"
+      },
+      {
+        "date": "2026-04-24",
+        "predicted_minimum": "167.6",
+        "actual_minimum": "177.7",
+        "error": "-10.1",
+        "predicted_change": "0.4",
+        "actual_change": "10.5",
+        "kind": "scheduled Friday",
+        "predicted_supply": "114.30",
+        "actual_supply": "123.18",
+        "supply_error": "-8.88",
+        "assumed_credit_card": "0.4",
+        "actual_credit_card": "0.4",
+        "mean_change": "-0.90",
+        "latest_change": "4.50",
+        "anchor_date": "2026-04-20",
+        "input_window_end": "2026-04-23",
+        "all_zone_minimum_errors": [
+          "-10.1",
+          "-10.1",
+          "-10.1",
+          "-10.1",
+          "-10.1",
+          "-10.1"
+        ],
+        "all_zone_maximum_errors": [
+          "-10.1",
+          "-10.1",
+          "-10.2",
+          "-10.2",
+          "-10.2",
+          "-10.2"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_323.pdf"
+      },
+      {
+        "date": "2026-04-25",
+        "predicted_minimum": "185.2",
+        "actual_minimum": "184.3",
+        "error": "0.9",
+        "predicted_change": "7.5",
+        "actual_change": "6.6",
+        "kind": "other gasoline setting",
+        "predicted_supply": "129.75",
+        "actual_supply": "128.86",
+        "supply_error": "0.89",
+        "assumed_credit_card": "0.4",
+        "actual_credit_card": "0.5",
+        "mean_change": "8.60",
+        "latest_change": "3.20",
+        "anchor_date": "2026-04-24",
+        "input_window_end": "2026-04-24",
+        "all_zone_minimum_errors": [
+          "0.9",
+          "0.9",
+          "0.9",
+          "0.9",
+          "0.9",
+          "0.9"
+        ],
+        "all_zone_maximum_errors": [
+          "0.9",
+          "0.9",
+          "0.9",
+          "0.9",
+          "0.9",
+          "0.9"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_324.pdf"
+      },
+      {
+        "date": "2026-05-01",
+        "predicted_minimum": "190.2",
+        "actual_minimum": "191.7",
+        "error": "-1.5",
+        "predicted_change": "5.9",
+        "actual_change": "7.4",
+        "kind": "scheduled Friday",
+        "predicted_supply": "134.03",
+        "actual_supply": "135.35",
+        "supply_error": "-1.32",
+        "assumed_credit_card": "0.5",
+        "actual_credit_card": "0.5",
+        "mean_change": "3.30",
+        "latest_change": "9.70",
+        "anchor_date": "2026-04-25",
+        "input_window_end": "2026-04-30",
+        "all_zone_minimum_errors": [
+          "-1.5",
+          "-1.5",
+          "-1.5",
+          "-1.5",
+          "-1.5",
+          "-1.5"
+        ],
+        "all_zone_maximum_errors": [
+          "-1.5",
+          "-1.5",
+          "-1.5",
+          "-1.5",
+          "-1.5",
+          "-1.6"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_325.pdf"
+      },
+      {
+        "date": "2026-05-08",
+        "predicted_minimum": "194.2",
+        "actual_minimum": "191.7",
+        "error": "2.5",
+        "predicted_change": "2.5",
+        "actual_change": "0.0",
+        "kind": "scheduled Friday",
+        "predicted_supply": "137.49",
+        "actual_supply": "135.35",
+        "supply_error": "2.14",
+        "assumed_credit_card": "0.5",
+        "actual_credit_card": "0.5",
+        "mean_change": "6.16",
+        "latest_change": "-5.60",
+        "anchor_date": "2026-05-01",
+        "input_window_end": "2026-05-07",
+        "all_zone_minimum_errors": [
+          "2.5",
+          "2.4",
+          "2.4",
+          "2.4",
+          "2.4",
+          "2.4"
+        ],
+        "all_zone_maximum_errors": [
+          "2.5",
+          "2.4",
+          "2.5",
+          "2.4",
+          "2.4",
+          "2.4"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_326.pdf"
+      },
+      {
+        "date": "2026-05-15",
+        "predicted_minimum": "193.6",
+        "actual_minimum": "196.2",
+        "error": "-2.6",
+        "predicted_change": "1.9",
+        "actual_change": "4.5",
+        "kind": "scheduled Friday",
+        "predicted_supply": "136.95",
+        "actual_supply": "139.14",
+        "supply_error": "-2.19",
+        "assumed_credit_card": "0.5",
+        "actual_credit_card": "0.6",
+        "mean_change": "-0.72",
+        "latest_change": "5.40",
+        "anchor_date": "2026-05-08",
+        "input_window_end": "2026-05-14",
+        "all_zone_minimum_errors": [
+          "-2.6",
+          "-2.6",
+          "-2.6",
+          "-2.6",
+          "-2.6",
+          "-2.6"
+        ],
+        "all_zone_maximum_errors": [
+          "-2.7",
+          "-2.6",
+          "-2.6",
+          "-2.6",
+          "-2.6",
+          "-2.6"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_327.pdf"
+      },
+      {
+        "date": "2026-05-22",
+        "predicted_minimum": "195.6",
+        "actual_minimum": "192.8",
+        "error": "2.8",
+        "predicted_change": "-0.6",
+        "actual_change": "-3.4",
+        "kind": "scheduled Friday",
+        "predicted_supply": "138.68",
+        "actual_supply": "136.15",
+        "supply_error": "2.53",
+        "assumed_credit_card": "0.6",
+        "actual_credit_card": "0.60",
+        "mean_change": "1.38",
+        "latest_change": "-3.80",
+        "anchor_date": "2026-05-15",
+        "input_window_end": "2026-05-21",
+        "all_zone_minimum_errors": [
+          "2.8",
+          "2.9",
+          "2.9",
+          "2.9",
+          "2.9",
+          "2.9"
+        ],
+        "all_zone_maximum_errors": [
+          "2.9",
+          "2.9",
+          "2.9",
+          "2.9",
+          "2.9",
+          "2.9"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_328.pdf"
+      },
+      {
+        "date": "2026-05-23",
+        "predicted_minimum": "186.4",
+        "actual_minimum": "185.6",
+        "error": "0.8",
+        "predicted_change": "-6.4",
+        "actual_change": "-7.2",
+        "kind": "other gasoline setting",
+        "predicted_supply": "130.55",
+        "actual_supply": "130.00",
+        "supply_error": "0.55",
+        "assumed_credit_card": "0.60",
+        "actual_credit_card": "0.50",
+        "mean_change": "-7.92",
+        "latest_change": "-3.50",
+        "anchor_date": "2026-05-22",
+        "input_window_end": "2026-05-22",
+        "all_zone_minimum_errors": [
+          "0.8",
+          "0.7",
+          "0.7",
+          "0.7",
+          "0.7",
+          "0.7"
+        ],
+        "all_zone_maximum_errors": [
+          "0.8",
+          "0.7",
+          "0.8",
+          "0.7",
+          "0.7",
+          "0.7"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_330.pdf"
+      },
+      {
+        "date": "2026-05-29",
+        "predicted_minimum": "182.5",
+        "actual_minimum": "178.4",
+        "error": "4.1",
+        "predicted_change": "-3.1",
+        "actual_change": "-7.2",
+        "kind": "scheduled Friday",
+        "predicted_supply": "125.56",
+        "actual_supply": "121.69",
+        "supply_error": "3.87",
+        "assumed_credit_card": "0.50",
+        "actual_credit_card": "0.8",
+        "mean_change": "-2.20",
+        "latest_change": "-8.70",
+        "anchor_date": "2026-05-23",
+        "input_window_end": "2026-05-28",
+        "all_zone_minimum_errors": [
+          "4.1",
+          "4.1",
+          "4.0",
+          "4.1",
+          "4.1",
+          "4.1"
+        ],
+        "all_zone_maximum_errors": [
+          "4.1",
+          "4.0",
+          "4.1",
+          "4.1",
+          "4.1",
+          "4.1"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_329.pdf"
+      },
+      {
+        "date": "2026-06-05",
+        "predicted_minimum": "176.8",
+        "actual_minimum": "173.1",
+        "error": "3.7",
+        "predicted_change": "-1.6",
+        "actual_change": "-5.3",
+        "kind": "scheduled Friday",
+        "predicted_supply": "120.25",
+        "actual_supply": "117.14",
+        "supply_error": "3.11",
+        "assumed_credit_card": "0.8",
+        "actual_credit_card": "0.7",
+        "mean_change": "-4.40",
+        "latest_change": "2.20",
+        "anchor_date": "2026-05-29",
+        "input_window_end": "2026-06-04",
+        "all_zone_minimum_errors": [
+          "3.7",
+          "3.7",
+          "3.6",
+          "3.6",
+          "3.6",
+          "3.6"
+        ],
+        "all_zone_maximum_errors": [
+          "3.7",
+          "3.6",
+          "3.7",
+          "3.7",
+          "3.7",
+          "3.7"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_331.pdf"
+      },
+      {
+        "date": "2026-06-12",
+        "predicted_minimum": "168.6",
+        "actual_minimum": "169.8",
+        "error": "-1.2",
+        "predicted_change": "-4.5",
+        "actual_change": "-3.3",
+        "kind": "scheduled Friday",
+        "predicted_supply": "113.17",
+        "actual_supply": "114.22",
+        "supply_error": "-1.05",
+        "assumed_credit_card": "0.7",
+        "actual_credit_card": "0.7",
+        "mean_change": "-4.50",
+        "latest_change": "-3.50",
+        "anchor_date": "2026-06-05",
+        "input_window_end": "2026-06-11",
+        "all_zone_minimum_errors": [
+          "-1.2",
+          "-1.2",
+          "-1.2",
+          "-1.2",
+          "-1.2",
+          "-1.2"
+        ],
+        "all_zone_maximum_errors": [
+          "-1.2",
+          "-1.1",
+          "-1.2",
+          "-1.2",
+          "-1.2",
+          "-1.2"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice..pdf"
+      },
+      {
+        "date": "2026-06-19",
+        "predicted_minimum": "165.0",
+        "actual_minimum": "165.3",
+        "error": "-0.3",
+        "predicted_change": "-4.8",
+        "actual_change": "-4.5",
+        "kind": "scheduled Friday",
+        "predicted_supply": "110.00",
+        "actual_supply": "110.24",
+        "supply_error": "-0.24",
+        "assumed_credit_card": "0.7",
+        "actual_credit_card": "0.70",
+        "mean_change": "-3.00",
+        "latest_change": "-6.40",
+        "anchor_date": "2026-06-12",
+        "input_window_end": "2026-06-18",
+        "all_zone_minimum_errors": [
+          "-0.3",
+          "-0.2",
+          "-0.3",
+          "-0.3",
+          "-0.3",
+          "-0.3"
+        ],
+        "all_zone_maximum_errors": [
+          "-0.2",
+          "-0.3",
+          "-0.3",
+          "-0.3",
+          "-0.3",
+          "-0.3"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_334.pdf"
+      },
+      {
+        "date": "2026-06-26",
+        "predicted_minimum": "166.1",
+        "actual_minimum": "168.9",
+        "error": "-2.8",
+        "predicted_change": "0.8",
+        "actual_change": "3.6",
+        "kind": "scheduled Friday",
+        "predicted_supply": "110.97",
+        "actual_supply": "113.42",
+        "supply_error": "-2.45",
+        "assumed_credit_card": "0.70",
+        "actual_credit_card": "0.7",
+        "mean_change": "0.88",
+        "latest_change": "0.50",
+        "anchor_date": "2026-06-19",
+        "input_window_end": "2026-06-25",
+        "all_zone_minimum_errors": [
+          "-2.8",
+          "-2.8",
+          "-2.8",
+          "-2.8",
+          "-2.8",
+          "-2.8"
+        ],
+        "all_zone_maximum_errors": [
+          "-2.8",
+          "-2.8",
+          "-2.8",
+          "-2.8",
+          "-2.8",
+          "-2.8"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_335.pdf"
+      }
+    ],
+    "summary": {
+      "count": 66,
+      "mae": "1.40",
+      "median": "0.90",
+      "p90": "3.0",
+      "max_error": "10.1",
+      "within_one_cent": 36,
+      "over_five_cents": 2,
+      "over_ten_cents": 1,
+      "direction_correct": 55,
+      "direction_cases": 57
+    }
+  },
+  "persistence": {
+    "cases": [
+      {
+        "date": "2026-07-03",
+        "predicted_minimum": "168.9",
+        "actual_minimum": "176.7",
+        "error": "-7.8",
+        "predicted_change": "0.0",
+        "actual_change": "7.8",
+        "kind": "scheduled Friday",
+        "predicted_supply": null,
+        "actual_supply": "120.19",
+        "supply_error": null,
+        "assumed_credit_card": null,
+        "actual_credit_card": "0.8",
+        "mean_change": "2.36",
+        "latest_change": "4.70",
+        "anchor_date": "2026-06-26",
+        "input_window_end": "2026-07-02",
+        "all_zone_minimum_errors": [
+          "-7.8",
+          "-7.8",
+          "-7.9",
+          "-7.9",
+          "-7.9",
+          "-7.9"
+        ],
+        "all_zone_maximum_errors": [
+          "-7.8",
+          "-7.9",
+          "-7.8",
+          "-7.8",
+          "-7.8",
+          "-7.8"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_337.pdf"
+      },
+      {
+        "date": "2026-07-10",
+        "predicted_minimum": "176.7",
+        "actual_minimum": "183.1",
+        "error": "-6.4",
+        "predicted_change": "0.0",
+        "actual_change": "6.4",
+        "kind": "scheduled Friday",
+        "predicted_supply": null,
+        "actual_supply": "125.78",
+        "supply_error": null,
+        "assumed_credit_card": null,
+        "actual_credit_card": "0.8",
+        "mean_change": "2.62",
+        "latest_change": "7.30",
+        "anchor_date": "2026-07-03",
+        "input_window_end": "2026-07-09",
+        "all_zone_minimum_errors": [
+          "-6.4",
+          "-6.4",
+          "-6.3",
+          "-6.3",
+          "-6.3",
+          "-6.3"
+        ],
+        "all_zone_maximum_errors": [
+          "-6.4",
+          "-6.3",
+          "-6.4",
+          "-6.4",
+          "-6.4",
+          "-6.4"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_338.pdf"
+      },
+      {
+        "date": "2026-07-17",
+        "predicted_minimum": "183.1",
+        "actual_minimum": "186.9",
+        "error": "-3.8",
+        "predicted_change": "0.0",
+        "actual_change": "3.8",
+        "kind": "scheduled Friday",
+        "predicted_supply": null,
+        "actual_supply": "128.97",
+        "supply_error": null,
+        "assumed_credit_card": null,
+        "actual_credit_card": "0.9",
+        "mean_change": "5.24",
+        "latest_change": "6.20",
+        "anchor_date": "2026-07-10",
+        "input_window_end": "2026-07-16",
+        "all_zone_minimum_errors": [
+          "-3.8",
+          "-3.7",
+          "-3.8",
+          "-3.8",
+          "-3.8",
+          "-3.8"
+        ],
+        "all_zone_maximum_errors": [
+          "-3.7",
+          "-3.8",
+          "-3.7",
+          "-3.8",
+          "-3.8",
+          "-3.8"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_342.pdf"
+      },
+      {
+        "date": "2026-07-24",
+        "predicted_minimum": "186.9",
+        "actual_minimum": "192.6",
+        "error": "-5.7",
+        "predicted_change": "0.0",
+        "actual_change": "5.7",
+        "kind": "scheduled Friday",
+        "predicted_supply": null,
+        "actual_supply": "134.02",
+        "supply_error": null,
+        "assumed_credit_card": null,
+        "actual_credit_card": "0.9",
+        "mean_change": "6.14",
+        "latest_change": "1.40",
+        "anchor_date": "2026-07-17",
+        "input_window_end": "2026-07-23",
+        "all_zone_minimum_errors": [
+          "-5.7",
+          "-5.8",
+          "-5.7",
+          "-5.8",
+          "-5.8",
+          "-5.8"
+        ],
+        "all_zone_maximum_errors": [
+          "-5.8",
+          "-5.7",
+          "-5.8",
+          "-5.7",
+          "-5.7",
+          "-5.7"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_343.pdf"
+      },
+      {
+        "date": "2026-07-31",
+        "predicted_minimum": "192.6",
+        "actual_minimum": "190.6",
+        "error": "2.0",
+        "predicted_change": "0.0",
+        "actual_change": "-2.0",
+        "kind": "scheduled Friday",
+        "predicted_supply": null,
+        "actual_supply": "132.21",
+        "supply_error": null,
+        "assumed_credit_card": null,
+        "actual_credit_card": "0.90",
+        "mean_change": "-1.26",
+        "latest_change": "-1.60",
+        "anchor_date": "2026-07-24",
+        "input_window_end": "2026-07-30",
+        "all_zone_minimum_errors": [
+          "2.0",
+          "2.1",
+          "2.0",
+          "2.1",
+          "2.1",
+          "2.1"
+        ],
+        "all_zone_maximum_errors": [
+          "2.1",
+          "2.0",
+          "2.1",
+          "2.0",
+          "2.0",
+          "2.0"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_344.pdf"
+      },
+      {
+        "date": "2026-08-05",
+        "predicted_minimum": "190.6",
+        "actual_minimum": "180.2",
+        "error": "10.4",
+        "predicted_change": "0.0",
+        "actual_change": "-10.4",
+        "kind": "other gasoline setting",
+        "predicted_supply": null,
+        "actual_supply": "123.21",
+        "supply_error": null,
+        "assumed_credit_card": null,
+        "actual_credit_card": "0.8",
+        "mean_change": "-6.4133333333333333333333333",
+        "latest_change": "-8.50",
+        "anchor_date": "2026-07-31",
+        "input_window_end": "2026-08-04",
+        "all_zone_minimum_errors": [
+          "10.4",
+          "10.4",
+          "10.4",
+          "10.4",
+          "10.4",
+          "10.4"
+        ],
+        "all_zone_maximum_errors": [
+          "10.4",
+          "10.4",
+          "10.3",
+          "10.4",
+          "10.4",
+          "10.4"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_345.pdf"
+      },
+      {
+        "date": "2026-08-07",
+        "predicted_minimum": "180.2",
+        "actual_minimum": "170.5",
+        "error": "9.7",
+        "predicted_change": "0.0",
+        "actual_change": "-9.7",
+        "kind": "scheduled Friday",
+        "predicted_supply": null,
+        "actual_supply": "114.78",
+        "supply_error": null,
+        "assumed_credit_card": null,
+        "actual_credit_card": "0.70",
+        "mean_change": "-11.9166666666666666666666667",
+        "latest_change": "-10.50",
+        "anchor_date": "2026-08-05",
+        "input_window_end": "2026-08-06",
+        "all_zone_minimum_errors": [
+          "9.7",
+          "9.7",
+          "9.7",
+          "9.7",
+          "9.7",
+          "9.7"
+        ],
+        "all_zone_maximum_errors": [
+          "9.7",
+          "9.7",
+          "9.8",
+          "9.7",
+          "9.7",
+          "9.7"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_346.pdf"
+      },
+      {
+        "date": "2026-08-12",
+        "predicted_minimum": "170.5",
+        "actual_minimum": "177.0",
+        "error": "-6.5",
+        "predicted_change": "0.0",
+        "actual_change": "6.5",
+        "kind": "other gasoline setting",
+        "predicted_supply": null,
+        "actual_supply": "120.43",
+        "supply_error": null,
+        "assumed_credit_card": null,
+        "actual_credit_card": "0.80",
+        "mean_change": "5.3833333333333333333333333",
+        "latest_change": "10.10",
+        "anchor_date": "2026-08-07",
+        "input_window_end": "2026-08-11",
+        "all_zone_minimum_errors": [
+          "-6.5",
+          "-6.6",
+          "-6.5",
+          "-6.5",
+          "-6.5",
+          "-6.5"
+        ],
+        "all_zone_maximum_errors": [
+          "-6.6",
+          "-6.5",
+          "-6.6",
+          "-6.5",
+          "-6.5",
+          "-6.5"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_347.pdf"
+      },
+      {
+        "date": "2026-08-14",
+        "predicted_minimum": "177.0",
+        "actual_minimum": "181.4",
+        "error": "-4.4",
+        "predicted_change": "0.0",
+        "actual_change": "4.4",
+        "kind": "scheduled Friday",
+        "predicted_supply": null,
+        "actual_supply": "124.28",
+        "supply_error": null,
+        "assumed_credit_card": null,
+        "actual_credit_card": "0.80",
+        "mean_change": "4.5666666666666666666666667",
+        "latest_change": "0.60",
+        "anchor_date": "2026-08-12",
+        "input_window_end": "2026-08-13",
+        "all_zone_minimum_errors": [
+          "-4.4",
+          "-4.4",
+          "-4.4",
+          "-4.4",
+          "-4.4",
+          "-4.4"
+        ],
+        "all_zone_maximum_errors": [
+          "-4.4",
+          "-4.4",
+          "-4.4",
+          "-4.4",
+          "-4.4",
+          "-4.4"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_348.pdf"
+      },
+      {
+        "date": "2026-08-21",
+        "predicted_minimum": "181.4",
+        "actual_minimum": "185.8",
+        "error": "-4.4",
+        "predicted_change": "0.0",
+        "actual_change": "4.4",
+        "kind": "scheduled Friday",
+        "predicted_supply": null,
+        "actual_supply": "128.08",
+        "supply_error": null,
+        "assumed_credit_card": null,
+        "actual_credit_card": "0.9",
+        "mean_change": "2.18",
+        "latest_change": "2.00",
+        "anchor_date": "2026-08-14",
+        "input_window_end": "2026-08-20",
+        "all_zone_minimum_errors": [
+          "-4.4",
+          "-4.4",
+          "-4.5",
+          "-4.5",
+          "-4.5",
+          "-4.5"
+        ],
+        "all_zone_maximum_errors": [
+          "-4.4",
+          "-4.5",
+          "-4.4",
+          "-4.4",
+          "-4.4",
+          "-4.4"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice%20August%2021%202026.pdf"
+      },
+      {
+        "date": "2026-08-28",
+        "predicted_minimum": "185.8",
+        "actual_minimum": "188.5",
+        "error": "-2.7",
+        "predicted_change": "0.0",
+        "actual_change": "2.7",
+        "kind": "scheduled Friday",
+        "predicted_supply": null,
+        "actual_supply": "130.38",
+        "supply_error": null,
+        "assumed_credit_card": null,
+        "actual_credit_card": "0.9",
+        "mean_change": "1.72",
+        "latest_change": "3.30",
+        "anchor_date": "2026-08-21",
+        "input_window_end": "2026-08-27",
+        "all_zone_minimum_errors": [
+          "-2.7",
+          "-2.6",
+          "-2.6",
+          "-2.6",
+          "-2.6",
+          "-2.6"
+        ],
+        "all_zone_maximum_errors": [
+          "-2.6",
+          "-2.6",
+          "-2.7",
+          "-2.7",
+          "-2.7",
+          "-2.7"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_349.pdf"
+      },
+      {
+        "date": "2026-09-04",
+        "predicted_minimum": "188.5",
+        "actual_minimum": "192.5",
+        "error": "-4.0",
+        "predicted_change": "0.0",
+        "actual_change": "4.0",
+        "kind": "scheduled Friday",
+        "predicted_supply": null,
+        "actual_supply": "133.96",
+        "supply_error": null,
+        "assumed_credit_card": null,
+        "actual_credit_card": "0.9",
+        "mean_change": "7.08",
+        "latest_change": "5.10",
+        "anchor_date": "2026-08-28",
+        "input_window_end": "2026-09-03",
+        "all_zone_minimum_errors": [
+          "-4.0",
+          "-4.1",
+          "-4.1",
+          "-4.1",
+          "-4.1",
+          "-4.1"
+        ],
+        "all_zone_maximum_errors": [
+          "-4.1",
+          "-4.1",
+          "-4.0",
+          "-4.1",
+          "-4.1",
+          "-4.0"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_352.pdf"
+      },
+      {
+        "date": "2026-09-11",
+        "predicted_minimum": "192.5",
+        "actual_minimum": "190.2",
+        "error": "2.3",
+        "predicted_change": "0.0",
+        "actual_change": "-2.3",
+        "kind": "scheduled Friday",
+        "predicted_supply": null,
+        "actual_supply": "131.86",
+        "supply_error": null,
+        "assumed_credit_card": null,
+        "actual_credit_card": "0.9",
+        "mean_change": "0.22",
+        "latest_change": "-3.20",
+        "anchor_date": "2026-09-04",
+        "input_window_end": "2026-09-10",
+        "all_zone_minimum_errors": [
+          "2.3",
+          "2.4",
+          "2.4",
+          "2.4",
+          "2.4",
+          "2.4"
+        ],
+        "all_zone_maximum_errors": [
+          "2.4",
+          "2.4",
+          "2.4",
+          "2.4",
+          "2.4",
+          "2.3"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_353.pdf"
+      },
+      {
+        "date": "2026-09-18",
+        "predicted_minimum": "190.2",
+        "actual_minimum": "196.1",
+        "error": "-5.9",
+        "predicted_change": "0.0",
+        "actual_change": "5.9",
+        "kind": "scheduled Friday",
+        "predicted_supply": null,
+        "actual_supply": "137.01",
+        "supply_error": null,
+        "assumed_credit_card": null,
+        "actual_credit_card": "1.0",
+        "mean_change": "1.90",
+        "latest_change": "4.90",
+        "anchor_date": "2026-09-11",
+        "input_window_end": "2026-09-17",
+        "all_zone_minimum_errors": [
+          "-5.9",
+          "-6.0",
+          "-6.0",
+          "-6.0",
+          "-6.0",
+          "-6.0"
+        ],
+        "all_zone_maximum_errors": [
+          "-6.0",
+          "-6.0",
+          "-6.0",
+          "-5.9",
+          "-5.9",
+          "-5.9"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_355.pdf"
+      },
+      {
+        "date": "2026-09-25",
+        "predicted_minimum": "196.1",
+        "actual_minimum": "199.1",
+        "error": "-3.0",
+        "predicted_change": "0.0",
+        "actual_change": "3.0",
+        "kind": "scheduled Friday",
+        "predicted_supply": null,
+        "actual_supply": "139.62",
+        "supply_error": null,
+        "assumed_credit_card": null,
+        "actual_credit_card": "1.0",
+        "mean_change": "2.20",
+        "latest_change": "6.40",
+        "anchor_date": "2026-09-18",
+        "input_window_end": "2026-09-24",
+        "all_zone_minimum_errors": [
+          "-3.0",
+          "-3.0",
+          "-2.9",
+          "-3.0",
+          "-3.0",
+          "-3.0"
+        ],
+        "all_zone_maximum_errors": [
+          "-3.0",
+          "-2.9",
+          "-3.0",
+          "-3.0",
+          "-3.0",
+          "-3.0"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_357.pdf"
+      },
+      {
+        "date": "2026-09-30",
+        "predicted_minimum": "199.1",
+        "actual_minimum": "193.7",
+        "error": "5.4",
+        "predicted_change": "0.0",
+        "actual_change": "-5.4",
+        "kind": "other gasoline setting",
+        "predicted_supply": null,
+        "actual_supply": "134.95",
+        "supply_error": null,
+        "assumed_credit_card": null,
+        "actual_credit_card": "0.9",
+        "mean_change": "-2.30",
+        "latest_change": "-9.30",
+        "anchor_date": "2026-09-25",
+        "input_window_end": "2026-09-29",
+        "all_zone_minimum_errors": [
+          "5.4",
+          "5.5",
+          "5.4",
+          "5.5",
+          "5.5",
+          "5.5"
+        ],
+        "all_zone_maximum_errors": [
+          "5.5",
+          "5.4",
+          "5.4",
+          "5.4",
+          "5.4",
+          "5.4"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_358.pdf"
+      },
+      {
+        "date": "2026-10-02",
+        "predicted_minimum": "193.7",
+        "actual_minimum": "191.7",
+        "error": "2.0",
+        "predicted_change": "0.0",
+        "actual_change": "-2.0",
+        "kind": "scheduled Friday",
+        "predicted_supply": null,
+        "actual_supply": "133.20",
+        "supply_error": null,
+        "assumed_credit_card": null,
+        "actual_credit_card": "0.9",
+        "mean_change": "-2.85",
+        "latest_change": "3.50",
+        "anchor_date": "2026-09-30",
+        "input_window_end": "2026-10-01",
+        "all_zone_minimum_errors": [
+          "2.0",
+          "2.0",
+          "2.0",
+          "2.0",
+          "2.0",
+          "2.0"
+        ],
+        "all_zone_maximum_errors": [
+          "2.0",
+          "2.0",
+          "2.0",
+          "2.0",
+          "2.0",
+          "2.0"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/gasprice_359.pdf"
+      },
+      {
+        "date": "2026-10-09",
+        "predicted_minimum": "191.7",
+        "actual_minimum": "192.9",
+        "error": "-1.2",
+        "predicted_change": "0.0",
+        "actual_change": "1.2",
+        "kind": "scheduled Friday",
+        "predicted_supply": null,
+        "actual_supply": "134.25",
+        "supply_error": null,
+        "assumed_credit_card": null,
+        "actual_credit_card": "0.90",
+        "mean_change": "3.41",
+        "latest_change": "-3.40",
+        "anchor_date": "2026-10-02",
+        "input_window_end": "2026-10-08",
+        "all_zone_minimum_errors": [
+          "-1.2",
+          "-1.2",
+          "-1.2",
+          "-1.2",
+          "-1.2",
+          "-1.2"
+        ],
+        "all_zone_maximum_errors": [
+          "-1.2",
+          "-1.2",
+          "-1.2",
+          "-1.2",
+          "-1.2",
+          "-1.2"
+        ],
+        "source_url": "https://nserbt.ca/sites/default/files/documents/gas/gasprice.pdf?1791515701"
+      }
+    ],
+    "summary": {
+      "count": 18,
+      "mae": "4.87",
+      "median": "4.40",
+      "p90": "9.7",
+      "max_error": "10.4",
+      "within_one_cent": 0,
+      "over_five_cents": 8,
+      "over_ten_cents": 1,
+      "direction_correct": 0,
+      "direction_cases": 18
+    }
+  },
+  "coverage": {
+    "holdout_start": "2026-07-01",
+    "holdout_end": "2026-10-09",
+    "total": 18,
+    "available": 18,
+    "unavailable": 0,
+    "unresolved_targets": 0,
+    "scheduled": 15,
+    "other_settings": 3
+  },
+  "historical_unavailable": [
+    {
+      "date": "2025-01-03",
+      "reason": "Two earlier gasoline settings are required for the rack-change windows"
+    },
+    {
+      "date": "2025-01-10",
+      "reason": "Two earlier gasoline settings are required for the rack-change windows"
+    }
+  ],
+  "caveat": "Retrospective model holdout, not blinded. Current archives do not prove historical release vintages.",
+  "rolling": {
+    "horizons": {
+      "1": {
+        "cases": [
+          {
+            "date": "2026-07-03",
+            "as_of": "2026-07-02",
+            "predicted_minimum": "172.6",
+            "actual_minimum": "176.7",
+            "error": "-4.1",
+            "predicted_change": "3.7",
+            "actual_change": "7.8",
+            "observed_count": 5,
+            "projected_count": 0,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_337.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-10",
+            "as_of": "2026-07-09",
+            "predicted_minimum": "181.8",
+            "actual_minimum": "183.1",
+            "error": "-1.3",
+            "predicted_change": "5.1",
+            "actual_change": "6.4",
+            "observed_count": 5,
+            "projected_count": 0,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_338.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-17",
+            "as_of": "2026-07-16",
+            "predicted_minimum": "189.4",
+            "actual_minimum": "186.9",
+            "error": "2.5",
+            "predicted_change": "6.3",
+            "actual_change": "3.8",
+            "observed_count": 5,
+            "projected_count": 0,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_342.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-24",
+            "as_of": "2026-07-23",
+            "predicted_minimum": "191.6",
+            "actual_minimum": "192.6",
+            "error": "-1.0",
+            "predicted_change": "4.7",
+            "actual_change": "5.7",
+            "observed_count": 5,
+            "projected_count": 0,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_343.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-31",
+            "as_of": "2026-07-30",
+            "predicted_minimum": "191.1",
+            "actual_minimum": "190.6",
+            "error": "0.5",
+            "predicted_change": "-1.5",
+            "actual_change": "-2.0",
+            "observed_count": 5,
+            "projected_count": 0,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_344.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-08-07",
+            "as_of": "2026-08-06",
+            "predicted_minimum": "167.8",
+            "actual_minimum": "170.5",
+            "error": "-2.7",
+            "predicted_change": "-12.4",
+            "actual_change": "-9.7",
+            "observed_count": 2,
+            "projected_count": 0,
+            "outside_training_features": [
+              "mean_change",
+              "latest_change"
+            ],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_346.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-08-14",
+            "as_of": "2026-08-13",
+            "predicted_minimum": "180.3",
+            "actual_minimum": "181.4",
+            "error": "-1.1",
+            "predicted_change": "3.3",
+            "actual_change": "4.4",
+            "observed_count": 2,
+            "projected_count": 0,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_348.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-08-21",
+            "as_of": "2026-08-20",
+            "predicted_minimum": "183.8",
+            "actual_minimum": "185.8",
+            "error": "-2.0",
+            "predicted_change": "2.4",
+            "actual_change": "4.4",
+            "observed_count": 5,
+            "projected_count": 0,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice%20August%2021%202026.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-08-28",
+            "as_of": "2026-08-27",
+            "predicted_minimum": "188.5",
+            "actual_minimum": "188.5",
+            "error": "0.0",
+            "predicted_change": "2.7",
+            "actual_change": "2.7",
+            "observed_count": 5,
+            "projected_count": 0,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_349.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-04",
+            "as_of": "2026-09-03",
+            "predicted_minimum": "195.4",
+            "actual_minimum": "192.5",
+            "error": "2.9",
+            "predicted_change": "6.9",
+            "actual_change": "4.0",
+            "observed_count": 5,
+            "projected_count": 0,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_352.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-11",
+            "as_of": "2026-09-10",
+            "predicted_minimum": "191.3",
+            "actual_minimum": "190.2",
+            "error": "1.1",
+            "predicted_change": "-1.2",
+            "actual_change": "-2.3",
+            "observed_count": 5,
+            "projected_count": 0,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_353.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-18",
+            "as_of": "2026-09-17",
+            "predicted_minimum": "193.7",
+            "actual_minimum": "196.1",
+            "error": "-2.4",
+            "predicted_change": "3.5",
+            "actual_change": "5.9",
+            "observed_count": 5,
+            "projected_count": 0,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_355.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-25",
+            "as_of": "2026-09-24",
+            "predicted_minimum": "200.5",
+            "actual_minimum": "199.1",
+            "error": "1.4",
+            "predicted_change": "4.4",
+            "actual_change": "3.0",
+            "observed_count": 5,
+            "projected_count": 0,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_357.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-10-02",
+            "as_of": "2026-10-01",
+            "predicted_minimum": "193.5",
+            "actual_minimum": "191.7",
+            "error": "1.8",
+            "predicted_change": "-0.2",
+            "actual_change": "-2.0",
+            "observed_count": 2,
+            "projected_count": 0,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_359.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-10-09",
+            "as_of": "2026-10-08",
+            "predicted_minimum": "192.4",
+            "actual_minimum": "192.9",
+            "error": "-0.5",
+            "predicted_change": "0.7",
+            "actual_change": "1.2",
+            "observed_count": 5,
+            "projected_count": 0,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/documents/gas/gasprice.pdf?1791515701",
+            "intervening_settings": 0
+          }
+        ],
+        "summary": {
+          "count": 15,
+          "mae": "1.69",
+          "median": "1.40",
+          "p90": "2.9",
+          "max_error": "4.1",
+          "within_one_cent": 4,
+          "over_five_cents": 0,
+          "over_ten_cents": 0,
+          "direction_correct": 15,
+          "direction_cases": 15
+        },
+        "earlier_summary": {
+          "count": 58,
+          "mae": "1.27",
+          "median": "0.80",
+          "p90": "2.8",
+          "max_error": "10.1",
+          "within_one_cent": 34,
+          "over_five_cents": 1,
+          "over_ten_cents": 1,
+          "direction_correct": 47,
+          "direction_cases": 49
+        },
+        "unavailable": [],
+        "total": 15
+      },
+      "2": {
+        "cases": [
+          {
+            "date": "2026-07-03",
+            "as_of": "2026-07-01",
+            "predicted_minimum": "173.7",
+            "actual_minimum": "176.7",
+            "error": "-3.0",
+            "predicted_change": "4.8",
+            "actual_change": "7.8",
+            "observed_count": 4,
+            "projected_count": 1,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_337.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-10",
+            "as_of": "2026-07-08",
+            "predicted_minimum": "178.7",
+            "actual_minimum": "183.1",
+            "error": "-4.4",
+            "predicted_change": "2.0",
+            "actual_change": "6.4",
+            "observed_count": 4,
+            "projected_count": 1,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_338.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-17",
+            "as_of": "2026-07-15",
+            "predicted_minimum": "187.9",
+            "actual_minimum": "186.9",
+            "error": "1.0",
+            "predicted_change": "4.8",
+            "actual_change": "3.8",
+            "observed_count": 4,
+            "projected_count": 1,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_342.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-24",
+            "as_of": "2026-07-22",
+            "predicted_minimum": "192.0",
+            "actual_minimum": "192.6",
+            "error": "-0.6",
+            "predicted_change": "5.1",
+            "actual_change": "5.7",
+            "observed_count": 4,
+            "projected_count": 1,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_343.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-31",
+            "as_of": "2026-07-29",
+            "predicted_minimum": "189.8",
+            "actual_minimum": "190.6",
+            "error": "-0.8",
+            "predicted_change": "-2.8",
+            "actual_change": "-2.0",
+            "observed_count": 4,
+            "projected_count": 1,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_344.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-08-07",
+            "as_of": "2026-08-05",
+            "predicted_minimum": "168.4",
+            "actual_minimum": "170.5",
+            "error": "-2.1",
+            "predicted_change": "-11.8",
+            "actual_change": "-9.7",
+            "observed_count": 1,
+            "projected_count": 1,
+            "outside_training_features": [
+              "mean_change"
+            ],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_346.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-08-14",
+            "as_of": "2026-08-12",
+            "predicted_minimum": "179.9",
+            "actual_minimum": "181.4",
+            "error": "-1.5",
+            "predicted_change": "2.9",
+            "actual_change": "4.4",
+            "observed_count": 1,
+            "projected_count": 1,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_348.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-08-21",
+            "as_of": "2026-08-19",
+            "predicted_minimum": "185.1",
+            "actual_minimum": "185.8",
+            "error": "-0.7",
+            "predicted_change": "3.7",
+            "actual_change": "4.4",
+            "observed_count": 4,
+            "projected_count": 1,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice%20August%2021%202026.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-08-28",
+            "as_of": "2026-08-26",
+            "predicted_minimum": "186.8",
+            "actual_minimum": "188.5",
+            "error": "-1.7",
+            "predicted_change": "1.0",
+            "actual_change": "2.7",
+            "observed_count": 4,
+            "projected_count": 1,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_349.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-04",
+            "as_of": "2026-09-02",
+            "predicted_minimum": "196.7",
+            "actual_minimum": "192.5",
+            "error": "4.2",
+            "predicted_change": "8.2",
+            "actual_change": "4.0",
+            "observed_count": 4,
+            "projected_count": 1,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_352.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-11",
+            "as_of": "2026-09-09",
+            "predicted_minimum": "195.0",
+            "actual_minimum": "190.2",
+            "error": "4.8",
+            "predicted_change": "2.5",
+            "actual_change": "-2.3",
+            "observed_count": 4,
+            "projected_count": 1,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_353.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-18",
+            "as_of": "2026-09-16",
+            "predicted_minimum": "196.3",
+            "actual_minimum": "196.1",
+            "error": "0.2",
+            "predicted_change": "6.1",
+            "actual_change": "5.9",
+            "observed_count": 4,
+            "projected_count": 1,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_355.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-25",
+            "as_of": "2026-09-23",
+            "predicted_minimum": "198.3",
+            "actual_minimum": "199.1",
+            "error": "-0.8",
+            "predicted_change": "2.2",
+            "actual_change": "3.0",
+            "observed_count": 4,
+            "projected_count": 1,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_357.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-10-02",
+            "as_of": "2026-09-30",
+            "predicted_minimum": "189.0",
+            "actual_minimum": "191.7",
+            "error": "-2.7",
+            "predicted_change": "-4.7",
+            "actual_change": "-2.0",
+            "observed_count": 1,
+            "projected_count": 1,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_359.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-10-09",
+            "as_of": "2026-10-07",
+            "predicted_minimum": "194.3",
+            "actual_minimum": "192.9",
+            "error": "1.4",
+            "predicted_change": "2.6",
+            "actual_change": "1.2",
+            "observed_count": 4,
+            "projected_count": 1,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/documents/gas/gasprice.pdf?1791515701",
+            "intervening_settings": 0
+          }
+        ],
+        "summary": {
+          "count": 15,
+          "mae": "1.99",
+          "median": "1.50",
+          "p90": "4.4",
+          "max_error": "4.8",
+          "within_one_cent": 6,
+          "over_five_cents": 0,
+          "over_ten_cents": 0,
+          "direction_correct": 14,
+          "direction_cases": 15
+        },
+        "earlier_summary": {
+          "count": 58,
+          "mae": "1.80",
+          "median": "1.00",
+          "p90": "4.8",
+          "max_error": "12.0",
+          "within_one_cent": 30,
+          "over_five_cents": 5,
+          "over_ten_cents": 1,
+          "direction_correct": 44,
+          "direction_cases": 49
+        },
+        "unavailable": [],
+        "total": 15
+      },
+      "3": {
+        "cases": [
+          {
+            "date": "2026-07-03",
+            "as_of": "2026-06-30",
+            "predicted_minimum": "173.7",
+            "actual_minimum": "176.7",
+            "error": "-3.0",
+            "predicted_change": "4.8",
+            "actual_change": "7.8",
+            "observed_count": 3,
+            "projected_count": 2,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_337.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-10",
+            "as_of": "2026-07-07",
+            "predicted_minimum": "180.1",
+            "actual_minimum": "183.1",
+            "error": "-3.0",
+            "predicted_change": "3.4",
+            "actual_change": "6.4",
+            "observed_count": 3,
+            "projected_count": 2,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_338.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-17",
+            "as_of": "2026-07-14",
+            "predicted_minimum": "186.7",
+            "actual_minimum": "186.9",
+            "error": "-0.2",
+            "predicted_change": "3.6",
+            "actual_change": "3.8",
+            "observed_count": 3,
+            "projected_count": 2,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_342.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-24",
+            "as_of": "2026-07-21",
+            "predicted_minimum": "191.4",
+            "actual_minimum": "192.6",
+            "error": "-1.2",
+            "predicted_change": "4.5",
+            "actual_change": "5.7",
+            "observed_count": 3,
+            "projected_count": 2,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_343.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-31",
+            "as_of": "2026-07-28",
+            "predicted_minimum": "189.7",
+            "actual_minimum": "190.6",
+            "error": "-0.9",
+            "predicted_change": "-2.9",
+            "actual_change": "-2.0",
+            "observed_count": 3,
+            "projected_count": 2,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_344.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-08-07",
+            "as_of": "2026-08-04",
+            "predicted_minimum": "182.1",
+            "actual_minimum": "170.5",
+            "error": "11.6",
+            "predicted_change": "-8.5",
+            "actual_change": "-20.1",
+            "observed_count": 3,
+            "projected_count": 2,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_346.pdf",
+            "intervening_settings": 1
+          },
+          {
+            "date": "2026-08-14",
+            "as_of": "2026-08-11",
+            "predicted_minimum": "179.7",
+            "actual_minimum": "181.4",
+            "error": "-1.7",
+            "predicted_change": "9.2",
+            "actual_change": "10.9",
+            "observed_count": 3,
+            "projected_count": 2,
+            "outside_training_features": [
+              "latest_change"
+            ],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_348.pdf",
+            "intervening_settings": 1
+          },
+          {
+            "date": "2026-08-21",
+            "as_of": "2026-08-18",
+            "predicted_minimum": "184.4",
+            "actual_minimum": "185.8",
+            "error": "-1.4",
+            "predicted_change": "3.0",
+            "actual_change": "4.4",
+            "observed_count": 3,
+            "projected_count": 2,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice%20August%2021%202026.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-08-28",
+            "as_of": "2026-08-25",
+            "predicted_minimum": "187.3",
+            "actual_minimum": "188.5",
+            "error": "-1.2",
+            "predicted_change": "1.5",
+            "actual_change": "2.7",
+            "observed_count": 3,
+            "projected_count": 2,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_349.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-04",
+            "as_of": "2026-09-01",
+            "predicted_minimum": "195.7",
+            "actual_minimum": "192.5",
+            "error": "3.2",
+            "predicted_change": "7.2",
+            "actual_change": "4.0",
+            "observed_count": 3,
+            "projected_count": 2,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_352.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-11",
+            "as_of": "2026-09-08",
+            "predicted_minimum": "194.9",
+            "actual_minimum": "190.2",
+            "error": "4.7",
+            "predicted_change": "2.4",
+            "actual_change": "-2.3",
+            "observed_count": 3,
+            "projected_count": 2,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_353.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-18",
+            "as_of": "2026-09-15",
+            "predicted_minimum": "192.6",
+            "actual_minimum": "196.1",
+            "error": "-3.5",
+            "predicted_change": "2.4",
+            "actual_change": "5.9",
+            "observed_count": 3,
+            "projected_count": 2,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_355.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-25",
+            "as_of": "2026-09-22",
+            "predicted_minimum": "197.5",
+            "actual_minimum": "199.1",
+            "error": "-1.6",
+            "predicted_change": "1.4",
+            "actual_change": "3.0",
+            "observed_count": 3,
+            "projected_count": 2,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_357.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-10-02",
+            "as_of": "2026-09-29",
+            "predicted_minimum": "192.6",
+            "actual_minimum": "191.7",
+            "error": "0.9",
+            "predicted_change": "-6.5",
+            "actual_change": "-7.4",
+            "observed_count": 3,
+            "projected_count": 2,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_359.pdf",
+            "intervening_settings": 1
+          },
+          {
+            "date": "2026-10-09",
+            "as_of": "2026-10-06",
+            "predicted_minimum": "193.9",
+            "actual_minimum": "192.9",
+            "error": "1.0",
+            "predicted_change": "2.2",
+            "actual_change": "1.2",
+            "observed_count": 3,
+            "projected_count": 2,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/documents/gas/gasprice.pdf?1791515701",
+            "intervening_settings": 0
+          }
+        ],
+        "summary": {
+          "count": 15,
+          "mae": "2.61",
+          "median": "1.60",
+          "p90": "4.7",
+          "max_error": "11.6",
+          "within_one_cent": 4,
+          "over_five_cents": 1,
+          "over_ten_cents": 1,
+          "direction_correct": 14,
+          "direction_cases": 15
+        },
+        "earlier_summary": {
+          "count": 58,
+          "mae": "2.42",
+          "median": "1.50",
+          "p90": "6.7",
+          "max_error": "13.7",
+          "within_one_cent": 23,
+          "over_five_cents": 7,
+          "over_ten_cents": 2,
+          "direction_correct": 38,
+          "direction_cases": 49
+        },
+        "unavailable": [],
+        "total": 15
+      },
+      "4": {
+        "cases": [
+          {
+            "date": "2026-07-03",
+            "as_of": "2026-06-29",
+            "predicted_minimum": "170.2",
+            "actual_minimum": "176.7",
+            "error": "-6.5",
+            "predicted_change": "1.3",
+            "actual_change": "7.8",
+            "observed_count": 2,
+            "projected_count": 3,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_337.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-10",
+            "as_of": "2026-07-06",
+            "predicted_minimum": "177.4",
+            "actual_minimum": "183.1",
+            "error": "-5.7",
+            "predicted_change": "0.7",
+            "actual_change": "6.4",
+            "observed_count": 2,
+            "projected_count": 3,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_338.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-17",
+            "as_of": "2026-07-13",
+            "predicted_minimum": "181.0",
+            "actual_minimum": "186.9",
+            "error": "-5.9",
+            "predicted_change": "-2.1",
+            "actual_change": "3.8",
+            "observed_count": 2,
+            "projected_count": 3,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_342.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-24",
+            "as_of": "2026-07-20",
+            "predicted_minimum": "191.1",
+            "actual_minimum": "192.6",
+            "error": "-1.5",
+            "predicted_change": "4.2",
+            "actual_change": "5.7",
+            "observed_count": 2,
+            "projected_count": 3,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_343.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-31",
+            "as_of": "2026-07-27",
+            "predicted_minimum": "191.7",
+            "actual_minimum": "190.6",
+            "error": "1.1",
+            "predicted_change": "-0.9",
+            "actual_change": "-2.0",
+            "observed_count": 2,
+            "projected_count": 3,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_344.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-08-07",
+            "as_of": "2026-08-03",
+            "predicted_minimum": "184.5",
+            "actual_minimum": "170.5",
+            "error": "14.0",
+            "predicted_change": "-6.1",
+            "actual_change": "-20.1",
+            "observed_count": 2,
+            "projected_count": 3,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_346.pdf",
+            "intervening_settings": 1
+          },
+          {
+            "date": "2026-08-14",
+            "as_of": "2026-08-10",
+            "predicted_minimum": "175.1",
+            "actual_minimum": "181.4",
+            "error": "-6.3",
+            "predicted_change": "4.6",
+            "actual_change": "10.9",
+            "observed_count": 2,
+            "projected_count": 3,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_348.pdf",
+            "intervening_settings": 1
+          },
+          {
+            "date": "2026-08-21",
+            "as_of": "2026-08-17",
+            "predicted_minimum": "182.2",
+            "actual_minimum": "185.8",
+            "error": "-3.6",
+            "predicted_change": "0.8",
+            "actual_change": "4.4",
+            "observed_count": 2,
+            "projected_count": 3,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice%20August%2021%202026.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-08-28",
+            "as_of": "2026-08-24",
+            "predicted_minimum": "189.0",
+            "actual_minimum": "188.5",
+            "error": "0.5",
+            "predicted_change": "3.2",
+            "actual_change": "2.7",
+            "observed_count": 2,
+            "projected_count": 3,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_349.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-04",
+            "as_of": "2026-08-31",
+            "predicted_minimum": "196.2",
+            "actual_minimum": "192.5",
+            "error": "3.7",
+            "predicted_change": "7.7",
+            "actual_change": "4.0",
+            "observed_count": 2,
+            "projected_count": 3,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_352.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-11",
+            "as_of": "2026-09-07",
+            "predicted_minimum": "192.2",
+            "actual_minimum": "190.2",
+            "error": "2.0",
+            "predicted_change": "-0.3",
+            "actual_change": "-2.3",
+            "observed_count": 2,
+            "projected_count": 3,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_353.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-18",
+            "as_of": "2026-09-14",
+            "predicted_minimum": "191.9",
+            "actual_minimum": "196.1",
+            "error": "-4.2",
+            "predicted_change": "1.7",
+            "actual_change": "5.9",
+            "observed_count": 2,
+            "projected_count": 3,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_355.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-25",
+            "as_of": "2026-09-21",
+            "predicted_minimum": "198.6",
+            "actual_minimum": "199.1",
+            "error": "-0.5",
+            "predicted_change": "2.5",
+            "actual_change": "3.0",
+            "observed_count": 2,
+            "projected_count": 3,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_357.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-10-02",
+            "as_of": "2026-09-28",
+            "predicted_minimum": "194.1",
+            "actual_minimum": "191.7",
+            "error": "2.4",
+            "predicted_change": "-5.0",
+            "actual_change": "-7.4",
+            "observed_count": 2,
+            "projected_count": 3,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_359.pdf",
+            "intervening_settings": 1
+          },
+          {
+            "date": "2026-10-09",
+            "as_of": "2026-10-05",
+            "predicted_minimum": "196.0",
+            "actual_minimum": "192.9",
+            "error": "3.1",
+            "predicted_change": "4.3",
+            "actual_change": "1.2",
+            "observed_count": 2,
+            "projected_count": 3,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/documents/gas/gasprice.pdf?1791515701",
+            "intervening_settings": 0
+          }
+        ],
+        "summary": {
+          "count": 15,
+          "mae": "4.07",
+          "median": "3.60",
+          "p90": "6.5",
+          "max_error": "14.0",
+          "within_one_cent": 2,
+          "over_five_cents": 5,
+          "over_ten_cents": 1,
+          "direction_correct": 14,
+          "direction_cases": 15
+        },
+        "earlier_summary": {
+          "count": 58,
+          "mae": "2.63",
+          "median": "1.60",
+          "p90": "6.5",
+          "max_error": "17.1",
+          "within_one_cent": 21,
+          "over_five_cents": 8,
+          "over_ten_cents": 3,
+          "direction_correct": 38,
+          "direction_cases": 50
+        },
+        "unavailable": [],
+        "total": 15
+      },
+      "5": {
+        "cases": [
+          {
+            "date": "2026-07-03",
+            "as_of": "2026-06-28",
+            "predicted_minimum": "172.8",
+            "actual_minimum": "176.7",
+            "error": "-3.9",
+            "predicted_change": "3.9",
+            "actual_change": "7.8",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_337.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-10",
+            "as_of": "2026-07-05",
+            "predicted_minimum": "177.3",
+            "actual_minimum": "183.1",
+            "error": "-5.8",
+            "predicted_change": "0.6",
+            "actual_change": "6.4",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_338.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-17",
+            "as_of": "2026-07-12",
+            "predicted_minimum": "183.2",
+            "actual_minimum": "186.9",
+            "error": "-3.7",
+            "predicted_change": "0.1",
+            "actual_change": "3.8",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_342.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-24",
+            "as_of": "2026-07-19",
+            "predicted_minimum": "188.5",
+            "actual_minimum": "192.6",
+            "error": "-4.1",
+            "predicted_change": "1.6",
+            "actual_change": "5.7",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_343.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-31",
+            "as_of": "2026-07-26",
+            "predicted_minimum": "195.4",
+            "actual_minimum": "190.6",
+            "error": "4.8",
+            "predicted_change": "2.8",
+            "actual_change": "-2.0",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_344.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-08-07",
+            "as_of": "2026-08-02",
+            "predicted_minimum": "184.5",
+            "actual_minimum": "170.5",
+            "error": "14.0",
+            "predicted_change": "-6.1",
+            "actual_change": "-20.1",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_346.pdf",
+            "intervening_settings": 1
+          },
+          {
+            "date": "2026-08-14",
+            "as_of": "2026-08-09",
+            "predicted_minimum": "173.3",
+            "actual_minimum": "181.4",
+            "error": "-8.1",
+            "predicted_change": "2.8",
+            "actual_change": "10.9",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_348.pdf",
+            "intervening_settings": 1
+          },
+          {
+            "date": "2026-08-21",
+            "as_of": "2026-08-16",
+            "predicted_minimum": "180.8",
+            "actual_minimum": "185.8",
+            "error": "-5.0",
+            "predicted_change": "-0.6",
+            "actual_change": "4.4",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice%20August%2021%202026.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-08-28",
+            "as_of": "2026-08-23",
+            "predicted_minimum": "186.2",
+            "actual_minimum": "188.5",
+            "error": "-2.3",
+            "predicted_change": "0.4",
+            "actual_change": "2.7",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_349.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-04",
+            "as_of": "2026-08-30",
+            "predicted_minimum": "192.1",
+            "actual_minimum": "192.5",
+            "error": "-0.4",
+            "predicted_change": "3.6",
+            "actual_change": "4.0",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_352.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-11",
+            "as_of": "2026-09-06",
+            "predicted_minimum": "192.2",
+            "actual_minimum": "190.2",
+            "error": "2.0",
+            "predicted_change": "-0.3",
+            "actual_change": "-2.3",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_353.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-18",
+            "as_of": "2026-09-13",
+            "predicted_minimum": "194.4",
+            "actual_minimum": "196.1",
+            "error": "-1.7",
+            "predicted_change": "4.2",
+            "actual_change": "5.9",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_355.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-25",
+            "as_of": "2026-09-20",
+            "predicted_minimum": "197.4",
+            "actual_minimum": "199.1",
+            "error": "-1.7",
+            "predicted_change": "1.3",
+            "actual_change": "3.0",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_357.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-10-02",
+            "as_of": "2026-09-27",
+            "predicted_minimum": "200.8",
+            "actual_minimum": "191.7",
+            "error": "9.1",
+            "predicted_change": "1.7",
+            "actual_change": "-7.4",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_359.pdf",
+            "intervening_settings": 1
+          },
+          {
+            "date": "2026-10-09",
+            "as_of": "2026-10-04",
+            "predicted_minimum": "199.6",
+            "actual_minimum": "192.9",
+            "error": "6.7",
+            "predicted_change": "7.9",
+            "actual_change": "1.2",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/documents/gas/gasprice.pdf?1791515701",
+            "intervening_settings": 0
+          }
+        ],
+        "summary": {
+          "count": 15,
+          "mae": "4.89",
+          "median": "4.10",
+          "p90": "9.1",
+          "max_error": "14.0",
+          "within_one_cent": 1,
+          "over_five_cents": 5,
+          "over_ten_cents": 1,
+          "direction_correct": 12,
+          "direction_cases": 15
+        },
+        "earlier_summary": {
+          "count": 58,
+          "mae": "2.51",
+          "median": "1.75",
+          "p90": "5.9",
+          "max_error": "12.2",
+          "within_one_cent": 20,
+          "over_five_cents": 9,
+          "over_ten_cents": 1,
+          "direction_correct": 38,
+          "direction_cases": 50
+        },
+        "unavailable": [],
+        "total": 15
+      },
+      "6": {
+        "cases": [
+          {
+            "date": "2026-07-03",
+            "as_of": "2026-06-27",
+            "predicted_minimum": "172.8",
+            "actual_minimum": "176.7",
+            "error": "-3.9",
+            "predicted_change": "3.9",
+            "actual_change": "7.8",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_337.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-10",
+            "as_of": "2026-07-04",
+            "predicted_minimum": "177.3",
+            "actual_minimum": "183.1",
+            "error": "-5.8",
+            "predicted_change": "0.6",
+            "actual_change": "6.4",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_338.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-17",
+            "as_of": "2026-07-11",
+            "predicted_minimum": "183.2",
+            "actual_minimum": "186.9",
+            "error": "-3.7",
+            "predicted_change": "0.1",
+            "actual_change": "3.8",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_342.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-24",
+            "as_of": "2026-07-18",
+            "predicted_minimum": "188.5",
+            "actual_minimum": "192.6",
+            "error": "-4.1",
+            "predicted_change": "1.6",
+            "actual_change": "5.7",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_343.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-31",
+            "as_of": "2026-07-25",
+            "predicted_minimum": "195.4",
+            "actual_minimum": "190.6",
+            "error": "4.8",
+            "predicted_change": "2.8",
+            "actual_change": "-2.0",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_344.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-08-07",
+            "as_of": "2026-08-01",
+            "predicted_minimum": "184.5",
+            "actual_minimum": "170.5",
+            "error": "14.0",
+            "predicted_change": "-6.1",
+            "actual_change": "-20.1",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_346.pdf",
+            "intervening_settings": 1
+          },
+          {
+            "date": "2026-08-14",
+            "as_of": "2026-08-08",
+            "predicted_minimum": "173.3",
+            "actual_minimum": "181.4",
+            "error": "-8.1",
+            "predicted_change": "2.8",
+            "actual_change": "10.9",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_348.pdf",
+            "intervening_settings": 1
+          },
+          {
+            "date": "2026-08-21",
+            "as_of": "2026-08-15",
+            "predicted_minimum": "180.8",
+            "actual_minimum": "185.8",
+            "error": "-5.0",
+            "predicted_change": "-0.6",
+            "actual_change": "4.4",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice%20August%2021%202026.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-08-28",
+            "as_of": "2026-08-22",
+            "predicted_minimum": "186.2",
+            "actual_minimum": "188.5",
+            "error": "-2.3",
+            "predicted_change": "0.4",
+            "actual_change": "2.7",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_349.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-04",
+            "as_of": "2026-08-29",
+            "predicted_minimum": "192.1",
+            "actual_minimum": "192.5",
+            "error": "-0.4",
+            "predicted_change": "3.6",
+            "actual_change": "4.0",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_352.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-11",
+            "as_of": "2026-09-05",
+            "predicted_minimum": "192.2",
+            "actual_minimum": "190.2",
+            "error": "2.0",
+            "predicted_change": "-0.3",
+            "actual_change": "-2.3",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_353.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-18",
+            "as_of": "2026-09-12",
+            "predicted_minimum": "194.4",
+            "actual_minimum": "196.1",
+            "error": "-1.7",
+            "predicted_change": "4.2",
+            "actual_change": "5.9",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_355.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-25",
+            "as_of": "2026-09-19",
+            "predicted_minimum": "197.4",
+            "actual_minimum": "199.1",
+            "error": "-1.7",
+            "predicted_change": "1.3",
+            "actual_change": "3.0",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_357.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-10-02",
+            "as_of": "2026-09-26",
+            "predicted_minimum": "200.8",
+            "actual_minimum": "191.7",
+            "error": "9.1",
+            "predicted_change": "1.7",
+            "actual_change": "-7.4",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_359.pdf",
+            "intervening_settings": 1
+          },
+          {
+            "date": "2026-10-09",
+            "as_of": "2026-10-03",
+            "predicted_minimum": "199.6",
+            "actual_minimum": "192.9",
+            "error": "6.7",
+            "predicted_change": "7.9",
+            "actual_change": "1.2",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/documents/gas/gasprice.pdf?1791515701",
+            "intervening_settings": 0
+          }
+        ],
+        "summary": {
+          "count": 15,
+          "mae": "4.89",
+          "median": "4.10",
+          "p90": "9.1",
+          "max_error": "14.0",
+          "within_one_cent": 1,
+          "over_five_cents": 5,
+          "over_ten_cents": 1,
+          "direction_correct": 12,
+          "direction_cases": 15
+        },
+        "earlier_summary": {
+          "count": 58,
+          "mae": "2.51",
+          "median": "1.75",
+          "p90": "5.9",
+          "max_error": "12.2",
+          "within_one_cent": 20,
+          "over_five_cents": 9,
+          "over_ten_cents": 1,
+          "direction_correct": 38,
+          "direction_cases": 50
+        },
+        "unavailable": [],
+        "total": 15
+      },
+      "7": {
+        "cases": [
+          {
+            "date": "2026-07-03",
+            "as_of": "2026-06-26",
+            "predicted_minimum": "172.8",
+            "actual_minimum": "176.7",
+            "error": "-3.9",
+            "predicted_change": "3.9",
+            "actual_change": "7.8",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_337.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-10",
+            "as_of": "2026-07-03",
+            "predicted_minimum": "177.3",
+            "actual_minimum": "183.1",
+            "error": "-5.8",
+            "predicted_change": "0.6",
+            "actual_change": "6.4",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_338.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-17",
+            "as_of": "2026-07-10",
+            "predicted_minimum": "183.2",
+            "actual_minimum": "186.9",
+            "error": "-3.7",
+            "predicted_change": "0.1",
+            "actual_change": "3.8",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_342.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-24",
+            "as_of": "2026-07-17",
+            "predicted_minimum": "188.5",
+            "actual_minimum": "192.6",
+            "error": "-4.1",
+            "predicted_change": "1.6",
+            "actual_change": "5.7",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_343.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-07-31",
+            "as_of": "2026-07-24",
+            "predicted_minimum": "195.4",
+            "actual_minimum": "190.6",
+            "error": "4.8",
+            "predicted_change": "2.8",
+            "actual_change": "-2.0",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_344.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-08-07",
+            "as_of": "2026-07-31",
+            "predicted_minimum": "184.5",
+            "actual_minimum": "170.5",
+            "error": "14.0",
+            "predicted_change": "-6.1",
+            "actual_change": "-20.1",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_346.pdf",
+            "intervening_settings": 1
+          },
+          {
+            "date": "2026-08-14",
+            "as_of": "2026-08-07",
+            "predicted_minimum": "173.3",
+            "actual_minimum": "181.4",
+            "error": "-8.1",
+            "predicted_change": "2.8",
+            "actual_change": "10.9",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_348.pdf",
+            "intervening_settings": 1
+          },
+          {
+            "date": "2026-08-21",
+            "as_of": "2026-08-14",
+            "predicted_minimum": "180.8",
+            "actual_minimum": "185.8",
+            "error": "-5.0",
+            "predicted_change": "-0.6",
+            "actual_change": "4.4",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice%20August%2021%202026.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-08-28",
+            "as_of": "2026-08-21",
+            "predicted_minimum": "186.2",
+            "actual_minimum": "188.5",
+            "error": "-2.3",
+            "predicted_change": "0.4",
+            "actual_change": "2.7",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_349.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-04",
+            "as_of": "2026-08-28",
+            "predicted_minimum": "192.1",
+            "actual_minimum": "192.5",
+            "error": "-0.4",
+            "predicted_change": "3.6",
+            "actual_change": "4.0",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_352.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-11",
+            "as_of": "2026-09-04",
+            "predicted_minimum": "192.2",
+            "actual_minimum": "190.2",
+            "error": "2.0",
+            "predicted_change": "-0.3",
+            "actual_change": "-2.3",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_353.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-18",
+            "as_of": "2026-09-11",
+            "predicted_minimum": "194.4",
+            "actual_minimum": "196.1",
+            "error": "-1.7",
+            "predicted_change": "4.2",
+            "actual_change": "5.9",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_355.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-09-25",
+            "as_of": "2026-09-18",
+            "predicted_minimum": "197.4",
+            "actual_minimum": "199.1",
+            "error": "-1.7",
+            "predicted_change": "1.3",
+            "actual_change": "3.0",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_357.pdf",
+            "intervening_settings": 0
+          },
+          {
+            "date": "2026-10-02",
+            "as_of": "2026-09-25",
+            "predicted_minimum": "200.8",
+            "actual_minimum": "191.7",
+            "error": "9.1",
+            "predicted_change": "1.7",
+            "actual_change": "-7.4",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/gasprice_359.pdf",
+            "intervening_settings": 1
+          },
+          {
+            "date": "2026-10-09",
+            "as_of": "2026-10-02",
+            "predicted_minimum": "199.6",
+            "actual_minimum": "192.9",
+            "error": "6.7",
+            "predicted_change": "7.9",
+            "actual_change": "1.2",
+            "observed_count": 1,
+            "projected_count": 4,
+            "outside_training_features": [],
+            "source_url": "https://nserbt.ca/sites/default/files/documents/gas/gasprice.pdf?1791515701",
+            "intervening_settings": 0
+          }
+        ],
+        "summary": {
+          "count": 15,
+          "mae": "4.89",
+          "median": "4.10",
+          "p90": "9.1",
+          "max_error": "14.0",
+          "within_one_cent": 1,
+          "over_five_cents": 5,
+          "over_ten_cents": 1,
+          "direction_correct": 12,
+          "direction_cases": 15
+        },
+        "earlier_summary": {
+          "count": 58,
+          "mae": "2.51",
+          "median": "1.75",
+          "p90": "5.9",
+          "max_error": "12.2",
+          "within_one_cent": 19,
+          "over_five_cents": 8,
+          "over_ten_cents": 1,
+          "direction_correct": 41,
+          "direction_cases": 51
+        },
+        "unavailable": [],
+        "total": 15
+      }
+    },
+    "watch": {
+      "cases": [
+        {
+          "date": "2026-07-01",
+          "target": "2026-07-02",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "4.02",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-06-30",
+              "rack_price": "125.70",
+              "supply_gap": "3.76"
+            },
+            {
+              "date": "2026-07-01",
+              "rack_price": "125.70",
+              "supply_gap": "4.02"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-03",
+          "target": "2026-07-04",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "0.54",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-07-03",
+              "rack_price": "124.60",
+              "supply_gap": "0.54"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-06",
+          "target": "2026-07-07",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "0.61",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-07-03",
+              "rack_price": "124.60",
+              "supply_gap": "0.54"
+            },
+            {
+              "date": "2026-07-06",
+              "rack_price": "124.70",
+              "supply_gap": "0.61"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-07",
+          "target": "2026-07-08",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "2.49",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-07-06",
+              "rack_price": "124.70",
+              "supply_gap": "0.61"
+            },
+            {
+              "date": "2026-07-07",
+              "rack_price": "127.90",
+              "supply_gap": "2.49"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-08",
+          "target": "2026-07-09",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "1.72",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-07-07",
+              "rack_price": "127.90",
+              "supply_gap": "2.49"
+            },
+            {
+              "date": "2026-07-08",
+              "rack_price": "125.90",
+              "supply_gap": "1.72"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-10",
+          "target": "2026-07-11",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "0.12",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-07-10",
+              "rack_price": "128.70",
+              "supply_gap": "0.12"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-13",
+          "target": "2026-07-14",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "-1.44",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-07-10",
+              "rack_price": "128.70",
+              "supply_gap": "0.12"
+            },
+            {
+              "date": "2026-07-13",
+              "rack_price": "126.40",
+              "supply_gap": "-1.44"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-14",
+          "target": "2026-07-15",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "2.32",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-07-13",
+              "rack_price": "126.40",
+              "supply_gap": "-1.44"
+            },
+            {
+              "date": "2026-07-14",
+              "rack_price": "133.20",
+              "supply_gap": "2.32"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-15",
+          "target": "2026-07-16",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "3.72",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-07-14",
+              "rack_price": "133.20",
+              "supply_gap": "2.32"
+            },
+            {
+              "date": "2026-07-15",
+              "rack_price": "134.80",
+              "supply_gap": "3.72"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-17",
+          "target": "2026-07-18",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "1.45",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-07-17",
+              "rack_price": "135.70",
+              "supply_gap": "1.45"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-20",
+          "target": "2026-07-21",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "3.28",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-07-17",
+              "rack_price": "135.70",
+              "supply_gap": "1.45"
+            },
+            {
+              "date": "2026-07-20",
+              "rack_price": "138.40",
+              "supply_gap": "3.28"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-21",
+          "target": "2026-07-22",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "3.72",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-07-20",
+              "rack_price": "138.40",
+              "supply_gap": "3.28"
+            },
+            {
+              "date": "2026-07-21",
+              "rack_price": "138.70",
+              "supply_gap": "3.72"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-22",
+          "target": "2026-07-23",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "4.36",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-07-21",
+              "rack_price": "138.70",
+              "supply_gap": "3.72"
+            },
+            {
+              "date": "2026-07-22",
+              "rack_price": "139.60",
+              "supply_gap": "4.36"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-24",
+          "target": "2026-07-25",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "2.41",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-07-24",
+              "rack_price": "140.90",
+              "supply_gap": "2.41"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-27",
+          "target": "2026-07-28",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "-0.18",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-07-24",
+              "rack_price": "140.90",
+              "supply_gap": "2.41"
+            },
+            {
+              "date": "2026-07-27",
+              "rack_price": "137.10",
+              "supply_gap": "-0.18"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-28",
+          "target": "2026-07-29",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "-1.89",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-07-27",
+              "rack_price": "137.10",
+              "supply_gap": "-0.18"
+            },
+            {
+              "date": "2026-07-28",
+              "rack_price": "134.80",
+              "supply_gap": "-1.89"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-29",
+          "target": "2026-07-30",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "-2.23",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-07-28",
+              "rack_price": "134.80",
+              "supply_gap": "-1.89"
+            },
+            {
+              "date": "2026-07-29",
+              "rack_price": "134.90",
+              "supply_gap": "-2.23"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-31",
+          "target": "2026-08-01",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "-5.33",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-07-31",
+              "rack_price": "131.50",
+              "supply_gap": "-5.33"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-03",
+          "target": "2026-08-04",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "-5.33",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-07-31",
+              "rack_price": "131.50",
+              "supply_gap": "-5.33"
+            },
+            {
+              "date": "2026-08-03",
+              "rack_price": "131.50",
+              "supply_gap": "-5.33"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-04",
+          "target": "2026-08-05",
+          "status": "single_quote_move",
+          "direction": "down",
+          "latest_gap": "-6.97",
+          "actual_interruption": true,
+          "outcome_status": "known",
+          "actual_direction": "down",
+          "observations": [
+            {
+              "date": "2026-08-03",
+              "rack_price": "131.50",
+              "supply_gap": "-5.33"
+            },
+            {
+              "date": "2026-08-04",
+              "rack_price": "128.70",
+              "supply_gap": "-6.97"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-05",
+          "target": "2026-08-06",
+          "status": "single_quote_move",
+          "direction": "down",
+          "latest_gap": "-10.29",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-08-05",
+              "rack_price": "119.10",
+              "supply_gap": "-10.29"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-07",
+          "target": "2026-08-08",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "2.51",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-08-07",
+              "rack_price": "121.00",
+              "supply_gap": "2.51"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-10",
+          "target": "2026-08-11",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "3.73",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-08-07",
+              "rack_price": "121.00",
+              "supply_gap": "2.51"
+            },
+            {
+              "date": "2026-08-10",
+              "rack_price": "122.80",
+              "supply_gap": "3.73"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-11",
+          "target": "2026-08-12",
+          "status": "single_quote_move",
+          "direction": "up",
+          "latest_gap": "7.12",
+          "actual_interruption": true,
+          "outcome_status": "known",
+          "actual_direction": "up",
+          "observations": [
+            {
+              "date": "2026-08-10",
+              "rack_price": "122.80",
+              "supply_gap": "3.73"
+            },
+            {
+              "date": "2026-08-11",
+              "rack_price": "128.30",
+              "supply_gap": "7.12"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-12",
+          "target": "2026-08-13",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "2.50",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-08-12",
+              "rack_price": "128.30",
+              "supply_gap": "2.50"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-14",
+          "target": "2026-08-15",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "-0.54",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-08-14",
+              "rack_price": "128.10",
+              "supply_gap": "-0.54"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-17",
+          "target": "2026-08-18",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "0.48",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-08-14",
+              "rack_price": "128.10",
+              "supply_gap": "-0.54"
+            },
+            {
+              "date": "2026-08-17",
+              "rack_price": "129.60",
+              "supply_gap": "0.48"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-18",
+          "target": "2026-08-19",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "2.14",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-08-17",
+              "rack_price": "129.60",
+              "supply_gap": "0.48"
+            },
+            {
+              "date": "2026-08-18",
+              "rack_price": "132.20",
+              "supply_gap": "2.14"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-19",
+          "target": "2026-08-20",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "2.94",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-08-18",
+              "rack_price": "132.20",
+              "supply_gap": "2.14"
+            },
+            {
+              "date": "2026-08-19",
+              "rack_price": "133.10",
+              "supply_gap": "2.94"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-21",
+          "target": "2026-08-22",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "0.32",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-08-21",
+              "rack_price": "131.10",
+              "supply_gap": "0.32"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-24",
+          "target": "2026-08-25",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "2.29",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-08-21",
+              "rack_price": "131.10",
+              "supply_gap": "0.32"
+            },
+            {
+              "date": "2026-08-24",
+              "rack_price": "134.00",
+              "supply_gap": "2.29"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-25",
+          "target": "2026-08-26",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "1.34",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-08-24",
+              "rack_price": "134.00",
+              "supply_gap": "2.29"
+            },
+            {
+              "date": "2026-08-25",
+              "rack_price": "131.90",
+              "supply_gap": "1.34"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-26",
+          "target": "2026-08-27",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "0.96",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-08-25",
+              "rack_price": "131.90",
+              "supply_gap": "1.34"
+            },
+            {
+              "date": "2026-08-26",
+              "rack_price": "131.30",
+              "supply_gap": "0.96"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-28",
+          "target": "2026-08-29",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "3.16",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-08-28",
+              "rack_price": "136.40",
+              "supply_gap": "3.16"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-31",
+          "target": "2026-09-01",
+          "status": "single_quote_move",
+          "direction": "up",
+          "latest_gap": "6.08",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-08-28",
+              "rack_price": "136.40",
+              "supply_gap": "3.16"
+            },
+            {
+              "date": "2026-08-31",
+              "rack_price": "140.70",
+              "supply_gap": "6.08"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-01",
+          "target": "2026-09-02",
+          "status": "sustained_proxy_move",
+          "direction": "up",
+          "latest_gap": "6.14",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-08-31",
+              "rack_price": "140.70",
+              "supply_gap": "6.08"
+            },
+            {
+              "date": "2026-09-01",
+              "rack_price": "140.10",
+              "supply_gap": "6.14"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-02",
+          "target": "2026-09-03",
+          "status": "sustained_proxy_move",
+          "direction": "up",
+          "latest_gap": "6.99",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-09-01",
+              "rack_price": "140.10",
+              "supply_gap": "6.14"
+            },
+            {
+              "date": "2026-09-02",
+              "rack_price": "141.40",
+              "supply_gap": "6.99"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-04",
+          "target": "2026-09-05",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "-0.30",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-09-04",
+              "rack_price": "139.10",
+              "supply_gap": "-0.30"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-07",
+          "target": "2026-09-08",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "-0.30",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-09-04",
+              "rack_price": "139.10",
+              "supply_gap": "-0.30"
+            },
+            {
+              "date": "2026-09-07",
+              "rack_price": "139.10",
+              "supply_gap": "-0.30"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-08",
+          "target": "2026-09-09",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "1.58",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-09-07",
+              "rack_price": "139.10",
+              "supply_gap": "-0.30"
+            },
+            {
+              "date": "2026-09-08",
+              "rack_price": "142.30",
+              "supply_gap": "1.58"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-09",
+          "target": "2026-09-10",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "1.93",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-09-08",
+              "rack_price": "142.30",
+              "supply_gap": "1.58"
+            },
+            {
+              "date": "2026-09-09",
+              "rack_price": "142.40",
+              "supply_gap": "1.93"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-11",
+          "target": "2026-09-12",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "3.74",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-09-11",
+              "rack_price": "142.10",
+              "supply_gap": "3.74"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-14",
+          "target": "2026-09-15",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "1.97",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-09-11",
+              "rack_price": "142.10",
+              "supply_gap": "3.74"
+            },
+            {
+              "date": "2026-09-14",
+              "rack_price": "139.50",
+              "supply_gap": "1.97"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-15",
+          "target": "2026-09-16",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "2.19",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-09-14",
+              "rack_price": "139.50",
+              "supply_gap": "1.97"
+            },
+            {
+              "date": "2026-09-15",
+              "rack_price": "140.30",
+              "supply_gap": "2.19"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-16",
+          "target": "2026-09-17",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "4.99",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-09-15",
+              "rack_price": "140.30",
+              "supply_gap": "2.19"
+            },
+            {
+              "date": "2026-09-16",
+              "rack_price": "145.60",
+              "supply_gap": "4.99"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-18",
+          "target": "2026-09-19",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "1.11",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-09-18",
+              "rack_price": "142.50",
+              "supply_gap": "1.11"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-21",
+          "target": "2026-09-22",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "1.92",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-09-18",
+              "rack_price": "142.50",
+              "supply_gap": "1.11"
+            },
+            {
+              "date": "2026-09-21",
+              "rack_price": "143.70",
+              "supply_gap": "1.92"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-22",
+          "target": "2026-09-23",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "1.28",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-09-21",
+              "rack_price": "143.70",
+              "supply_gap": "1.92"
+            },
+            {
+              "date": "2026-09-22",
+              "rack_price": "142.40",
+              "supply_gap": "1.28"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-23",
+          "target": "2026-09-24",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "1.80",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-09-22",
+              "rack_price": "142.40",
+              "supply_gap": "1.28"
+            },
+            {
+              "date": "2026-09-23",
+              "rack_price": "143.50",
+              "supply_gap": "1.80"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-25",
+          "target": "2026-09-26",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "1.48",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-09-25",
+              "rack_price": "146.80",
+              "supply_gap": "1.48"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-28",
+          "target": "2026-09-29",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "-3.22",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-09-25",
+              "rack_price": "146.80",
+              "supply_gap": "1.48"
+            },
+            {
+              "date": "2026-09-28",
+              "rack_price": "139.90",
+              "supply_gap": "-3.22"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-29",
+          "target": "2026-09-30",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "-4.93",
+          "actual_interruption": true,
+          "outcome_status": "known",
+          "actual_direction": "down",
+          "observations": [
+            {
+              "date": "2026-09-28",
+              "rack_price": "139.90",
+              "supply_gap": "-3.22"
+            },
+            {
+              "date": "2026-09-29",
+              "rack_price": "138.10",
+              "supply_gap": "-4.93"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-30",
+          "target": "2026-10-01",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "-4.07",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-09-30",
+              "rack_price": "135.90",
+              "supply_gap": "-4.07"
+            }
+          ]
+        },
+        {
+          "date": "2026-10-02",
+          "target": "2026-10-03",
+          "status": "single_quote_move",
+          "direction": "up",
+          "latest_gap": "6.91",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-10-02",
+              "rack_price": "147.00",
+              "supply_gap": "6.91"
+            }
+          ]
+        },
+        {
+          "date": "2026-10-05",
+          "target": "2026-10-06",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "4.39",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-10-02",
+              "rack_price": "147.00",
+              "supply_gap": "6.91"
+            },
+            {
+              "date": "2026-10-05",
+              "rack_price": "143.30",
+              "supply_gap": "4.39"
+            }
+          ]
+        },
+        {
+          "date": "2026-10-06",
+          "target": "2026-10-07",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "2.63",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-10-05",
+              "rack_price": "143.30",
+              "supply_gap": "4.39"
+            },
+            {
+              "date": "2026-10-06",
+              "rack_price": "140.90",
+              "supply_gap": "2.63"
+            }
+          ]
+        },
+        {
+          "date": "2026-10-07",
+          "target": "2026-10-08",
+          "status": "below_reference",
+          "direction": null,
+          "latest_gap": "2.50",
+          "actual_interruption": false,
+          "outcome_status": "known",
+          "actual_direction": null,
+          "observations": [
+            {
+              "date": "2026-10-06",
+              "rack_price": "140.90",
+              "supply_gap": "2.63"
+            },
+            {
+              "date": "2026-10-07",
+              "rack_price": "141.40",
+              "supply_gap": "2.50"
+            }
+          ]
+        }
+      ],
+      "unavailable": [],
+      "unresolved_targets": [],
+      "summary": {
+        "early": {
+          "alert_days": 7,
+          "true_alert_days": 2,
+          "false_alert_days": 5,
+          "actual_events": 3,
+          "unresolved_alert_days": 0,
+          "unresolved_target_dates": 0,
+          "detected_events": 2,
+          "missed_events": 1
+        },
+        "sustained": {
+          "alert_days": 2,
+          "true_alert_days": 0,
+          "false_alert_days": 2,
+          "actual_events": 3,
+          "unresolved_alert_days": 0,
+          "unresolved_target_dates": 0,
+          "detected_events": 0,
+          "missed_events": 3
+        }
+      }
+    },
+    "caveat": "Retrospective and exploratory, not blinded. Actual publication vintages are unverified. Lead-time tests retain errors across intervening interruptions. Watch checks next-calendar-day non-Friday gasoline settings, not a calibrated probability or the official trigger."
+  },
+  "legacy_common": {
+    "count": 9,
+    "repaired": {
+      "count": 9,
+      "mae": "1.46",
+      "median": "1.30",
+      "p90": "2.9",
+      "max_error": "2.9",
+      "within_one_cent": 3,
+      "over_five_cents": 0,
+      "over_ten_cents": 0,
+      "direction_correct": 9,
+      "direction_cases": 9
+    },
+    "withdrawn_proxy": {
+      "count": 9,
+      "mae": "2.74",
+      "median": "2.80",
+      "p90": "5.9",
+      "max_error": "5.9",
+      "within_one_cent": 2,
+      "over_five_cents": 1,
+      "over_ten_cents": 0,
+      "direction_correct": 9,
+      "direction_cases": 9
+    }
+  }
+}

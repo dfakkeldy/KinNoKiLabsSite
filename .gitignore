@@ -7,3 +7,7 @@
 .superpowers/
 .worktrees/
 .cloudflare/
+/Tools/gas-price-watch/**/__pycache__/
+/Tools/gas-price-watch/engine/data/
+/Tools/gas-price-watch/engine/sources/
+/Tools/gas-price-watch/engine/report.html
