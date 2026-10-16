@@ -1,4 +1,5 @@
 import { assessSnapshot, decimal, formatCents, formatDate, formatPrice, formatTimestamp, groupForecasts, loadSnapshot, publicUrl } from './gas-core.js';
+import { forecastComparison, renderComparison } from './gas-chart.js';
 
 const BOARD_URL = 'https://nserbt.ca/nseb/mandates/gasoline-diesel-pricing/gasoline-diesel-prices-zone-map';
 const messages = {
@@ -66,6 +67,7 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
   root.replaceChildren(toolbar, feedStatus, content);
 
   let data = null; let source = 'none'; let zone = 6; let busy = false; let lastFetch = now().getTime(); let lastReason;
+  let comparisonIssue = 'first';
   function selected(zones) { return zones?.find((price) => price.zone === zone); }
   function currentCard(view) {
     const card = el('article', 'gas-card');
@@ -177,10 +179,26 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
     return node;
   }
   function ledgerSection(at) {
-    const node = section('Saved calls and official outcomes', 'First and latest saved estimates for the most recent 26 effective dates. Updates to the same date stay one event.', 'gas-ledger');
+    const node = section('Predictions vs actual prices', 'First and latest saved estimates for the most recent 26 effective dates. Updates to the same date stay one event.', 'gas-ledger');
+    node.id = 'gas-results';
     const groups = groupForecasts(data?.issued_forecasts, at);
     const observed = groups.filter((group) => group.status === 'scored').length; const pending = groups.length - observed;
     node.append(el('p', 'gas-ledger-summary', `Recent history · ${observed} effective ${observed === 1 ? 'date' : 'dates'} scored · ${pending} awaiting an official outcome`));
+    const comparison = el('figure', 'gas-comparison');
+    const controls = el('div', 'gas-comparison-controls');
+    const choice = el('select', 'gas-comparison-select', null, { id: 'gas-comparison-issue' });
+    choice.append(el('option', '', 'First saved prediction', { value: 'first' }), el('option', '', 'Latest saved prediction', { value: 'latest' }));
+    choice.value = comparisonIssue; choice.disabled = observed === 0;
+    controls.append(el('label', '', 'Prediction to compare', { for: 'gas-comparison-issue' }), choice);
+    const plot = el('div', 'gas-comparison-body');
+    const draw = () => renderComparison(plot, forecastComparison(data?.issued_forecasts, zone, comparisonIssue, at), { document, zone, issue: comparisonIssue });
+    choice.addEventListener('change', () => {
+      if (!['first', 'latest'].includes(choice.value)) return;
+      comparisonIssue = choice.value; draw();
+    });
+    draw();
+    comparison.append(controls, el('figcaption', 'gas-comparison-explanation', 'Zero means an exact match. Above zero is too high; below zero is too low. Pending dates enter the graph only after the official outcome is known.'), plot);
+    node.append(comparison);
     if (!groups.length) {
       node.append(el('p', 'gas-section-note', 'No valid pre-setting records are available in this snapshot. Historical test scores above do not establish prospective accuracy.')); return node;
     }
@@ -224,7 +242,9 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
     const summary = el('section', 'gas-summary', null, { 'aria-label': `Zone ${zone} regular self-service gasoline prices` });
     const prices = el('div', 'gas-price-grid'); prices.append(currentCard(view), estimateCard(view));
     summary.append(prices, allZones(view));
-    content.replaceChildren(summary, performanceSection(), watchSection(view), ledgerSection(at), sourcesSection());
+    const keepComparisonFocus = document.activeElement?.id === 'gas-comparison-issue';
+    content.replaceChildren(summary, ledgerSection(at), performanceSection(), watchSection(view), sourcesSection());
+    if (keepComparisonFocus) content.querySelector('#gas-comparison-issue')?.focus({ preventScroll: true });
   }
   async function refresh() {
     if (busy) return;

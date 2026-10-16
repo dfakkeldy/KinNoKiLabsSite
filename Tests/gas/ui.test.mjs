@@ -19,6 +19,9 @@ function data() {
 async function mount(snapshot, { at = '2026-10-15T23:00:00Z', fetcher } = {}) {
   assert.equal(typeof ui.mountGasWatch, 'function', 'The public page must mount a usable view');
   const fixture = createDOMFixture(); let clock = new Date(at);
+  fixture.document.createElementNS = (namespace, tag) => {
+    const node = fixture.document.createElement(tag); node.namespaceURI = namespace; return node;
+  };
   const calls = [];
   const app = ui.mountGasWatch(fixture.root, { document: fixture.document, window: fixture.window, now: () => clock,
     fetcher: fetcher || (async (url) => { calls.push(url); return { ok: true, json: async () => snapshot }; }) });
@@ -124,6 +127,77 @@ test('several issues for one date produce one observed event with first, latest 
   assert.match(ledger.textContent, /\$1\.948/);
   assert.match(ledger.textContent, /-1\.7¢\/L/);
   assert.match(ledger.textContent, /-3\.6¢\/L/);
+});
+
+function completedCalls() {
+  return ['first', 'latest'].map((id, index) => ({ record_id: id, date: '2026-10-09',
+    issued_at: `2026-10-08T${index ? '22' : '18'}:00:00Z`, status: 'scored',
+    predicted_zones: prices(index ? '192.4' : '191.2', '195.4'),
+    zones: prices().map((p) => ({ zone: p.zone, predicted_minimum: '191.2', actual_minimum: '192.1', minimum_error: '999' })) }));
+}
+
+test('the comparison graph shows the selected zone error, official price and a real SVG zero line', async () => {
+  const snapshot = data(); snapshot.issued_forecasts = completedCalls();
+  const fixture = await mount(snapshot);
+  const chart = fixture.root.querySelector('.gas-comparison');
+  assert.ok(chart, 'Saved outcomes need a visible comparison graph');
+  assert.match(chart.textContent, /Zone 6/);
+  assert.match(chart.textContent, /\$1\.912.*\$1\.921.*0\.9¢\/L too low/);
+  assert.match(chart.textContent, /zero.*exact|exact.*zero/i);
+  assert.equal(chart.querySelector('svg').namespaceURI, 'http://www.w3.org/2000/svg');
+  assert.equal(chart.querySelector('svg').getAttribute('role'), 'img');
+  assert.equal(chart.querySelectorAll('.gas-comparison-zero').length, 1);
+  assert.equal(chart.querySelector('.gas-comparison-bar').getAttribute('data-error'), '-0.9');
+});
+
+test('first/latest and zone controls update the graph while retaining keyboard focus and comparison choice', async () => {
+  const snapshot = data(); snapshot.issued_forecasts = completedCalls();
+  snapshot.issued_forecasts[1].predicted_zones[0].minimum = '189.8';
+  snapshot.issued_forecasts.forEach((r) => { r.zones[0].actual_minimum = '191.0'; });
+  const fixture = await mount(snapshot);
+  const choice = fixture.root.querySelector('.gas-comparison-select');
+  assert.ok(choice);
+  choice.focus(); choice.value = 'latest'; choice.dispatchEvent(new fixture.Event('change'));
+  assert.equal(fixture.document.activeElement, choice);
+  assert.match(fixture.root.querySelector('.gas-comparison-result').textContent, /0\.3¢\/L too high/);
+  const zone = fixture.root.querySelector('#gas-zone'); zone.value = '1'; zone.dispatchEvent(new fixture.Event('change'));
+  assert.equal(fixture.root.querySelector('.gas-comparison-select').value, 'latest');
+  assert.match(fixture.root.querySelector('.gas-comparison-result').textContent, /\$1\.898.*\$1\.910.*1\.2¢\/L too low/);
+  assert.equal(fixture.calls.length, 1, 'Comparison controls use the already downloaded public data');
+});
+
+test('a routine feed refresh adds newly completed dates and preserves the chosen comparison and focus', async () => {
+  let snapshot = data(); snapshot.issued_forecasts = completedCalls();
+  const fixture = await mount(snapshot, { fetcher: async () => ({ ok: true, json: async () => snapshot }) });
+  const choice = fixture.root.querySelector('.gas-comparison-select');
+  choice.focus(); choice.value = 'latest'; choice.dispatchEvent(new fixture.Event('change'));
+  snapshot = { ...snapshot, checked_at: '2026-10-16T08:00:00Z', current: { ...snapshot.current, date: '2026-10-16', zones: prices('192.1', '195.1') },
+    target_date: '2026-10-23', estimate: null, watch: null, issued_forecasts: [...snapshot.issued_forecasts,
+      ...completedCalls().map((r, i) => ({ ...r, record_id: `next-${i}`, date: '2026-10-16', issued_at: `2026-10-15T${i ? '22' : '18'}:00:00Z` }))] };
+  fixture.setTime('2026-10-16T08:00:00Z'); fixture.tickIntervals(); await settle();
+  const refreshed = fixture.root.querySelector('.gas-comparison-select');
+  assert.equal(refreshed.value, 'latest');
+  assert.equal(fixture.document.activeElement, refreshed);
+  assert.equal(fixture.root.querySelectorAll('.gas-comparison-bar').length, 2);
+  assert.match(fixture.root.querySelector('.gas-comparison-caption').textContent, /2 completed dates/);
+  assert.match(fixture.root.querySelector('.gas-comparison-result').textContent, /Oct 16, 2026/);
+});
+
+test('a pending outcome is explained and never drawn as a correct prediction', async () => {
+  const snapshot = data();
+  snapshot.issued_forecasts = [{ record_id: 'pending', date: '2026-10-16', issued_at: '2026-10-15T18:00:00Z', predicted_zones: prices('191.2', '194.2'), status: 'pending' }];
+  const fixture = await mount(snapshot);
+  assert.ok(fixture.root.querySelector('.gas-comparison'));
+  assert.equal(fixture.root.querySelector('.gas-comparison-svg'), null);
+  assert.match(fixture.root.querySelector('.gas-comparison-empty').textContent, /official outcome/i);
+});
+
+test('an exact match has a visible zero marker rather than a disappearing bar', async () => {
+  const snapshot = data(); snapshot.issued_forecasts = completedCalls().slice(0, 1);
+  snapshot.issued_forecasts[0].predicted_zones = prices('192.1', '195.1');
+  const fixture = await mount(snapshot);
+  assert.match(fixture.root.querySelector('.gas-comparison-result').textContent, /exact match/i);
+  assert.equal(fixture.root.querySelectorAll('.gas-comparison-exact').length, 1);
 });
 
 test('data text is rendered as text and unsafe source URLs never become links', async () => {
