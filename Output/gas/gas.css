@@ -1,0 +1,97 @@
+.page-gas [hidden] { display: none !important; }
+.gas-skip { position: fixed; inset: 8px auto auto 8px; z-index: 101; padding: 12px 18px; background: var(--surface); color: var(--text); transform: translateY(-150%); }
+.gas-skip:focus { transform: none; }
+.gas-nav-links { display: flex; align-items: center; gap: 18px; }
+.gas-nav-links > a { padding: 12px 0; font-size: 14px; color: var(--text-muted); text-decoration: none; }
+.gas-nav-links > a:hover { color: var(--text); }
+.gas-nav .theme-toggle { min-width: 44px; min-height: 44px; }
+.gas-page { padding-top: clamp(40px, 6vw, 72px); }
+.gas-app { display: grid; gap: 32px; }
+.gas-toolbar { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 20px; }
+.gas-zone-field { display: grid; gap: 8px; }
+.gas-zone-field label { font-size: 14px; font-weight: 600; }
+.gas-zone-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+.gas-zone-controls select { min-height: 48px; min-width: 174px; padding: 10px 38px 10px 16px; border-radius: 10px; border: 1px solid var(--gold-hairline); background: var(--surface); color: var(--text); font: inherit; }
+.gas-refresh { min-height: 48px; }
+.gas-refresh:disabled { opacity: .7; cursor: wait; }
+.gas-feed-status { padding: 16px 20px; border: 1px solid var(--separator); border-left: 3px solid var(--gold-text); border-radius: 0 12px 12px 0; color: var(--text-muted); font-size: 14px; line-height: 1.65; }
+.gas-feed-status[data-state="fresh"] { border-left-color: var(--gold-hairline); }
+.gas-content { display: grid; gap: clamp(40px, 6vw, 64px); min-width: 0; }
+.gas-price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.gas-card { min-width: 0; padding: clamp(22px, 3vw, 32px); background: var(--surface); border: 1px solid var(--separator); border-radius: var(--radius-card); box-shadow: var(--shadow-card); }
+.gas-card h2 { font-size: clamp(20px, 2.4vw, 26px); }
+.gas-card .eyebrow { margin-bottom: 12px; }
+.gas-card-estimate { border-color: var(--gold-hairline); }
+.gas-card-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 22px; }
+.gas-card-top h2 { font-size: 19px; }
+.gas-badge { display: inline-flex; padding: 5px 10px; border: 1px solid var(--gold-hairline); border-radius: var(--radius-pill); font-size: 12px; font-weight: 500; color: var(--gold-text); }
+.gas-price { font-size: clamp(46px, 6vw, 70px); font-weight: 600; line-height: 1.1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.gas-price-unit { margin-top: 7px; font-size: 13px; color: var(--text-muted); }
+.gas-price-maximum { margin-top: 20px; font-size: 17px; font-variant-numeric: tabular-nums; }
+.gas-card-note { margin-top: 14px; color: var(--text-muted); font-size: 14px; line-height: 1.65; }
+.gas-change { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--separator); font-size: 16px; color: var(--gold-text); }
+.gas-coverage { margin-top: 12px; font-size: 14px; }
+.gas-empty { margin-top: 18px; font-size: 24px; font-weight: 500; }
+.gas-notice { padding: 20px; border: 1px solid var(--gold-hairline); border-radius: 12px; line-height: 1.65; }
+.gas-details { margin-top: 24px; border-top: 1px solid var(--separator); padding-top: 16px; }
+.gas-details summary { min-height: 30px; cursor: pointer; font-weight: 500; font-size: 14px; color: var(--text); }
+.gas-details > :not(summary) { margin-top: 16px; }
+.gas-details ul { padding-left: 20px; display: grid; gap: 10px; color: var(--text-muted); font-size: 14px; }
+.gas-components { display: grid; gap: 12px; font-size: 14px; }
+.gas-components > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; }
+.gas-components dt { color: var(--text-muted); }
+.gas-components dd { font-variant-numeric: tabular-nums; }
+.gas-section { min-width: 0; }
+.gas-section .section-title { font-size: clamp(25px, 3.4vw, 34px); }
+.gas-section .section-head { margin-bottom: 24px; }
+.gas-section-note { margin-top: 20px; max-width: 78ch; color: var(--text-muted); font-size: 14px; line-height: 1.7; }
+.gas-stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.gas-stat { padding: 24px; border: 1px solid var(--separator); border-radius: 16px; background: var(--surface); }
+.gas-stat h3 { font-size: 14px; font-weight: 500; color: var(--text-muted); }
+.gas-stat-value { margin-top: 16px; font-size: clamp(26px, 3vw, 36px); font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -.025em; }
+.gas-stat p:last-child { margin-top: 10px; color: var(--text-muted); font-size: 13px; }
+.gas-table-wrap { max-width: 100%; overflow-x: auto; border: 1px solid var(--separator); border-radius: 12px; }
+.gas-table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; font-variant-numeric: tabular-nums; }
+.gas-table caption { padding: 14px 16px; text-align: left; font-size: 13px; color: var(--text-muted); background: var(--surface); }
+.gas-table th, .gas-table td { padding: 14px 16px; border-top: 1px solid var(--separator); vertical-align: top; }
+.gas-table thead th { background: var(--surface); font-size: 12px; font-weight: 500; color: var(--text-muted); }
+.gas-table tbody th { font-weight: 500; }
+.gas-table td { white-space: nowrap; }
+.gas-table tr[data-selected="true"] { background: var(--fill-2); }
+.gas-all-zones { margin-top: 24px; }
+.gas-watch { padding: clamp(22px, 3vw, 32px); background: var(--surface); border: 1px solid var(--gold-hairline); border-radius: var(--radius-card); }
+.gas-watch-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 18px; }
+.gas-watch-status { font-size: clamp(19px, 2.5vw, 24px); font-weight: 500; }
+.gas-watch-gap { margin-top: 12px; font-size: clamp(30px, 4vw, 44px); line-height: 1.2; font-weight: 500; font-variant-numeric: tabular-nums; }
+.gas-watch-description { margin: 18px 0; max-width: 75ch; color: var(--text-muted); font-size: 15px; }
+.gas-observations { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 24px; padding: 0; margin: 16px 0 22px; font-size: 13px; color: var(--text-muted); }
+.gas-observations li { font-variant-numeric: tabular-nums; }
+.gas-watch .gas-table-wrap { margin-top: 24px; }
+.gas-ledger-summary { margin-bottom: 20px; font-size: 15px; color: var(--text-muted); }
+.gas-ledger .gas-table { min-width: 630px; }
+.gas-issue { display: grid; gap: 4px; margin-bottom: 12px; }
+.gas-issue:last-child { margin-bottom: 0; }
+.gas-issue-label { font-size: 12px; color: var(--text-muted); }
+.gas-issue-time { font-size: 11px; color: var(--text-muted); }
+.gas-source-list { display: grid; gap: 14px; padding-left: 20px; font-size: 15px; overflow-wrap: anywhere; }
+.gas-footer { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; }
+.gas-footer .footer-tagline { flex-basis: 100%; }
+.gas-footer .font-toggle { margin-left: auto; min-height: 44px; }
+@media (max-width: 700px) {
+  .gas-price-grid { grid-template-columns: 1fr; }
+  .gas-stat-grid { grid-template-columns: 1fr; }
+  .gas-stat { display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; align-items: center; }
+  .gas-stat-value { margin-top: 0; font-size: 27px; }
+  .gas-stat p:last-child { grid-column: 1 / -1; margin-top: 0; }
+  .gas-table th, .gas-table td { padding: 12px; }
+  .gas-nav-links { gap: 14px; }
+  .gas-footer .font-toggle { margin-left: 0; }
+}
+@media (max-width: 380px) {
+  .gas-nav .nav-brand { font-size: 14px; gap: 6px; }
+  .gas-nav .nav-brand img { width: 27px; height: 27px; }
+  .gas-nav-links { gap: 12px; }
+  .gas-nav-links > a { font-size: 13px; }
+  .gas-stat { display: block; }
+  .gas-stat-value { margin: 12px 0 8px; }
+}

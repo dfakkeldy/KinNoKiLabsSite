@@ -33,18 +33,6 @@ jobs:
         run: make generate PUBLISH_BIN="swift run KinNoKiLabsSite"
       - name: Test the site
         run: make test
-      - name: Export generated pages for this manual preparation run
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          git add --intent-to-add Output
-          git diff --binary -- Output > "$RUNNER_TEMP/generated-output.patch"
-      - name: Save generated-page patch
-        if: github.event_name == 'workflow_dispatch'
-        uses: actions/upload-artifact@v4
-        with:
-          name: generated-output-${{ github.sha }}
-          path: ${{ runner.temp }}/generated-output.patch
-          if-no-files-found: error
       - name: Verify committed generated output
         run: |
           git diff --exit-code -- Output

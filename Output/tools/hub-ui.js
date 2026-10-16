@@ -24,6 +24,9 @@ export function renderToolsHub(root) {
       element('h1', { text: 'Web tools', ownerDocument: doc }),
       element('p', { class: 'tool-lede', text: 'Small, fast utilities. They load once, work offline, and keep everything on your device.', ownerDocument: doc }),
       element('div', { class: 'tool-connectivity-status', 'data-tool-connectivity': '', ownerDocument: doc })),
-    element('div', { class: 'tool-hub-grid', ownerDocument: doc }, ...cards)
+    element('div', { class: 'tool-hub-grid', ownerDocument: doc }, ...cards),
+    element('section', { class: 'tool-live-data', ownerDocument: doc },
+      element('h2', { ownerDocument: doc }, element('a', { href: '/gas/', text: 'Gas Price Watch', ownerDocument: doc })),
+      element('p', { text: 'Official Nova Scotia gasoline prices and experimental rolling estimates. A connection is needed for the latest public data.', ownerDocument: doc }))
   );
 }
