@@ -1,0 +1,453 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-10-16T03:20:01.113485+00:00",
+  "status": "ok",
+  "error": null,
+  "current": {
+    "date": "2026-10-16",
+    "source_url": "https://nserbt.ca/sites/default/files/documents/gas/gasprice.pdf?1792120504",
+    "zones": [
+      {
+        "zone": 1,
+        "minimum": "190.2",
+        "maximum": "193.1"
+      },
+      {
+        "zone": 2,
+        "minimum": "190.7",
+        "maximum": "193.7"
+      },
+      {
+        "zone": 3,
+        "minimum": "191.2",
+        "maximum": "194.2"
+      },
+      {
+        "zone": 4,
+        "minimum": "191.3",
+        "maximum": "194.3"
+      },
+      {
+        "zone": 5,
+        "minimum": "191.3",
+        "maximum": "194.3"
+      },
+      {
+        "zone": 6,
+        "minimum": "192.1",
+        "maximum": "195.1"
+      }
+    ],
+    "benchmark": "121.19",
+    "forward": "0.70",
+    "clean_fuel": "9.99",
+    "credit_card": "0.9"
+  },
+  "target_date": "2026-10-23",
+  "estimate": {
+    "date": "2026-10-23",
+    "mode": "provisional",
+    "zones": [
+      {
+        "zone": 1,
+        "minimum": "190.2",
+        "maximum": "193.2"
+      },
+      {
+        "zone": 2,
+        "minimum": "190.8",
+        "maximum": "193.8"
+      },
+      {
+        "zone": 3,
+        "minimum": "191.3",
+        "maximum": "194.2"
+      },
+      {
+        "zone": 4,
+        "minimum": "191.4",
+        "maximum": "194.3"
+      },
+      {
+        "zone": 5,
+        "minimum": "191.4",
+        "maximum": "194.3"
+      },
+      {
+        "zone": 6,
+        "minimum": "192.2",
+        "maximum": "195.1"
+      }
+    ],
+    "issued_at": "2026-10-16T03:20:00.487781+00:00",
+    "model_version": "halifax-e10-rolling-v3",
+    "observed_quotes": 0,
+    "total_quotes": 5,
+    "projected_quotes": 5,
+    "latest_quote_date": "2026-10-15",
+    "error_reference": null,
+    "outside_training_features": [],
+    "assumptions": [
+      "Each unobserved weekday holds the latest real posted quote. Projected rows are explicitly marked.",
+      "Missing dates before the latest observed quote are errors, never projections.",
+      "New gasoline orders reset the anchor and the remaining averaging window.",
+      "Known taxes and margins apply on the target date; the latest retail adjustment is carried.",
+      "This is a conditional rolling estimate, not an exact unpublished Board calculation."
+    ]
+  },
+  "watch": {
+    "status": "waiting_for_quotes",
+    "latest_gap": null,
+    "reference_cents": "6",
+    "direction": null,
+    "observations": [],
+    "regular_setting_next": false,
+    "limitations": "Experimental combined supply-cost indicator, not the Board's daily NYH benchmark or a probability. The retrospective exploratory check caught 2 of 3 events with 5 false-alert days for early signals; sustained signals caught 0 of 3 with 2 false alerts. Historical publication vintages are unverified. The Board uses different inputs and may exercise discretion.",
+    "source_url": "https://nserbt.ca/sites/default/files/Decision%20%28Interruption%29.pdf"
+  },
+  "performance": {
+    "complete": {
+      "count": 18,
+      "mae": "1.64",
+      "max_error": "4.1"
+    },
+    "rolling": [
+      {
+        "lead_days": 1,
+        "count": 15,
+        "mae": "1.69",
+        "max_error": "4.1",
+        "total": 15,
+        "earlier_p90": "2.8"
+      },
+      {
+        "lead_days": 2,
+        "count": 15,
+        "mae": "1.99",
+        "max_error": "4.8",
+        "total": 15,
+        "earlier_p90": "4.8"
+      },
+      {
+        "lead_days": 3,
+        "count": 15,
+        "mae": "2.61",
+        "max_error": "11.6",
+        "total": 15,
+        "earlier_p90": "6.7"
+      },
+      {
+        "lead_days": 4,
+        "count": 15,
+        "mae": "4.07",
+        "max_error": "14.0",
+        "total": 15,
+        "earlier_p90": "6.5"
+      },
+      {
+        "lead_days": 5,
+        "count": 15,
+        "mae": "4.89",
+        "max_error": "14.0",
+        "total": 15,
+        "earlier_p90": "5.9"
+      },
+      {
+        "lead_days": 6,
+        "count": 15,
+        "mae": "4.89",
+        "max_error": "14.0",
+        "total": 15,
+        "earlier_p90": "5.9"
+      },
+      {
+        "lead_days": 7,
+        "count": 15,
+        "mae": "4.89",
+        "max_error": "14.0",
+        "total": 15,
+        "earlier_p90": "5.9"
+      }
+    ],
+    "watch": {
+      "decision_days": 57,
+      "early": {
+        "actual_events": 3,
+        "detected_events": 2,
+        "false_alert_days": 5,
+        "missed_events": 1,
+        "unresolved_target_dates": 0,
+        "unresolved_alert_days": 0
+      },
+      "sustained": {
+        "actual_events": 3,
+        "detected_events": 0,
+        "false_alert_days": 2,
+        "missed_events": 3,
+        "unresolved_target_dates": 0,
+        "unresolved_alert_days": 0
+      }
+    }
+  },
+  "issued_forecasts": [
+    {
+      "date": "2026-10-16",
+      "issued_at": "2026-10-15T21:13:17.641854+00:00",
+      "record_id": "2026-10-16/halifax-e10-change-v2-1f293aba9d6f.json",
+      "model_version": "halifax-e10-change-v2",
+      "predicted_zones": [
+        {
+          "zone": 1,
+          "minimum": "189.3",
+          "maximum": "192.2"
+        },
+        {
+          "zone": 2,
+          "minimum": "189.8",
+          "maximum": "192.8"
+        },
+        {
+          "zone": 3,
+          "minimum": "190.3",
+          "maximum": "193.2"
+        },
+        {
+          "zone": 4,
+          "minimum": "190.4",
+          "maximum": "193.4"
+        },
+        {
+          "zone": 5,
+          "minimum": "190.4",
+          "maximum": "193.4"
+        },
+        {
+          "zone": 6,
+          "minimum": "191.2",
+          "maximum": "194.2"
+        }
+      ],
+      "status": "scored",
+      "effective_at": "2026-10-16T03:01:00+00:00",
+      "observed_at": "2026-10-16T03:20:00.487781+00:00",
+      "input_fingerprint": "1f293aba9d6fd421f5846e0a77924b3ddbdec777b88c855b0420e62f6eb25798",
+      "zones": [
+        {
+          "zone": 1,
+          "predicted_minimum": "189.3",
+          "actual_minimum": "190.2",
+          "minimum_error": "-0.9",
+          "predicted_maximum": "192.2",
+          "actual_maximum": "193.1",
+          "maximum_error": "-0.9"
+        },
+        {
+          "zone": 2,
+          "predicted_minimum": "189.8",
+          "actual_minimum": "190.7",
+          "minimum_error": "-0.9",
+          "predicted_maximum": "192.8",
+          "actual_maximum": "193.7",
+          "maximum_error": "-0.9"
+        },
+        {
+          "zone": 3,
+          "predicted_minimum": "190.3",
+          "actual_minimum": "191.2",
+          "minimum_error": "-0.9",
+          "predicted_maximum": "193.2",
+          "actual_maximum": "194.2",
+          "maximum_error": "-1"
+        },
+        {
+          "zone": 4,
+          "predicted_minimum": "190.4",
+          "actual_minimum": "191.3",
+          "minimum_error": "-0.9",
+          "predicted_maximum": "193.4",
+          "actual_maximum": "194.3",
+          "maximum_error": "-0.9"
+        },
+        {
+          "zone": 5,
+          "predicted_minimum": "190.4",
+          "actual_minimum": "191.3",
+          "minimum_error": "-0.9",
+          "predicted_maximum": "193.4",
+          "actual_maximum": "194.3",
+          "maximum_error": "-0.9"
+        },
+        {
+          "zone": 6,
+          "predicted_minimum": "191.2",
+          "actual_minimum": "192.1",
+          "minimum_error": "-0.9",
+          "predicted_maximum": "194.2",
+          "actual_maximum": "195.1",
+          "maximum_error": "-0.9"
+        }
+      ],
+      "source_url": "https://nserbt.ca/sites/default/files/documents/gas/gasprice.pdf?1792120504"
+    },
+    {
+      "date": "2026-10-16",
+      "issued_at": "2026-10-15T21:19:18.680500+00:00",
+      "record_id": "2026-10-16/halifax-e10-change-v2-9b5af1ba8e12.json",
+      "model_version": "halifax-e10-change-v2",
+      "predicted_zones": [
+        {
+          "zone": 1,
+          "minimum": "189.3",
+          "maximum": "192.2"
+        },
+        {
+          "zone": 2,
+          "minimum": "189.8",
+          "maximum": "192.8"
+        },
+        {
+          "zone": 3,
+          "minimum": "190.3",
+          "maximum": "193.2"
+        },
+        {
+          "zone": 4,
+          "minimum": "190.4",
+          "maximum": "193.4"
+        },
+        {
+          "zone": 5,
+          "minimum": "190.4",
+          "maximum": "193.4"
+        },
+        {
+          "zone": 6,
+          "minimum": "191.2",
+          "maximum": "194.2"
+        }
+      ],
+      "status": "scored",
+      "effective_at": "2026-10-16T03:01:00+00:00",
+      "observed_at": "2026-10-16T03:20:00.487781+00:00",
+      "input_fingerprint": "9b5af1ba8e125c6cb1b024602098e60254c329bcfdc712e36a75e479b3721ffc",
+      "zones": [
+        {
+          "zone": 1,
+          "predicted_minimum": "189.3",
+          "actual_minimum": "190.2",
+          "minimum_error": "-0.9",
+          "predicted_maximum": "192.2",
+          "actual_maximum": "193.1",
+          "maximum_error": "-0.9"
+        },
+        {
+          "zone": 2,
+          "predicted_minimum": "189.8",
+          "actual_minimum": "190.7",
+          "minimum_error": "-0.9",
+          "predicted_maximum": "192.8",
+          "actual_maximum": "193.7",
+          "maximum_error": "-0.9"
+        },
+        {
+          "zone": 3,
+          "predicted_minimum": "190.3",
+          "actual_minimum": "191.2",
+          "minimum_error": "-0.9",
+          "predicted_maximum": "193.2",
+          "actual_maximum": "194.2",
+          "maximum_error": "-1"
+        },
+        {
+          "zone": 4,
+          "predicted_minimum": "190.4",
+          "actual_minimum": "191.3",
+          "minimum_error": "-0.9",
+          "predicted_maximum": "193.4",
+          "actual_maximum": "194.3",
+          "maximum_error": "-0.9"
+        },
+        {
+          "zone": 5,
+          "predicted_minimum": "190.4",
+          "actual_minimum": "191.3",
+          "minimum_error": "-0.9",
+          "predicted_maximum": "193.4",
+          "actual_maximum": "194.3",
+          "maximum_error": "-0.9"
+        },
+        {
+          "zone": 6,
+          "predicted_minimum": "191.2",
+          "actual_minimum": "192.1",
+          "minimum_error": "-0.9",
+          "predicted_maximum": "194.2",
+          "actual_maximum": "195.1",
+          "maximum_error": "-0.9"
+        }
+      ],
+      "source_url": "https://nserbt.ca/sites/default/files/documents/gas/gasprice.pdf?1792120504"
+    },
+    {
+      "date": "2026-10-23",
+      "issued_at": "2026-10-16T03:20:00.487781+00:00",
+      "record_id": "2026-10-23/halifax-e10-rolling-v3-9420acf7b246.json",
+      "model_version": "halifax-e10-rolling-v3",
+      "predicted_zones": [
+        {
+          "zone": 1,
+          "minimum": "190.2",
+          "maximum": "193.2"
+        },
+        {
+          "zone": 2,
+          "minimum": "190.8",
+          "maximum": "193.8"
+        },
+        {
+          "zone": 3,
+          "minimum": "191.3",
+          "maximum": "194.2"
+        },
+        {
+          "zone": 4,
+          "minimum": "191.4",
+          "maximum": "194.3"
+        },
+        {
+          "zone": 5,
+          "minimum": "191.4",
+          "maximum": "194.3"
+        },
+        {
+          "zone": 6,
+          "minimum": "192.2",
+          "maximum": "195.1"
+        }
+      ],
+      "status": "pending",
+      "effective_at": "2026-10-23T03:01:00+00:00",
+      "observed_at": "2026-10-16T03:20:00.487781+00:00",
+      "input_fingerprint": "9420acf7b246057e5ef854916e71511669736bdd2810f505fb9d3e7172dac5e2",
+      "reason": "Target price is not yet effective"
+    }
+  ],
+  "live_validation": {
+    "observed_events": 1,
+    "pending_events": 1
+  },
+  "sources": [
+    {
+      "name": "Nova Scotia Energy and Regulatory Boards Tribunal",
+      "url": "https://nserbt.ca/nseb/mandates/gasoline-diesel-pricing/gasoline-diesel-prices-zone-map"
+    },
+    {
+      "name": "Kalibrate Halifax E10 daily wholesale prices",
+      "url": "https://charting.kalibrate.com/"
+    },
+    {
+      "name": "Natural Resources Canada daily Halifax wholesale prices",
+      "url": "https://www2.nrcan-rncan.gc.ca/eneene/sources/pripri/wholesale_bycity_e.cfm?productID=9&locationID=39&frequency=D"
+    }
+  ]
+}
