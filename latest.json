@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "checked_at": "2026-10-16T23:34:48.457013+00:00",
+  "checked_at": "2026-10-17T04:23:38.333063+00:00",
   "status": "ok",
   "error": null,
   "current": {
@@ -80,7 +80,7 @@
         "maximum": "190.7"
       }
     ],
-    "issued_at": "2026-10-16T18:02:49.244326+00:00",
+    "issued_at": "2026-10-17T04:23:37.398011+00:00",
     "model_version": "halifax-e10-rolling-v3",
     "observed_quotes": 1,
     "total_quotes": 5,
@@ -236,7 +236,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-16T03:01:00+00:00",
-      "observed_at": "2026-10-16T23:34:47.518039+00:00",
+      "observed_at": "2026-10-17T04:23:37.398011+00:00",
       "input_fingerprint": "1f293aba9d6fd421f5846e0a77924b3ddbdec777b88c855b0420e62f6eb25798",
       "zones": [
         {
@@ -335,7 +335,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-16T03:01:00+00:00",
-      "observed_at": "2026-10-16T23:34:47.518039+00:00",
+      "observed_at": "2026-10-17T04:23:37.398011+00:00",
       "input_fingerprint": "9b5af1ba8e125c6cb1b024602098e60254c329bcfdc712e36a75e479b3721ffc",
       "zones": [
         {
@@ -434,14 +434,14 @@
       ],
       "status": "pending",
       "effective_at": "2026-10-23T03:01:00+00:00",
-      "observed_at": "2026-10-16T23:34:47.518039+00:00",
+      "observed_at": "2026-10-17T04:23:37.398011+00:00",
       "input_fingerprint": "9420acf7b246057e5ef854916e71511669736bdd2810f505fb9d3e7172dac5e2",
       "reason": "Target price is not yet effective"
     },
     {
       "date": "2026-10-23",
-      "issued_at": "2026-10-16T18:02:49.244326+00:00",
-      "record_id": "2026-10-23/halifax-e10-rolling-v3-f0d16ab58199.json",
+      "issued_at": "2026-10-17T04:23:37.398011+00:00",
+      "record_id": "2026-10-23/halifax-e10-rolling-v3-9f7cca58f396.json",
       "model_version": "halifax-e10-rolling-v3",
       "predicted_zones": [
         {
@@ -477,8 +477,8 @@
       ],
       "status": "pending",
       "effective_at": "2026-10-23T03:01:00+00:00",
-      "observed_at": "2026-10-16T23:34:47.518039+00:00",
-      "input_fingerprint": "f0d16ab58199b4621e4998ea940353527fda09a1551b44e1b6592335b19e538e",
+      "observed_at": "2026-10-17T04:23:37.398011+00:00",
+      "input_fingerprint": "9f7cca58f3965d1f7837ae787dfef3bdbd679059157bc12decd891f9b696d389",
       "reason": "Target price is not yet effective"
     }
   ],
