@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "checked_at": "2026-10-17T13:43:14.827330+00:00",
+  "checked_at": "2026-10-17T17:09:43.845825+00:00",
   "status": "ok",
   "error": null,
   "current": {
@@ -236,7 +236,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-16T03:01:00+00:00",
-      "observed_at": "2026-10-17T13:43:13.614076+00:00",
+      "observed_at": "2026-10-17T17:09:43.184871+00:00",
       "input_fingerprint": "1f293aba9d6fd421f5846e0a77924b3ddbdec777b88c855b0420e62f6eb25798",
       "zones": [
         {
@@ -335,7 +335,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-16T03:01:00+00:00",
-      "observed_at": "2026-10-17T13:43:13.614076+00:00",
+      "observed_at": "2026-10-17T17:09:43.184871+00:00",
       "input_fingerprint": "9b5af1ba8e125c6cb1b024602098e60254c329bcfdc712e36a75e479b3721ffc",
       "zones": [
         {
@@ -434,7 +434,7 @@
       ],
       "status": "pending",
       "effective_at": "2026-10-23T03:01:00+00:00",
-      "observed_at": "2026-10-17T13:43:13.614076+00:00",
+      "observed_at": "2026-10-17T17:09:43.184871+00:00",
       "input_fingerprint": "9420acf7b246057e5ef854916e71511669736bdd2810f505fb9d3e7172dac5e2",
       "reason": "Target price is not yet effective"
     },
@@ -477,7 +477,7 @@
       ],
       "status": "pending",
       "effective_at": "2026-10-23T03:01:00+00:00",
-      "observed_at": "2026-10-17T13:43:13.614076+00:00",
+      "observed_at": "2026-10-17T17:09:43.184871+00:00",
       "input_fingerprint": "9f7cca58f3965d1f7837ae787dfef3bdbd679059157bc12decd891f9b696d389",
       "reason": "Target price is not yet effective"
     }
