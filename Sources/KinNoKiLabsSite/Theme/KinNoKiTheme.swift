@@ -498,6 +498,7 @@ private func siteFooter() -> Node<HTML.BodyContext> {
                     ("/posts", "Posts"),
                     ("/privacy", "Privacy"),
                     ("/nsmarksthespot-privacy/", "NS app privacy"),
+                    ("/echo-privacy/", "Echo app privacy"),
                 ])
             ),
             .div(

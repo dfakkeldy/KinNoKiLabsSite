@@ -37,13 +37,13 @@ Anki-style JSON decks import today. Real .apkg files — scheduling history incl
 Not while they're DRM-locked. Echo plays open formats only (MP3, M4A, M4B and friends) and does not bypass DRM. Tools like Libation or OpenAudible can export books you own to open formats — see the [manual's FAQ](/echo-manual) for details, including a note on checking the legality in your country.
 
 ### Does Echo track my location?
-Only if you opt in. Context Memory (🚧 coming in 1.0) is off by default, captures approximate neighborhood-level places only, stores them on your device, and has a one-tap Delete Location History button. Your session location history never syncs anywhere — Echo has no servers. See the [privacy policy](/privacy).
+Context Memory is optional and off by default. With permission, the device can provide a precise fix; Echo rounds coordinates before asking Apple's geocoder for a place name and stores the resulting context locally. Delete Context Memory removes the app's local context records, not providers' records or backups. See the [Echo Privacy Policy](/echo-privacy/).
 
 ### Will my flashcards and bookmarks sync between devices?
-Alignment anchors sync today; full study sync — flashcards, decks, bookmarks, playback position — ships with 1.0 through your personal iCloud (🚧). No accounts, no Echo servers.
+This release does not promise complete private synchronization of flashcards, decks, bookmarks or playback position. Files in an iCloud folder follow Apple's file services, and Watch features transfer selected state and voice memos with the paired iPhone. Importing a book may look up matching public alignment anchors when network access is permitted, with local fallback for an ordinary lookup failure. This release does not expose public-alignment uploads. See the [Echo Privacy Policy](/echo-privacy/).
 
 ### Does Echo work offline?
-Yes — playback, reading, alignment, flashcards, everything. The only network use is your own iCloud file syncing, plus Echo's public CloudKit database if you choose Share Alignment in Book Settings.
+Local playback, reading, narration and alignment can work with the required files and models already present. Model downloads, optional community-alignment lookup, website capture, external AI and Audiobookshelf use a network connection. External AI sends book text to the configured provider. This release does not expose public-alignment uploads. See the [Echo Privacy Policy](/echo-privacy/).
 
 ### Where is my data? Can I get it out?
 Your audio stays where you put it (Echo reads in place). Echo's own data lives in a local database on your device with an open-source schema. Bookmarks export to Markdown today; with 1.0, decks export to portable JSON and whole books export as Markdown study bundles for Obsidian, Logseq, or Notion (🚧). Your data is never hostage.
