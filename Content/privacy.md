@@ -2,10 +2,10 @@
 
 **Effective Date:** October 18, 2026
 
-KinNoKi Labs doesn't collect your data. This page spells out exactly what our apps do and don't do with it.
+This page describes KinNoKi Labs apps and this website. The native iPhone and iPad app NS Marks The Spot has its own [privacy policy](/nsmarksthespot-privacy/), which governs that app. The remaining app descriptions below do not describe the native NS Marks The Spot app.
 
 ## Data Collection
-Our applications (including Echo, MacroMark, NS Marks The Spot, Turn Timer, and Routey) do not collect or sell your personal data, and never send it to us — we have no servers. The only data that ever leaves your device goes to Apple's own services (iCloud sync, Echo's geocoding lookup, and Echo's optional public alignment sharing), all described below. We do not use third-party analytics trackers or advertising frameworks.
+Our applications (including Echo, MacroMark, Turn Timer, and Routey) do not collect or sell your personal data, and never send it to us — we have no servers. The only data that ever leaves your device goes to Apple's own services (iCloud sync, Echo's geocoding lookup, and Echo's optional public alignment sharing), all described below. We do not use third-party analytics trackers or advertising frameworks.
 
 ## iCloud Sync
 Some of our apps use Apple’s iCloud to sync your data across your personal devices. This data is stored securely in your private iCloud account. We do not have access to this data, nor can we view or manage it. All iCloud synchronization is handled exclusively by Apple's services according to their privacy policies.

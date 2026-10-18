@@ -297,7 +297,7 @@ private func navSection(for path: String) -> String {
     switch first {
     case "services", "gis", "tenders":
         return "/services"
-    case "apps", "support", "taxsale", "testflight":
+    case "apps", "support", "taxsale", "testflight", "nsmarksthespot-privacy":
         return "/apps"
     case _ where first.hasPrefix("echo-") || first.hasSuffix("-help"):
         return "/apps"
@@ -497,6 +497,7 @@ private func siteFooter() -> Node<HTML.BodyContext> {
                     ("/about", "About"),
                     ("/posts", "Posts"),
                     ("/privacy", "Privacy"),
+                    ("/nsmarksthespot-privacy/", "NS app privacy"),
                 ])
             ),
             .div(
