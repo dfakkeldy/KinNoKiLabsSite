@@ -1,11 +1,11 @@
 # Privacy Policy
 
-**Effective Date:** October 16, 2026
+**Effective Date:** October 18, 2026
 
 KinNoKi Labs doesn't collect your data. This page spells out exactly what our apps do and don't do with it.
 
 ## Data Collection
-Our applications (including Echo, MacroMark, NS Marks The Spot, Turn Timer, and Routey) do not collect or sell your personal data, and never send it to us — we have no servers. The only data that ever leaves your device goes to Apple's own services (iCloud sync, and Echo's geocoding lookup), both described below. We do not use third-party analytics trackers or advertising frameworks.
+Our applications (including Echo, MacroMark, NS Marks The Spot, Turn Timer, and Routey) do not collect or sell your personal data, and never send it to us — we have no servers. The only data that ever leaves your device goes to Apple's own services (iCloud sync, Echo's geocoding lookup, and Echo's optional public alignment sharing), all described below. We do not use third-party analytics trackers or advertising frameworks.
 
 ## iCloud Sync
 Some of our apps use Apple’s iCloud to sync your data across your personal devices. This data is stored securely in your private iCloud account. We do not have access to this data, nor can we view or manage it. All iCloud synchronization is handled exclusively by Apple's services according to their privacy policies.
@@ -18,6 +18,9 @@ Echo includes an **opt-in** feature called Context Memory that can tag your list
 - **Stored on your device.** Your session location history is never synced or transmitted anywhere — not even to your own iCloud. Place names attached to bookmarks sync with those bookmarks through your personal iCloud only while the feature is enabled.
 - **Deletable in one tap.** "Delete Location History" in Echo's settings permanently erases every captured place.
 - **One honest footnote:** converting coordinates into a readable name (e.g., "Maple Ridge, Halifax") uses Apple's standard geocoding service, governed by Apple's privacy policy. Echo caches results locally to keep such lookups rare. We never see them — we have no servers to see them with.
+
+## Shared alignments (Echo, optional)
+Echo's Book Settings include an optional, user-initiated Share Alignment action. Confirming it puts that book's title, author, duration and alignment markers in Echo's public CloudKit database, along with a persistent identifier derived from your iCloud account. Other Echo users can use these alignments. The upload excludes audio, full book text and notes. Echo has no in-app control to delete a shared alignment. This uses Apple's CloudKit — Echo runs no servers.
 
 ## On-Device Statistics
 Echo's Insights feature (listening time, streaks, review statistics) is computed entirely on your device, from your own local history, for your eyes only. It is not analytics — no one but you can see it.

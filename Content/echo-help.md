@@ -43,7 +43,7 @@ Only if you opt in. Context Memory (🚧 coming in 1.0) is off by default, captu
 Alignment anchors sync today; full study sync — flashcards, decks, bookmarks, playback position — ships with 1.0 through your personal iCloud (🚧). No accounts, no Echo servers.
 
 ### Does Echo work offline?
-Yes — playback, reading, alignment, flashcards, everything. The only network use is your own iCloud file syncing.
+Yes — playback, reading, alignment, flashcards, everything. The only network use is your own iCloud file syncing, plus Echo's public CloudKit database if you choose Share Alignment in Book Settings.
 
 ### Where is my data? Can I get it out?
 Your audio stays where you put it (Echo reads in place). Echo's own data lives in a local database on your device with an open-source schema. Bookmarks export to Markdown today; with 1.0, decks export to portable JSON and whole books export as Markdown study bundles for Obsidian, Logseq, or Notion (🚧). Your data is never hostage.

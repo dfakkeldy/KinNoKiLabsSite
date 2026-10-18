@@ -388,9 +388,10 @@ Mac 1.0 is the *functional core* — play, read, review, see your stats. Full re
 
 ## 22. Sync & iCloud
 
-Echo has no servers and no accounts — sync rides on *your* iCloud, end to end.
+Echo has no servers and no accounts — device sync rides on *your* iCloud, end to end.
 
-- **Today:** your audio files sync wherever you keep them (e.g., iCloud Drive), and alignment anchors sync through iCloud so a book aligned once stays aligned.
+- **Today:** your audio files sync wherever you keep them (e.g., iCloud Drive), and alignment anchors sync through your personal iCloud so a book aligned once stays aligned on your devices.
+- **Optional Share Alignment:** a user-initiated Book Settings action. Confirming it puts that book's title, author, duration and alignment markers in Echo's public CloudKit database, along with a persistent identifier derived from your iCloud account. Other Echo users can use these alignments. The upload excludes audio, full book text and notes. Echo has no in-app control to delete a shared alignment. See the [privacy policy](/privacy).
 - **Study sync** (🚧 **Coming in 1.0**): flashcards, decks, bookmarks, and playback position sync across iPhone, Mac, and Watch through your personal iCloud (private database). Edit a card on the Mac, review it on the phone, resume the book on either.
 - **Sensible conflicts:** scheduling follows your most recent review; content follows your most recent edit.
 - **What never syncs:** your session location history (section 15), and anything you haven't opted into.
@@ -427,6 +428,7 @@ Optional — the iOS app's built-in alignment needs none of this.
 - **No accounts. No analytics. No tracking. No ads. No servers.**
 - Your books, bookmarks, photos, voice memos, notes, flashcards, and listening history stay on your devices (and your personal iCloud, where you enable sync).
 - Speech recognition for alignment runs **entirely on-device**. Audio never leaves your hardware.
+- **Share Alignment** is optional and user-initiated in Book Settings. Confirming it puts that book's title, author, duration and alignment markers in Echo's public CloudKit database, along with a persistent identifier derived from your iCloud account. Other Echo users can use these alignments. The upload excludes audio, full book text and notes. Echo has no in-app control to delete a shared alignment. See the [privacy policy](/privacy).
 - Location (Context Memory, 🚧) is **opt-in, approximate, and deletable** — and session location history never leaves the device. See the [privacy policy](/privacy).
 - The app is **open source (GPL-3.0)**: [github.com/dfakkeldy/Echo](https://github.com/dfakkeldy/Echo).
 
@@ -442,7 +444,7 @@ One parent "Audiobooks" folder; one folder per book; the EPUB or PDF in the same
 Not while they're DRM-locked — Echo plays open formats only and does not bypass DRM. If you want to listen to audiobooks **you've purchased** in Echo, tools exist that export your own library to open formats: [Libation](https://getlibation.com) (free, open source, for Audible libraries) and [OpenAudible](https://openaudible.org) (paid) are the well-known ones. Libation's M4B exports work beautifully with Echo — chapters, art, and all. One honest caveat: the legality of removing DRM from media you own varies by country, even for personal use — check the rules where you live. Echo has no affiliation with these tools, and the best long-term fix is buying DRM-free where possible (Libro.fm and Downpour offer DRM-free titles; LibriVox is free and public-domain).
 
 **Does Echo work fully offline?**
-Yes — playback, reading, alignment, flashcards, notes, insights: everything. The only network use is your own iCloud file syncing (and, if you enable Context Memory, Apple's place-name lookup).
+Yes — playback, reading, alignment, flashcards, notes, insights: everything. The only network use is your own iCloud file syncing, Apple's place-name lookup if you enable Context Memory, and Echo's public CloudKit database if you choose Share Alignment.
 
 **The reader text doesn't match the narration.**
 Different editions drift. Run **Auto-Align Chapters**; for stubborn spots, long-press the paragraph you're *hearing* → **Align to Now**. Two or three manual anchors usually tame even a messy book.
@@ -472,7 +474,7 @@ Raise the watch and give it a beat — it requests authoritative state from the 
 Only if you turn it on — and even then: approximate places, a few capture moments, stored on your device, deletable in one tap, session history never synced. Echo has no servers to send it to. See section 15 and the [privacy policy](/privacy).
 
 **Does Echo use AI? Does anything leave my device?**
-On-device machine learning (WhisperKit) for alignment — no cloud APIs, no uploads, ever. No chatbots, no generative features today; if AI-assisted card drafting arrives post-1.0, it will run on-device under the same rules (🔭).
+On-device machine learning (WhisperKit) for alignment — no cloud speech APIs, and audio never leaves your hardware. Share Alignment is a separate, optional upload of title, author, duration, alignment markers, and an iCloud-derived identifier; it does not upload audio, full book text, or notes. No chatbots, no generative features today; if AI-assisted card drafting arrives post-1.0, it will run on-device under the same rules (🔭).
 
 **What's coming after 1.0?**
 The honest shortlist: Chapter Study Mode, on-device AI card drafting, focus soundscapes, gentle hyperfocus/transition reminders, a Context Memory map view, FSRS as an alternative scheduler, .apkg export, richer CarPlay, full Mac reader parity. The [roadmap](https://github.com/dfakkeldy/Echo/blob/main/ROADMAP.md) is public, like everything else.
