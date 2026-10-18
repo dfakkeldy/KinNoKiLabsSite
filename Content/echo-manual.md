@@ -225,7 +225,7 @@ Pick a `.apkg` file from the deck list's import button and Echo maps it card-by-
 - **SM-2 scheduling** (the same family Anki uses): grade a card **Again / Hard / Good / Easy** and its next appearance is computed from your history.
 - Cards with audio play their snippet — review with your ears.
 - Due count, reviewed-today, and totals show on the Timeline review module; the full picture lives in Insights (section 14, 🚧).
-- An optional **daily local notification** reminds you when cards are due. (Local = generated on your device; Echo has no servers.)
+- An optional **daily local notification** reminds you when cards are due. (Local = generated on your device, not pushed from a server.)
 
 ### Review on Apple Watch
 
