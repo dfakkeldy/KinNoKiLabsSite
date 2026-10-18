@@ -30,6 +30,7 @@ jobs:
         with:
           node-version: 22
       - name: Generate the site
+        id: generate
         run: make generate PUBLISH_BIN="swift run KinNoKiLabsSite"
       - name: Test the site
         run: make test
@@ -42,3 +43,21 @@ jobs:
             echo "$untracked_output"
             exit 1
           fi
+      - name: Preserve generated output diff for review
+        id: output-diff
+        if: ${{ always() && steps.generate.outcome == 'success' }}
+        run: |
+          temp_index_dir="$(mktemp -d "$RUNNER_TEMP/site-output-index.XXXXXX")"
+          trap 'rm -rf "$temp_index_dir"' EXIT
+          export GIT_INDEX_FILE="$temp_index_dir/index"
+          git read-tree HEAD
+          git add -A -- Output
+          git diff --cached --binary --full-index -- Output > "$RUNNER_TEMP/generated-output-${EXPECTED_HEAD}.patch"
+      - name: Retain only the generated output patch
+        if: ${{ always() && steps.output-diff.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: generated-output-${{ env.EXPECTED_HEAD }}
+          path: ${{ runner.temp }}/generated-output-${{ env.EXPECTED_HEAD }}.patch
+          if-no-files-found: error
+          retention-days: 1

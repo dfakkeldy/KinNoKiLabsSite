@@ -83,7 +83,7 @@ iCloud Drive/
 ### What lives where
 
 - **Audio, EPUB, PDF files:** your folder, wherever you put it. Echo reads in place and never modifies your files.
-- **Bookmarks, flashcards, notes, alignment, progress:** Echo's local database on the device (synced via your personal iCloud — section 22).
+- **Bookmarks, flashcards, notes, alignment, progress:** Echo's local database on the device. Complete private synchronization is not promised in this release; see section 22 for file providers, selected Watch transfers and optional public lookup.
 - **Playlist order edits:** Echo's database *plus* a small portable manifest file in the book's folder, so ordering travels with the folder.
 - **Voice memos & bookmark photos:** Echo's app storage on the device.
 
@@ -296,7 +296,7 @@ Import like an EPUB — the Import button accepts both and routes automatically.
 
 ## 14. Insights 🚧 Coming in 1.0
 
-Echo's honest mirror: everything it shows is computed on your device from your own listening and review history. No server ever sees a number. Open it from the dashboard modules or the Timeline toolbar.
+Echo's Insights charts are computed on your device from local listening and review history. Optional Audiobookshelf progress exchange is separate and sends progress to the server you connect. Open Insights from the dashboard modules or the Timeline toolbar.
 
 - **Overview:** range picker (day / week / month / year / all-time), total listening time, current streak, daily average.
 - **Listening:** time per day or week, speed trend, share per book, a time-of-day histogram (find your golden hours), session lengths.
@@ -311,11 +311,11 @@ The dashboard gets live teaser modules — real listened-today, streak, upcoming
 
 Your brain files *where* alongside *what* — Echo can capture the "where" for you. Off by default; opt in via **Settings → Privacy & Location → Context Memory**.
 
-- **Approximate places only:** reduced-accuracy location, neighborhood level — never your doorstep. Stored as a coarse place name like "Maple Ridge, Halifax".
+- **Location and place names:** with permission, the device may supply a precise fix. Echo rounds coordinates to two decimal places before asking Apple's geocoder for a place name and stores the rounded context locally.
 - **Three capture points:** session start, bookmark creation, chapter start. Powers bookmark place chips, "Chapter 3 started at Oak Street" in per-book Insights, and the Places list.
 - **Never blocking:** capture is fire-and-forget with a timeout — bookmarks save instantly even in airplane mode, just without a place.
-- **Deletable in one tap:** *Delete Location History* permanently erases every captured place.
-- **Sync policy:** bookmark places travel with bookmarks through your personal iCloud while the feature is on; your session location history **never** leaves the device. Details in the [privacy policy](/privacy).
+- **Local deletion:** Delete Context Memory removes local context records and cached place data. It does not erase providers' records or device backups.
+- **Storage and transfers:** context is stored locally. User-chosen exports, backups and optional services have their own handling; full private study synchronization is not promised. See the [Echo Privacy Policy](/echo-privacy/).
 
 ## 16. Exports & Your Data
 
@@ -388,14 +388,11 @@ Mac 1.0 is the *functional core* — play, read, review, see your stats. Full re
 
 ## 22. Sync & iCloud
 
-Echo has no servers and no accounts — device sync rides on *your* iCloud, end to end.
+Core owned-file playback and reading do not require an Echo account. Files in an iCloud folder follow Apple's file services. This release does not promise complete private synchronization of flashcards, decks, bookmarks or playback position. Watch features transfer selected state and voice memos with the paired iPhone.
 
-- **Today:** your audio files sync wherever you keep them (e.g., iCloud Drive), and alignment anchors sync through your personal iCloud so a book aligned once stays aligned on your devices.
-- **Optional Share Alignment:** a user-initiated Book Settings action. Confirming it puts that book's title, author, duration and alignment markers in Echo's public CloudKit database, along with a persistent identifier derived from your iCloud account. Other Echo users can use these alignments. The upload excludes audio, full book text and notes. Echo has no in-app control to delete a shared alignment. See the [privacy policy](/privacy).
-- **Study sync** (🚧 **Coming in 1.0**): flashcards, decks, bookmarks, and playback position sync across iPhone, Mac, and Watch through your personal iCloud (private database). Edit a card on the Mac, review it on the phone, resume the book on either.
-- **Sensible conflicts:** scheduling follows your most recent review; content follows your most recent edit.
-- **What never syncs:** your session location history (section 15), and anything you haven't opted into.
-- Voice memos, brain-dump notes, and planned sessions stay device-local in 1.0; their sync is on the roadmap.
+When network access is permitted, importing a book may look up matching public alignment anchors, with local fallback for an ordinary lookup failure. The lookup uses a deterministic record identifier derived from the book's title, author and duration; it does not publish local anchors, audio, full book text or notes. No matching record or successful request is guaranteed.
+
+This 1.0 release does not expose public-alignment uploads. Earlier builds offered an upload of title, author, duration and alignment markers with a persistent identifier derived from the uploader's iCloud account. That payload excluded audio, full book text and notes. If an alignment was shared using another build, deleting local content or signing out does not itself delete public copies. Echo's client sets no automatic expiry and has no in-app deletion control for past shared alignments; copies obtained by others have separate handling. See the [Echo Privacy Policy](/echo-privacy/).
 
 ## 23. Settings Reference
 
@@ -425,11 +422,11 @@ Optional — the iOS app's built-in alignment needs none of this.
 
 ## 25. Privacy
 
-- **No accounts. No analytics. No tracking. No ads. No servers.**
-- Your books, bookmarks, photos, voice memos, notes, flashcards, and listening history stay on your devices (and your personal iCloud, where you enable sync).
-- Speech recognition for alignment runs **entirely on-device**. Audio never leaves your hardware.
-- **Share Alignment** is optional and user-initiated in Book Settings. Confirming it puts that book's title, author, duration and alignment markers in Echo's public CloudKit database, along with a persistent identifier derived from your iCloud account. Other Echo users can use these alignments. The upload excludes audio, full book text and notes. Echo has no in-app control to delete a shared alignment. See the [privacy policy](/privacy).
-- Location (Context Memory, 🚧) is **opt-in, approximate, and deletable** — and session location history never leaves the device. See the [privacy policy](/privacy).
+- Core owned-file playback and reading do not require an Echo account. Local narration and alignment can run on-device with their required files and models present.
+- External AI is optional and sends book text to the configured provider under that provider's retention and training policies. Audiobookshelf uses the server and account you connect, including listening-progress exchange. Model downloads, public alignment lookup and website capture also use a network connection.
+- This release does not expose public-alignment uploads. Optional lookup and the limits for past uploads are described in section 22 and the [Echo Privacy Policy](/echo-privacy/).
+- Context Memory is optional and off by default. The device may supply a precise fix; coordinates are rounded before Apple's geocoding request. Local deletion does not erase providers' records or backups.
+- Local media, selected Watch transfers, user-chosen exports and backups have separate handling. Support emails are retained indefinitely, and there is no support-email deletion system. See the [Echo Privacy Policy](/echo-privacy/) for these choices and limits.
 - The app is **open source (GPL-3.0)**: [github.com/dfakkeldy/Echo](https://github.com/dfakkeldy/Echo).
 
 ## 26. Troubleshooting & FAQ
@@ -444,7 +441,7 @@ One parent "Audiobooks" folder; one folder per book; the EPUB or PDF in the same
 Not while they're DRM-locked — Echo plays open formats only and does not bypass DRM. If you want to listen to audiobooks **you've purchased** in Echo, tools exist that export your own library to open formats: [Libation](https://getlibation.com) (free, open source, for Audible libraries) and [OpenAudible](https://openaudible.org) (paid) are the well-known ones. Libation's M4B exports work beautifully with Echo — chapters, art, and all. One honest caveat: the legality of removing DRM from media you own varies by country, even for personal use — check the rules where you live. Echo has no affiliation with these tools, and the best long-term fix is buying DRM-free where possible (Libro.fm and Downpour offer DRM-free titles; LibriVox is free and public-domain).
 
 **Does Echo work fully offline?**
-Yes — playback, reading, alignment, flashcards, notes, insights: everything. The only network use is your own iCloud file syncing, Apple's place-name lookup if you enable Context Memory, and Echo's public CloudKit database if you choose Share Alignment.
+Local playback, reading, narration and alignment can work with the required files and models already present. Model downloads, optional community-alignment lookup, website capture, external AI and Audiobookshelf use a network connection. External AI sends book text to the configured provider. This release does not expose public-alignment uploads. See the [Echo Privacy Policy](/echo-privacy/).
 
 **The reader text doesn't match the narration.**
 Different editions drift. Run **Auto-Align Chapters**; for stubborn spots, long-press the paragraph you're *hearing* → **Align to Now**. Two or three manual anchors usually tame even a messy book.
@@ -471,10 +468,10 @@ Alignment anchors sync today; full study sync — cards, decks, bookmarks, playb
 Raise the watch and give it a beat — it requests authoritative state from the phone on wake. Both devices on, nearby, helps.
 
 **Is the location feature tracking me?**
-Only if you turn it on — and even then: approximate places, a few capture moments, stored on your device, deletable in one tap, session history never synced. Echo has no servers to send it to. See section 15 and the [privacy policy](/privacy).
+Context Memory is optional and off by default. With permission, the device can provide a precise fix; Echo rounds coordinates before asking Apple's geocoder for a place name and stores the resulting context locally. Delete Context Memory removes the app's local context records, not providers' records or backups. See section 15 and the [Echo Privacy Policy](/echo-privacy/).
 
 **Does Echo use AI? Does anything leave my device?**
-On-device machine learning (WhisperKit) for alignment — no cloud speech APIs, and audio never leaves your hardware. Share Alignment is a separate, optional upload of title, author, duration, alignment markers, and an iCloud-derived identifier; it does not upload audio, full book text, or notes. No chatbots, no generative features today; if AI-assisted card drafting arrives post-1.0, it will run on-device under the same rules (🔭).
+Local narration and alignment use on-device models. Optional external-AI features send book text to the provider you configure, under that provider's policies. They are separate from local processing and do not make the same retention promise. This 1.0 release does not expose public-alignment uploads; conditional lookup with local fallback remains. See the [Echo Privacy Policy](/echo-privacy/).
 
 **What's coming after 1.0?**
 The honest shortlist: Chapter Study Mode, on-device AI card drafting, focus soundscapes, gentle hyperfocus/transition reminders, a Context Memory map view, FSRS as an alternative scheduler, .apkg export, richer CarPlay, full Mac reader parity. The [roadmap](https://github.com/dfakkeldy/Echo/blob/main/ROADMAP.md) is public, like everything else.
