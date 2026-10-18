@@ -22,7 +22,7 @@ So I built it, nights and weekends around a full delivery route, with no formal 
 
 **You don't have to make a single flashcard.** Echo is a full-featured, own-your-library audiobook player first — the study tools are there if you ever want them, and out of the way if you don't.
 
-- **Your books, your device:** Import your DRM-free M4B and MP3 files — single books or whole folders. Everything lives on your device and your personal iCloud. No servers, no analytics, no tracking.
+- **Your books, your device:** Import your DRM-free M4B and MP3 files — single books or whole folders. Your library lives on your device and your personal iCloud. Share Alignment in Book Settings is optional; it puts that book's title, author, duration and alignment markers in Echo's public CloudKit database. No servers, no analytics, no tracking.
 - **Everywhere Apple audio goes:** Full CarPlay Now Playing with a browseable library, a Watch remote you design, a Lock Screen widget, Control Center, and Siri bookmarks.
 - **The essentials, done right:** A sleep timer that fades out or stops at the chapter end, pitch-corrected speed, instant chapter navigation, bookmarks, and background audio tuned for spoken word.
 - **Picks up where your attention left off:** Adaptive Smart Rewind backs up just enough after a break; pull your headphones and Echo pauses instead of blasting the speaker.
