@@ -116,9 +116,9 @@ Honest list — these are known, so you don't need to report them (though opinio
 
 ## 5. Privacy during the beta
 
-Echo's promise is unchanged in beta: **no analytics, no tracking, no servers, alignment fully on-device.**
+Core import, local playback, reading and voice synthesis run on-device without an Echo account. Audiobookshelf (your own server), external AI providers you configure, model downloads, public alignment lookup and files you choose in iCloud use network services. When network access is permitted, importing a book may look up matching public alignment anchors, with local fallback for an ordinary lookup failure. This 1.0 release does not expose public-alignment uploads. These connections are optional. See the [Echo Privacy Policy](/echo-privacy/).
 
-One thing TestFlight itself adds: Apple's beta system shares **crash reports** and **the feedback you choose to send** with the developer, along with device/OS/build info. That's TestFlight's standard mechanism (it's how your reports reach me), not telemetry inside Echo. The full policy is on the [privacy page](/privacy).
+One thing TestFlight itself adds: Apple's beta system shares **crash reports** and **the feedback you choose to send** with the developer, along with device/OS/build info. That's TestFlight's standard mechanism (it's how your reports reach me), not telemetry inside Echo. The full policy is on the [Echo privacy page](/echo-privacy/).
 
 *Thank you for testing. Every report makes the player better for the next interrupted listener.* — Dan
 
