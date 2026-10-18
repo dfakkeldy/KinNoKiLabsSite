@@ -20,8 +20,8 @@ const alignmentFacts = [
   /do not state a fixed retention period for past public alignments or guarantee removal of copies obtained by other users/,
 ];
 
-// These cases cover the approved privacy/help changes. The manual and marketing
-// copy require a separate correction; passing these tests does not clear them.
+// These cases cover the approved privacy/help text and the matching manual and
+// app privacy paragraph. They do not certify unrelated feature or marketing copy.
 test('dedicated Echo privacy covers lookup, deferred uploads and historical public copies', () => {
   for (const [label, source] of [
     ['Content/privacy.md', read('Content/privacy.md')],
@@ -65,5 +65,45 @@ test('Echo help explains optional network routes without promising complete priv
     }
     assert.doesNotMatch(source, /public CloudKit database if you choose Share Alignment/);
     assert.doesNotMatch(source, /only network.*iCloud.*Share Alignment/is);
+  }
+});
+
+test('Echo manual and app privacy copy match the approved connected-service limits', () => {
+  for (const [label, source] of [
+    ['Content/echo-manual.md', read('Content/echo-manual.md')],
+    ['Output/echo-manual/index.html', read('Output/echo-manual/index.html')],
+  ]) {
+    for (const fact of [
+      /This 1\.0 release does not expose public-alignment uploads/,
+      /Earlier builds offered an upload of title, author, duration and alignment markers/,
+      /persistent identifier derived from the uploader/,
+      /deleting local content or signing out does not itself delete public copies/,
+      /client sets no automatic expiry and has no in-app deletion control for past shared alignments/,
+      /copies obtained by others have separate handling/,
+      /deterministic record identifier derived from the book/,
+      /does not publish local anchors, audio, full book text or notes/,
+      /local fallback for an ordinary lookup failure/,
+      /does not promise complete private synchronization/,
+      /device may supply a precise fix/,
+      /rounds coordinates to two decimal places before asking Apple/,
+      /does not erase providers(?:'|’|&#39;|&apos;|&#x27;) records or device backups/,
+      /Optional external-AI features send book text to the provider you configure/,
+      /Support emails are retained indefinitely, and there is no support-email deletion system/,
+      /\/echo-privacy\//,
+    ]) {
+      assert.match(source, fact, `${label} must include ${fact}`);
+    }
+    assert.doesNotMatch(source, /Optional Share Alignment|Confirming it puts|No server ever sees a number|Approximate places only|permanently erases every captured place|No chatbots, no generative features today|The only network use is/);
+  }
+  for (const [label, source] of [
+    ['Sources/KinNoKiLabsSite/Theme/KinNoKiTheme.swift', read('Sources/KinNoKiLabsSite/Theme/KinNoKiTheme.swift')],
+    ['Output/apps/echo/index.html', read('Output/apps/echo/index.html')],
+  ]) {
+    const privacyCard = source.match(/<h3>Radically private<\/h3><p>(.*?)<\/p>/s)?.[1];
+    assert.ok(privacyCard, `${label} must retain the Echo privacy paragraph`);
+    assert.match(privacyCard, /Core playback and reading need no Echo account/, `${label} must scope the account statement`);
+    assert.match(privacyCard, /Optional connected services have separate data handling/, `${label} must disclose connected services`);
+    assert.match(privacyCard, /\/echo-privacy\//, `${label} must link the dedicated policy`);
+    assert.doesNotMatch(privacyCard, /No accounts, no analytics, no tracking, no servers\./);
   }
 });

@@ -1777,7 +1777,7 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
 
       <section class="reveal echo-section echo-section-tight">
         <div class="principles-grid">
-          <div class="principle-card"><h3>Radically private</h3><p>No accounts, no analytics, no tracking, no servers.</p></div>
+          <div class="principle-card"><h3>Radically private</h3><p>Core playback and reading need no Echo account. Optional connected services have separate data handling. <a href="/echo-privacy/">Read the Echo privacy policy.</a></p></div>
           <div class="principle-card"><h3>Open source</h3><p>GPL-3.0, public on GitHub — the whole app.</p></div>
           <div class="principle-card"><h3>No locked files</h3><p>Built around DRM-free files you own and can see.</p></div>
           <div class="principle-card"><h3>For Every Mind</h3><p>Designed for interrupted, neurodivergent attention first.</p></div>
