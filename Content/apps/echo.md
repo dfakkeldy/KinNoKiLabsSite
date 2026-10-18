@@ -22,7 +22,7 @@ So I built it, nights and weekends around a full delivery route, with no formal 
 
 **You don't have to make a single flashcard.** Echo is a full-featured, own-your-library audiobook player first — the study tools are there if you ever want them, and out of the way if you don't.
 
-- **Your books, your device:** Import your DRM-free M4B and MP3 files — single books or whole folders. Your library lives on your device and your personal iCloud. Share Alignment in Book Settings is optional; it puts that book's title, author, duration and alignment markers in Echo's public CloudKit database. No servers, no analytics, no tracking.
+- **Your books, your device:** Import your DRM-free M4B and MP3 files — single books or whole folders. Echo stores its library records and progress on your device. This 1.0 release does not expose public-alignment uploads. When network access is permitted, importing a book may look up matching public alignment anchors, with local fallback for an ordinary lookup failure. See the [Echo Privacy Policy](/echo-privacy/).
 - **Everywhere Apple audio goes:** Full CarPlay Now Playing with a browseable library, a Watch remote you design, a Lock Screen widget, Control Center, and Siri bookmarks.
 - **The essentials, done right:** A sleep timer that fades out or stops at the chapter end, pitch-corrected speed, instant chapter navigation, bookmarks, and background audio tuned for spoken word.
 - **Picks up where your attention left off:** Adaptive Smart Rewind backs up just enough after a break; pull your headphones and Echo pauses instead of blasting the speaker.
@@ -50,13 +50,13 @@ A growing crowd of apps will sync your audiobook to your ebook, on your device. 
 - **Mark Now, Card Later:** One tap (phone or watch) marks a passage without stopping the narration; the Card Inbox turns marks into flashcards when you have the bandwidth — not mid-sentence.
 - **Decks, Tags & Anki Import** 🚧 **Coming in 1.0:** Organize cards into decks, edit any card, review per deck — and import real .apkg Anki decks, scheduling history included.
 - **Brain Dump** 🚧 **Coming in 1.0:** A thought hits mid-chapter? Park it — text or voice, even dictated from the watch — without pausing the book. Promote keepers to bookmarks or flashcards later.
-- **Context Memory** 🚧 **Coming in 1.0:** Opt in and Echo quietly notes *where* you were — on bookmarks, sessions, and chapter starts. Approximate, on-device, deletable.
+- **Context Memory** 🚧 **Coming in 1.0:** Opt in to capture place context with bookmarks, sessions and chapter starts. With permission, the device may supply a precise fix; Echo rounds coordinates before asking Apple's geocoder for a place name and stores the rounded context locally. Local deletion does not erase providers' records or device backups. See the [Echo Privacy Policy](/echo-privacy/).
 - **Insights That Are Real:** Listening time, streaks, chapter coverage ("Ch 7 — 86%, heard 3×"), retention curves, review forecasts — honest numbers from your actual listening, never from a server.
 - **Synced EPUB Reader:** The text scrolls with the narration, tap a paragraph to jump the audio, search the book and leap to the spoken moment.
 - **PDF Companions:** Diagrams and page-level material can sit beside the audio, so visual context appears when the narration needs it.
 - **On-Device Auto-Alignment:** Echo's speech recognition (WhisperKit + CoreML) aligns text to audio in tiers — chapter snap, drift detection, word-level repair. Entirely on your device.
 - **Second-Brain Export:** One tap exports a book's bookmarks, notes, voice memos, photos, and flashcards as a clean Markdown bundle — straight into Obsidian, Logseq, or Notion. No account, no lock-in.
-- **Study Sync via iCloud** 🚧 **Coming in 1.0:** Flashcards, decks, bookmarks, and playback position follow you between iPhone, Mac, and Watch through your personal iCloud — Echo runs no servers.
+- **Files, iCloud and Watch:** Files in an iCloud folder follow Apple's file services. Watch features transfer selected state and voice memos with the paired iPhone. This release does not promise complete private synchronization of flashcards, decks, bookmarks or playback position. See the [Echo Privacy Policy](/echo-privacy/).
 - **A Watch Remote You Design:** Up to 25 buttons across 5 pages, Digital Crown scrubbing or volume, plus a Pomodoro focus timer on your wrist.
 - **Built for CarPlay:** A full Now Playing screen plus a browseable Library, Chapters, and Bookmarks — with in-dash buttons to bookmark, record a memo, or mark a passage on the road.
 - **Focus Soundscapes & Visualizer:** Layer generative white/brown noise, binaural beats, and nature sounds under your narration — and watch four GPU-powered audio visualizers respond as you listen.
@@ -67,7 +67,7 @@ A growing crowd of apps will sync your audiobook to your ebook, on your device. 
 
 ## One library, four screens
 
-- **Radically private:** No accounts, no analytics, no tracking, no servers.
+- **Radically private:** Core playback and reading need no Echo account. Optional connected services have separate data handling. External AI sends book text to the provider you configure, under that provider's retention and training policies. [Read the Echo privacy policy](/echo-privacy/).
 - **Open source:** Echo is open source under the GPL-3.0 license.
 - **No locked files:** Echo is built around DRM-free files you own and can see.
 - **For Every Mind:** Designed for interrupted, neurodivergent attention first — and useful for everyone whose listening gets interrupted.

@@ -21,7 +21,8 @@ const alignmentFacts = [
 ];
 
 // These cases cover the approved privacy/help text and the matching manual and
-// app privacy paragraph. They do not certify unrelated feature or marketing copy.
+// app privacy paragraph, including the app Markdown rendered in RSS. They do not
+// certify unrelated feature or marketing copy.
 test('dedicated Echo privacy covers lookup, deferred uploads and historical public copies', () => {
   for (const [label, source] of [
     ['Content/privacy.md', read('Content/privacy.md')],
@@ -39,6 +40,39 @@ test('dedicated Echo privacy covers lookup, deferred uploads and historical publ
     for (const fact of alignmentFacts) {
       assert.match(source, fact, `${label} must include ${fact}`);
     }
+  }
+});
+
+test('Echo source and its RSS item preserve the approved privacy and availability limits', async t => {
+  const items = read('Output/feed.rss').match(/<item>.*?<\/item>/gs) ?? [];
+  const echoItems = items.filter(item => /<link>https:\/\/kinnokilabs\.com\/apps\/echo\/?<\/link>/.test(item));
+  assert.equal(echoItems.length, 1, 'the feed must contain exactly one Echo app item');
+  const encoded = echoItems[0].match(/<content:encoded>(.*?)<\/content:encoded>/s)?.[1];
+  assert.ok(encoded, 'the Echo item must include its rendered Markdown body');
+  const rendered = encoded.replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&amp;/g, '&');
+  for (const [label, source] of [
+    ['Content/apps/echo.md', read('Content/apps/echo.md')],
+    ['Output/feed.rss Echo item', rendered],
+  ]) {
+    await t.test(label, () => {
+      for (const fact of [
+        /This 1\.0 release does not expose public-alignment uploads/,
+        /look up matching public alignment anchors/,
+        /local fallback for an ordinary lookup failure/,
+        /device may supply a precise fix/,
+        /rounds coordinates before asking Apple/,
+        /Local deletion does not erase providers(?:'|’|&#39;|&apos;|&#x27;) records or device backups/,
+        /does not promise complete private synchronization/,
+        /Core playback and reading need no Echo account/,
+        /External AI sends book text to the provider you configure/,
+        /provider(?:'|’|&#39;|&apos;|&#x27;)s retention and training policies/,
+        /\/echo-privacy\//,
+      ]) {
+        assert.match(source, fact, `${label} must include ${fact}`);
+      }
+      assert.doesNotMatch(source, /Share Alignment in Book Settings is optional|No accounts, no analytics, no tracking, no servers\.|Approximate, on-device, deletable\./);
+    });
   }
 });
 
