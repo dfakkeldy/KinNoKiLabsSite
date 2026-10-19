@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "checked_at": "2026-10-19T13:18:09.690326+00:00",
+  "checked_at": "2026-10-19T19:55:36.389253+00:00",
   "status": "ok",
   "error": null,
   "current": {
@@ -51,42 +51,42 @@
     "zones": [
       {
         "zone": 1,
-        "minimum": "185.8",
-        "maximum": "188.8"
+        "minimum": "187.1",
+        "maximum": "190.1"
       },
       {
         "zone": 2,
-        "minimum": "186.4",
-        "maximum": "189.4"
+        "minimum": "187.7",
+        "maximum": "190.6"
       },
       {
         "zone": 3,
-        "minimum": "186.9",
-        "maximum": "189.8"
+        "minimum": "188.1",
+        "maximum": "191.1"
       },
       {
         "zone": 4,
-        "minimum": "187.0",
-        "maximum": "189.9"
+        "minimum": "188.2",
+        "maximum": "191.2"
       },
       {
         "zone": 5,
-        "minimum": "187.0",
-        "maximum": "189.9"
+        "minimum": "188.2",
+        "maximum": "191.2"
       },
       {
         "zone": 6,
-        "minimum": "187.8",
-        "maximum": "190.7"
+        "minimum": "189.0",
+        "maximum": "192.0"
       }
     ],
-    "issued_at": "2026-10-19T06:14:55.556409+00:00",
+    "issued_at": "2026-10-19T19:55:35.893101+00:00",
     "model_version": "halifax-e10-rolling-v3",
-    "observed_quotes": 1,
+    "observed_quotes": 2,
     "total_quotes": 5,
-    "projected_quotes": 4,
-    "latest_quote_date": "2026-10-16",
-    "error_reference": "5.9",
+    "projected_quotes": 3,
+    "latest_quote_date": "2026-10-19",
+    "error_reference": "6.5",
     "outside_training_features": [],
     "assumptions": [
       "Each unobserved weekday holds the latest real posted quote. Projected rows are explicitly marked.",
@@ -99,13 +99,17 @@
   "watch": {
     "status": "below_reference",
     "anchor_date": "2026-10-16",
-    "latest_gap": "-3.81",
+    "latest_gap": "-2.93",
     "reference_cents": "6",
     "direction": null,
     "observations": [
       {
         "date": "2026-10-16",
         "supply_gap": "-3.81"
+      },
+      {
+        "date": "2026-10-19",
+        "supply_gap": "-2.93"
       }
     ],
     "regular_setting_next": false,
@@ -236,7 +240,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-16T03:01:00+00:00",
-      "observed_at": "2026-10-19T13:18:09.028819+00:00",
+      "observed_at": "2026-10-19T19:55:35.893101+00:00",
       "input_fingerprint": "1f293aba9d6fd421f5846e0a77924b3ddbdec777b88c855b0420e62f6eb25798",
       "zones": [
         {
@@ -335,7 +339,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-16T03:01:00+00:00",
-      "observed_at": "2026-10-19T13:18:09.028819+00:00",
+      "observed_at": "2026-10-19T19:55:35.893101+00:00",
       "input_fingerprint": "9b5af1ba8e125c6cb1b024602098e60254c329bcfdc712e36a75e479b3721ffc",
       "zones": [
         {
@@ -434,51 +438,51 @@
       ],
       "status": "pending",
       "effective_at": "2026-10-23T03:01:00+00:00",
-      "observed_at": "2026-10-19T13:18:09.028819+00:00",
+      "observed_at": "2026-10-19T19:55:35.893101+00:00",
       "input_fingerprint": "9420acf7b246057e5ef854916e71511669736bdd2810f505fb9d3e7172dac5e2",
       "reason": "Target price is not yet effective"
     },
     {
       "date": "2026-10-23",
-      "issued_at": "2026-10-19T06:14:55.556409+00:00",
-      "record_id": "2026-10-23/halifax-e10-rolling-v3-a3d4701fe675.json",
+      "issued_at": "2026-10-19T19:55:35.893101+00:00",
+      "record_id": "2026-10-23/halifax-e10-rolling-v3-2609dcfdd900.json",
       "model_version": "halifax-e10-rolling-v3",
       "predicted_zones": [
         {
           "zone": 1,
-          "minimum": "185.8",
-          "maximum": "188.8"
+          "minimum": "187.1",
+          "maximum": "190.1"
         },
         {
           "zone": 2,
-          "minimum": "186.4",
-          "maximum": "189.4"
+          "minimum": "187.7",
+          "maximum": "190.6"
         },
         {
           "zone": 3,
-          "minimum": "186.9",
-          "maximum": "189.8"
+          "minimum": "188.1",
+          "maximum": "191.1"
         },
         {
           "zone": 4,
-          "minimum": "187",
-          "maximum": "189.9"
+          "minimum": "188.2",
+          "maximum": "191.2"
         },
         {
           "zone": 5,
-          "minimum": "187",
-          "maximum": "189.9"
+          "minimum": "188.2",
+          "maximum": "191.2"
         },
         {
           "zone": 6,
-          "minimum": "187.8",
-          "maximum": "190.7"
+          "minimum": "189",
+          "maximum": "192"
         }
       ],
       "status": "pending",
       "effective_at": "2026-10-23T03:01:00+00:00",
-      "observed_at": "2026-10-19T13:18:09.028819+00:00",
-      "input_fingerprint": "a3d4701fe675096d1578db2eaec862dbc566bef107f0a6b7b5857400a7633222",
+      "observed_at": "2026-10-19T19:55:35.893101+00:00",
+      "input_fingerprint": "2609dcfdd90094f4f7792c82e0c67ea6ca6b529ced3754372f5cfc884e1da87b",
       "reason": "Target price is not yet effective"
     }
   ],
