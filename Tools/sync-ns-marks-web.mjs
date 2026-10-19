@@ -102,9 +102,9 @@ function installBuild(dist, destination, config) {
     for (const entry of readdirSync(dist)) {
       cpSync(join(dist, entry), join(staging, entry), { recursive: true });
     }
-    // /poker, /rhodena and /fishmap are rewrites, so their shells need the
-    // map bundle's asset base.
-    for (const [file, label] of [['poker.html', 'Poker'], ['rhodena.html', 'Rhodena'], ['fishing.html', 'Fishing']]) {
+    // /poker, /rhodena, /fishmap and /pointtupper are rewrites, so their
+    // shells need the map bundle's asset base.
+    for (const [file, label] of [['poker.html', 'Poker'], ['rhodena.html', 'Rhodena'], ['fishing.html', 'Fishing'], ['pointtupper.html', 'Point Tupper']]) {
       const shell = join(staging, file);
       if (!existsSync(shell)) continue;
       const html = readFileSync(shell, 'utf8');

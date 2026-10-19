@@ -53,6 +53,7 @@ function makeFixture() {
     writeFileSync('dist/poker.html', '<base href="./" /><script type="module" src="./assets/app.js"></script>');
     writeFileSync('dist/rhodena.html', '<base href="./" /><script type="module" src="./assets/app.js"></script>');
     writeFileSync('dist/fishing.html', '<base href="./" /><script type="module" src="./assets/app.js"></script>');
+    writeFileSync('dist/pointtupper.html', '<base href="./" /><script type="module" src="./assets/app.js"></script>');
   `);
 
   run('git', ['init', '-q'], source);
@@ -252,6 +253,36 @@ test('the short /fishmap URL serves the focused fishing map without redirecting'
   }
 });
 
+test('the short /pointtupper URL serves the focused Point Tupper map without redirecting', () => {
+  // Same shape as /rhodena: proxy the extension-less canonical path so the
+  // address bar and share links keep the short URL.
+  const expectedRewrites = [
+    '/pointtupper /apps/nsmarksthespot/map/pointtupper 200',
+    '/pointtupper/ /apps/nsmarksthespot/map/pointtupper 200',
+  ];
+  // Output/ is regenerated from Resources/ by `make generate`.
+  for (const root of ['Resources', 'Output']) {
+    const redirects = readFileSync(
+      new URL(`../../${root}/_redirects`, import.meta.url),
+      'utf8',
+    );
+    for (const expectedRewrite of expectedRewrites) {
+      assert.ok(
+        redirects.split('\n').includes(expectedRewrite),
+        `${root}/_redirects is missing: ${expectedRewrite}`,
+      );
+    }
+    assert.doesNotMatch(redirects, /\/pointtupper\.html 200/);
+
+    // The pinned copy gains pointtupper.html with the NS Marks source that adds it.
+    const shell = new URL(`../../${root}/apps/nsmarksthespot/map/pointtupper.html`, import.meta.url);
+    if (existsSync(shell)) {
+      const html = readFileSync(shell, 'utf8');
+      assert.ok(html.includes('<base href="/apps/nsmarksthespot/map/" />'), `${root} Point Tupper shell must use the published asset base`);
+    }
+  }
+});
+
 test('sync tool stamps Poker shell base href to the published map path', () => {
   const fixture = makeFixture();
   try {
@@ -270,7 +301,7 @@ test('sync tool stamps Poker shell base href to the published map path', () => {
     ], { encoding: 'utf8' });
 
     assert.equal(result.status, 0, result.stderr);
-    for (const file of ['poker.html', 'rhodena.html', 'fishing.html']) {
+    for (const file of ['poker.html', 'rhodena.html', 'fishing.html', 'pointtupper.html']) {
       const shell = readFileSync(join(fixture.destination, file), 'utf8');
       assert.match(shell, /<base href="\/apps\/nsmarksthespot\/map\/" \/>/, file);
       assert.doesNotMatch(shell, /<base href="\.\/" \/>/, file);
