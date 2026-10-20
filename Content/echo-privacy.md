@@ -43,6 +43,12 @@ Capturing a website article downloads its HTML and selected images from the corr
 
 You can export or share books, notes, cards and media to destinations you choose. On macOS, exporting through AnkiConnect sends selected card text and deck information to Anki running on the same Mac. The destination application controls any later synchronization or sharing.
 
+## Optional Watch Inbox webhook
+
+If you configure Watch Inbox, Echo sends your dictated text to the HTTPS webhook you choose through your paired iPhone. Each message includes a unique capture identifier, capture time and the source name echo-watch. When a book is open, its title and listening position are included as context. Native dictation follows your Apple device settings and Apple's privacy policy.
+
+Pending messages are stored locally on the watch and iPhone until the endpoint accepts them. Echo then removes the pending text and keeps a hashed identifier receipt locally to avoid sending the same capture again. The webhook key is stored in the iPhone Keychain. Previous endpoint configurations are retained so already-queued messages keep their original destination. The operator of your chosen webhook controls its processing, logs and retention. Endpoint acceptance does not confirm that a recipient has saved or acted on a message.
+
 ## Location, photos, microphone and Apple devices
 
 Context Memory is optional and off by default. With permission, Echo can obtain the device's location and round its coordinates to two decimal places before asking Apple's geocoding service for a place name. The device may supply a precise location fix before rounding. Echo stores the rounded context and place name locally. Delete Context Memory removes the app's local context records and cached place data; it does not erase third-party records or device backups.
