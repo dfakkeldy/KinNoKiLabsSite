@@ -117,8 +117,9 @@ starts, check for yours with `gh search issues --owner dfakkeldy --state open
   you on one, in any repo, that's it. Otherwise, at the start, use the open
   issue in his private hub repo (your user-level or bot instructions name it)
   that relates to what he's asking about, or open one there. A PR that
-  finishes the issue says `Closes #N`. Otherwise the session is done when you
-  ask Dan whether you can close the issue and he says yes.
+  finishes the issue says `Closes #N`. Otherwise, when its "Done when" is met,
+  close the issue yourself with a one-line summary; Dan can reopen it. Hand it
+  to Dan only for a real decision or physical step, written as that step.
 - Only Dan hands work from one agent to another. Keep an issue or hand it back
   to Dan, never on to another agent.
 - When you finish or get stuck, hand it back in one comment: what you did with
