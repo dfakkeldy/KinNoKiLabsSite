@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "checked_at": "2026-10-21T18:38:26.055277+00:00",
+  "checked_at": "2026-10-21T22:21:00.474263+00:00",
   "status": "error",
   "error": "The latest update could not verify current inputs. The estimate and watch are temporarily unavailable.",
   "current": {
