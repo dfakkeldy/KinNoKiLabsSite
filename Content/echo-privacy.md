@@ -45,9 +45,9 @@ You can export or share books, notes, cards and media to destinations you choose
 
 ## Optional Watch Inbox webhook
 
-If you configure Watch Inbox, Echo sends your dictated text to the HTTPS webhook you choose through your paired iPhone. Each message includes a unique capture identifier, capture time and the source name echo-watch. When a book is open, its title and listening position are included as context. Native dictation follows your Apple device settings and Apple's privacy policy.
+If you configure Watch Inbox, Echo sends your dictated text to the HTTPS webhook you choose through your paired iPhone. Each message includes a unique capture identifier, capture time and the source name echo-watch. When a book is open, its metadata title and listening position are included as context; if that title is unavailable, context is omitted. Native dictation follows your Apple device settings and Apple's privacy policy.
 
-Pending messages are stored locally on the watch and iPhone until the endpoint accepts them. Echo then removes the pending text and keeps a hashed identifier receipt locally to avoid sending the same capture again. The webhook key is stored in the iPhone Keychain. Previous endpoint configurations are retained so already-queued messages keep their original destination. The operator of your chosen webhook controls its processing, logs and retention. Endpoint acceptance does not confirm that a recipient has saved or acted on a message.
+Pending messages are stored locally on the watch and iPhone until the endpoint accepts them. Echo then removes the pending text and keeps a hashed identifier receipt locally to avoid sending the same capture again. The webhook key is stored in the iPhone Keychain. Previous endpoint configurations are retained so already-queued messages keep their original destination unless you choose Use Current Inbox for Queued Messages, which moves those pending captures to the current endpoint while keeping their unique identifiers, text and capture metadata. The operator of your chosen webhook controls its processing, logs and retention. Endpoint acceptance does not confirm that a recipient has saved or acted on a message.
 
 ## Location, photos, microphone and Apple devices
 
