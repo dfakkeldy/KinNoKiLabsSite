@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "checked_at": "2026-10-24T14:31:18.603361+00:00",
+  "checked_at": "2026-10-24T18:07:59.342482+00:00",
   "status": "ok",
   "error": null,
   "current": {
@@ -236,7 +236,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-16T03:01:00+00:00",
-      "observed_at": "2026-10-24T14:31:17.906753+00:00",
+      "observed_at": "2026-10-24T18:07:59.005105+00:00",
       "input_fingerprint": "1f293aba9d6fd421f5846e0a77924b3ddbdec777b88c855b0420e62f6eb25798",
       "zones": [
         {
@@ -335,7 +335,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-16T03:01:00+00:00",
-      "observed_at": "2026-10-24T14:31:17.906753+00:00",
+      "observed_at": "2026-10-24T18:07:59.005105+00:00",
       "input_fingerprint": "9b5af1ba8e125c6cb1b024602098e60254c329bcfdc712e36a75e479b3721ffc",
       "zones": [
         {
@@ -434,7 +434,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-23T03:01:00+00:00",
-      "observed_at": "2026-10-24T14:31:17.906753+00:00",
+      "observed_at": "2026-10-24T18:07:59.005105+00:00",
       "input_fingerprint": "9420acf7b246057e5ef854916e71511669736bdd2810f505fb9d3e7172dac5e2",
       "zones": [
         {
@@ -533,7 +533,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-23T03:01:00+00:00",
-      "observed_at": "2026-10-24T14:31:17.906753+00:00",
+      "observed_at": "2026-10-24T18:07:59.005105+00:00",
       "input_fingerprint": "b26dad91ce43a4c276e1324f6db0420b8b31ebf3b40f39a7a7e67483c02acfcb",
       "zones": [
         {
@@ -632,7 +632,7 @@
       ],
       "status": "pending",
       "effective_at": "2026-10-30T03:01:00+00:00",
-      "observed_at": "2026-10-24T14:31:17.906753+00:00",
+      "observed_at": "2026-10-24T18:07:59.005105+00:00",
       "input_fingerprint": "7c96824dfb7c87c8b7c101ec325f806d76fb43b3cfe388064e610da3dce22454",
       "reason": "Target price is not yet effective"
     },
@@ -675,7 +675,7 @@
       ],
       "status": "pending",
       "effective_at": "2026-10-30T03:01:00+00:00",
-      "observed_at": "2026-10-24T14:31:17.906753+00:00",
+      "observed_at": "2026-10-24T18:07:59.005105+00:00",
       "input_fingerprint": "ed2cd85435371e0133281e6dfa64178633a0a1ee4b40a3430276d72bce5b13d5",
       "reason": "Target price is not yet effective"
     }
