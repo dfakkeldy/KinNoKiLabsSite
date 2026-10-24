@@ -645,7 +645,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                   </div>
                   <div class="tax-desk-rule"></div>
                   <p><strong>Dec 8</strong> CBRM · public auction, Sydney</p>
-                  <p><strong>30 days</strong> before each sale, its property list goes up</p>
+                  <p><strong>30+ days</strong> before each sale, its property list goes up</p>
                   <small>The map adds each sale’s parcels once the municipality publishes its list.</small>
                 </aside>
               </div>
@@ -658,7 +658,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                     <p class="tax-kicker">Posted dates</p>
                     <h2 id="tax-dates-heading">What’s<br><em>coming up.</em></h2>
                   </div>
-                  <p>Two sales are posted on official municipal pages. Each list is published at least 30 days before its sale and can shrink right up to the day, so open the municipal page again before you go.</p>
+                  <p>These are the upcoming sales posted on the municipal pages checked October 23; other municipalities may post theirs later. Each property list goes up at least 30 days before its sale and can shrink right up to the day, so open the municipal page again before you go.</p>
                 </div>
 
                 <div class="tax-date-list">
