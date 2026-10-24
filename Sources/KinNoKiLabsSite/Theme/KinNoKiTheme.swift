@@ -1040,8 +1040,8 @@ private func homeMain() -> Node<HTML.BodyContext> {
             <a class="btn btn-gray" href="/apps">Explore the apps</a>
           </div>
           <ul class="proof-strip">
-            <li><span>4 apps in development</span></li>
-            <li><span>4 in TestFlight</span></li>
+            <li><span>4 apps</span></li>
+            <li><span>MacroMark 1.0 on the App Store</span></li>
             <li><a class="link-quiet" href="https://github.com/dfakkeldy" target="_blank" rel="noopener">Source is public on GitHub; licences vary</a></li>
             <li><span>Built around real workflows</span></li>
           </ul>
@@ -1112,7 +1112,7 @@ private func homeMain() -> Node<HTML.BodyContext> {
             <h3>MacroMark</h3>
             <p>Apple Watch voice capture for people whose notes live in Markdown.</p>
             <div class="app-card-meta">
-              <span class="status-chip">Internal TestFlight</span>
+              <span class="status-chip">App Store — 1.0</span>
               <span class="platforms">Watch · iPhone</span>
             </div>
           </a>
@@ -1154,7 +1154,7 @@ private func appsMain() -> Node<HTML.BodyContext> {
       <header class="page-head">
         <p class="eyebrow">Apps</p>
         <h1 class="page-title">Four apps, honestly statused.</h1>
-        <p class="page-lede">All four have TestFlight builds running — Echo and Turn Timer as public betas, the rest internal — and none are on the App Store yet. Getting them there — review prep, metadata, polish — is the current work. Source is public on GitHub; licences vary.</p>
+        <p class="page-lede">MacroMark 1.0 is live on the App Store and free. Echo and Turn Timer are public TestFlight betas; the NS Marks The Spot browser map is live, with the native iPhone app still in TestFlight. Source is public on GitHub; licences vary.</p>
       </header>
 
       <a class="reveal echo-row" href="/apps/echo">
@@ -1177,7 +1177,7 @@ private func appsMain() -> Node<HTML.BodyContext> {
           <p class="app-card-lead">Tap your Watch complication, speak, lower your wrist — the note lands in today's Markdown file, ready for Obsidian or Logseq.</p>
           <p class="app-card-note">Verbal Macros turn speech into structure: say "Task" and get <code>- [ ]</code></p>
           <div class="app-card-meta">
-            <span class="status-chip">Internal TestFlight</span>
+            <span class="status-chip">App Store — 1.0</span>
             <span class="platforms">Watch · iPhone</span>
           </div>
         </a>

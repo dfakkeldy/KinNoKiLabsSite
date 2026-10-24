@@ -23,10 +23,13 @@ test('Routey is gone from the homepage, apps listing, and support page', () => {
     assert.doesNotMatch(html, /\/apps\/routey/);
     assert.doesNotMatch(html, /Routey/);
   }
-  assert.match(home, /<span>4 apps in development<\/span>/);
-  assert.match(home, /<span>4 in TestFlight<\/span>/);
+  assert.match(home, /<span>4 apps<\/span>/);
+  assert.match(home, /<span>MacroMark 1\.0 on the App Store<\/span>/);
   assert.match(apps, /Four apps, honestly statused\./);
-  assert.match(apps, /All four have TestFlight builds running/);
+  assert.match(apps, /MacroMark 1\.0 is live on the App Store and free/);
+  assert.doesNotMatch(home, /4 apps in development/);
+  assert.doesNotMatch(home, /4 in TestFlight/);
+  assert.doesNotMatch(apps, /none are on the App Store yet/);
   for (const source of [theme, home, apps]) {
     assert.doesNotMatch(source, /\b5 apps\b|\b5 in TestFlight\b|Five apps|All five/);
   }
