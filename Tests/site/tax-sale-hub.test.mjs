@@ -28,62 +28,55 @@ test('publishes the short Nova Scotia tax-sale hub route', () => {
 });
 
 test('keeps only upcoming posted dates in the current sale desk', () => {
-  assert.doesNotMatch(generated, /Inverness County · 9:30 a\.m\./);
-  assert.doesNotMatch(generated, /35 advertised rows/);
-  assert.doesNotMatch(generated, /39 current mapped PIDs/);
-  assert.doesNotMatch(generated, /Annapolis County · tenders close 1:00 p\.m\./);
-  assert.match(generated, /September<\/strong><small>Victoria County · tenders close 12:00 noon<\/small>/);
-  assert.match(generated, /<strong>5<\/strong> advertised rows/);
-  assert.match(generated, /<strong>5<\/strong> active mapped PIDs/);
-  assert.match(generated, /25 current mapped PIDs across two notices/);
-  assert.doesNotMatch(generated, /Monday, August 31; tenders close at/);
-  assert.match(generated, /Monday, September 14; tenders close at 12:00 noon/);
-  assert.match(generated, /Tuesday, September 15; tenders close at 10:00 a\.m\./);
-  assert.match(generated, /https:\/\/annapoliscounty\.ca\/tax-finance\/tax-sale/);
-  assert.match(generated, /https:\/\/victoriacounty\.com\/residents\/property-taxation-services\/tax-sales\//);
-  assert.match(generated, /https:\/\/www\.halifax\.ca\/home-property\/property-taxes\/tax-sale/);
-  assert.doesNotMatch(generated, /1 advertised row · 0 withdrawn rows · 1 active PID mapped/);
-  assert.match(generated, /5 advertised rows · 4 opaque source rows excluded · 5 active PIDs mapped/);
-  assert.match(generated, /19 advertised rows · 0 withdrawn rows · 20 of 20 PIDs mapped/);
-  assert.match(generated, /Halifax and Victoria notices re-checked September 3, 2026 · Annapolis snapshot July 23/);
-  assert.doesNotMatch(generated, /CBRM \+ Inverness County notices/);
-  assert.match(generated, /<span>Mapped now<\/span><strong>Two current municipal notices · 25 active PIDs<\/strong>/);
-  assert.match(
-    generated,
-    /<span>Current notice<\/span><strong>Halifax tax-sale page<\/strong>/,
-  );
-  assert.match(
-    generated,
-    /<span>Past event source<\/span><strong>CBRM tax-sales page<\/strong>/,
-  );
-  assert.equal(
-    generated.match(/class="tax-date-card reveal"/g)?.length,
-    2,
-  );
-  assert.match(generated, /Posted does not mean final\./);
+  assert.match(generated, /<span class="tax-desk-day">23<\/span>/);
+  assert.match(generated, /November<\/strong><small>Victoria County · public auction, 11:00 a\.m\.<\/small>/);
+  assert.match(generated, /<strong>Dec 8<\/strong> CBRM · public auction, Sydney/);
+  assert.match(generated, /Dates checked October 23, 2026 on each municipality’s page/);
+  assert.equal(generated.match(/class="tax-date-card reveal"/g)?.length, 2);
+  assert.match(generated, /Monday, November 23 at 11:00 a\.m\./);
+  assert.match(generated, /St\. Mark’s Masonic Lodge, 24 Queen Street, Baddeck/);
+  assert.match(generated, /Tuesday, December 8; registration opens at 10:00 a\.m\./);
+  assert.match(generated, /Centre 200 Main Concourse, 481 George Street, Sydney/);
+  assert.match(generated, /https:\/\/victoriacounty\.com\/property-tax-sale-notice\//);
+  assert.match(generated, /https:\/\/cbrm\.ns\.ca\/business\/property-sales-management\/tax-sales\//);
+  assert.match(generated, /Lists change until the sale\./);
+  assert.match(generated, /<span>Next sale · November 23<\/span><strong>Victoria County tax-sales page<\/strong>/);
+  assert.match(generated, /<span>Next sale · December 8<\/span><strong>CBRM tax-sales page<\/strong>/);
+  assert.doesNotMatch(generated, /tenders close 12:00 noon<\/small>/);
+  assert.doesNotMatch(generated, /25 current mapped PIDs across two notices/);
 });
 
 test('presents passed sale dates as past without claiming outcomes', () => {
   assert.equal(
     generated.match(/class="tax-date-card tax-date-past reveal"/g)?.length,
-    3,
+    5,
   );
-  assert.equal(generated.match(/Sale date passed · Verify results/g)?.length, 3);
+  assert.equal(generated.match(/Sale date passed · Results with the municipality/g)?.length, 5);
+  assert.match(generated, /Advertised for Tuesday, September 15; tenders closed at 10:00 a\.m\./);
+  assert.match(generated, /Advertised for Monday, September 14; tenders closed at 12:00 noon/);
   assert.match(generated, /Advertised for Monday, August 31; tenders closed at 1:00 p\.m\./);
   assert.match(generated, /Last notice snapshot July 23: 1 advertised row · 0 withdrawn rows/);
   assert.match(generated, /Advertised for Tuesday, August 11 at 9:30 a\.m\./);
   assert.match(generated, /Advertised for Thursday, August 20 at 10:00 a\.m\./);
-  assert.equal(
-    generated.match(
-      /A past date is not evidence of outcome—verify results and current status with the municipality\./g,
-    )?.length,
-    3,
-  );
   assert.match(generated, /Last notice snapshot August 10: 27 advertised rows · 18 withdrawn rows/);
   assert.match(generated, /Last notice snapshot August 18: 2 advertised rows · 0 withdrawn rows/);
+  assert.match(generated, /https:\/\/annapoliscounty\.ca\/tax-finance\/tax-sale/);
+  assert.match(generated, /https:\/\/www\.halifax\.ca\/home-property\/property-taxes\/tax-sale/);
   assert.match(generated, /https:\/\/invernesscounty\.ca\/services\/finance-taxation\/tax-sales\//);
   assert.match(generated, /https:\/\/www\.discovermiddleton\.ca\/property-tax-sale-information/);
   assert.doesNotMatch(generated, /\b(?:un)?sold\b/i);
+});
+
+test('states each limit once instead of qualifying every line', () => {
+  for (const hedge of [
+    /Posted does not mean final/,
+    /A past date is not evidence of outcome/,
+    /It cannot tell you/,
+    /Neither this hub, the map, nor the guide proves/,
+  ]) {
+    assert.doesNotMatch(generated, hedge);
+  }
+  assert.match(generated, /The map shows you <em>where\.<\/em><br>The records tell you <em>whether\.<\/em>/);
 });
 
 test('explore map copy names postal community in search', () => {
@@ -108,14 +101,12 @@ test('explore map copy names postal community in search', () => {
 });
 
 test('shows truthful format status and connects the existing app page', () => {
-  assert.match(generated, /Public EPUB \+ audiobook · available now/);
-  assert.match(generated, /EPUB text edition/);
+  assert.match(generated, /Free guide · PDF, EPUB and audiobook/);
+  assert.match(generated, /<h3>Illustrated PDF<\/h3>/);
+  assert.match(generated, /Illustrated PDF · 149 pages · 13 chapters · 39 figures · free/);
   assert.match(generated, /href="\/listen\/\?book=beyond-the-tax-sale-packet"/);
-  assert.match(
-    generated,
-    /This edition has passed package and audio checks\. The creator completed the full listening review and approved this edition for publication\./,
-  );
-  assert.match(generated, /No finished public video is available yet\./);
+  assert.match(generated, /The first edition, narrated in full \(4 hours 13 minutes\)/);
+  assert.doesNotMatch(generated, /Video edition/);
   assert.match(generated, /\/apps\/nsmarksthespot\/map\//);
   assert.match(generated, /\/images\/taxsale\/og\.png/);
   assert.match(appContent, /\[Nova Scotia Tax Sale Hub\]\(\/taxsale\/\)/);
@@ -133,6 +124,18 @@ test('publishes the exact approved EPUB through a stable first-party redirect', 
   assert.equal(existsSync(generatedEpub), false, 'generated Pages artifact stays below the file limit');
   assert.equal(publicCover.length > 0, true);
   assert.deepEqual(generatedCover, publicCover);
+});
+
+test('serves the illustrated PDF and EPUB first-party under the Pages file limit', () => {
+  const limit = 25 * 1024 * 1024;
+  for (const name of ['beyond-the-tax-sale-packet-illustrated.pdf', 'beyond-the-tax-sale-packet-illustrated.epub']) {
+    const source = readFileSync(new URL(`../../Resources/taxsale/${name}`, import.meta.url));
+    const output = readFileSync(new URL(`../../Output/taxsale/${name}`, import.meta.url));
+    assert.ok(source.length > 1024 * 1024, `${name} is present`);
+    assert.ok(source.length < limit, `${name} stays under the 25 MiB Pages limit`);
+    assert.deepEqual(output, source, `${name} is copied unchanged`);
+    assert.match(generated, new RegExp(`href="/taxsale/${name.replace(/\./g, '\\.')}" download`));
+  }
 });
 
 test('uses the live map palette across source and generated styles', () => {
