@@ -5,13 +5,13 @@ image: /images/apps/macromark.png
 accent: #2f8cff
 tagline: Apple Watch to Markdown.
 platforms: Apple Watch, iPhone
-status: Internal TestFlight — toward V1.0
+status: App Store — 1.0
 iconAlt: MacroMark app icon — the letters M and M flanking a downward arrow on a dark navy tile
 ---
 
 MacroMark is voice capture for people whose notes live in Markdown. Tap your Watch complication, speak, lower your wrist, and let MacroMark append the thought to today's note.
 
-> MacroMark is in active development toward V1.0, with internal TestFlight builds running. It is not on the App Store yet.
+> MacroMark 1.0 is [live on the App Store](https://apps.apple.com/ca/app/macromark/id6785081218) and free. Version 1.1 is in testing.
 
 ## A note before the thought cools
 
@@ -60,4 +60,4 @@ Verbal macros turn natural speech into structure. Use the built-in Markdown trig
 MacroMark is built around local capture, Apple speech services where applicable, and user-owned note files. It is not a social inbox or analytics product.
 
 ---
-[Project Site](https://dfakkeldy.github.io/MacroMark/) | [View Source Code on GitHub](https://github.com/dfakkeldy/MacroMark) | [Get Help & Support](/macromark-help)
+[Get on the App Store](https://apps.apple.com/ca/app/macromark/id6785081218) | [Project Site](https://dfakkeldy.github.io/MacroMark/) | [View Source Code on GitHub](https://github.com/dfakkeldy/MacroMark) | [Get Help & Support](/macromark-help)

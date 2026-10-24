@@ -11,6 +11,10 @@ const visualTimer = readFileSync(
   new URL('../../Content/apps/visualtimer.md', import.meta.url),
   'utf8',
 );
+const macromark = readFileSync(
+  new URL('../../Content/apps/macromark.md', import.meta.url),
+  'utf8',
+);
 const echoBeta = readFileSync(new URL('../../Content/echo-beta.md', import.meta.url), 'utf8');
 const nsMarksHelp = readFileSync(
   new URL('../../Content/nsmarksthespot-help.md', import.meta.url),
@@ -30,6 +34,14 @@ const generatedNsMarks = readFileSync(
 );
 const generatedApps = readFileSync(
   new URL('../../Output/apps/index.html', import.meta.url),
+  'utf8',
+);
+const generatedHome = readFileSync(
+  new URL('../../Output/index.html', import.meta.url),
+  'utf8',
+);
+const generatedMacromark = readFileSync(
+  new URL('../../Output/apps/macromark/index.html', import.meta.url),
   'utf8',
 );
 
@@ -186,6 +198,34 @@ test('Turn Timer mentions the on-site PWA and keeps the live TestFlight join', (
   assert.match(visualTimer, /\/tools\/turn-timer\//);
   assert.match(visualTimer, /https:\/\/testflight\.apple\.com\/join\/s7w4YGWU/);
   assert.match(visualTimer, /not on the App Store yet/);
+});
+
+test('MacroMark public copy says 1.0 is live on the App Store and free', () => {
+  const storeURL = 'https://apps.apple.com/ca/app/macromark/id6785081218';
+  assert.match(macromark, /^status: App Store — 1\.0$/m);
+  assert.match(macromark, new RegExp(storeURL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.match(macromark, /MacroMark 1\.0 is \[live on the App Store\]/);
+  assert.match(macromark, /and free/);
+  assert.match(macromark, /Version 1\.1 is in testing/);
+  assert.doesNotMatch(macromark, /Internal TestFlight/);
+  assert.doesNotMatch(macromark, /not on the App Store yet/);
+  assert.doesNotMatch(macromark, /toward V1\.0/);
+
+  for (const source of [theme, generatedHome, generatedApps]) {
+    assert.match(source, /status-chip">App Store — 1\.0</);
+    assert.doesNotMatch(source, /status-chip">Internal TestFlight</);
+  }
+  assert.match(generatedHome, /<span>MacroMark 1\.0 on the App Store<\/span>/);
+  assert.match(generatedApps, /MacroMark 1\.0 is live on the App Store and free/);
+  assert.match(generatedMacromark, /App Store — 1\.0/);
+  assert.match(
+    generatedMacromark,
+    /href="https:\/\/apps\.apple\.com\/ca\/app\/macromark\/id6785081218"/,
+  );
+  assert.match(generatedMacromark, /and free/);
+  assert.match(generatedMacromark, /Version 1\.1 is in testing/);
+  assert.doesNotMatch(generatedMacromark, /not on the App Store yet/);
+  assert.doesNotMatch(generatedMacromark, /Internal TestFlight/);
 });
 
 test('Echo beta guide uses the live public join and Burly stays off the public tree', () => {
