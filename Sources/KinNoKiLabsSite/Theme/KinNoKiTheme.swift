@@ -629,24 +629,24 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                 <div class="tax-hero-copy">
                   <p class="tax-kicker">KinNoKi Labs · Nova Scotia field desk</p>
                   <h1 id="tax-hero-title">Nova Scotia<br><em>tax sales, mapped.</em></h1>
-                  <p class="tax-lede">One quick place for posted municipal dates, the live parcel map, and the public text and audio editions of <cite>Beyond the Tax-Sale Packet</cite>.</p>
+                  <p class="tax-lede">Posted municipal sale dates, a live parcel map, and a free illustrated guide to how the whole process works.</p>
                   <div class="tax-actions">
                     <a class="tax-button tax-button-solid" href="/apps/nsmarksthespot/map/">Open the live map <span aria-hidden="true">↗</span></a>
                     <a class="tax-button tax-button-line" href="#dates">See posted dates <span aria-hidden="true">↓</span></a>
                   </div>
-                  <p class="tax-refreshed">Halifax and Victoria notices re-checked September 3, 2026 · Annapolis snapshot July 23</p>
+                  <p class="tax-refreshed">Dates checked October 23, 2026 on each municipality’s page</p>
                 </div>
 
-                <aside class="tax-desk" aria-label="Current tax-sale desk summary">
-                  <div class="tax-desk-label"><span>Current desk</span><span>NS / 2026</span></div>
+                <aside class="tax-desk" aria-label="Next posted tax sale">
+                  <div class="tax-desk-label"><span>Next posted sale</span><span>NS / 2026</span></div>
                   <div class="tax-desk-date">
-                    <span class="tax-desk-day">14</span>
-                    <div><strong>September</strong><small>Victoria County · tenders close 12:00 noon</small></div>
+                    <span class="tax-desk-day">23</span>
+                    <div><strong>November</strong><small>Victoria County · public auction, 11:00 a.m.</small></div>
                   </div>
                   <div class="tax-desk-rule"></div>
-                  <p><strong>5</strong> advertised rows</p>
-                  <p><strong>5</strong> active mapped PIDs</p>
-                  <small>Counts reflect the current Victoria County tender notice; four opaque source rows are excluded. The live map also tracks 20 advertised PIDs from the Halifax tender, all with provincial parcel geometry, for 25 current mapped PIDs across two notices.</small>
+                  <p><strong>Dec 8</strong> CBRM · public auction, Sydney</p>
+                  <p><strong>30 days</strong> before each sale, its property list goes up</p>
+                  <small>The map adds each sale’s parcels once the municipality publishes its list.</small>
                 </aside>
               </div>
             </section>
@@ -656,54 +656,76 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                 <div class="tax-section-intro reveal">
                   <div>
                     <p class="tax-kicker">Posted dates</p>
-                    <h2 id="tax-dates-heading">What is still<br><em>coming up.</em></h2>
+                    <h2 id="tax-dates-heading">What’s<br><em>coming up.</em></h2>
                   </div>
-                  <p>These are the two current notices tracked in the map—not a promise that every advertised property will still be offered. Always open each municipal source again before acting.</p>
+                  <p>Two sales are posted on official municipal pages. Each list is published at least 30 days before its sale and can shrink right up to the day, so open the municipal page again before you go.</p>
                 </div>
 
                 <div class="tax-date-list">
                   <article class="tax-date-card reveal">
-                    <div class="tax-date-calendar" aria-hidden="true"><span>SEP</span><strong>14</strong><small>2026</small></div>
+                    <div class="tax-date-calendar" aria-hidden="true"><span>NOV</span><strong>23</strong><small>2026</small></div>
                     <div class="tax-date-copy">
-                      <p class="tax-status">Posted · Sealed tender</p>
+                      <p class="tax-status">Posted · Public auction</p>
                       <h3>Municipality of the County of Victoria</h3>
-                      <p><strong>Monday, September 14; tenders close at 12:00 noon</strong><br>Municipal Administration Building, 495 Chebucto Street, Baddeck</p>
-                      <p class="tax-date-detail">5 advertised rows · 4 opaque source rows excluded · 5 active PIDs mapped</p>
+                      <p><strong>Monday, November 23 at 11:00 a.m.</strong><br>St. Mark’s Masonic Lodge, 24 Queen Street, Baddeck</p>
+                      <p class="tax-date-detail">Register in advance · the room closes when the sale begins · property list on the county’s tax-sale notice page</p>
                     </div>
                     <div class="tax-date-actions">
                       <a href="https://victoriacounty.com/residents/property-taxation-services/tax-sales/">Official Victoria County page <span aria-hidden="true">↗</span></a>
-                      <a href="/apps/nsmarksthespot/map/">View mapped parcels <span aria-hidden="true">→</span></a>
+                      <a href="https://victoriacounty.com/property-tax-sale-notice/">Property list page <span aria-hidden="true">↗</span></a>
                     </div>
                   </article>
                   <article class="tax-date-card reveal">
-                    <div class="tax-date-calendar" aria-hidden="true"><span>SEP</span><strong>15</strong><small>2026</small></div>
+                    <div class="tax-date-calendar" aria-hidden="true"><span>DEC</span><strong>8</strong><small>2026</small></div>
                     <div class="tax-date-copy">
-                      <p class="tax-status">Posted · Sealed tender</p>
-                      <h3>Halifax Regional Municipality</h3>
-                      <p><strong>Tuesday, September 15; tenders close at 10:00 a.m.</strong><br>Online or Alderney Customer Service Centre, 40 Alderney Drive, Dartmouth</p>
-                      <p class="tax-date-detail">19 advertised rows · 0 withdrawn rows · 20 of 20 PIDs mapped</p>
+                      <p class="tax-status">Posted · Public auction</p>
+                      <h3>Cape Breton Regional Municipality</h3>
+                      <p><strong>Tuesday, December 8; registration opens at 10:00 a.m.</strong><br>Centre 200 Main Concourse, 481 George Street, Sydney</p>
+                      <p class="tax-date-detail">In-person registration with photo ID · minimum bid plus a $200 fee at the sale · balance within three business days</p>
                     </div>
                     <div class="tax-date-actions">
-                      <a href="https://www.halifax.ca/home-property/property-taxes/tax-sale">Official Halifax page <span aria-hidden="true">↗</span></a>
-                      <a href="/apps/nsmarksthespot/map/">View mapped parcels <span aria-hidden="true">→</span></a>
+                      <a href="https://cbrm.ns.ca/business/property-sales-management/tax-sales/">Official CBRM page <span aria-hidden="true">↗</span></a>
                     </div>
                   </article>
                 </div>
 
                 <div class="tax-notice reveal" role="note">
-                  <strong>Posted does not mean final.</strong>
-                  <p>Owners may pay arrears, municipalities may revise or remove listings, and results are a separate record. Confirm the current list, terms, time, venue, and outcome with the municipality.</p>
+                  <strong>Lists change until the sale.</strong>
+                  <p>Owners can pay before the sale, and municipalities revise or withdraw listings. Check the current list, terms, time and place with the municipality before you go.</p>
                 </div>
 
-                <h3 class="tax-past-heading" id="tax-past-heading">Past sale dates · outcomes not recorded here</h3>
+                <h3 class="tax-past-heading" id="tax-past-heading">Recent sale dates · results on each municipality’s page</h3>
                 <div class="tax-date-list tax-past-list" aria-labelledby="tax-past-heading">
+                  <article class="tax-date-card tax-date-past reveal">
+                    <div class="tax-date-calendar" aria-hidden="true"><span>SEP</span><strong>15</strong><small>2026</small></div>
+                    <div class="tax-date-copy">
+                      <p class="tax-status">Sale date passed · Results with the municipality</p>
+                      <h3>Halifax Regional Municipality</h3>
+                      <p><strong>Advertised for Tuesday, September 15; tenders closed at 10:00 a.m.</strong><br>Online or Alderney Customer Service Centre, 40 Alderney Drive, Dartmouth</p>
+                      <p class="tax-date-detail">Last notice snapshot September 3: 19 advertised rows · 20 PIDs</p>
+                    </div>
+                    <div class="tax-date-actions">
+                      <a href="https://www.halifax.ca/home-property/property-taxes/tax-sale">Official Halifax page <span aria-hidden="true">↗</span></a>
+                    </div>
+                  </article>
+                  <article class="tax-date-card tax-date-past reveal">
+                    <div class="tax-date-calendar" aria-hidden="true"><span>SEP</span><strong>14</strong><small>2026</small></div>
+                    <div class="tax-date-copy">
+                      <p class="tax-status">Sale date passed · Results with the municipality</p>
+                      <h3>Municipality of the County of Victoria</h3>
+                      <p><strong>Advertised for Monday, September 14; tenders closed at 12:00 noon</strong><br>Municipal Administration Building, 495 Chebucto Street, Baddeck</p>
+                      <p class="tax-date-detail">Last notice snapshot September 3: 5 advertised rows</p>
+                    </div>
+                    <div class="tax-date-actions">
+                      <a href="https://victoriacounty.com/residents/property-taxation-services/tax-sales/">Official Victoria County page <span aria-hidden="true">↗</span></a>
+                    </div>
+                  </article>
                   <article class="tax-date-card tax-date-past reveal">
                     <div class="tax-date-calendar" aria-hidden="true"><span>AUG</span><strong>31</strong><small>2026</small></div>
                     <div class="tax-date-copy">
-                      <p class="tax-status">Sale date passed · Verify results</p>
+                      <p class="tax-status">Sale date passed · Results with the municipality</p>
                       <h3>Municipality of the County of Annapolis</h3>
                       <p><strong>Advertised for Monday, August 31; tenders closed at 1:00 p.m.</strong><br>752 St George Street, Annapolis Royal</p>
-                      <p>The advertised sale date has passed. A past date is not evidence of outcome—verify results and current status with the municipality.</p>
                       <p class="tax-date-detail">Last notice snapshot July 23: 1 advertised row · 0 withdrawn rows</p>
                     </div>
                     <div class="tax-date-actions">
@@ -711,29 +733,27 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                     </div>
                   </article>
                   <article class="tax-date-card tax-date-past reveal">
-                    <div class="tax-date-calendar" aria-hidden="true"><span>AUG</span><strong>11</strong><small>2026</small></div>
-                    <div class="tax-date-copy">
-                      <p class="tax-status">Sale date passed · Verify results</p>
-                      <h3>Municipality of the County of Inverness</h3>
-                      <p><strong>Advertised for Tuesday, August 11 at 9:30 a.m.</strong><br>St. Peter’s Parish Hall, 260 Main Street, Port Hood</p>
-                      <p>The advertised sale date has passed. A past date is not evidence of outcome—verify results and current status with the municipality.</p>
-                      <p class="tax-date-detail">Last notice snapshot August 10: 27 advertised rows · 18 withdrawn rows</p>
-                    </div>
-                    <div class="tax-date-actions">
-                      <a href="https://invernesscounty.ca/services/finance-taxation/tax-sales/">Official Inverness page <span aria-hidden="true">↗</span></a>
-                    </div>
-                  </article>
-                  <article class="tax-date-card tax-date-past reveal">
                     <div class="tax-date-calendar" aria-hidden="true"><span>AUG</span><strong>20</strong><small>2026</small></div>
                     <div class="tax-date-copy">
-                      <p class="tax-status">Sale date passed · Verify results</p>
+                      <p class="tax-status">Sale date passed · Results with the municipality</p>
                       <h3>Town of Middleton</h3>
                       <p><strong>Advertised for Thursday, August 20 at 10:00 a.m.</strong><br>Town Hall Council Chambers, 131 Commercial Street, Middleton</p>
-                      <p>The advertised sale date has passed. A past date is not evidence of outcome—verify results and current status with the municipality.</p>
                       <p class="tax-date-detail">Last notice snapshot August 18: 2 advertised rows · 0 withdrawn rows</p>
                     </div>
                     <div class="tax-date-actions">
                       <a href="https://www.discovermiddleton.ca/property-tax-sale-information">Official Middleton page <span aria-hidden="true">↗</span></a>
+                    </div>
+                  </article>
+                  <article class="tax-date-card tax-date-past reveal">
+                    <div class="tax-date-calendar" aria-hidden="true"><span>AUG</span><strong>11</strong><small>2026</small></div>
+                    <div class="tax-date-copy">
+                      <p class="tax-status">Sale date passed · Results with the municipality</p>
+                      <h3>Municipality of the County of Inverness</h3>
+                      <p><strong>Advertised for Tuesday, August 11 at 9:30 a.m.</strong><br>St. Peter’s Parish Hall, 260 Main Street, Port Hood</p>
+                      <p class="tax-date-detail">Last notice snapshot August 10: 27 advertised rows · 18 withdrawn rows</p>
+                    </div>
+                    <div class="tax-date-actions">
+                      <a href="https://invernesscounty.ca/services/finance-taxation/tax-sales/">Official Inverness page <span aria-hidden="true">↗</span></a>
                     </div>
                   </article>
                 </div>
@@ -749,10 +769,10 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                 <div class="tax-split-copy reveal">
                   <p class="tax-large-copy">Search an eight-digit PID, Nova Scotia civic address, or postal community, open a mapped tax-sale parcel, and compare it with roads, water, aerial imagery, Crown land, and municipal context.</p>
                   <ul class="tax-facts">
-                    <li><span>Mapped now</span><strong>Two current municipal notices · 25 active PIDs</strong></li>
+                    <li><span>Mapped</span><strong>Dated municipal notices and past results, with links to each source</strong></li>
                     <li><span>Search</span><strong>PID, civic address, postal community, or visible parcel</strong></li>
                     <li><span>Privacy</span><strong>No owner names; no location upload</strong></li>
-                    <li><span>Boundary</span><strong>Approximate context, never a legal survey</strong></li>
+                    <li><span>Boundaries</span><strong>Approximate context; a surveyor locates the line</strong></li>
                   </ul>
                   <a class="tax-text-link" href="/apps/nsmarksthespot/map/">Explore the current map <span aria-hidden="true">→</span></a>
                 </div>
@@ -764,42 +784,43 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                 <div class="tax-guide-feature reveal">
                   <img class="tax-book-cover" src="/taxsale/cover.png" alt="Cover of Beyond the Tax-Sale Packet by Dan Fakkeldy" width="1600" height="2560" loading="lazy" decoding="async">
                   <div class="tax-guide-copy">
-                    <p class="tax-kicker">Public EPUB + audiobook · available now</p>
+                    <p class="tax-kicker">Free guide · PDF, EPUB and audiobook</p>
                     <h2 id="tax-guide-heading"><em>Beyond the<br>Tax-Sale Packet</em></h2>
-                    <p class="tax-large-copy">A thirteen-chapter guide to how Nova Scotia municipal tax sales work—and how to research carefully without mistaking a notice, assessment, or map for an answer.</p>
+                    <p class="tax-large-copy">How Nova Scotia tax sales work, from the first unpaid bill to the deed. Learn to read a notice, build a dated research file, and take each question to the person who can answer it. Now in a plain-language illustrated edition with 31 diagrams and charts.</p>
                     <div class="tax-actions tax-guide-actions">
-                      <a class="tax-button tax-button-solid" href="/taxsale/beyond-the-tax-sale-packet.epub" download>Download the EPUB <span aria-hidden="true">↓</span></a>
+                      <a class="tax-button tax-button-solid" href="/taxsale/beyond-the-tax-sale-packet-illustrated.pdf" download>Download the illustrated PDF <span aria-hidden="true">↓</span></a>
                       <a class="tax-button tax-button-line" href="/listen/?book=beyond-the-tax-sale-packet">Listen in the Listening Room <span aria-hidden="true">→</span></a>
                     </div>
-            <p class="tax-guide-meta">Text + audio · 13 chapters · 54 figures · 4:12:50 · educational information only</p>
+            <p class="tax-guide-meta">Illustrated PDF · 149 pages · 13 chapters · 39 figures · free</p>
                   </div>
                 </div>
 
-                <div class="tax-format-grid" aria-label="Guide formats and status">
+                <div class="tax-format-grid" aria-label="Guide formats">
                   <article class="tax-format-card reveal">
                     <p class="tax-format-number">01</p>
-                    <p class="tax-status tax-status-active">Available now</p>
-                    <h3>EPUB text edition</h3>
-            <p>The complete public text, selected cover, 54 public-safe figures, source appendix, and careful boundary between screening evidence and unresolved questions.</p>
-                    <a href="/taxsale/beyond-the-tax-sale-packet.epub" download>Download the EPUB <span aria-hidden="true">↓</span></a>
-                    <a href="/tools/epub-reader/">Open the on-device reader <span aria-hidden="true">→</span></a>
+                    <p class="tax-status tax-status-active">New · October 2026</p>
+                    <h3>Illustrated PDF</h3>
+            <p>The plain-language edition: 31 diagrams and charts, a footer on every page that explains its abbreviations, and the official sources for each chapter. Print it or read it on screen.</p>
+                    <a href="/taxsale/beyond-the-tax-sale-packet-illustrated.pdf" download>Download the PDF <span aria-hidden="true">↓</span></a>
                   </article>
                   <article class="tax-format-card reveal">
                     <p class="tax-format-number">02</p>
                     <p class="tax-status tax-status-active">Available now</p>
-                    <h3>Audiobook</h3>
-            <p>A creator-listened chaptered edition for the road, a walk, or the workbench, with synced text and figures in the Listening Room.</p>
-            <p>This edition has passed package and audio checks. The creator completed the full listening review and approved this edition for publication.</p>
-                    <a href="/listen/?book=beyond-the-tax-sale-packet">Open the Listening Room <span aria-hidden="true">→</span></a>
+                    <h3>EPUB ebook</h3>
+            <p>The illustrated edition for e-readers, with pop-up definitions. The first-edition EPUB, which matches the audiobook word for word, stays available.</p>
+                    <a href="/taxsale/beyond-the-tax-sale-packet-illustrated.epub" download>Download the illustrated EPUB <span aria-hidden="true">↓</span></a>
+                    <a href="/taxsale/beyond-the-tax-sale-packet.epub" download>First-edition EPUB <span aria-hidden="true">↓</span></a>
+                    <a href="/tools/epub-reader/">Open the on-device reader <span aria-hidden="true">→</span></a>
                   </article>
                   <article class="tax-format-card reveal">
                     <p class="tax-format-number">03</p>
-                    <p class="tax-status">Planned · not public</p>
-                    <h3>Video edition</h3>
-                    <p>Maps, packet anatomy, and process diagrams paced to the same grounded narration. No finished public video is available yet.</p>
+                    <p class="tax-status tax-status-active">Available now</p>
+                    <h3>Audiobook</h3>
+            <p>The first edition, narrated in full (4 hours 13 minutes), with synced text and figures in the Listening Room. Its wording is the first edition’s, so it differs from the illustrated text.</p>
+                    <a href="/listen/?book=beyond-the-tax-sale-packet">Open the Listening Room <span aria-hidden="true">→</span></a>
                   </article>
                 </div>
-                <a class="tax-text-link tax-development-link" href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/docs/nova-scotia-tax-sale-book">Open the public development packet and sources <span aria-hidden="true">↗</span></a>
+                <a class="tax-text-link tax-development-link" href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/docs/nova-scotia-tax-sale-book">Open the public research record and sources <span aria-hidden="true">↗</span></a>
               </div>
             </section>
 
@@ -811,8 +832,8 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                 </div>
                 <div class="tax-source-list reveal">
                   <a href="https://nslegislature.ca/sites/default/files/legc/statutes/municipal%20government.pdf"><span>Provincial law</span><strong>Nova Scotia Municipal Government Act</strong><b aria-hidden="true">↗</b></a>
-                  <a href="https://cbrm.ns.ca/business/property-sales-management/tax-sales/"><span>Past event source</span><strong>CBRM tax-sales page</strong><b aria-hidden="true">↗</b></a>
-                  <a href="https://www.halifax.ca/home-property/property-taxes/tax-sale"><span>Current notice</span><strong>Halifax tax-sale page</strong><b aria-hidden="true">↗</b></a>
+                  <a href="https://victoriacounty.com/residents/property-taxation-services/tax-sales/"><span>Next sale · November 23</span><strong>Victoria County tax-sales page</strong><b aria-hidden="true">↗</b></a>
+                  <a href="https://cbrm.ns.ca/business/property-sales-management/tax-sales/"><span>Next sale · December 8</span><strong>CBRM tax-sales page</strong><b aria-hidden="true">↗</b></a>
                   <a href="https://www.novascotia.ca/sign-property-online"><span>Land records</span><strong>Nova Scotia Property Online</strong><b aria-hidden="true">↗</b></a>
                 </div>
               </div>
@@ -820,11 +841,11 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
 
             <section class="tax-boundary" aria-labelledby="tax-boundary-heading">
               <div class="tax-wrap tax-boundary-grid reveal">
-                <p class="tax-kicker">The useful boundary</p>
-                <h2 id="tax-boundary-heading">A map can tell you <em>where.</em><br>It cannot tell you <em>whether.</em></h2>
+                <p class="tax-kicker">Where answers come from</p>
+                <h2 id="tax-boundary-heading">The map shows you <em>where.</em><br>The records tell you <em>whether.</em></h2>
                 <div>
-                  <p>Neither this hub, the map, nor the guide proves access, title, condition, value, possession, insurance, financing, environmental condition, or buildability.</p>
-                  <p>Use these resources to ask better questions. Verify live details with the municipality and take unresolved legal, tax, title, survey, planning, or construction questions to the right qualified professional.</p>
+                  <p>Use the map and the guide to find a parcel, read its notice and list the questions that matter.</p>
+                  <p>Access, title, boundaries, condition, value and permits are answered by the land registry, the municipality and the right professional: a lawyer, surveyor, planner, inspector or insurer. Confirm live details with the municipality before acting.</p>
                 </div>
               </div>
             </section>
@@ -837,7 +858,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                   <a class="tax-button tax-button-solid" href="/apps/nsmarksthespot/map/">Open the live map <span aria-hidden="true">↗</span></a>
                   <a class="tax-button tax-button-line" href="#dates">Review posted dates <span aria-hidden="true">↑</span></a>
                 </div>
-                <p class="tax-fine-print">Educational information only—not legal, tax, investment, surveying, appraisal, environmental, planning, or construction advice.</p>
+                <p class="tax-fine-print">A public guide to a public process. For a decision about a specific property, ask a qualified professional.</p>
               </div>
             </section>
             """#
