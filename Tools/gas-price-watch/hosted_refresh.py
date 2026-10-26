@@ -450,6 +450,9 @@ def refresh_public(cache_dir: Path, data_dir: Path, *, now: datetime | None = No
                 payload["target_date"] = _day(snapshot["next_friday"]).isoformat()
                 payload["issued_forecasts"], payload["live_validation"] = _issued_results(snapshot.get("issued_forecast_results", []))
                 generated = _aware(snapshot["generated_at"])
+                # The public payload stays generic; the Actions log names the failed source.
+                for row in snapshot.get("fetch_errors", []):
+                    print(f"Source refresh failed: {row['source']}: {row['error']}", file=sys.stderr)
                 critical = {"prices.html", "historical-prices.html", "order-current.pdf", "rack/nrcan-halifax.html",
                             f"rack/e10-{checked.astimezone(HALIFAX).year}.xlsx"}
                 official_sources = {"prices.html", "historical-prices.html", "order-current.pdf"}
@@ -471,7 +474,8 @@ def refresh_public(cache_dir: Path, data_dir: Path, *, now: datetime | None = No
                             payload.update(status="ok", error=None)
                         except (KeyError, TypeError, ValueError):
                             payload.update(estimate=None, watch=None)
-    except Exception:
+    except Exception as exc:
+        print(f"Refresh failed: {type(exc).__name__}: {exc}", file=sys.stderr)
         checked = _aware(now) if isinstance(now, datetime) and now.tzinfo is not None and now.utcoffset() is not None else utc_now()
         payload = _fallback(previous, checked, frozen)
     if now is None:
