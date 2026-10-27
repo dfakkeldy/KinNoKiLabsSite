@@ -5,12 +5,12 @@ image: /images/apps/routey.png
 accent: #ef4444
 tagline: Your route. Your rules.
 platforms: iPhone
-status: Internal TestFlight
+status: Discontinued
 ---
 
 Routey is the offline-first iPhone companion built for rural mail carriers. Import a route, search it locally, snap parcel labels with OCR, and keep moving even where there's no cell signal.
 
-> Internal TestFlight is active and V1.0 is in progress. The V1.0 cut focuses on the phone workflow first; watchOS and CarPlay stay planned until the phone workflow is stable, reviewed, and useful in the truck.
+> Routey was discontinued in October 2026. It was never released on the App Store. The source code stays on GitHub as an archived project.
 
 ## The official tools weren't built for rural routes
 
@@ -41,15 +41,11 @@ Rural carriers handle more parcels than ever, with handhelds designed for city s
 2. **Snap your parcels.** OCR-scan each label to add it in route order automatically — or search and tap, whichever is faster.
 3. **Deliver from Today's Run.** Work from the daily list while keeping the master route intact.
 
-## V1.0 still has gates
+## Where it ended
 
-- **One platform for now:** The current path is iPhone-first.
-- **V1.0 release gates:** Route import, local search, parcel capture, and the daily-run flow need to be stable before V1.0 goes out for review.
-- **watchOS and CarPlay:** Planned, but not part of V1.0. They wait until the phone workflow is stable.
-
-Routey is in active development with internal TestFlight builds running. Star the project to follow along while V1.0 moves toward review.
+Routey reached internal TestFlight builds on iPhone. watchOS and CarPlay were planned for after V1.0, which never shipped. The archived repository keeps the code and history.
 
 **Independent project note:** Routey is an independent project and is not affiliated with, endorsed by, or sponsored by any postal or delivery service. Apple, CarPlay, and Apple Watch are trademarks of Apple Inc.
 
 ---
-[Project Site](https://dfakkeldy.github.io/Routey/) | [View Source Code on GitHub](https://github.com/dfakkeldy/Routey)
+[View the archived source code on GitHub](https://github.com/dfakkeldy/Routey)
