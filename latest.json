@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "checked_at": "2026-10-27T16:37:44.107812+00:00",
-  "status": "error",
-  "error": "The latest update could not verify current inputs. The estimate and watch are temporarily unavailable.",
+  "checked_at": "2026-10-27T21:17:55.955354+00:00",
+  "status": "ok",
+  "error": null,
   "current": {
     "date": "2026-10-23",
     "source_url": "https://nserbt.ca/sites/default/files/documents/gas/gasprice.pdf?1792725301",
@@ -45,8 +45,77 @@
     "credit_card": "0.8"
   },
   "target_date": "2026-10-30",
-  "estimate": null,
-  "watch": null,
+  "estimate": {
+    "date": "2026-10-30",
+    "mode": "provisional",
+    "zones": [
+      {
+        "zone": 1,
+        "minimum": "184.6",
+        "maximum": "187.5"
+      },
+      {
+        "zone": 2,
+        "minimum": "185.1",
+        "maximum": "188.1"
+      },
+      {
+        "zone": 3,
+        "minimum": "185.6",
+        "maximum": "188.5"
+      },
+      {
+        "zone": 4,
+        "minimum": "185.7",
+        "maximum": "188.7"
+      },
+      {
+        "zone": 5,
+        "minimum": "185.7",
+        "maximum": "188.7"
+      },
+      {
+        "zone": 6,
+        "minimum": "186.5",
+        "maximum": "189.5"
+      }
+    ],
+    "issued_at": "2026-10-27T21:17:55.279765+00:00",
+    "model_version": "halifax-e10-rolling-v3",
+    "observed_quotes": 3,
+    "total_quotes": 5,
+    "projected_quotes": 2,
+    "latest_quote_date": "2026-10-27",
+    "error_reference": "6.7",
+    "outside_training_features": [],
+    "assumptions": [
+      "Each unobserved weekday holds the latest real posted quote. Projected rows are explicitly marked.",
+      "Missing dates before the latest observed quote are errors, never projections.",
+      "New gasoline orders reset the anchor and the remaining averaging window.",
+      "Known taxes and margins apply on the target date; the latest retail adjustment is carried.",
+      "This is a conditional rolling estimate, not an exact unpublished Board calculation."
+    ]
+  },
+  "watch": {
+    "status": "below_reference",
+    "anchor_date": "2026-10-23",
+    "latest_gap": "1.80",
+    "reference_cents": "6",
+    "direction": null,
+    "observations": [
+      {
+        "date": "2026-10-26",
+        "supply_gap": "1.31"
+      },
+      {
+        "date": "2026-10-27",
+        "supply_gap": "1.80"
+      }
+    ],
+    "regular_setting_next": false,
+    "limitations": "Experimental combined supply-cost indicator, not the Board's daily NYH benchmark or a probability. The retrospective exploratory check caught 2 of 3 events with 5 false-alert days for early signals; sustained signals caught 0 of 3 with 2 false alerts. Historical publication vintages are unverified. The Board uses different inputs and may exercise discretion.",
+    "source_url": "https://nserbt.ca/sites/default/files/Decision%20%28Interruption%29.pdf"
+  },
   "performance": {
     "complete": {
       "count": 18,
@@ -171,7 +240,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-16T03:01:00+00:00",
-      "observed_at": "2026-10-27T16:37:43.427930+00:00",
+      "observed_at": "2026-10-27T21:17:55.279765+00:00",
       "input_fingerprint": "1f293aba9d6fd421f5846e0a77924b3ddbdec777b88c855b0420e62f6eb25798",
       "zones": [
         {
@@ -270,7 +339,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-16T03:01:00+00:00",
-      "observed_at": "2026-10-27T16:37:43.427930+00:00",
+      "observed_at": "2026-10-27T21:17:55.279765+00:00",
       "input_fingerprint": "9b5af1ba8e125c6cb1b024602098e60254c329bcfdc712e36a75e479b3721ffc",
       "zones": [
         {
@@ -369,7 +438,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-23T03:01:00+00:00",
-      "observed_at": "2026-10-27T16:37:43.427930+00:00",
+      "observed_at": "2026-10-27T21:17:55.279765+00:00",
       "input_fingerprint": "9420acf7b246057e5ef854916e71511669736bdd2810f505fb9d3e7172dac5e2",
       "zones": [
         {
@@ -468,7 +537,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-23T03:01:00+00:00",
-      "observed_at": "2026-10-27T16:37:43.427930+00:00",
+      "observed_at": "2026-10-27T21:17:55.279765+00:00",
       "input_fingerprint": "b26dad91ce43a4c276e1324f6db0420b8b31ebf3b40f39a7a7e67483c02acfcb",
       "zones": [
         {
@@ -567,51 +636,51 @@
       ],
       "status": "pending",
       "effective_at": "2026-10-30T03:01:00+00:00",
-      "observed_at": "2026-10-27T16:37:43.427930+00:00",
+      "observed_at": "2026-10-27T21:17:55.279765+00:00",
       "input_fingerprint": "7c96824dfb7c87c8b7c101ec325f806d76fb43b3cfe388064e610da3dce22454",
       "reason": "Target price is not yet effective"
     },
     {
       "date": "2026-10-30",
-      "issued_at": "2026-10-27T05:00:56.703451+00:00",
-      "record_id": "2026-10-30/halifax-e10-rolling-v3-fb3cb0c7db9e.json",
+      "issued_at": "2026-10-27T21:17:55.279765+00:00",
+      "record_id": "2026-10-30/halifax-e10-rolling-v3-87c99f5c98c3.json",
       "model_version": "halifax-e10-rolling-v3",
       "predicted_zones": [
         {
           "zone": 1,
-          "minimum": "184.1",
-          "maximum": "187"
+          "minimum": "184.6",
+          "maximum": "187.5"
         },
         {
           "zone": 2,
-          "minimum": "184.6",
-          "maximum": "187.6"
+          "minimum": "185.1",
+          "maximum": "188.1"
         },
         {
           "zone": 3,
-          "minimum": "185.1",
-          "maximum": "188"
+          "minimum": "185.6",
+          "maximum": "188.5"
         },
         {
           "zone": 4,
-          "minimum": "185.2",
-          "maximum": "188.2"
+          "minimum": "185.7",
+          "maximum": "188.7"
         },
         {
           "zone": 5,
-          "minimum": "185.2",
-          "maximum": "188.2"
+          "minimum": "185.7",
+          "maximum": "188.7"
         },
         {
           "zone": 6,
-          "minimum": "186",
-          "maximum": "189"
+          "minimum": "186.5",
+          "maximum": "189.5"
         }
       ],
       "status": "pending",
       "effective_at": "2026-10-30T03:01:00+00:00",
-      "observed_at": "2026-10-27T16:37:43.427930+00:00",
-      "input_fingerprint": "fb3cb0c7db9e635d2fc0374e4f5719dd89da186bce058cc5c64c1af62a71d38b",
+      "observed_at": "2026-10-27T21:17:55.279765+00:00",
+      "input_fingerprint": "87c99f5c98c32d7851ad1e063be0cc7640b1a08ee7a488e0d32dff2ef3c6de8b",
       "reason": "Target price is not yet effective"
     }
   ],
