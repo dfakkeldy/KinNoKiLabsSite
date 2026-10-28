@@ -1126,7 +1126,7 @@ private func homeMain() -> Node<HTML.BodyContext> {
             </div>
           </a>
           <a class="app-card" href="/apps/visualtimer/">
-            <img class="app-icon" src="/images/apps/turntimer.png" alt="Turn Timer app icon — an orange progress ring">
+            <img class="app-icon" src="/images/apps/turntimer.png" alt="Turn Timer app icon: a clock inside a ring of coloured countdown segments">
             <h3>Turn Timer</h3>
             <p>Visual rounds for countdowns, turns, routines, and reusable sequences.</p>
             <div class="app-card-meta">
@@ -1191,7 +1191,7 @@ private func appsMain() -> Node<HTML.BodyContext> {
           </div>
         </a>
         <a class="app-card" href="/apps/visualtimer/">
-          <img class="app-icon" src="/images/apps/turntimer.png" alt="Turn Timer app icon — an orange progress ring">
+          <img class="app-icon" src="/images/apps/turntimer.png" alt="Turn Timer app icon: a clock inside a ring of coloured countdown segments">
           <h3>Turn Timer</h3>
           <p>An Apple-native visual sequence timer — one-tap visual countdowns plus reusable sequences. A React PWA lives at /tools/turn-timer/.</p>
           <div class="app-card-meta">
