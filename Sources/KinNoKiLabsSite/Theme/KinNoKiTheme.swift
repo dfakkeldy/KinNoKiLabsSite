@@ -210,7 +210,10 @@ private func siteHead<L: Location>(
     let pageTitle = isIndex ? site.name : "\(baseTitle) — \(site.name)"
     let description = location.description.isEmpty ? site.description : location.description
     let url = site.url(for: location.path)
-    let imageURL = site.url(for: location.imagePath ?? Path("/logo.png"))
+    // Share previews: pages without their own image get the 1200x630 card,
+    // and an SVG app icon is swapped for its PNG twin, since Facebook,
+    // LinkedIn and X don't render SVG.
+    let imageURL = site.url(for: shareImagePath(location.imagePath))
 
     // No-flash theme snippet — MUST run before the stylesheet so the first
     // paint already carries the stored (or default-dark) theme. Also marks
@@ -266,6 +269,18 @@ private func siteHead<L: Location>(
         .meta(.attribute(named: "property", value: "og:image"), .attribute(named: "content", value: imageURL.absoluteString)),
         .meta(.name("twitter:card"), .content("summary_large_image"))
     )
+}
+
+/// The og:image for a page: its own image, a PNG twin of an SVG icon
+/// (`/images/apps/x.svg` -> `/images/apps/x.png`, which must exist in
+/// Resources), or the default 1200x630 share card.
+private func shareImagePath(_ imagePath: Path?) -> Path {
+    guard let imagePath = imagePath else { return Path("/images/og-default.png") }
+    let string = imagePath.string
+    if string.hasSuffix(".svg") {
+        return Path(String(string.dropLast(4)) + ".png")
+    }
+    return imagePath
 }
 
 // MARK: - Shared header + mobile menu
