@@ -222,7 +222,7 @@ test('opens on the featured book and names it honestly', async () => {
   assert.equal(el(harness, 'bookForm').textContent,
     'Original fiction · Novel · Techno-thriller');
   assert.match(el(harness, 'bookByline').textContent,
-    /^by Dan Fakkeldy · 34 chapters · ~80\.1k words · ≈9 h once narrated$/);
+    /^Created by Dan Fakkeldy with AI · 34 chapters · ~80\.1k words · ≈9 h once narrated$/);
 });
 
 test('the transport stays dead while there is nothing to play', async () => {
@@ -254,7 +254,7 @@ test('the caption panel carries the real opening lines, labelled as such', async
 test('status reports the production state instead of implying playback', async () => {
   const harness = await bootAwaiting();
   const status = el(harness, 'status').textContent;
-  assert.match(status, /^Narration queued —/);
+  assert.match(status, /^Audiobook in production —/);
   assert.match(status, /no audio to stream yet/);
   assert.equal(el(harness, 'status').classList.contains('error'), false);
 });
@@ -307,7 +307,7 @@ test('an explicit ?book= opens that title', async () => {
   const harness = await bootAwaiting({ search: '?book=duty-of-care' });
   assert.equal(el(harness, 'bookTitle').textContent, 'Duty of Care');
   assert.equal(el(harness, 'chapterCount').textContent, '(22)');
-  assert.match(el(harness, 'status').textContent, /^Manuscript finished —/);
+  assert.match(el(harness, 'status').textContent, /^Novel finished, narration to come —/);
 });
 
 test('an unknown ?book= falls back to the featured title and says so', async () => {
@@ -348,7 +348,7 @@ test('the room opens on the narrated book, not the featured one', async () => {
     'The Human Exception — Fiction Listening Room — KinNoKi Labs');
   // Real runtime, not the "≈N h once narrated" estimate.
   assert.equal(el(harness, 'bookByline').textContent,
-    'by Dan Fakkeldy · 24 chapters · ~58.3k words · 7:53:23');
+    'Created by Dan Fakkeldy with AI · 24 chapters · ~58.3k words · 7:53:23');
   assert.equal(el(harness, 'editionNote').hidden, false);
   assert.match(el(harness, 'editionNote').textContent, /first listen/i);
 });
@@ -424,7 +424,7 @@ test('?book=reversible-containment streams the first-listen package', async () =
   assert.equal(harness.document.title,
     'Reversible Containment — Fiction Listening Room — KinNoKi Labs');
   assert.equal(el(harness, 'bookByline').textContent,
-    'by Dan Fakkeldy · 30 chapters · ~79.8k words · 9:56:19');
+    'Created by Dan Fakkeldy with AI · 30 chapters · ~79.8k words · 9:56:19');
   assert.equal(el(harness, 'editionNote').hidden, false);
   assert.match(el(harness, 'editionNote').textContent, /first listen/i);
   assert.match(el(harness, 'editionNote').textContent, /review/i);
@@ -489,7 +489,7 @@ test('an un-narrated title still opens inert while another book streams', async 
     assert.equal(el(harness, id).disabled, true, `${id} must stay disabled`);
   }
   assert.equal(harness.audio.loadCalls, 0, 'the other book’s stream is never fetched');
-  assert.match(el(harness, 'status').textContent, /^Narration queued —/);
+  assert.match(el(harness, 'status').textContent, /^Audiobook in production —/);
 });
 
 /* ── Narrated mechanics, on a short synthetic timeline ─── */
