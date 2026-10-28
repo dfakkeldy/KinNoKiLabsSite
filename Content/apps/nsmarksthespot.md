@@ -10,9 +10,11 @@ status: Live browser map
 
 NS Marks The Spot is a Nova Scotia map for property research and local history. Search a parcel by PID, civic address, or postal community, read dated municipal tax-sale notices against live parcel geometry, switch on provincial reference layers, and slide Hugh Fletcher's 1880s geological sheets over today's landscape.
 
+<p class="app-actions"><a class="btn btn-gold btn-md" href="/apps/nsmarksthespot/map/">Open the map</a></p>
+
 ## Where it stands
 
-The current product focus is the **browser map**, live at [/apps/nsmarksthespot/map/](/apps/nsmarksthespot/map/). It runs on any phone, tablet, or desktop with nothing to install. Optional live location draws the position this device reports in the browser and keeps that reading on-device. The native iPhone app is a separate offline and field companion with internal TestFlight builds; it is not on the App Store.
+The current product focus is the **browser map**, live at [/apps/nsmarksthespot/map/](/apps/nsmarksthespot/map/). It runs on any phone, tablet, or desktop with nothing to install. Optional live location draws the position this device reports in the browser and keeps that reading on-device. The native iPhone app is a separate offline and field companion in internal TestFlight builds; it is not on the App Store.
 
 ## What the map does
 
@@ -26,14 +28,14 @@ The current product focus is the **browser map**, live at [/apps/nsmarksthespot/
 
 ## Rhodena Wind
 
-The proposed turbine map has a focused page at [/rhodena](/rhodena) — a short URL, the same pattern as /poker. It is the research map with a Rhodena focus, titled **Rhodena Wind — proposed turbine map**. The full map stays at [/apps/nsmarksthespot/map/](/apps/nsmarksthespot/map/). This is not a separate offline pocket app: there is no service worker or offline pack.
+The proposed turbine map has a focused page at [/rhodena](/rhodena). It is the research map with a Rhodena focus, titled **Rhodena Wind — proposed turbine map**. The full map stays at [/apps/nsmarksthespot/map/](/apps/nsmarksthespot/map/).
 
 - **Sight lines:** From a chosen viewpoint on the viewshed, an eye-level (~1.7 m) line runs to each assessed 200 m tip in the viewshed colours. It stays solid until bare earth first obstructs it, then a ridge mark and a dotted remainder. Those breaks use the same terrain samples, curvature, and refraction as the viewshed. Trees, buildings, and the final design are not in the model; the line is drawn to tip height, not the hub. Near-threshold results stay amber. Unassessed or out-of-range turbines get no line. The layout is the provisional proposed layout.
 - **Map | Aerial:** A switch under the 3D control. Aerial imagery still opens the Province licence gate before it turns on.
 
 ## Fishing
 
-The fishing map has a focused page at [/fishmap](/fishmap), the same short-URL pattern as /poker and /rhodena. It is the research map with a fishing focus, titled **Fishing spots — Cape Breton and the Strait of Canso**. It is separate from the static [Strait and Bras d'Or Fishing Map](/fishing/) at /fishing/, and its footer links there. This is not a separate offline pocket app: there is no service worker or offline pack.
+The fishing map has a focused page at [/fishmap](/fishmap). It is the research map with a fishing focus, titled **Fishing spots — Cape Breton and the Strait of Canso**. It is separate from the static [Strait and Bras d'Or Fishing Map](/fishing/) at /fishing/, and its footer links there.
 
 - **Spots:** Numbered pins and spot cards for 27 hand-picked shore, wharf and lake spots, each with its sources and directions in Google Maps or Apple Maps.
 - **When and what:** Month and species filters and a species calendar. A dated summary of the rules to check hides each rule once its date has passed; the page never says a season is open now. Check the current Anglers' Handbook and DFO notices before you go.

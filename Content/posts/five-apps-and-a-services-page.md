@@ -1,9 +1,11 @@
 ---
 date: 2026-07-05 20:30
-description: A status note — five apps in the works, four with TestFlight builds running, none on the App Store yet, and a new services page.
+description: A July 2026 status note on the apps in progress and a new services page, with an October 2026 update — MacroMark 1.0 is now on the App Store.
 tags: studio
 ---
 # Five apps and a services page
+
+> **Update, October 2026:** MacroMark 1.0 is now [on the App Store](https://apps.apple.com/ca/app/macromark/id6785081218), free. Routey has been discontinued. See [Apps](/apps) for where each app stands today.
 
 First real post, so a status note rather than a manifesto.
 

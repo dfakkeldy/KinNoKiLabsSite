@@ -4,7 +4,7 @@ description: Visual rounds for real-world countdowns, turns, routines, and reusa
 image: /images/apps/turntimer.png
 accent: #74c0fc
 tagline: Make time visible for turns, routines, and reusable sequences.
-platforms: iPhone
+platforms: iPhone, Browser
 status: TestFlight
 ---
 

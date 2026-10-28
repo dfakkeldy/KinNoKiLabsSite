@@ -330,11 +330,11 @@ test('Poker has the pinned asset base and narrowly authorized worker scope', () 
   }
 });
 
-test('privacy names the Poker pocket as browser-local storage', () => {
+test('privacy names the Poker address and driveway map as browser-local storage', () => {
   const privacy = readFileSync(new URL('../../Content/privacy.md', import.meta.url), 'utf8');
   const generated = readFileSync(new URL('../../Output/privacy/index.html', import.meta.url), 'utf8');
   for (const [label, source] of [['Content/privacy.md', privacy], ['Output/privacy/index.html', generated]]) {
-    assert.match(source, /Poker pocket at \/poker/, `${label} must name the Poker pocket route`);
+    assert.match(source, /address and driveway map at \/poker/, `${label} must name the Poker route`);
     assert.match(source, /address search/, `${label} must mention address search`);
     assert.match(source, /driveway traces/, `${label} must mention driveway traces`);
     assert.match(source, /offline pack/, `${label} must mention the offline pack`);
