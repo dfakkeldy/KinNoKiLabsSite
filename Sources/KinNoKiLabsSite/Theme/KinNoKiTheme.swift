@@ -783,7 +783,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
             <section class="tax-section tax-guide-section" id="guide" aria-labelledby="tax-guide-heading">
               <div class="tax-wrap">
                 <div class="tax-guide-feature reveal">
-                  <img class="tax-book-cover" src="/taxsale/cover.png" alt="Cover of Beyond the Tax-Sale Packet by Dan Fakkeldy" width="1600" height="2560" loading="lazy" decoding="async">
+                  <img class="tax-book-cover" src="/images/covers/beyond-the-tax-sale-packet-640.webp" alt="Cover of Beyond the Tax-Sale Packet by Dan Fakkeldy" width="640" height="1024" loading="lazy" decoding="async">
                   <div class="tax-guide-copy">
                     <p class="tax-kicker">Free guide · PDF, EPUB and audiobook</p>
                     <h2 id="tax-guide-heading"><em>Beyond the<br>Tax-Sale Packet</em></h2>
@@ -1597,7 +1597,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
 
         <div class="learn-book-grid">
           <article class="learn-book-card">
-            <img class="learn-book-cover" src="/learn/covers/echo-from-the-inside.png" alt="Cover of Echo, From the Inside" width="1600" height="2560" loading="lazy" decoding="async">
+            <img class="learn-book-cover" src="/images/covers/echo-from-the-inside-640.webp" alt="Cover of Echo, From the Inside" width="640" height="1024" loading="lazy" decoding="async">
             <div>
               <p class="learn-book-runtime">17 chapters · about 5.4 hours</p>
               <h3>Echo, From the Inside</h3>
@@ -1612,7 +1612,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
           </article>
 
           <article class="learn-book-card">
-            <img class="learn-book-cover" src="/learn/covers/why-it-feels-right.png" alt="Cover of Why It Feels Right" width="1600" height="2560" loading="lazy" decoding="async">
+            <img class="learn-book-cover" src="/images/covers/why-it-feels-right-640.webp" alt="Cover of Why It Feels Right" width="640" height="1024" loading="lazy" decoding="async">
             <div>
               <p class="learn-book-runtime">18 chapters · about 5.0 hours</p>
               <h3>Why It Feels Right</h3>
@@ -1627,7 +1627,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
           </article>
 
           <article class="learn-book-card">
-            <img class="learn-book-cover" src="/learn/covers/findable.png" alt="Cover of Findable" width="1600" height="2560" loading="lazy" decoding="async">
+            <img class="learn-book-cover" src="/images/covers/findable-640.webp" alt="Cover of Findable" width="640" height="1024" loading="lazy" decoding="async">
             <div>
               <p class="learn-book-runtime">8 chapters · about 3.0 hours</p>
               <h3>Findable</h3>
@@ -1641,7 +1641,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
             </div>
           </article>
           <article class="learn-book-card">
-            <img class="learn-book-cover" src="/learn/covers/rodents-in-the-walls.png" alt="Cover of Rodents in the Walls" width="1600" height="2560" loading="lazy" decoding="async">
+            <img class="learn-book-cover" src="/images/covers/rodents-in-the-walls-640.webp" alt="Cover of Rodents in the Walls" width="640" height="1024" loading="lazy" decoding="async">
             <div>
               <p class="learn-book-runtime">9 chapters · about 2.0 hours</p>
               <h3>Rodents in the Walls</h3>
@@ -1656,7 +1656,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
           </article>
 
           <article class="learn-book-card">
-            <img class="learn-book-cover" src="/learn/covers/chicken-predators.png" alt="Cover of Chicken Predators" width="1600" height="2560" loading="lazy" decoding="async">
+            <img class="learn-book-cover" src="/images/covers/chicken-predators-640.webp" alt="Cover of Chicken Predators" width="640" height="1024" loading="lazy" decoding="async">
             <div>
               <p class="learn-book-runtime">16 chapters · about 3.1 hours</p>
               <h3>Chicken Predators</h3>

@@ -14,7 +14,7 @@
 
 PUBLISH_BIN ?= publish
 
-.PHONY: publish preview generate clean test test-listen test-fiction test-games test-tools test-site test-gas-price-watch listen-catalog paired-covers sync-ns-marks-web sync-turn-timer-web tender-pack
+.PHONY: publish preview generate clean test test-listen test-fiction test-games test-tools test-site test-gas-price-watch listen-catalog paired-covers cover-thumbnails sync-ns-marks-web sync-turn-timer-web tender-pack
 
 generate:
 	@generation_epochs="$$(node Tools/prepare-deterministic-publish.mjs)" && \
@@ -71,6 +71,9 @@ listen-catalog:
 
 paired-covers:
 	Tools/sync-paired-cover-assets.sh
+
+cover-thumbnails:
+	Tools/make-cover-thumbnails.sh
 
 sync-ns-marks-web:
 	node Tools/sync-ns-marks-web.mjs

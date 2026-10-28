@@ -49,7 +49,7 @@ for (const book of approvedBooks) {
     const card = matchingCards[0];
 
     assert.ok(card.includes(
-      `<img class="learn-book-cover" src="/learn/covers/${book.slug}.png" alt="Cover of ${book.title}" width="1600" height="2560" loading="lazy" decoding="async">`,
+      `<img class="learn-book-cover" src="/images/covers/${book.slug}-640.webp" alt="Cover of ${book.title}" width="640" height="1024" loading="lazy" decoding="async">`,
     ));
     assert.ok(card.includes(`<p class="learn-book-runtime">${book.runtime}</p>`));
     assert.ok(card.includes(`<p>${book.description}</p>`));
