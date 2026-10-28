@@ -1,32 +1,34 @@
 # Building Echo — The Devlog
 
-Echo went from "I wonder if I could make an iOS app" to a four-platform audiobook study system in about eight weeks. This is the week-by-week story, reconstructed from the actual git history — **428 commits between April 19 and June 9, 2026**, written by one developer with no prior Swift experience, in evenings and weekends.
+Echo went from "I wonder if I could make an iOS app" to a four-platform audiobook study system in about eight weeks. This is the week-by-week story, reconstructed from the actual git history — **428 commits between April 19 and June 9, 2026**, by one developer new to Swift, directing an AI coding agent in evenings and weekends.
 
 It's all open source. You can audit every claim below: [github.com/dfakkeldy/Echo](https://github.com/dfakkeldy/Echo).
 
 ## The road to 1.0
 
-The next chapter is underway: Echo now has a defined 1.0 — a trustworthy study player on iPhone, Watch, and Mac, with honest study analytics and a complete flashcard workflow. The program, in landing order: a **listening capture layer** (so your stats accumulate from the very next beta build), **CI and the Echo identity cleanup**, the **Insights screen** (real listening time, streaks, chapter coverage, retention curves), opt-in **Context Memory** (place-tagged bookmarks and sessions), the full **Anki workflow** (decks, tags, a card editor, the mark-later Card Inbox, real .apkg import), **Brain Dump notes** with watch dictation, **Markdown second-brain export**, and **iCloud study sync**. About fourteen weeks of evenings and weekends, planned the same way everything else here was built: in public. [Join the beta](/echo-beta) and watch it land build by build.
+In June, Echo got a defined 1.0: a trustworthy study player on iPhone, Watch, and Mac, with honest study analytics and a complete flashcard workflow. The plan, in landing order: a **listening capture layer** (so your stats accumulate from the very next beta build), **CI and the Echo identity cleanup**, the **Insights screen** (real listening time, streaks, chapter coverage, retention curves), opt-in **Context Memory** (place-tagged bookmarks and sessions), the full **Anki workflow** (decks, tags, a card editor, the mark-later Card Inbox, real .apkg import), **Brain Dump notes** with watch dictation, **Markdown second-brain export**, and **iCloud study sync**.
+
+**Where it stands, October 2026:** Echo is still in its open TestFlight beta. The Card Inbox, the card editor and decks, FSRS review, Insights on iPhone, and Markdown study-note exports are in current builds; full iCloud study sync and direct `.apkg` import on iPhone are still open. [Join the beta](/echo-beta) to follow it build by build.
 
 ## June 14 · *A realization: it's a player first*
 
-Writing the 1.0 marketing made something obvious that the feature list had been hiding: most of Echo is useful even if you never make a single flashcard. The sleep timer, CarPlay, the Apple Watch remote, soundscapes, pitch-corrected speed, chapter and bookmark looping, your own DRM-free library — that's a complete, private audiobook player on its own. The study system is the *reason* Echo exists, but it shouldn't be the toll booth you have to pass to enjoy the thing. So the sites now say it plainly: *just here to listen? Echo's got you.* Same app, wider door.
+Writing the 1.0 marketing made something obvious that the feature list had been hiding: most of Echo is useful even if you never make a single flashcard. The sleep timer, the Apple Watch remote, soundscapes, pitch-corrected speed, chapter and bookmark looping, your own DRM-free library — that's a complete, private audiobook player on its own. The study system is the *reason* Echo exists, but it shouldn't be the toll booth you have to pass to enjoy the thing. So the sites now say it plainly: *just here to listen? Echo's got you.* Same app, wider door.
 
 ## Week 1 — April 19 · *The two-hour app* (10 commits)
 
-It started with a problem, not a plan. No audiobook app I could find would loop a single chapter, survive thirty interruptions a shift, and play at 1.25× without chipmunk-voicing the narrator. One Sunday of vibe-coding later: a working player that loaded a folder from iCloud, looped chapters, and played speed-corrected audio. By the end of the day it had background-persistence so it would still be ready to play after a long pause — the first brick of what became Smart Rewind.
+It started with a problem, not a plan. No audiobook app I could find would loop a single chapter, survive thirty interruptions a day, and play at 1.25× without chipmunk-voicing the narrator. One Sunday of directing an AI coding agent produced a working player that loaded a folder from iCloud, looped chapters, and played speed-corrected audio. By the end of the day it had background-persistence so it would still be ready to play after a long pause — the first brick of what became Smart Rewind.
 
-Then the repo went quiet for ten days. (Day job. Also: using the thing every day on the route, finding out what was missing.)
+Then the repo went quiet for ten days while I used the app every day and found out what was missing.
 
 ## Week 2 — April 27 – May 3 · *The watch appears* (20 commits)
 
-The project got a name (BookLoop — it wouldn't survive), and got serious: a playlist editor with a virtual chapter queue, disabled-chapter skipping, persistent progress and per-book speed memory. Then the line that changed the app's shape: *"feat: Add Apple Watch app with Connectivity, Haptics, and Glassmorphism UI."* One day later the watch had widgets and App Intents; by week's end the complication showed the current book's thumbnail with live progress. The phone could finally stay plugged into the aux cable, in the user's pocket, all shift.
+The project got a name (BookLoop — it wouldn't survive), and got serious: a playlist editor with a virtual chapter queue, disabled-chapter skipping, persistent progress and per-book speed memory. Then the line that changed the app's shape: *"feat: Add Apple Watch app with Connectivity, Haptics, and Glassmorphism UI."* One day later the watch had widgets and App Intents; by week's end the complication showed the current book's thumbnail with live progress. The phone could finally stay in a pocket or plugged into the car, all day.
 
 ## Week 3 — May 4 – 10 · *Bookmarks learn to talk* (48 commits)
 
 The week of the signature features. **Smart Rewind** grew its three tiers — seconds, minutes, hours — so every interruption length got a proportional rewind. **Voice memo bookmarks** landed, including the detail that still surprises people: memos *play back inline* when the narration reaches them. Then bookmarks reached the watch, learned to **loop between bookmarks**, and got volume normalization.
 
-Also this week: an Appearance menu with **OpenDyslexic and Lexend** fonts (the accessibility thread starts here, not as an afterthought), a sleep timer, the relicense to MIT (Echo has since moved to GPL-3.0) — and the first macOS app. Honesty corner: this is also the week of commits literally titled *"broke some stuff"*, *"broken"*, and *"stuck on computing dependencies"* ×2, as three Xcode targets were forcibly consolidated into one project. It got fixed. The git history keeps the scars.
+Also this week: an Appearance menu with **OpenDyslexic and Lexend** fonts (the accessibility thread starts here, not as an afterthought), a sleep timer, the relicense to MIT (Echo has since moved to GPL-3.0) — and the first macOS app. Honesty corner: this was also a rough week in the commit log, as three Xcode targets were forcibly consolidated into one project. It got fixed. The git history keeps the scars.
 
 ## Week 4 — May 11 – 17 · *The study player thesis* (92 commits)
 
@@ -42,7 +44,7 @@ The busiest week in the project's history, and it reads like a different app shi
 - **The Anki system.** SM-2 daily review, inline flashcard recall during playback, audio snippet cards, JSON deck import, and hands-free **flashcard review on the watch**.
 - **The EPUB alignment pipeline** — a Swift CLI that unpacks an EPUB, parses the spine, and fuzzy-aligns transcribed audio to text with Levenshtein matching. The hardest problem in the app, started properly, with tests.
 - **V1 EPUB timeline core** — `epub_block` and `alignment_anchor` tables, an import service, manual anchors with interpolation: the seed of the Read tab.
-- Plus: tab navigation, multi-file **M4B support**, **CarPlay**, a portable playlist manifest, a Twitter-style unified timeline feed — and the project's first marketing site with the privacy policy.
+- Plus: tab navigation, multi-file **M4B support**, early **CarPlay** scaffolding, a portable playlist manifest, a Twitter-style unified timeline feed — and the project's first marketing site with the privacy policy.
 
 ## Week 6 — May 25 – 31 · *Stabilize, audit, rebrand* (81 commits)
 
@@ -66,11 +68,11 @@ The engineering flourish of the week: the **accent contrast safety pipeline**. A
 
 ## The shape of the thing
 
-Eight working weeks. Four platforms (iOS, watchOS, macOS, widgets — plus CarPlay). A SQL database, an on-device ML alignment pipeline, a spaced-repetition system, and an EPUB/PDF reader — built on nights and weekends by someone whose previous programming experience was "some Python scripts for GIS and a Visual Basic call logger in high school."
+Eight working weeks. Four platforms (iOS, watchOS, macOS, widgets). A SQL database, an on-device ML alignment pipeline, a spaced-repetition system, and an EPUB/PDF reader — built on nights and weekends by a developer whose background was GIS and estimating work rather than Swift.
 
 The point of publishing this log isn't bragging rights. It's the same as open-sourcing the code: you should be able to see exactly what you're trusting with your books and your attention — and maybe, if you've been wondering whether you could build *your* app, this page is the nudge.
 
-*The devlog is generated from the real commit history.*
+*The devlog is reconstructed from the real commit history.*
 
 ---
 [Echo](/apps/echo) | [User Manual](/echo-manual) | [Join the Beta](/echo-beta) | [Source on GitHub](https://github.com/dfakkeldy/Echo)
