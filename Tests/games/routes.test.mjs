@@ -7,10 +7,10 @@ test('reviewed Arcade Hall social art is exact and generator-copied byte-for-byt
   const source = readFileSync(new URL('../../Resources/images/games/og.png', import.meta.url));
   const output = readFileSync(new URL('../../Output/images/games/og.png', import.meta.url));
   assert.equal(source.toString('ascii', 1, 4), 'PNG');
-  assert.equal(source.readUInt32BE(16), 1734);
-  assert.equal(source.readUInt32BE(20), 907);
+  assert.equal(source.readUInt32BE(16), 1200);
+  assert.equal(source.readUInt32BE(20), 630);
   assert.equal(createHash('sha256').update(source).digest('hex'),
-    'e6246c17edf3e48206a8ed1f49cc948fe578d1b0c9437f3edbf12534e8c1d3bb');
+    '6c8b550d87c6497e6b99bc65f6d071a74e06f5dc2223804770eafc03dcbf21da');
   assert.deepEqual(output, source);
 });
 
