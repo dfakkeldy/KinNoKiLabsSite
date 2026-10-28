@@ -27,7 +27,7 @@ Echo does not impose one retention period on all providers or custom services. D
 
 When external fetching is permitted and the app can access its configured CloudKit container, importing a book can look for matching public alignment anchors. Echo sends Apple a deterministic record identifier derived from the book's title, author and duration. This lookup does not publish your local anchors, audio, full book text or notes. An ordinary lookup failure can fall back to local alignment; the app can also find no matching record.
 
-This 1.0 release does not expose an action for uploading alignments to the public database. This is separate from the optional lookup and from files in your private iCloud storage. The lookup description does not promise that a matching record exists or that a request will succeed.
+The current release does not expose an action for uploading alignments to the public database. This is separate from the optional lookup and from files in your private iCloud storage. The lookup description does not promise that a matching record exists or that a request will succeed.
 
 If you shared an alignment using another build, removing local anchors, deleting a local book or signing out does not itself delete public copies. Echo's client sets no automatic expiry for shared alignment records and has no in-app deletion control for them. We do not state a fixed retention period for past public alignments or guarantee removal of copies obtained by other users. You can contact us with privacy questions or requests using the address below.
 

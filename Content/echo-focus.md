@@ -72,7 +72,7 @@ ADHD motivation runs on interest, novelty, challenge, and urgency far more than 
 - **Rotate novelty deliberately.** Two or three books in flight isn't failure — it's fuel. When one goes flat, switching beats stopping.
 - **Choose books you actually want to hear.** Material that fascinates you gets the kind of attention money can't buy.
 
-**∞ How Echo helps:** Audio learning is temptation bundling by nature — chapters ride along on walks, chores, and commutes. Streaks, heatmaps, and listening totals (🚧 **Coming in 1.0**) give progress an immediate, visible surface — honest numbers, no guilt-trip notifications. (Why the streak is designed to bend instead of break: next section.) Five-minute review sessions are deliberately sized for "I can do five minutes."
+**∞ How Echo helps:** Audio learning is temptation bundling by nature — chapters ride along on walks, chores, and commutes. Streaks and listening totals in Insights give progress an immediate, visible surface — honest numbers, no guilt-trip notifications. (Why the streak is designed to bend instead of break: next section.) Five-minute review sessions are deliberately sized for "I can do five minutes."
 
 ## 6. All-or-Nothing Thinking — finding the gray
 
@@ -88,7 +88,7 @@ ADHD motivation runs on interest, novelty, challenge, and urgency far more than 
 - **Never miss twice.** One miss is an event; two starts a pattern. The rule isn't "never miss" — it's "make the *next* one count," which converts a lapse into a bounce instead of a verdict.
 - **Pre-plan the recovery.** Decide *now* what happens after a bad day: "if I miss a day, I do five minutes the next morning." That's an implementation intention (Gollwitzer, 1999) aimed precisely at the relapse moment — where the what-the-hell effect strikes.
 
-**∞ How Echo helps:** Chapter coverage is the gray scale, literally (🚧 **Coming in 1.0**) — a book stops being "read or unread" and becomes "Chapter 7 — 86% covered, listened 3×"; partial progress is a number on the screen, climbing. The streak is designed to bend, not break (🚧 **Coming in 1.0**), and the heatmap shows your month as texture instead of a pass/fail verdict — a deliberate answer to the abstinence violation effect. Mark Now, Card Later (🚧 **Coming in 1.0**) is anti-perfectionism by design: a rough one-tap mark today beats the perfect flashcard you never made. Five-minute reviews and the Pomodoro make partial sessions official. And Smart Rewind makes messy resumes free — the "I lost my place, it's all ruined" spiral never starts.
+**∞ How Echo helps:** Chapter coverage is the gray scale, literally (🚧 **Coming in 1.0**) — a book stops being "read or unread" and becomes "Chapter 7 — 86% covered, listened 3×"; partial progress is a number on the screen, climbing. The streak is designed to bend, not break (🚧 **Coming in 1.0**), and the heatmap shows your month as texture instead of a pass/fail verdict — a deliberate answer to the abstinence violation effect. Mark Now, Card Later is anti-perfectionism by design: a rough one-tap mark today beats the perfect flashcard you never made. Five-minute reviews and the Pomodoro make partial sessions official. And Smart Rewind makes messy resumes free — the "I lost my place, it's all ruined" spiral never starts.
 
 One honest boundary: if extreme self-judgment is persistent, distressing, or reaching well beyond study habits, that's squarely therapy territory (see "When to get more support" below) — cognitive-behavioral therapy was practically built for this pattern, and it works.
 

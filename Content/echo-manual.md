@@ -1,6 +1,6 @@
 # Echo User Manual
 
-The complete reference for **Echo: Audiobook Study Player** on iPhone, iPad, Apple Watch, Mac, CarPlay, and widgets.
+The complete reference for **Echo: Audiobook Study Player** on iPhone, iPad, Apple Watch, Mac, and widgets.
 
 New to Echo? Read [Getting the Most Out of Echo](/echo-learn) first — it explains *why* these features help you learn. This manual explains *how* everything works.
 
@@ -104,7 +104,7 @@ Five configurable transport buttons. Defaults: skip back, previous chapter, play
 - **Skip durations** configurable 5–60 s, independently forward/backward, synced to the watch.
 - **Long-press secondary actions:** each button can carry a second action on long-press (Settings → Player Controls).
 - **Sections:** fine-grained chapter files are grouped into logical chapters; Next/Previous Section jumps the sub-sections; the scrubber shows tick marks and snaps to them with a haptic tap.
-- **Mark for a flashcard** (🚧 **Coming in 1.0**) — a one-tap Mark action drops the passage into your Card Inbox without pausing playback.
+- **Mark for a flashcard** — a one-tap Mark action drops the passage into your Card Inbox without pausing playback.
 
 ### Speed control — pitch-corrected
 
@@ -181,30 +181,26 @@ A complete spaced-repetition system — think Anki, built into your audiobook pl
 
 - **From the reader:** long-press a passage → **Create Flashcard**.
 - **From a bookmark:** any bookmark — note, memo, photo and all — becomes a card.
-- **From a mark** (🚧) — via the Card Inbox, below.
+- **From a mark** — via the Card Inbox, below.
 - **From a note** (🚧) — promote a Brain Dump entry (section 10).
 - **From scratch:** in the Timeline tab.
 - **Import a deck:** Anki-style JSON today; real .apkg with 1.0 (below).
 
-Every card has a **front** (write it as a question) and a **back**, and can carry an **audio snippet** (the actual narrated clip), a **photo**, a **deck and tags** (🚧), and a **trigger timing** (or manual-review-only).
+Every card has a **front** (write it as a question) and a **back**, and can carry an **audio snippet** (the actual narrated clip), a **photo**, a **deck and tags**, and a **trigger timing** (or manual-review-only).
 
-### The Card Inbox — mark now, card later 🚧 Coming in 1.0
+### The Card Inbox — mark now, card later
 
 1. **Mark:** one tap on the transport bar (or a watch button) captures the passage you just heard — a few seconds of context either side, with the transcript snippet when the book is aligned. Playback never stops.
 2. **Inbox:** marks collect grouped by book, with a badge on the dashboard and Timeline toolbar.
 3. **Convert:** tap a mark → a pre-filled card editor (adjust the clip, write the front as a question, pick a deck) — or swipe to dismiss.
 
-When the Card Inbox arrives, the old inline flashcard popups retire — capture stops competing with listening.
+The old inline flashcard popups are retired — capture no longer competes with listening.
 
-### Inline recall during playback
-
-Cards with a trigger timing surface as you listen — a micro-review in context. Cards set to *manual only* never interrupt playback. (With 1.0, new cards default to manual-only and the popup mechanism is retired.)
-
-### Editing cards 🚧 Coming in 1.0
+### Editing cards
 
 Every card opens in a full editor: front/back, audio snippet range (with "use current position"), deck, tags, enabled toggle, delete-with-confirmation. Reachable from the Timeline, review sessions, and the deck browser.
 
-### Decks & tags 🚧 Coming in 1.0
+### Decks & tags
 
 - **Deck list:** every deck with card count and due count; deckless cards live in an implicit "Unfiled" group.
 - **Deck detail:** searchable card list, per-deck mini-stats, rename, delete (cascade cards or orphan them).
@@ -222,14 +218,14 @@ Pick a `.apkg` file from the deck list's import button and Echo maps it card-by-
 
 ### Daily Review
 
-- **SM-2 scheduling** (the same family Anki uses): grade a card **Again / Hard / Good / Easy** and its next appearance is computed from your history.
+- **FSRS scheduling** (FSRS-4.5, the modern scheduler Anki also offers): grade a card **Again / Hard / Good / Easy** and its next appearance is computed from your history.
 - Cards with audio play their snippet — review with your ears.
-- Due count, reviewed-today, and totals show on the Timeline review module; the full picture lives in Insights (section 14, 🚧).
+- Due count, reviewed-today, and totals show on the Timeline review module; the full picture lives in Insights (section 14).
 - An optional **daily local notification** reminds you when cards are due. (Local = generated on your device, not pushed from a server.)
 
 ### Review on Apple Watch
 
-The full review session runs hands-free on the watch: hear the card, think your answer, tap a grade. Perfect for the walk between mailboxes.
+The full review session runs hands-free on the watch: hear the card, think your answer, tap a grade. Perfect for a walk.
 
 > 🔭 **Roadmap — Chapter Study Mode:** treat each chapter as a flashcard, with due chapters lining up as a ready-made listening queue. Until then: loop the chapter, grade yourself honestly at its end, and card anything you couldn't explain.
 
@@ -294,7 +290,7 @@ Import like an EPUB — the Import button accepts both and routes automatically.
 - **Page-level alignment:** long-press a page → the Manual Alignment sheet, with play/pause, ±5 s skips, and a **scrubber joystick** — pull a little for slow precise scrubbing, more for fast travel, with live audio preview.
 - **Page bookmarks:** a screenshot thumbnail plus your exact page, zoom, and scroll position — tapping restores the view precisely.
 
-## 14. Insights 🚧 Coming in 1.0
+## 14. Insights
 
 Echo's Insights charts are computed on your device from local listening and review history. Optional Audiobookshelf progress exchange is separate and sends progress to the server you connect. Open Insights from the dashboard modules or the Timeline toolbar.
 
@@ -322,7 +318,7 @@ Your brain files *where* alongside *what* — Echo can capture the "where" for y
 Echo's position on your data: it's yours, in formats you can read, forever. The database schema is open source; nothing is hostage.
 
 - **Bookmarks → Markdown** (available today): a book's bookmarks with timestamps, notes, and deep links that reopen Echo at the exact second.
-- **Study Notes bundle** (🚧 **Coming in 1.0**): the whole second brain, per book — one Markdown file (bookmarks, Book Notes, flashcard fronts/backs, chapter headings, place names) plus an assets folder with your voice memos and photos. Obsidian/Logseq/Notion-ready: plain files, relative links, no account. Per book, or bulk-export in Settings.
+- **Study Notes bundle**: the whole second brain, per book — one Markdown file (bookmarks, Book Notes, flashcard fronts/backs, chapter headings, place names) plus an assets folder with your voice memos and photos. Obsidian/Logseq/Notion-ready: plain files, relative links, no account. Per book, or bulk-export in Settings.
 - **Deck → JSON** (🚧 **Coming in 1.0**): any deck (or all cards) as a portable file with every field including scheduling state; Echo re-imports its own exports losslessly — backup and device-migration in one.
 - **Anki .apkg import** (🚧 **Coming in 1.0**): inbound — see section 9. (.apkg *export* is on the roadmap; JSON export covers backup until then.)
 
@@ -345,7 +341,7 @@ Your study history as a feed: chapters, bookmarks (with photos and memo indicato
 ### The remote
 
 - **Up to 25 buttons:** five pages of five slots, every slot user-assignable — play/pause, skips (5–60 s), chapters, sections, loop, speed, sleep timer, bookmark, Pomodoro, or empty (empty pages hide).
-- **Mark passage** (🚧 **Coming in 1.0**) — one tap into the Card Inbox.
+- **Mark passage** — one tap into the Card Inbox.
 - **Dictate note** (🚧 **Coming in 1.0**) — speak a Brain Dump note; playback never pauses.
 - **Design it from the phone:** drag-and-drop the layout in Settings → Watch App; it syncs instantly.
 - **Digital Crown:** assign to volume or scrubbing (with a deadzone so a brushed crown doesn't jump your position).
@@ -372,7 +368,7 @@ State syncs via durable application context — the watch picks up the truth the
 
 ## 20. CarPlay
 
-Echo appears in CarPlay with a browse list and transport commands — play, pause, skip. Intentionally minimal for now; richer templates and capture buttons are on the roadmap. No CarPlay in your car? That's what the watch remote and aux cable are for — Echo's whole design assumes the phone stays in your pocket.
+CarPlay isn't enabled in current builds; it's on the roadmap. Until then, the watch remote and your car's audio connection do the job — Echo's whole design assumes the phone stays in your pocket.
 
 ## 21. Echo for Mac
 
@@ -392,7 +388,7 @@ Core owned-file playback and reading do not require an Echo account. Files in an
 
 When network access is permitted, importing a book may look up matching public alignment anchors, with local fallback for an ordinary lookup failure. The lookup uses a deterministic record identifier derived from the book's title, author and duration; it does not publish local anchors, audio, full book text or notes. No matching record or successful request is guaranteed.
 
-This 1.0 release does not expose public-alignment uploads. Earlier builds offered an upload of title, author, duration and alignment markers with a persistent identifier derived from the uploader's iCloud account. That payload excluded audio, full book text and notes. If an alignment was shared using another build, deleting local content or signing out does not itself delete public copies. Echo's client sets no automatic expiry and has no in-app deletion control for past shared alignments; copies obtained by others have separate handling. See the [Echo Privacy Policy](/echo-privacy/).
+The current release does not expose public-alignment uploads. Earlier builds offered an upload of title, author, duration and alignment markers with a persistent identifier derived from the uploader's iCloud account. That payload excluded audio, full book text and notes. If an alignment was shared using another build, deleting local content or signing out does not itself delete public copies. Echo's client sets no automatic expiry and has no in-app deletion control for past shared alignments; copies obtained by others have separate handling. See the [Echo Privacy Policy](/echo-privacy/).
 
 ## 23. Settings Reference
 
@@ -406,7 +402,7 @@ This 1.0 release does not expose public-alignment uploads. Earlier builds offere
 - **Player Controls:** five tap actions + five long-press actions
 - **Watch App:** button layout designer (5 pages × 5 slots) · Digital Crown mode · artwork layout · haptics · date overlay · title scroll speed
 - **Per-book overrides:** any global setting, pinned per book
-- **Data:** study-notes bulk export (🚧) · deck export (🚧)
+- **Data:** study-notes bulk export · deck export (🚧)
 - **Help:** the full in-app help library
 - **Language:** English and Dutch
 
@@ -453,10 +449,10 @@ The first run downloads the on-device speech model (~40 MB) and transcription is
 JSON decks import today. Real `.apkg` files — scheduling history included — arrive with 1.0 (🚧). Newest-format decks: re-export from Anki with *"Support older Anki versions"* checked. Cloze cards flatten to plain Q&A in v1.
 
 **Can I get my flashcards and notes back out?**
-Yes — that's policy. Bookmarks export to Markdown today; with 1.0, decks export to portable JSON and every book exports a full study-notes bundle for Obsidian/Logseq/Notion (🚧). The schema is open source; your data is never hostage. See section 16.
+Yes — that's policy. Bookmarks and full study-notes bundles export to Markdown today, ready for Obsidian/Logseq/Notion. Portable JSON deck export is coming with 1.0 (🚧). The schema is open source; your data is never hostage. See section 16.
 
-**Inline flashcards interrupt me too much.**
-Set those cards to *manual only*, or disable inline triggers in Settings → Study. This gets better in 1.0: the Card Inbox replaces mid-playback popups entirely (🚧).
+**Will flashcards interrupt my listening?**
+No. Mid-playback popups are retired: one tap marks a passage into the Card Inbox without pausing, and reviews happen in Daily Review.
 
 **What's the difference between a bookmark, a note, and a flashcard?**
 A **bookmark** is a *moment* (timestamp, optionally with memo/photo/place). A **note** (🚧) is an *untethered thought* — the brain-dump. A **flashcard** is a *question* you want to keep answering. Notes and bookmarks both promote into flashcards — capture cheap first, decide later.
@@ -471,10 +467,10 @@ Raise the watch and give it a beat — it requests authoritative state from the 
 Context Memory is optional and off by default. With permission, the device can provide a precise fix; Echo rounds coordinates before asking Apple's geocoder for a place name and stores the resulting context locally. Delete Context Memory removes the app's local context records, not providers' records or backups. See section 15 and the [Echo Privacy Policy](/echo-privacy/).
 
 **Does Echo use AI? Does anything leave my device?**
-Local narration and alignment use on-device models. Optional external-AI features send book text to the provider you configure, under that provider's policies. They are separate from local processing and do not make the same retention promise. This 1.0 release does not expose public-alignment uploads; conditional lookup with local fallback remains. See the [Echo Privacy Policy](/echo-privacy/).
+Local narration and alignment use on-device models. Optional external-AI features send book text to the provider you configure, under that provider's policies. They are separate from local processing and do not make the same retention promise. The current release does not expose public-alignment uploads; conditional lookup with local fallback remains. See the [Echo Privacy Policy](/echo-privacy/).
 
 **What's coming after 1.0?**
-The honest shortlist: Chapter Study Mode, on-device AI card drafting, focus soundscapes, gentle hyperfocus/transition reminders, a Context Memory map view, FSRS as an alternative scheduler, .apkg export, richer CarPlay, full Mac reader parity. The [roadmap](https://github.com/dfakkeldy/Echo/blob/main/ROADMAP.md) is public, like everything else.
+The honest shortlist: Chapter Study Mode, gentle hyperfocus/transition reminders, a Context Memory map view, .apkg export, CarPlay, full Mac reader parity. The [roadmap](https://github.com/dfakkeldy/Echo/blob/main/ROADMAP.md) is public, like everything else.
 
 **Where are my files? Can I get my data out?**
 Your audio stays where you put it (Echo reads in place and never modifies your files). Echo's own data lives in a local database with an open-source schema; everything exports (section 16). Deleting the app deletes Echo's database — your audio folder is untouched.

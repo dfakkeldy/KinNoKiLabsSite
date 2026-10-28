@@ -11,7 +11,7 @@ const alignmentFacts = [
   /title, author and duration/,
   /lookup does not publish your local anchors, audio, full book text or notes/,
   /ordinary lookup failure can fall back to local alignment/,
-  /1\.0 release does not expose an action for uploading alignments/,
+  /current release does not expose an action for uploading alignments/,
   /does not promise that a matching record exists or that a request will succeed/,
   /If you shared an alignment using another build/,
   /signing out does not itself delete public copies/,
@@ -57,7 +57,7 @@ test('Echo source and its RSS item preserve the approved privacy and availabilit
   ]) {
     await t.test(label, () => {
       for (const fact of [
-        /This 1\.0 release does not expose public-alignment uploads/,
+        /The current release does not expose public-alignment uploads/,
         /look up matching public alignment anchors/,
         /local fallback for an ordinary lookup failure/,
         /device may supply a precise fix/,
@@ -108,7 +108,7 @@ test('Echo manual and app privacy copy match the approved connected-service limi
     ['Output/echo-manual/index.html', read('Output/echo-manual/index.html')],
   ]) {
     for (const fact of [
-      /This 1\.0 release does not expose public-alignment uploads/,
+      /The current release does not expose public-alignment uploads/,
       /Earlier builds offered an upload of title, author, duration and alignment markers/,
       /persistent identifier derived from the uploader/,
       /deleting local content or signing out does not itself delete public copies/,

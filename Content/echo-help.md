@@ -2,7 +2,7 @@
 
 Thank you for using Echo. The fastest routes to an answer:
 
-- **[User Manual](/echo-manual)** — the complete reference: every feature on iPhone, Apple Watch, Mac, CarPlay, and widgets, plus a library-organization guide.
+- **[User Manual](/echo-manual)** — the complete reference: every feature on iPhone, iPad, Apple Watch, Mac, and widgets, plus a library-organization guide.
 - **[Getting the Most Out of Echo](/echo-learn)** — how to use the study features, and the memory science behind them.
 - **[The Focus Field Guide](/echo-focus)** — ADHD & AuDHD strategies for getting started, staying organized, and staying motivated.
 - **[Beta Guide](/echo-beta)** — TestFlight setup, feedback how-to, and structured test plans.
@@ -27,8 +27,8 @@ The first run downloads the on-device speech model (~40 MB) and transcription is
 ### The watch shows a stale book or position.
 Raise the watch and give it a beat — it requests authoritative state from the phone on wake. Keeping both devices on and nearby (Bluetooth/Wi-Fi) helps.
 
-### Inline flashcards interrupt me too much.
-Set those cards to *manual only*, or disable inline triggers in Settings → Study. Your reviews then live only in Daily Review. (This gets better in 1.0: a one-tap Card Inbox replaces mid-playback popups entirely. 🚧)
+### Will flashcards interrupt my listening?
+No. Mid-playback flashcard popups are retired: one tap marks a passage without pausing the book, the mark waits in the Card Inbox until you turn it into a card, and reviews happen in Daily Review.
 
 ### Can I import my Anki decks?
 Anki-style JSON decks import today. Real .apkg files — scheduling history included — arrive with Echo 1.0 (🚧). Details and format notes are in the [manual](/echo-manual).
@@ -46,10 +46,10 @@ This release does not promise complete private synchronization of flashcards, de
 Local playback, reading, narration and alignment can work with the required files and models already present. Model downloads, optional community-alignment lookup, website capture, external AI and Audiobookshelf use a network connection. External AI sends book text to the configured provider. This release does not expose public-alignment uploads. See the [Echo Privacy Policy](/echo-privacy/).
 
 ### Where is my data? Can I get it out?
-Your audio stays where you put it (Echo reads in place). Echo's own data lives in a local database on your device with an open-source schema. Bookmarks export to Markdown today; with 1.0, decks export to portable JSON and whole books export as Markdown study bundles for Obsidian, Logseq, or Notion (🚧). Your data is never hostage.
+Your audio stays where you put it (Echo reads in place). Echo's own data lives in a local database on your device with an open-source schema. Bookmarks and whole-book study-note bundles export to Markdown today, ready for Obsidian, Logseq, or Notion. Portable JSON deck export is coming with 1.0 (🚧). Your data is never hostage.
 
 ### What's coming after 1.0?
-Chapter Study Mode, on-device AI card drafting, focus soundscapes, gentle hyperfocus reminders, a Context Memory map view, FSRS scheduling, .apkg export, richer CarPlay, and full Mac reader parity. The [roadmap](https://github.com/dfakkeldy/Echo/blob/main/ROADMAP.md) is public.
+Chapter Study Mode, gentle hyperfocus reminders, a Context Memory map view, .apkg export, CarPlay, and full Mac reader parity. The [roadmap](https://github.com/dfakkeldy/Echo/blob/main/ROADMAP.md) is public.
 
 ## Contact
 
