@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "thumbnails": {
+    "echo-from-the-inside-640.webp": {
+      "source": "learn/covers/echo-from-the-inside.png",
+      "sourceSha256": "0fe641954a1f20016613596afbaa8a95dc218611077c276bb13aa8cc191c40d1",
+      "sha256": "5020f319793b9a8affcc7c8d8093f6c6e4d44987277351c2da7ceac2d3f393bf",
+      "dimensions": [
+        640,
+        1024
+      ]
+    },
+    "why-it-feels-right-640.webp": {
+      "source": "learn/covers/why-it-feels-right.png",
+      "sourceSha256": "3fbc32510e611766c150c6280dc0059b634d1c6d4f0923beec84291fb0e819b3",
+      "sha256": "8e70f85d18d991cf48271af8631b34bbe5112fea82c5f41366f68736058749cc",
+      "dimensions": [
+        640,
+        1024
+      ]
+    },
+    "findable-640.webp": {
+      "source": "learn/covers/findable.png",
+      "sourceSha256": "4b0ca55fb5e4f4edca32102c0fd3b49b67db1ed67399578ac8d241735501fe19",
+      "sha256": "d3f8ef4ab8b93f1683d268d862931b06840eaed54148c2d77647525dff2fce64",
+      "dimensions": [
+        640,
+        1024
+      ]
+    },
+    "rodents-in-the-walls-640.webp": {
+      "source": "learn/covers/rodents-in-the-walls.png",
+      "sourceSha256": "e1afe1fbcbd440927c8d4d62de475af3230afe0d8edbbb6a886c498fc21af2a2",
+      "sha256": "9f769459c2c5cf622509d8310df2814b80ddbb6358f365aa6d6a6d6c00a4e511",
+      "dimensions": [
+        640,
+        1024
+      ]
+    },
+    "chicken-predators-640.webp": {
+      "source": "learn/covers/chicken-predators.png",
+      "sourceSha256": "1745b28342f6e70061f5333f9c7f29e1e5adcbe726e111432f88563648b87210",
+      "sha256": "0c6426a4ce80b4c02fe0e8f1395b69fd8f6d429c3b13aa2664d9f686726413fa",
+      "dimensions": [
+        640,
+        1024
+      ]
+    },
+    "beyond-the-tax-sale-packet-640.webp": {
+      "source": "taxsale/cover.png",
+      "sourceSha256": "fffaf3037b43f6341a822cb004a0a4d1829e8ef56df80c753400471ffe53ddf6",
+      "sha256": "7d3c3b9c061ef09cab0731e77fac6d642bc182edc48707951aa8b23ef2ed71f2",
+      "dimensions": [
+        640,
+        1024
+      ]
+    }
+  }
+}

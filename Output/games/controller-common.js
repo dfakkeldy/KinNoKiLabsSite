@@ -43,8 +43,8 @@ export function element(tag, attributes = {}, ...children) {
   return node;
 }
 
-// Shared thumbnail builder for cargo/piece previews (Kinnoki Stack next-cargo
-// pills, Kinnoki Yard tray pieces). `cells` are piece-local {row, column}
+// Shared thumbnail builder for cargo/piece previews (KinNoKi Stack next-cargo
+// pills, KinNoKi Yard tray pieces). `cells` are piece-local {row, column}
 // integers (already reflecting whatever rotation the caller wants shown);
 // the bounding box and every cell position are derived purely from those
 // integers via CSS percentage math (custom properties + calc()), so this

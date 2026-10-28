@@ -76,7 +76,7 @@ export async function renderCharts(root, store) {
   }
   let state = persisted(session.run.puzzle.definition, session.run.puzzle.play);
   const size = state.definition.size;
-  const shell = sharedShell({ title: 'Kinnoki Charts', difficulty: session.difficulty });
+  const shell = sharedShell({ title: 'KinNoKi Charts', difficulty: session.difficulty });
   shell.setAssisted(session.run.assisted);
   const instructions = element('details', { 'data-instructions': '' },
     element('summary', { text: 'How to play' }),
