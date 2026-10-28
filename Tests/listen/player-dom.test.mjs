@@ -952,12 +952,12 @@ function libraryCover(player, title) {
 test('a square cover keeps its own dimensions instead of a forced portrait ratio', async () => {
   const player = await bootPlayer({
     catalog: sizedCatalog({
-      'the-new-deal': { coverWidth: 768, coverHeight: 768 },
+      'chicken-predators': { coverWidth: 768, coverHeight: 768 },
       'rodents-in-the-walls': { coverWidth: 480, coverHeight: 768 },
     }),
   });
 
-  const square = libraryCover(player, 'The New Deal');
+  const square = libraryCover(player, 'Chicken Predators');
   assert.equal(square.getAttribute('width'), '768');
   assert.equal(square.getAttribute('height'), '768');
 
@@ -982,13 +982,13 @@ test('a cover without catalog dimensions gets neither width nor height', async (
 test('a cover with only one usable dimension asserts no ratio at all', async () => {
   const player = await bootPlayer({
     catalog: sizedCatalog({
-      'the-new-deal': { coverWidth: 768 },
+      'chicken-predators': { coverWidth: 768 },
       'rodents-in-the-walls': { coverWidth: 480, coverHeight: 0 },
       'tests-first': { coverWidth: 480, coverHeight: 768.5 },
     }),
   });
 
-  for (const title of ['The New Deal', 'Rodents in the Walls', 'Tests First']) {
+  for (const title of ['Chicken Predators', 'Rodents in the Walls', 'Tests First']) {
     const cover = libraryCover(player, title);
     assert.equal(cover.getAttribute('width'), null, `${title} width`);
     assert.equal(cover.getAttribute('height'), null, `${title} height`);

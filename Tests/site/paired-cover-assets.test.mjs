@@ -25,7 +25,6 @@ const portraitSlugs = [
   'the-voice-in-the-machine',
   'rodents-in-the-walls',
   'chicken-predators',
-  'the-new-deal',
   'is-there-anyone-in-here',
   'claude-platform-01-the-message',
   'claude-platform-02-thinking-and-reliable-responses',

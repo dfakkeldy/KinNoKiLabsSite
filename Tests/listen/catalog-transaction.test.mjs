@@ -35,9 +35,9 @@ source "$TRANSACTION_LIBRARY"
 listen_catalog_install_cleanup_traps
 listen_catalog_transaction_init "$OUT_DIR"
 
-mkdir -p "$STAGED_BOOKS/chicken-predators" "$STAGED_BOOKS/the-new-deal"
+mkdir -p "$STAGED_BOOKS/chicken-predators" "$STAGED_BOOKS/fixture-second-book"
 printf 'new chicken\n' > "$STAGED_BOOKS/chicken-predators/marker.txt"
-printf 'new deal\n' > "$STAGED_BOOKS/the-new-deal/marker.txt"
+printf 'new second book\n' > "$STAGED_BOOKS/fixture-second-book/marker.txt"
 printf '{"bundle":"new"}\n' > "$STAGED_CATALOG"
 
 if [ "$EXISTING_FINALS" -eq 1 ]; then
@@ -231,7 +231,7 @@ test('successful transaction swaps the complete bundle and prunes stale director
   const { out, result } = runFixture(t);
   assert.equal(result.status, 0, diagnostic(result));
   assert.equal(readFileSync(join(out, 'books.json'), 'utf8'), '{"bundle":"new"}\n');
-  assert.deepEqual(readdirSync(join(out, 'books')).sort(), ['chicken-predators', 'the-new-deal']);
+  assert.deepEqual(readdirSync(join(out, 'books')).sort(), ['chicken-predators', 'fixture-second-book']);
   assert.equal(existsSync(join(out, 'books/revoked-test')), false);
   assertNoBuildRoots(out);
 });

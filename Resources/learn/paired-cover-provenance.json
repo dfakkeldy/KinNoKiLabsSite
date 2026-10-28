@@ -282,30 +282,6 @@
         ]
       }
     },
-    "the-new-deal": {
-      "receiptKind": "cover-selection-v2",
-      "receiptSchemaVersion": 2,
-      "selectionReceiptSha256": "87f1a12509bd14ab95bde7aec45b65604e5e4db1b2d2db2f960cea6940754ed0",
-      "portrait": {
-        "sourceSha256": "3d6ded0e0af6c9454d6a5712e78fbba84fb8aa4f0dbd72fd5ce7e72768d14a37",
-        "dimensions": [
-          1600,
-          2560
-        ]
-      },
-      "square": {
-        "sourceSha256": "2034da6997ad9c451a3542049fbce5cfbc0203a6675a36bc405413de20a437c0",
-        "derivativeSha256": "ecc8f6a93a99e254038f1a5a5048ba07cab247f96e3dad2402e066a2b3280d91",
-        "sourceDimensions": [
-          2400,
-          2400
-        ],
-        "derivativeDimensions": [
-          768,
-          768
-        ]
-      }
-    },
     "is-there-anyone-in-here": {
       "receiptKind": "cover-selection-v2",
       "receiptSchemaVersion": 2,
