@@ -295,7 +295,7 @@ Import like an EPUB — the Import button accepts both and routes automatically.
 Echo's Insights charts are computed on your device from local listening and review history. Optional Audiobookshelf progress exchange is separate and sends progress to the server you connect. Open Insights from the dashboard modules or the Timeline toolbar.
 
 - **Overview:** range picker (day / week / month / year / all-time), total listening time, current streak, daily average.
-- **Listening:** time per day or week, speed trend, share per book, a time-of-day histogram (find your golden hours), session lengths.
+- **Listening:** time per day or week, speed trend, share per book, a time-of-day histogram (find your golden hours), and session lengths (🚧).
 - **Per-book:** a chapter-coverage heatmap — tap a chapter for "Chapter 7 — 86% covered, listened 3×" — plus totals and pace.
 - **Study:** reviews per day, a retention curve against a 90% target, grade distribution, and a 30-day due forecast.
 - **Planner:** planned-versus-actual session pairs, when you schedule listening.

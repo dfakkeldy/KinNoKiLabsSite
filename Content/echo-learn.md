@@ -155,7 +155,7 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 ## 11. Insights — see yourself learn
 
-**What it does:** A dedicated Insights screen built from your actual listening and review history — computed on your device, never sent anywhere. Listening time by day, week, month, or year. Streaks and a review-day heatmap. Per-book **chapter coverage** ("Chapter 7 — 86% covered, listened 3×"). Your speed trend, session lengths, and best time of day. For flashcards: reviews per day, a retention curve, grade distribution, and a 30-day due forecast. If you use Context Memory, a simple list of the places you listen most.
+**What it does:** A dedicated Insights screen built from your actual listening and review history — computed on your device, never sent anywhere. Listening time by day, week, month, or year. Streaks, with a review-day heatmap still to come (🚧). Per-book **chapter coverage** ("Chapter 7 — 86% covered, listened 3×"). Your speed trend and best time of day, with session lengths still to come (🚧). For flashcards: reviews per day, a retention curve, grade distribution, and a 30-day due forecast. If you use Context Memory, a simple list of the places you listen most.
 
 **The science: self-monitoring and feedback.** Learners are famously bad at judging their own learning — re-reading *feels* effective precisely when it isn't. Self-regulated-learning research (Zimmerman, 2002) puts accurate self-monitoring at the center of effective studying; Hattie & Timperley (2007) rank concrete feedback among the most powerful influences on learning; and goal-setting research (Locke & Latham, 2002) shows specific, visible progress sustains effort far better than "do your best."
 
