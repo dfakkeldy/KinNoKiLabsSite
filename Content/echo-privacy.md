@@ -53,7 +53,7 @@ Pending messages are stored locally on the watch and iPhone until the endpoint a
 
 Context Memory is optional and off by default. With permission, Echo can obtain the device's location and round its coordinates to two decimal places before asking Apple's geocoding service for a place name. The device may supply a precise location fix before rounding. Echo stores the rounded context and place name locally. Delete Context Memory removes the app's local context records and cached place data; it does not erase third-party records or device backups.
 
-Microphone permission supports recording voice memos. Photo access supports selected images and saving exported media to Photos. Echo keeps these recordings and imported images locally in the traced features. A Watch voice memo can transfer to the paired iPhone using Apple's device communication services. Apple may fetch Photos or files from your personal iCloud account when you select them.
+Microphone permission supports recording voice memos. Photo access supports selected images and saving exported media to Photos. Echo keeps these recordings and imported images on your device. A Watch voice memo can transfer to the paired iPhone using Apple's device communication services. Apple may fetch Photos or files from your personal iCloud account when you select them.
 
 Apple manages App Store purchases, system backups and any files you choose to keep in Apple cloud storage. Those services follow [Apple's privacy policy](https://www.apple.com/legal/privacy/en-ww/) and your Apple settings. This does not mean every Echo record is automatically synchronized through private iCloud.
 
