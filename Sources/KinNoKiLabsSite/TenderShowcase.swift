@@ -247,15 +247,14 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
                 .text("A manually curated showcase of Nova Scotia public tender opportunities, each turned into a source-linked starting brief with visible questions and a reusable review workflow. This is a planning aid, not a live tender directory.")
             )
         ),
-        // 2. Current examples
-        .section(
-            .class("tender-current reveal"),
-            .h2(.text("Current examples")),
-            .p(.class("tender-source-note"), .text("Each entry exposes its lifecycle state and the date it was last checked. Recheck the official source before acting.")),
-            .if(
-                current.isEmpty,
-                .p(.class("tender-empty"), .text("No open tenders are featured right now. The briefs under Archived demonstrations below are closed worked examples: each was prepared for a real Nova Scotia tender that has since closed, and is kept to show the source-linked review workflow.")),
-                else: .div(
+        // 2. Current examples (hidden while none are open; the worked examples lead)
+        .if(
+            !current.isEmpty,
+            .section(
+                .class("tender-current reveal"),
+                .h2(.text("Current examples")),
+                .p(.class("tender-source-note"), .text("Each entry exposes its lifecycle state and the date it was last checked. Recheck the official source before acting.")),
+                .div(
                     .class("tender-current-grid"),
                     .forEach(current) { card in
                         .a(
@@ -283,13 +282,17 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
                 )
             )
         ),
-        // 3. Archived demonstrations (the empty-state note above points here)
+        // 3. Worked examples: closed tenders kept as demonstrations
         .section(
             .class("tender-archive reveal"),
-            .h2(.text("Archived demonstrations")),
+            .h2(.text("Worked examples")),
+            .if(
+                current.isEmpty && !archived.isEmpty,
+                .p(.class("tender-source-note"), .text("Each brief below was prepared for a real Nova Scotia tender that has since closed. They are closed worked examples, kept to show the source-linked review workflow."))
+            ),
             .if(
                 archived.isEmpty,
-                .p(.class("tender-empty"), .text("No archived demonstrations yet. When a current example closes or is withdrawn, it will be retained here as a demonstration.")),
+                .p(.class("tender-empty"), .text("No worked examples yet. When a current example closes or is withdrawn, it will be kept here as a demonstration.")),
                 else: .div(
                     .class("tender-archive-grid"),
                     .forEach(archived) { card in
@@ -330,7 +333,7 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
                 .class("tender-preview reveal"),
                 .h2(.text("Free custom tender preview")),
                 .p(.text("Send a public tender URL or ID, your company or work type, contact details, and a short fit explanation. You will receive a free one-page starting brief showing the same source-linked review workflow — no account, no upload, no obligation.")),
-                .p(.class("tender-source-note"), .text("I can only do a limited number while testing.")),
+                .p(.class("tender-source-note"), .text("I take a limited number of requests each month.")),
                 .p(.class("tender-source-note"), .text("For a deeper fit analysis, the paid Tender-to-Bid Diagnostic expands the starting brief into a compliance check, question map, and document checklist for one specific opportunity.")),
                 .a(
                     .class("btn btn-gold tender-request"),

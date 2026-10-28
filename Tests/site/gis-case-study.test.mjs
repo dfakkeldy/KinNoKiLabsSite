@@ -89,7 +89,9 @@ test('publishes only the five reviewed WebP assets and preserves dimensions and 
   assert.deepEqual(readdirSync(sourceDir).sort(), assetNames);
   assert.deepEqual(readdirSync(outputDir).sort(), assetNames);
   assert.equal(generated.match(/<img src="\/images\/gis\//g)?.length, 5);
-  assert.equal(generated.match(/width="1440" height="900"/g)?.length, 5);
+  assert.equal(generated.match(/width="1440" height="900"/g)?.length, 4);
+  // The 2015 mosaic is cropped to its imaged band.
+  assert.equal(generated.match(/width="1440" height="500"/g)?.length, 1);
   assert.equal(generated.match(/<img src="\/images\/gis\/[^"]+"[^>]+alt="[^"]+"/g)?.length, 5);
 
   for (const name of assetNames) {

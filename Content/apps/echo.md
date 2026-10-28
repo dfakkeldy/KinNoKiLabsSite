@@ -4,7 +4,7 @@ description: An audiobook player built for studying, not just listening.
 image: /images/apps/echo.png
 accent: #d4af37
 tagline: For Every Mind — Turn listening into learning.
-platforms: iPhone, Apple Watch, Mac, CarPlay
+platforms: iPhone, iPad, Apple Watch, Mac
 status: TestFlight beta — open
 featured: true
 iconAlt: Echo app icon — an infinity symbol in silver and gold
@@ -12,18 +12,18 @@ iconAlt: Echo app icon — an infinity symbol in silver and gold
 
 Echo is the audiobook player that helps you *remember* what you heard — word-perfect read-along, one-tap flashcards, and a study system built on the real science of memory.
 
-## Built on a mail route
+## Why Echo exists
 
-I deliver mail — in and out of the car thirty times a shift, an aux cable, an Apple Watch, and an AuDHD brain that learns from non-fiction audiobooks in stolen, interrupted minutes. No app on the internet would loop a single chapter until it stuck, stay ready to play on a watch after a long pause, or remember *why* a bookmark was made three driveways ago.
+A lot of real listening happens in stolen, interrupted minutes: in and out of the car, an aux cable, an Apple Watch, a chapter cut short. No app on the internet would loop a single chapter until it stuck, stay ready to play on a watch after a long pause, or remember *why* a bookmark was made three stops ago.
 
-So I built it, nights and weekends around a full delivery route, with no formal programming background — an app for iPhone, Apple Watch, Mac, and CarPlay that treats audiobooks the way students treat textbooks.
+So I built one — an app for iPhone, iPad, Apple Watch, and Mac that treats audiobooks the way students treat textbooks.
 
 ## Just here to listen?
 
 **You don't have to make a single flashcard.** Echo is a full-featured, own-your-library audiobook player first — the study tools are there if you ever want them, and out of the way if you don't.
 
-- **Your books, your device:** Import your DRM-free M4B and MP3 files — single books or whole folders. Echo stores its library records and progress on your device. This 1.0 release does not expose public-alignment uploads. When network access is permitted, importing a book may look up matching public alignment anchors, with local fallback for an ordinary lookup failure. See the [Echo Privacy Policy](/echo-privacy/).
-- **Everywhere Apple audio goes:** Full CarPlay Now Playing with a browseable library, a Watch remote you design, a Lock Screen widget, Control Center, and Siri bookmarks.
+- **Your books, your device:** Import your DRM-free M4B and MP3 files — single books or whole folders. Echo stores its library records and progress on your device. The current release does not expose public-alignment uploads. When network access is permitted, importing a book may look up matching public alignment anchors, with local fallback for an ordinary lookup failure. See the [Echo Privacy Policy](/echo-privacy/).
+- **Everywhere Apple audio goes:** A Watch remote you design, Watch complications, Lock Screen and Control Center playback controls, and Siri bookmarks.
 - **The essentials, done right:** A sleep timer that fades out or stops at the chapter end, pitch-corrected speed, instant chapter navigation, bookmarks, and background audio tuned for spoken word.
 - **Picks up where your attention left off:** Adaptive Smart Rewind backs up just enough after a break; pull your headphones and Echo pauses instead of blasting the speaker.
 - **Make listening yours:** Lay out every transport button, retint the player to your cover art, layer in focus soundscapes, or boost quiet narration past the system max.
@@ -58,7 +58,6 @@ A growing crowd of apps will sync your audiobook to your ebook, on your device. 
 - **Second-Brain Export:** One tap exports a book's bookmarks, notes, voice memos, photos, and flashcards as a clean Markdown bundle — straight into Obsidian, Logseq, or Notion. No account, no lock-in.
 - **Files, iCloud and Watch:** Files in an iCloud folder follow Apple's file services. Watch features transfer selected state and voice memos with the paired iPhone. This release does not promise complete private synchronization of flashcards, decks, bookmarks or playback position. See the [Echo Privacy Policy](/echo-privacy/).
 - **A Watch Remote You Design:** Up to 25 buttons across 5 pages, Digital Crown scrubbing or volume, plus a Pomodoro focus timer on your wrist.
-- **Built for CarPlay:** A full Now Playing screen plus a browseable Library, Chapters, and Bookmarks — with in-dash buttons to bookmark, record a memo, or mark a passage on the road.
 - **Focus Soundscapes & Visualizer:** Layer generative white/brown noise, binaural beats, and nature sounds under your narration — and watch four GPU-powered audio visualizers respond as you listen.
 - **Pitch-Corrected Speed:** Narrators sound human at 1.25×. Every book remembers its own speed.
 - **Dyslexia-Friendly by Design:** Lexend and OpenDyslexic fonts built in, Dynamic Type, VoiceOver labels.

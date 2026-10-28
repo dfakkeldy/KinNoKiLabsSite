@@ -194,22 +194,6 @@
         "receiptSpecSha256": "404a3b69dabcdc2b20e8ad83de179a8fefdd3bc13faa2035f6e09a35a3a833ea"
       }
     },
-    "the-new-deal": {
-      "receiptKind": "cover-selection-v2",
-      "receiptPath": "cover-selection.json",
-      "receiptSha256": "87f1a12509bd14ab95bde7aec45b65604e5e4db1b2d2db2f960cea6940754ed0",
-      "candidateId": "weight-of-the-mailbag",
-      "portrait": {
-        "sha256": "3d6ded0e0af6c9454d6a5712e78fbba84fb8aa4f0dbd72fd5ce7e72768d14a37",
-        "specSha256": "b6f801a44d7b944189c482d9d4836bb0d03d0d81274f75ff57d36abb018113df",
-        "receiptSpecSha256": "b6f801a44d7b944189c482d9d4836bb0d03d0d81274f75ff57d36abb018113df"
-      },
-      "square": {
-        "sha256": "2034da6997ad9c451a3542049fbce5cfbc0203a6675a36bc405413de20a437c0",
-        "specSha256": "be94fee278f98d193e7a809f83f385b5da169bb39c3b3a453209e98d8915ec0d",
-        "receiptSpecSha256": "be94fee278f98d193e7a809f83f385b5da169bb39c3b3a453209e98d8915ec0d"
-      }
-    },
     "is-there-anyone-in-here": {
       "receiptKind": "cover-selection-v2",
       "receiptPath": "cover-selection.json",

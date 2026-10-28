@@ -114,7 +114,7 @@ test('shows truthful format status and connects the existing app page', () => {
 
 test('publishes the exact approved EPUB through a stable first-party redirect', () => {
   assert.match(generated, /href="\/taxsale\/beyond-the-tax-sale-packet\.epub" download/);
-  assert.match(generated, /src="\/taxsale\/cover\.png"/);
+  assert.match(generated, /src="\/images\/covers\/beyond-the-tax-sale-packet-640\.webp"/);
   assert.match(generated, /href="\/tools\/epub-reader\/"/);
   const expectedRedirect =
     '/taxsale/beyond-the-tax-sale-packet.epub https://raw.githubusercontent.com/dfakkeldy/explainer-audiobooks/4cedf19540bc128edc7561333a95facddb05e31a/books/beyond-the-tax-sale-packet/beyond-the-tax-sale-packet.epub 302';

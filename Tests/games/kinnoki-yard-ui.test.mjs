@@ -182,7 +182,7 @@ test('Yard rejects a saved run whose signature does not match its definition', a
       audioFactory: silentYardAudioFactory,
     });
     assert.ok(fixture.root.querySelector('.game-error'));
-    assert.match(fixture.root.textContent, /Saved Kinnoki Yard state is invalid/);
+    assert.match(fixture.root.textContent, /Saved KinNoKi Yard state is invalid/);
     assert.equal(fixture.root.querySelector('[data-continue-game]'), null);
   } finally { restore(); }
 });
@@ -222,7 +222,7 @@ test('Yard rejects either saved assistance mismatch before Continue admission', 
         storage: fixture.localStorage,
         audioFactory: silentYardAudioFactory,
       });
-      assert.match(fixture.root.textContent, /Saved Kinnoki Yard state is invalid/);
+      assert.match(fixture.root.textContent, /Saved KinNoKi Yard state is invalid/);
       assert.equal(fixture.root.querySelector('[data-continue-game]'), null);
       assert.equal(openGameStore(fixture.localStorage).store.runs['kinnoki-yard'], undefined);
     } finally { restore(); }
@@ -249,7 +249,7 @@ test('Yard rejects nonboolean saved assistance envelopes before Continue admissi
         storage: fixture.localStorage,
         audioFactory: silentYardAudioFactory,
       });
-      assert.match(fixture.root.textContent, /Saved Kinnoki Yard state is invalid/);
+      assert.match(fixture.root.textContent, /Saved KinNoKi Yard state is invalid/);
       assert.equal(fixture.root.querySelector('[data-continue-game]'), null);
       assert.equal(openGameStore(fixture.localStorage).store.runs['kinnoki-yard'], undefined);
     } finally { restore(); }

@@ -6,10 +6,12 @@ accent: #2f8cff
 tagline: Apple Watch to Markdown.
 platforms: Apple Watch, iPhone
 status: App Store — 1.0
-iconAlt: MacroMark app icon — the letters M and M flanking a downward arrow on a dark navy tile
+iconAlt: MacroMark app icon — the letters M and M flanking a downward arrow, in silver on a black disc
 ---
 
 MacroMark is voice capture for people whose notes live in Markdown. Tap your Watch complication, speak, lower your wrist, and let MacroMark append the thought to today's note.
+
+<p class="app-actions"><a class="btn btn-gold btn-md" href="https://apps.apple.com/ca/app/macromark/id6785081218">Download on the App Store</a></p>
 
 > MacroMark 1.0 is [live on the App Store](https://apps.apple.com/ca/app/macromark/id6785081218) and free. Version 1.1 is in testing.
 
@@ -44,16 +46,14 @@ Verbal macros turn natural speech into structure. Use the built-in Markdown trig
 - **iCloud Drive:** Notes land in user-owned files.
 - **SwiftUI and SwiftData:** Native Apple-platform foundations keep the app focused and local.
 
-## V1.0 is about trust
+## Built for trust
 
-- **Reliability core:** Capture should survive real wrist-down usage and connectivity gaps.
-- **Status and recovery:** The app should make pending and failed transfers understandable.
-- **Review by date:** Captures should be easy to audit in daily-note form.
-- **App Intents:** System surfaces should make capture fast.
-- **Setup proof:** First-run setup should show exactly where notes go.
-- **Daily-note shape:** The output should be clean enough to live in a real vault.
-- **Transcription integrity:** The text should preserve what was said without surprise formatting.
-- **Launch readiness:** Privacy answers, a support page, and proof it's ready matter as much as features.
+- **Reliability core:** Watch captures stay queued until the iPhone has processed them and the export has succeeded or is safely queued for retry.
+- **Status and recovery:** Export status labels, a needs-attention filter, partial-transcription warnings and retry actions keep capture state visible.
+- **Review by date:** Check today's, yesterday's or any earlier daily note from the phone inbox or the Watch daily log.
+- **App Intents:** Instant capture, typed capture, daily-log review and append-text actions are available in Shortcuts and Siri.
+- **Setup proof:** Settings show where notes go and can write a test note before you rely on Watch capture.
+- **Daily-note shape:** Timestamp style, separators and an optional append heading are yours to configure.
 
 ## Privacy stays plain
 

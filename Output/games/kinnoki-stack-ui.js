@@ -117,7 +117,7 @@ function buildStackShell(root, difficulty, audioControls) {
 
   const cells = [];
   const grid = element('div', {
-    class: 'stack-grid', role: 'grid', 'aria-label': 'Kinnoki Stack cargo dock',
+    class: 'stack-grid', role: 'grid', 'aria-label': 'KinNoKi Stack cargo dock',
   });
   for (let row = 0; row < 18; row += 1) {
     const rowNode = element('div', { class: 'stack-row', role: 'row' });
@@ -193,7 +193,7 @@ function buildStackShell(root, difficulty, audioControls) {
       'div',
       { class: 'game-toolbar' },
       element('a', { href: '/games', class: 'back-link', text: '← Games' }),
-      element('h1', { text: 'Kinnoki Stack' }),
+      element('h1', { text: 'KinNoKi Stack' }),
       element('label', {}, element('span', { text: 'Difficulty' }), difficultySelect),
     ),
     notice,
@@ -709,7 +709,7 @@ function selectStackModel({
   const run = store.runs[GAME];
   if (run) {
     if (!validStoredStackRun(run, engine)) {
-      throw new Error('Saved Kinnoki Stack state is invalid.');
+      throw new Error('Saved KinNoKi Stack state is invalid.');
     }
     return {
       definition: run.puzzle.definition,
@@ -866,7 +866,7 @@ StackController.prototype.activate = async function activate(kind, api) {
   const action = kind === 'start' ? { type: 'start' } : { type: 'resume' };
   const transition = this.engine.reduceStack(this.state, action);
   if (transition.state.status !== 'active') {
-    throw new Error('Kinnoki Stack could not enter active play.');
+    throw new Error('KinNoKi Stack could not enter active play.');
   }
   this.state = transition.state;
 
@@ -1066,7 +1066,7 @@ StackController.prototype.replaceWithDifficulty = async function replaceWithDiff
   const run = this.persistence.store.runs[GAME];
   if (run) {
     const accepted = this.dependencies.confirm(
-      'Replace the current Kinnoki Stack run? The unfinished run will not count.',
+      'Replace the current KinNoKi Stack run? The unfinished run will not count.',
     );
     if (!accepted) {
       this.view.difficultySelect.value = this.difficulty;
@@ -1103,13 +1103,13 @@ StackController.prototype.finishTerminal = function finishTerminal() {
   let recordsBroken = [];
   try {
     payload = this.engine.stackCompletionPayload(this.state, this.lifecycle.elapsed());
-    if (!payload) throw new Error('Kinnoki Stack ended without a completion payload.');
+    if (!payload) throw new Error('KinNoKi Stack ended without a completion payload.');
     if (!validCompletionPayload(payload, this.state)) {
-      throw new Error('Kinnoki Stack ended with an invalid completion payload.');
+      throw new Error('KinNoKi Stack ended with an invalid completion payload.');
     }
     recordsBroken = this.persistence.complete(payload.records, this.state);
     if (!this.lifecycle.finish()) {
-      throw new Error('Kinnoki Stack completion lifecycle could not settle.');
+      throw new Error('KinNoKi Stack completion lifecycle could not settle.');
     }
   } catch (error) {
     this.finishing = false;
@@ -1170,7 +1170,7 @@ StackController.prototype.renderError = function renderError(error) {
   this.announcer.dispose();
   this.audioControls.dispose();
   renderGameError(this.root, {
-    title: 'Kinnoki Stack paused',
+    title: 'KinNoKi Stack paused',
     message: error.message || 'This run could not continue safely.',
     newGameHref: '/games/kinnoki-stack?difficulty=' + this.difficulty,
   });
@@ -1220,13 +1220,13 @@ async function mountStack(root, initialStore, dependencies, slot, options = {}) 
     if (existing && !options.previewDefinition) {
       if (!validStoredStackRun(existing, dependencies.engine)) {
         persistence.abandon(existing.signature);
-        throw new Error('Saved Kinnoki Stack state is invalid.');
+        throw new Error('Saved KinNoKi Stack state is invalid.');
       }
       persistence.normalizeAssistance(existing.puzzle.play);
       if (existing.difficulty !== difficulty) {
         const accepted = dependencies.confirm(
           'Replace the saved ' + titleCase(existing.difficulty)
-            + ' Kinnoki Stack run with ' + titleCase(difficulty) + '?',
+            + ' KinNoKi Stack run with ' + titleCase(difficulty) + '?',
         );
         if (accepted) {
           abandonedSignature = existing.signature;
@@ -1253,7 +1253,7 @@ async function mountStack(root, initialStore, dependencies, slot, options = {}) 
     return controller;
   } catch (error) {
     renderGameError(root, {
-      title: 'Kinnoki Stack paused',
+      title: 'KinNoKi Stack paused',
       message: error.message || 'A new run could not be prepared.',
       newGameHref: '/games/kinnoki-stack?difficulty=' + difficulty,
     });

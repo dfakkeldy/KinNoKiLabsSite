@@ -24,9 +24,10 @@ test('Routey is gone from the homepage, apps listing, and support page', () => {
     assert.doesNotMatch(html, /Routey/);
   }
   assert.match(home, /<span>4 apps<\/span>/);
-  assert.match(home, /<span>MacroMark 1\.0 on the App Store<\/span>/);
-  assert.match(apps, /Four apps, honestly statused\./);
-  assert.match(apps, /MacroMark 1\.0 is live on the App Store and free/);
+  assert.match(home, /href="https:\/\/apps\.apple\.com\/ca\/app\/macromark\/id6785081218"[^>]*>MacroMark 1\.0 on the App Store<\/a>/);
+  assert.match(apps, /Four apps, honestly labelled\./);
+  assert.doesNotMatch(apps, /statused/);
+  assert.match(apps, /MacroMark 1\.0 is <a[^>]*href="https:\/\/apps\.apple\.com\/ca\/app\/macromark\/id6785081218"[^>]*>live on the App Store<\/a> and free/);
   assert.doesNotMatch(home, /4 apps in development/);
   assert.doesNotMatch(home, /4 in TestFlight/);
   assert.doesNotMatch(apps, /none are on the App Store yet/);
@@ -59,7 +60,8 @@ test('tender hub claims a tagged, accessible PDF and presents closed briefs as w
   assert.doesNotMatch(tenders, /showcase of current Nova Scotia/);
   assert.match(tenders, /closed worked examples/);
   assert.match(tenders, /Request a free custom preview/);
-  assert.match(tenders, /I can only do a limited number while testing\./);
+  assert.match(tenders, /I take a limited number of requests each month\./);
+  assert.doesNotMatch(tenders, /while testing/);
 });
 
 test('about and services name Dan, with no photo of him', () => {

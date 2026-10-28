@@ -89,7 +89,7 @@ test('mount renders the toolbar, clue strips, and a size×size grid of charts ce
   } finally { restore(); }
 });
 
-test('Kinnoki Charts patches cell nodes in place instead of replacing them on dispatch', async () => {
+test('KinNoKi Charts patches cell nodes in place instead of replacing them on dispatch', async () => {
   const fixture = createDOMFixture({ search: '?difficulty=easy&continue=1' });
   const restore = installDOM(fixture);
   try {

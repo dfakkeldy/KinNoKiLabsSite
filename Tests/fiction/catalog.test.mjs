@@ -71,6 +71,9 @@ for (const book of catalog.books) {
       assert.ok(book[field].length > 0, `${field} must not be empty`);
     }
     assert.equal(book.author, book.slug.startsWith('merchant-of-venice-') ? 'William Shakespeare' : 'Dan Fakkeldy');
+    if (book.author === 'Dan Fakkeldy') {
+      assert.equal(book.credit, 'Created by Dan Fakkeldy with AI', 'original novels credit how they were made');
+    }
     assert.ok(book.wordCount > 1000, 'wordCount is a real manuscript length');
     assert.ok(book.estimatedHours > 0);
     assert.ok(productionStates.has(book.production.state),

@@ -1074,6 +1074,12 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 .app-hero + .prose > hr + p:last-child { font-size: 0; margin: 0; }
 .app-hero + .prose > hr + p:last-child a { display: inline-block; margin: 0 10px 10px 0; padding: 8px 16px; font-size: 14.5px; line-height: 1.4; font-weight: 500; color: var(--text); text-decoration: none; background: var(--surface); border: 1px solid var(--separator); border-radius: var(--radius-pill); }
 .app-hero + .prose > hr + p:last-child a:hover { border-color: color-mix(in srgb, var(--gold-500) 45%, var(--separator)); color: var(--text); }
+/* Primary actions near the top of an app page (App Store, Open the map),
+   written in the Markdown as <p class="app-actions"><a class="btn …">. */
+.app-hero + .prose > .app-actions { display: flex; flex-wrap: wrap; gap: 10px 14px; margin: 0 0 28px; }
+.prose a.btn { text-decoration: none; }
+.prose a.btn-gold, .prose a.btn-gold:hover { color: #1d1d1f; }
+.prose a.btn-outline, .prose a.btn-outline:hover { color: var(--text); }
 @media (max-width: 559px) {
   .app-hero { flex-direction: column; align-items: flex-start; gap: 16px; }
   .app-hero-icon { width: 72px; height: 72px; }
@@ -1693,7 +1699,7 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
   0% { transform: translate(-50%, 0); opacity: 1; }
   100% { transform: translate(-50%, -28px); opacity: 0; }
 }
-/* Shared cargo/piece thumbnail (Kinnoki Stack previews, Kinnoki Yard tray):
+/* Shared cargo/piece thumbnail (KinNoKi Stack previews, KinNoKi Yard tray):
    percentage-positioned cells sized from custom properties set in JS from
    cell coordinates, never from a layout read. */
 .cargo-thumb {
@@ -1836,7 +1842,7 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
 body.font-opendyslexic .yard-cell:focus-visible,
 body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 
-/* ── Kinnoki Charts (nonogram) ──────────────────────── */
+/* ── KinNoKi Charts (nonogram) ──────────────────────── */
 /* Row clues sit left of the grid, column clues sit above it; the whole
    layout (clues + grid together) rides inside .game-board-scroll so a hard
    15×15 board scrolls horizontally as one unit on narrow screens, matching
@@ -3276,6 +3282,8 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   object-fit: cover;
 }
 .gis-figure-dark { background: #101714; }
+/* The 2015 mosaic is a wide 1440x500 band; show it whole, not cropped to 8:5. */
+.gis-figure-wide img { aspect-ratio: 1440 / 500; }
 .gis-product-figure img { object-position: left top; }
 .gis-figure figcaption {
   padding: 14px 16px 15px;

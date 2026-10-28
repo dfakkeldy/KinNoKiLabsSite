@@ -210,7 +210,10 @@ private func siteHead<L: Location>(
     let pageTitle = isIndex ? site.name : "\(baseTitle) — \(site.name)"
     let description = location.description.isEmpty ? site.description : location.description
     let url = site.url(for: location.path)
-    let imageURL = site.url(for: location.imagePath ?? Path("/logo.png"))
+    // Share previews: pages without their own image get the 1200x630 card,
+    // and an SVG app icon is swapped for its PNG twin, since Facebook,
+    // LinkedIn and X don't render SVG.
+    let imageURL = site.url(for: shareImagePath(location.imagePath))
 
     // No-flash theme snippet — MUST run before the stylesheet so the first
     // paint already carries the stored (or default-dark) theme. Also marks
@@ -266,6 +269,18 @@ private func siteHead<L: Location>(
         .meta(.attribute(named: "property", value: "og:image"), .attribute(named: "content", value: imageURL.absoluteString)),
         .meta(.name("twitter:card"), .content("summary_large_image"))
     )
+}
+
+/// The og:image for a page: its own image, a PNG twin of an SVG icon
+/// (`/images/apps/x.svg` -> `/images/apps/x.png`, which must exist in
+/// Resources), or the default 1200x630 share card.
+private func shareImagePath(_ imagePath: Path?) -> Path {
+    guard let imagePath = imagePath else { return Path("/images/og-default.png") }
+    let string = imagePath.string
+    if string.hasSuffix(".svg") {
+        return Path(String(string.dropLast(4)) + ".png")
+    }
+    return imagePath
 }
 
 // MARK: - Shared header + mobile menu
@@ -353,9 +368,10 @@ private func brandLink() -> Node<HTML.BodyContext> {
 }
 
 /// Both logo variants are in the DOM; styles.css shows the one that suits
-/// the active theme.
+/// the active theme. The 128px WebP marks cover the 28-40px header and footer
+/// sizes at 3x; the full 748px PNGs are only for the large hero tree.
 private func brandMarks<Ctx>() -> Node<Ctx> {
-    .raw(#"<img class="logo-on-dark" src="/images/brand/logo-mark.png" alt=""><img class="logo-on-light" src="/images/brand/logo-mark-light.png" alt="">"#)
+    .raw(#"<img class="logo-on-dark" src="/images/brand/logo-mark-128.webp" width="128" height="128" alt=""><img class="logo-on-light" src="/images/brand/logo-mark-light-128.webp" width="128" height="128" alt="">"#)
 }
 
 private func navLink(_ item: NavItem, _ active: String) -> Node<HTML.ListContext> {
@@ -497,7 +513,7 @@ private func siteFooter() -> Node<HTML.BodyContext> {
                     ("/about", "About"),
                     ("/posts", "Posts"),
                     ("/privacy", "Privacy"),
-                    ("/nsmarksthespot-privacy/", "NS app privacy"),
+                    ("/nsmarksthespot-privacy/", "NS Marks The Spot privacy"),
                     ("/echo-privacy/", "Echo app privacy"),
                 ])
             ),
@@ -782,7 +798,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
             <section class="tax-section tax-guide-section" id="guide" aria-labelledby="tax-guide-heading">
               <div class="tax-wrap">
                 <div class="tax-guide-feature reveal">
-                  <img class="tax-book-cover" src="/taxsale/cover.png" alt="Cover of Beyond the Tax-Sale Packet by Dan Fakkeldy" width="1600" height="2560" loading="lazy" decoding="async">
+                  <img class="tax-book-cover" src="/images/covers/beyond-the-tax-sale-packet-640.webp" alt="Cover of Beyond the Tax-Sale Packet by Dan Fakkeldy" width="640" height="1024" loading="lazy" decoding="async">
                   <div class="tax-guide-copy">
                     <p class="tax-kicker">Free guide · PDF, EPUB and audiobook</p>
                     <h2 id="tax-guide-heading"><em>Beyond the<br>Tax-Sale Packet</em></h2>
@@ -1041,7 +1057,7 @@ private func homeMain() -> Node<HTML.BodyContext> {
           </div>
           <ul class="proof-strip">
             <li><span>4 apps</span></li>
-            <li><span>MacroMark 1.0 on the App Store</span></li>
+            <li><a class="link-quiet" href="https://apps.apple.com/ca/app/macromark/id6785081218" target="_blank" rel="noopener">MacroMark 1.0 on the App Store</a></li>
             <li><a class="link-quiet" href="https://github.com/dfakkeldy" target="_blank" rel="noopener">Source is public on GitHub; licences vary</a></li>
             <li><span>Built around real workflows</span></li>
           </ul>
@@ -1074,17 +1090,16 @@ private func homeMain() -> Node<HTML.BodyContext> {
             <img class="flagship-icon" src="/images/apps/echo.png" alt="Echo app icon — an infinity symbol in silver and gold">
             <h2 class="flagship-title">Echo</h2>
             <p class="flagship-tagline">For Every Mind — turn listening into learning.</p>
-            <p class="flagship-desc">The audiobook player that helps you remember what you heard. Built on a mail route, nights and weekends, for an AuDHD brain that learns in stolen, interrupted minutes.</p>
+            <p class="flagship-desc">The audiobook player that helps you remember what you heard. Built for minds that learn in stolen, interrupted minutes.</p>
             <ul class="tick-list">
               <li>\(svgCheck)<p><strong>Word-perfect read-along.</strong> <span>True karaoke, tuned on-device to the real audio.</span></p></li>
               <li>\(svgCheck)<p><strong>One-tap flashcards.</strong> <span>Spaced repetition (FSRS / FSRS-4.5) with the narrator's audio attached.</span></p></li>
               <li>\(svgCheck)<p><strong>Smart Rewind.</strong> <span>Interruptions stop costing you context.</span></p></li>
             </ul>
             <div class="pill-row">
-              <span class="badge-pill">iPhone</span>
+              <span class="badge-pill">iPhone &amp; iPad</span>
               <span class="badge-pill">Apple Watch</span>
               <span class="badge-pill">Mac</span>
-              <span class="badge-pill">CarPlay</span>
             </div>
             <div class="flagship-actions">
               <a class="btn btn-gold btn-md" href="/apps/echo">Meet Echo</a>
@@ -1126,7 +1141,7 @@ private func homeMain() -> Node<HTML.BodyContext> {
             </div>
           </a>
           <a class="app-card" href="/apps/visualtimer/">
-            <img class="app-icon" src="/images/apps/turntimer.png" alt="Turn Timer app icon — an orange progress ring">
+            <img class="app-icon" src="/images/apps/turntimer.png" alt="Turn Timer app icon: a clock inside a ring of coloured countdown segments">
             <h3>Turn Timer</h3>
             <p>Visual rounds for countdowns, turns, routines, and reusable sequences.</p>
             <div class="app-card-meta">
@@ -1136,12 +1151,12 @@ private func homeMain() -> Node<HTML.BodyContext> {
           </a>
         </div>
         <div class="section-foot">
-          <a class="row-link" href="/apps">All apps, honestly statused \(svgArrow)</a>
+          <a class="row-link" href="/apps">All apps and where each one stands \(svgArrow)</a>
         </div>
       </section>
 
       <section class="closing reveal">
-        <p class="closing-quote">Built between shifts on a rural mail route in Nova Scotia — bid rooms before that. <span>The tools exist because the work demanded them.</span></p>
+        <p class="closing-quote">Built in Cape Breton, Nova Scotia — bid rooms and field maps before that. <span>The tools exist because the work demanded them.</span></p>
         <a class="row-link row-link-gold" href="/about">About the studio \(svgArrow)</a>
       </section>
     </main>
@@ -1153,8 +1168,8 @@ private func appsMain() -> Node<HTML.BodyContext> {
     <main class="site-main page">
       <header class="page-head">
         <p class="eyebrow">Apps</p>
-        <h1 class="page-title">Four apps, honestly statused.</h1>
-        <p class="page-lede">MacroMark 1.0 is live on the App Store and free. Echo and Turn Timer are public TestFlight betas; the NS Marks The Spot browser map is live, with the native iPhone app still in TestFlight. Source is public on GitHub; licences vary.</p>
+        <h1 class="page-title">Four apps, honestly labelled.</h1>
+        <p class="page-lede">MacroMark 1.0 is <a class="link-quiet" href="https://apps.apple.com/ca/app/macromark/id6785081218" target="_blank" rel="noopener">live on the App Store</a> and free. Echo and Turn Timer are public TestFlight betas; the NS Marks The Spot browser map is live, with the native iPhone app in internal TestFlight builds. Source is public on GitHub; licences vary.</p>
       </header>
 
       <a class="reveal echo-row" href="/apps/echo">
@@ -1165,7 +1180,7 @@ private func appsMain() -> Node<HTML.BodyContext> {
             <span class="status-chip">TestFlight beta — open</span>
           </div>
           <p>An audiobook player built for studying, not just listening. Word-perfect read-along, one-tap flashcards, Smart Rewind, and a Watch remote you design.</p>
-          <span class="platforms">iPhone · Apple Watch · Mac · CarPlay · GPL-3.0</span>
+          <span class="platforms">iPhone &amp; iPad · Apple Watch · Mac · GPL-3.0</span>
         </div>
         <svg class="echo-row-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
       </a>
@@ -1184,16 +1199,16 @@ private func appsMain() -> Node<HTML.BodyContext> {
         <a class="app-card" href="/apps/nsmarksthespot/">
           <img class="app-icon" src="/images/apps/nsmarksthespot.svg" alt="NS Marks The Spot app icon">
           <h3>NS Marks The Spot</h3>
-          <p>The live product is the browser map — parcel search by PID, civic address, or postal community, dated municipal tax-sale notices on live parcel geometry, provincial reference layers, and Fletcher’s 1880s sheets as an optional overlay, with optional live location. The native iPhone app is a separate offline companion in TestFlight, not on the App Store.</p>
+          <p>The live product is the browser map — parcel search by PID, civic address, or postal community, dated municipal tax-sale notices on live parcel geometry, provincial reference layers, and Fletcher’s 1880s sheets as an optional overlay, with optional live location. The native iPhone app is a separate offline companion in internal TestFlight builds, not on the App Store.</p>
           <div class="app-card-meta">
             <span class="status-chip">Live browser map</span>
             <span class="platforms">Browser · iPhone</span>
           </div>
         </a>
         <a class="app-card" href="/apps/visualtimer/">
-          <img class="app-icon" src="/images/apps/turntimer.png" alt="Turn Timer app icon — an orange progress ring">
+          <img class="app-icon" src="/images/apps/turntimer.png" alt="Turn Timer app icon: a clock inside a ring of coloured countdown segments">
           <h3>Turn Timer</h3>
-          <p>An Apple-native visual sequence timer — one-tap visual countdowns plus reusable sequences. A React PWA lives at /tools/turn-timer/.</p>
+          <p>An Apple-native visual sequence timer — one-tap visual countdowns plus reusable sequences. It also runs in your browser, with nothing to install.</p>
           <div class="app-card-meta">
             <span class="status-chip">TestFlight</span>
             <span class="platforms">iPhone · Browser</span>
@@ -1372,9 +1387,9 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
 
         <article class="gis-stop gis-stop-reverse reveal" id="gis-2015">
           <div class="gis-marker" aria-hidden="true"><span>2015</span></div>
-          <figure class="gis-figure">
-            <img src="/images/gis/aerial-mosaic-2015.webp" width="1440" height="900" loading="lazy" decoding="async" alt="Cropped winter aerial mosaic showing a winding stream through snow-covered forest, with visible seams between the creator's source photographs.">
-            <figcaption><span>Creator-captured imagery</span> Tight crop from the original mosaic; structures and location context removed.</figcaption>
+          <figure class="gis-figure gis-figure-wide">
+            <img src="/images/gis/aerial-mosaic-2015.webp" width="1440" height="500" loading="lazy" decoding="async" alt="Winter aerial mosaic of snow-covered forest with a dark winding stream, stitched from frames Dan captured on a flight, with the first-pass seams left in.">
+            <figcaption><span>Creator-captured imagery</span> Cropped to the imaged band of the original mosaic; structures and location context removed.</figcaption>
           </figure>
           <div class="gis-stop-copy">
             <p class="gis-era">Field capture · Raster stitching</p>
@@ -1439,8 +1454,8 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
         <article class="gis-stop reveal" id="gis-2026">
           <div class="gis-marker" aria-hidden="true"><span>2026</span></div>
           <figure class="gis-figure gis-product-figure">
-            <img src="/images/gis/ns-marks-product-2026.webp" width="1440" height="900" loading="lazy" decoding="async" alt="NS Marks The Spot browser interface showing a public OpenStreetMap background, a locally imported USGS GeoPDF listed in the map layers panel, and its extent outlined over the map.">
-            <figcaption><span>Product acceptance capture</span> Local import UI over OpenStreetMap; imported GeoPDF content is not displayed.</figcaption>
+            <img src="/images/gis/ns-marks-product-2026.webp" width="1440" height="900" loading="lazy" decoding="async" alt="The NS Marks The Spot browser map over Cape Breton, with its PID and address search and map layers panel, and the licence footer showing OpenStreetMap and Nova Scotia open data credits.">
+            <figcaption><span>Public map, October 2026</span> Cape Breton in the browser map: PID and address search, map layers panel, and the source and licence credits.</figcaption>
           </figure>
           <div class="gis-stop-copy">
             <p class="gis-era">Native + browser mapping · Product engineering</p>
@@ -1523,7 +1538,7 @@ private func aboutMain() -> Node<HTML.BodyContext> {
 
       <section class="reveal page-block story">
         <p class="eyebrow">Background</p>
-        <p class="story-lead">Before KinNoKi Labs, I spent years in bid rooms — estimates, tender paperwork, and the documents that follow a job around. These days I deliver a rural mail route, which is where several of these apps were born.</p>
+        <p class="story-lead">Before KinNoKi Labs, I spent years in bid rooms — estimates, tender paperwork, and the documents that follow a job around. Several of these apps started on a rural mail route.</p>
         <p class="story-body">That mix keeps the work honest. I know what it costs to quote work against a deadline with the numbers scattered across old jobs, and I know what a tool has to survive to earn its place on a busy day: spotty connectivity, repeated paperwork, and no patience for software that gets in the way.</p>
       </section>
 
@@ -1572,7 +1587,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
           </div>
         </div>
         <aside class="learn-intake-card" aria-label="Topic request summary">
-          <p class="learn-card-label">Flyer offer</p>
+          <p class="learn-card-label">Request a topic</p>
           <p>Send a topic you genuinely want to learn. If it is a good fit, I will make a short custom audiobook and invite you to test it in Echo.</p>
           <a class="row-link" href="mailto:learn@kinnokilabs.com">learn@kinnokilabs.com</a>
         </aside>
@@ -1597,7 +1612,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
 
         <div class="learn-book-grid">
           <article class="learn-book-card">
-            <img class="learn-book-cover" src="/learn/covers/echo-from-the-inside.png" alt="Cover of Echo, From the Inside" width="1600" height="2560" loading="lazy" decoding="async">
+            <img class="learn-book-cover" src="/images/covers/echo-from-the-inside-640.webp" alt="Cover of Echo, From the Inside" width="640" height="1024" loading="lazy" decoding="async">
             <div>
               <p class="learn-book-runtime">17 chapters · about 5.4 hours</p>
               <h3>Echo, From the Inside</h3>
@@ -1612,7 +1627,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
           </article>
 
           <article class="learn-book-card">
-            <img class="learn-book-cover" src="/learn/covers/why-it-feels-right.png" alt="Cover of Why It Feels Right" width="1600" height="2560" loading="lazy" decoding="async">
+            <img class="learn-book-cover" src="/images/covers/why-it-feels-right-640.webp" alt="Cover of Why It Feels Right" width="640" height="1024" loading="lazy" decoding="async">
             <div>
               <p class="learn-book-runtime">18 chapters · about 5.0 hours</p>
               <h3>Why It Feels Right</h3>
@@ -1627,7 +1642,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
           </article>
 
           <article class="learn-book-card">
-            <img class="learn-book-cover" src="/learn/covers/findable.png" alt="Cover of Findable" width="1600" height="2560" loading="lazy" decoding="async">
+            <img class="learn-book-cover" src="/images/covers/findable-640.webp" alt="Cover of Findable" width="640" height="1024" loading="lazy" decoding="async">
             <div>
               <p class="learn-book-runtime">8 chapters · about 3.0 hours</p>
               <h3>Findable</h3>
@@ -1641,7 +1656,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
             </div>
           </article>
           <article class="learn-book-card">
-            <img class="learn-book-cover" src="/learn/covers/rodents-in-the-walls.png" alt="Cover of Rodents in the Walls" width="1600" height="2560" loading="lazy" decoding="async">
+            <img class="learn-book-cover" src="/images/covers/rodents-in-the-walls-640.webp" alt="Cover of Rodents in the Walls" width="640" height="1024" loading="lazy" decoding="async">
             <div>
               <p class="learn-book-runtime">9 chapters · about 2.0 hours</p>
               <h3>Rodents in the Walls</h3>
@@ -1656,7 +1671,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
           </article>
 
           <article class="learn-book-card">
-            <img class="learn-book-cover" src="/learn/covers/chicken-predators.png" alt="Cover of Chicken Predators" width="1600" height="2560" loading="lazy" decoding="async">
+            <img class="learn-book-cover" src="/images/covers/chicken-predators-640.webp" alt="Cover of Chicken Predators" width="640" height="1024" loading="lazy" decoding="async">
             <div>
               <p class="learn-book-runtime">16 chapters · about 3.1 hours</p>
               <h3>Chicken Predators</h3>
@@ -1681,7 +1696,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
           <a class="btn btn-gold" href="mailto:learn@kinnokilabs.com">learn@kinnokilabs.com</a>
         </div>
         <div class="learn-request-list">
-          <p>I can only make a limited number while testing.</p>
+          <p>I take a limited number of requests each month.</p>
           <p>Useful feedback gets first pick for the next custom book.</p>
           <p>Please don't send private workplace, customer, medical, legal, or financial details.</p>
         </div>
@@ -1713,10 +1728,9 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
           <p class="echo-hero-tagline">For Every Mind — turn listening into learning.</p>
           <p class="echo-hero-lede">The audiobook player that helps you remember what you heard — word-perfect read-along, one-tap flashcards, and a study system built on the real science of memory.</p>
           <div class="echo-hero-pills">
-            <span class="echo-pill">iPhone</span>
+            <span class="echo-pill">iPhone &amp; iPad</span>
             <span class="echo-pill">Apple Watch</span>
             <span class="echo-pill">Mac</span>
-            <span class="echo-pill">CarPlay</span>
             <span class="echo-pill echo-pill-gold">Open source · GPL-3.0</span>
           </div>
           <div class="echo-hero-actions">
@@ -1755,9 +1769,9 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
 
       <section class="reveal echo-section">
         <div class="story">
-        <p class="eyebrow">Built on a mail route</p>
-        <p class="story-lead">I deliver mail — in and out of the car thirty times a shift, an aux cable, an Apple Watch, and an AuDHD brain that learns from non-fiction audiobooks in stolen, interrupted minutes. No app would loop a single chapter until it stuck, stay ready on a watch after a long pause, or remember <em>why</em> a bookmark was made three driveways ago.</p>
-        <p class="story-body">So I built it, nights and weekends around a full delivery route — an app that treats audiobooks the way students treat textbooks. And if you're just here to listen? You never have to make a single flashcard.</p>
+        <p class="eyebrow">Why Echo exists</p>
+        <p class="story-lead">A lot of real listening happens in stolen, interrupted minutes: in and out of the car, an aux cable, an Apple Watch, a chapter cut short. No app would loop a single chapter until it stuck, stay ready on a watch after a long pause, or remember <em>why</em> a bookmark was made three stops ago.</p>
+        <p class="story-body">So I built one: an app that treats audiobooks the way students treat textbooks. And if you're just here to listen? You never have to make a single flashcard.</p>
         </div>
       </section>
 
@@ -1786,7 +1800,6 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
           <div class="feature-card"><h3>Synced EPUB Reader</h3><p>Text scrolls with the narration. Tap a paragraph to jump the audio; search the book and leap to the spoken moment.</p></div>
           <div class="feature-card"><h3>Voice &amp; Photo Bookmarks</h3><p>Hold a button and speak your thought, or attach a photo of where you are — memos play back inline when the narration returns there.</p></div>
           <div class="feature-card"><h3>A Watch Remote You Design</h3><p>Up to 25 buttons across 5 pages, Digital Crown scrubbing, plus a Pomodoro focus timer on your wrist.</p></div>
-          <div class="feature-card"><h3>Built for CarPlay</h3><p>Full Now Playing plus a browseable library — with in-dash buttons to bookmark, record a memo, or mark a passage on the road.</p></div>
           <div class="feature-card"><h3>Pitch-Corrected Speed</h3><p>Narrators sound human at 1.25× — zero pitch distortion, and every book remembers its own speed.</p></div>
           <div class="feature-card"><h3>Dyslexia-Friendly by Design</h3><p>Lexend and OpenDyslexic built in, Dynamic Type, VoiceOver labels. Designed for interrupted, neurodivergent attention first.</p></div>
           <div class="feature-card"><h3>Mark Now, Card Later</h3><p>One tap marks a passage without stopping the narration; the Card Inbox turns marks into flashcards when you have the bandwidth.</p></div>
@@ -1811,7 +1824,7 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
           <div class="glow-bottom"></div>
           <div class="echo-cta-inner">
             <h2 class="echo-cta-title">Echo is in open beta right now.</h2>
-            <p class="echo-cta-lede">TestFlight builds for iPhone, Apple Watch, Mac, and CarPlay — guides, test plans, and a devlog included.</p>
+            <p class="echo-cta-lede">TestFlight builds for iPhone, iPad, Apple Watch, and Mac — guides, test plans, and a devlog included.</p>
             <div class="echo-cta-actions">
               <a class="btn btn-gold" href="https://testflight.apple.com/join/Zu9rzg59">Join the TestFlight beta</a>
               <a class="echo-source-link" href="/listen/">Listen in your browser</a>

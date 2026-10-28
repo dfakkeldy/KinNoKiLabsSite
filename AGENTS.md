@@ -55,6 +55,9 @@ a task branch and a PR instead.
   unless Dan decides otherwise.
 - Paired cover art: `make paired-covers`, pinned by
   `Resources/learn/paired-cover-source-manifest.json`.
+  The /learn and /taxsale pages show 640x1024 WebP copies from
+  `Resources/images/covers/`; rerun `make cover-thumbnails` after a cover
+  changes (a test fails until you do).
 - `Resources/tools/turn-timer/`: `make sync-turn-timer-web`, pinned by
   `Tools/turn-timer-web-source.json`.
 - NS Marks map at `/apps/nsmarksthespot/map/`: pinned by

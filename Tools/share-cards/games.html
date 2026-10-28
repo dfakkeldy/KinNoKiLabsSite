@@ -1,0 +1,84 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#c9a24b;--gold-hi:#f1d596;--gold-lo:#7a6230;--hair:rgba(201,162,75,.32);--tile:#111214;--muted:#a1a1a6}
+html,body{margin:0;width:1200px;height:630px;overflow:hidden}
+body{font-family:'Lexend',sans-serif;color:#f5f5f7;position:relative;
+ background:radial-gradient(ellipse 70% 60% at 50% 0%, rgba(201,162,75,.14), rgba(0,0,0,0) 70%),#000}
+.frame{position:absolute;inset:24px;border:1px solid var(--hair);border-radius:22px}
+header{position:absolute;left:64px;right:64px;top:52px;display:flex;align-items:flex-end;justify-content:space-between}
+.eyebrow{margin:0 0 10px;font-size:19px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+h1{margin:0;font-size:64px;line-height:1;font-weight:600;letter-spacing:-.02em;
+ background:linear-gradient(180deg,#f7e9c4,#c9a24b);-webkit-background-clip:text;background-clip:text;color:transparent}
+.side{text-align:right;color:var(--muted);font-size:20px;line-height:1.45;margin:0 0 4px}
+.side b{color:#f5f5f7;font-weight:500}
+.grid{position:absolute;left:64px;right:64px;top:198px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.tile{height:148px;box-sizing:border-box;background:var(--tile);border:1px solid var(--hair);border-radius:18px;display:flex;align-items:center;gap:22px;padding:0 22px}
+.art{width:112px;height:112px;flex:none;position:relative}
+.meta p{margin:0 0 6px;font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.meta h2{margin:0;font-size:27px;font-weight:500;line-height:1.1}
+/* mini boards */
+.board{display:grid;width:112px;height:112px;border:2px solid var(--gold);border-radius:6px;box-sizing:border-box;overflow:hidden}
+.board i{display:grid;place-items:center;font-style:normal;font-family:ui-monospace,Menlo,monospace;color:var(--gold-hi);border:1px solid rgba(201,162,75,.35)}
+.sud{grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr)}.sud i{font-size:26px;font-weight:600}
+.cw{grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,1fr)}.cw i{font-size:15px;font-weight:700}.cw i.x{background:var(--gold-lo)}.cw i.f{background:rgba(201,162,75,.18)}
+.ws{grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,1fr)}.ws i{font-size:15px;border:none;color:#8e8e93}.ws i.h{color:var(--gold-hi)}
+.pill{position:absolute;left:4px;right:4px;top:46px;height:21px;border:2px solid var(--gold-hi);border-radius:12px}
+.stack{position:relative;width:112px;height:112px}
+.stack span{position:absolute;width:22px;height:22px;border-radius:4px;background:linear-gradient(180deg,#f1d596,#a68b5c);box-shadow:inset 0 0 0 2px rgba(0,0,0,.35)}
+.stack .dock{position:absolute;left:0;right:0;bottom:0;height:4px;border-radius:2px;background:var(--gold)}
+.stack .tide{position:absolute;left:0;right:0;bottom:10px;height:2px;background:repeating-linear-gradient(90deg,#5ac8fa 0 8px,transparent 8px 14px);opacity:.7}
+.yard{grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);gap:4px;padding:6px;background:#0b0b0c}
+.yard i{border:none;border-radius:4px}
+.c1{background:linear-gradient(180deg,#f1d596,#a68b5c)}.c2{background:linear-gradient(180deg,#d9d9de,#8e8e93)}.c3{background:rgba(201,162,75,.15)}
+.charts{display:grid;grid-template-columns:22px repeat(5,1fr);grid-template-rows:22px repeat(5,1fr);width:112px;height:112px}
+.charts b{display:grid;place-items:center;font:600 11px ui-monospace,Menlo,monospace;color:var(--muted)}
+.charts i{border:1px solid rgba(201,162,75,.35)}.charts i.f{background:linear-gradient(180deg,#f1d596,#a68b5c)}
+footer{position:absolute;left:64px;right:64px;bottom:52px;display:flex;justify-content:space-between;font-size:20px;color:var(--muted)}
+footer b{color:var(--gold-hi);font-weight:500}
+</style></head><body>
+<div class="frame"></div>
+<header>
+  <div><p class="eyebrow">KinNoKi Arcade Hall</p><h1>Six ways to play.</h1></div>
+  <p class="side"><b>Free in your browser</b><br>Three difficulty levels each</p>
+</header>
+<div class="grid">
+  <div class="tile"><div class="art board sud"><i>7</i><i>2</i><i>9</i><i>3</i><i>5</i><i>1</i><i>8</i><i>6</i><i>4</i></div>
+    <div class="meta"><p>Logic</p><h2>Sudoku</h2></div></div>
+  <div class="tile"><div class="art board cw">
+    <i class="f">T</i><i class="f">I</i><i class="f">D</i><i class="f">E</i><i class="x"></i>
+    <i class="f">A</i><i class="x"></i><i class="f">O</i><i class="x"></i><i></i>
+    <i class="f">C</i><i class="f">A</i><i class="f">R</i><i class="f">G</i><i class="f">O</i>
+    <i class="f">K</i><i class="x"></i><i class="f">Y</i><i class="x"></i><i></i>
+    <i class="x"></i><i></i><i></i><i></i><i class="x"></i></div>
+    <div class="meta"><p>Words</p><h2>Crossword</h2></div></div>
+  <div class="tile"><div class="art"><div class="board ws">
+    <i>Q</i><i>S</i><i>E</i><i>A</i><i>L</i>
+    <i>B</i><i>R</i><i>K</i><i>N</i><i>P</i>
+    <i class="h">D</i><i class="h">O</i><i class="h">C</i><i class="h">K</i><i class="h">S</i>
+    <i>W</i><i>A</i><i>V</i><i>E</i><i>T</i>
+    <i>H</i><i>U</i><i>L</i><i>M</i><i>B</i></div><div class="pill"></div></div>
+    <div class="meta"><p>Discovery</p><h2>Word Search</h2></div></div>
+  <div class="tile"><div class="art stack">
+    <span style="left:44px;top:4px"></span><span style="left:66px;top:4px"></span><span style="left:66px;top:26px"></span>
+    <span style="left:0px;top:60px"></span><span style="left:22px;top:60px"></span><span style="left:0px;top:82px"></span><span style="left:22px;top:82px"></span>
+    <span style="left:66px;top:82px"></span><span style="left:88px;top:82px"></span><span style="left:88px;top:60px"></span>
+    <div class="tide"></div><div class="dock"></div></div>
+    <div class="meta"><p>Cargo arcade</p><h2>KinNoKi Stack</h2></div></div>
+  <div class="tile"><div class="art board yard">
+    <i class="c1"></i><i class="c1"></i><i class="c2"></i><i class="c3"></i>
+    <i class="c2"></i><i class="c1"></i><i class="c2"></i><i class="c1"></i>
+    <i class="c2"></i><i class="c1"></i><i class="c1"></i><i class="c2"></i>
+    <i class="c1"></i><i class="c3"></i><i class="c2"></i><i class="c1"></i></div>
+    <div class="meta"><p>Harbour packing</p><h2>KinNoKi Yard</h2></div></div>
+  <div class="tile"><div class="art charts">
+    <b></b><b>1</b><b>2</b><b>5</b><b>2</b><b>1</b>
+    <b>1</b><i></i><i></i><i class="f"></i><i></i><i></i>
+    <b>3</b><i></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i>
+    <b>5</b><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i>
+    <b>1</b><i></i><i></i><i class="f"></i><i></i><i></i>
+    <b>1</b><i></i><i></i><i class="f"></i><i></i><i></i></div>
+    <div class="meta"><p>Picture logic</p><h2>KinNoKi Charts</h2></div></div>
+</div>
+<footer><span>Progress stays on your device</span><b>kinnokilabs.com/games</b></footer>
+</body></html>

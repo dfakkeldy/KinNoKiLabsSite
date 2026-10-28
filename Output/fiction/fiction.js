@@ -128,8 +128,14 @@
   }
 
   /* ── Rendering: book metadata ───────────────────────── */
+  /* An explicit credit line ("Created by … with AI") wins over the plain
+     "by <author>" byline, so the original novels say how they were made. */
+  function creditLine(b) {
+    return typeof b.credit === 'string' && b.credit.length > 0 ? b.credit : 'by ' + b.author;
+  }
+
   function bylineParts(b) {
-    var parts = ['by ' + b.author, b.chapters.length + ' chapters'];
+    var parts = [creditLine(b), b.chapters.length + ' chapters'];
     if (typeof b.wordCount === 'number') parts.push(fmtWords(b.wordCount));
     if (playable) parts.push(fmtTime(b.durationSeconds));
     else if (typeof b.estimatedHours === 'number') parts.push('≈' + b.estimatedHours + ' h once narrated');
@@ -219,7 +225,7 @@
 
     var meta = document.createElement('span');
     meta.className = 'fic-meta';
-    meta.textContent = 'by ' + b.author + ' · ' + b.chapters.length + ' chapters · ' + fmtWords(b.wordCount);
+    meta.textContent = creditLine(b) + ' · ' + b.chapters.length + ' chapters · ' + fmtWords(b.wordCount);
     li.appendChild(meta);
 
     var actions = document.createElement('span');

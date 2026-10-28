@@ -1,4 +1,4 @@
-// Kinnoki Charts pictogram catalog. Row strings use '.' for an empty cell and
+// KinNoKi Charts pictogram catalog. Row strings use '.' for an empty cell and
 // 'X' for a filled cell; they are converted into flat 0/1 solution arrays
 // (row-major, length size * size) at module load so the engine never has to
 // parse strings at runtime. Every entry must be fully line-solvable — see

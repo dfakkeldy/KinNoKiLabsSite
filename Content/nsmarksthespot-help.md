@@ -2,13 +2,11 @@
 
 Questions or problems with NS Marks The Spot? Here's how to reach me.
 
-## Frequently Asked Questions
+## Where to find the maps
 
-I haven't written the FAQ yet. If something in the app is confusing, email me — the questions people actually ask will shape this section.
+The full browser map is at [/apps/nsmarksthespot/map/](/apps/nsmarksthespot/map/). The focused Rhodena Wind map is at [/rhodena](/rhodena). The fishing map is at [/fishmap](/fishmap); the static Strait and Bras d'Or Fishing Map stays at [/fishing/](/fishing/).
 
 ## Contact
-
-The focused Rhodena Wind map is at [/rhodena](/rhodena). The fishing map is at [/fishmap](/fishmap); the static Strait and Bras d'Or Fishing Map stays at [/fishing/](/fishing/).
 
 Hit a bug, or have a feature request? Get in touch:
 

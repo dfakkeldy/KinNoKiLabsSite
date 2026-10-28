@@ -8,7 +8,7 @@ You don't need to read this front to back. Jump to whatever feature you're curio
 
 > **The short version:** Passive listening feels like learning, but most of it evaporates within days. Echo is built around the handful of techniques that cognitive science has shown actually move information into long-term memory: retrieval practice, spacing, context cues, cognitive offloading, and multi-sensory encoding. Use even two or three of them and you'll likely remember a lot more of what you listen to.
 
-> **Not here to study?** That's completely fine. Echo is a full-featured audiobook player first — CarPlay, a designable Apple Watch remote, a sleep timer, focus soundscapes, pitch-corrected speed, and your own DRM-free files, all on-device. Everything below is optional. Use as much or as little of it as you like.
+> **Not here to study?** That's completely fine. Echo is a full-featured audiobook player first — a designable Apple Watch remote, a sleep timer, focus soundscapes, pitch-corrected speed, and your own DRM-free files, all on-device. Everything below is optional. Use as much or as little of it as you like.
 
 ## 1. Photo & Place Bookmarks — borrow your brain's sense of place
 
@@ -35,7 +35,7 @@ This is one of the most replicated effects in memory research. In the classic 19
 
 **Never heard of Anki? Start here.** Anki is beloved flashcard software used by medical students, language learners, and memory nerds worldwide. Its superpower is the *schedule*: instead of cramming, it shows you each card at the moment you're about to forget it — first after a day, then a few days, then weeks, then months. Each successful recall flattens your forgetting curve a little more, until the fact is effectively permanent.
 
-Echo speaks the same language — it uses the same SM-2 scheduling algorithm Anki was built on, imports Anki-style JSON decks today, and with 1.0 imports real **.apkg deck files** directly (🚧 **Coming in 1.0**) — your years of Anki history, scheduling included, carried over. With 1.0 you'll also organize everything into **decks with tags**, edit any card, and review one deck at a time (🚧 **Coming in 1.0**). And if you ever leave, your cards export right back out — no lock-in (see Second-Brain Export below).
+Echo speaks the same language — it schedules reviews with FSRS, the modern algorithm Anki also offers, imports Anki-style JSON decks today, and with 1.0 imports real **.apkg deck files** directly (🚧 **Coming in 1.0**) — your years of Anki history, scheduling included, carried over. You can also organize everything into **decks with tags**, edit any card, and review one deck at a time. And if you ever leave, your cards export right back out — no lock-in (see Second-Brain Export below).
 
 **The science: the Forgetting Curve and the Spacing Effect.** In the 1880s, Hermann Ebbinghaus measured how quickly memorized material decays: steeply at first, then slowly. He also found the fix: each well-timed review resets the curve and makes it shallower. A century-plus of follow-up research (including Cepeda et al.'s 2006 meta-analysis) keeps confirming it: **spacing reviews out beats massing them together, for essentially everyone, for essentially everything.**
 
@@ -65,9 +65,7 @@ Echo speaks the same language — it uses the same SM-2 scheduling algorithm Ank
 - Grade ruthlessly. "Again" is not failure; it's telling the scheduler the truth so it can help.
 - Feeling a card was *hard* is good news — effortful retrieval (Bjork's "desirable difficulty") is exactly the condition under which memory grows.
 
-## 4. Mark Now, Card Later — protect the flow 🚧
-
-> 🚧 **Coming in 1.0** — in active development.
+## 4. Mark Now, Card Later — protect the flow
 
 **What it does:** A single tap — on the transport bar or a watch button — **marks** the passage you just heard, with a few seconds of context on either side, and the narration never stops. Later, your **Card Inbox** shows every mark grouped by book, with its transcript snippet and audio. Turn marks into flashcards when you actually have the bandwidth — or swipe away the ones that didn't age well.
 
@@ -115,7 +113,7 @@ Echo speaks the same language — it uses the same SM-2 scheduling algorithm Ank
 
 **How to use it:**
 
-- Tune the three tiers (seconds / minutes / hours) to your life. Hopping out of a delivery vehicle every few minutes? ~10 seconds. Overnight gap? A minute or more.
+- Tune the three tiers (seconds / minutes / hours) to your life. Stopping and starting every few minutes? ~10 seconds. Overnight gap? A minute or more.
 - Don't fight it. If the rewound material feels boringly familiar — perfect. That's confirmation you encoded it the first time.
 
 ## 8. Read Along — the synced EPUB & PDF reader
@@ -155,11 +153,9 @@ Echo speaks the same language — it uses the same SM-2 scheduling algorithm Ank
 - Hit a dense argument? Drop to 1× and loop it rather than plowing through at speed.
 - Re-listens of looped chapters can run faster — you're reinforcing, not decoding.
 
-## 11. Insights — see yourself learn 🚧
+## 11. Insights — see yourself learn
 
-> 🚧 **Coming in 1.0** — in active development.
-
-**What it does:** A dedicated Insights screen built from your actual listening and review history — computed on your device, never sent anywhere. Listening time by day, week, month, or year. Streaks and a review-day heatmap. Per-book **chapter coverage** ("Chapter 7 — 86% covered, listened 3×"). Your speed trend, session lengths, and best time of day. For flashcards: reviews per day, a retention curve, grade distribution, and a 30-day due forecast. If you use Context Memory, a simple list of the places you listen most.
+**What it does:** A dedicated Insights screen built from your actual listening and review history — computed on your device, never sent anywhere. Listening time by day, week, month, or year. Streaks, with a review-day heatmap still to come (🚧). Per-book **chapter coverage** ("Chapter 7 — 86% covered, listened 3×"). Your speed trend and best time of day, with session lengths still to come (🚧). For flashcards: reviews per day, a retention curve, grade distribution, and a 30-day due forecast. If you use Context Memory, a simple list of the places you listen most.
 
 **The science: self-monitoring and feedback.** Learners are famously bad at judging their own learning — re-reading *feels* effective precisely when it isn't. Self-regulated-learning research (Zimmerman, 2002) puts accurate self-monitoring at the center of effective studying; Hattie & Timperley (2007) rank concrete feedback among the most powerful influences on learning; and goal-setting research (Locke & Latham, 2002) shows specific, visible progress sustains effort far better than "do your best."
 
@@ -170,9 +166,7 @@ Echo speaks the same language — it uses the same SM-2 scheduling algorithm Ank
 - Find your golden hours in the time-of-day chart and schedule the dense book there.
 - Streaks bend, they don't break. A missed day is data, not a verdict — [The Focus Field Guide](/echo-focus) has a whole section on all-or-nothing thinking and why this matters double for ADHD brains.
 
-## 12. Second-Brain Export — make it yours forever 🚧
-
-> 🚧 **Coming in 1.0** — in active development. (Bookmark-only Markdown export ships today.)
+## 12. Second-Brain Export — make it yours forever
 
 **What it does:** One tap exports a book's entire study record as a clean, portable Markdown bundle: every bookmark with its timestamp and note, your brain-dump entries, flashcard fronts and backs, chapter headings — plus an assets folder with your voice memos and photos. Drop the folder into **Obsidian**, **Logseq**, or **Notion**, or just keep it as files. No account, no API, no lock-in.
 
@@ -204,13 +198,13 @@ Echo speaks the same language — it uses the same SM-2 scheduling algorithm Ank
 ## The Echo Method — putting it together
 
 1. **First pass (listen):** normal or slightly raised speed. When something lands, bookmark it — voice memo if your hands are busy, photo if the moment is distinctive. A passing thought about anything else? Brain-dump it and keep listening. (🚧)
-2. **Mark the card-worthy moments:** one tap, no pause. They'll wait in the Card Inbox. (🚧)
+2. **Mark the card-worthy moments:** one tap, no pause. They'll wait in the Card Inbox.
 3. **Loop what matters:** for dense chapters, loop until you could explain them.
 4. **Harvest on your schedule:** at home, process the inboxes — promote marks to flashcards, promote brain-dump keepers, delete the rest.
 5. **Review daily:** when the notification arrives, clear your due cards — phone or watch, five-ish minutes.
-6. **Check Insights weekly:** coverage gaps tell you what to re-listen; the due forecast tells you whether to ease up on new cards. (🚧)
+6. **Check Insights weekly:** coverage gaps tell you what to re-listen; the due forecast tells you whether to ease up on new cards.
 7. **Read-along pass (optional, for the big books):** weekend re-listen with the Read tab open.
-8. **Graduate the book:** export the study bundle to your second brain and reorganize it in your own words. (🚧)
+8. **Graduate the book:** export the study bundle to your second brain and reorganize it in your own words.
 
 None of these steps is hard; the entire system is designed to run inside a life full of interruptions — because it was built inside one.
 

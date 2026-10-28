@@ -14,7 +14,7 @@ const slugs = [
   'echo-from-the-inside', 'why-it-feels-right',
   'you-are-the-architect', 'the-bug-is-a-clue', 'tests-first',
   'git-happens', 'findable', 'the-voice-in-the-machine',
-  'rodents-in-the-walls', 'chicken-predators', 'the-new-deal',
+  'rodents-in-the-walls', 'chicken-predators',
   'is-there-anyone-in-here', 'claude-platform-01-the-message',
   'claude-platform-02-thinking-and-reliable-responses',
   'claude-platform-03-giving-claude-tools',
@@ -35,7 +35,6 @@ const candidates = {
   'the-voice-in-the-machine': 'sentence-to-sound',
   'rodents-in-the-walls': 'c2a-compact-ribbon-editorial-footer',
   'chicken-predators': 'night-at-the-fence',
-  'the-new-deal': 'weight-of-the-mailbag',
   'is-there-anyone-in-here': 'one-lit-aperture',
   'claude-platform-01-the-message': 'route-and-return',
   'claude-platform-02-thinking-and-reliable-responses': 'event-by-event',
@@ -217,7 +216,7 @@ test('paired cover sync fails closed for every reviewed negative contract', asyn
     try {
       const first = invoke(f);
       assert.equal(first.status, 0, first.stderr);
-      assert.match(first.stdout, /20 portrait covers and 19 square player derivatives/);
+      assert.match(first.stdout, /19 portrait covers and 18 square player derivatives/);
       const provenance = JSON.parse(readFileSync(path.join(f.output, 'learn/paired-cover-provenance.json')));
       assert.equal(provenance.books['an-unsettling-conversation'].receiptKind, 'cover-selection-v2');
       assert.equal(provenance.books['you-are-the-architect'].receiptKind, 'legacy-cover-pair-v1');

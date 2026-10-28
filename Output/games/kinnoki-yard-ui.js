@@ -62,7 +62,7 @@ const cellKey = (row, column) => row + ':' + column;
 const cargoFor = (typeId) => CARGO_BY_ID.get(typeId) ?? {
   id: 'unknown', label: 'Unknown cargo', pattern: 'solid',
 };
-const modeLabel = (mode) => MODE_LABELS[mode] ?? 'Kinnoki Yard';
+const modeLabel = (mode) => MODE_LABELS[mode] ?? 'KinNoKi Yard';
 function buildYardSelectors(mode, difficulty) {
   const modeSelect = element(
     'select',
@@ -88,7 +88,7 @@ function buildYardBoard(definition, focus) {
   const grid = element('div', {
     class: 'yard-grid',
     role: 'grid',
-    'aria-label': 'Kinnoki Yard cargo board',
+    'aria-label': 'KinNoKi Yard cargo board',
     style: '--yard-columns: ' + definition.width,
   });
   for (let row = 0; row < definition.height; row += 1) {
@@ -218,7 +218,7 @@ function buildYardShell(root, model, audioControls) {
   const shell = element('section', { class: 'yard-game' },
     element('div', { class: 'game-toolbar' },
       element('a', { href: '/games', class: 'back-link', text: '← Games' }),
-      element('h1', { text: 'Kinnoki Yard' }),
+      element('h1', { text: 'KinNoKi Yard' }),
       element('label', {}, element('span', { text: 'Mode' }), selectors.modeSelect),
       element('label', {}, element('span', { text: 'Difficulty' }),
         selectors.difficultySelect)),
@@ -749,7 +749,7 @@ function selectYardModel({
   const run = store.runs[GAME];
   if (run) {
     if (!validStoredYardRun(run, engine)) {
-      throw new Error('Saved Kinnoki Yard state is invalid.');
+      throw new Error('Saved KinNoKi Yard state is invalid.');
     }
     return {
       definition: run.puzzle.definition,
@@ -902,7 +902,7 @@ YardController.prototype.activate = async function activate(kind, api) {
   const action = kind === 'start' ? { type: 'start' } : { type: 'resume' };
   const transition = this.engine.reduceYard(this.state, action);
   if (transition.state.status !== 'active') {
-    throw new Error('Kinnoki Yard could not enter active play.');
+    throw new Error('KinNoKi Yard could not enter active play.');
   }
   this.state = transition.state;
   if (kind === 'start') {
@@ -1243,14 +1243,14 @@ YardController.prototype.finishTerminal = function finishTerminal() {
     const elapsedMs = this.lifecycle.elapsed();
     payload = this.engine.yardCompletionPayload(this.state, elapsedMs);
     if (!payload) {
-      throw new Error('Kinnoki Yard ended without a completion payload.');
+      throw new Error('KinNoKi Yard ended without a completion payload.');
     }
     if (!validCompletionPayload(payload, this.state)) {
-      throw new Error('Kinnoki Yard ended with an invalid completion payload.');
+      throw new Error('KinNoKi Yard ended with an invalid completion payload.');
     }
     recordsBroken = this.persistence.complete(payload.mode, payload.records, this.state);
     if (!this.lifecycle.finish()) {
-      throw new Error('Kinnoki Yard completion lifecycle could not settle.');
+      throw new Error('KinNoKi Yard completion lifecycle could not settle.');
     }
   } catch (error) {
     this.finishing = false;
@@ -1314,7 +1314,7 @@ YardController.prototype.renderError = function renderError(error) {
   this.announcer.dispose();
   this.audioControls.dispose();
   renderGameError(this.root, {
-    title: 'Kinnoki Yard paused',
+    title: 'KinNoKi Yard paused',
     message: error.message || 'This game could not continue safely.',
     newGameHref: '/games/kinnoki-yard?mode=' + this.mode
       + '&difficulty=' + this.difficulty,
@@ -1366,7 +1366,7 @@ async function mountYard(root, initialStore, dependencies, slot, options = {}) {
     if (existing && !options.previewDefinition) {
       if (!validStoredYardRun(existing, dependencies.engine)) {
         persistence.abandon(existing.signature);
-        throw new Error('Saved Kinnoki Yard state is invalid.');
+        throw new Error('Saved KinNoKi Yard state is invalid.');
       }
       if (existing.mode !== mode || existing.difficulty !== difficulty) {
         const accepted = dependencies.confirm(
@@ -1400,7 +1400,7 @@ async function mountYard(root, initialStore, dependencies, slot, options = {}) {
     return controller;
   } catch (error) {
     renderGameError(root, {
-      title: 'Kinnoki Yard paused',
+      title: 'KinNoKi Yard paused',
       message: error.message || 'A new Yard game could not be prepared.',
       newGameHref: '/games/kinnoki-yard?mode=' + mode
         + '&difficulty=' + difficulty,

@@ -107,7 +107,7 @@ test('NS Marks public copy names the focused Rhodena page, sight lines, and Map 
   assert.match(nsMarks, /\*\*Map \| Aerial:\*\*/);
   assert.match(nsMarks, /\[Rhodena Wind\]\(\/rhodena\)/);
   assert.match(nsMarksHelp, /The focused Rhodena Wind map is at \[\/rhodena\]\(\/rhodena\)\./);
-  assert.match(nsMarksHelp, /I haven't written the FAQ yet/);
+  assert.doesNotMatch(nsMarksHelp, /I haven't written the FAQ yet/);
   assert.match(generatedNsMarks, /<h2>Rhodena Wind<\/h2>/);
   assert.match(generatedNsMarks, /href="\/rhodena">\/rhodena</);
   assert.match(generatedNsMarks, /href="\/rhodena">Rhodena Wind</);
@@ -115,9 +115,9 @@ test('NS Marks public copy names the focused Rhodena page, sight lines, and Map 
   assert.match(generatedNsMarks, /<strong>Map \| Aerial:<\/strong>/);
   for (const source of [nsMarks, generatedNsMarks]) {
     assert.match(source, /Rhodena Wind — proposed turbine map/);
-    assert.match(source, /same pattern as \/poker/);
+    assert.doesNotMatch(source, /same pattern as \/poker/);
     assert.match(source, /research map with a Rhodena focus/);
-    assert.match(source, /no service worker or offline pack/);
+    assert.doesNotMatch(source, /service worker/);
     assert.match(source, /eye-level \(~1\.7 m\)/);
     assert.match(source, /assessed 200 m tip/);
     assert.match(source, /viewshed colours/);
@@ -144,7 +144,7 @@ test('NS Marks public copy names the fishing focus page at /fishmap, separate fr
   assert.match(generatedNsMarks, /<h2>Fishing<\/h2>/);
   for (const source of [nsMarks, generatedNsMarks]) {
     assert.match(source, /research map with a fishing focus/);
-    assert.match(source, /same short-URL pattern as \/poker and \/rhodena/);
+    assert.doesNotMatch(source, /short-URL pattern/);
     assert.match(source, /never says a season is open now/);
     assert.match(source, /not permission to fish from the wharf/);
     assert.doesNotMatch(source, /fish from the road allowance/i);
@@ -215,8 +215,14 @@ test('MacroMark public copy says 1.0 is live on the App Store and free', () => {
     assert.match(source, /status-chip">App Store — 1\.0</);
     assert.doesNotMatch(source, /status-chip">Internal TestFlight</);
   }
-  assert.match(generatedHome, /<span>MacroMark 1\.0 on the App Store<\/span>/);
-  assert.match(generatedApps, /MacroMark 1\.0 is live on the App Store and free/);
+  assert.match(
+    generatedHome,
+    /href="https:\/\/apps\.apple\.com\/ca\/app\/macromark\/id6785081218"[^>]*>MacroMark 1\.0 on the App Store<\/a>/,
+  );
+  assert.match(
+    generatedApps,
+    /MacroMark 1\.0 is <a[^>]*href="https:\/\/apps\.apple\.com\/ca\/app\/macromark\/id6785081218"[^>]*>live on the App Store<\/a> and free/,
+  );
   assert.match(generatedMacromark, /App Store — 1\.0/);
   assert.match(
     generatedMacromark,

@@ -32,19 +32,19 @@ test('catalogue is top-level frozen in exact six-game order with approved metada
     { id: 'sudoku', title: 'Sudoku', modes: [{ id: 'default', label: 'New puzzle' }], records: ['time'] },
     { id: 'crossword', title: 'Crossword', modes: [{ id: 'default', label: 'New puzzle' }], records: ['time'] },
     { id: 'word-search', title: 'Word Search', modes: [{ id: 'default', label: 'New puzzle' }], records: ['time'] },
-    { id: 'kinnoki-stack', title: 'Kinnoki Stack', modes: [{ id: 'default', label: 'New run' }], records: ['score', 'combo'] },
-    { id: 'kinnoki-yard', title: 'Kinnoki Yard', modes: [
+    { id: 'kinnoki-stack', title: 'KinNoKi Stack', modes: [{ id: 'default', label: 'New run' }], records: ['score', 'combo'] },
+    { id: 'kinnoki-yard', title: 'KinNoKi Yard', modes: [
       { id: 'contracts', label: 'Puzzle Contracts' },
       { id: 'endless', label: 'Endless Yard' },
     ], records: ['time', 'moves', 'score', 'combo'] },
-    { id: 'kinnoki-charts', title: 'Kinnoki Charts', modes: [{ id: 'default', label: 'New chart' }], records: ['time'] },
+    { id: 'kinnoki-charts', title: 'KinNoKi Charts', modes: [{ id: 'default', label: 'New chart' }], records: ['time'] },
   ]);
 });
 
 test('hub renders six cards without stale three-game language', () => {
   const markup = renderHubMarkup(createEmptyGameStore());
   for (const title of [
-    'Sudoku', 'Crossword', 'Word Search', 'Kinnoki Stack', 'Kinnoki Yard', 'Kinnoki Charts',
+    'Sudoku', 'Crossword', 'Word Search', 'KinNoKi Stack', 'KinNoKi Yard', 'KinNoKi Charts',
   ]) assert.match(markup, new RegExp('<h2[^>]*>' + title + '</h2>'));
   assert.equal([...markup.matchAll(/<article class="game-card/g)].length, 6);
   assert.doesNotMatch(markup, /three familiar|three classics|three games/i);
@@ -58,7 +58,7 @@ test('Yard Continue preserves saved mode and difficulty', () => {
     elapsedBeforeStartMs: 2, assisted: false,
   };
   const card = gameCardModel(store, {
-    id: 'kinnoki-yard', title: 'Kinnoki Yard',
+    id: 'kinnoki-yard', title: 'KinNoKi Yard',
     modes: [{ id: 'contracts' }, { id: 'endless' }],
   });
   assert.equal(card.continueHref,
@@ -105,17 +105,17 @@ test('Yard Continue copy and URLs distinguish Contract from Endless', () => {
 test('Yard mode difficulty containers are DOM groups with mode-specific names', () => {
   const dom = parseModeGroups(renderHubMarkup(createEmptyGameStore()));
   const yardGroups = dom.querySelectorAll('[role="group"]')
-    .filter((group) => group.getAttribute('aria-label')?.startsWith('Choose Kinnoki Yard'));
+    .filter((group) => group.getAttribute('aria-label')?.startsWith('Choose KinNoKi Yard'));
   assert.deepEqual(yardGroups.map((group) => ({
     label: group.getAttribute('aria-label'),
     links: group.querySelectorAll('a').map((link) => link.textContent),
   })), [
     {
-      label: 'Choose Kinnoki Yard Puzzle Contracts difficulty',
+      label: 'Choose KinNoKi Yard Puzzle Contracts difficulty',
       links: ['Easy', 'Medium', 'Hard'],
     },
     {
-      label: 'Choose Kinnoki Yard Endless Yard difficulty',
+      label: 'Choose KinNoKi Yard Endless Yard difficulty',
       links: ['Easy', 'Medium', 'Hard'],
     },
   ]);

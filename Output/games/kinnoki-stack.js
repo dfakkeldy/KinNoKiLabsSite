@@ -17,7 +17,7 @@ export const STACK_CONFIG = Object.freeze({
 export const STACK_MAX_FRAME_DELTA_MS = 250;
 
 export function createStackDefinition({ difficulty, seed }) {
-  if (!STACK_DIFFICULTIES.includes(difficulty) || !Number.isSafeInteger(seed) || seed < 0 || seed > 0xffffffff) throw new TypeError('Invalid Kinnoki Stack definition request');
+  if (!STACK_DIFFICULTIES.includes(difficulty) || !Number.isSafeInteger(seed) || seed < 0 || seed > 0xffffffff) throw new TypeError('Invalid KinNoKi Stack definition request');
   return Object.freeze({ version: 1, game: 'kinnoki-stack', mode: 'default', difficulty, seed: seed >>> 0, width: STACK_WIDTH, height: STACK_HEIGHT });
 }
 export function stackDefinitionSignature(definition) {
@@ -59,7 +59,7 @@ const manifestProvenanceFor = (manifests, nextIndex, generations) => ({
 export function createStackState(definition) {
   let expectedDefinition;
   try { expectedDefinition = createStackDefinition({ difficulty: definition?.difficulty, seed: definition?.seed }); } catch {}
-  if (!expectedDefinition || JSON.stringify(definition) !== JSON.stringify(expectedDefinition)) throw new TypeError('Invalid Kinnoki Stack definition');
+  if (!expectedDefinition || JSON.stringify(definition) !== JSON.stringify(expectedDefinition)) throw new TypeError('Invalid KinNoKi Stack definition');
   const config = STACK_CONFIG[definition.difficulty];
   const board = emptyStackBoard();
   const selected = selectNextManifestZones({ board, width: STACK_WIDTH, height: STACK_HEIGHT, shapeIds: config.manifestShapeIds, seed: definition.seed, startIndex: 0, count: config.manifestCount });
@@ -71,7 +71,7 @@ export function createStackState(definition) {
   return { definition, difficulty: definition.difficulty, width: STACK_WIDTH, height: STACK_HEIGHT, status: 'preview', board, active, preview, sequenceIndex: 0, nextPieceId: config.previewCount + 1, manifests: selected.manifests, manifestIndex: selected.nextIndex, manifestProvenance: manifestProvenanceFor(selected.manifests, selected.nextIndex, [initialGeneration]), lockHistory: [], tide: tideForEvent(definition, 0), components: [], score: 0, combo: 0, bestCombo: 0, dispatchedManifests: 0, placements: 0, assisted: false, stepMode: false, grounded: null, gravityAccumulatorMs: 0, terminalReason: null };
 }
 export function prepareStackForContinue(play) {
-  if (!['active', 'paused'].includes(play?.status) || !validateStackState(play, play?.difficulty).valid) throw new TypeError('Saved Kinnoki Stack state is invalid');
+  if (!['active', 'paused'].includes(play?.status) || !validateStackState(play, play?.difficulty).valid) throw new TypeError('Saved KinNoKi Stack state is invalid');
   return { ...cloneSerializable(play), status: 'paused' };
 }
 

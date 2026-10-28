@@ -567,7 +567,7 @@ test('accepted New Run abandons active storage and hostile saved state fails clo
     };
     await renderKinnokiStack(fixture.root, hostile, { audioFactory: silentAudio });
     assert.match(fixture.root.querySelector('[role="alert"]').textContent,
-      /saved Kinnoki Stack state is invalid/i);
+      /saved KinNoKi Stack state is invalid/i);
     saved = JSON.parse(fixture.localStorage.getItem(STORE_KEYS.v2));
     assert.equal(saved.runs['kinnoki-stack'], undefined);
   } finally { restore(); }

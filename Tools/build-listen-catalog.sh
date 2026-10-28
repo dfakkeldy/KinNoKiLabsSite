@@ -74,7 +74,8 @@ GH_BASE="https://github.com/dfakkeldy/explainer-audiobooks"
 # Public text/package allow-list: slug|title|subtitle|writtenBy
 # (The Long Route and The Living Knowledge Base were reclassified private
 # on 2026-07-09 — explainer-audiobooks PR #11 — and must NOT return here
-# without an explicit decision.)
+# without an explicit decision. the-new-deal was unpublished from the site on
+# 2026-10-28 by Dan's decision and stays out the same way.)
 ALLOW_LIST="$(cat <<'EOF'
 an-unsettling-conversation|An Unsettling Conversation|J-Space, Working Memory, and the Question of Machine Experience|Codex (GPT-5)
 jspace-inside-the-machine|J-Space: Inside the Machine|Parameters, Working Memory, and the Question of Consciousness|Codex (GPT-5)
@@ -88,7 +89,6 @@ findable|Findable||Opus 4.8
 the-voice-in-the-machine|The Voice in the Machine||Opus 4.8
 chicken-predators|Chicken Predators||GLM-5.2
 rodents-in-the-walls|Rodents in the Walls|Squirrels and Other Houseguests in Western Cape Breton|GPT-5.6 Sol
-the-new-deal|The New Deal|Canada Post, CUPW, and What It Means for Rural Mail|GLM-5.2
 is-there-anyone-in-here|Is There Anyone in Here?|One Language Model Examines the Case for Its Own Consciousness|Claude Fable 5
 claude-platform-01-the-message|The Message|Conversations, Content Blocks, and the Messages API|Codex (GPT-5)
 claude-platform-02-thinking-and-reliable-responses|Making Claude Think and Respond Reliably|Reasoning, Multimodal Inputs, Structured Output, and Streaming|Codex (GPT-5)
@@ -113,7 +113,6 @@ findable
 the-voice-in-the-machine
 chicken-predators
 rodents-in-the-walls
-the-new-deal
 is-there-anyone-in-here
 claude-platform-01-the-message
 claude-platform-02-thinking-and-reliable-responses
@@ -131,7 +130,7 @@ claude-platform-03-giving-claude-tools
 claude-platform-04-tools-claude-can-operate
 beyond-the-tax-sale-packet"
 
-EXPECTED_BOOK_COUNT=20
+EXPECTED_BOOK_COUNT=19
 listen_catalog_transaction_init "$OUT_DIR"
 
 # BEGIN VALIDATE_SERIES
