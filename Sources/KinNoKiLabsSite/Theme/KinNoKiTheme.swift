@@ -1371,9 +1371,9 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
 
         <article class="gis-stop gis-stop-reverse reveal" id="gis-2015">
           <div class="gis-marker" aria-hidden="true"><span>2015</span></div>
-          <figure class="gis-figure">
-            <img src="/images/gis/aerial-mosaic-2015.webp" width="1440" height="900" loading="lazy" decoding="async" alt="Cropped winter aerial mosaic showing a winding stream through snow-covered forest, with visible seams between the creator's source photographs.">
-            <figcaption><span>Creator-captured imagery</span> Tight crop from the original mosaic; structures and location context removed.</figcaption>
+          <figure class="gis-figure gis-figure-wide">
+            <img src="/images/gis/aerial-mosaic-2015.webp" width="1440" height="500" loading="lazy" decoding="async" alt="Winter aerial mosaic of snow-covered forest with a dark winding stream, stitched from frames Dan captured on a flight, with the first-pass seams left in.">
+            <figcaption><span>Creator-captured imagery</span> Cropped to the imaged band of the original mosaic; structures and location context removed.</figcaption>
           </figure>
           <div class="gis-stop-copy">
             <p class="gis-era">Field capture · Raster stitching</p>
@@ -1438,8 +1438,8 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
         <article class="gis-stop reveal" id="gis-2026">
           <div class="gis-marker" aria-hidden="true"><span>2026</span></div>
           <figure class="gis-figure gis-product-figure">
-            <img src="/images/gis/ns-marks-product-2026.webp" width="1440" height="900" loading="lazy" decoding="async" alt="NS Marks The Spot browser interface showing a public OpenStreetMap background, a locally imported USGS GeoPDF listed in the map layers panel, and its extent outlined over the map.">
-            <figcaption><span>Product acceptance capture</span> Local import UI over OpenStreetMap; imported GeoPDF content is not displayed.</figcaption>
+            <img src="/images/gis/ns-marks-product-2026.webp" width="1440" height="900" loading="lazy" decoding="async" alt="The NS Marks The Spot browser map over Cape Breton, with its PID and address search and map layers panel, and the licence footer showing OpenStreetMap and Nova Scotia open data credits.">
+            <figcaption><span>Public map, October 2026</span> Cape Breton in the browser map: PID and address search, map layers panel, and the source and licence credits.</figcaption>
           </figure>
           <div class="gis-stop-copy">
             <p class="gis-era">Native + browser mapping · Product engineering</p>

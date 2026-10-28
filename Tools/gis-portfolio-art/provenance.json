@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "publishedPage": "/gis/",
-  "reviewedAt": "2026-07-29",
+  "reviewedAt": "2026-10-28",
   "privacyRule": "No client name, address, parcel identifier, exact private geometry, private correspondence, or private source file is published.",
   "items": [
     {
@@ -20,7 +20,7 @@
       "publishedAsset": "/images/gis/aerial-mosaic-2015.webp",
       "sourceSha256": "2fd32a3b1e74af9d7d6631c8adbd3f0814b58e9db09d263491d265e35343be1c",
       "authorshipEvidence": "Contemporary sent correspondence identifies the images as captured by the creator on a flight and describes the attached mosaic as a first attempt.",
-      "transformation": "Tightly cropped to a non-identifying forest-and-stream area; removed structures, industrial activity, edges, labels, and location context.",
+      "transformation": "Tightly cropped to a non-identifying forest-and-stream area; removed structures, industrial activity, edges, labels, and location context. On 2026-10-28 the black no-data rows above and below the imaged band were cropped away (1440x500); nothing inside the band was edited.",
       "visibleLayerRights": "Creator-captured aerial photographs and creator-produced mosaic only.",
       "publicationDecision": "Publish cropped derivative; retain full mosaic privately."
     },
@@ -48,11 +48,11 @@
       "id": "ns-marks-product-2026",
       "year": 2026,
       "publishedAsset": "/images/gis/ns-marks-product-2026.webp",
-      "sourceSha256": "7310815108b51465bdcbc4460ecfeb71ed4111f33fba8192bd7904f436f4983b",
-      "authorshipEvidence": "Acceptance capture is committed in the exact public NS Marks The Spot source revision represented by the website's published source receipt.",
-      "transformation": "Cropped to the product interface and public map extent. No private imported map content is displayed.",
-      "visibleLayerRights": "NS Marks The Spot interface under the repository MIT licence; OpenStreetMap background with visible OpenStreetMap contributor attribution; user-imported GeoPDF appears only as metadata and an extent outline.",
-      "publicationDecision": "Publish cropped acceptance capture."
+      "sourceSha256": "02b089702825879371043d035ed5b5a6e364972fea62d7817b04b27161792b8a",
+      "authorshipEvidence": "Captured on 2026-10-28 from the public NS Marks The Spot browser map at /apps/nsmarksthespot/map/ (default Cape Breton view, licences shown); the interface is the public MIT-licensed NS Marks The Spot source.",
+      "transformation": "1440x900 browser capture of the public map with the licence footer shown. No imported or private map content is loaded.",
+      "visibleLayerRights": "NS Marks The Spot interface under the repository MIT licence; NS Marks Atlas basemap with the visible licence footer crediting OpenStreetMap contributors, the Open Government Licence - Nova Scotia, OpenFreeMap and OpenMapTiles.",
+      "publicationDecision": "Publish the public-map capture with its licence footer."
     }
   ]
 }

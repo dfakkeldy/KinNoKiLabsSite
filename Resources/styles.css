@@ -3282,6 +3282,8 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   object-fit: cover;
 }
 .gis-figure-dark { background: #101714; }
+/* The 2015 mosaic is a wide 1440x500 band; show it whole, not cropped to 8:5. */
+.gis-figure-wide img { aspect-ratio: 1440 / 500; }
 .gis-product-figure img { object-position: left top; }
 .gis-figure figcaption {
   padding: 14px 16px 15px;
