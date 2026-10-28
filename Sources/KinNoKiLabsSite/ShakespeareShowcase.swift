@@ -26,7 +26,7 @@ func shakespeareCollectionMain() -> Node<HTML.BodyContext> {
             <p class="shakespeare-status">Edition complete · Release pending</p>
             <p class="shakespeare-secondary">A completed edition of Shakespeare's comedy. Its work page will gather public editions and media as they are released.</p>
             <dl class="shakespeare-formats">
-              <div><dt>Available</dt><dd>No public releases yet</dd></div>
+              <div><dt>Status</dt><dd>No public releases yet</dd></div>
             </dl>
           </article>
         </div>
@@ -92,7 +92,7 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
           </figure>
           <div class="shakespeare-album-copy">
             <h2 id="listen-title">Merchants of Venice</h2>
-            <p class="shakespeare-secondary shakespeare-album-byline">An album by Dan</p>
+            <p class="shakespeare-secondary shakespeare-album-byline">An album by Dan Fakkeldy</p>
             <p>Original songs after Shakespeare's play, including “Word Is Bond”.</p>
             <div class="shakespeare-action-row">
               <a class="btn shakespeare-suno" href="https://suno.com/playlist/2a02c169-de0a-43e5-a6de-6184c804920f" target="_blank" rel="noopener noreferrer" aria-describedby="suno-new-tab">Listen on Suno <span aria-hidden="true">↗</span></a>
@@ -105,7 +105,7 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
       <section id="read" aria-labelledby="read-title" class="shakespeare-section">
         <p class="eyebrow">III · Read</p>
         <h2 id="read-title" class="shakespeare-sr-only">Read</h2>
-        <p class="shakespeare-secondary shakespeare-edition-intro">Two modern-English editions, each as an EPUB and a chaptered M4B audiobook. These are public first-listen editions; human reading and listening review remain pending.</p>
+        <p class="shakespeare-secondary shakespeare-edition-intro">Two modern-English editions, each as an EPUB and a chaptered M4B audiobook.</p>
         <div class="shakespeare-editions">
           <article class="shakespeare-edition">
             <img class="shakespeare-cover" src="/images/shakespeare/merchant-play-cover.png" width="1024" height="1536" alt="The Merchant of Venice, modern-English play: Shylock portrait cover" loading="lazy">
@@ -165,7 +165,6 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
           <li><a href="https://github.com/dfakkeldy/explainer-audiobooks" target="_blank" rel="noopener noreferrer" aria-describedby="shakespeare-new-tab">Production methods <span aria-hidden="true">↗</span></a><span class="shakespeare-small shakespeare-muted">explainer-audiobooks on GitHub</span></li>
           <li><a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/4bf38dd2b67ffb205344e4331b6dd78fc2668fb1/books/merchant-of-venice-play" target="_blank" rel="noopener noreferrer" aria-describedby="shakespeare-new-tab">Play edition source <span aria-hidden="true">↗</span></a><span class="shakespeare-small shakespeare-muted">Adaptation, covers and publication manifest</span></li>
           <li><a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/4bf38dd2b67ffb205344e4331b6dd78fc2668fb1/books/merchant-of-venice-novel" target="_blank" rel="noopener noreferrer" aria-describedby="shakespeare-new-tab">Novel edition source <span aria-hidden="true">↗</span></a><span class="shakespeare-small shakespeare-muted">Adaptation, covers and publication manifest</span></li>
-          <li class="shakespeare-code-pending"><span>Merchant project code</span><span class="shakespeare-status">Publication pending</span></li>
         </ul>
       </section>
       <p id="shakespeare-new-tab" class="shakespeare-sr-only">Opens in a new tab</p>

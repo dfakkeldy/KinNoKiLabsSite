@@ -44,11 +44,8 @@ test('the film offers an on-demand player and a working YouTube fallback', () =>
   assert.doesNotMatch(section('watch'), /coming soon|will follow|<(?:iframe|video|audio)\b/i);
 });
 
-test('unpublished Merchant project code exposes no action and page load starts no media', () => {
-  const pendingCode = section('code').match(/<li class="shakespeare-code-pending">([\s\S]*?)<\/li>/)?.[1] ?? '';
-  assert.match(pendingCode, /Merchant project code/);
-  assert.match(pendingCode, /Publication pending/);
-  assert.doesNotMatch(pendingCode, /<(?:a|button)\b/);
+test('unpublished Merchant project code is not listed and page load starts no media', () => {
+  assert.doesNotMatch(section('code'), /shakespeare-code-pending|Publication pending/);
   assert.doesNotMatch(main, /href="#"|\bdisabled\b|aria-disabled|\/Users\/|file:|sediment:/i);
   assert.doesNotMatch(main, /<(?:script|iframe|audio|video)\b|class="[^"]*\breveal\b/i);
 });
@@ -67,7 +64,8 @@ test('edition buttons open the matching listening room and retain both release d
   assert.match(read, /EPUB 1\.5 MB · M4B 32\.8 MB/);
   assert.match(read, /2h 19m 14s/);
   assert.match(read, /2h 06m 18s/);
-  assert.match(read, /human reading and listening review remain pending/);
+  assert.match(read, /Two modern-English editions, each as an EPUB and a chaptered M4B audiobook\.<\/p>/);
+  assert.doesNotMatch(read, /review remain pending/);
   assert.doesNotMatch(read, /Release pending|Cover concept|<(?:iframe|audio|button)\b/);
 });
 
