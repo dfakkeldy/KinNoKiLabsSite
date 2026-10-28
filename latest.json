@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "checked_at": "2026-10-28T01:19:46.745976+00:00",
+  "checked_at": "2026-10-28T08:27:46.716338+00:00",
   "status": "ok",
   "error": null,
   "current": {
@@ -80,7 +80,7 @@
         "maximum": "189.5"
       }
     ],
-    "issued_at": "2026-10-27T21:17:55.279765+00:00",
+    "issued_at": "2026-10-28T08:27:46.223483+00:00",
     "model_version": "halifax-e10-rolling-v3",
     "observed_quotes": 3,
     "total_quotes": 5,
@@ -240,7 +240,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-16T03:01:00+00:00",
-      "observed_at": "2026-10-28T01:19:46.036825+00:00",
+      "observed_at": "2026-10-28T08:27:46.223483+00:00",
       "input_fingerprint": "1f293aba9d6fd421f5846e0a77924b3ddbdec777b88c855b0420e62f6eb25798",
       "zones": [
         {
@@ -339,7 +339,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-16T03:01:00+00:00",
-      "observed_at": "2026-10-28T01:19:46.036825+00:00",
+      "observed_at": "2026-10-28T08:27:46.223483+00:00",
       "input_fingerprint": "9b5af1ba8e125c6cb1b024602098e60254c329bcfdc712e36a75e479b3721ffc",
       "zones": [
         {
@@ -438,7 +438,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-23T03:01:00+00:00",
-      "observed_at": "2026-10-28T01:19:46.036825+00:00",
+      "observed_at": "2026-10-28T08:27:46.223483+00:00",
       "input_fingerprint": "9420acf7b246057e5ef854916e71511669736bdd2810f505fb9d3e7172dac5e2",
       "zones": [
         {
@@ -537,7 +537,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-23T03:01:00+00:00",
-      "observed_at": "2026-10-28T01:19:46.036825+00:00",
+      "observed_at": "2026-10-28T08:27:46.223483+00:00",
       "input_fingerprint": "b26dad91ce43a4c276e1324f6db0420b8b31ebf3b40f39a7a7e67483c02acfcb",
       "zones": [
         {
@@ -636,14 +636,14 @@
       ],
       "status": "pending",
       "effective_at": "2026-10-30T03:01:00+00:00",
-      "observed_at": "2026-10-28T01:19:46.036825+00:00",
+      "observed_at": "2026-10-28T08:27:46.223483+00:00",
       "input_fingerprint": "7c96824dfb7c87c8b7c101ec325f806d76fb43b3cfe388064e610da3dce22454",
       "reason": "Target price is not yet effective"
     },
     {
       "date": "2026-10-30",
-      "issued_at": "2026-10-27T21:17:55.279765+00:00",
-      "record_id": "2026-10-30/halifax-e10-rolling-v3-87c99f5c98c3.json",
+      "issued_at": "2026-10-28T08:27:46.223483+00:00",
+      "record_id": "2026-10-30/halifax-e10-rolling-v3-d80172df2e6a.json",
       "model_version": "halifax-e10-rolling-v3",
       "predicted_zones": [
         {
@@ -679,8 +679,8 @@
       ],
       "status": "pending",
       "effective_at": "2026-10-30T03:01:00+00:00",
-      "observed_at": "2026-10-28T01:19:46.036825+00:00",
-      "input_fingerprint": "87c99f5c98c32d7851ad1e063be0cc7640b1a08ee7a488e0d32dff2ef3c6de8b",
+      "observed_at": "2026-10-28T08:27:46.223483+00:00",
+      "input_fingerprint": "d80172df2e6a3f73a30ac8cb8683ff161bdd674e9d0724b2768e2a8cf9166be3",
       "reason": "Target price is not yet effective"
     }
   ],
