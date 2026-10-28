@@ -19,7 +19,7 @@ const styles = readFileSync(new URL('../../Resources/styles.css', import.meta.ur
 
 const tenderDir = new URL('../../Content/tenders/', import.meta.url);
 const tenderFiles = existsSync(tenderDir)
-  ? readdirSync(tenderDir).filter((f) => f.endsWith('.md')).sort()
+  ? readdirSync(tenderDir).filter((f) => f.endsWith('.md') && f !== 'index.md').sort()
   : [];
 
 const DISCLAIMER =
@@ -405,9 +405,12 @@ test('generates the tender showcase hub route', () => {
   assert.match(hub, /<body class="page-section page-tenders">/);
   assert.match(hub, /Tender Starter Showcase/i);
   assert.ok(
-    /tender-current-grid/.test(hub) || /No open tenders are featured right now\. The briefs under Archived demonstrations below are closed worked examples/.test(hub),
-    'hub must render the current grid or the truthful empty state',
+    /tender-current-grid/.test(hub) || !/Current examples/.test(hub),
+    'hub must render the current grid, or no Current examples heading at all',
   );
+  assert.match(hub, /<h2>Worked examples<\/h2>/);
+  assert.doesNotMatch(hub, /Archived demonstrations/);
+  assert.match(hub, /<meta name="description" content="Worked, source-linked starting briefs/);
 });
 
 test('generates a detail page for each tender record', () => {

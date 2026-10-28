@@ -1,6 +1,6 @@
 ---
 title: Autobody and Painting Services for HRM Light-Duty Vehicles (Halifax Location)
-description: A source-linked starting brief for a current Nova Scotia operational service tender.
+description: A worked starting brief for a closed Nova Scotia operational service tender, kept as a demonstration of the review workflow.
 date: 2026-07-24 12:00
 tenderID: HRM-2026-0311
 issuer: Halifax Regional Municipality
