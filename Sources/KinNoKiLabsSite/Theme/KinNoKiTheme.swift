@@ -353,9 +353,10 @@ private func brandLink() -> Node<HTML.BodyContext> {
 }
 
 /// Both logo variants are in the DOM; styles.css shows the one that suits
-/// the active theme.
+/// the active theme. The 128px WebP marks cover the 28-40px header and footer
+/// sizes at 3x; the full 748px PNGs are only for the large hero tree.
 private func brandMarks<Ctx>() -> Node<Ctx> {
-    .raw(#"<img class="logo-on-dark" src="/images/brand/logo-mark.png" alt=""><img class="logo-on-light" src="/images/brand/logo-mark-light.png" alt="">"#)
+    .raw(#"<img class="logo-on-dark" src="/images/brand/logo-mark-128.webp" width="128" height="128" alt=""><img class="logo-on-light" src="/images/brand/logo-mark-light-128.webp" width="128" height="128" alt="">"#)
 }
 
 private func navLink(_ item: NavItem, _ active: String) -> Node<HTML.ListContext> {
