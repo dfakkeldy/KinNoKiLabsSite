@@ -6,7 +6,7 @@ accent: #2f8cff
 tagline: Apple Watch to Markdown.
 platforms: Apple Watch, iPhone
 status: App Store — 1.0
-iconAlt: MacroMark app icon — the letters M and M flanking a downward arrow on a dark navy tile
+iconAlt: MacroMark app icon — the letters M and M flanking a downward arrow, in silver on a black disc
 ---
 
 MacroMark is voice capture for people whose notes live in Markdown. Tap your Watch complication, speak, lower your wrist, and let MacroMark append the thought to today's note.
