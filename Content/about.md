@@ -1,4 +1,4 @@
-# About KinNoKi Labs
+# About
 
 **KinNoKi Labs** is a solo independent studio solving messy technical and operational problems for real-world work.
 
