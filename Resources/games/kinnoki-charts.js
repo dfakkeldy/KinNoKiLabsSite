@@ -179,10 +179,10 @@ function selectFreshPicture({ pool, seed, previousSignatures }) {
 
 export function createChartsPuzzle({ difficulty, seed, previousSignatures = null }) {
   const size = CHARTS_SIZE_BY_DIFFICULTY[difficulty];
-  if (!size) throw new RangeError(`Unsupported Kinnoki Charts difficulty: ${difficulty}`);
+  if (!size) throw new RangeError(`Unsupported KinNoKi Charts difficulty: ${difficulty}`);
   const pool = CHART_CATALOG[difficulty];
   if (!Array.isArray(pool) || pool.length === 0) {
-    throw new RangeError(`No Kinnoki Charts catalog entries for difficulty: ${difficulty}`);
+    throw new RangeError(`No KinNoKi Charts catalog entries for difficulty: ${difficulty}`);
   }
 
   const picture = selectFreshPicture({ pool, seed, previousSignatures });

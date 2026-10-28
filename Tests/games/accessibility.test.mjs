@@ -256,7 +256,7 @@ test('Word Search found-cell pop animation references a defined keyframe', () =>
   assert.match(css, new RegExp(`@keyframes\\s+${escaped(match[1])}\\s*\\{`), `${match[1]} keyframes must actually be defined`);
 });
 
-test('Kinnoki Charts cell transition, error shake and reveal bloom have reduced-motion overrides', () => {
+test('KinNoKi Charts cell transition, error shake and reveal bloom have reduced-motion overrides', () => {
   assert.match(css,
     /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.charts-cell\s*\{[\s\S]*?transition:\s*none/);
   assert.match(css,
@@ -265,13 +265,13 @@ test('Kinnoki Charts cell transition, error shake and reveal bloom have reduced-
     /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.charts-cell\.is-reveal[\s\S]*?animation:\s*none/);
 });
 
-test('Kinnoki Charts satisfied clue carries the strike-through non-colour cue, not opacity alone', () => {
+test('KinNoKi Charts satisfied clue carries the strike-through non-colour cue, not opacity alone', () => {
   const satisfied = ruleBody('.charts-clue.is-satisfied');
   assert.match(satisfied, /text-decoration\s*:\s*line-through/);
   assert.match(satisfied, /opacity\s*:\s*\.45/);
 });
 
-test('Kinnoki Charts is-reveal uses its own bloom-to-gold keyframe, distinct from the shared cell bloom', () => {
+test('KinNoKi Charts is-reveal uses its own bloom-to-gold keyframe, distinct from the shared cell bloom', () => {
   const reveal = ruleBody('.charts-cell.is-reveal');
   const match = reveal.match(/animation\s*:\s*([\w-]+)/);
   assert.ok(match, 'is-reveal declares an animation');

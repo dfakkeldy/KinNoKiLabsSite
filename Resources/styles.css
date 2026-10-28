@@ -1699,7 +1699,7 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
   0% { transform: translate(-50%, 0); opacity: 1; }
   100% { transform: translate(-50%, -28px); opacity: 0; }
 }
-/* Shared cargo/piece thumbnail (Kinnoki Stack previews, Kinnoki Yard tray):
+/* Shared cargo/piece thumbnail (KinNoKi Stack previews, KinNoKi Yard tray):
    percentage-positioned cells sized from custom properties set in JS from
    cell coordinates, never from a layout read. */
 .cargo-thumb {
@@ -1842,7 +1842,7 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
 body.font-opendyslexic .yard-cell:focus-visible,
 body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 
-/* ── Kinnoki Charts (nonogram) ──────────────────────── */
+/* ── KinNoKi Charts (nonogram) ──────────────────────── */
 /* Row clues sit left of the grid, column clues sit above it; the whole
    layout (clues + grid together) rides inside .game-board-scroll so a hard
    15×15 board scrolls horizontally as one unit on narrow screens, matching

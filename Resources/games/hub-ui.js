@@ -30,7 +30,7 @@ export const GAMES = Object.freeze([
   },
   {
     id: 'kinnoki-stack',
-    title: 'Kinnoki Stack',
+    title: 'KinNoKi Stack',
     eyebrow: 'Cargo arcade',
     description: 'Guide falling cargo into manifests while forecast tides reshape the dock.',
     symbol: 'S',
@@ -39,7 +39,7 @@ export const GAMES = Object.freeze([
   },
   {
     id: 'kinnoki-yard',
-    title: 'Kinnoki Yard',
+    title: 'KinNoKi Yard',
     eyebrow: 'Harbour packing',
     description: 'Solve calm packing contracts or build an endless manifest-clearing yard.',
     symbol: 'Y',
@@ -51,7 +51,7 @@ export const GAMES = Object.freeze([
   },
   {
     id: 'kinnoki-charts',
-    title: 'Kinnoki Charts',
+    title: 'KinNoKi Charts',
     eyebrow: 'Picture logic',
     description: 'Fill quiet row and column tallies until a small harbour chart appears.',
     symbol: 'C',
