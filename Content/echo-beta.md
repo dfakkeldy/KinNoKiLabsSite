@@ -1,6 +1,6 @@
 # Join the Echo Beta
 
-Welcome — and thank you. Echo is built by one person around a full-time mail route, which means every tester genuinely moves the project. This page covers how the beta works, how to send feedback that actually helps, and a set of structured test plans if you want to hunt bugs on purpose.
+Welcome — and thank you. Echo is built by one person, which means every tester genuinely moves the project. This page covers how the beta works, how to send feedback that actually helps, and a set of structured test plans if you want to hunt bugs on purpose.
 
 The short version: **use Echo like you really listen** — commute, chores, workouts, bedtime — and tell me the moment something feels wrong.
 

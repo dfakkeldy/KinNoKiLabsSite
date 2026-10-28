@@ -1,6 +1,6 @@
 # Building Echo — The Devlog
 
-Echo went from "I wonder if I could make an iOS app" to a four-platform audiobook study system in about eight weeks. This is the week-by-week story, reconstructed from the actual git history — **428 commits between April 19 and June 9, 2026**, written by a mail carrier with no prior Swift experience, in the hours around a full-time delivery route.
+Echo went from "I wonder if I could make an iOS app" to a four-platform audiobook study system in about eight weeks. This is the week-by-week story, reconstructed from the actual git history — **428 commits between April 19 and June 9, 2026**, written by one developer with no prior Swift experience, in evenings and weekends.
 
 It's all open source. You can audit every claim below: [github.com/dfakkeldy/Echo](https://github.com/dfakkeldy/Echo).
 
@@ -50,7 +50,7 @@ A maturity week. A systematic roadmap appeared and got executed: concurrency saf
 
 Two headliners: the **EPUB Reader Feed** shipped — the dedicated Read tab with card-based rendering, full-text search with highlighting, per-passage colors, TOC, and auto-scroll that follows the narration. And **WhisperKit auto-alignment** arrived: on-device speech recognition snapping chapter boundaries, detecting drift, and repairing it automatically. The "align an entire audiobook to its EPUB with one tap" dream became a feature.
 
-And at week's end: *"chore: Rebrand Orbit Audiobooks to **Echo**"* — new name, alternate app icons, and the "For Every Mind" positioning, with the infinity-symbol icon in silver and gold as a nod to the AuDHD community the app was built from.
+And at week's end: *"chore: Rebrand Orbit Audiobooks to **Echo**"* — new name, alternate app icons, and the "For Every Mind" positioning, with the infinity-symbol icon in silver and gold as a nod to the AuDHD community the app was built for.
 
 ## Week 7 — June 1 – 7 · *Word-level precision + PDF* (18 commits)
 
@@ -66,7 +66,7 @@ The engineering flourish of the week: the **accent contrast safety pipeline**. A
 
 ## The shape of the thing
 
-Eight working weeks. Four platforms (iOS, watchOS, macOS, widgets — plus CarPlay). A SQL database, an on-device ML alignment pipeline, a spaced-repetition system, and an EPUB/PDF reader — built nights-and-weekends around a mail route, by someone whose previous programming experience was "some Python scripts for GIS and a Visual Basic call logger in high school."
+Eight working weeks. Four platforms (iOS, watchOS, macOS, widgets — plus CarPlay). A SQL database, an on-device ML alignment pipeline, a spaced-repetition system, and an EPUB/PDF reader — built on nights and weekends by someone whose previous programming experience was "some Python scripts for GIS and a Visual Basic call logger in high school."
 
 The point of publishing this log isn't bragging rights. It's the same as open-sourcing the code: you should be able to see exactly what you're trusting with your books and your attention — and maybe, if you've been wondering whether you could build *your* app, this page is the nudge.
 

@@ -1074,7 +1074,7 @@ private func homeMain() -> Node<HTML.BodyContext> {
             <img class="flagship-icon" src="/images/apps/echo.png" alt="Echo app icon — an infinity symbol in silver and gold">
             <h2 class="flagship-title">Echo</h2>
             <p class="flagship-tagline">For Every Mind — turn listening into learning.</p>
-            <p class="flagship-desc">The audiobook player that helps you remember what you heard. Built on a mail route, nights and weekends, for an AuDHD brain that learns in stolen, interrupted minutes.</p>
+            <p class="flagship-desc">The audiobook player that helps you remember what you heard. Built for minds that learn in stolen, interrupted minutes.</p>
             <ul class="tick-list">
               <li>\(svgCheck)<p><strong>Word-perfect read-along.</strong> <span>True karaoke, tuned on-device to the real audio.</span></p></li>
               <li>\(svgCheck)<p><strong>One-tap flashcards.</strong> <span>Spaced repetition (FSRS / FSRS-4.5) with the narrator's audio attached.</span></p></li>
@@ -1141,7 +1141,7 @@ private func homeMain() -> Node<HTML.BodyContext> {
       </section>
 
       <section class="closing reveal">
-        <p class="closing-quote">Built between shifts on a rural mail route in Nova Scotia — bid rooms before that. <span>The tools exist because the work demanded them.</span></p>
+        <p class="closing-quote">Built in Cape Breton, Nova Scotia — bid rooms and field maps before that. <span>The tools exist because the work demanded them.</span></p>
         <a class="row-link row-link-gold" href="/about">About the studio \(svgArrow)</a>
       </section>
     </main>
@@ -1755,9 +1755,9 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
 
       <section class="reveal echo-section">
         <div class="story">
-        <p class="eyebrow">Built on a mail route</p>
-        <p class="story-lead">I deliver mail — in and out of the car thirty times a shift, an aux cable, an Apple Watch, and an AuDHD brain that learns from non-fiction audiobooks in stolen, interrupted minutes. No app would loop a single chapter until it stuck, stay ready on a watch after a long pause, or remember <em>why</em> a bookmark was made three driveways ago.</p>
-        <p class="story-body">So I built it, nights and weekends around a full delivery route — an app that treats audiobooks the way students treat textbooks. And if you're just here to listen? You never have to make a single flashcard.</p>
+        <p class="eyebrow">Why Echo exists</p>
+        <p class="story-lead">A lot of real listening happens in stolen, interrupted minutes: in and out of the car, an aux cable, an Apple Watch, a chapter cut short. No app would loop a single chapter until it stuck, stay ready on a watch after a long pause, or remember <em>why</em> a bookmark was made three stops ago.</p>
+        <p class="story-body">So I built one: an app that treats audiobooks the way students treat textbooks. And if you're just here to listen? You never have to make a single flashcard.</p>
         </div>
       </section>
 

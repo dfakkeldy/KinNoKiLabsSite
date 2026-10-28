@@ -12,11 +12,11 @@ iconAlt: Echo app icon — an infinity symbol in silver and gold
 
 Echo is the audiobook player that helps you *remember* what you heard — word-perfect read-along, one-tap flashcards, and a study system built on the real science of memory.
 
-## Built on a mail route
+## Why Echo exists
 
-I deliver mail — in and out of the car thirty times a shift, an aux cable, an Apple Watch, and an AuDHD brain that learns from non-fiction audiobooks in stolen, interrupted minutes. No app on the internet would loop a single chapter until it stuck, stay ready to play on a watch after a long pause, or remember *why* a bookmark was made three driveways ago.
+A lot of real listening happens in stolen, interrupted minutes: in and out of the car, an aux cable, an Apple Watch, a chapter cut short. No app on the internet would loop a single chapter until it stuck, stay ready to play on a watch after a long pause, or remember *why* a bookmark was made three stops ago.
 
-So I built it, nights and weekends around a full delivery route, with no formal programming background — an app for iPhone, Apple Watch, Mac, and CarPlay that treats audiobooks the way students treat textbooks.
+So I built one — an app for iPhone, Apple Watch, Mac, and CarPlay that treats audiobooks the way students treat textbooks.
 
 ## Just here to listen?
 
