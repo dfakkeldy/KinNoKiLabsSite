@@ -1,0 +1,328 @@
+{
+  "anchor_date": "2026-10-23",
+  "anchor_supply": "125.06",
+  "as_of": "2026-10-29",
+  "assumptions": [
+    "Each unobserved weekday holds the latest real posted quote. Projected rows are explicitly marked.",
+    "Missing dates before the latest observed quote are errors, never projections.",
+    "New gasoline orders reset the anchor and the remaining averaging window.",
+    "Known taxes and margins apply on the target date; the latest retail adjustment is carried.",
+    "This is a conditional rolling estimate, not an exact unpublished Board calculation."
+  ],
+  "credit_card": "0.8",
+  "date": "2026-10-30",
+  "effective_at": "2026-10-30T03:01:00+00:00",
+  "forecast_basis": "combined supply subtotal, conditional on unchanged unobserved rack quotes",
+  "input_fingerprint": "794c3319f6e24037a55b8b4112549c8157ff42d15c464a17a958bfb11cb4c7f2",
+  "input_window_end": "2026-10-28",
+  "issued_at": "2026-10-29T07:02:31.172056+00:00",
+  "latest_change": "2.60",
+  "latest_quote_date": "2026-10-28",
+  "market_input_fingerprint": "cc7211736fecba26fd459d398bca054123de71ec9794785828911641b5ce7045",
+  "mean_change": "-0.04",
+  "model_parameters": {
+    "coefficients": [
+      "0.056657803305",
+      "0.572106697388",
+      "0.394488244385"
+    ],
+    "feature_bounds": {
+      "latest_change": [
+        "-9.90",
+        "9.70"
+      ],
+      "mean_change": [
+        "-9.14",
+        "8.60"
+      ]
+    },
+    "features": [
+      "intercept",
+      "period mean rack change",
+      "latest posted rack change"
+    ],
+    "fit_before": "2026-07-01",
+    "model_version": "halifax-e10-change-v2",
+    "training_count": 86,
+    "training_fingerprint": "657405dcc55ff1e2715f1956df98fea2d709fa938457aa7514e4a33808027573",
+    "training_first": "2025-01-17",
+    "training_last": "2026-06-26",
+    "units": "CAD cents per litre"
+  },
+  "model_version": "halifax-e10-rolling-v3",
+  "outside_training_features": [],
+  "previous_rack_window": {
+    "end": "2026-10-22",
+    "latest": "128.20",
+    "latest_date": "2026-10-22",
+    "mean": "131.22",
+    "observations": [
+      {
+        "date": "2026-10-16",
+        "price": "133.20"
+      },
+      {
+        "date": "2026-10-19",
+        "price": "134.50"
+      },
+      {
+        "date": "2026-10-20",
+        "price": "131.70"
+      },
+      {
+        "date": "2026-10-21",
+        "price": "128.50"
+      },
+      {
+        "date": "2026-10-22",
+        "price": "128.20"
+      }
+    ],
+    "start": "2026-10-16"
+  },
+  "prior_date": "2026-10-16",
+  "projection": {
+    "dates": [
+      "2026-10-29"
+    ],
+    "method": "hold_last_real_quote",
+    "observed_count": 4,
+    "projected_count": 1,
+    "quote_date": "2026-10-28",
+    "quote_price": "130.80",
+    "total_count": 5
+  },
+  "provisional": true,
+  "rack_window": {
+    "end": "2026-10-29",
+    "latest": "130.80",
+    "latest_date": "2026-10-28",
+    "mean": "131.18",
+    "observations": [
+      {
+        "date": "2026-10-23",
+        "price": "130.30",
+        "projected": false
+      },
+      {
+        "date": "2026-10-26",
+        "price": "131.70",
+        "projected": false
+      },
+      {
+        "date": "2026-10-27",
+        "price": "132.30",
+        "projected": false
+      },
+      {
+        "date": "2026-10-28",
+        "price": "130.80",
+        "projected": false
+      },
+      {
+        "date": "2026-10-29",
+        "price": "130.80",
+        "projected": true
+      }
+    ],
+    "start": "2026-10-23"
+  },
+  "range_calibration_days_ahead": 2,
+  "range_calibration_quote_date": "2026-10-28",
+  "range_calibration_summary": {
+    "count": 58,
+    "direction_cases": 49,
+    "direction_correct": 44,
+    "mae": "1.80",
+    "max_error": "12.0",
+    "median": "1.00",
+    "over_five_cents": 5,
+    "over_ten_cents": 1,
+    "p90": "4.8",
+    "within_one_cent": 30
+  },
+  "range_description": "Earlier expanding-origin absolute-error reference at the actual quote lead time; not a confidence guarantee",
+  "range_half_width": "4.8",
+  "record_id": "2026-10-30/halifax-e10-rolling-v3-794c3319f6e2.json",
+  "retrieved_sources": {
+    "order-current.pdf": {
+      "bytes": 284117,
+      "retrieved_at": "2026-10-29T07:02:31.170381+00:00",
+      "sha256": "e2b52f5bd79492dd8a7adc488f40f097125710bc143e65492b572b7dc7ad731f",
+      "url": "https://nserbt.ca/sites/default/files/documents/gas/gasprice.pdf?1792725301"
+    },
+    "rack/e10-2025.xlsx": {
+      "bytes": 43360,
+      "retrieved_at": "2026-10-16T03:44:02.048846+00:00",
+      "reused": true,
+      "sha256": "f2e790b1ece89109d2259a4f03a17ec192d289b1ee8dcea725916278387af182",
+      "url": "https://charting.kalibrate.com/WPPS/E10/Wholesale/DAILY/2025/E10_Wholesale_DAILY_2025.xlsx"
+    },
+    "rack/e10-2026.xlsx": {
+      "bytes": 42469,
+      "retrieved_at": "2026-10-29T07:02:30.143119+00:00",
+      "sha256": "6d085a46a6f0ea9018e9a879d84adc7b1e493c8237eb9628cb842b79226a027a",
+      "url": "https://charting.kalibrate.com/WPPS/E10/Wholesale/DAILY/2026/E10_Wholesale_DAILY_2026.xlsx"
+    },
+    "rack/nrcan-halifax.html": {
+      "bytes": 74630,
+      "retrieved_at": "2026-10-29T07:02:30.608125+00:00",
+      "sha256": "af4cb67d5c315b035294191e4ddafe51ea87d75f49ca4929003f261fcaf393d6",
+      "url": "https://www2.nrcan-rncan.gc.ca/eneene/sources/pripri/wholesale_bycity_e.cfm?productID=9&locationID=39&frequency=D"
+    }
+  },
+  "source_verification": {
+    "dates": [
+      "2026-08-31",
+      "2026-09-01",
+      "2026-09-02",
+      "2026-09-03",
+      "2026-09-04",
+      "2026-09-07",
+      "2026-09-08",
+      "2026-09-09",
+      "2026-09-10",
+      "2026-09-11",
+      "2026-09-14",
+      "2026-09-15",
+      "2026-09-16",
+      "2026-09-17",
+      "2026-09-18",
+      "2026-09-21",
+      "2026-09-22",
+      "2026-09-23",
+      "2026-09-24",
+      "2026-09-25",
+      "2026-09-28",
+      "2026-09-29",
+      "2026-09-30",
+      "2026-10-01",
+      "2026-10-02",
+      "2026-10-05",
+      "2026-10-06",
+      "2026-10-07",
+      "2026-10-08",
+      "2026-10-09",
+      "2026-10-12",
+      "2026-10-13",
+      "2026-10-14",
+      "2026-10-15",
+      "2026-10-16",
+      "2026-10-19",
+      "2026-10-20",
+      "2026-10-21",
+      "2026-10-22",
+      "2026-10-23",
+      "2026-10-26",
+      "2026-10-27",
+      "2026-10-28"
+    ],
+    "matched_count": 43
+  },
+  "supply_component": "126.12",
+  "training_fingerprint": "657405dcc55ff1e2715f1956df98fea2d709fa938457aa7514e4a33808027573",
+  "zones": [
+    {
+      "base_wholesale": "137.56",
+      "carbon": "0",
+      "credit_card": "0.8",
+      "excise": "0",
+      "hst": "0.14",
+      "maximum": "186.5",
+      "minimum": "183.5",
+      "provincial_tax": "15.5",
+      "retail_max": "9.7",
+      "retail_min": "7.1",
+      "supply_component": "126.12",
+      "transport": "0.6",
+      "wholesale": "153.06",
+      "wholesale_margin": "10.84",
+      "zone": 1
+    },
+    {
+      "base_wholesale": "138.06",
+      "carbon": "0",
+      "credit_card": "0.8",
+      "excise": "0",
+      "hst": "0.14",
+      "maximum": "187",
+      "minimum": "184.1",
+      "provincial_tax": "15.5",
+      "retail_max": "9.7",
+      "retail_min": "7.1",
+      "supply_component": "126.12",
+      "transport": "1.1",
+      "wholesale": "153.56",
+      "wholesale_margin": "10.84",
+      "zone": 2
+    },
+    {
+      "base_wholesale": "138.46",
+      "carbon": "0",
+      "credit_card": "0.8",
+      "excise": "0",
+      "hst": "0.14",
+      "maximum": "187.5",
+      "minimum": "184.5",
+      "provincial_tax": "15.5",
+      "retail_max": "9.7",
+      "retail_min": "7.1",
+      "supply_component": "126.12",
+      "transport": "1.5",
+      "wholesale": "153.96",
+      "wholesale_margin": "10.84",
+      "zone": 3
+    },
+    {
+      "base_wholesale": "138.56",
+      "carbon": "0",
+      "credit_card": "0.8",
+      "excise": "0",
+      "hst": "0.14",
+      "maximum": "187.6",
+      "minimum": "184.6",
+      "provincial_tax": "15.5",
+      "retail_max": "9.7",
+      "retail_min": "7.1",
+      "supply_component": "126.12",
+      "transport": "1.6",
+      "wholesale": "154.06",
+      "wholesale_margin": "10.84",
+      "zone": 4
+    },
+    {
+      "base_wholesale": "138.56",
+      "carbon": "0",
+      "credit_card": "0.8",
+      "excise": "0",
+      "hst": "0.14",
+      "maximum": "187.6",
+      "minimum": "184.6",
+      "provincial_tax": "15.5",
+      "retail_max": "9.7",
+      "retail_min": "7.1",
+      "supply_component": "126.12",
+      "transport": "1.6",
+      "wholesale": "154.06",
+      "wholesale_margin": "10.84",
+      "zone": 5
+    },
+    {
+      "base_wholesale": "139.26",
+      "carbon": "0",
+      "credit_card": "0.8",
+      "excise": "0",
+      "hst": "0.14",
+      "maximum": "188.4",
+      "minimum": "185.4",
+      "provincial_tax": "15.5",
+      "retail_max": "9.7",
+      "retail_min": "7.1",
+      "supply_component": "126.12",
+      "transport": "2.3",
+      "wholesale": "154.76",
+      "wholesale_margin": "10.84",
+      "zone": 6
+    }
+  ]
+}
