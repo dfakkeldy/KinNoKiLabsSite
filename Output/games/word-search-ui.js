@@ -137,7 +137,9 @@ export async function renderWordSearch(root, store) {
   });
   const panRail = element('div', { class: 'word-search-pan', role: 'group', 'aria-label': 'Horizontal board navigation' }, panLeft, panRange, panRight);
   const boardColumn = element('div', { class: 'word-search-board-column' }, boardScroll, panRail, controls);
-  const wordColumn = element('section', { class: 'word-search-words' }, element('h2', { text: state.definition.theme }), words);
+  // One line on how to select, so the board works without opening How to play.
+  const selectHint = element('p', { class: 'game-board-legend word-search-legend', text: 'Drag across a word, or tap its first and last letters.' });
+  const wordColumn = element('section', { class: 'word-search-words' }, element('h2', { text: state.definition.theme }), selectHint, words);
   layout.append(boardColumn, wordColumn);
 
   // `completed` must be declared before any closure that captures it (the

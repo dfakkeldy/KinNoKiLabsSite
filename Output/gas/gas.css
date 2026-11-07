@@ -1,10 +1,6 @@
 .page-gas [hidden] { display: none !important; }
 .gas-skip { position: fixed; inset: 8px auto auto 8px; z-index: 101; padding: 12px 18px; background: var(--surface); color: var(--text); transform: translateY(-150%); }
 .gas-skip:focus { transform: none; }
-.gas-nav-links { display: flex; align-items: center; gap: 18px; }
-.gas-nav-links > a { padding: 12px 0; font-size: 14px; color: var(--text-muted); text-decoration: none; }
-.gas-nav-links > a:hover { color: var(--text); }
-.gas-nav .theme-toggle { min-width: 44px; min-height: 44px; }
 .gas-page { padding-top: clamp(40px, 6vw, 72px); }
 .gas-app { display: grid; gap: 32px; }
 .gas-toolbar { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 20px; }
@@ -13,13 +9,23 @@
 .gas-zone-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
 .gas-zone-controls > a { display: inline-flex; align-items: center; min-height: 44px; }
 .gas-zone-controls select { min-height: 48px; min-width: 174px; padding: 10px 38px 10px 16px; border-radius: 10px; border: 1px solid var(--gold-hairline); background: var(--surface); color: var(--text); font: inherit; }
-.gas-refresh { min-height: 48px; }
+/* Type scale for the whole app: 15px secondary copy, 13px captions. */
+/* The freshness line and the control that re-reads the feed share one bar,
+   so the refresh reads as part of the status, not as the page's action. */
+.gas-status-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding: 12px 14px 12px 20px; border: 1px solid var(--separator); border-left: 3px solid var(--gold-text); border-radius: 0 12px 12px 0; }
+.gas-status-bar:has(.gas-feed-status[data-state="fresh"]) { border-left-color: var(--gold-hairline); }
+.gas-feed-status { flex: 1 1 320px; min-width: 0; color: var(--text-muted); font-size: 15px; line-height: 1.6; }
+.gas-refresh { flex: none; min-height: 44px; }
 .gas-refresh:disabled { opacity: .7; cursor: wait; }
-.gas-feed-status { padding: 16px 20px; border: 1px solid var(--separator); border-left: 3px solid var(--gold-text); border-radius: 0 12px 12px 0; color: var(--text-muted); font-size: 14px; line-height: 1.65; }
-.gas-feed-status[data-state="fresh"] { border-left-color: var(--gold-hairline); }
 .gas-content { display: grid; gap: clamp(40px, 6vw, 64px); min-width: 0; }
-.gas-price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
-.gas-card { min-width: 0; padding: clamp(22px, 3vw, 32px); background: var(--surface); border: 1px solid var(--separator); border-radius: var(--radius-card); box-shadow: var(--shadow-card); }
+/* Both cards run to the same foot, with their closing disclosures on one
+   line, however much the estimate card has to say. */
+.gas-price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: stretch; }
+.gas-card { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; padding: clamp(22px, 3vw, 32px); background: var(--surface); border: 1px solid var(--separator); border-radius: var(--radius-card); box-shadow: var(--shadow-card); }
+.gas-card > * { align-self: stretch; }
+.gas-card > a { align-self: flex-start; }
+.gas-card > .gas-details:last-child { margin-top: auto; }
+.gas-card > :nth-last-child(2) { margin-bottom: 24px; }
 .gas-card h2 { font-size: clamp(20px, 2.4vw, 26px); }
 .gas-card .eyebrow { margin-bottom: 12px; }
 .gas-card-estimate { border-color: var(--gold-hairline); }
@@ -36,36 +42,40 @@
 .gas-withheld-link::after { content: "↓" / ""; margin-left: 6px; }
 .gas-card-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 22px; }
 .gas-card-top h2 { font-size: 19px; }
-.gas-badge { display: inline-flex; padding: 5px 10px; border: 1px solid var(--gold-hairline); border-radius: var(--radius-pill); font-size: 12px; font-weight: 500; color: var(--gold-text); }
+.gas-badge { display: inline-flex; padding: 5px 10px; border: 1px solid var(--gold-hairline); border-radius: var(--radius-pill); font-size: 13px; font-weight: 500; color: var(--gold-text); }
 .gas-price { font-size: clamp(46px, 6vw, 70px); font-weight: 600; line-height: 1.1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
 .gas-price-unit { margin-top: 7px; font-size: 13px; color: var(--text-muted); }
 .gas-price-maximum { margin-top: 20px; font-size: 17px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.gas-card-note { margin-top: 14px; color: var(--text-muted); font-size: 14px; line-height: 1.65; }
+.gas-card-note { margin-top: 14px; color: var(--text-muted); font-size: 15px; line-height: 1.6; }
 .gas-change { display: flex; align-items: center; gap: 10px; margin-top: 14px; font-size: 16px; font-weight: 600; color: var(--gold-text); font-variant-numeric: tabular-nums; }
 .gas-change::before { content: "→" / ""; display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--gold-hairline); font-size: 15px; line-height: 1; }
 .gas-change[data-direction="down"]::before { content: "↓" / ""; }
 .gas-change[data-direction="up"]::before { content: "↑" / ""; }
 .gas-card-estimate .gas-price-maximum { padding-top: 18px; border-top: 1px solid var(--separator); }
-.gas-coverage { margin-top: 12px; font-size: 14px; }
+.gas-coverage { margin-top: 12px; font-size: 15px; font-variant-numeric: tabular-nums; }
 .gas-empty { margin-top: 18px; font-size: 24px; font-weight: 500; }
 .gas-notice { padding: 20px; border: 1px solid var(--gold-hairline); border-radius: 12px; line-height: 1.65; }
-.gas-details { margin-top: 24px; border-top: 1px solid var(--separator); padding-top: 16px; }
-.gas-details summary { min-height: 30px; cursor: pointer; font-weight: 500; font-size: 14px; color: var(--text); }
+.gas-details { margin-top: 24px; border-top: 1px solid var(--separator); padding-top: 8px; }
+.gas-details summary { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; font-weight: 500; font-size: 15px; color: var(--text); }
+.gas-details summary::-webkit-details-marker { display: none; }
+.gas-details summary::before { content: ""; flex: none; width: 7px; height: 7px; margin: 0 4px 0 2px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); transition: transform .15s var(--ease); }
+.gas-details[open] > summary::before { transform: rotate(45deg); }
+.gas-details > summary { list-style: none; }
 .gas-details > :not(summary) { margin-top: 16px; }
-.gas-details ul { padding-left: 20px; display: grid; gap: 10px; color: var(--text-muted); font-size: 14px; }
-.gas-components { display: grid; gap: 12px; font-size: 14px; }
+.gas-details ul { padding-left: 20px; display: grid; gap: 10px; color: var(--text-muted); font-size: 15px; }
+.gas-components { display: grid; gap: 12px; font-size: 15px; }
 .gas-components > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; }
 .gas-components dt { color: var(--text-muted); }
 .gas-components dd { font-variant-numeric: tabular-nums; }
 .gas-section { min-width: 0; }
 .gas-section .section-title { font-size: clamp(25px, 3.4vw, 34px); }
 .gas-section .section-head { margin-bottom: 24px; }
-.gas-section-note { margin-top: 20px; max-width: 78ch; color: var(--text-muted); font-size: 14px; line-height: 1.7; }
+.gas-section-note { margin-top: 20px; max-width: 78ch; color: var(--text-muted); font-size: 15px; line-height: 1.6; }
 .gas-stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .gas-stat { padding: 24px; border: 1px solid var(--separator); border-radius: 16px; background: var(--surface); }
-.gas-stat h3 { font-size: 14px; font-weight: 500; color: var(--text-muted); }
+.gas-stat h3 { font-size: 15px; font-weight: 500; color: var(--text-muted); }
 .gas-stat-value { margin-top: 16px; font-size: clamp(26px, 3vw, 36px); font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -.025em; }
-.gas-stat p:last-child { margin-top: 10px; color: var(--text-muted); font-size: 13px; }
+.gas-stat p:last-child { margin-top: 10px; color: var(--text-muted); font-size: 13px; font-variant-numeric: tabular-nums; }
 /* Scroll shadows: an edge fades in only on the side that has more table,
    so a clipped column always shows that it can be scrolled to. */
 .gas-table-wrap {
@@ -76,10 +86,10 @@
     radial-gradient(farthest-side at 0 50%, rgba(0, 0, 0, .45), transparent) left center / 14px 100% no-repeat scroll,
     radial-gradient(farthest-side at 100% 50%, rgba(0, 0, 0, .45), transparent) right center / 14px 100% no-repeat scroll;
 }
-.gas-table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; font-variant-numeric: tabular-nums; }
+.gas-table { width: 100%; border-collapse: collapse; font-size: 15px; text-align: left; font-variant-numeric: tabular-nums; }
 .gas-table caption { padding: 14px 16px; text-align: left; font-size: 13px; color: var(--text-muted); background: var(--surface); }
 .gas-table th, .gas-table td { padding: 14px 16px; border-top: 1px solid var(--separator); vertical-align: top; }
-.gas-table thead th { background: var(--surface); font-size: 12px; font-weight: 500; color: var(--text-muted); }
+.gas-table thead th { background: var(--surface); font-size: 13px; font-weight: 500; color: var(--text-muted); }
 .gas-table tbody th { font-weight: 500; }
 .gas-table td { white-space: nowrap; }
 .gas-table tr[data-selected="true"] { background: var(--fill-2); }
@@ -97,19 +107,18 @@
 /* The scroll-shadow covers must match whatever the table sits on, or they
    paint dark smears on both edges of a table that does not overflow. */
 .gas-watch .gas-table-wrap, .gas-card .gas-table-wrap { --wrap-bg: var(--surface); }
-.gas-ledger-summary { margin-bottom: 20px; font-size: 15px; color: var(--text-muted); }
 .gas-ledger { scroll-margin-top: 88px; }
 .gas-ledger .gas-table { min-width: 630px; }
 .gas-ledger-details { margin-top: 28px; }
-.gas-ledger-details summary { padding: 12px 0; }
+.gas-ledger-details summary { padding: 0; }
 .gas-comparison { padding: clamp(18px, 3vw, 28px); margin: 0 0 24px; border: 1px solid var(--separator); border-radius: 16px; background: var(--surface); }
 .gas-comparison-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; }
-.gas-comparison-controls label { font-size: 14px; font-weight: 500; }
-.gas-comparison-select { max-width: 100%; min-height: 44px; padding: 8px 36px 8px 12px; border: 1px solid var(--gold-hairline); border-radius: 8px; background: var(--surface); color: var(--text); font: inherit; font-size: 14px; }
+.gas-comparison-controls label { font-size: 15px; font-weight: 500; }
+.gas-comparison-select { max-width: 100%; min-height: 44px; padding: 8px 36px 8px 12px; border: 1px solid var(--gold-hairline); border-radius: 8px; background: var(--surface); color: var(--text); font: inherit; font-size: 15px; }
 .gas-comparison-select:disabled { opacity: .65; }
-.gas-comparison-explanation, .gas-comparison-empty { margin-top: 16px; font-size: 14px; line-height: 1.7; color: var(--text-muted); }
+.gas-comparison-explanation, .gas-comparison-empty { margin-top: 16px; font-size: 15px; line-height: 1.6; color: var(--text-muted); }
 .gas-comparison-result { margin-top: 24px; font-size: 16px; line-height: 1.6; font-variant-numeric: tabular-nums; }
-.gas-comparison-caption { margin-top: 8px; color: var(--text-muted); font-size: 13px; }
+.gas-comparison-caption { margin-top: 8px; color: var(--text-muted); font-size: 13px; font-variant-numeric: tabular-nums; }
 .gas-comparison-key { display: flex; flex-wrap: wrap; gap: 6px 20px; margin: 14px 0 0; padding: 0; list-style: none; font-size: 13px; color: var(--text-muted); }
 .gas-comparison-key li { display: inline-flex; align-items: center; gap: 8px; }
 .gas-comparison-key li::before { content: ""; width: 12px; height: 12px; border-radius: 2px; background: var(--gold-text); }
@@ -143,8 +152,13 @@
    value, so First and Latest read as a pair without doubling row height. */
 .gas-issue { display: grid; grid-template-columns: 3.6em auto; align-items: baseline; column-gap: 10px; row-gap: 2px; margin-bottom: 10px; }
 .gas-issue:last-child { margin-bottom: 0; }
-.gas-issue-label { font-size: 12px; color: var(--text-muted); }
-.gas-issue-time { grid-column: 2; font-size: 12px; color: var(--text-muted); }
+.gas-issue-label { font-size: 13px; color: var(--text-muted); }
+.gas-issue-time { grid-column: 2; font-size: 13px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+/* Errors carry the chart's fills: gold too high, grey too low, and an
+   exact match set bold, so the ledger reads as the graph in figures. */
+.gas-issue-value[data-sign="high"] { color: var(--gold-text); font-weight: 500; }
+.gas-issue-value[data-sign="low"] { color: var(--text-muted); font-weight: 500; }
+.gas-issue-value[data-sign="exact"] { font-weight: 700; }
 .gas-source-list { display: grid; gap: 14px; padding-left: 20px; font-size: 15px; overflow-wrap: anywhere; }
 .gas-footer { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; }
 .gas-footer .footer-tagline { flex-basis: 100%; }
@@ -156,32 +170,31 @@
   .gas-comparison-frame { grid-template-columns: 38px minmax(0, 1fr); }
   .gas-comparison-point { padding: 0 2px; font-size: 11px; }
   /* The ledger restacks as one card per effective date: the date heads
-     the card and the three values sit side by side with their labels, so
-     nothing is lost off the right edge of a phone. */
+     the card, each saved estimate takes one full-width line (label, price,
+     issue time), then the official outcome and the error sit side by side.
+     Nothing wraps into a three-line timestamp or runs off a phone. */
   .gas-ledger .gas-table { min-width: 0; }
   .gas-ledger .gas-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   .gas-ledger .gas-table, .gas-ledger .gas-table tbody { display: block; }
   .gas-ledger .gas-table caption { display: block; }
-  .gas-ledger .gas-table tr { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr) minmax(0, 1fr); gap: 4px 12px; padding: 14px 12px; border-top: 1px solid var(--separator); }
-  .gas-issue-time { grid-column: 1 / -1; }
-  .gas-ledger td[data-label="Error"] .gas-issue { grid-template-columns: minmax(0, 1fr); }
+  .gas-ledger .gas-table tr { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px 16px; padding: 16px 14px; border-top: 1px solid var(--separator); }
+  .gas-ledger td[data-label="Saved estimate"] { grid-column: 1 / -1; }
+  .gas-ledger td[data-label="Saved estimate"] .gas-issue { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 10px; margin-bottom: 6px; }
+  .gas-ledger td[data-label="Saved estimate"] .gas-issue-label { flex: none; width: 3.6em; }
+  .gas-ledger td[data-label="Saved estimate"] .gas-issue-time { margin-left: auto; }
+  .gas-ledger td[data-label="Error"] .gas-issue { margin-bottom: 6px; }
   .gas-withheld { padding-block: 18px 0; }
-  .gas-ledger .gas-table tbody th { grid-column: 1 / -1; padding: 0 0 6px; border: 0; }
+  .gas-ledger .gas-table tbody th { grid-column: 1 / -1; padding: 0; border: 0; font-size: 16px; }
   .gas-ledger .gas-table td { padding: 0; border: 0; white-space: normal; min-width: 0; }
-  .gas-ledger .gas-table td::before { content: attr(data-label); display: block; margin-bottom: 6px; font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--text-muted); }
+  .gas-ledger .gas-table td::before { content: attr(data-label); display: block; margin-bottom: 6px; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
   .gas-stat-grid { grid-template-columns: 1fr; }
   .gas-stat { display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; align-items: center; }
   .gas-stat-value { margin-top: 0; font-size: 27px; }
   .gas-stat p:last-child { grid-column: 1 / -1; margin-top: 0; }
   .gas-table th, .gas-table td { padding: 12px; }
-  .gas-nav-links { gap: 14px; }
   .gas-footer .font-toggle { margin-left: 0; }
 }
 @media (max-width: 380px) {
-  .gas-nav .nav-brand { font-size: 14px; gap: 6px; }
-  .gas-nav .nav-brand img { width: 27px; height: 27px; }
-  .gas-nav-links { gap: 12px; }
-  .gas-nav-links > a { font-size: 13px; }
   .gas-stat { display: block; }
   .gas-stat-value { margin: 12px 0 8px; }
 }

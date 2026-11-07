@@ -51,11 +51,18 @@ export function element(tag, attributes = {}, ...children) {
 // never reads layout. `rotation` is recorded as metadata (a data attribute)
 // for callers that want a rotation-aware hook in CSS or tests; it does not
 // re-derive cell coordinates.
-// Stack and Yard keep their play controls disabled outside active play. A
-// one-line caption names the button that unlocks them, so a row of dashed
-// (disabled) controls reads as "waiting for Start", not as broken.
+// Stack and Yard keep their play controls disabled outside active play. The
+// shell carries the play state (data-play-state) so CSS can leave the move
+// pad out before the first Start and dim it while paused. A one-line caption
+// names the button that starts or resumes play.
 const GO_LABELS = Object.freeze({ start: 'Start', continue: 'Continue', resume: 'Resume' });
+export const STATUS_LABELS = Object.freeze({
+  preview: 'Ready', active: 'Playing', paused: 'Paused', terminal: 'Finished',
+});
+export const statusLabel = (status) => STATUS_LABELS[status]
+  ?? (String(status).charAt(0).toUpperCase() + String(status).slice(1));
 export function syncControlsHint(view, { status, entryKind }) {
+  view?.shell?.setAttribute?.('data-play-state', String(status));
   const hint = view?.controlsHint;
   if (!hint) return;
   const go = entryKind === 'continue' ? view.continueGame
@@ -63,7 +70,9 @@ export function syncControlsHint(view, { status, entryKind }) {
   const waiting = status === 'preview' || status === 'paused';
   hint.hidden = !waiting || !go || go.hidden || !GO_LABELS[entryKind];
   hint.textContent = hint.hidden ? ''
-    : 'Press ' + GO_LABELS[entryKind] + ' to use these controls.';
+    : status === 'preview'
+      ? 'Press ' + GO_LABELS[entryKind] + ' to play. Your controls appear here.'
+      : 'Press ' + GO_LABELS[entryKind] + ' to use these controls.';
 }
 
 export function cargoThumb(cells, { patternClass, rotation = 0 } = {}) {

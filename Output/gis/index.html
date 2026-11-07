@@ -3,7 +3,7 @@
     <div class="gis-hero-copy">
       <p class="eyebrow">GIS case study · 2013–2026</p>
       <h1 id="gis-title">From field maps to<br><em>mapping products.</em></h1>
-      <p class="gis-lead">More than a decade turning field observations, forestry records, imagery, public data, and rural infrastructure questions into maps people can actually use.</p>
+      <p class="gis-lead">More than a decade of field observations, forestry records, imagery, public data, and rural infrastructure questions.</p>
       <blockquote>The work is not making a pretty map. It is turning imperfect real-world information into a useful, understandable decision tool.</blockquote>
     </div>
     <aside class="gis-scope-note">
@@ -15,11 +15,11 @@
 
   <nav class="gis-timeline-nav" aria-label="Case study timeline">
     <ol>
-      <li><a href="#gis-2013"><span>2013</span>Field status</a></li>
-      <li><a href="#gis-2015"><span>2015</span>Aerial mosaic</a></li>
-      <li><a href="#gis-2023-visibility"><span>2023</span>Visibility screen</a></li>
-      <li><a href="#gis-2023-field"><span>2023</span>Field review</a></li>
-      <li><a href="#gis-2026"><span>2026</span>Mapping product</a></li>
+      <li><a href="#gis-2013"><span class="gis-nav-year">2013</span><span class="gis-nav-label">Field status</span></a></li>
+      <li><a href="#gis-2015"><span class="gis-nav-year">2015</span><span class="gis-nav-label">Aerial mosaic</span></a></li>
+      <li><a href="#gis-2023-visibility"><span class="gis-nav-year">2023</span><span class="gis-nav-label">Visibility screen</span></a></li>
+      <li><a href="#gis-2023-field"><span class="gis-nav-year">2023</span><span class="gis-nav-label">Field review</span></a></li>
+      <li><a href="#gis-2026"><span class="gis-nav-year">2026</span><span class="gis-nav-label">Mapping product</span></a></li>
     </ol>
   </nav>
 
@@ -28,7 +28,14 @@
       <div class="gis-marker" aria-hidden="true"><span>2013</span></div>
       <figure class="gis-figure">
         <img src="/images/gis/field-classification-2013.webp" width="1440" height="900" fetchpriority="high" decoding="async" alt="Generalized map reconstruction with invented land shapes coloured yellow, blue, pink, green, and grey for different field and paperwork states.">
-        <figcaption><span>Public-safe reconstruction</span> Invented geometry; no basemap, names, areas, or client location.</figcaption>
+        <figcaption><span>Public-safe reconstruction</span> Invented geometry; no basemap, names, areas, or client location.
+          <div class="gis-legend"><p>Field status</p><ul>
+            <li><i class="gis-key gis-key-confirmed" aria-hidden="true"></i>record confirmed</li>
+            <li><i class="gis-key gis-key-unconfirmed" aria-hidden="true"></i>not yet confirmed</li>
+            <li><i class="gis-key gis-key-new" aria-hidden="true"></i>new field note</li>
+            <li><i class="gis-key gis-key-review" aria-hidden="true"></i>needs review</li>
+          </ul></div>
+        </figcaption>
       </figure>
       <div class="gis-stop-copy">
         <p class="gis-era">ArcMap 10.1 · Forestry operations</p>
@@ -39,10 +46,10 @@
           <div><h3>Method</h3><p>Revised colour categories in ArcMap and carried uncertainty into the legend instead of smoothing it away.</p></div>
           <div><h3>Output</h3><p>A field and office reference map with a deliberately visible “needs review” state.</p></div>
         </div>
-        <div class="gis-boundary">
-          <p><strong>It supported:</strong> reconciling the map and paperwork before follow-up.</p>
-          <p><strong>It did not establish:</strong> survey boundaries, title, Crown status, or present-day conditions.</p>
-        </div>
+      </div>
+      <div class="gis-boundary">
+        <p><strong>It supported:</strong> reconciling the map and paperwork before follow-up.</p>
+        <p><strong>It did not establish:</strong> survey boundaries, title, Crown status, or present-day conditions.</p>
       </div>
     </article>
 
@@ -61,10 +68,10 @@
           <div><h3>Method</h3><p>Stitched overlapping frames into one continuous, zoomable PDF while keeping the imperfect first-pass seams visible.</p></div>
           <div><h3>Output</h3><p>A continuous winter mosaic that made terrain and image coverage easier to review.</p></div>
         </div>
-        <div class="gis-boundary">
-          <p><strong>It supported:</strong> reviewing coverage, stitch quality, and broad terrain relationships.</p>
-          <p><strong>It did not establish:</strong> survey-grade position, orthophoto accuracy, or current conditions.</p>
-        </div>
+      </div>
+      <div class="gis-boundary">
+        <p><strong>It supported:</strong> reviewing coverage, stitch quality, and broad terrain relationships.</p>
+        <p><strong>It did not establish:</strong> survey-grade position, orthophoto accuracy, or current conditions.</p>
       </div>
     </article>
 
@@ -72,7 +79,14 @@
       <div class="gis-marker" aria-hidden="true"><span>2023</span></div>
       <figure class="gis-figure gis-figure-dark">
         <img src="/images/gis/visibility-analysis-2023.webp" width="1440" height="900" loading="lazy" decoding="async" alt="Generalized dark regional shape containing a regular point grid classified green, yellow, orange, and red for relative modelled visibility.">
-        <figcaption><span>Public-safe reconstruction</span> Invented geography and classes; utilities, addresses, basemap, and exact results removed.</figcaption>
+        <figcaption><span>Public-safe reconstruction</span> Invented geography and classes; utilities, addresses, basemap, and exact results removed.
+          <div class="gis-legend"><p>Relative screening classes</p><ul>
+            <li><i class="gis-key gis-key-dot gis-key-lower" aria-hidden="true"></i>lower modelled exposure</li>
+            <li><i class="gis-key gis-key-dot gis-key-middle" aria-hidden="true"></i>middle range</li>
+            <li><i class="gis-key gis-key-dot gis-key-higher" aria-hidden="true"></i>higher range</li>
+            <li><i class="gis-key gis-key-dot gis-key-priority" aria-hidden="true"></i>review priority</li>
+          </ul></div>
+        </figcaption>
       </figure>
       <div class="gis-stop-copy">
         <p class="gis-era">QGIS 3.30 · Scripted spatial analysis</p>
@@ -83,10 +97,10 @@
           <div><h3>Method</h3><p>QGIS plus an adjustable scripted analysis developed iteratively from the plain-language question.</p></div>
           <div><h3>Output</h3><p>A classified regional screening map that made relative patterns visible.</p></div>
         </div>
-        <div class="gis-boundary">
-          <p><strong>It supported:</strong> comparing parameters and focusing further research.</p>
-          <p><strong>It did not establish:</strong> wind resource, siting approval, grid access, land rights, environmental suitability, or project viability.</p>
-        </div>
+      </div>
+      <div class="gis-boundary">
+        <p><strong>It supported:</strong> comparing parameters and focusing further research.</p>
+        <p><strong>It did not establish:</strong> wind resource, siting approval, grid access, land rights, environmental suitability, or project viability.</p>
       </div>
     </article>
 
@@ -94,7 +108,13 @@
       <div class="gis-marker" aria-hidden="true"><span>2023</span></div>
       <figure class="gis-figure">
         <img src="/images/gis/planting-review-2023.webp" width="1440" height="900" loading="lazy" decoding="async" alt="Generalized planting review reconstruction with invented green treatment blocks, white field access line, and green or red observation points.">
-        <figcaption><span>Public-safe reconstruction</span> Invented treatment blocks and sample points; landowner, counts, outcome, imagery, and location removed.</figcaption>
+        <figcaption><span>Public-safe reconstruction</span> Invented treatment blocks and sample points; landowner, counts, outcome, imagery, and location removed.
+          <div class="gis-legend"><p>Field review</p><ul>
+            <li><i class="gis-key gis-key-dot gis-key-observed" aria-hidden="true"></i>observation recorded</li>
+            <li><i class="gis-key gis-key-dot gis-key-follow-up" aria-hidden="true"></i>follow-up indicated</li>
+            <li><i class="gis-key gis-key-line" aria-hidden="true"></i>field access line</li>
+          </ul></div>
+        </figcaption>
       </figure>
       <div class="gis-stop-copy">
         <p class="gis-era">QGIS 3.32 · Field verification</p>
@@ -105,10 +125,10 @@
           <div><h3>Method</h3><p>Reviewed how the tally should be interpreted, connected observations back to the map, and kept the field evidence alongside the summary.</p></div>
           <div><h3>Output</h3><p>A plot map and companion tally for review and follow-up.</p></div>
         </div>
-        <div class="gis-boundary">
-          <p><strong>It supported:</strong> reviewing a historical, sample-based field outcome and locating areas to revisit.</p>
-          <p><strong>It did not establish:</strong> a whole-site inventory, a current condition, or a result independent of the agreed tally method.</p>
-        </div>
+      </div>
+      <div class="gis-boundary">
+        <p><strong>It supported:</strong> reviewing a historical, sample-based field outcome and locating areas to revisit.</p>
+        <p><strong>It did not establish:</strong> a whole-site inventory, a current condition, or a result independent of the agreed tally method.</p>
       </div>
     </article>
 
@@ -127,11 +147,11 @@
           <div><h3>Method</h3><p>Offline-first native tiles; browser georeferencing with embedded GeoPDF frames or manual control points; local-file handling, source receipts, and licence gates.</p></div>
           <div><h3>Output</h3><p><a href="/apps/nsmarksthespot/">NS Marks The Spot</a> as an iPhone companion and an <a href="/apps/nsmarksthespot/map/">open browser map</a>.</p></div>
         </div>
-        <div class="gis-boundary">
-          <p><strong>It supports:</strong> source-linked research, field orientation, and better questions about historical geography.</p>
-          <p><strong>It does not establish:</strong> survey position, title, access, present road or trail condition, tax-sale status, or legal advice.</p>
-        </div>
         <p class="gis-rights-note">Capture from the exact public <a href="https://github.com/dfakkeldy/ns-marks-the-spot" target="_blank" rel="noopener">NS Marks The Spot source</a>. The visible background retains <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributor attribution</a>; the listed USGS GeoPDF is represented only by metadata and an extent outline.</p>
+      </div>
+      <div class="gis-boundary">
+        <p><strong>It supports:</strong> source-linked research, field orientation, and better questions about historical geography.</p>
+        <p><strong>It does not establish:</strong> survey position, title, access, present road or trail condition, tax-sale status, or legal advice.</p>
       </div>
     </article>
   </section>

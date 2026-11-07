@@ -144,7 +144,8 @@ export function renderContrastTool(root, deps = {}) {
     const ratio = contrastRatio(foregroundHex, backgroundHex);
     const checks = verdicts(ratio);
     const ratioText = formatNumber(ratio, 2);
-    const headline = `Contrast ${ratioText} : 1`;
+    // The label names the number once; the display line is the answer alone.
+    const headline = `${ratioText} : 1`;
     // A pair that passes everything gets one line instead of five identical ticks.
     const allPass = VERDICT_ROWS.every(([key]) => checks[key]);
     const verdictList = allPass
@@ -162,14 +163,16 @@ export function renderContrastTool(root, deps = {}) {
         })
       )));
     const preview = element('div', { class: 'contrast-preview', ownerDocument: doc });
-    const forward = element('p', {
-      class: 'contrast-swatch', text: 'The quick brown fox jumps over the lazy dog.', ownerDocument: doc,
-    });
+    // Each sample shows both WCAG sizes the verdicts grade: body text, then
+    // large text (24px), so a "large text only" pass is visible, not just stated.
+    const sampleLines = () => [
+      element('span', { class: 'contrast-sample-normal', text: 'The quick brown fox jumps over the lazy dog.', ownerDocument: doc }),
+      element('span', { class: 'contrast-sample-large', text: 'Large text, 24px', ownerDocument: doc }),
+    ];
+    const forward = element('p', { class: 'contrast-swatch', ownerDocument: doc }, ...sampleLines());
     forward.style.setProperty('background-color', backgroundHex);
     forward.style.setProperty('color', foregroundHex);
-    const reverse = element('p', {
-      class: 'contrast-swatch', text: 'The quick brown fox jumps over the lazy dog.', ownerDocument: doc,
-    });
+    const reverse = element('p', { class: 'contrast-swatch', ownerDocument: doc }, ...sampleLines());
     reverse.style.setProperty('background-color', foregroundHex);
     reverse.style.setProperty('color', backgroundHex);
     preview.append(
@@ -221,6 +224,7 @@ export function renderContrastTool(root, deps = {}) {
 
     // Nothing to suggest once the pair meets the highest target.
     results.replaceChildren(
+      element('p', { class: 'contrast-ratio-label', text: 'Contrast ratio', ownerDocument: doc }),
       element('div', { class: 'contrast-headline', ownerDocument: doc },
         element('p', { class: 'tool-result-strong contrast-ratio', text: headline, ownerDocument: doc }),
         // When everything passes, the summary line below already says AAA.

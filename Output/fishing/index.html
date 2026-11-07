@@ -199,7 +199,7 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .mchip{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:48px;padding:5px 2px;cursor:pointer;border-left:1px solid var(--rule);text-align:center;user-select:none;-webkit-user-select:none;position:relative}
 .months .mchip:first-of-type{border-left:0}
 .mchip .m-name{font-family:var(--font-display);font-weight:600;font-size:16px;letter-spacing:.04em;line-height:1}
-.mchip .m-count{font-size:12px;color:var(--ink-3);line-height:1}
+.mchip .m-count{font-size:13px;font-weight:600;color:var(--ink-2);line-height:1}
 .mchip:hover{background:var(--surface-2)}
 .chip-in:checked + .mchip{background:var(--ink);color:var(--surface)}
 .chip-in:checked + .mchip .m-count{color:var(--surface);opacity:.8}
@@ -222,6 +222,10 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .status-box{align-self:center;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;justify-content:flex-end}
 .status{margin:0;color:var(--ink-2);font-size:15px}
 .status b{color:var(--ink)}
+/* Phone filters: one summary row that opens the species, water and
+   drive-from controls, so the map arrives in the first screen. Desktop
+   never shows it and never hides the controls. */
+.filters-toggle{display:none}
 .linkbtn{background:none;border:0;padding:2px 0;color:var(--salt);text-decoration:underline;text-underline-offset:2px;cursor:pointer;font-size:15px}
 .linkbtn[hidden]{display:none}
 .note-drive{margin:0;font-size:13px;color:var(--ink-3)}
@@ -426,7 +430,7 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .cal-more dd{margin:2px 0 0;font-size:14px;color:var(--ink-2)}
 .cal-more dd p{margin:0 0 4px}
 
-.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border:2px solid var(--ink);background:var(--surface)}
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border:1px solid var(--rule-strong);background:var(--surface)}
 .rule{padding:14px 16px 12px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
 .rule h3{font-size:19px;letter-spacing:.02em;margin-bottom:5px}
 .rule p,.rule ul{margin:0 0 6px;font-size:15px}
@@ -447,7 +451,7 @@ footer{margin-top:30px;padding-top:14px;border-top:3px double var(--rule-strong)
 footer h2{font-size:22px;margin-bottom:8px;color:var(--ink)}
 footer ol{margin:0;padding-left:22px}
 footer li{margin:0 0 4px}
-.legal{margin-top:18px;padding:12px 14px;border:1px solid var(--ink);background:var(--surface);color:var(--ink)}
+.legal{margin-top:18px;padding:12px 14px;border:1px solid var(--rule-strong);background:var(--surface);color:var(--ink)}
 .legal strong{font-family:var(--font-display);font-size:18px;letter-spacing:.08em;text-transform:uppercase}
 .credits p{margin:0 0 8px}
 .colophon{margin-top:14px;font-size:13px;color:var(--ink-3)}
@@ -493,6 +497,12 @@ footer li{margin:0 0 4px}
   .months .mchip:nth-of-type(2),.months .mchip:nth-of-type(8){border-left:0}
   .mchip{min-height:44px}
   .ctl-row{grid-template-columns:1fr;gap:10px}
+  .filters-toggle{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;padding:8px 12px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+  .filters-toggle .ft-label{flex:none;font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+  .filters-toggle .ft-sum{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:15px;font-weight:600}
+  .filters-toggle::after{content:"";flex:none;width:8px;height:8px;margin:0 4px -2px 0;border-right:2px solid var(--ink-2);border-bottom:2px solid var(--ink-2);transform:rotate(45deg);transform-origin:60% 60%}
+  .filters-toggle[aria-expanded="true"]::after{transform:rotate(-135deg)}
+  .controls.is-collapsed .ctl-row > :not(.status-box){display:none}
   .seg label{min-height:44px}
   .seg{width:100%}
   .seg label{flex:1;padding:6px 6px;font-size:15px}
@@ -576,7 +586,8 @@ footer li{margin:0 0 4px}
         <input class="chip-in" type="radio" name="month" id="m12" value="12"><label class="mchip" for="m12"><span class="m-name">Dec</span><span class="m-count num" data-m="12"></span></label>
       </div>
     </fieldset>
-    <div class="ctl-row">
+    <button type="button" class="filters-toggle" id="filters-toggle" aria-expanded="true" aria-controls="ctl-row"><span class="ft-label">Filters</span><span class="ft-sum" id="filters-sum">All species · All water · from St. Peter's</span></button>
+    <div class="ctl-row" id="ctl-row">
       <div>
         <label class="ctl-label" for="species" style="display:block">Species</label>
         <div class="select-wrap"><select id="species"><option value="">All species</option></select></div>
@@ -722,9 +733,9 @@ footer li{margin:0 0 4px}
     <div class="legal" role="note">
       <p><strong>Not legal advice.</strong> This is a planning map compiled on 2026-10-12 from 2026 rules. The handbook itself has no legal force; the regulations and DFO variation orders are the law, and they change. Check the current NS Anglers' Handbook and DFO notices before you fish.</p>
       <p><strong>General foot-access context.</strong> For Nova Scotia residents, section 3(1) of the <a href="https://nslegislature.ca/sites/default/files/legc/statutes/angling.pdf" target="_blank" rel="noopener">Angling Act</a> describes travel on foot along the banks of a river, stream or lake, and across uncultivated or Crown land, for lawful rod-and-line fishing in those waters. Section 2 defines lawful fishing by reference to applicable provincial and federal laws and regulations; uncultivated land is in its natural wild state, including cleared land otherwise left natural. Section 3(3) preserves compensation for actual damage to owners or occupants and does not grant a right to light fires.</p>
-      <p>This general context does not verify access at any pin, route or harbour structure. A nearby road, a public-looking wharf or the absence of a closure sign does not establish fishing permission. Confirm the applicable access right, any required landholder or operator permission, and current local closures and fishing rules before using the shore or structures.</p>
+      <p>Spot pins, seasons and access notes were compiled from public records and have not been checked on the ground. This general context does not verify access at any pin, route or harbour structure. A nearby road, a public-looking wharf or the absence of a closure sign does not establish fishing permission. Confirm the applicable access right, any required landholder or operator permission, and current local closures and fishing rules before using the shore or structures.</p>
     </div>
-    <p class="colophon">Built for phones and desktops by <a href="/">KinNoKi Labs</a>. Spot pins, seasons and access notes were compiled from public records and have not been checked on the ground. These records do not verify land ownership, shore access or permission to fish; confirm before visiting.</p>
+    <p class="colophon">Built for phones and desktops by <a href="/">KinNoKi Labs</a>.</p>
   </footer>
 </div>
 
@@ -1142,6 +1153,13 @@ footer li{margin:0 0 4px}
     // Spot pins only: a place name may never sit on one of them, and may
     // never be cut by the map edge. (An origin diamond may carry its own
     // town name beside it, as before.)
+    // The zoom buttons and the KEY panel float over the map: a place name
+    // may not sit under them either (it would read as cut off).
+    var mapRect = map.getContainer().getBoundingClientRect();
+    Array.prototype.forEach.call(map.getContainer().querySelectorAll('.leaflet-top .leaflet-control'), function (el) {
+      var r = el.getBoundingClientRect();
+      if (r.width && r.height) boxes.push([r.left - mapRect.left - 4, r.top - mapRect.top - 4, r.right - mapRect.left + 4, r.bottom - mapRect.top + 4]);
+    });
     var pinBoxes = boxes.slice();
     Object.keys(ORIGINS).forEach(function (k) {
       var pt = map.latLngToContainerPoint(ORIGINS[k].ll);
@@ -1370,7 +1388,29 @@ footer li{margin:0 0 4px}
     elStatus.innerHTML = txt; // built only from numbers and our own month/origin labels
     var isDefault = !state.month && !state.species && state.water === 'all';
     elReset.hidden = isDefault;
+    renderFilterSummary();
   }
+
+  /* Phone filters: the summary row names the current choices; the controls
+     start folded on a phone and always show on wider screens. */
+  var elFilters = $('#filters-toggle'), elFiltersSum = $('#filters-sum'), elControls = $('.controls');
+  function renderFilterSummary() {
+    if (!elFiltersSum) return;
+    var sp = state.species ? state.species : 'All species';
+    var wt = state.water === 'salt' ? 'Salt and tidal' : state.water === 'fresh' ? 'Fresh' : 'All water';
+    elFiltersSum.textContent = sp + ' · ' + wt + ' · from ' + ORIGINS[state.origin].label;
+  }
+  function setFiltersOpen(open) {
+    if (!elFilters || !elControls) return;
+    elFilters.setAttribute('aria-expanded', open ? 'true' : 'false');
+    elControls.classList.toggle('is-collapsed', !open);
+  }
+  var filtersMQ = window.matchMedia ? window.matchMedia('(max-width: 700px)') : { matches: false };
+  setFiltersOpen(!filtersMQ.matches);
+  if (elFilters) elFilters.addEventListener('click', function () { setFiltersOpen(elFilters.getAttribute('aria-expanded') !== 'true'); });
+  function onFiltersLayout() { setFiltersOpen(!filtersMQ.matches); }
+  try { filtersMQ.addEventListener('change', onFiltersLayout); } catch (e) { try { filtersMQ.addListener(onFiltersLayout); } catch (e2) { /* ignore */ } }
+  renderFilterSummary();
 
   function listItem(s) {
     var st = seasonOf(s);
@@ -1766,6 +1806,13 @@ footer li{margin:0 0 4px}
       var shown = spots.filter(passes);
       var target = state.month ? shown.filter(function (s) { return seasonOf(s) !== 'out'; }) : shown;
       if (!target.length) target = shown.length ? shown : spots;
+      // Phone: open on the spots within half an hour of the chosen origin,
+      // the same ones that head the list, so their pins sit far enough apart
+      // to tap. Zoom out (or the scale bar) shows every spot.
+      if (isNarrow()) {
+        var near = target.filter(function (s) { return drive(s) <= 30; });
+        if (near.length >= 5) target = near;
+      }
       map.fitBounds(L.latLngBounds(target.map(function (s) { return [s.lat, s.lon]; })), { padding: isNarrow() ? [24, 24] : [44, 44], maxZoom: 12, animate: false });
     }
   }).catch(function () {

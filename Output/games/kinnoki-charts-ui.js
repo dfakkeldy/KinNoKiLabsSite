@@ -82,9 +82,9 @@ export async function renderCharts(root, store) {
   const instructions = element('details', { 'data-instructions': '' },
     element('summary', { text: 'How to play' }),
     element('p', {
-      text: 'Row clues sit to the left of the grid, column clues sit above it. Choose a '
-        + 'cell and cycle it blank, filled, or marked to match the clues. Arrow keys move, '
-        + 'Enter or Space cycles the selected cell, and X or M toggles a mark. ' + ASSIST_RULE,
+      text: 'Row clues sit to the left of the grid, column clues above it; each number is '
+        + 'one run of filled cells, in order. Arrow keys move, Enter or Space cycles the '
+        + 'selected cell, and X or M toggles a mark. ' + ASSIST_RULE,
     }));
   const corner = element('div', { class: 'charts-corner', 'aria-hidden': 'true' });
   const columnClueNodes = [];
@@ -147,12 +147,12 @@ export async function renderCharts(root, store) {
     if (!completed) void puzzleAudio.dispose();
   });
 
-  // One plain line names the input next to the board, so play does not
-  // depend on opening How to play; audio follows it in the side column.
-  const legend = element('p', { class: 'game-board-legend', 'data-charts-legend': '',
+  // One plain line names the input directly above the board, so play does
+  // not depend on opening How to play; audio sits in the side column.
+  const legend = element('p', { class: 'game-board-legend charts-legend', 'data-charts-legend': '',
     text: 'Tap a cell to cycle it: blank, filled, marked ×. Filled runs must match the numbers.' });
-  const side = element('div', { class: 'game-side' }, legend, audioControls.element);
-  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, boardScroll, side, shell.live);
+  const side = element('div', { class: 'game-side charts-side' }, audioControls.element);
+  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, legend, boardScroll, side, shell.live);
 
   // Build the size*size cell buttons (and their gridcell wrappers) once.
   // draw() below only ever patches attributes/classes/content on these same

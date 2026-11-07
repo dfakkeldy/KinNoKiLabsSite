@@ -173,7 +173,18 @@ export async function renderCrossword(root, store) {
     element('p', { text: 'Type letters. Arrow keys move, Backspace erases, Tab moves through clues, and selecting a crossing twice changes direction. ' + ASSIST_RULE }));
   const layout = element('div', { class: 'crossword-layout' });
   const board = element('div', { class: 'game-board crossword-board', role: 'grid', 'aria-label': 'Crossword puzzle' });
-  board.setAttribute('style', `--crossword-size:${state.definition.size}`);
+  // The board is cropped to the rows and columns that hold letters, so a
+  // generated layout never carries whole blank edge rows or columns.
+  const usedRows = [];
+  const usedColumns = [];
+  state.definition.cells.forEach((row, rowIndex) => row.forEach((cell, columnIndex) => {
+    if (cell) { usedRows.push(rowIndex); usedColumns.push(columnIndex); }
+  }));
+  const firstRow = usedRows.length ? Math.min(...usedRows) : 0;
+  const firstColumn = usedColumns.length ? Math.min(...usedColumns) : 0;
+  const rowCount = usedRows.length ? Math.max(...usedRows) - firstRow + 1 : state.definition.size;
+  const columnCount = usedColumns.length ? Math.max(...usedColumns) - firstColumn + 1 : state.definition.size;
+  board.setAttribute('style', `--crossword-size:${state.definition.size};--crossword-rows:${rowCount};--crossword-columns:${columnCount}`);
   const clues = element('div', { class: 'crossword-clues' });
   const clueButtons = new Map();
   const clueAnswers = new Map();
@@ -252,7 +263,7 @@ export async function renderCrossword(root, store) {
         role: 'gridcell', class: 'crossword-gridcell', 'aria-rowindex': rowIndex + 1,
         'aria-colindex': columnIndex + 1,
       }, input, marker);
-      gridCell.setAttribute('style', `grid-row:${rowIndex + 1};grid-column:${columnIndex + 1}`);
+      gridCell.setAttribute('style', `grid-row:${rowIndex - firstRow + 1};grid-column:${columnIndex - firstColumn + 1}`);
       rowNode.append(gridCell);
       cellInputs[rowIndex][columnIndex] = input;
     });
@@ -286,7 +297,7 @@ export async function renderCrossword(root, store) {
       button.classList.toggle('is-filled', filled);
     }
     currentClue.textContent = activeEntry
-      ? `${activeEntry.number} ${activeEntry.direction === 'across' ? 'Across' : 'Down'}. ${activeEntry.clue}`
+      ? `${activeEntry.number} ${activeEntry.direction === 'across' ? 'Across' : 'Down'}. ${activeEntry.clue} (${positions(activeEntry).length})`
       : '';
     shell.timer.textContent = formatElapsed(session.elapsed());
     if (state.completed && !completed) {
