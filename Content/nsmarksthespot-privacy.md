@@ -1,5 +1,7 @@
 # NS Marks The Spot Privacy Policy
 
+<p class="prose-meta"><strong>Last updated:</strong> October 18, 2026</p>
+
 NS Marks The Spot is made by Daniel Vincent Fakkeldy, operating as KinNoKi Labs. This policy describes the native iPhone and iPad app. In short:
 
 - You can use the app without creating an NS Marks account.
@@ -44,8 +46,7 @@ NS Marks The Spot is made by Daniel Vincent Fakkeldy, operating as KinNoKi Labs.
 
 **Contact.** Mail sent to the KinNoKi support and privacy addresses below is routed through Apple iCloud Mail, subject to [Apple's privacy policy](https://www.apple.com/legal/privacy/en-ww/).
 
-- **App support:** [map@kinnokilabs.com](mailto:map@kinnokilabs.com)
-- **Privacy questions or requests:** [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com)
+<div class="row-list prose-contact"><a class="support-row" href="mailto:map@kinnokilabs.com?subject=NS%20Marks%20The%20Spot%20support"><span class="support-row-glyph" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg></span><span class="support-row-text"><span>App support</span><span class="support-row-sub">map@kinnokilabs.com</span></span><svg class="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></a><a class="support-row" href="mailto:hello@kinnokilabs.com?subject=NS%20Marks%20The%20Spot%20privacy"><span class="support-row-glyph" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg></span><span class="support-row-text"><span>Privacy questions or requests</span><span class="support-row-sub">hello@kinnokilabs.com</span></span><svg class="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></a></div>
 
 ---
 [App help](/nsmarksthespot-help/) | [Site privacy](/privacy/)

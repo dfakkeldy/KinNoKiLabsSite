@@ -238,10 +238,14 @@ const difficultyMarkup = (group) => group.difficulties.map(({ label, href }) => 
   `<a href="${escapeHTML(href)}">${escapeHTML(label)}</a>`
 )).join('');
 
+// A single-mode label ("New puzzle") reads as an action over its chips, so
+// the chips read as start buttons; Yard's two mode names stay as they are.
+const chipLabel = (label) => (/^New /.test(label) ? 'Start a ' + label.toLowerCase() : label);
+
 const modeGroupsMarkup = (card) => card.modeGroups.map((group) => (
   '<div class="difficulty-links" role="group" aria-label="Choose '
     + escapeHTML(card.title) + ' ' + escapeHTML(group.label) + ' difficulty">'
-    + '<span>' + escapeHTML(group.label) + '</span>'
+    + '<span>' + escapeHTML(chipLabel(group.label)) + '</span>'
     + difficultyMarkup(group)
     + '</div>'
 )).join('');

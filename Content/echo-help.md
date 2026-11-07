@@ -1,6 +1,6 @@
 # Echo help
 
-Thank you for using Echo. The fastest routes to an answer:
+Thank you for using Echo. The fastest routes to an answer are these guides; the most common questions follow them.
 
 - **[User Manual](/echo-manual)** — the complete reference: every feature on iPhone, iPad, Apple Watch, Mac, and widgets (including the ones still in development on the way to 1.0), plus a library-organization guide.
 - **[Getting the Most Out of Echo](/echo-learn)** — how to use the study features, and the memory science behind them.
@@ -47,10 +47,10 @@ Chapter Study Mode, gentle hyperfocus reminders, a Context Memory map view, .apk
 Context Memory is optional and off by default. With permission, the device can provide a precise fix; Echo rounds coordinates before asking Apple's geocoder for a place name and stores the resulting context locally. **Delete Context Memory** removes the app's local context records, not providers' records or backups. See the [Echo Privacy Policy](/echo-privacy/).
 
 ### Will my flashcards and bookmarks sync between devices?
-This release does not promise complete private synchronization of flashcards, decks, bookmarks or playback position. Files in an iCloud folder follow Apple's file services, and Watch features transfer selected state and voice memos with the paired iPhone. Importing a book may look up matching public alignment anchors when network access is permitted, with local fallback for an ordinary lookup failure. This release does not expose public-alignment uploads. See the [Echo Privacy Policy](/echo-privacy/).
+This release does not promise complete private synchronization of flashcards, decks, bookmarks or playback position. Files in an iCloud folder follow Apple's file services, and Watch features transfer selected state and voice memos with the paired iPhone. Importing a book may look up matching public alignment anchors when network access is permitted, with local fallback for an ordinary lookup failure. This release does not expose public-alignment uploads.
 
 ### Does Echo work offline?
-Local playback, reading, narration and alignment can work with the required files and models already present. Model downloads, optional community-alignment lookup, website capture, external AI and Audiobookshelf use a network connection. External AI sends book text to the configured provider. See the [Echo Privacy Policy](/echo-privacy/).
+Local playback, reading, narration and alignment can work with the required files and models already present. Model downloads, optional community-alignment lookup, website capture, external AI and Audiobookshelf use a network connection. External AI sends book text to the configured provider.
 
 ### Where is my data? Can I get it out?
 Your audio stays where you put it (Echo reads in place). Echo's own data lives in a local database on your device with an open-source schema. Bookmarks and whole-book study-note bundles export to Markdown today, ready for Obsidian, Logseq, or Notion. Portable JSON deck export is coming with 1.0. Your data is never hostage.
@@ -65,4 +65,4 @@ Stuck, found a bug, or want a feature? Email or open an issue.
 I try to answer within 24–48 hours.
 
 ---
-[Echo](/apps/echo) | [User Manual](/echo-manual) | [Echo Privacy](/echo-privacy/) | [All app support](/support)
+[Echo](/apps/echo) | [Echo Privacy](/echo-privacy/) | [All app support](/support)

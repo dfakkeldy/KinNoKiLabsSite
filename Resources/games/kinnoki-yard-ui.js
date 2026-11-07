@@ -14,7 +14,7 @@ import { createGameAudio } from './game-audio.js';
 import {
   cargoThumb, createAudioControls, createEventAnnouncer, createGameLifecycle,
   defaultSeedFactory, element, formatElapsed, makeGameTerminal,
-  prefersReducedMotion, renderGameError, syncControlsHint,
+  prefersReducedMotion, renderGameError, statusLabel, syncControlsHint,
 } from './controller-common.js';
 import { celebrate } from './celebration.js';
 import { safeLocalStorage } from './hub-ui.js';
@@ -212,8 +212,19 @@ function buildYardShell(root, model, audioControls) {
     stat('Record status', assisted),
     stat(mode === 'contracts' ? 'Contract' : 'Cargo Manifests', summary),
     stat('Selected piece', rotation));
-  const help = element('details', { 'data-yard-keyboard-help': '' },
-    element('summary', { text: 'Keyboard controls' }),
+  // How to play, as on every other game page: the goal for this mode, the
+  // keys, then the record rule.
+  const help = element('details', { 'data-yard-keyboard-help': '', class: 'game-how-to-play' },
+    element('summary', { text: 'How to play' }),
+    element('p', {
+      text: mode === 'contracts'
+        ? 'Choose cargo in the tray, rotate it if you need to, then choose where it goes '
+          + 'on the board. The contract is done when tray cargo fills every dashed cell. '
+          + 'Undo is free; a hint makes the run ineligible for records.'
+        : 'Choose cargo in the tray, rotate it if you need to, then choose where it goes '
+          + 'on the board. A filled dashed manifest dispatches for points. The run ends '
+          + 'when no tray cargo fits; Undo makes the run ineligible for records.',
+    }),
     element('p', {
       text: 'Arrow keys move board focus. Enter or Space places cargo. '
         + 'R rotates, U undoes, H requests a Contract hint, and Escape pauses.',
@@ -452,7 +463,7 @@ function paintYard(view, state, {
   view.assisted.textContent = state.assisted
     ? 'Assisted run · records excluded'
     : 'Eligible for records';
-  view.status.textContent = titleCase(state.status);
+  view.status.textContent = statusLabel(state.status);
   view.summary.textContent = mode === 'contracts'
     ? Object.keys(state.placements).length + '/' + state.definition.pieces.length
       + ' cargo pieces placed'

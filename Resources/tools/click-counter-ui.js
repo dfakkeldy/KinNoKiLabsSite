@@ -183,9 +183,12 @@ export function renderClickCounterTool(root, deps = {}) {
     element('div', { class: 'tool-field click-counter-target', ownerDocument: doc },
       element('label', { for: 'click-counter-target', text: 'Target number', ownerDocument: doc }),
       targetInput),
-    result,
-    element('div', { class: 'tool-actions click-counter-actions', ownerDocument: doc }, copyButton, resetButton),
-    copyStatus,
+    // The answer, its actions and the copy status are one group, so on wide
+    // screens Copy sits right under the equation it copies.
+    element('div', { class: 'click-counter-answer', ownerDocument: doc },
+      result,
+      element('div', { class: 'tool-actions click-counter-actions', ownerDocument: doc }, copyButton, resetButton),
+      copyStatus),
   );
   body.append(form);
 }

@@ -147,21 +147,40 @@ export function renderPassphraseTool(root, deps = {}) {
     announce(text);
   };
 
-  // Before the first Generate the slot describes what the current options
-  // will make, so every option shows its effect. Nothing is generated until
-  // asked; after that, changing an option rolls a fresh value.
+  // Before the first Generate the slot shows the answer's shape: a masked
+  // preview (dots, joined by the real separator) over a one-line caption,
+  // so every option shows its effect while no secret is on screen. Nothing
+  // is generated until asked; after that, changing an option rolls a fresh
+  // value. The mask is decoration; the caption carries the meaning.
   const resultArea = (describe) => {
-    const placeholder = element('p', { class: 'passphrase-placeholder', ownerDocument: doc });
+    const mask = element('span', { class: 'passphrase-mask', 'aria-hidden': 'true', ownerDocument: doc });
+    const caption = element('span', { class: 'passphrase-caption', ownerDocument: doc });
+    const placeholder = element('p', { class: 'passphrase-placeholder', ownerDocument: doc }, mask, caption);
     const container = element('div', { class: 'passphrase-result', ownerDocument: doc }, placeholder);
-    const refresh = () => { placeholder.textContent = describe(); };
+    const refresh = () => {
+      const { shape, text } = describe();
+      mask.textContent = shape;
+      mask.hidden = shape === '';
+      caption.textContent = text;
+    };
     refresh();
     return { container, refresh };
   };
 
+  // Fixed, typical EFF word lengths: the preview's rhythm never changes
+  // from one visit to the next, and it never hints at a real word.
+  const GHOST_WORD_LENGTHS = [6, 5, 7, 4, 6, 5, 7, 6];
+  const DOT = '•';
+
   const describePassphrase = () => {
     const extras = [values.capitalize ? 'capitalized' : null, values.includeNumber ? 'with a number' : null]
       .filter(Boolean).join(', ');
-    return `Press Generate for ${values.words} words joined with ${SEPARATOR_WORDS[values.separator] ?? 'a separator'}${extras ? `, ${extras}` : ''}.`;
+    const words = GHOST_WORD_LENGTHS.slice(0, values.words).map((length) => DOT.repeat(length));
+    if (values.includeNumber) words.push('#');
+    return {
+      shape: words.join(values.separator),
+      text: `${values.words} words joined with ${SEPARATOR_WORDS[values.separator] ?? 'a separator'}${extras ? `, ${extras}` : ''}. Press Generate to make one.`,
+    };
   };
 
   const describeString = () => {
@@ -169,9 +188,13 @@ export function renderPassphraseTool(root, deps = {}) {
       values.lower ? 'lowercase' : null, values.upper ? 'uppercase' : null,
       values.digits ? 'digits' : null, values.symbols ? 'symbols' : null,
     ].filter(Boolean);
-    if (sets.length === 0) return 'Choose at least one character set below.';
+    if (sets.length === 0) return { shape: '', text: 'Choose at least one character set below.' };
     const list = sets.length === 1 ? sets[0] : `${sets.slice(0, -1).join(', ')} and ${sets.at(-1)}`;
-    return `Press Generate for ${values.length} characters of ${list}.`;
+    const shown = isLength(values.length) ? Math.min(values.length, 24) : 0;
+    return {
+      shape: `${DOT.repeat(shown)}${isLength(values.length) && values.length > 24 ? '…' : ''}`,
+      text: `${values.length} characters of ${list}. Press Generate to make one.`,
+    };
   };
 
   const optionFlow = (run, area) => {

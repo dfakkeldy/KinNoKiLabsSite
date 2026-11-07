@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**Effective Date:** October 18, 2026
+**Effective Date:** October 18, 2026 · **Last updated:** October 28, 2026
 
 Our apps MacroMark and Turn Timer do not collect or sell your personal data, and never send it to us — we have no servers. We do not use third-party analytics trackers or advertising frameworks.
 
@@ -35,10 +35,10 @@ kinnokilabs.com is a static site with no accounts, no analytics, and no advertis
 
 - **[Fishing map](/fishing/):** Your month, species, water and drive-from choices stay in that browser. The map library loads from `cdnjs.cloudflare.com` and the fonts from Google Fonts, like any web request. Directions open Google Maps or Apple Maps only when you tap them.
 - **[NS Marks The Spot browser map](/apps/nsmarksthespot/map/):** Maps you import, saved setups, and any position this device reports stay in that browser. Map tiles and layer data are fetched from the public sources named in each layer’s attribution; those requests carry only the ordinary information any web request carries. Tax-sale listings never show owner names.
-- **[Address and driveway map](/poker):** The address and driveway map at /poker keeps address search, driveway traces, and its offline pack in that browser only; no resident names. Aerial imagery is not stored offline. Clearing this site’s data removes it.
+- **[Address and driveway map](/poker):** Its address search, driveway traces, and offline pack stay in that browser only; no resident names. Aerial imagery is not stored offline. Clearing this site’s data removes it.
 
 ## Questions
 Email [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com) with any questions or concerns about this Privacy Policy.
 
 ---
-[All app support](/support)
+[Echo privacy](/echo-privacy/) | [NS Marks The Spot privacy](/nsmarksthespot-privacy/) | [All app support](/support)

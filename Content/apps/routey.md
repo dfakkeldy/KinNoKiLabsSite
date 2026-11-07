@@ -3,7 +3,7 @@ title: Routey
 description: A discontinued offline-first iPhone route organizer. It was never released; the source code is archived on GitHub.
 image: /images/apps/routey.png
 accent: #ef4444
-tagline: An offline-first iPhone route organizer, now archived.
+tagline: A rural route organizer, now archived.
 platforms: iPhone
 status: Discontinued
 ---

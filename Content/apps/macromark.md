@@ -11,9 +11,11 @@ iconAlt: MacroMark app icon — the letters M and M flanking a downward arrow, i
 
 MacroMark is voice capture for people whose notes live in Markdown. Tap your Watch complication, speak, lower your wrist, and let MacroMark append the thought to today's note.
 
-MacroMark 1.0 is [live on the App Store](https://apps.apple.com/ca/app/macromark/id6785081218) and free. Version 1.1 is in testing.
+MacroMark 1.0 is live on the App Store and free. Version 1.1 is in testing.
 
 <p class="app-actions"><a class="btn btn-gold" href="https://apps.apple.com/ca/app/macromark/id6785081218">Download on the App Store</a></p>
+
+<div class="app-gallery"><figure class="app-gallery-shot"><div class="screen-frame"><img src="/images/apps/macromark-inbox.webp" width="414" height="900" loading="lazy" decoding="async" alt="MacroMark's iPhone inbox for one day: three captured notes in Markdown, a heading and task lists among them, each marked Incomplete or saved to iCloud Drive." /></div><figcaption class="screen-caption"><strong>Inbox.</strong> Each capture, as Markdown, with where it went.</figcaption></figure><figure class="app-gallery-shot"><div class="screen-frame"><img src="/images/apps/macromark-macros.webp" width="414" height="900" loading="lazy" decoding="async" alt="MacroMark's iPhone settings: the Watch double-tap action, the iCloud save location, and a list of macros, each phrase shown above the Markdown it writes." /></div><figcaption class="screen-caption"><strong>Macros.</strong> Each phrase above the Markdown it writes.</figcaption></figure></div>
 
 ## Say the shape of the note
 
@@ -42,12 +44,12 @@ MacroMark is built around the moment when opening a phone would be enough fricti
 
 ## Built for trust
 
-- **Reliability core:** Watch captures stay queued until the iPhone has processed them and the export has succeeded or is safely queued for retry.
-- **Status and recovery:** Export status labels, a needs-attention filter, partial-transcription warnings and retry actions keep capture state visible.
-- **Review by date:** Check today's, yesterday's or any earlier daily note from the phone inbox or the Watch daily log.
-- **App Intents:** Instant capture, typed capture, daily-log review and append-text actions are available in Shortcuts and Siri.
-- **Setup proof:** Settings show where notes go and can write a test note before you rely on Watch capture.
-- **Daily-note shape:** Timestamp style, separators and an optional append heading are yours to configure.
+- **Reliability core** Watch captures stay queued until the iPhone has processed them and the export has succeeded or is safely queued for retry.
+- **Status and recovery** Export status labels, a needs-attention filter, partial-transcription warnings and retry actions keep capture state visible.
+- **Review by date** Check today's, yesterday's or any earlier daily note from the phone inbox or the Watch daily log.
+- **App Intents** Instant capture, typed capture, daily-log review and append-text actions are available in Shortcuts and Siri.
+- **Setup proof** Settings show where notes go and can write a test note before you rely on Watch capture.
+- **Daily-note shape** Timestamp style, separators and an optional append heading are yours to configure.
 
 ## Privacy stays plain
 
@@ -56,4 +58,5 @@ MacroMark is built around local capture, Apple speech services where applicable,
 <p class="app-actions app-actions-end"><a class="btn btn-gold" href="https://apps.apple.com/ca/app/macromark/id6785081218">Download on the App Store</a></p>
 
 ---
-[Project site](https://dfakkeldy.github.io/MacroMark/) | [Source on GitHub](https://github.com/dfakkeldy/MacroMark) | [Get help](/macromark-help)
+
+<p class="app-more"><span class="app-more-label">More</span><a href="https://dfakkeldy.github.io/MacroMark/">Project site</a><a href="https://github.com/dfakkeldy/MacroMark">Source on GitHub</a><a href="/macromark-help">Get help</a></p>

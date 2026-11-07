@@ -14,7 +14,7 @@ import { createGameAudio } from './game-audio.js';
 import {
   cargoThumb, createAudioControls, createEventAnnouncer, createGameLifecycle,
   defaultSeedFactory, element, formatElapsed, makeGameTerminal,
-  prefersReducedMotion, renderGameError, syncControlsHint,
+  prefersReducedMotion, renderGameError, statusLabel, syncControlsHint,
 } from './controller-common.js';
 import { celebrate } from './celebration.js';
 import { safeLocalStorage } from './hub-ui.js';
@@ -110,13 +110,24 @@ function buildStackShell(root, difficulty, audioControls) {
   const difficultyExplanation = element('p', {
     class: 'game-mode-note', 'data-difficulty-explanation': '', text: DIFFICULTY_COPY[difficulty],
   });
+  // How to play, as on every other game page: the goal, then the keys, then
+  // the two assistive tools and the record rule.
   const keyboardHelp = element(
     'details',
-    { 'data-stack-keyboard-help': '' },
-    element('summary', { text: 'Keyboard controls' }),
+    { 'data-stack-keyboard-help': '', class: 'game-how-to-play' },
+    element('summary', { text: 'How to play' }),
+    element('p', {
+      text: 'Cargo drops from the top of the dock. Move and rotate it so it lands in the '
+        + 'dashed manifest. A filled manifest dispatches for points, and dispatching on '
+        + 'drop after drop builds a combo. The run ends when cargo settles above the crane line.',
+    }),
     element('p', {
       text: 'Left/Right arrows move. Down soft-drops. Space hard-drops. '
         + 'Z or Up rotates. P or Escape pauses. Enter advances in Step Mode.',
+    }),
+    element('p', {
+      text: 'Describe Dock writes out what is on the board. Step Mode stops the drop '
+        + 'until you advance, and makes the run ineligible for records.',
     }),
   );
 
@@ -368,7 +379,7 @@ function paintStack(view, state, {
   view.assisted.textContent = state.assisted
     ? 'Assisted run · records excluded'
     : 'Eligible for records';
-  view.status.textContent = titleCase(state.status);
+  view.status.textContent = statusLabel(state.status);
 
   const completedCells = state.manifests.reduce((total, item) => (
     total + item.cells.filter(({ row, column }) => state.board[row][column] !== null).length

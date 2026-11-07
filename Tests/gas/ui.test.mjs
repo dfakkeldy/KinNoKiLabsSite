@@ -121,7 +121,7 @@ test('several issues for one date produce one observed event with first, latest 
   const fixture = await mount(snapshot);
   assert.equal(fixture.root.querySelectorAll('.gas-ledger-event').length, 1);
   const ledger = fixture.root.querySelector('.gas-ledger');
-  assert.match(ledger.textContent, /1 effective date scored/);
+  assert.match(ledger.textContent, /1 completed date/);
   assert.match(ledger.textContent, /First.*\$1\.931/);
   assert.match(ledger.textContent, /Latest.*\$1\.912/);
   assert.match(ledger.textContent, /\$1\.948/);

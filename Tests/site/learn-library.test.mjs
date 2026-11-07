@@ -56,14 +56,22 @@ for (const book of approvedBooks) {
 
     const expectedLinks = [
       `<a href="/listen/?book=${book.slug}">Listen</a>`,
-      `<a href="${publicLibrary}/tree/main/books/${book.slug}" target="_blank" rel="noopener">Book folder</a>`,
       `<a href="${publicLibrary}/raw/main/books/${book.slug}/${book.slug}.epub">EPUB</a>`,
       `<a href="${publicLibrary}/blob/main/books/${book.slug}/${book.slug}.md" target="_blank" rel="noopener">Read</a>`,
     ];
     const actualLinks = [...card.matchAll(/<a\b[^>]*>[^<]+<\/a>/g)].map((match) => match[0]);
+    // Listen, EPUB and Read only: the public-library tile under the grid
+    // links the repository that holds every book folder.
     assert.deepEqual(actualLinks, expectedLinks);
   });
 }
+
+test('the library tile links the public repository and the page ends on the request', () => {
+  assert.ok(html.includes(`<a class="learn-library-tile" href="${publicLibrary}" target="_blank" rel="noopener">`));
+  const notes = html.indexOf('class="reveal learn-section learn-notes"');
+  const request = html.indexOf('class="reveal learn-section learn-request-grid" id="request"');
+  assert.ok(notes > 0 && request > notes, 'the notes come before the request panel');
+});
 
 test('private books remain absent from learn', () => {
   assert.doesNotMatch(html, /The Long Route/);

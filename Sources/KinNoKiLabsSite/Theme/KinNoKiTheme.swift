@@ -597,14 +597,30 @@ private func notFoundMain() -> Node<HTML.BodyContext> {
         <h1 class="page-title">That page isn't here.</h1>
         <p class="page-lede">The link may be old, or the address may have a typo. These are the main places to go from here.</p>
       </header>
-      <div class="row-list">
-        <a class="support-row" href="/"><span class="support-row-text"><span>Home</span><span class="support-row-sub">The studio and what it does</span></span>\(svgRowChevron)</a>
-        <a class="support-row" href="/services"><span class="support-row-text"><span>Services</span><span class="support-row-sub">Work with me on a technical problem</span></span>\(svgRowChevron)</a>
-        <a class="support-row" href="/apps"><span class="support-row-text"><span>Apps</span><span class="support-row-sub">Echo, MacroMark, NS Marks The Spot, Turn Timer</span></span>\(svgRowChevron)</a>
-        <a class="support-row" href="/support"><span class="support-row-text"><span>Support</span><span class="support-row-sub">Help pages for each app</span></span>\(svgRowChevron)</a>
-        <a class="support-row" href="/learn"><span class="support-row-text"><span>Learn</span><span class="support-row-sub">Learning audiobooks to listen to</span></span>\(svgRowChevron)</a>
+      <div class="row-list" id="not-found-rows">
+        <a class="support-row" href="/services" data-sections="services gis tenders"><span class="support-row-text"><span>Services</span><span class="support-row-sub">Work with me on a technical problem</span></span>\(svgRowChevron)</a>
+        <a class="support-row" href="/apps" data-sections="apps testflight"><span class="support-row-text"><span>Apps</span><span class="support-row-sub">Apps for Apple devices and the browser</span></span>\(svgRowChevron)</a>
+        <a class="support-row" href="/support" data-sections="support"><span class="support-row-text"><span>Support</span><span class="support-row-sub">Help pages for each app</span></span>\(svgRowChevron)</a>
+        <a class="support-row" href="/learn" data-sections="learn listen fiction shakespeare"><span class="support-row-text"><span>Learn</span><span class="support-row-sub">Learning audiobooks to listen to</span></span>\(svgRowChevron)</a>
         <a class="support-row" href="mailto:hello@kinnokilabs.com"><span class="support-row-text"><span>Looking for something specific?</span><span class="support-row-sub">hello@kinnokilabs.com</span></span>\(svgRowChevron)</a>
       </div>
+      <script>
+      (function () {
+        var first = (location.pathname.split('/')[1] || '').toLowerCase();
+        if (/help/.test(first)) first = 'support';
+        else if (/^echo-/.test(first)) first = 'apps';
+        var list = document.getElementById('not-found-rows');
+        if (!first || !list) return;
+        var rows = list.querySelectorAll('[data-sections]');
+        for (var i = 0; i < rows.length; i++) {
+          if ((' ' + rows[i].getAttribute('data-sections') + ' ').indexOf(' ' + first + ' ') !== -1) {
+            rows[i].classList.add('is-likely');
+            list.insertBefore(rows[i], list.firstChild);
+            return;
+          }
+        }
+      })();
+      </script>
     </main>
     """)
 }
@@ -747,7 +763,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                   <article class="tax-date-card tax-date-past reveal">
                     <div class="tax-date-calendar" aria-hidden="true"><span>SEP</span><strong>15</strong><small>2026</small></div>
                     <div class="tax-date-copy">
-                      <p class="tax-status">Sale date passed · Results with the municipality</p>
+                      <p class="tax-status">Sale date passed</p>
                       <h3>Halifax Regional Municipality</h3>
                       <p><strong>Advertised for Tuesday, September 15; tenders closed at 10:00 a.m.</strong><br>Online or Alderney Customer Service Centre, 40 Alderney Drive, Dartmouth</p>
                       <p class="tax-date-detail">Last notice snapshot September 3: 19 advertised rows · 20 PIDs</p>
@@ -759,7 +775,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                   <article class="tax-date-card tax-date-past reveal">
                     <div class="tax-date-calendar" aria-hidden="true"><span>SEP</span><strong>14</strong><small>2026</small></div>
                     <div class="tax-date-copy">
-                      <p class="tax-status">Sale date passed · Results with the municipality</p>
+                      <p class="tax-status">Sale date passed</p>
                       <h3>Municipality of the County of Victoria</h3>
                       <p><strong>Advertised for Monday, September 14; tenders closed at 12:00 noon</strong><br>Municipal Administration Building, 495 Chebucto Street, Baddeck</p>
                       <p class="tax-date-detail">Last notice snapshot September 3: 5 advertised rows</p>
@@ -771,7 +787,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                   <article class="tax-date-card tax-date-past reveal">
                     <div class="tax-date-calendar" aria-hidden="true"><span>AUG</span><strong>31</strong><small>2026</small></div>
                     <div class="tax-date-copy">
-                      <p class="tax-status">Sale date passed · Results with the municipality</p>
+                      <p class="tax-status">Sale date passed</p>
                       <h3>Municipality of the County of Annapolis</h3>
                       <p><strong>Advertised for Monday, August 31; tenders closed at 1:00 p.m.</strong><br>752 St George Street, Annapolis Royal</p>
                       <p class="tax-date-detail">Last notice snapshot July 23: 1 advertised row · 0 withdrawn rows</p>
@@ -783,7 +799,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                   <article class="tax-date-card tax-date-past reveal">
                     <div class="tax-date-calendar" aria-hidden="true"><span>AUG</span><strong>20</strong><small>2026</small></div>
                     <div class="tax-date-copy">
-                      <p class="tax-status">Sale date passed · Results with the municipality</p>
+                      <p class="tax-status">Sale date passed</p>
                       <h3>Town of Middleton</h3>
                       <p><strong>Advertised for Thursday, August 20 at 10:00 a.m.</strong><br>Town Hall Council Chambers, 131 Commercial Street, Middleton</p>
                       <p class="tax-date-detail">Last notice snapshot August 18: 2 advertised rows · 0 withdrawn rows</p>
@@ -795,7 +811,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                   <article class="tax-date-card tax-date-past reveal">
                     <div class="tax-date-calendar" aria-hidden="true"><span>AUG</span><strong>11</strong><small>2026</small></div>
                     <div class="tax-date-copy">
-                      <p class="tax-status">Sale date passed · Results with the municipality</p>
+                      <p class="tax-status">Sale date passed</p>
                       <h3>Municipality of the County of Inverness</h3>
                       <p><strong>Advertised for Tuesday, August 11 at 9:30 a.m.</strong><br>St. Peter’s Parish Hall, 260 Main Street, Port Hood</p>
                       <p class="tax-date-detail">Last notice snapshot August 10: 27 advertised rows · 18 withdrawn rows</p>
@@ -813,9 +829,9 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                 <div class="reveal">
                   <p class="tax-kicker">Explore</p>
                   <h2 id="tax-map-heading">From notice row<br>to <em>parcel context.</em></h2>
+                  <p class="tax-large-copy">Search an eight-digit PID, Nova Scotia civic address, or postal community, open a mapped tax-sale parcel, and compare it with roads, water, aerial imagery, Crown land, and municipal context.</p>
                 </div>
                 <div class="tax-split-copy reveal">
-                  <p class="tax-large-copy">Search an eight-digit PID, Nova Scotia civic address, or postal community, open a mapped tax-sale parcel, and compare it with roads, water, aerial imagery, Crown land, and municipal context.</p>
                   <ul class="tax-facts">
                     <li><span>Mapped</span><strong>Dated municipal notices and past results, with links to each source</strong></li>
                     <li><span>Search</span><strong>PID, civic address, postal community, or visible parcel</strong></li>
@@ -923,8 +939,7 @@ private func postsListMain(_ section: Section<KinNoKiLabsSite>) -> Node<HTML.Bod
         .header(
             .class("page-head"),
             .p(.class("eyebrow"), .text("Posts")),
-            .h1(.class("page-title"), .text("Studio notes.")),
-            .p(.class("page-lede"), .text("Occasional notes from the studio."))
+            .h1(.class("page-title"), .text("Studio notes."))
         ),
         .div(.class("post-list"), .forEach(section.items.sorted { $0.date > $1.date }) { postCard($0) }),
         topicCount > 1
@@ -1064,6 +1079,9 @@ private func proseMain(_ page: Page) -> Node<HTML.BodyContext> {
     var classes = "prose prose-guide"
     if guide.hasChapters { classes += " prose-chapters" }
     if guide.hasContents { classes += " prose-long" }
+    // The three privacy policies ("privacy", "echo-privacy", …) set their
+    // bold lead-ins as mini-headings.
+    if page.path.string.hasSuffix("privacy") { classes += " prose-policy" }
     return .main(
         .class("site-main article-page"),
         .unwrap(pageParents[page.path.string]) { parent in
@@ -1112,6 +1130,10 @@ private func guideBody(_ source: String) -> GuideBody {
         (" 🚧</h2>", " " + guideStatusTag + "</h2>"),
         (" 🚧</h3>", " " + guideStatusTag + "</h3>"),
         ("<p><strong>Effective Date:</strong>", #"<p class="prose-meta"><strong>Effective Date:</strong>"#),
+        ("<p><strong>Last updated:</strong>", #"<p class="prose-meta"><strong>Last updated:</strong>"#),
+        // The manual's folder tree: its two rules stand out from the file names.
+        ("↑ auto-imported", #"<span class="prose-tree-note">↑ auto-imported</span>"#),
+        ("↑ optional if art is embedded", #"<span class="prose-tree-note">↑ optional if art is embedded</span>"#),
     ]
     for (marker, replacement) in replacements {
         html = html.replacingOccurrences(of: marker, with: replacement)
@@ -1124,7 +1146,7 @@ private func guideBody(_ source: String) -> GuideBody {
         return GuideBody(html: guideH3IDs(html, used: &usedIDs), hasContents: false, hasChapters: false)
     }
 
-    var contents: [(id: String, label: String, number: String?, title: String)] = []
+    var contents: [(id: String, label: String, number: String?, title: String, section: Int)] = []
     var sections: [String] = []
     // Commit counts by section index, for the devlog's dateline bars.
     var counts: [Int: Int] = [:]
@@ -1144,7 +1166,7 @@ private func guideBody(_ source: String) -> GuideBody {
         let id = guideUniqueID(label, used: &usedIDs)
         let number = guideChapterNumber(label)
         let title = number.map { String(label.dropFirst($0.count + 2)) } ?? label
-        contents.append((id: id, label: label, number: number, title: title))
+        contents.append((id: id, label: label, number: number, title: title, section: sections.count))
 
         var heading = String(piece[..<close.lowerBound])
         if let number = number, heading.hasPrefix(number + ". ") {
@@ -1174,18 +1196,50 @@ private func guideBody(_ source: String) -> GuideBody {
 
     var intro = pieces[0]
     var toc = ""
-    if contents.count >= 4 {
+    // A short page with three chapters and three or more subheads (the site
+    // privacy policy) also gets the list, with its subheads nested under
+    // their chapters. Their ids are set here, in the same document order the
+    // final guideH3IDs pass would use, so the ids do not change.
+    let subheadCount = sections.reduce(0) { $0 + $1.components(separatedBy: "<h3>").count - 1 }
+    let nestSubheads = contents.count == 3 && subheadCount >= 3
+    if nestSubheads {
+        intro = guideH3IDs(intro, used: &usedIDs)
+        for index in sections.indices {
+            sections[index] = guideH3IDs(sections[index], used: &usedIDs)
+        }
+    }
+    if contents.count >= 4 || nestSubheads {
         // The list (and the wide-screen rail) shows the short heading, the
-        // part before " — "; the full heading stays in the link's title.
+        // part before " — " or a trailing "(…)"; the full heading stays in
+        // the link's title.
         let items = contents.map { item -> String in
             let short = guideShortLabel(item.title)
             var text = short
             if let number = item.number {
                 text = #"<span class="prose-toc-num">\#(number)</span><span>\#(short)</span>"#
+            } else if short.hasPrefix("Week ") {
+                // A devlog week ("Week 4 · The study player thesis") hangs a
+                // mono "W4" like a chapter number, so each label fits one line.
+                let tail = String(short.dropFirst(5))
+                let week = String(tail.prefix { $0.isASCII && $0.isNumber })
+                let after = tail.dropFirst(week.count)
+                if !week.isEmpty, after.hasPrefix(" · "), after.count > 3 {
+                    let rest = String(after.dropFirst(3))
+                    text = #"<span class="prose-toc-num" aria-hidden="true">W\#(week)</span><span><span class="visually-hidden">Week \#(week) · </span>\#(rest)</span>"#
+                }
             }
             let fullTitle = item.title.replacingOccurrences(of: "\"", with: "&quot;")
             let titleAttribute = short == item.title ? "" : #" title="\#(fullTitle)""#
-            return ##"<li><a href="#\##(item.id)""## + titleAttribute + ">" + text + "</a></li>"
+            var subheads = ""
+            if nestSubheads, sections.indices.contains(item.section) {
+                let entries = guideH3Entries(sections[item.section])
+                if !entries.isEmpty {
+                    subheads = "<ul>" + entries.map { entry in
+                        ##"<li><a href="#\##(entry.id)">"## + entry.label + "</a></li>"
+                    }.joined() + "</ul>"
+                }
+            }
+            return ##"<li><a href="#\##(item.id)""## + titleAttribute + ">" + text + "</a>" + subheads + "</li>"
         }.joined()
         // A folding list straight under the title (and a policy's effective
         // date): one row on a phone or tablet, which site.js folds below the
@@ -1202,11 +1256,13 @@ private func guideBody(_ source: String) -> GuideBody {
         } else {
             intro = toc + intro
         }
-        // A long section ends with a way back to the list. The last section
-        // gets none (the page ends there), and neither does a short one,
-        // where the list is only a flick away.
+        // A section ends with a way back to the list. The last section gets
+        // none (the page ends there). On a guide of eight or more chapters
+        // every section before it gets one, so the way back is always in
+        // the same place; on a shorter guide only a long section does, since
+        // the list is a flick away from a short one.
         let back = ##"<p class="prose-toc-return"><a href="#prose-toc-title"><span aria-hidden="true">↑</span>Back to contents</a></p>"##
-        for index in sections.indices.dropLast() where sections[index].count >= 1200 {
+        for index in sections.indices.dropLast() where contents.count >= 8 || sections[index].count >= 1200 {
             sections[index] += back
         }
     }
@@ -1234,7 +1290,8 @@ private func guideBody(_ source: String) -> GuideBody {
 }
 
 /// The contents-list label for a heading: the part before an em-dash
-/// subtitle ("Time Blindness — when …" -> "Time Blindness").
+/// subtitle ("Time Blindness — when …" -> "Time Blindness") or a trailing
+/// parenthetical ("Context Memory (Location)" -> "Context Memory").
 private func guideShortLabel(_ title: String) -> String {
     for separator in [" — ", " &mdash; ", " &#8212; "] {
         if let range = title.range(of: separator) {
@@ -1242,7 +1299,30 @@ private func guideShortLabel(_ title: String) -> String {
             if !short.isEmpty { return short }
         }
     }
+    if title.hasSuffix(")"), let open = title.range(of: " (", options: .backwards) {
+        let short = title[..<open.lowerBound].trimmingCharacters(in: .whitespaces)
+        if !short.isEmpty { return short }
+    }
     return title
+}
+
+/// The id and plain label of every `<h3 id="…">` in a section, in order
+/// (for the nested subheads in a short page's contents list).
+private func guideH3Entries(_ html: String) -> [(id: String, label: String)] {
+    var entries: [(id: String, label: String)] = []
+    for part in html.components(separatedBy: #"<h3 id=""#).dropFirst() {
+        guard let quote = part.firstIndex(of: "\""),
+              let open = part.range(of: ">"),
+              let close = part.range(of: "</h3>"),
+              open.upperBound <= close.lowerBound else { continue }
+        let label = guideStripTags(
+            String(part[open.upperBound..<close.lowerBound])
+                .replacingOccurrences(of: guideStatusTag, with: "")
+                .replacingOccurrences(of: guideRoadmapTag, with: "")
+        ).trimmingCharacters(in: .whitespaces)
+        entries.append((id: String(part[..<quote]), label: label))
+    }
+    return entries
 }
 
 /// A slug id for a heading label that no earlier heading on the page used.
@@ -1429,7 +1509,6 @@ private func homeMain() -> Node<HTML.BodyContext> {
             <a class="btn btn-gray" href="/apps">Explore the apps</a>
           </div>
           <ul class="proof-strip">
-            <li><span>4 apps</span></li>
             <li><a class="link-quiet" href="https://apps.apple.com/ca/app/macromark/id6785081218" target="_blank" rel="noopener">MacroMark 1.0 on the App Store</a></li>
             <li><a class="link-quiet" href="https://github.com/dfakkeldy" target="_blank" rel="noopener">Source is public on GitHub; licences vary</a></li>
           </ul>
@@ -1458,10 +1537,12 @@ private func homeMain() -> Node<HTML.BodyContext> {
       <section class="section reveal">
         <p class="eyebrow">Flagship app</p>
         <div class="bento bento-gold split-flagship">
-          <div class="flagship-copy">
+          <div class="flagship-copy flagship-head">
             <img class="flagship-icon" src="/images/apps/echo.png" alt="Echo app icon — an infinity symbol in silver and gold">
             <h2 class="flagship-title">Echo</h2>
             <p class="flagship-tagline">For Every Mind — turn listening into learning.</p>
+          </div>
+          <div class="flagship-copy flagship-body">
             <p class="flagship-desc">The audiobook player that helps you remember what you heard. Built for minds that learn in stolen, interrupted minutes.</p>
             <ul class="tick-list">
               <li>\(svgCheck)<p><strong>Word-perfect read-along.</strong> <span>True karaoke, tuned on-device to the real audio.</span></p></li>
@@ -1494,33 +1575,33 @@ private func homeMain() -> Node<HTML.BodyContext> {
       <section class="section reveal">
         <p class="eyebrow">Also in the lab</p>
         <div class="card-grid">
-          <a class="app-card" href="/apps/macromark/">
+          <div class="app-card app-card-stretch">
             <img class="app-icon" src="/images/apps/macromark.png" alt="MacroMark app icon">
-            <h3>MacroMark</h3>
+            <h3><a class="app-card-link" href="/apps/macromark/">MacroMark</a></h3>
             <p>Apple Watch voice capture for people whose notes live in Markdown.</p>
             <div class="app-card-meta">
-              <span class="status-chip">App Store — 1.0</span>
+              <a class="status-chip status-chip-link" href="https://apps.apple.com/ca/app/macromark/id6785081218" target="_blank" rel="noopener" aria-label="App Store — 1.0: open MacroMark on the App Store">App Store — 1.0<span class="status-chip-arrow" aria-hidden="true">↗</span></a>
               <span class="platforms">Watch · iPhone</span>
             </div>
-          </a>
-          <a class="app-card" href="/apps/nsmarksthespot/">
+          </div>
+          <div class="app-card app-card-stretch">
             <img class="app-icon" src="/images/apps/nsmarksthespot.svg" alt="NS Marks The Spot app icon">
-            <h3>NS Marks The Spot</h3>
+            <h3><a class="app-card-link" href="/apps/nsmarksthespot/">NS Marks The Spot</a></h3>
             <p>Nova Scotia parcels, dated tax-sale notices, and Fletcher’s 1880s sheets on one source-linked browser map.</p>
             <div class="app-card-meta">
-              <span class="status-chip">Live browser map</span>
+              <a class="status-chip status-chip-link" href="/apps/nsmarksthespot/map/" aria-label="Live browser map: open the map">Live browser map<span class="status-chip-arrow" aria-hidden="true">↗</span></a>
               <span class="platforms">Browser · iPhone</span>
             </div>
-          </a>
-          <a class="app-card" href="/apps/visualtimer/">
+          </div>
+          <div class="app-card app-card-stretch">
             <img class="app-icon" src="/images/apps/turntimer.png" alt="Turn Timer app icon: a clock inside a ring of coloured countdown segments">
-            <h3>Turn Timer</h3>
+            <h3><a class="app-card-link" href="/apps/visualtimer/">Turn Timer</a></h3>
             <p>Visual rounds for countdowns, turns, routines, and reusable sequences.</p>
             <div class="app-card-meta">
-              <span class="status-chip">TestFlight beta</span>
+              <a class="status-chip status-chip-link" href="https://testflight.apple.com/join/s7w4YGWU" target="_blank" rel="noopener" aria-label="TestFlight beta: join the Turn Timer beta">TestFlight beta<span class="status-chip-arrow" aria-hidden="true">↗</span></a>
               <span class="platforms">iPhone · Browser</span>
             </div>
-          </a>
+          </div>
         </div>
         <div class="section-foot">
           <a class="row-link" href="/apps">All apps and where each one stands \(svgArrow)</a>
@@ -1530,7 +1611,7 @@ private func homeMain() -> Node<HTML.BodyContext> {
       <section class="closing reveal">
         <p class="eyebrow">The studio</p>
         <p class="closing-quote">Built in Cape Breton, Nova Scotia — bid rooms and field maps before that. <span>The tools exist because the work demanded them.</span></p>
-        <a class="btn btn-gray btn-md" href="/about">About the studio \(svgArrow)</a>
+        <a class="btn btn-gray" href="/about">About the studio \(svgArrow)</a>
       </section>
     </main>
     """)
@@ -1542,7 +1623,12 @@ private func appsMain() -> Node<HTML.BodyContext> {
       <header class="page-head">
         <p class="eyebrow">Apps</p>
         <h1 class="page-title">Four apps, honestly labelled.</h1>
-        <p class="page-lede">Each card shows where its app stands today. MacroMark 1.0 is <a class="link-quiet" href="https://apps.apple.com/ca/app/macromark/id6785081218" target="_blank" rel="noopener">live on the App Store</a> and free. Source is public on GitHub; licences vary.</p>
+        <p class="page-lede">Each card shows where its app stands today. Source is public on GitHub; licences vary.</p>
+        <dl class="status-legend">
+          <div><dt><span class="status-chip">App Store — 1.0</span></dt><dd>Download it now.</dd></div>
+          <div><dt><span class="status-chip">Live browser map</span></dt><dd>Open it in any browser.</dd></div>
+          <div><dt><span class="status-chip">TestFlight beta</span></dt><dd>Test it through Apple’s TestFlight.</dd></div>
+        </dl>
       </header>
 
       <div class="reveal app-list">
@@ -1553,7 +1639,6 @@ private func appsMain() -> Node<HTML.BodyContext> {
           <div class="app-card-meta">
             <span class="status-chip">TestFlight beta</span>
             <span class="platforms">iPhone&nbsp;&amp;&nbsp;iPad ·&nbsp;Watch ·&nbsp;Mac</span>
-            <span class="platforms">GPL-3.0</span>
           </div>
           \(svgChevron)
         </a>
@@ -1604,7 +1689,6 @@ private func servicesMain() -> Node<HTML.BodyContext> {
           <p class="page-lede">I'm Dan Fakkeldy. I trace how the work actually moves, fix the smallest valuable bottleneck first, and leave behind something your team can understand and operate.</p>
           <div class="services-hero-actions">
             <a class="btn btn-gold" href="mailto:hello@kinnokilabs.com">Email me about a problem</a>
-            <a class="row-link" href="#how-engagements-start">How engagements start \(svgArrow)</a>
           </div>
         </div>
         <div class="system-map" aria-label="Examples of disconnected business information brought into one working system">
@@ -1616,7 +1700,7 @@ private func servicesMain() -> Node<HTML.BodyContext> {
             <span class="system-map-node">Websites &amp; tools</span>
           </div>
           <div class="system-map-connector" aria-hidden="true"></div>
-          <p class="system-map-method">Map · fix · hand back</p>
+          <a class="system-map-method" href="#how-engagements-start" aria-label="Map, fix, hand back: how engagements start">Map · fix · hand back <span aria-hidden="true">↓</span></a>
           <div class="system-map-connector" aria-hidden="true"></div>
           <div class="system-map-result">
             <span>One useful outcome</span>
@@ -1650,12 +1734,10 @@ private func servicesMain() -> Node<HTML.BodyContext> {
         <p class="eyebrow">Problems I take on</p>
         <div class="chip-row">
           <span class="chip">Forms, reporting &amp; handoffs</span>
-          <span class="chip">Websites &amp; browser tools</span>
           <span class="chip">Integrations &amp; automation</span>
-          <span class="chip">Dashboards &amp; knowledge bases</span>
           <span class="chip">Mobile or custom software</span>
+          <span class="chip">Apple release support — when that is the actual problem</span>
         </div>
-        <p class="scope-note">Also: Apple release support — when that is the actual problem.</p>
       </section>
 
       <section class="reveal page-block">
@@ -1717,7 +1799,7 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
         <div class="gis-hero-copy">
           <p class="eyebrow">GIS case study · 2013–2026</p>
           <h1 id="gis-title">From field maps to<br><em>mapping products.</em></h1>
-          <p class="gis-lead">More than a decade turning field observations, forestry records, imagery, public data, and rural infrastructure questions into maps people can actually use.</p>
+          <p class="gis-lead">More than a decade of field observations, forestry records, imagery, public data, and rural infrastructure questions.</p>
           <blockquote>The work is not making a pretty map. It is turning imperfect real-world information into a useful, understandable decision tool.</blockquote>
         </div>
         <aside class="gis-scope-note">
@@ -1729,11 +1811,11 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
 
       <nav class="gis-timeline-nav" aria-label="Case study timeline">
         <ol>
-          <li><a href="#gis-2013"><span>2013</span>Field status</a></li>
-          <li><a href="#gis-2015"><span>2015</span>Aerial mosaic</a></li>
-          <li><a href="#gis-2023-visibility"><span>2023</span>Visibility screen</a></li>
-          <li><a href="#gis-2023-field"><span>2023</span>Field review</a></li>
-          <li><a href="#gis-2026"><span>2026</span>Mapping product</a></li>
+          <li><a href="#gis-2013"><span class="gis-nav-year">2013</span><span class="gis-nav-label">Field status</span></a></li>
+          <li><a href="#gis-2015"><span class="gis-nav-year">2015</span><span class="gis-nav-label">Aerial mosaic</span></a></li>
+          <li><a href="#gis-2023-visibility"><span class="gis-nav-year">2023</span><span class="gis-nav-label">Visibility screen</span></a></li>
+          <li><a href="#gis-2023-field"><span class="gis-nav-year">2023</span><span class="gis-nav-label">Field review</span></a></li>
+          <li><a href="#gis-2026"><span class="gis-nav-year">2026</span><span class="gis-nav-label">Mapping product</span></a></li>
         </ol>
       </nav>
 
@@ -1742,7 +1824,14 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
           <div class="gis-marker" aria-hidden="true"><span>2013</span></div>
           <figure class="gis-figure">
             <img src="/images/gis/field-classification-2013.webp" width="1440" height="900" fetchpriority="high" decoding="async" alt="Generalized map reconstruction with invented land shapes coloured yellow, blue, pink, green, and grey for different field and paperwork states.">
-            <figcaption><span>Public-safe reconstruction</span> Invented geometry; no basemap, names, areas, or client location.</figcaption>
+            <figcaption><span>Public-safe reconstruction</span> Invented geometry; no basemap, names, areas, or client location.
+              <div class="gis-legend"><p>Field status</p><ul>
+                <li><i class="gis-key gis-key-confirmed" aria-hidden="true"></i>record confirmed</li>
+                <li><i class="gis-key gis-key-unconfirmed" aria-hidden="true"></i>not yet confirmed</li>
+                <li><i class="gis-key gis-key-new" aria-hidden="true"></i>new field note</li>
+                <li><i class="gis-key gis-key-review" aria-hidden="true"></i>needs review</li>
+              </ul></div>
+            </figcaption>
           </figure>
           <div class="gis-stop-copy">
             <p class="gis-era">ArcMap 10.1 · Forestry operations</p>
@@ -1753,10 +1842,10 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
               <div><h3>Method</h3><p>Revised colour categories in ArcMap and carried uncertainty into the legend instead of smoothing it away.</p></div>
               <div><h3>Output</h3><p>A field and office reference map with a deliberately visible “needs review” state.</p></div>
             </div>
-            <div class="gis-boundary">
-              <p><strong>It supported:</strong> reconciling the map and paperwork before follow-up.</p>
-              <p><strong>It did not establish:</strong> survey boundaries, title, Crown status, or present-day conditions.</p>
-            </div>
+          </div>
+          <div class="gis-boundary">
+            <p><strong>It supported:</strong> reconciling the map and paperwork before follow-up.</p>
+            <p><strong>It did not establish:</strong> survey boundaries, title, Crown status, or present-day conditions.</p>
           </div>
         </article>
 
@@ -1775,10 +1864,10 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
               <div><h3>Method</h3><p>Stitched overlapping frames into one continuous, zoomable PDF while keeping the imperfect first-pass seams visible.</p></div>
               <div><h3>Output</h3><p>A continuous winter mosaic that made terrain and image coverage easier to review.</p></div>
             </div>
-            <div class="gis-boundary">
-              <p><strong>It supported:</strong> reviewing coverage, stitch quality, and broad terrain relationships.</p>
-              <p><strong>It did not establish:</strong> survey-grade position, orthophoto accuracy, or current conditions.</p>
-            </div>
+          </div>
+          <div class="gis-boundary">
+            <p><strong>It supported:</strong> reviewing coverage, stitch quality, and broad terrain relationships.</p>
+            <p><strong>It did not establish:</strong> survey-grade position, orthophoto accuracy, or current conditions.</p>
           </div>
         </article>
 
@@ -1786,7 +1875,14 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
           <div class="gis-marker" aria-hidden="true"><span>2023</span></div>
           <figure class="gis-figure gis-figure-dark">
             <img src="/images/gis/visibility-analysis-2023.webp" width="1440" height="900" loading="lazy" decoding="async" alt="Generalized dark regional shape containing a regular point grid classified green, yellow, orange, and red for relative modelled visibility.">
-            <figcaption><span>Public-safe reconstruction</span> Invented geography and classes; utilities, addresses, basemap, and exact results removed.</figcaption>
+            <figcaption><span>Public-safe reconstruction</span> Invented geography and classes; utilities, addresses, basemap, and exact results removed.
+              <div class="gis-legend"><p>Relative screening classes</p><ul>
+                <li><i class="gis-key gis-key-dot gis-key-lower" aria-hidden="true"></i>lower modelled exposure</li>
+                <li><i class="gis-key gis-key-dot gis-key-middle" aria-hidden="true"></i>middle range</li>
+                <li><i class="gis-key gis-key-dot gis-key-higher" aria-hidden="true"></i>higher range</li>
+                <li><i class="gis-key gis-key-dot gis-key-priority" aria-hidden="true"></i>review priority</li>
+              </ul></div>
+            </figcaption>
           </figure>
           <div class="gis-stop-copy">
             <p class="gis-era">QGIS 3.30 · Scripted spatial analysis</p>
@@ -1797,10 +1893,10 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
               <div><h3>Method</h3><p>QGIS plus an adjustable scripted analysis developed iteratively from the plain-language question.</p></div>
               <div><h3>Output</h3><p>A classified regional screening map that made relative patterns visible.</p></div>
             </div>
-            <div class="gis-boundary">
-              <p><strong>It supported:</strong> comparing parameters and focusing further research.</p>
-              <p><strong>It did not establish:</strong> wind resource, siting approval, grid access, land rights, environmental suitability, or project viability.</p>
-            </div>
+          </div>
+          <div class="gis-boundary">
+            <p><strong>It supported:</strong> comparing parameters and focusing further research.</p>
+            <p><strong>It did not establish:</strong> wind resource, siting approval, grid access, land rights, environmental suitability, or project viability.</p>
           </div>
         </article>
 
@@ -1808,7 +1904,13 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
           <div class="gis-marker" aria-hidden="true"><span>2023</span></div>
           <figure class="gis-figure">
             <img src="/images/gis/planting-review-2023.webp" width="1440" height="900" loading="lazy" decoding="async" alt="Generalized planting review reconstruction with invented green treatment blocks, white field access line, and green or red observation points.">
-            <figcaption><span>Public-safe reconstruction</span> Invented treatment blocks and sample points; landowner, counts, outcome, imagery, and location removed.</figcaption>
+            <figcaption><span>Public-safe reconstruction</span> Invented treatment blocks and sample points; landowner, counts, outcome, imagery, and location removed.
+              <div class="gis-legend"><p>Field review</p><ul>
+                <li><i class="gis-key gis-key-dot gis-key-observed" aria-hidden="true"></i>observation recorded</li>
+                <li><i class="gis-key gis-key-dot gis-key-follow-up" aria-hidden="true"></i>follow-up indicated</li>
+                <li><i class="gis-key gis-key-line" aria-hidden="true"></i>field access line</li>
+              </ul></div>
+            </figcaption>
           </figure>
           <div class="gis-stop-copy">
             <p class="gis-era">QGIS 3.32 · Field verification</p>
@@ -1819,10 +1921,10 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
               <div><h3>Method</h3><p>Reviewed how the tally should be interpreted, connected observations back to the map, and kept the field evidence alongside the summary.</p></div>
               <div><h3>Output</h3><p>A plot map and companion tally for review and follow-up.</p></div>
             </div>
-            <div class="gis-boundary">
-              <p><strong>It supported:</strong> reviewing a historical, sample-based field outcome and locating areas to revisit.</p>
-              <p><strong>It did not establish:</strong> a whole-site inventory, a current condition, or a result independent of the agreed tally method.</p>
-            </div>
+          </div>
+          <div class="gis-boundary">
+            <p><strong>It supported:</strong> reviewing a historical, sample-based field outcome and locating areas to revisit.</p>
+            <p><strong>It did not establish:</strong> a whole-site inventory, a current condition, or a result independent of the agreed tally method.</p>
           </div>
         </article>
 
@@ -1841,11 +1943,11 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
               <div><h3>Method</h3><p>Offline-first native tiles; browser georeferencing with embedded GeoPDF frames or manual control points; local-file handling, source receipts, and licence gates.</p></div>
               <div><h3>Output</h3><p><a href="/apps/nsmarksthespot/">NS Marks The Spot</a> as an iPhone companion and an <a href="/apps/nsmarksthespot/map/">open browser map</a>.</p></div>
             </div>
-            <div class="gis-boundary">
-              <p><strong>It supports:</strong> source-linked research, field orientation, and better questions about historical geography.</p>
-              <p><strong>It does not establish:</strong> survey position, title, access, present road or trail condition, tax-sale status, or legal advice.</p>
-            </div>
             <p class="gis-rights-note">Capture from the exact public <a href="https://github.com/dfakkeldy/ns-marks-the-spot" target="_blank" rel="noopener">NS Marks The Spot source</a>. The visible background retains <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributor attribution</a>; the listed USGS GeoPDF is represented only by metadata and an extent outline.</p>
+          </div>
+          <div class="gis-boundary">
+            <p><strong>It supports:</strong> source-linked research, field orientation, and better questions about historical geography.</p>
+            <p><strong>It does not establish:</strong> survey position, title, access, present road or trail condition, tax-sale status, or legal advice.</p>
           </div>
         </article>
       </section>
@@ -1983,7 +2085,6 @@ private func learnMain() -> Node<HTML.BodyContext> {
             </div>
             <div class="learn-book-links">
               <a href="/listen/?book=echo-from-the-inside">Listen</a>
-              <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/echo-from-the-inside" target="_blank" rel="noopener">Book folder</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/echo-from-the-inside/echo-from-the-inside.epub">EPUB</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/echo-from-the-inside/echo-from-the-inside.md" target="_blank" rel="noopener">Read</a>
             </div>
@@ -1998,7 +2099,6 @@ private func learnMain() -> Node<HTML.BodyContext> {
             </div>
             <div class="learn-book-links">
               <a href="/listen/?book=why-it-feels-right">Listen</a>
-              <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/why-it-feels-right" target="_blank" rel="noopener">Book folder</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/why-it-feels-right/why-it-feels-right.epub">EPUB</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/why-it-feels-right/why-it-feels-right.md" target="_blank" rel="noopener">Read</a>
             </div>
@@ -2013,7 +2113,6 @@ private func learnMain() -> Node<HTML.BodyContext> {
             </div>
             <div class="learn-book-links">
               <a href="/listen/?book=findable">Listen</a>
-              <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/findable" target="_blank" rel="noopener">Book folder</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/findable/findable.epub">EPUB</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/findable/findable.md" target="_blank" rel="noopener">Read</a>
             </div>
@@ -2027,7 +2126,6 @@ private func learnMain() -> Node<HTML.BodyContext> {
             </div>
             <div class="learn-book-links">
               <a href="/listen/?book=rodents-in-the-walls">Listen</a>
-              <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/rodents-in-the-walls" target="_blank" rel="noopener">Book folder</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/rodents-in-the-walls/rodents-in-the-walls.epub">EPUB</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/rodents-in-the-walls/rodents-in-the-walls.md" target="_blank" rel="noopener">Read</a>
             </div>
@@ -2042,7 +2140,6 @@ private func learnMain() -> Node<HTML.BodyContext> {
             </div>
             <div class="learn-book-links">
               <a href="/listen/?book=chicken-predators">Listen</a>
-              <a href="https://github.com/dfakkeldy/explainer-audiobooks/tree/main/books/chicken-predators" target="_blank" rel="noopener">Book folder</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/raw/main/books/chicken-predators/chicken-predators.epub">EPUB</a>
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/chicken-predators/chicken-predators.md" target="_blank" rel="noopener">Read</a>
             </div>
@@ -2052,6 +2149,17 @@ private func learnMain() -> Node<HTML.BodyContext> {
             <span class="learn-library-tile-text">The public repo holds the EPUB files, readable Markdown, covers, and notes about how each book was made.</span>
             <span class="learn-library-tile-cta">Browse the Explainer Audiobooks library \(svgArrow)</span>
           </a>
+        </div>
+      </section>
+
+      <section class="reveal learn-section learn-notes">
+        <div class="learn-note">
+          <p class="learn-card-label">Optional library sharing</p>
+          <p>With your permission, public-safe books may be added to the learning audiobook library so other people can use them too. That is optional; a private request can stay private.</p>
+        </div>
+        <div class="learn-note">
+          <p class="learn-card-label">Honesty note</p>
+          <p>The books are AI-assisted, researched, and spot-checked, but they are not expert-reviewed professional advice. Treat them as a friendly starting point and check primary sources for anything important.</p>
         </div>
       </section>
 
@@ -2071,17 +2179,6 @@ private func learnMain() -> Node<HTML.BodyContext> {
           <p>Please don't send private workplace, customer, medical, legal, or financial details.</p>
         </div>
       </section>
-
-      <section class="reveal learn-section learn-notes">
-        <div class="learn-note">
-          <p class="learn-card-label">Optional library sharing</p>
-          <p>With your permission, public-safe books may be added to the learning audiobook library so other people can use them too. That is optional; a private request can stay private.</p>
-        </div>
-        <div class="learn-note">
-          <p class="learn-card-label">Honesty note</p>
-          <p>The books are AI-assisted, researched, and spot-checked, but they are not expert-reviewed professional advice. Treat them as a friendly starting point and check primary sources for anything important.</p>
-        </div>
-      </section>
     </main>
     """)
 }
@@ -2097,15 +2194,10 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
           <h1 class="echo-hero-title">Echo</h1>
           <p class="echo-hero-tagline">For Every Mind — turn listening into learning.</p>
           <p class="echo-hero-lede">The audiobook player that helps you remember what you heard.</p>
-          <div class="echo-hero-pills">
-            <span class="echo-pill">iPhone &amp; iPad</span>
-            <span class="echo-pill">Apple Watch</span>
-            <span class="echo-pill">Mac</span>
-            <span class="echo-pill echo-pill-gold">Open source · GPL-3.0</span>
-          </div>
+          <p class="echo-hero-platforms">iPhone &amp; iPad · Apple Watch · Mac</p>
           <div class="echo-hero-actions">
             <a class="btn btn-gold" href="https://testflight.apple.com/join/Zu9rzg59">Join the TestFlight beta</a>
-            <a class="echo-source-link" href="https://github.com/dfakkeldy/Echo" target="_blank" rel="noopener">\(svgGitHub)View source</a>
+            <a class="echo-source-link" href="https://github.com/dfakkeldy/Echo" target="_blank" rel="noopener">\(svgGitHub)Open source · GPL-3.0</a>
           </div>
         </div>
       </section>
@@ -2129,7 +2221,7 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
         <div class="watch-row">
           <figure class="screen-figure watch-figure">
             <div class="screen-frame watch-frame"><img src="/images/screenshots/echo/merchant-watch-playback.webp" width="416" height="496" loading="lazy" decoding="async" alt="Echo Apple Watch playback controls for The Merchant of Venice — The Novel, with its square audiobook cover"></div>
-            <figcaption class="screen-caption"><strong>Pause without reaching for your phone.</strong> Playback stays on your wrist, with the book's cover in view.</figcaption>
+            <figcaption class="screen-caption"><strong>Pause without reaching for your phone.</strong> Playback stays on your wrist.</figcaption>
           </figure>
           <figure class="screen-figure watch-figure">
             <div class="screen-frame watch-frame"><img src="/images/screenshots/echo/merchant-watch-volume.webp" width="416" height="496" loading="lazy" decoding="async" alt="Echo Apple Watch volume controls for The Merchant of Venice — The Novel, with teal accents"></div>
@@ -2203,11 +2295,8 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
             <p class="echo-cta-links-label">Guides and help</p>
             <div class="echo-cta-links">
               <a class="echo-cta-link" href="/echo-manual">User manual</a>
-              <a class="echo-cta-link" href="/echo-learn">Learning guide</a>
-              <a class="echo-cta-link" href="/echo-focus">Focus Field Guide</a>
               <a class="echo-cta-link" href="/echo-beta">Beta guide</a>
-              <a class="echo-cta-link" href="/echo-devlog">Devlog</a>
-              <a class="echo-cta-link" href="/echo-help">Help &amp; support</a>
+              <a class="echo-cta-link" href="/echo-help">Help and every guide</a>
             </div>
           </div>
         </div>

@@ -61,7 +61,9 @@ test('mounts synchronized labelled colour fields, five WCAG verdicts, and both p
   const ratio = contrastRatio('#123456', '#0b0b0c');
   const result = fixture.root.querySelector('.tool-result-strong');
   assert.ok(result);
-  assert.equal(result.textContent, `Contrast ${Number(ratio.toFixed(2))} : 1`);
+  // The display line is the ratio alone; a separate label names it.
+  assert.equal(result.textContent, `${Number(ratio.toFixed(2))} : 1`);
+  assert.equal(fixture.root.querySelector('.contrast-ratio-label')?.textContent, 'Contrast ratio');
   assert.equal(fixture.root.querySelectorAll('.tool-verdict').length, 5);
   assert.match(fixture.root.querySelector('.tool-verdict').textContent, /AA normal text — (pass|fail)/);
 

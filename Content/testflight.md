@@ -5,7 +5,7 @@
 Two apps are in open beta. Joining takes two steps.
 
 <ol class="beta-steps">
-<li><strong>Install Apple's free TestFlight app.</strong> It installs and updates the beta builds.</li>
+<li><strong>Install Apple's free <a href="https://apps.apple.com/app/testflight/id899247664">TestFlight app</a>.</strong> It installs and updates the beta builds.</li>
 <li><strong>Tap “Join the beta” for the app you want below.</strong> Do it on the device you'll test on.</li>
 </ol>
 

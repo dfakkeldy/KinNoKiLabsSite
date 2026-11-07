@@ -22,7 +22,7 @@ featuredPack: true
 
 ## What the official source says
 
-Halifax Regional Municipality posted this Request for Proposal (Construction) on July 24, 2026. The title describes street recapitalization, intersection reconfigurations, traffic calming, and sidewalk renewals at various locations. The closing date shown by the procurement portal is August 10, 2026, at 2:00 PM Atlantic time. The official notice page is the authoritative source for scope, documents, and any addenda.
+This is a Request for Proposal (Construction) for street recapitalization, intersection reconfigurations, traffic calming, and sidewalk renewals at various locations. The official notice page is the authoritative source for scope, documents, and any addenda.
 
 ## Who might examine this opportunity
 

@@ -319,7 +319,7 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
             .h1(.text("Tender Starter Showcase")),
             .p(
                 .class("tender-intro"),
-                .text("A manually curated showcase of Nova Scotia public tender opportunities, each turned into a source-linked starting brief with visible questions and a reusable review workflow.")
+                .text("Each example takes a real Nova Scotia public tender and turns it into a source-linked starting brief, with the questions to verify first.")
             )
         ),
         // 2. Current examples (hidden while none are open; the worked examples lead)
@@ -344,7 +344,7 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
                                     timeNode(card.checkedAt, formattedDate(card.checkedAt))
                                 )
                             ),
-                            .h3(.text(card.item.title)),
+                            .h3(.text(displayTenderTitle(card.item.title))),
                             .dl(
                                 .class("tender-meta"),
                                 .div(.dt(.text("Issuer")), .dd(.text(card.issuer))),
@@ -364,7 +364,7 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
             .h2(.text("Worked examples")),
             .if(
                 current.isEmpty && !archived.isEmpty,
-                .p(.class("tender-source-note"), .text("These are closed worked examples, each prepared for a real Nova Scotia tender and kept to show the source-linked review workflow."))
+                .p(.class("tender-source-note"), .text("These are closed worked examples, kept up to show the workflow."))
             ),
             .if(
                 archived.isEmpty,
@@ -377,7 +377,7 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
                         .a(
                             .class("tender-card tender-card-archive"),
                             .href(card.item.path.absoluteString),
-                            .h3(.text(card.item.title)),
+                            .h3(.text(displayTenderTitle(card.item.title))),
                             .dl(
                                 .class("tender-meta"),
                                 .div(.dt(.text("Issuer")), .dd(.text(card.issuer))),
@@ -433,6 +433,13 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
 
 // MARK: - Detail page
 
+/// Source titles join parts with " - "; a no-break space before the hyphen
+/// keeps a wrapped line from starting with a bare dash. Display only: the
+/// frontmatter title and the page <title> keep the source text.
+func displayTenderTitle(_ title: String) -> String {
+    title.replacingOccurrences(of: " - ", with: "\u{00A0}- ")
+}
+
 /// Procurement titles can run past 100 characters; those get a smaller H1.
 private let longTenderTitleLength = 70
 
@@ -442,7 +449,7 @@ func tenderDetailMain(record: TenderRecord) -> Node<HTML.BodyContext> {
         // The parent is named one way, top and bottom: "All worked examples".
         .a(.class("back-link"), .href("/tenders/"), iconArrowBack(), .text("All worked examples")),
         .p(.class("eyebrow"), .text("Tender Starter Showcase")),
-        .h1(.text(record.item.title)),
+        .h1(.text(displayTenderTitle(record.item.title))),
         .div(
             .class("tender-state"),
             .span(.class("tender-state-label"), .text(record.lifecycle.label)),

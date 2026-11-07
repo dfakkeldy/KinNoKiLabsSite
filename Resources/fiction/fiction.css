@@ -260,3 +260,9 @@
 .fiction-shelf li:not(.is-playable) { border-style: solid; border-color: color-mix(in srgb, var(--gold-500) 22%, var(--separator)); }
 .fiction-shelf li:not(.is-playable) .fic-cover { filter: saturate(0.55); transition: filter 0.2s ease; }
 .fiction-shelf li:not(.is-playable):hover .fic-cover { filter: none; }
+
+/* ── Round 5 (listening family, pass D) ─────────────── */
+/* One action line per streaming card: "Listen now" then the formats,
+   wrapping as one row instead of two rows with a band between them. */
+.fiction-shelf li .fic-actions { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; }
+.fiction-shelf li .fic-state:has(.fic-badge) { flex-basis: 100%; }

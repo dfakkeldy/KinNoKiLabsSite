@@ -1,10 +1,10 @@
 # The Focus Field Guide — ADHD & AuDHD Strategies
 
-Echo was built for interrupted, neurodivergent attention. This page is the rest of the toolbox: practical, research-backed strategies for the executive-function stuff — getting started, time blindness, staying organized, motivation, all-or-nothing thinking, hyperfocus, distractibility. Most tips work with or without Echo; where Echo genuinely helps, there's a note. Take what works, skip what doesn't.
+Echo, now in beta on TestFlight, was built for interrupted, neurodivergent attention. This page is the rest of the toolbox: practical, research-backed strategies for the executive-function stuff. Most tips work with or without Echo; where Echo genuinely helps, there's a note. Take what works, skip what doesn't.
 
 **The premise of this whole page:** ADHD is not a knowledge problem — you usually know exactly what you should be doing. It's a *performance* problem: a gap between knowing and doing, driven by how the brain handles activation, time, working memory, and reward (Barkley, 2012). So none of these strategies are "try harder." All of them are **move the work out of your head and into the world** — externalize time, externalize memory, externalize the starting gun. That's also the design thesis behind Echo.
 
-> **This is a field guide, not medical advice.** ADHD and autism are real, diagnosable conditions — strategies like these *complement* professional care (therapy, coaching, medication where appropriate); they don't replace it. Echo itself is in beta on TestFlight. Features marked 🚧 **Coming in 1.0** are in active development; 🔭 **Roadmap** means planned after 1.0.
+> **This is a field guide, not medical advice.** ADHD and autism are real, diagnosable conditions — strategies like these *complement* professional care (therapy, coaching, medication where appropriate); they don't replace it.
 
 ## 1. Getting Started — the activation-energy problem
 

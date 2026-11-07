@@ -37,16 +37,7 @@
       <circle cx="660" cy="697" r="18"/><circle cx="734" cy="697" r="18"/><circle cx="808" cy="697" r="18"/>
     </g>
   </g>
-  <g transform="translate(1018 684)">
-    <rect width="485" height="223" rx="22" fill="#eef1e9"/>
-    <text x="32" y="48" fill="#27332e" font-family="system-ui, sans-serif" font-size="23" font-weight="700">RELATIVE SCREENING CLASSES</text>
-    <g font-family="system-ui, sans-serif" font-size="20" fill="#27332e">
-      <circle cx="47" cy="87" r="11" fill="#67b989"/><text x="75" y="94">lower modelled exposure</text>
-      <circle cx="47" cy="126" r="11" fill="#edcd63"/><text x="75" y="133">middle range</text>
-      <circle cx="47" cy="165" r="11" fill="#e89956"/><text x="75" y="172">higher range</text>
-      <circle cx="47" cy="204" r="11" fill="#d66a5f"/><text x="75" y="211">review priority</text>
-    </g>
-  </g>
+  <!-- The legend is HTML text in the /gis figcaption, so it stays readable at every size. -->
   <g transform="translate(72 68)" font-family="system-ui, sans-serif">
     <text fill="#eef1e9" font-size="25" font-weight="700" letter-spacing="3">2023 · GENERALIZED RECONSTRUCTION</text>
     <text y="48" fill="#a9b6af" font-size="22">Invented geography · no utilities, addresses, or exact results</text>

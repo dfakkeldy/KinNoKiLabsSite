@@ -27,9 +27,10 @@ The browser version runs on any device, with nothing to install, and can be adde
 <div class="tt-plans">
 <section class="tt-plan"><h3>Free</h3><ul><li>The quick timer</li><li>The six starters</li><li>Playback</li><li>One custom template</li><li>Five recent sessions</li></ul></section>
 <section class="tt-plan tt-plan-pro"><h3>Turn Timer Pro <span class="tt-plan-note">One-time purchase</span></h3><ul><li>Unlimited templates</li><li>Full history and export</li><li>Sharing</li><li>Private iCloud sync</li><li>Template widgets</li></ul></section>
+<p class="tt-plans-foot">No subscription, ads or third&#8209;party tracking.</p>
 </div>
 
-No subscription, ads or third-party tracking.
+<p class="app-actions app-actions-end"><a class="btn btn-gold btn-md" href="/tools/turn-timer/">Try it in your browser</a></p>
 
 ---
 [Get help](/visualtimer-help) | [Privacy policy](https://dfakkeldy.github.io/VisualTimer/privacy.html) | [Build log](https://dfakkeldy.github.io/VisualTimer/devlog.html) | [Project site](https://dfakkeldy.github.io/VisualTimer/) | [Source on GitHub](https://github.com/dfakkeldy/VisualTimer)

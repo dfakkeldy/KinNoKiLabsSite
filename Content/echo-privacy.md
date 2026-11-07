@@ -1,5 +1,7 @@
 # Echo Privacy Policy
 
+<p class="prose-meta"><strong>Last updated:</strong> October 28, 2026</p>
+
 Echo is made by Daniel Vincent Fakkeldy, operating as KinNoKi Labs. In short:
 
 - You can play and study local audiobooks without creating an Echo account.
@@ -69,8 +71,7 @@ Echo is made by Daniel Vincent Fakkeldy, operating as KinNoKi Labs. In short:
 
 **Contact.** Mail sent to the KinNoKi support and privacy addresses below is routed through Apple iCloud Mail, subject to [Apple's privacy policy](https://www.apple.com/legal/privacy/en-ww/).
 
-- **Privacy questions or requests:** [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com)
-- **Echo support:** [echo@kinnokilabs.com](mailto:echo@kinnokilabs.com)
+<div class="row-list prose-contact"><a class="support-row" href="mailto:hello@kinnokilabs.com?subject=Echo%20privacy"><span class="support-row-glyph" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg></span><span class="support-row-text"><span>Privacy questions or requests</span><span class="support-row-sub">hello@kinnokilabs.com</span></span><svg class="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></a><a class="support-row" href="mailto:echo@kinnokilabs.com?subject=Echo%20support"><span class="support-row-glyph" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg></span><span class="support-row-text"><span>Echo support</span><span class="support-row-sub">echo@kinnokilabs.com</span></span><svg class="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></a></div>
 
 ---
 [Help & Support](/echo-help) | [User Manual](/echo-manual) | [Site privacy](/privacy/)

@@ -15,7 +15,7 @@ export function comparisonLimit(points) {
   return Math.ceil(Math.max(5, ...points.map((point) => Math.abs(point.error))) / 5) * 5;
 }
 
-export function renderComparison(root, points, { document = root.ownerDocument, zone, issue }) {
+export function renderComparison(root, points, { document = root.ownerDocument, zone, issue, pending = 0 }) {
   function el(tag, className, text) {
     const node = document.createElement(tag);
     if (className) node.className = className;
@@ -36,7 +36,9 @@ export function renderComparison(root, points, { document = root.ownerDocument, 
   const newest = points.at(-1);
   const difference = newest.error === 0 ? 'Exact match.' : `${formatCents(String(Math.abs(newest.error)))} too ${newest.error > 0 ? 'high' : 'low'}.`;
   root.append(el('p', 'gas-comparison-result', `${formatDate(newest.date)}: estimated ${formatPrice(newest.predicted)}, official ${formatPrice(newest.actual)}. ${difference}`),
-    el('p', 'gas-comparison-caption', `Zone ${zone} minimum price · ${points.length} completed ${points.length === 1 ? 'date' : 'dates'} · ${issue === 'latest' ? 'Latest' : 'First'} saved prediction`));
+    // The one place the page counts dates: completed here, pending beside
+    // them (the selector above already names which prediction is shown).
+    el('p', 'gas-comparison-caption', `Zone ${zone} minimum price · ${points.length} completed ${points.length === 1 ? 'date' : 'dates'}${Number.isInteger(pending) && pending > 0 ? ` · ${pending} pending` : ''}`));
   // A visible key at the bars: the two fills mean opposite things.
   const key = el('ul', 'gas-comparison-key');
   for (const [name, text] of [['high', 'Estimate too high'], ['low', 'Estimate too low']]) {

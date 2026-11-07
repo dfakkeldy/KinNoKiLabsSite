@@ -46,7 +46,7 @@ test('makes the services page problem-first and technology-flexible', () => {
     'Practical Tools &amp; Knowledge Systems',
     'What’s tangled?',
     'Spreadsheets &amp; data',
-    'Websites &amp; browser tools',
+    'Websites &amp; tools',
     'Mobile or custom software',
     'Apple release support — when that is the actual problem',
   ]) {

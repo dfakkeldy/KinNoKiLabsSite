@@ -48,6 +48,8 @@ Alignment bugs are the most valuable reports and need the most context. Include:
 
 Pick whichever matches your life. Each plan is 10–20 minutes of intentional testing.
 
+**Jump to a plan:** [A · Commute](#plan-a-the-commute-run-smart-rewind-interruptions) · [B · Alignment](#plan-b-the-alignment-gauntlet-epub-auto-align) · [C · Study](#plan-c-the-study-session-bookmarks-flashcards-review) · [D · Library](#plan-d-the-library-stress-test-formats-playlist) · [E · Wrist](#plan-e-the-wrist-only-day-watch-remote) · [F · Accessibility](#plan-f-the-accessibility-pass-dynamic-type-fonts-voiceover) · [G · 1.0 Preview](#plan-g-the-1-0-preview-as-builds-gain-the-new-features)
+
 ### Plan A — The Commute Run *Smart Rewind & interruptions*
 
 1. Start a book, then live your interrupted life: pause for seconds, for minutes, for an hour.
@@ -86,7 +88,7 @@ Pick whichever matches your life. Each plan is 10–20 minutes of intentional te
 4. Leave the watch off-wrist overnight; next morning, raise it: right book, right position, no phantom commands?
 5. Run a **Pomodoro**: set 25 minutes, lower your wrist, confirm the alarm is unmissable.
 
-### Plan F — The Accessibility Pass
+### Plan F — The Accessibility Pass *Dynamic Type, fonts, VoiceOver*
 
 1. Crank Dynamic Type to a large size: anything truncated, overlapping, or unreadable?
 2. Switch the reader font to **OpenDyslexic**, then **Lexend**; adjust size and line spacing.
@@ -120,7 +122,7 @@ Honest list — these are known, so you don't need to report them (though opinio
 
 Core import, local playback, reading and voice synthesis run on-device without an Echo account. Audiobookshelf (your own server), external AI providers you configure, model downloads, public alignment lookup and files you choose in iCloud use network services. When network access is permitted, importing a book may look up matching public alignment anchors, with local fallback for an ordinary lookup failure. This 1.0 release does not expose public-alignment uploads. These connections are optional. See the [Echo Privacy Policy](/echo-privacy/).
 
-One thing TestFlight itself adds: Apple's beta system shares **crash reports** and **the feedback you choose to send** with the developer, along with device/OS/build info. That's TestFlight's standard mechanism (it's how your reports reach me), not telemetry inside Echo. The full policy is on the [Echo privacy page](/echo-privacy/).
+One thing TestFlight itself adds: Apple's beta system shares **crash reports** and **the feedback you choose to send** with the developer, along with device/OS/build info. That's TestFlight's standard mechanism (it's how your reports reach me), not telemetry inside Echo.
 
 *Thank you for testing. Every report makes the player better for the next interrupted listener.* — Dan
 

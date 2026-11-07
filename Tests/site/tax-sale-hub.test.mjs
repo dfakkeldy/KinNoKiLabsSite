@@ -51,7 +51,10 @@ test('presents passed sale dates as past without claiming outcomes', () => {
     generated.match(/class="tax-date-card tax-date-past reveal"/g)?.length,
     5,
   );
-  assert.equal(generated.match(/Sale date passed · Results with the municipality/g)?.length, 5);
+  // Each past row is marked passed; where its results live is said once,
+  // in the heading over the list.
+  assert.equal(generated.match(/<p class="tax-status">Sale date passed<\/p>/g)?.length, 5);
+  assert.equal(generated.match(/Recent sale dates · results on each municipality’s page/g)?.length, 1);
   assert.match(generated, /Advertised for Tuesday, September 15; tenders closed at 10:00 a\.m\./);
   assert.match(generated, /Advertised for Monday, September 14; tenders closed at 12:00 noon/);
   assert.match(generated, /Advertised for Monday, August 31; tenders closed at 1:00 p\.m\./);

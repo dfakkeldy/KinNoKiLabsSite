@@ -734,3 +734,69 @@ body.font-opendyslexic .room-bar .font-toggle {
 @media (pointer: coarse) {
   .room-formats a, .room-library li .room-lib-links a { display: inline-flex; align-items: center; min-height: 44px; padding-block: 0; margin-block: 0; }
 }
+
+/* ── Round 5 (listening family, pass D) ─────────────── */
+/* Desktop stage: the caption panel keeps its own height (title, opening
+   line, hint) and the transport follows it, instead of the panel
+   stretching to the rail and leaving an empty lower half. */
+@media (min-width: 760px) {
+  .room { align-items: start; }
+  .room-stage { align-self: start; }
+  .room-captions { flex: none; max-height: none; }
+}
+/* At rest the first word of the opening line is already lit, so the
+   stage shows the read-along it promises before anyone presses play. */
+.room-main:not(.started) .room-captions .room-preview .pw:first-child {
+  color: var(--text);
+  text-shadow: 0 0 18px color-mix(in srgb, var(--gold-300) 35%, transparent);
+}
+/* Section names are labels; the card and book titles are the headings
+   you read, so "Series" no longer competes with the series' own title. */
+.room-library > h2 {
+  color: var(--room-text-accent);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+/* Four volumes form a 2 × 2 block rather than three and an orphan. */
+@media (min-width: 560px) {
+  .series-volume-list:has(> li:nth-child(4):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+/* Library cards: in each row the link lines share one bottom edge. Listen
+   leads; EPUB and Read are quieter until pointed at or focused. */
+/* The stage book's card stretches with its row too, so "Now playing"
+   sits on the same line as its neighbours' links. */
+.room-library li[aria-current="page"] { align-self: stretch; }
+.room-library li .room-lib-links,
+.room-library li[aria-current="page"] .room-lib-links { align-self: end; margin-top: 10px; }
+.room-library li .room-lib-links a:not(.room-lib-listen) {
+  color: var(--room-text-tertiary);
+  text-decoration-color: color-mix(in srgb, currentColor 30%, transparent);
+}
+.room-library li .room-lib-links a:not(.room-lib-listen):is(:hover, :focus-visible) {
+  color: var(--room-text-accent);
+  text-decoration-color: currentColor;
+}
+@media (max-width: 759px) {
+  /* Phone: cover and title side by side, then the stage and its play
+     button, then the chapter list, so Play lands in the first screen. */
+  .room { grid-template-columns: 104px minmax(0, 1fr); column-gap: 16px; row-gap: 20px; }
+  .room-side { display: contents; }
+  .room-cover-frame { grid-column: 1; grid-row: 1; align-self: start; }
+  .room-meta { grid-column: 2; grid-row: 1; min-width: 0; }
+  .room-stage { grid-column: 1 / -1; grid-row: 2; }
+  .room-chapters { grid-column: 1 / -1; grid-row: 3; }
+  /* After the boxed series block, More books reads as a quiet ruled
+     list: a second rhythm for the long scroll. */
+  #moreBooksShelf li {
+    border: 0;
+    border-top: 1px solid var(--separator);
+    border-radius: 0;
+    padding: 14px 0 6px;
+  }
+  #moreBooksShelf ul { gap: 0; }
+  .room-library li .room-lib-links,
+  .room-library li[aria-current="page"] .room-lib-links { margin-top: 0; }
+}

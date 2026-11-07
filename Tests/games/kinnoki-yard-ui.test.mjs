@@ -870,7 +870,7 @@ test('Endless dispatch reuses the Task 8 score pop and dispatch flash', async ()
   } finally { restore(); }
 });
 
-test('preview names the go-button for its dashed controls and labels the selected piece', async () => {
+test('preview names the go-button that brings in its controls and labels the selected piece', async () => {
   const fixture = createDOMFixture({ search: '?mode=contracts&difficulty=easy' });
   const restore = installDOM(fixture);
   try {
@@ -880,7 +880,8 @@ test('preview names the go-button for its dashed controls and labels the selecte
     });
     const hint = fixture.root.querySelector('[data-controls-hint]');
     assert.equal(hint.hidden, false);
-    assert.equal(hint.textContent, 'Press Start to use these controls.');
+    assert.equal(hint.textContent, 'Press Start to play. Your controls appear here.');
+    assert.equal(fixture.root.querySelector('.yard-game').getAttribute('data-play-state'), 'preview');
     assert.match(fixture.root.querySelector('[data-yard-rotation-state]').textContent,
       /^(None selected|Rotation \d+° · \d+ orientations?)$/);
     assert.doesNotMatch(fixture.root.textContent ?? '', / allowed$/);

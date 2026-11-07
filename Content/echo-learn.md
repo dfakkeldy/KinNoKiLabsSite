@@ -4,9 +4,7 @@ Echo isn't just an audiobook player with extra buttons. Every feature exists bec
 
 **The short version:** Passive listening feels like learning, but most of it evaporates within days. Echo is built around the handful of techniques that cognitive science has shown actually move information into long-term memory: retrieval practice, spacing, context cues, cognitive offloading, and multi-sensory encoding. Use even two or three of them and you'll likely remember a lot more of what you listen to.
 
-> **Not here to study?** That's completely fine. Echo is a full-featured audiobook player first — a designable Apple Watch remote, a sleep timer, focus soundscapes, pitch-corrected speed, and your own DRM-free files, all on-device. Everything below is optional. Use as much or as little of it as you like. Looking for ADHD/AuDHD-specific strategies? See [The Focus Field Guide](/echo-focus).
-
-You don't need to read this front to back. Jump to whatever feature you're curious about — each section stands on its own. Features tagged 🚧 **Coming in 1.0** are in active development; 🔭 **Roadmap** means planned after 1.0; everything else ships in the current beta.
+> **Not here to study?** That's completely fine. Echo is a full-featured audiobook player first — a designable Apple Watch remote, a sleep timer, focus soundscapes, pitch-corrected speed, and your own DRM-free files, all on-device. Everything below is optional, and each section stands on its own, so jump to whatever you're curious about. Features tagged 🚧 **Coming in 1.0** are in active development; 🔭 **Roadmap** means planned after 1.0; everything else ships in the current beta. Looking for ADHD/AuDHD-specific strategies? See [The Focus Field Guide](/echo-focus).
 
 ## 1. Photo & Place Bookmarks — borrow your brain's sense of place
 
