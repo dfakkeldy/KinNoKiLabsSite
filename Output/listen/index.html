@@ -65,12 +65,6 @@
           <p id="bookSubtitle" class="room-subtitle" hidden></p>
           <p id="bookByline" class="room-byline"></p>
         </div>
-        <details class="room-chapters">
-          <summary>Chapters <span id="chapterCount" class="room-chapter-count"></span></summary>
-          <nav aria-label="Chapters">
-            <ol id="chapterList"></ol>
-          </nav>
-        </details>
       </div>
 
       <div class="room-stage">
@@ -123,19 +117,33 @@
             </div>
           </div>
         </div>
+
+        <!-- The chapter list belongs to the transport it seeks, so it closes
+             the player column (and, on a phone, follows the controls). -->
+        <details class="room-chapters">
+          <summary>Chapters <span id="chapterCount" class="room-chapter-count"></span></summary>
+          <nav aria-label="Chapters">
+            <ol id="chapterList"></ol>
+          </nav>
+        </details>
       </div>
     </section>
 
     <p id="emptyState" class="room-empty" role="status" aria-live="polite" hidden></p>
 
     <section id="seriesShelves" class="room-library" aria-labelledby="seriesLibraryTitle" hidden>
-      <h2 id="seriesLibraryTitle">Series</h2>
+      <!-- Named for assistive tech; on screen the series card's own title
+           is the heading, so the block is not titled twice. -->
+      <h2 id="seriesLibraryTitle" class="visually-hidden">Series</h2>
       <div id="seriesLibrary"></div>
     </section>
 
     <section id="moreBooksShelf" class="room-library" aria-labelledby="moreBooksTitle">
       <h2 id="moreBooksTitle">More books</h2>
-      <p class="room-library-sub">Choose another narrated book, or open any title as an EPUB or readable Markdown.</p>
+      <!-- One line per input: with a mouse, EPUB and Read show when a card
+           is pointed at (listen.css), so the line says so; elsewhere every
+           card shows them. -->
+      <p class="room-library-sub"><span class="room-library-sub-touch">Choose another narrated book, or open any title as an EPUB or readable Markdown.</span><span class="room-library-sub-pointer">Choose another narrated book, or point at any card for its EPUB and readable Markdown.</span></p>
       <ul id="library"></ul>
     </section>
 

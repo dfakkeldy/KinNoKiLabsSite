@@ -44,7 +44,7 @@
   var SPEEDS = [1, 1.25, 1.5, 2];
   var SPEED_KEY = 'kinnoki-fiction-rate';
   var FORMATS = [
-    { key: 'read', label: 'Read as Markdown' },
+    { key: 'read', label: 'Read' },   // the Markdown manuscript, named as on /listen and /learn
     { key: 'epub', label: 'EPUB' },
     { key: 'folder', label: 'Book folder' },
   ];

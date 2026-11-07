@@ -184,7 +184,9 @@ export async function renderCrossword(root, store) {
   const firstColumn = usedColumns.length ? Math.min(...usedColumns) : 0;
   const rowCount = usedRows.length ? Math.max(...usedRows) - firstRow + 1 : state.definition.size;
   const columnCount = usedColumns.length ? Math.max(...usedColumns) - firstColumn + 1 : state.definition.size;
-  board.setAttribute('style', `--crossword-size:${state.definition.size};--crossword-rows:${rowCount};--crossword-columns:${columnCount}`);
+  // Set on the layout (the board inherits them) so the clue bar and the
+  // check row can share the board's width on desktop.
+  layout.setAttribute('style', `--crossword-size:${state.definition.size};--crossword-rows:${rowCount};--crossword-columns:${columnCount}`);
   const clues = element('div', { class: 'crossword-clues' });
   const clueButtons = new Map();
   const clueAnswers = new Map();

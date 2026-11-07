@@ -73,7 +73,7 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
   root.replaceChildren(toolbar, statusBar, content);
 
   let data = null; let source = 'none'; let zone = 6; let busy = false; let lastFetch = now().getTime(); let lastReason;
-  let comparisonIssue = 'first';
+  let comparisonIssue = 'first'; let componentsOpen = null;
   function selected(zones) { return zones?.find((price) => price.zone === zone); }
   function currentCard(view) {
     const card = el('article', 'gas-card');
@@ -91,7 +91,14 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
     for (const [key, label] of [['benchmark', 'Benchmark'], ['forward', 'Forward correction'], ['clean_fuel', 'Clean fuel adjustment'], ['credit_card', 'Credit card adjustment']]) {
       const row = el('div'); row.append(el('dt', '', label), el('dd', '', formatCents(view.current[key], { digits: 2 }))); components.append(row);
     }
-    card.append(detail('Published pricing components', [components])); return card;
+    // Beside the taller estimate card the components fill the official
+    // card's foot with real figures instead of an empty band, so they start
+    // open on wide screens; a phone keeps them folded. A reader's own
+    // choice survives the five-minute refresh.
+    const breakdown = detail('Published pricing components', [components]);
+    breakdown.open = componentsOpen ?? Boolean(window?.matchMedia?.('(min-width: 701px)').matches);
+    breakdown.addEventListener('toggle', () => { componentsOpen = breakdown.open; });
+    card.append(breakdown); return card;
   }
   function estimateCard(view) {
     const card = el('article', 'gas-card gas-card-estimate');
@@ -152,7 +159,9 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
     const rolling = Array.isArray(performance?.rolling) ? performance.rolling.filter((row) => Number.isInteger(row?.lead_days) && row.lead_days >= 1 && row.lead_days <= 7 && decimal(row.mae) !== null && decimal(row.max_error) !== null) : [];
     const early = rolling.find((row) => row.lead_days === 7); const late = rolling.find((row) => row.lead_days === 1);
     const grid = el('div', 'gas-stat-grid');
-    grid.append(statistic('Complete-window v2', formatCents(complete?.mae, { digits: 2 }), `${count(complete?.count)} later conditional price settings · mean absolute error`),
+    // The plain name the estimate card already uses for a complete quote
+    // window; the model version is named in the test method below.
+    grid.append(statistic('All quotes observed', formatCents(complete?.mae, { digits: 2 }), `${count(complete?.count)} later conditional price settings · mean absolute error`),
       statistic('7 days before Friday', formatCents(early?.mae, { digits: 2 }), `${count(early?.count)} Friday outcomes · mean absolute error`),
       statistic('1 day before Friday', formatCents(late?.mae, { digits: 2 }), `${count(late?.count)} Friday outcomes · mean absolute error`)); node.append(grid);
     // The method caveats are true and stay on the page, folded under the
@@ -190,11 +199,11 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
         node.append(observations);
       }
       if (watch.regular_setting_next) node.append(el('p', 'gas-card-note', 'The next scheduled setting is the regular Friday order.'));
-      node.append(el('p', 'gas-watch-description', watch.limitations), link('Board guidance on interruptions', watch.source_url));
     }
-    // The published limitations already say this when a watch is shown;
-    // the generic caveat is only needed when there is no watch to qualify.
-    if (!watch || typeof watch.limitations !== 'string' || !/NYH/.test(watch.limitations)) node.append(el('p', 'gas-watch-description', "Real rack quotes estimate a combined supply-cost gap. The Board uses its own daily NYH benchmark and discretion. This watch cannot confirm an actual trigger or give an interruption probability."));
+    // One plain line says what the watch is; the published limitations (the
+    // test counts and caveats) fold under the results table below.
+    node.append(el('p', 'gas-watch-description', "An early-warning signal built from real wholesale quotes. It is not the Board's own daily New York Harbor (NYH) benchmark, and it cannot confirm an interruption or give its probability."));
+    if (watch) node.append(link('Board guidance on interruptions', watch.source_url));
     const performance = data?.performance?.watch;
     if (performance) {
       const rows = [['Early signal', performance.early], ['Sustained signal', performance.sustained]].map(([label, value]) => {
@@ -204,6 +213,7 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
       // The table (false alarms included) stays in view; how the days were
       // counted folds beneath it, as in the tests section above.
       const method = [el('p', 'gas-card-note', `${count(performance.decision_days)} quote-day decisions. Multiple alert days may relate to one event; they do not count as independent interruptions.`)];
+      if (typeof watch?.limitations === 'string') method.unshift(el('p', 'gas-card-note', watch.limitations));
       const unresolvedTargets = [performance.early?.unresolved_target_dates, performance.sustained?.unresolved_target_dates];
       const unresolvedDays = [performance.early?.unresolved_alert_days, performance.sustained?.unresolved_alert_days];
       // Zero unresolved items is the normal case and says nothing; the line
@@ -211,7 +221,10 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
       if ([...unresolvedTargets, ...unresolvedDays].some((value) => value !== 0)) method.push(el('p', 'gas-card-note', `Unresolved target dates, early / sustained: ${unresolvedTargets.map(count).join(' / ')}. Unresolved alert days: ${unresolvedDays.map(count).join(' / ')}.`));
       node.append(table('Exploratory interruption test · false-alert days are quote-day decisions', ['Signal', 'Events detected', 'False-alert days', 'Events missed'], rows),
         detail('How the watch was tested', method));
-    } else node.append(el('p', 'gas-section-note', 'Watch validation is unavailable.'));
+    } else {
+      node.append(el('p', 'gas-section-note', 'Watch validation is unavailable.'));
+      if (typeof watch?.limitations === 'string') node.append(el('p', 'gas-card-note', watch.limitations));
+    }
     return node;
   }
   function ledgerSection(at) {

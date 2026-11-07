@@ -68,12 +68,6 @@
           <p id="bookByline" class="room-byline"></p>
           <p id="editionNote" class="edition-status" hidden></p>
         </div>
-        <details class="room-chapters">
-          <summary>Chapters <span id="chapterCount" class="room-chapter-count"></span></summary>
-          <nav aria-label="Chapters">
-            <ol id="chapterList"></ol>
-          </nav>
-        </details>
       </div>
 
       <div class="room-stage">
@@ -127,6 +121,15 @@
             </div>
           </div>
         </div>
+
+        <!-- The chapter list belongs to the transport it seeks, so it closes
+             the player column (and, on a phone, follows the controls). -->
+        <details class="room-chapters">
+          <summary>Chapters <span id="chapterCount" class="room-chapter-count"></span></summary>
+          <nav aria-label="Chapters">
+            <ol id="chapterList"></ol>
+          </nav>
+        </details>
       </div>
     </section>
 
