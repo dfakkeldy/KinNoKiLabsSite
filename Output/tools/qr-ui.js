@@ -214,8 +214,11 @@ export function renderQrTool(root, deps = {}) {
     prefs = setToolPrefs(storage, prefs, 'qr-code', { text, level });
   };
 
+  // Nothing to export until there is a code, so the row waits out of sight
+  // (the buttons stay disabled too, for anything that still reaches them).
   const setActionsEnabled = (enabled) => {
     for (const action of [downloadSvg, downloadPng, copyPng]) action.disabled = !enabled;
+    actions.hidden = !enabled;
   };
 
   const showStatus = (className, message) => {

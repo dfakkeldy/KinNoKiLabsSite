@@ -793,6 +793,8 @@ export function createGameLifecycle({
   return api;
 }
 
+export const ASSIST_RULE = 'Hints and checks make a run ineligible for best-time records.';
+
 export function sharedShell({ title, difficulty }) {
   const breadcrumb = element('a', { href: '/games', class: 'back-link', text: '← Games' });
   const heading = element('h1', { text: title });
@@ -808,14 +810,15 @@ export function sharedShell({ title, difficulty }) {
   const notice = element('p', { class: 'game-storage-notice', role: 'status', 'aria-live': 'polite', hidden: true,
     text: 'Local progress is unavailable. You can still play.' });
   const live = element('p', { class: 'games-live-region', role: 'status', 'aria-live': 'polite' });
+  // The record rule lives in each game's How to play text (ASSIST_RULE); this
+  // line only appears once a hint or check has actually marked the run.
   const assistedStatus = element('p', {
     class: 'game-assisted-status', 'data-assisted-status': '', role: 'status', 'aria-live': 'polite',
-    text: 'Hints and checks make this run ineligible for best-time records.',
+    hidden: true, text: '',
   });
   const setAssisted = (assisted, announce = false) => {
-    assistedStatus.textContent = assisted
-      ? 'Assisted run — ineligible for best-time records.'
-      : 'Hints and checks make this run ineligible for best-time records.';
+    assistedStatus.hidden = !assisted;
+    assistedStatus.textContent = assisted ? 'Assisted run — ineligible for best-time records.' : '';
     if (announce && assisted) live.textContent = 'Assisted run. This time is ineligible for best-time records.';
   };
   return { toolbar, select, timer, notice, live, assistedStatus, setAssisted };

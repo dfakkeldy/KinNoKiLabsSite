@@ -32,8 +32,11 @@ export function renderUnitTool(root, deps = {}) {
   let prefs = openToolPrefs(storage);
   const saved = toolPrefs(prefs, 'unit-converter');
   let category = categoryFor(saved.category);
-  let fromId = unitFor(category, saved.from, category.units[0].id);
-  let toId = unitFor(category, saved.to, category.units[1].id);
+  // A first visit opens on a pair people look up (1 in = 2.54 cm) rather
+  // than the list's first two units; saved choices still win.
+  const firstVisitLength = saved.category === undefined && category.id === 'length';
+  let fromId = unitFor(category, saved.from, firstVisitLength ? 'in' : category.units[0].id);
+  let toId = unitFor(category, saved.to, firstVisitLength ? 'cm' : category.units[1].id);
 
   const body = toolShell(root, {
     title: 'Unit Converter',

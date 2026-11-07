@@ -37,6 +37,12 @@ export function renderComparison(root, points, { document = root.ownerDocument, 
   const difference = newest.error === 0 ? 'Exact match.' : `${formatCents(String(Math.abs(newest.error)))} too ${newest.error > 0 ? 'high' : 'low'}.`;
   root.append(el('p', 'gas-comparison-result', `${formatDate(newest.date)}: estimated ${formatPrice(newest.predicted)}, official ${formatPrice(newest.actual)}. ${difference}`),
     el('p', 'gas-comparison-caption', `Zone ${zone} minimum price · ${points.length} completed ${points.length === 1 ? 'date' : 'dates'} · ${issue === 'latest' ? 'Latest' : 'First'} saved prediction`));
+  // A visible key at the bars: the two fills mean opposite things.
+  const key = el('ul', 'gas-comparison-key');
+  for (const [name, text] of [['high', 'Estimate too high'], ['low', 'Estimate too low']]) {
+    const item = el('li', `gas-comparison-key-${name}`, text); key.append(item);
+  }
+  root.append(key);
 
   const limit = comparisonLimit(points);
   const width = Math.max(240, points.length * 64);

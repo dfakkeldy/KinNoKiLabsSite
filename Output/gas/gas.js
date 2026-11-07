@@ -13,7 +13,6 @@ const messages = {
   official_pending: "Waiting for this Friday's official order before estimating the following week. Estimates and watch are hidden.",
   invalid_estimate: 'The estimate could not be validated. Estimates and watch are hidden; the last verified official order is shown below.',
 };
-const WITHHELD_POINTER = 'Withheld for now. The notice at the top of the page says why.';
 const modeLabels = { complete: 'All quotes observed', provisional: 'Some quotes assumed', extrapolation: 'Outside training range' };
 const count = (value) => Number.isInteger(value) && value >= 0 ? String(value) : 'Unavailable';
 
@@ -94,13 +93,16 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
     const estimate = view.estimate; const price = selected(estimate?.zones);
     // The Experimental badge describes a live estimate; a withheld card
     // carries only the explanation.
-    top.append(el('h2', '', 'Conditional Friday estimate')); if (price) top.append(el('span', 'gas-badge', 'Experimental')); card.append(top);
+    top.append(el('h2', '', 'Conditional Friday estimate'), el('span', 'gas-badge', price ? 'Experimental' : 'Withheld')); card.append(top);
     if (!price) {
-      // The full reason is printed once, in the notice at the top of the
-      // page; the card points to it instead of repeating it.
-      if (view.reason) card.append(el('p', 'gas-empty', 'Estimate withheld'), el('p', 'gas-card-note', WITHHELD_POINTER));
-      else card.append(el('p', 'gas-empty', 'Estimate withheld'), el('p', 'gas-card-note', 'Waiting for enough verified data to issue an estimate.'),
-        el('p', 'gas-card-note', 'A fresh official order and recent source check are required.'));
+      // The reason is printed once, in the notice at the top of the page.
+      // The card keeps its place in the layout, states its status in the
+      // badge, and points to the saved record, which stays visible.
+      const body = el('div', 'gas-withheld');
+      if (view.reason) body.append(el('p', 'gas-withheld-note', 'No estimate is shown right now. The notice above gives the reason.'));
+      else body.append(el('p', 'gas-withheld-note', 'Waiting for enough verified data to issue an estimate. A fresh official order and recent source check are required.'));
+      body.append(el('a', 'link-quiet gas-withheld-link', 'Past estimates and their outcomes', { href: '#gas-results' }));
+      card.append(body);
       return card;
     }
     const current = selected(view.current.zones);
@@ -160,7 +162,9 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
     const heading = el('div', 'gas-watch-heading');
     const watch = view.watch;
     heading.append(el('h2', 'section-title', 'Interrupter watch')); if (watch) heading.append(el('span', 'gas-badge', 'Experimental')); node.append(heading);
-    if (!watch) node.append(el('p', 'gas-watch-status', 'Watch withheld'), el('p', 'gas-watch-description', view.reason ? WITHHELD_POINTER : 'No verified quote signal is available.'));
+    // The withheld reason is in the notice at the top; the status line is
+    // enough here.
+    if (!watch) { node.append(el('p', 'gas-watch-status', 'Watch withheld')); if (!view.reason) node.append(el('p', 'gas-watch-description', 'No verified quote signal is available.')); }
     else {
       const labels = { below_reference: `Below the ${formatCents(watch.reference_cents)} reference`, single_quote_move: 'One quote crosses the reference', sustained_proxy_move: 'Sustained quote move across the reference', waiting_for_quotes: 'Waiting for real quotes', unavailable: 'Quote signal unavailable' };
       node.append(el('p', 'gas-watch-status', labels[watch.status]));
@@ -189,7 +193,9 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
         el('p', 'gas-section-note', `${count(performance.decision_days)} quote-day decisions. Multiple alert days may relate to one event; they do not count as independent interruptions.`));
       const unresolvedTargets = [performance.early?.unresolved_target_dates, performance.sustained?.unresolved_target_dates];
       const unresolvedDays = [performance.early?.unresolved_alert_days, performance.sustained?.unresolved_alert_days];
-      node.append(el('p', 'gas-section-note', `Unresolved target dates, early / sustained: ${unresolvedTargets.map(count).join(' / ')}. Unresolved alert days: ${unresolvedDays.map(count).join(' / ')}.`));
+      // Zero unresolved items is the normal case and says nothing; the line
+      // appears only when something is actually unresolved or unknown.
+      if ([...unresolvedTargets, ...unresolvedDays].some((value) => value !== 0)) node.append(el('p', 'gas-section-note', `Unresolved target dates, early / sustained: ${unresolvedTargets.map(count).join(' / ')}. Unresolved alert days: ${unresolvedDays.map(count).join(' / ')}.`));
     } else node.append(el('p', 'gas-section-note', 'Watch validation is unavailable.'));
     return node;
   }

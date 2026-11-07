@@ -22,10 +22,12 @@ import { safeLocalStorage } from './hub-ui.js';
 const GAME = 'kinnoki-stack';
 const MODE = 'default';
 const DIFFICULTIES = Object.freeze(['easy', 'medium', 'hard']);
+// Each line ends by naming the dashed outline on the dock, so the target is
+// explained before Start.
 const DIFFICULTY_COPY = Object.freeze({
-  easy: 'Easy: slower, three previews, large manifests, no tides.',
-  medium: 'Medium: moderate, two previews, mixed manifests and forecast tides.',
-  hard: 'Hard: faster, one preview, irregular manifests and frequent tides.',
+  easy: 'Easy: slower, three previews, large manifests, no tides. Fill the dashed manifest to dispatch it.',
+  medium: 'Medium: moderate, two previews, mixed manifests and forecast tides. Fill the dashed manifests to dispatch them.',
+  hard: 'Hard: faster, one preview, irregular manifests and frequent tides. Fill the dashed manifests to dispatch them.',
 });
 const CARGO_BY_ID = new Map(CARGO_CATALOG.map((cargo) => [cargo.id, cargo]));
 const CLOCK_CHECKPOINT_MS = 1000;
@@ -68,7 +70,7 @@ function buildStackShell(root, difficulty, audioControls) {
   const score = element('span', { 'data-stack-score': '', text: '0' });
   const highScore = element('span', { 'data-stack-high-score': '', text: '—' });
   const assisted = element('span', {
-    'data-assisted-status': '', text: 'Unassisted · eligible for records',
+    'data-assisted-status': '', text: 'Eligible for records',
   });
   const manifest = element('span', { 'data-stack-manifest': '', text: 'Preparing manifest' });
   const tide = element('span', { 'data-stack-tide': '', text: 'No tides' });
@@ -172,6 +174,9 @@ function buildStackShell(root, difficulty, audioControls) {
   };
   controls.advance.hidden = true;
   controls.describe.disabled = false;
+  // Describe Dock and Step Mode are assistive tools, not moves: they sit in a
+  // quieter row under the movement pad (see .stack-tool in styles.css).
+  for (const tool of [controls.describe, controls.stepMode, controls.advance]) tool.classList.add('stack-tool');
   const controlsHint = element('p', {
     class: 'game-controls-hint', 'data-controls-hint': '', text: '',
   });
@@ -228,8 +233,9 @@ function buildStackShell(root, difficulty, audioControls) {
       dockDescription,
       stats,
       keyboardHelp,
+      // Audio closes the run panel beside the dock on wide screens.
+      audioControls.element,
     ),
-    audioControls.element,
   );
   root.replaceChildren(shell);
 
@@ -361,7 +367,7 @@ function paintStack(view, state, {
     ? best.toLocaleString('en-CA') : '—';
   view.assisted.textContent = state.assisted
     ? 'Assisted run · records excluded'
-    : 'Unassisted · eligible for records';
+    : 'Eligible for records';
   view.status.textContent = titleCase(state.status);
 
   const completedCells = state.manifests.reduce((total, item) => (

@@ -4,6 +4,7 @@ import { createGameAudio } from './game-audio.js';
 import {
   completionPanel, createAudioControls, createConfirmDialog, createSession, element,
   formatElapsed, makeGameTerminal, prefersReducedMotion, renderReplacementKept, sharedShell,
+  ASSIST_RULE,
 } from './controller-common.js';
 
 const directions = { across: [0, 1], down: [1, 0] };
@@ -169,7 +170,7 @@ export async function renderCrossword(root, store) {
   const shell = sharedShell({ title: 'Crossword', difficulty: session.difficulty });
   shell.setAssisted(state.assisted);
   const instructions = element('details', { 'data-instructions': '' }, element('summary', { text: 'How to play' }),
-    element('p', { text: 'Type letters. Arrow keys move, Backspace erases, Tab moves through clues, and selecting a crossing twice changes direction.' }));
+    element('p', { text: 'Type letters. Arrow keys move, Backspace erases, Tab moves through clues, and selecting a crossing twice changes direction. ' + ASSIST_RULE }));
   const layout = element('div', { class: 'crossword-layout' });
   const board = element('div', { class: 'game-board crossword-board', role: 'grid', 'aria-label': 'Crossword puzzle' });
   board.setAttribute('style', `--crossword-size:${state.definition.size}`);
@@ -224,7 +225,9 @@ export async function renderCrossword(root, store) {
     if (!completed) void puzzleAudio.dispose();
   });
 
-  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, layout, audioControls.element, shell.live);
+  // Audio closes the clue column (after the clues on phones).
+  clues.append(audioControls.element);
+  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, layout, shell.live);
 
   // Build the grid inputs (and their number markers) once. draw() below only
   // ever patches attributes/classes/value on these same nodes so cell and

@@ -111,7 +111,7 @@
     els.cover.src = book.cover;
     els.cover.alt = book.coverAlt || ('Cover of ' + book.title);
 
-    els.honesty.textContent = 'Written by ' + book.writtenBy +
+    els.honesty.textContent = book.title + ' was written by ' + book.writtenBy +
       ', grounded in real sources — spot-checked, not expert-reviewed. ';
     var link = document.createElement('a');
     link.href = 'https://github.com/dfakkeldy/explainer-audiobooks#honest-disclosure';

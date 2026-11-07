@@ -11,6 +11,7 @@
 .gas-zone-field { display: grid; gap: 8px; }
 .gas-zone-field label { font-size: 14px; font-weight: 600; }
 .gas-zone-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+.gas-zone-controls > a { display: inline-flex; align-items: center; min-height: 44px; }
 .gas-zone-controls select { min-height: 48px; min-width: 174px; padding: 10px 38px 10px 16px; border-radius: 10px; border: 1px solid var(--gold-hairline); background: var(--surface); color: var(--text); font: inherit; }
 .gas-refresh { min-height: 48px; }
 .gas-refresh:disabled { opacity: .7; cursor: wait; }
@@ -22,17 +23,23 @@
 .gas-card h2 { font-size: clamp(20px, 2.4vw, 26px); }
 .gas-card .eyebrow { margin-bottom: 12px; }
 .gas-card-estimate { border-color: var(--gold-hairline); }
-/* Withheld: the estimate card steps back to a dashed, unshadowed outline,
-   so its shorter height reads as a deliberately quiet state beside the
-   official price, not a missing block. */
-.gas-price-grid.is-withheld { grid-template-columns: 1.4fr 1fr; }
-.gas-price-grid.is-withheld .gas-card-estimate { border: 1px dashed var(--gold-hairline); background: transparent; box-shadow: none; }
+/* Withheld: the estimate card steps back to a dashed, unshadowed outline
+   that keeps its full slot beside the official price (no void under a
+   short card). Its status sits in the badge; the note and the link to the
+   saved record sit centred in the slot. */
+.gas-price-grid.is-withheld { grid-template-columns: 1.4fr 1fr; align-items: stretch; }
+.gas-price-grid.is-withheld .gas-card-estimate { display: flex; flex-direction: column; border: 1px dashed var(--gold-hairline); background: transparent; box-shadow: none; }
+.gas-price-grid.is-withheld .gas-card-estimate .gas-card-top { margin-bottom: 0; }
+.gas-withheld { display: grid; gap: 14px; justify-items: start; margin-block: auto; padding-block: 28px; }
+.gas-withheld-note { max-width: 34ch; color: var(--text-muted); font-size: 15px; line-height: 1.65; }
+.gas-withheld-link { display: inline-flex; align-items: center; min-height: 44px; font-size: 15px; }
+.gas-withheld-link::after { content: "↓" / ""; margin-left: 6px; }
 .gas-card-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 22px; }
 .gas-card-top h2 { font-size: 19px; }
 .gas-badge { display: inline-flex; padding: 5px 10px; border: 1px solid var(--gold-hairline); border-radius: var(--radius-pill); font-size: 12px; font-weight: 500; color: var(--gold-text); }
 .gas-price { font-size: clamp(46px, 6vw, 70px); font-weight: 600; line-height: 1.1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
 .gas-price-unit { margin-top: 7px; font-size: 13px; color: var(--text-muted); }
-.gas-price-maximum { margin-top: 20px; font-size: 17px; font-variant-numeric: tabular-nums; }
+.gas-price-maximum { margin-top: 20px; font-size: 17px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .gas-card-note { margin-top: 14px; color: var(--text-muted); font-size: 14px; line-height: 1.65; }
 .gas-change { display: flex; align-items: center; gap: 10px; margin-top: 14px; font-size: 16px; font-weight: 600; color: var(--gold-text); font-variant-numeric: tabular-nums; }
 .gas-change::before { content: "→" / ""; display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--gold-hairline); font-size: 15px; line-height: 1; }
@@ -79,6 +86,8 @@
 .gas-all-zones { margin-top: 24px; }
 .gas-watch { padding: clamp(22px, 3vw, 32px); background: var(--surface); border: 1px solid var(--gold-hairline); border-radius: var(--radius-card); }
 .gas-watch-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 18px; }
+/* Same title scale as the page's other section heads. */
+.gas-watch .section-title { font-size: clamp(25px, 3.4vw, 34px); }
 .gas-watch-status { font-size: clamp(19px, 2.5vw, 24px); font-weight: 500; }
 .gas-watch-gap { margin-top: 12px; font-size: clamp(30px, 4vw, 44px); line-height: 1.2; font-weight: 500; font-variant-numeric: tabular-nums; }
 .gas-watch-description { margin: 18px 0; max-width: 75ch; color: var(--text-muted); font-size: 15px; }
@@ -101,6 +110,10 @@
 .gas-comparison-explanation, .gas-comparison-empty { margin-top: 16px; font-size: 14px; line-height: 1.7; color: var(--text-muted); }
 .gas-comparison-result { margin-top: 24px; font-size: 16px; line-height: 1.6; font-variant-numeric: tabular-nums; }
 .gas-comparison-caption { margin-top: 8px; color: var(--text-muted); font-size: 13px; }
+.gas-comparison-key { display: flex; flex-wrap: wrap; gap: 6px 20px; margin: 14px 0 0; padding: 0; list-style: none; font-size: 13px; color: var(--text-muted); }
+.gas-comparison-key li { display: inline-flex; align-items: center; gap: 8px; }
+.gas-comparison-key li::before { content: ""; width: 12px; height: 12px; border-radius: 2px; background: var(--gold-text); }
+.gas-comparison-key .gas-comparison-key-low::before { background: var(--text-muted); }
 .gas-comparison-frame { display: grid; grid-template-columns: 46px minmax(0, 1fr); margin-top: 38px; }
 .gas-comparison-axis { position: relative; height: 200px; font-size: 12px; font-variant-numeric: tabular-nums; color: var(--text-muted); }
 .gas-comparison-unit { position: absolute; right: 10px; top: -28px; }
@@ -126,16 +139,20 @@
 .gas-comparison-labels { display: flex; padding-top: 12px; }
 .gas-comparison-point { display: grid; flex: 1 0 64px; gap: 4px; padding: 0 4px; text-align: center; font-size: 12px; line-height: 1.5; color: var(--text-muted); }
 .gas-comparison-value { color: var(--text); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.gas-issue { display: grid; gap: 4px; margin-bottom: 12px; }
+/* One line per saved issue: label, value, then the issue time under the
+   value, so First and Latest read as a pair without doubling row height. */
+.gas-issue { display: grid; grid-template-columns: 3.6em auto; align-items: baseline; column-gap: 10px; row-gap: 2px; margin-bottom: 10px; }
 .gas-issue:last-child { margin-bottom: 0; }
 .gas-issue-label { font-size: 12px; color: var(--text-muted); }
-.gas-issue-time { font-size: 11px; color: var(--text-muted); }
+.gas-issue-time { grid-column: 2; font-size: 12px; color: var(--text-muted); }
 .gas-source-list { display: grid; gap: 14px; padding-left: 20px; font-size: 15px; overflow-wrap: anywhere; }
 .gas-footer { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; }
 .gas-footer .footer-tagline { flex-basis: 100%; }
 .gas-footer .font-toggle { margin-left: auto; min-height: 44px; }
+.gas-footer .footer-legal-links a { font-size: 15px; }
 @media (max-width: 700px) {
-  .gas-price-grid { grid-template-columns: 1fr; }
+  .gas-price-grid,
+  .gas-price-grid.is-withheld { grid-template-columns: 1fr; }
   .gas-comparison-frame { grid-template-columns: 38px minmax(0, 1fr); }
   .gas-comparison-point { padding: 0 2px; font-size: 11px; }
   /* The ledger restacks as one card per effective date: the date heads
@@ -145,7 +162,10 @@
   .gas-ledger .gas-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   .gas-ledger .gas-table, .gas-ledger .gas-table tbody { display: block; }
   .gas-ledger .gas-table caption { display: block; }
-  .gas-ledger .gas-table tr { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px 12px; padding: 14px 12px; border-top: 1px solid var(--separator); }
+  .gas-ledger .gas-table tr { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr) minmax(0, 1fr); gap: 4px 12px; padding: 14px 12px; border-top: 1px solid var(--separator); }
+  .gas-issue-time { grid-column: 1 / -1; }
+  .gas-ledger td[data-label="Error"] .gas-issue { grid-template-columns: minmax(0, 1fr); }
+  .gas-withheld { padding-block: 18px 0; }
   .gas-ledger .gas-table tbody th { grid-column: 1 / -1; padding: 0 0 6px; border: 0; }
   .gas-ledger .gas-table td { padding: 0; border: 0; white-space: normal; min-width: 0; }
   .gas-ledger .gas-table td::before { content: attr(data-label); display: block; margin-bottom: 6px; font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--text-muted); }

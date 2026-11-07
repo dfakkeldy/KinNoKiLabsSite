@@ -145,7 +145,9 @@
 
   function renderBook() {
     document.title = book.title + ' — Fiction Listening Room — KinNoKi Labs';
-    els.bookForm.textContent = (book.collectionLabel || 'Original fiction') + ' · ' + book.form + ' · ' + book.genre;
+    // A non-breaking space before each middle dot: when the eyebrow wraps,
+    // a line can end on a dot but never start with one.
+    els.bookForm.textContent = (book.collectionLabel || 'Original fiction') + '\u00a0· ' + book.form + '\u00a0· ' + book.genre;
     els.bookTitle.textContent = book.title;
     if (book.subtitle) { els.bookSubtitle.textContent = book.subtitle; els.bookSubtitle.hidden = false; }
     els.bookByline.textContent = bylineParts(book);

@@ -36,6 +36,12 @@
   --tidal-tint:#bfdbd9;
   --fresh:#2c5a44;
   --fresh-tint:#c6d9c9;
+  /* Calendar "good" bars in light: the peak colour mixed over --surface
+     until each bar reaches 3:1 on the off-white grid; peaks stay darker
+     and taller. */
+  --salt-bar:#6d94ae;
+  --tidal-bar:#61989c;
+  --fresh-bar:#779485;
   --pin-text:#ffffff;
   --pin-ring:#ffffff;
   --dim-fill:#c5cccb;
@@ -201,11 +207,11 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .mchip.is-empty .m-name{color:var(--ink-3)}
 .ctl-row{display:grid;grid-template-columns:minmax(200px,1.1fr) auto auto minmax(0,1fr);gap:12px 18px;align-items:end}
 .select-wrap{position:relative}
-.select-wrap select{appearance:none;-webkit-appearance:none;width:100%;min-height:42px;padding:8px 36px 8px 12px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--surface);color:var(--ink);font:inherit;font-size:16px;cursor:pointer}
-.select-wrap::after{content:"";position:absolute;right:14px;bottom:17px;width:8px;height:8px;border-right:2px solid var(--ink-2);border-bottom:2px solid var(--ink-2);transform:rotate(45deg);pointer-events:none}
+.select-wrap select{appearance:none;-webkit-appearance:none;width:100%;min-height:46px;padding:8px 36px 8px 12px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--surface);color:var(--ink);font:inherit;font-size:16px;cursor:pointer}
+.select-wrap::after{content:"";position:absolute;right:14px;bottom:19px;width:8px;height:8px;border-right:2px solid var(--ink-2);border-bottom:2px solid var(--ink-2);transform:rotate(45deg);pointer-events:none}
 .select-wrap select:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
 .seg{display:flex;border:1px solid var(--rule-strong);border-radius:3px;background:var(--surface);overflow:hidden}
-.seg label{display:flex;align-items:center;justify-content:center;min-height:40px;padding:6px 14px;cursor:pointer;border-left:1px solid var(--rule);white-space:nowrap;font-weight:600;font-size:15px;position:relative}
+.seg label{display:flex;align-items:center;justify-content:center;min-height:44px;padding:6px 14px;cursor:pointer;border-left:1px solid var(--rule);white-space:nowrap;font-weight:600;font-size:15px;position:relative}
 .seg .chip-in:first-child + label{border-left:0}
 .seg label:hover{background:var(--surface-2)}
 .seg .chip-in:checked + label{background:var(--ink);color:var(--surface)}
@@ -408,6 +414,11 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .cal-key{display:flex;flex-wrap:wrap;gap:6px 18px;margin:10px 0 0;font-size:13px;color:var(--ink-2)}
 .cal-key span{display:inline-flex;align-items:center;gap:6px}
 .cal-key i{display:inline-block;width:22px;height:10px}
+.cal-key [hidden]{display:none}
+.cal-evidence{display:flex;flex-wrap:wrap;gap:4px 18px;margin:8px 0 0;font-size:13px;color:var(--ink-2)}
+.cal-evidence dt{font-weight:700;color:var(--ink)}
+.cal-evidence dd{margin:0}
+.cal-evidence dd i{font-weight:600;color:var(--ink)}
 .cal-more{margin-top:12px}
 .cal-more summary{cursor:pointer;font-weight:600}
 .cal-more dl{margin:8px 0 0;display:grid;gap:10px}
@@ -425,9 +436,10 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .rule.wide{grid-column:1/-1}
 .rule > h3:not(:first-child){margin-top:12px}
 .rule.report{background:var(--buoy-tint)}
-.tel{font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:.03em;white-space:nowrap;-webkit-user-select:text;user-select:text;color:var(--ink)}
+.tel{display:inline-flex;align-items:center;min-height:44px;font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:.03em;white-space:nowrap;-webkit-user-select:text;user-select:text;color:var(--ink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.tel:hover{color:var(--salt)}
 .tel-list{list-style:none;padding:0!important;margin:4px 0 6px}
-.tel-list li{margin:0 0 6px}
+.tel-list li{margin:0 0 2px}
 .tel-list .who{display:block;font-size:13px;color:var(--ink-2)}
 
 footer{margin-top:30px;padding-top:14px;border-top:3px double var(--rule-strong);color:var(--ink-2);font-size:14px}
@@ -464,6 +476,8 @@ footer li{margin:0 0 4px}
   .foot-grid{grid-template-columns:1fr}
 }
 @media (max-width:700px){
+  .cal-evidence{display:grid;gap:2px}
+  .cal-evidence dt{margin-bottom:2px}
   .hide-sm{display:none}
   .mast{grid-template-columns:1fr;gap:10px;padding-bottom:12px}
   .eyebrow{font-size:13px;margin-bottom:4px}
@@ -479,7 +493,7 @@ footer li{margin:0 0 4px}
   .months .mchip:nth-of-type(2),.months .mchip:nth-of-type(8){border-left:0}
   .mchip{min-height:44px}
   .ctl-row{grid-template-columns:1fr;gap:10px}
-  .seg label{min-height:40px}
+  .seg label{min-height:44px}
   .seg{width:100%}
   .seg label{flex:1;padding:6px 6px;font-size:15px}
   .leaflet-bottom.leaflet-right{left:96px}
@@ -514,6 +528,11 @@ footer li{margin:0 0 4px}
   .cal tbody th small{font-size:12px}
   .cal thead th{font-size:12px}
   .card-head h2{font-size:25px}
+}
+/* Touch: inline links in the rules (licence shops, DFO, the invasive-fish
+   line) get a taller hit area without moving the text around them. */
+@media (pointer:coarse){
+  .rule p a:not(.tel){display:inline-block;padding:12px 2px;margin:-12px -2px}
 }
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}
@@ -642,7 +661,7 @@ footer li{margin:0 0 4px}
         <h3>No night fishing for sport fish</h3>
         <p>No angling for trout, salmon or smallmouth bass from 2 hours after sunset to 2 hours before sunrise. In inland water, no angling of any kind from 22:00 to 06:00.</p>
         <h3 style="margin-top:12px">Invasive fish</h3>
-        <p>Keep every smallmouth bass and chain pickerel you catch. Never move live fish, dump bait, or use perch, bass, pickerel, bullhead, goldfish or crayfish as bait. Report new invasive fish: <span class="tnum selectable">902-485-5056</span>.</p>
+        <p>Keep every smallmouth bass and chain pickerel you catch. Never move live fish, dump bait, or use perch, bass, pickerel, bullhead, goldfish or crayfish as bait. Report new invasive fish: <a class="tnum" href="tel:+19024855056">902-485-5056</a>.</p>
       </div>
       <div class="rule">
         <h3>Atlantic salmon</h3>
@@ -657,9 +676,9 @@ footer li{margin:0 0 4px}
       <div class="rule report">
         <h3>Report poaching</h3>
         <ul class="tel-list">
-          <li><span class="who">Fisheries and Oceans Canada (DFO)</span><span class="tel">1-800-565-1633, ext. 6</span></li>
-          <li><span class="who">NS Natural Resources</span><span class="tel">1-800-565-2224</span></li>
-          <li><span class="who">Crime Stoppers</span><span class="tel">1-800-222-8477</span></li>
+          <li><span class="who">Fisheries and Oceans Canada (DFO)</span><a class="tel" href="tel:+18005651633,6">1-800-565-1633, ext. 6</a></li>
+          <li><span class="who">NS Natural Resources</span><a class="tel" href="tel:+18005652224">1-800-565-2224</a></li>
+          <li><span class="who">Crime Stoppers</span><a class="tel" href="tel:+18002228477">1-800-222-8477</a></li>
         </ul>
         <p class="cite"><a href="https://www.dfo-mpo.gc.ca/contact/report-signaler-eng.htm" target="_blank" rel="noopener">DFO: report a fisheries violation</a></p>
       </div>
@@ -1120,10 +1139,15 @@ footer li{margin:0 0 4px}
       boxes.push([pt.x + o[0] - 16, pt.y + o[1] - 16, pt.x + o[0] + 16, pt.y + o[1] + 16]);
       if (o[0] || o[1]) boxes.push([pt.x - 5, pt.y - 5, pt.x + 5, pt.y + 5]);
     });
+    // Spot pins only: a place name may never sit on one of them, and may
+    // never be cut by the map edge. (An origin diamond may carry its own
+    // town name beside it, as before.)
+    var pinBoxes = boxes.slice();
     Object.keys(ORIGINS).forEach(function (k) {
       var pt = map.latLngToContainerPoint(ORIGINS[k].ll);
       boxes.push([pt.x - 11, pt.y - 11, pt.x + 11, pt.y + 11]);
     });
+    function inside(b) { return b[0] >= 2 && b[1] >= 2 && b[2] <= size.x - 2 && b[3] <= size.y - 2; }
     var want = {};
     for (var i = 0; i < places.length; i++) {
       var p = places[i];
@@ -1147,10 +1171,13 @@ footer li{margin:0 0 4px}
         ];
       }
       var chosen = null;
-      for (var c = 0; c < cand.length; c++) { if (!hit(cand[c][1], boxes)) { chosen = cand[c]; break; } }
-      if (!chosen && p.priority === 1) { // priority 1 always shows: take the least-covered position
+      for (var c = 0; c < cand.length; c++) { if (inside(cand[c][1]) && !hit(cand[c][1], boxes)) { chosen = cand[c]; break; } }
+      if (!chosen && p.priority === 1) { // priority 1 shows when it can: least-covered position clear of every pin
         var best = Infinity;
-        cand.forEach(function (cd) { var a = overlapArea(cd[1], boxes); if (a < best) { best = a; chosen = cd; } });
+        cand.forEach(function (cd) {
+          if (!inside(cd[1]) || hit(cd[1], pinBoxes)) return;
+          var a = overlapArea(cd[1], boxes); if (a < best) { best = a; chosen = cd; }
+        });
       }
       if (!chosen) continue;
       var bx = chosen[1];
@@ -1686,16 +1713,24 @@ footer li{margin:0 0 4px}
     table.appendChild(tbody);
     wrap.appendChild(table);
     wrap.appendChild(h('div', { class: 'cal-key' },
-      h('span', null, h('i', { style: 'background:var(--salt-tint)' }), h('i', { style: 'background:var(--salt);margin-left:-6px' }), 'Salt and tidal: good, peak'),
-      h('span', null, h('i', { style: 'background:var(--fresh-tint)' }), h('i', { style: 'background:var(--fresh);margin-left:-6px' }), 'Fresh: good, peak'),
-      h('span', null, h('i', { style: 'box-shadow:inset 2px 0 0 var(--buoy),inset -2px 0 0 var(--buoy)' }), 'Month chosen above'),
-      h('span', null, 'Evidence: confirmed = read in the primary text; reported = angler, guide or news report; inferred = reasoning from rules and biology')));
+      h('span', null, h('i', { style: 'background:var(--salt-bar)' }), h('i', { style: 'background:var(--salt);margin-left:-6px' }), 'Salt and tidal: good, peak'),
+      h('span', null, h('i', { style: 'background:var(--fresh-bar)' }), h('i', { style: 'background:var(--fresh);margin-left:-6px' }), 'Fresh: good, peak'),
+      // Only meaningful once a month is picked; renderCalendarCursor toggles it.
+      h('span', { class: 'cal-key-month', hidden: '' }, h('i', { style: 'box-shadow:inset 2px 0 0 var(--buoy),inset -2px 0 0 var(--buoy)' }), 'Month chosen above')));
+    // The evidence classes are definitions, not swatches: a short list of
+    // their own under the key instead of one run-on line.
+    wrap.appendChild(h('dl', { class: 'cal-evidence' },
+      h('dt', null, 'Evidence'),
+      h('dd', null, h('i', null, 'confirmed'), ' read in the primary text'),
+      h('dd', null, h('i', null, 'reported'), ' angler, guide or news report'),
+      h('dd', null, h('i', null, 'inferred'), ' reasoning from rules and biology')));
     wrap.appendChild(h('details', { class: 'cal-more' }, h('summary', null, 'Seasons, limits and notes for each species (2026)'), more));
     calCells = $$('[data-m]', table);
     renderCalendarCursor();
   }
   function renderCalendarCursor() {
     calCells.forEach(function (c) { c.classList.toggle('cur', +c.getAttribute('data-m') === state.month && state.month > 0); });
+    var monthKey = $('.cal-key-month'); if (monthKey) monthKey.hidden = !(state.month > 0);
   }
 
   /* ---------- controls ---------- */

@@ -265,8 +265,10 @@ const recordMarkup = (game, stats) => {
   ].join('');
 };
 
-// A game with no finishes and no records shows one quiet line instead of a
-// grid of placeholder dashes; the full record grid appears after a finish.
+// A game with no finishes and no records shows no record row at all (the
+// records band below states the empty book once); after a finish the record
+// row sits under the description, above the difficulty chips, so the chips
+// always end the card.
 const unplayed = (stats) => stats.completed === '0 completed'
   && Object.entries(stats).every(([key, value]) => key === 'completed' || value === '—');
 
@@ -279,13 +281,11 @@ const cardMarkup = (store, game) => {
         <p class="game-card-eyebrow">${escapeHTML(card.eyebrow)}</p>
         <span class="game-card-symbol" aria-hidden="true">${escapeHTML(card.symbol)}</span>
       </div>
-      <h2>${escapeHTML(card.title)}</h2>
+      <h2><a class="game-card-title" href="${escapeHTML(card.continueHref ?? card.difficulties[0].href)}">${escapeHTML(card.title)}</a></h2>
       <p class="game-card-description">${escapeHTML(card.description)}</p>
       ${card.continueHref ? `<a class="btn btn-gold game-continue" href="${escapeHTML(card.continueHref)}">${escapeHTML(card.continueLabel)}</a>` : ''}
+      ${unplayed(stats) ? '' : `<dl class="game-card-stats">${recordMarkup(game, stats)}</dl>`}
       <div class="game-mode-actions">${modeGroupsMarkup(card)}</div>
-      ${unplayed(stats)
-        ? '<p class="game-card-stats-empty">Not played yet</p>'
-        : `<dl class="game-card-stats">${recordMarkup(game, stats)}</dl>`}
     </article>`;
 };
 
@@ -323,7 +323,7 @@ export function renderHubMarkup(store) {
         <div><dt>${escapeHTML(stats.totalLabel)}</dt><dd>${escapeHTML(stats.total)}</dd></div>
         <div><dt>${escapeHTML(stats.streakLabel)}</dt><dd>${escapeHTML(stats.streak)}</dd></div>
       </dl>
-      <button class="btn btn-gray games-reset" type="button" data-reset-games${stored ? '' : ' disabled'}>Reset Game Data</button>
+      <button class="btn btn-gray games-reset" type="button" data-reset-games${stored ? '' : ' hidden disabled'}>Reset Game Data</button>
     </section>
     <dialog class="game-dialog" data-reset-dialog aria-labelledby="reset-dialog-title">
       <form method="dialog">
