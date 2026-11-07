@@ -196,13 +196,13 @@ func shakespeareMidsummerMain() -> Node<HTML.BodyContext> {
       </figure>
       <section id="project-status" class="shakespeare-section shakespeare-release-card" aria-labelledby="project-status-title">
         <h2 id="project-status-title">Public release pending</h2>
-        <p class="shakespeare-secondary">Each of these gets its link here on release:</p>
-        <ul class="shakespeare-release-list">
-          <li>Book editions</li>
-          <li>Audiobook</li>
-          <li>Video</li>
-          <li>Project code</li>
-        </ul>
+        <p class="shakespeare-secondary">Each of these gets its link here when it is released.</p>
+        <dl class="shakespeare-formats shakespeare-release-status">
+          <div><dt>Book editions</dt><dd>Release pending</dd></div>
+          <div><dt>Audiobook</dt><dd>Release pending</dd></div>
+          <div><dt>Video</dt><dd>Release pending</dd></div>
+          <div><dt>Project code</dt><dd>Publication pending</dd></div>
+        </dl>
       </section>
       <nav class="shakespeare-related" aria-label="More Shakespeare">
         <p class="eyebrow">Also in the collection</p>

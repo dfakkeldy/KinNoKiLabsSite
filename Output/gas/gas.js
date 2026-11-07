@@ -100,10 +100,12 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
     const current = selected(view.current.zones);
     const change = Number((decimal(price.minimum) - decimal(current.minimum)).toFixed(1));
     const movement = change < 0 ? `Down ${formatCents(String(-change))}` : change > 0 ? `Up ${formatCents(String(change))}` : 'No change';
+    // The movement against today's official minimum is the card's second
+    // read, set straight under the estimate it qualifies.
     card.append(el('p', 'gas-price gas-estimate-price', formatPrice(price.minimum)), el('p', 'gas-price-unit', 'Estimated minimum · CAD per litre'),
+      el('p', 'gas-change', `${movement} from the official minimum`, { 'data-direction': change < 0 ? 'down' : change > 0 ? 'up' : 'flat' }),
       el('p', 'gas-price-maximum', `Estimated maximum ${formatPrice(price.maximum)} / L`),
       el('p', 'gas-card-note', `For ${formatDate(estimate.date)} · ${modeLabels[estimate.mode]}`),
-      el('p', 'gas-change', `${movement} from the official minimum`),
       el('p', 'gas-coverage', `${estimate.observed_quotes} of ${estimate.total_quotes} weekday quotes observed · ${estimate.projected_quotes} assumed unchanged`),
       el('p', 'gas-card-note', `Latest real quote ${formatDate(estimate.latest_quote_date)}. Issued ${formatTimestamp(estimate.issued_at)}.`));
     if (estimate.projected_quotes > 0) card.append(el('p', 'gas-card-note', 'Remaining weekdays hold the last real quote. New quotes replace these assumptions.'));
@@ -156,14 +158,21 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
     else {
       const labels = { below_reference: `Below the ${formatCents(watch.reference_cents)} reference`, single_quote_move: 'One quote crosses the reference', sustained_proxy_move: 'Sustained quote move across the reference', waiting_for_quotes: 'Waiting for real quotes', unavailable: 'Quote signal unavailable' };
       node.append(el('p', 'gas-watch-status', labels[watch.status]));
-      if (watch.latest_gap !== null && !['waiting_for_quotes', 'unavailable'].includes(watch.status)) node.append(el('p', 'gas-watch-gap', formatCents(watch.latest_gap, { signed: true, digits: 2 })), el('p', 'gas-price-unit', 'Latest estimated combined supply-cost gap'));
-      const observations = el('ul', 'gas-observations');
-      for (const item of watch.observations.slice(-5)) observations.append(el('li', '', `${formatDate(item.date)} · ${formatCents(item.supply_gap, { signed: true, digits: 2 })}`));
-      node.append(observations);
+      const latest = watch.observations.at(-1);
+      if (watch.latest_gap !== null && !['waiting_for_quotes', 'unavailable'].includes(watch.status)) node.append(el('p', 'gas-watch-gap', formatCents(watch.latest_gap, { signed: true, digits: 2 })), el('p', 'gas-price-unit', `Latest estimated combined supply-cost gap${latest ? ` · ${formatDate(latest.date)}` : ''}`));
+      // A one-day history would only repeat the headline number; the list
+      // earns its place once there is a trend to read.
+      if (watch.observations.length > 1) {
+        const observations = el('ul', 'gas-observations');
+        for (const item of watch.observations.slice(-5)) observations.append(el('li', '', `${formatDate(item.date)} · ${formatCents(item.supply_gap, { signed: true, digits: 2 })}`));
+        node.append(observations);
+      }
       if (watch.regular_setting_next) node.append(el('p', 'gas-card-note', 'The next scheduled setting is the regular Friday order.'));
       node.append(el('p', 'gas-watch-description', watch.limitations), link('Board guidance on interruptions', watch.source_url));
     }
-    node.append(el('p', 'gas-watch-description', "Real rack quotes estimate a combined supply-cost gap. The Board uses its own daily NYH benchmark and discretion. This watch cannot confirm an actual trigger or give an interruption probability."));
+    // The published limitations already say this when a watch is shown;
+    // the generic caveat is only needed when there is no watch to qualify.
+    if (!watch || typeof watch.limitations !== 'string' || !/NYH/.test(watch.limitations)) node.append(el('p', 'gas-watch-description', "Real rack quotes estimate a combined supply-cost gap. The Board uses its own daily NYH benchmark and discretion. This watch cannot confirm an actual trigger or give an interruption probability."));
     const performance = data?.performance?.watch;
     if (performance) {
       const rows = [['Early signal', performance.early], ['Sustained signal', performance.sustained]].map(([label, value]) => {
@@ -217,9 +226,16 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
     const rows = groups.map((group) => {
       const tr = el('tr', 'gas-ledger-event');
       const actual = selected(group.score?.zones)?.actual_minimum;
-      tr.append(el('th', '', formatDate(group.date), { scope: 'row' }), issues(group), el('td', '', actual ? formatPrice(actual) : 'Pending'), issues(group, true)); return tr;
+      const saved = issues(group); saved.setAttribute('data-label', 'Saved estimate');
+      const errors = issues(group, true); errors.setAttribute('data-label', 'Error');
+      tr.append(el('th', '', formatDate(group.date), { scope: 'row' }), saved, el('td', '', actual ? formatPrice(actual) : 'Pending', { 'data-label': 'Official outcome' }), errors); return tr;
     });
-    node.append(table(`Zone ${zone} · minimum price in CAD per litre · error = estimate minus official`, ['Effective date', 'Saved estimate', 'Official outcome', 'Error'], rows));
+    // PUBLIC_CONTRACT: prior predictions/actuals stay visible, so the ledger
+    // starts open; the summary still lets a reader fold it away.
+    const ledger = detail(`All saved estimates · ${groups.length} effective ${groups.length === 1 ? 'date' : 'dates'}`,
+      [table(`Zone ${zone} · minimum price in CAD per litre · error = estimate minus official`, ['Effective date', 'Saved estimate', 'Official outcome', 'Error'], rows)], 'gas-ledger-details');
+    ledger.open = true;
+    node.append(ledger);
     return node;
   }
   function sourcesSection() {

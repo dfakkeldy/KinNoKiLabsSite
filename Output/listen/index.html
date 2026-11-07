@@ -91,6 +91,7 @@
                instead of announcing every word change. -->
           <p id="captionWords" aria-hidden="true"></p>
           <p id="captionText" class="visually-hidden"></p>
+          <p id="cueHint" class="room-cue-hint" aria-hidden="true" hidden>Press play &mdash; each word lights up as it&rsquo;s read.</p>
         </div>
 
         <p id="status" class="room-status" role="status" aria-live="polite">Loading the book&hellip;</p>
@@ -127,14 +128,6 @@
 
     <p id="emptyState" class="room-empty" role="status" aria-live="polite" hidden></p>
 
-    <section class="room-cta bento-tint reveal" aria-label="About Echo">
-      <div>
-        <h2>Like listening this way?</h2>
-        <p>Echo does this with your whole audiobook library — word-perfect read-along, one-tap flashcards, and a study system built on the real science of memory.</p>
-      </div>
-      <a class="btn btn-gold" href="/echo-beta">Join the TestFlight beta</a>
-    </section>
-
     <section id="seriesShelves" class="room-library" aria-labelledby="seriesLibraryTitle" hidden>
       <h2 id="seriesLibraryTitle">Series</h2>
       <div id="seriesLibrary"></div>
@@ -144,6 +137,14 @@
       <h2 id="moreBooksTitle">More books</h2>
       <p class="room-library-sub">Choose another narrated book, or open any title as an EPUB or readable Markdown.</p>
       <ul id="library"></ul>
+    </section>
+
+    <section class="room-cta bento-tint reveal" aria-label="About Echo">
+      <div>
+        <h2>Like listening this way?</h2>
+        <p>Echo does this with your whole audiobook library — word-perfect read-along, one-tap flashcards, and a study system built on the real science of memory.</p>
+      </div>
+      <a class="btn btn-gold" href="/echo-beta">Join the TestFlight beta</a>
     </section>
 
     <p id="honesty" class="room-honesty"></p>

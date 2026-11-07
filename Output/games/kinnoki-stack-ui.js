@@ -100,10 +100,10 @@ function buildStackShell(root, difficulty, audioControls) {
     class: 'stack-preview', 'data-stack-preview': '', 'aria-label': 'Next cargo',
   });
   const dockDescription = element('p', {
-    'data-dock-description': '', role: 'status', text: '',
+    class: 'stack-dock-description', 'data-dock-description': '', role: 'status', text: '',
   });
   const difficultyExplanation = element('p', {
-    'data-difficulty-explanation': '', text: DIFFICULTY_COPY[difficulty],
+    class: 'game-mode-note', 'data-difficulty-explanation': '', text: DIFFICULTY_COPY[difficulty],
   });
   const keyboardHelp = element(
     'details',
@@ -192,25 +192,36 @@ function buildStackShell(root, difficulty, audioControls) {
     element(
       'div',
       { class: 'game-toolbar' },
-      element('a', { href: '/games', class: 'back-link', text: '← Games' }),
-      element('h1', { text: 'KinNoKi Stack' }),
+      element(
+        'div',
+        { class: 'game-title' },
+        element('a', { href: '/games', class: 'back-link', text: '← Games' }),
+        element('h1', { text: 'KinNoKi Stack' }),
+      ),
       element('label', {}, element('span', { text: 'Difficulty' }), difficultySelect),
     ),
     notice,
     eventRegion,
-    difficultyExplanation,
-    stats,
+    // Phone reading order: what to do, the next cargo, the dock and its
+    // controls, then the status tiles. Wide screens move the run panel
+    // beside the dock (see .stack-layout in styles.css).
     element(
       'div',
-      { class: 'game-preplay' },
-      start, continueGame, resume, restart, newRun,
+      { class: 'stack-layout' },
+      difficultyExplanation,
+      element(
+        'div',
+        { class: 'game-preplay' },
+        start, continueGame, resume, restart, newRun,
+      ),
+      element('section', { class: 'stack-next', 'aria-label': 'Next cargo' },
+        element('h2', { text: 'Next cargo' }), preview),
+      dock,
+      element('div', { class: 'stack-controls' }, Object.values(controls)),
+      dockDescription,
+      stats,
+      keyboardHelp,
     ),
-    element('section', { 'aria-label': 'Next cargo' },
-      element('h2', { text: 'Next cargo' }), preview),
-    keyboardHelp,
-    dock,
-    element('div', { class: 'stack-controls' }, Object.values(controls)),
-    dockDescription,
     audioControls.element,
   );
   root.replaceChildren(shell);

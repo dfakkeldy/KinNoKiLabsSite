@@ -33,11 +33,6 @@ export function renderClickCounterTool(root, deps = {}) {
     title: 'Click Counter',
     lede: 'Convert a target number into clicks on a 60-click scale.',
   });
-  const shell = root.querySelector('.tool-shell');
-  shell.replaceChildren(
-    element('a', { class: 'tool-back-link', href: '/tools', text: '← All tools', ownerDocument: doc }),
-    ...shell.children,
-  );
 
   const form = element('form', { class: 'tool-form click-counter', ownerDocument: doc });
   form.addEventListener('submit', (event) => event.preventDefault());
@@ -131,7 +126,7 @@ export function renderClickCounterTool(root, deps = {}) {
   });
 
   const copyButton = element('button', {
-    class: 'click-counter-copy', type: 'button', text: 'Copy result', ownerDocument: doc,
+    class: 'click-counter-copy tool-primary', type: 'button', text: 'Copy result', ownerDocument: doc,
   });
   copyButton.addEventListener('click', async () => {
     if (currentClicks === null) return;
@@ -147,7 +142,7 @@ export function renderClickCounterTool(root, deps = {}) {
   });
 
   const resetButton = element('button', {
-    type: 'button', text: 'Reset', ownerDocument: doc,
+    class: 'tool-quiet', type: 'button', text: 'Reset', ownerDocument: doc,
   });
   resetButton.addEventListener('click', () => {
     baseNumber = DEFAULT_BASE;
@@ -160,7 +155,7 @@ export function renderClickCounterTool(root, deps = {}) {
   showResult();
   form.append(
     element('fieldset', { class: 'click-counter-fieldset', ownerDocument: doc },
-      element('legend', { text: 'Base number', ownerDocument: doc }),
+      element('legend', { text: 'Base number (equals 60 clicks)', ownerDocument: doc }),
       presets),
     element('div', { class: 'tool-field click-counter-target', ownerDocument: doc },
       element('label', { for: 'click-counter-target', text: 'Target number', ownerDocument: doc }),
@@ -168,7 +163,6 @@ export function renderClickCounterTool(root, deps = {}) {
     result,
     element('div', { class: 'tool-actions click-counter-actions', ownerDocument: doc }, copyButton, resetButton),
     copyStatus,
-    element('p', { class: 'click-counter-local-note', text: 'Calculated on this device.', ownerDocument: doc }),
   );
   body.append(form);
 }

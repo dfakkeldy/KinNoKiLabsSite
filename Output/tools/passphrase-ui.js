@@ -111,7 +111,7 @@ export function renderPassphraseTool(root, deps = {}) {
     const value = result.phrase ?? result.value;
     const tier = strengthFor(result.entropyBits);
     const entropy = `~${formatNumber(result.entropyBits, 0)} bits — ${tier}`;
-    const copy = element('button', { type: 'button', text: 'Copy', ownerDocument: doc });
+    const copy = element('button', { type: 'button', class: 'passphrase-copy', text: 'Copy', ownerDocument: doc });
     copy.addEventListener('click', async () => {
       const copied = await copyText(value, deps.clipboard);
       if (resultToken !== currentResultToken) return;
@@ -143,10 +143,18 @@ export function renderPassphraseTool(root, deps = {}) {
     announce(text);
   };
 
-  const resultArea = () => element('div', { class: 'passphrase-result', ownerDocument: doc });
+  const resultArea = (kind) => element('div', {
+    class: 'passphrase-result', ownerDocument: doc,
+  }, element('p', {
+    class: 'passphrase-placeholder', text: `Your ${kind} will appear here.`, ownerDocument: doc,
+  }));
+
+  const labelledField = (id, label, control) => element('div', { class: 'tool-field', ownerDocument: doc },
+    element('label', { for: id, text: label, ownerDocument: doc }), control);
 
   const renderPassphraseForm = () => {
-    const form = element('form', { class: 'tool-form', ownerDocument: doc });
+    const form = element('form', { class: 'tool-form passphrase-form', ownerDocument: doc });
+    form.addEventListener('submit', (event) => event.preventDefault());
     const words = element('select', { id: 'passphrase-words', name: 'words', ownerDocument: doc },
       ...[3, 4, 5, 6, 7, 8].map((value) => option(doc, String(value), String(value))));
     words.value = String(values.words);
@@ -161,8 +169,8 @@ export function renderPassphraseTool(root, deps = {}) {
       values.separator = event.currentTarget.value;
       save();
     });
-    const results = resultArea();
-    const generate = element('button', { type: 'button', text: 'Generate', ownerDocument: doc });
+    const results = resultArea('passphrase');
+    const generate = element('button', { type: 'button', class: 'tool-primary', text: 'Generate', ownerDocument: doc });
     generate.addEventListener('click', () => {
       try {
         renderResult(results, generatePassphraseFn({
@@ -176,27 +184,27 @@ export function renderPassphraseTool(root, deps = {}) {
       }
     });
     form.append(
-      element('label', { for: 'passphrase-words', text: 'Words', ownerDocument: doc }),
-      words,
-      element('label', { for: 'passphrase-separator', text: 'Separator', ownerDocument: doc }),
-      separator,
-      checkbox(doc, {
-        name: 'capitalize', label: 'Capitalize words', checked: values.capitalize,
-        onChange: (event) => { values.capitalize = event.currentTarget.checked; save(); },
-      }),
-      checkbox(doc, {
-        name: 'includeNumber', label: 'Include a number', checked: values.includeNumber,
-        onChange: (event) => { values.includeNumber = event.currentTarget.checked; save(); },
-      }),
-      generate,
       results,
+      element('div', { class: 'tool-actions', ownerDocument: doc }, generate),
+      element('div', { class: 'passphrase-options', ownerDocument: doc },
+        labelledField('passphrase-words', 'Words', words),
+        labelledField('passphrase-separator', 'Separator', separator),
+        checkbox(doc, {
+          name: 'capitalize', label: 'Capitalize words', checked: values.capitalize,
+          onChange: (event) => { values.capitalize = event.currentTarget.checked; save(); },
+        }),
+        checkbox(doc, {
+          name: 'includeNumber', label: 'Include a number', checked: values.includeNumber,
+          onChange: (event) => { values.includeNumber = event.currentTarget.checked; save(); },
+        })),
       element('p', { class: 'tool-muted', text: 'Wordlist: EFF large wordlist (CC BY 3.0)', ownerDocument: doc }),
     );
     return form;
   };
 
   const renderStringForm = () => {
-    const form = element('form', { class: 'tool-form', ownerDocument: doc });
+    const form = element('form', { class: 'tool-form passphrase-form', ownerDocument: doc });
+    form.addEventListener('submit', (event) => event.preventDefault());
     const length = element('input', {
       id: 'passphrase-length', name: 'length', type: 'number', min: '1', max: '1024', inputmode: 'numeric', ownerDocument: doc,
     });
@@ -205,8 +213,8 @@ export function renderPassphraseTool(root, deps = {}) {
       values.length = Number(event.currentTarget.value);
       save();
     });
-    const results = resultArea();
-    const generate = element('button', { type: 'button', text: 'Generate', ownerDocument: doc });
+    const results = resultArea('random string');
+    const generate = element('button', { type: 'button', class: 'tool-primary', text: 'Generate', ownerDocument: doc });
     generate.addEventListener('click', () => {
       try {
         renderResult(results, generateStringFn({
@@ -221,26 +229,26 @@ export function renderPassphraseTool(root, deps = {}) {
       }
     });
     form.append(
-      element('label', { for: 'passphrase-length', text: 'Length', ownerDocument: doc }),
-      length,
-      checkbox(doc, {
-        name: 'lower', label: 'Lowercase letters', checked: values.lower,
-        onChange: (event) => { values.lower = event.currentTarget.checked; save(); },
-      }),
-      checkbox(doc, {
-        name: 'upper', label: 'Uppercase letters', checked: values.upper,
-        onChange: (event) => { values.upper = event.currentTarget.checked; save(); },
-      }),
-      checkbox(doc, {
-        name: 'digits', label: 'Digits', checked: values.digits,
-        onChange: (event) => { values.digits = event.currentTarget.checked; save(); },
-      }),
-      checkbox(doc, {
-        name: 'symbols', label: 'Symbols', checked: values.symbols,
-        onChange: (event) => { values.symbols = event.currentTarget.checked; save(); },
-      }),
-      generate,
       results,
+      element('div', { class: 'tool-actions', ownerDocument: doc }, generate),
+      element('div', { class: 'passphrase-options', ownerDocument: doc },
+        labelledField('passphrase-length', 'Length', length),
+        checkbox(doc, {
+          name: 'lower', label: 'Lowercase letters', checked: values.lower,
+          onChange: (event) => { values.lower = event.currentTarget.checked; save(); },
+        }),
+        checkbox(doc, {
+          name: 'upper', label: 'Uppercase letters', checked: values.upper,
+          onChange: (event) => { values.upper = event.currentTarget.checked; save(); },
+        }),
+        checkbox(doc, {
+          name: 'digits', label: 'Digits', checked: values.digits,
+          onChange: (event) => { values.digits = event.currentTarget.checked; save(); },
+        }),
+        checkbox(doc, {
+          name: 'symbols', label: 'Symbols', checked: values.symbols,
+          onChange: (event) => { values.symbols = event.currentTarget.checked; save(); },
+        })),
     );
     return form;
   };

@@ -39,7 +39,7 @@ export function renderComparison(root, points, { document = root.ownerDocument, 
     el('p', 'gas-comparison-caption', `Zone ${zone} minimum price · ${points.length} completed ${points.length === 1 ? 'date' : 'dates'} · ${issue === 'latest' ? 'Latest' : 'First'} saved prediction`));
 
   const limit = comparisonLimit(points);
-  const width = Math.max(240, points.length * 84);
+  const width = Math.max(240, points.length * 64);
   const frame = el('div', 'gas-comparison-frame');
   const axis = el('div', 'gas-comparison-axis'); axis.setAttribute('aria-hidden', 'true');
   axis.append(el('span', 'gas-comparison-unit', '¢/L'));

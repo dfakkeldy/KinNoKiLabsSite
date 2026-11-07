@@ -39,7 +39,8 @@ export function renderUnitTool(root, deps = {}) {
     title: 'Unit Converter',
     lede: 'Convert everyday units from length to data sizes.',
   });
-  const form = element('form', { class: 'tool-form', ownerDocument: doc });
+  const form = element('form', { class: 'tool-form unit-converter', ownerDocument: doc });
+  form.addEventListener('submit', (event) => event.preventDefault());
   const categorySelect = element('select', { id: 'unit-category', name: 'category', ownerDocument: doc },
     ...CATEGORIES.map(({ id, label }) => {
       const option = element('option', { value: id, text: label, ownerDocument: doc });
@@ -69,7 +70,7 @@ export function renderUnitTool(root, deps = {}) {
     const toValue = parseDecimal(toInput.value);
     if (fromValue === null || toValue === null) return;
     const text = `${formatNumber(fromValue, 6)} ${fromId} = ${formatNumber(toValue, 6)} ${toId}`;
-    result.setAttribute('class', 'tool-result-strong');
+    result.setAttribute('class', 'tool-result-strong unit-summary');
     result.replaceChildren(text);
     if (shouldAnnounce) announce(text);
   };
@@ -134,10 +135,14 @@ export function renderUnitTool(root, deps = {}) {
   form.append(
     element('div', { class: 'tool-field', ownerDocument: doc },
       element('label', { for: 'unit-category', text: 'Category', ownerDocument: doc }), categorySelect),
-    element('div', { class: 'tool-field', ownerDocument: doc },
-      element('label', { for: 'unit-from-value', text: 'From', ownerDocument: doc }), fromInput, fromSelect),
-    element('div', { class: 'tool-field', ownerDocument: doc },
-      element('label', { for: 'unit-to-value', text: 'To', ownerDocument: doc }), toInput, toSelect),
+    element('div', { class: 'unit-pair', ownerDocument: doc },
+      element('div', { class: 'tool-field', ownerDocument: doc },
+        element('label', { for: 'unit-from-value', text: 'From', ownerDocument: doc }),
+        element('div', { class: 'tool-inline unit-row', ownerDocument: doc }, fromInput, fromSelect)),
+      element('span', { class: 'unit-equals', 'aria-hidden': 'true', text: '=', ownerDocument: doc }),
+      element('div', { class: 'tool-field', ownerDocument: doc },
+        element('label', { for: 'unit-to-value', text: 'To', ownerDocument: doc }),
+        element('div', { class: 'tool-inline unit-row', ownerDocument: doc }, toInput, toSelect))),
     result,
   );
   body.append(form);

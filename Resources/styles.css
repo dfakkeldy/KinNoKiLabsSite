@@ -4386,8 +4386,6 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .shakespeare-epigraph figcaption { margin-top: 12px; color: var(--shakespeare-muted); font-size: 15px; line-height: 22px; }
 .shakespeare-release-card { max-width: 640px; padding: 24px; background: var(--surface); border: 1px solid var(--separator); border-radius: 20px; }
 .shakespeare-release-card h2 { margin-bottom: 6px; }
-.shakespeare-release-list { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 0; padding: 0; list-style: none; }
-.shakespeare-release-list li { padding: 6px 14px; border: 1px solid var(--separator); border-radius: 999px; color: var(--shakespeare-secondary); font-size: 15px; line-height: 22px; }
 @media (max-width: 899px) {
   /* Phone/tablet hero: the art follows the title and byline, before the
      intro and the section index, so it lands in the first screen. */
