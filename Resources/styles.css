@@ -2404,7 +2404,7 @@ fieldset.game-audio-controls legend { float: left; width: 100%; padding: 0; colo
 .games-app details summary { min-height: 44px; cursor: pointer; color: var(--game-text-primary); font-weight: 600; }
 .games-app details p { margin-top: 8px; }
 
-.sudoku-board { display: grid; grid-template-columns: repeat(9, 1fr); min-width: calc(9 * 44px); aspect-ratio: 1; }
+.sudoku-board { display: grid; grid-template-columns: repeat(9, 1fr); grid-template-rows: repeat(9, 1fr); min-width: calc(9 * 44px); aspect-ratio: 1; }
 .sudoku-row { display: contents; }
 .sudoku-gridcell { display: flex; min-width: 44px; min-height: 44px; }
 .sudoku-cell {
