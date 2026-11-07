@@ -10,11 +10,17 @@ status: Live browser map
 
 NS Marks The Spot is a Nova Scotia map for property research and local history. Search a parcel by PID, civic address, or postal community, read dated municipal tax-sale notices against live parcel geometry, switch on provincial reference layers, and slide Hugh Fletcher's 1880s geological sheets over today's landscape.
 
-<p class="app-actions"><a class="btn btn-gold btn-md" href="/apps/nsmarksthespot/map/">Open the map</a></p>
+<p class="app-actions"><a class="btn btn-gold btn-md" href="/apps/nsmarksthespot/map/">Open Online Map</a></p>
+
+<figure class="app-shot"><img src="/images/gis/ns-marks-product-2026.webp" width="1440" height="900" decoding="async" alt="The NS Marks The Spot browser map over Cape Breton, with its PID and address search and map layers panel, and the licence footer showing OpenStreetMap and Nova Scotia open data credits." /><figcaption>The browser map over Cape Breton: PID and address search, the map layers panel, and source and licence credits.</figcaption></figure>
+
+## Every slider pull is a little time travel
+
+Fade between the old survey and the current map to trace where a road bent, where a shoreline shifted, or where a name survived. The old sheets mark what today's maps forgot — gold mines, foundries, schools — sitting close to where they used to be under the modern roads and woods.
 
 ## Where it stands
 
-The current product focus is the **browser map**, live at [/apps/nsmarksthespot/map/](/apps/nsmarksthespot/map/). It runs on any phone, tablet, or desktop with nothing to install. Optional live location draws the position this device reports in the browser and keeps that reading on-device. The native iPhone app is a separate offline and field companion in internal TestFlight builds; it is not on the App Store.
+The current product focus is the **browser map**. The live map runs on any phone, tablet, or desktop with nothing to install. Optional live location draws the position this device reports in the browser and keeps that reading on-device. The native iPhone app is a separate offline and field companion in internal TestFlight builds; it is not on the App Store.
 
 ## What the map does
 
@@ -35,19 +41,15 @@ The proposed turbine map has a focused page at [/rhodena](/rhodena). It is the r
 
 ## Fishing
 
-The fishing map has a focused page at [/fishmap](/fishmap). It is the research map with a fishing focus, titled **Fishing spots — Cape Breton and the Strait of Canso**. It is separate from the static [Strait and Bras d'Or Fishing Map](/fishing/) at /fishing/, and its footer links there.
+The fishing map has a focused page at [/fishmap](/fishmap). It is the research map with a fishing focus, titled **Fishing spots — Cape Breton and the Strait of Canso**. It is separate from the static [Strait and Bras d'Or Fishing Map](/fishing/), and its footer links there.
 
 - **Spots:** Numbered pins and spot cards for 27 hand-picked shore, wharf and lake spots, each with its sources and directions in Google Maps or Apple Maps.
 - **When and what:** Month and species filters and a species calendar. A dated summary of the rules to check hides each rule once its date has passed; the page never says a season is open now. Check the current Anglers' Handbook and DFO notices before you go.
 - **Open-data layers:** Province stocked-waters records and DFO small craft harbours, alongside the curated spots. A harbour point is not permission to fish from the wharf.
-
-## Every slider pull is a little time travel
-
-Fade between the old survey and the current map to trace where a road bent, where a shoreline shifted, or where a name survived. The old sheets mark what today's maps forgot — gold mines, foundries, schools — sitting close to where they used to be under the modern roads and woods.
 
 ## Built in the open
 
 The code is public on GitHub under the MIT licence, structured around a map-engine boundary so the interface can stay steady while the renderer evolves. Map imagery keeps its own licences and attribution, layer by layer.
 
 ---
-[Open Online Map](/apps/nsmarksthespot/map/) | [Rhodena Wind](/rhodena) | [Fishing](/fishmap) | [Nova Scotia Tax Sale Hub](/taxsale/) | [Project Site](https://dfakkeldy.github.io/ns-marks-the-spot/) | [View Source Code on GitHub](https://github.com/dfakkeldy/ns-marks-the-spot) | [Get Help & Support](/nsmarksthespot-help)
+[Open Online Map](/apps/nsmarksthespot/map/) | [Rhodena Wind](/rhodena) | [Fishing](/fishmap) | [Project site](https://dfakkeldy.github.io/ns-marks-the-spot/) | [Source on GitHub](https://github.com/dfakkeldy/ns-marks-the-spot) | [Get help](/nsmarksthespot-help)

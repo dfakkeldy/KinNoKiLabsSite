@@ -91,29 +91,36 @@
   grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
   gap: 10px;
 }
-/* Cover in column one spanning the text rows beside it. Rows are sized by
-   content rather than a fixed template so a card without an edition note
-   or a status line closes up instead of leaving a gap. */
+/* Cover in column one, the text column beside it, and the action block
+   across the full card underneath. The action row sits in a flexible last
+   row, so in a row of cards of different lengths every action row lands
+   on the same bottom edge instead of trailing off at a different height. */
 .fiction-shelf li {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  grid-auto-rows: min-content;
-  align-content: start;
-  row-gap: 3px;
+  grid-template-rows: auto 1fr;
+  align-items: start;
   column-gap: 12px;
   border: 1px dashed color-mix(in srgb, var(--gold-500) 40%, var(--separator));
   border-radius: 12px;
   padding: 12px 14px;
   font-size: 13.5px;
 }
-/* The streaming title is the one solid-bordered, tinted card on the shelf. */
+/* Three tiers of card. Coming soon: a dashed outline on the page. Streaming:
+   a solid, quiet gold hairline on the card surface (lighter than the page
+   in both themes, never a grey wash). Now playing: the full accent border
+   plus an inner ring, the only card on the shelf drawn that way. */
 .fiction-shelf li.is-playable {
+  border: 1px solid color-mix(in srgb, var(--gold-500) 35%, var(--separator));
+  background: var(--surface);
+}
+.fiction-shelf li[aria-current="page"] {
   border: 1px solid var(--room-text-accent);
-  background: var(--fill-2);
+  box-shadow: inset 0 0 0 1px var(--room-text-accent);
+  background: color-mix(in srgb, var(--gold-500) 6%, var(--surface));
 }
 .fiction-shelf li .fic-cover {
   grid-column: 1;
-  grid-row: 1 / span 5;
   width: 76px;
   height: auto;
   display: block;
@@ -121,18 +128,33 @@
   border-radius: 8px;
   background: var(--fill-2);
 }
-.fiction-shelf li .fic-genre { color: var(--room-text-accent); font-family: var(--font-mono); font-size: 11px; }
+.fiction-shelf li .fic-body {
+  grid-column: 2;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.fiction-shelf li .fic-genre { color: var(--room-text-accent); font-family: var(--font-mono); font-size: 11px; text-wrap: balance; }
 .fiction-shelf li .fic-title { color: var(--text); font-weight: 500; min-width: 0; }
 .fiction-shelf li .fic-hook { color: var(--room-text-secondary); font-size: 12.5px; line-height: 1.45; }
 .fiction-shelf li .fic-meta { color: var(--room-text-tertiary); font-size: 12px; }
 .fiction-shelf li .fic-actions {
+  grid-column: 1 / -1;
+  align-self: end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding-top: 10px;
+}
+.fiction-shelf li .fic-state,
+.fiction-shelf li .fic-formats {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px 10px;
-  margin-top: 5px;
-  align-self: end;
-  justify-self: start;
+  gap: 4px 12px;
 }
 .fiction-shelf li a {
   color: var(--room-text-secondary);
@@ -144,24 +166,83 @@
 .fiction-shelf li a:hover { color: var(--room-text-accent); }
 .fiction-shelf li a.fic-listen {
   color: var(--room-text-accent);
+  font-size: 13.5px;
   font-weight: 650;
   text-decoration-thickness: 1.5px;
 }
-/* The pill says only "Coming soon"; the status line beside it carries the
-   actual news, so the pill takes the quieter token and leaves the accent
-   to the status. --gold-text would also land at 4.1:1 on light at this
-   size, under AA — the room tokens are contrast-audited, so use those. */
+/* State tags are labels, not controls: no border, no pill, a leading dot.
+   "Coming soon" and its production note read as one line, the note in
+   the audited accent token. */
+.fiction-shelf li .fic-now,
 .fiction-shelf li .fic-badge {
-  font-size: 10.5px;
-  font-weight: 600;
-  color: var(--room-text-secondary);
-  border: 1px solid color-mix(in srgb, var(--gold-500) 45%, transparent);
-  border-radius: var(--radius-pill);
-  padding: 2px 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   white-space: nowrap;
+  cursor: default;
 }
-.fiction-shelf li .fic-status { color: var(--room-text-accent); font-family: var(--font-mono); font-size: 11.5px; }
+.fiction-shelf li .fic-now { color: var(--room-text-accent); }
+.fiction-shelf li .fic-badge { color: var(--room-text-secondary); }
+.fiction-shelf li .fic-now::before,
+.fiction-shelf li .fic-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+/* "Coming soon · Audiobook in production" reads as one tag: the production
+   note follows the badge on the same line, in the same small register,
+   joined by a middle dot rather than restarting as a second label. */
+.fiction-shelf li .fic-state:has(.fic-badge) { display: block; line-height: 1.5; }
+.fiction-shelf li .fic-state:has(.fic-badge) .fic-badge { display: inline-flex; vertical-align: baseline; }
+.fiction-shelf li .fic-status {
+  color: var(--room-text-secondary);
+  font-size: 11.5px;
+}
+.fiction-shelf li .fic-status::before { content: " · "; white-space: pre; }
 
+/* On a desktop shelf the stage title is a full-width strip at the head of
+   the grid: a slim marker (cover, title, "Now playing", formats on one
+   line) rather than a tall card with an empty middle that repeats the
+   hero beside it. */
+@media (min-width: 760px) {
+  .fiction-shelf li[aria-current="page"] {
+    grid-column: 1 / -1;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-rows: auto;
+    align-items: center;
+    column-gap: 16px;
+  }
+  .fiction-shelf li[aria-current="page"] .fic-cover { width: 52px; }
+  .fiction-shelf li[aria-current="page"] .fic-actions {
+    grid-column: 3;
+    grid-row: 1;
+    align-self: center;
+    align-items: flex-end;
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 759px) {
+  .fiction-shelf li .fic-formats a,
+  .fiction-shelf li a.fic-listen {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 14px;
+  }
+  .fiction-shelf li .fic-formats { gap: 0 16px; }
+  /* One wrapping row on a phone: "Listen now" and the formats share a
+     line instead of stacking three 44px rows under every card. */
+  .fiction-shelf li .fic-actions { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 0 16px; padding-top: 4px; }
+  .fiction-shelf li .fic-state:has(.fic-badge) { flex-basis: 100%; min-height: 32px; }
+}
 @media (max-width: 420px) {
   .fiction-shelf ul { grid-template-columns: 1fr; }
 }

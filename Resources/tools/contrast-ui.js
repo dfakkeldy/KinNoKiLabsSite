@@ -20,6 +20,16 @@ const VERDICT_ROWS = Object.freeze([
   ['uiComponent', 'UI components'],
 ]);
 
+const HIGHEST_TARGET = TARGETS.at(-1);
+
+// The headline's plain-word grade, from the strictest check the pair meets.
+const gradeFor = (checks) => {
+  if (checks.aaaNormal) return 'Meets AAA';
+  if (checks.aaNormal) return 'Meets AA';
+  if (checks.aaLarge) return 'AA for large text and UI only';
+  return 'Fails every check';
+};
+
 const normalizedHex = (value) => {
   const rgb = hexToRgb(value);
   return rgb ? rgbToHex(rgb) : null;
@@ -36,7 +46,7 @@ const colourField = (doc, { id, name, label, value, onTextInput, onColourInput }
     id: `${id}-text`, name, type: 'text', inputmode: 'text', ownerDocument: doc,
   });
   const colour = element('input', {
-    id: `${id}-colour`, name: `${name}Color`, type: 'color', 'aria-label': `${label} picker`, ownerDocument: doc,
+    id: `${id}-colour`, name: `${name}Color`, type: 'color', class: 'contrast-picker', 'aria-label': `${label} picker`, ownerDocument: doc,
   });
   text.value = value;
   colour.value = value;
@@ -46,7 +56,8 @@ const colourField = (doc, { id, name, label, value, onTextInput, onColourInput }
     text,
     colour,
     field: element('div', { class: 'tool-field', ownerDocument: doc },
-      element('label', { for: `${id}-text`, text: label, ownerDocument: doc }), text, colour),
+      element('label', { for: `${id}-text`, text: label, ownerDocument: doc }),
+      element('div', { class: 'contrast-input-row', ownerDocument: doc }, colour, text)),
   };
 };
 
@@ -134,9 +145,22 @@ export function renderContrastTool(root, deps = {}) {
     const checks = verdicts(ratio);
     const ratioText = formatNumber(ratio, 2);
     const headline = `Contrast ${ratioText} : 1`;
-    const verdictList = element('ul', { class: 'tool-verdicts', ownerDocument: doc }, ...VERDICT_ROWS.map(([key, label]) => (
-      element('li', { class: 'tool-verdict', text: `${label} — ${checks[key] ? 'pass' : 'fail'}`, ownerDocument: doc })
-    )));
+    // A pair that passes everything gets one line instead of five identical ticks.
+    const allPass = VERDICT_ROWS.every(([key]) => checks[key]);
+    const verdictList = allPass
+      ? element('ul', { class: 'tool-verdicts is-summary', ownerDocument: doc },
+        element('li', {
+          class: 'tool-verdict is-pass',
+          text: 'Passes all five WCAG checks: AA and AAA, normal and large text, and UI components',
+          ownerDocument: doc,
+        }))
+      : element('ul', { class: 'tool-verdicts', ownerDocument: doc }, ...VERDICT_ROWS.map(([key, label]) => (
+        element('li', {
+          class: `tool-verdict ${checks[key] ? 'is-pass' : 'is-fail'}`,
+          text: `${label} — ${checks[key] ? 'pass' : 'fail'}`,
+          ownerDocument: doc,
+        })
+      )));
     const preview = element('div', { class: 'contrast-preview', ownerDocument: doc });
     const forward = element('p', {
       class: 'contrast-swatch', text: 'The quick brown fox jumps over the lazy dog.', ownerDocument: doc,
@@ -148,7 +172,12 @@ export function renderContrastTool(root, deps = {}) {
     });
     reverse.style.setProperty('background-color', foregroundHex);
     reverse.style.setProperty('color', backgroundHex);
-    preview.append(forward, reverse);
+    preview.append(
+      element('div', { class: 'contrast-sample', ownerDocument: doc },
+        element('p', { class: 'contrast-sample-label', text: 'Foreground on background', ownerDocument: doc }), forward),
+      element('div', { class: 'contrast-sample', ownerDocument: doc },
+        element('p', { class: 'contrast-sample-label', text: 'Swapped', ownerDocument: doc }), reverse),
+    );
 
     const suggestion = element('div', { class: 'contrast-suggestion', ownerDocument: doc });
     const targetSelect = element('select', {
@@ -160,11 +189,17 @@ export function renderContrastTool(root, deps = {}) {
       renderResults();
     });
     suggestion.append(
-      element('label', { for: 'contrast-suggestion-target', text: 'Suggestion target', ownerDocument: doc }),
+      element('label', { for: 'contrast-suggestion-target', text: 'Suggest a fix to reach', ownerDocument: doc }),
       targetSelect,
     );
-    if (ratio < target) {
-      const button = element('button', { type: 'button', text: 'Suggest a fix', ownerDocument: doc });
+    if (ratio >= target) {
+      suggestion.append(element('p', {
+        class: 'tool-hint contrast-suggestion-note',
+        text: `This pair already meets ${formatNumber(target, 1)} : 1. Pick a higher target to get a suggestion.`,
+        ownerDocument: doc,
+      }));
+    } else {
+      const button = element('button', { type: 'button', class: 'tool-primary', text: 'Suggest a fix', ownerDocument: doc });
       button.addEventListener('click', () => {
         const next = suggestPassing(foregroundHex, backgroundHex, target);
         if (!next) {
@@ -184,11 +219,14 @@ export function renderContrastTool(root, deps = {}) {
       suggestion.append(button);
     }
 
+    // Nothing to suggest once the pair meets the highest target.
     results.replaceChildren(
-      element('p', { class: 'tool-result-strong', text: headline, ownerDocument: doc }),
+      element('div', { class: 'contrast-headline', ownerDocument: doc },
+        element('p', { class: 'tool-result-strong contrast-ratio', text: headline, ownerDocument: doc }),
+        element('p', { class: 'contrast-grade', text: gradeFor(checks), ownerDocument: doc })),
       verdictList,
       preview,
-      suggestion,
+      ...(ratio < HIGHEST_TARGET ? [suggestion] : []),
     );
     announce(`Contrast ${ratioText} to 1 — AA normal ${checks.aaNormal ? 'pass' : 'fail'}`);
   };

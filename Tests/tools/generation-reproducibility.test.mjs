@@ -207,7 +207,7 @@ test('generated feed dates come from feed-source commits without unrelated feed 
 
   assert.equal(
     createHash('sha256').update(canonicalFeedContent(feed)).digest('hex'),
-    '855fd1e60b4d18fc21b0e00836cb1d7e731e632192e803ece3258d6ad3e327d7',
+    '188619401dcc3467d13ba982b9ae34457afd20dce137a350db5338a57b2e72ed',
     'deterministic generation must not churn unrelated feed content',
   );
 });
@@ -218,6 +218,7 @@ test('generated sitemap last-modified dates come from each content file commit',
   const sectionRoutes = [
     { url: 'https://kinnokilabs.com/apps', source: 'Content/apps' },
     { url: 'https://kinnokilabs.com/posts', source: 'Content/posts' },
+    { url: 'https://kinnokilabs.com/tenders', source: 'Content/tenders' },
   ];
   for (const { url, source } of sectionRoutes) {
     const expected = halifaxCalendarDate(latestCommitEpoch([source]));
@@ -226,7 +227,7 @@ test('generated sitemap last-modified dates come from each content file commit',
 
   for (const file of contentFiles()) {
     const route = routeForContent(file);
-    if (route === null || route === 'apps' || route === 'posts') continue;
+    if (route === null || route === 'apps' || route === 'posts' || route === 'tenders') continue;
     const url = `https://kinnokilabs.com/${route}`;
     if (unlistedRoutes.has(route)) {
       assert.equal(entries.has(url), false, `${url} is unlisted and must stay out of the sitemap`);

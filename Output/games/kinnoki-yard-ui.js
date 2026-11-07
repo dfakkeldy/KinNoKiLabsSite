@@ -14,7 +14,7 @@ import { createGameAudio } from './game-audio.js';
 import {
   cargoThumb, createAudioControls, createEventAnnouncer, createGameLifecycle,
   defaultSeedFactory, element, formatElapsed, makeGameTerminal,
-  prefersReducedMotion, renderGameError,
+  prefersReducedMotion, renderGameError, syncControlsHint,
 } from './controller-common.js';
 import { celebrate } from './celebration.js';
 import { safeLocalStorage } from './hub-ui.js';
@@ -152,9 +152,10 @@ function buildYardShell(root, model, audioControls) {
   const status = element('span', { 'data-yard-status': '', text: 'Ready' });
   const summary = element('span', { 'data-yard-summary': '', text: 'Preparing yard' });
   const rotation = element('span', {
-    'data-yard-rotation-state': '', text: 'Rotation 0°',
+    'data-yard-rotation-state': '', text: 'None selected',
   });
   const difficultyExplanation = element('p', {
+    class: 'game-mode-note',
     'data-difficulty-explanation': '',
     text: DIFFICULTY_COPY[mode][difficulty],
   });
@@ -178,6 +179,9 @@ function buildYardShell(root, model, audioControls) {
     hint: mode === 'contracts' ? control('Hint', 'data-yard-hint') : null,
     pause: control('Pause', 'data-pause-game'),
   };
+  const controlsHint = element('p', {
+    class: 'game-controls-hint', 'data-controls-hint': '', text: '',
+  });
   const start = element('button', {
     type: 'button', 'data-start-game': '', text: 'Start',
   });
@@ -207,7 +211,7 @@ function buildYardShell(root, model, audioControls) {
     stat('Local record', record),
     stat('Record status', assisted),
     stat(mode === 'contracts' ? 'Contract' : 'Cargo Manifests', summary),
-    stat('Rotation', rotation));
+    stat('Selected piece', rotation));
   const help = element('details', { 'data-yard-keyboard-help': '' },
     element('summary', { text: 'Keyboard controls' }),
     element('p', {
@@ -217,24 +221,30 @@ function buildYardShell(root, model, audioControls) {
 
   const shell = element('section', { class: 'yard-game' },
     element('div', { class: 'game-toolbar' },
-      element('a', { href: '/games', class: 'back-link', text: '← Games' }),
-      element('h1', { text: 'KinNoKi Yard' }),
+      element('div', { class: 'game-title' },
+        element('a', { href: '/games', class: 'back-link', text: '← Games' }),
+        element('h1', { text: 'KinNoKi Yard' })),
       element('label', {}, element('span', { text: 'Mode' }), selectors.modeSelect),
       element('label', {}, element('span', { text: 'Difficulty' }),
         selectors.difficultySelect)),
     notice,
     eventRegion,
-    difficultyExplanation,
-    stats,
-    element('div', { class: 'game-preplay' },
-      start, continueGame, resume, restart, newGame),
-    element('section', { class: 'yard-tray-panel', 'aria-label': 'Cargo tray' },
-      element('h2', { text: 'Cargo tray' }), tray),
-    help,
-    element('div', { class: 'yard-board-column' },
-      board.scroll, board.pan),
-    element('div', { class: 'yard-controls' },
-      Object.values(controls).filter(Boolean)),
+    // Phone reading order: what to do, the tray, the yard and its controls,
+    // then the status tiles. Wide screens move the run panel beside the yard
+    // (see .yard-layout in styles.css).
+    element('div', { class: 'yard-layout' },
+      difficultyExplanation,
+      element('div', { class: 'game-preplay' },
+        start, continueGame, resume, restart, newGame),
+      element('section', { class: 'yard-tray-panel', 'aria-label': 'Cargo tray' },
+        element('h2', { text: 'Cargo tray' }), tray),
+      element('div', { class: 'yard-board-column' },
+        board.scroll, board.pan,
+        element('div', { class: 'yard-controls' },
+          Object.values(controls).filter(Boolean)),
+        controlsHint),
+      stats,
+      help),
     audioControls.element);
   root.replaceChildren(shell);
   return {
@@ -242,7 +252,7 @@ function buildYardShell(root, model, audioControls) {
     ...selectors,
     ...board,
     timer, moves, score, record, assisted, status, summary, rotation,
-    difficultyExplanation, notice, eventRegion, tray, controls,
+    difficultyExplanation, notice, eventRegion, tray, controls, controlsHint,
     start, continueGame, resume, restart, newGame,
   };
 }
@@ -449,8 +459,13 @@ function paintYard(view, state, {
   const selected = selectedPiece(state);
   const selectedRotation = mode === 'contracts'
     ? state.selectedRotation : selected?.rotation ?? 0;
-  view.rotation.textContent = 'Rotation ' + ((selectedRotation % 4) * 90)
-    + '° · ' + (selected?.allowedRotations?.length ?? 0) + ' allowed';
+  // About the selected tray piece, not the Contract: a square has one
+  // orientation even on difficulties that allow every rotation.
+  const orientations = selected?.allowedRotations?.length ?? 0;
+  view.rotation.textContent = selected
+    ? 'Rotation ' + ((selectedRotation % 4) * 90) + '° · ' + orientations
+      + (orientations === 1 ? ' orientation' : ' orientations')
+    : 'None selected';
 
   const hintPlacement = state.hint?.status === 'solved' ? state.hint.placement : null;
   const hintKeys = contractHintKeys(state);
@@ -513,6 +528,7 @@ function paintYard(view, state, {
   view.continueGame.textContent = 'Continue ' + modeLabel(mode)
     + ' · ' + titleCase(difficulty);
   view.newGame.textContent = mode === 'contracts' ? 'New Puzzle' : 'New Yard';
+  syncControlsHint(view, { status: state.status, entryKind });
 }
 class YardPersistence {
   constructor({ storage, store, wallNow }) {
@@ -876,6 +892,19 @@ YardController.prototype.installPassiveHandlers = function installPassiveHandler
   this.listenPassive(this.view.panRight, 'click', () => {
     this.view.scroll.scrollLeft += 176;
   });
+  // Pan buttons only show when the yard is wider than its column.
+  const syncPanVisibility = () => {
+    const { scroll } = this.view;
+    scroll.parentNode?.classList?.toggle(
+      'is-fitting', scroll.scrollWidth <= scroll.clientWidth,
+    );
+  };
+  if (typeof globalThis.ResizeObserver === 'function') {
+    const observer = new globalThis.ResizeObserver(syncPanVisibility);
+    observer.observe(this.view.scroll);
+    this.passiveCleanups.add(() => observer.disconnect());
+  }
+  syncPanVisibility();
   // Delegated one-shot cleanup (mirrors kinnoki-stack-ui.js): the invalid-flash
   // cell class and the endless dispatch flash both self-clear on the very next
   // full repaint anyway, but this gives them a timely fade instead of waiting

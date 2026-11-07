@@ -17,11 +17,16 @@
 .gas-feed-status { padding: 16px 20px; border: 1px solid var(--separator); border-left: 3px solid var(--gold-text); border-radius: 0 12px 12px 0; color: var(--text-muted); font-size: 14px; line-height: 1.65; }
 .gas-feed-status[data-state="fresh"] { border-left-color: var(--gold-hairline); }
 .gas-content { display: grid; gap: clamp(40px, 6vw, 64px); min-width: 0; }
-.gas-price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.gas-price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
 .gas-card { min-width: 0; padding: clamp(22px, 3vw, 32px); background: var(--surface); border: 1px solid var(--separator); border-radius: var(--radius-card); box-shadow: var(--shadow-card); }
 .gas-card h2 { font-size: clamp(20px, 2.4vw, 26px); }
 .gas-card .eyebrow { margin-bottom: 12px; }
 .gas-card-estimate { border-color: var(--gold-hairline); }
+/* Withheld: the estimate card steps back to a dashed, unshadowed outline,
+   so its shorter height reads as a deliberately quiet state beside the
+   official price, not a missing block. */
+.gas-price-grid.is-withheld { grid-template-columns: 1.4fr 1fr; }
+.gas-price-grid.is-withheld .gas-card-estimate { border: 1px dashed var(--gold-hairline); background: transparent; box-shadow: none; }
 .gas-card-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 22px; }
 .gas-card-top h2 { font-size: 19px; }
 .gas-badge { display: inline-flex; padding: 5px 10px; border: 1px solid var(--gold-hairline); border-radius: var(--radius-pill); font-size: 12px; font-weight: 500; color: var(--gold-text); }
@@ -29,7 +34,11 @@
 .gas-price-unit { margin-top: 7px; font-size: 13px; color: var(--text-muted); }
 .gas-price-maximum { margin-top: 20px; font-size: 17px; font-variant-numeric: tabular-nums; }
 .gas-card-note { margin-top: 14px; color: var(--text-muted); font-size: 14px; line-height: 1.65; }
-.gas-change { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--separator); font-size: 16px; color: var(--gold-text); }
+.gas-change { display: flex; align-items: center; gap: 10px; margin-top: 14px; font-size: 16px; font-weight: 600; color: var(--gold-text); font-variant-numeric: tabular-nums; }
+.gas-change::before { content: "→" / ""; display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--gold-hairline); font-size: 15px; line-height: 1; }
+.gas-change[data-direction="down"]::before { content: "↓" / ""; }
+.gas-change[data-direction="up"]::before { content: "↑" / ""; }
+.gas-card-estimate .gas-price-maximum { padding-top: 18px; border-top: 1px solid var(--separator); }
 .gas-coverage { margin-top: 12px; font-size: 14px; }
 .gas-empty { margin-top: 18px; font-size: 24px; font-weight: 500; }
 .gas-notice { padding: 20px; border: 1px solid var(--gold-hairline); border-radius: 12px; line-height: 1.65; }
@@ -50,7 +59,16 @@
 .gas-stat h3 { font-size: 14px; font-weight: 500; color: var(--text-muted); }
 .gas-stat-value { margin-top: 16px; font-size: clamp(26px, 3vw, 36px); font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -.025em; }
 .gas-stat p:last-child { margin-top: 10px; color: var(--text-muted); font-size: 13px; }
-.gas-table-wrap { max-width: 100%; overflow-x: auto; border: 1px solid var(--separator); border-radius: 12px; }
+/* Scroll shadows: an edge fades in only on the side that has more table,
+   so a clipped column always shows that it can be scrolled to. */
+.gas-table-wrap {
+  max-width: 100%; overflow-x: auto; border: 1px solid var(--separator); border-radius: 12px;
+  background:
+    linear-gradient(to right, var(--wrap-bg, var(--bg)) 40%, transparent) left center / 40px 100% no-repeat local,
+    linear-gradient(to left, var(--wrap-bg, var(--bg)) 40%, transparent) right center / 40px 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, rgba(0, 0, 0, .45), transparent) left center / 14px 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, rgba(0, 0, 0, .45), transparent) right center / 14px 100% no-repeat scroll;
+}
 .gas-table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; font-variant-numeric: tabular-nums; }
 .gas-table caption { padding: 14px 16px; text-align: left; font-size: 13px; color: var(--text-muted); background: var(--surface); }
 .gas-table th, .gas-table td { padding: 14px 16px; border-top: 1px solid var(--separator); vertical-align: top; }
@@ -67,9 +85,14 @@
 .gas-observations { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 24px; padding: 0; margin: 16px 0 22px; font-size: 13px; color: var(--text-muted); }
 .gas-observations li { font-variant-numeric: tabular-nums; }
 .gas-watch .gas-table-wrap { margin-top: 24px; }
+/* The scroll-shadow covers must match whatever the table sits on, or they
+   paint dark smears on both edges of a table that does not overflow. */
+.gas-watch .gas-table-wrap, .gas-card .gas-table-wrap { --wrap-bg: var(--surface); }
 .gas-ledger-summary { margin-bottom: 20px; font-size: 15px; color: var(--text-muted); }
 .gas-ledger { scroll-margin-top: 88px; }
 .gas-ledger .gas-table { min-width: 630px; }
+.gas-ledger-details { margin-top: 28px; }
+.gas-ledger-details summary { padding: 12px 0; }
 .gas-comparison { padding: clamp(18px, 3vw, 28px); margin: 0 0 24px; border: 1px solid var(--separator); border-radius: 16px; background: var(--surface); }
 .gas-comparison-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; }
 .gas-comparison-controls label { font-size: 14px; font-weight: 500; }
@@ -87,14 +110,21 @@
 .gas-comparison-tick-2 { top: 50%; color: var(--text); font-weight: 600; }
 .gas-comparison-tick-3 { top: 75%; }
 .gas-comparison-tick-4 { top: 100%; }
-.gas-comparison-scroll { min-width: 0; overflow-x: auto; padding-bottom: 6px; }
+.gas-comparison-scroll { min-width: 0; overflow-x: auto; padding-bottom: 6px;
+  background:
+    linear-gradient(to left, var(--surface) 40%, transparent) right center / 40px 100% no-repeat local,
+    radial-gradient(farthest-side at 100% 50%, rgba(0, 0, 0, .4), transparent) right center / 14px 100% no-repeat scroll; }
 .gas-comparison-canvas { width: max-content; min-width: 100%; }
 .gas-comparison-svg { display: block; width: 100%; height: 200px; overflow: hidden; }
 .gas-comparison-grid { stroke: var(--separator); stroke-width: 1; }
 .gas-comparison-zero { stroke: var(--text-muted); stroke-width: 2; }
 .gas-comparison-bar, .gas-comparison-exact { fill: var(--gold-text); }
+/* Below zero = the estimate was too low: a second, neutral fill, so the
+   over/under pattern the explanation above describes reads at a glance. */
+.gas-comparison-bar[data-error^="-"] { fill: var(--text-muted); }
+
 .gas-comparison-labels { display: flex; padding-top: 12px; }
-.gas-comparison-point { display: grid; flex: 1 0 84px; gap: 4px; padding: 0 4px; text-align: center; font-size: 12px; line-height: 1.5; color: var(--text-muted); }
+.gas-comparison-point { display: grid; flex: 1 0 64px; gap: 4px; padding: 0 4px; text-align: center; font-size: 12px; line-height: 1.5; color: var(--text-muted); }
 .gas-comparison-value { color: var(--text); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .gas-issue { display: grid; gap: 4px; margin-bottom: 12px; }
 .gas-issue:last-child { margin-bottom: 0; }
@@ -106,6 +136,19 @@
 .gas-footer .font-toggle { margin-left: auto; min-height: 44px; }
 @media (max-width: 700px) {
   .gas-price-grid { grid-template-columns: 1fr; }
+  .gas-comparison-frame { grid-template-columns: 38px minmax(0, 1fr); }
+  .gas-comparison-point { padding: 0 2px; font-size: 11px; }
+  /* The ledger restacks as one card per effective date: the date heads
+     the card and the three values sit side by side with their labels, so
+     nothing is lost off the right edge of a phone. */
+  .gas-ledger .gas-table { min-width: 0; }
+  .gas-ledger .gas-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .gas-ledger .gas-table, .gas-ledger .gas-table tbody { display: block; }
+  .gas-ledger .gas-table caption { display: block; }
+  .gas-ledger .gas-table tr { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px 12px; padding: 14px 12px; border-top: 1px solid var(--separator); }
+  .gas-ledger .gas-table tbody th { grid-column: 1 / -1; padding: 0 0 6px; border: 0; }
+  .gas-ledger .gas-table td { padding: 0; border: 0; white-space: normal; min-width: 0; }
+  .gas-ledger .gas-table td::before { content: attr(data-label); display: block; margin-bottom: 6px; font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--text-muted); }
   .gas-stat-grid { grid-template-columns: 1fr; }
   .gas-stat { display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; align-items: center; }
   .gas-stat-value { margin-top: 0; font-size: 27px; }

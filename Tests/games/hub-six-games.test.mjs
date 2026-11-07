@@ -164,12 +164,22 @@ test('hostile typed stats normalize to finite safe output', () => {
   assert.doesNotMatch(renderHubMarkup(store), /Infinity|NaN|<img>/);
 });
 
-test('typed records render exact semantic dl labels', () => {
-  const markup = renderHubMarkup(createEmptyGameStore());
+test('typed records render exact semantic dl labels once a game has a finish', () => {
+  const store = createEmptyGameStore();
+  for (const game of Object.values(store.stats.games)) {
+    for (const mode of Object.values(game.modes)) mode.completed = 1;
+  }
+  const markup = renderHubMarkup(store);
   for (const label of [
     'Best score', 'Best combo', 'Contract time', 'Contract moves',
     'Endless score', 'Endless combo', 'Finished',
   ]) assert.match(markup, new RegExp('<dt>' + label + '</dt><dd>'));
+});
+
+test('unplayed games show one quiet line instead of placeholder records', () => {
+  const markup = renderHubMarkup(createEmptyGameStore());
+  assert.doesNotMatch(markup, /<dl class="game-card-stats">/);
+  assert.equal([...markup.matchAll(/class="game-card-stats-empty">Not played yet</g)].length, 6);
 });
 
 test('reset explanation names every locally removed game-data category', () => {
@@ -178,4 +188,16 @@ test('reset explanation names every locally removed game-data category', () => {
     'unfinished games', 'totals', 'streaks', 'time', 'moves', 'scores',
     'combos', 'music', 'effects',
   ]) assert.match(markup, new RegExp(phrase, 'i'));
+});
+
+test('an empty record book disables reset and names one easy first game', () => {
+  const markup = renderHubMarkup(createEmptyGameStore());
+  assert.match(markup, /<button[^>]+data-reset-games[^>]*\sdisabled>Reset Game Data<\/button>/);
+  assert.match(markup, /<a href="\/games\/sudoku\?difficulty=easy">Start with an Easy Sudoku<\/a>/);
+
+  const unfinished = createEmptyGameStore();
+  unfinished.runs.sudoku = { game: 'sudoku', mode: 'default', difficulty: 'easy' };
+  const stored = renderHubMarkup(unfinished);
+  assert.doesNotMatch(stored, /data-reset-games[^>]*disabled/);
+  assert.doesNotMatch(stored, /Start with an Easy Sudoku/);
 });

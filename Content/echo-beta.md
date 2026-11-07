@@ -78,7 +78,7 @@ Pick whichever matches your life. Each plan is 10–20 minutes of intentional te
 3. Drag-reorder a few tracks; dim one (e.g., a disclaimer track) and confirm playback skips it.
 4. iCloud users: try a book *without* "Keep Downloaded" on cellular — how does Echo cope? Then set Keep Downloaded and compare.
 
-### Plan E — The Wrist-Only Day *(watch remote)*
+### Plan E — The Wrist‑Only Day *(watch remote)*
 
 1. From the phone, design your button layout (try filling multiple pages; leave one page empty — it should hide).
 2. Drive a full listening session from the watch only: play, skip, sections, loop, speed, sleep timer, a bookmark with a voice memo.
@@ -103,6 +103,8 @@ The road to 1.0 lands feature-by-feature in beta builds — each build's *What t
 4. **Anki import:** bring a real .apkg deck. Counts right? Scheduling sensible (mature cards not reset)? Cloze cards reported in the summary?
 5. **Context Memory:** opt in, bookmark something on a walk, check the place chip. Then try airplane mode — bookmarks must still save instantly. Then press **Delete Location History** and verify everything's gone.
 6. **Study sync:** with two devices on the same iCloud, create a card on one and review it on the other.
+
+Finished a plan? Send what you found with TestFlight's screenshot feedback or a GitHub issue — [section 2](#2-sending-feedback-that-helps) shows how.
 
 ## 4. Known limitations (current beta)
 

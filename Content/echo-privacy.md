@@ -1,6 +1,10 @@
 # Echo Privacy Policy
 
-Echo is made by Daniel Vincent Fakkeldy, operating as KinNoKi Labs. You can play and study local audiobooks without creating an Echo account. Echo stores its library records, reading and listening progress, notes, study cards and settings on your device. Features vary by platform. The optional network features below have different data handling; using local files does not mean every feature is offline or uses only private iCloud storage.
+Echo is made by Daniel Vincent Fakkeldy, operating as KinNoKi Labs. In short:
+
+- You can play and study local audiobooks without creating an Echo account.
+- Echo stores its library records, reading and listening progress, notes, study cards and settings on your device. Features vary by platform.
+- The optional network features below have different data handling; using local files does not mean every feature is offline or uses only private iCloud storage.
 
 ## Local books, narration and study
 
@@ -63,4 +67,10 @@ If you choose to email support, we receive your email address and the content yo
 
 You can remove local content using Echo's controls, disable optional permissions in system Settings, remove an AI token, disconnect Audiobookshelf, and choose what to export or share. Copies in backups, exports, public alignment records and external services have separate handling. We do not promise a single deletion deadline for all of them.
 
-For privacy questions or requests, contact [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com). Echo support is available at [echo@kinnokilabs.com](mailto:echo@kinnokilabs.com). Mail sent to these KinNoKi support and privacy addresses is routed through Apple iCloud Mail, subject to [Apple's privacy policy](https://www.apple.com/legal/privacy/en-ww/).
+- **Privacy questions or requests:** [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com)
+- **Echo support:** [echo@kinnokilabs.com](mailto:echo@kinnokilabs.com)
+
+Mail sent to these KinNoKi support and privacy addresses is routed through Apple iCloud Mail, subject to [Apple's privacy policy](https://www.apple.com/legal/privacy/en-ww/).
+
+---
+[Echo](/apps/echo) | [Help & Support](/echo-help) | [User Manual](/echo-manual) | [Site privacy](/privacy/)

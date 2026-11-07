@@ -17,7 +17,7 @@
   var els = {
     cover: $('cover'), bookTitle: $('bookTitle'), bookSubtitle: $('bookSubtitle'),
     bookByline: $('bookByline'), chapterCount: $('chapterCount'), chapterList: $('chapterList'),
-    chapterNow: $('chapterNow'), captionPanel: $('captionPanel'), captionWords: $('captionWords'),
+    chapterNow: $('chapterNow'), captionPanel: $('captionPanel'), captionWords: $('captionWords'), cueHint: $('cueHint'),
     captionText: $('captionText'), figurePanel: $('figurePanel'), figureImg: $('figureImg'),
     figureCaption: $('figureCaption'), status: $('status'), playPause: $('playPause'),
     iconPlay: $('iconPlay'), iconPause: $('iconPause'), back30: $('back30'), fwd30: $('fwd30'),
@@ -30,6 +30,7 @@
     library: $('library'), honesty: $('honesty'),
   };
   var main = document.querySelector('.room-main');
+  var hasStarted = false; // mirrors .room-main.started for the pre-play preview
   var room = document.querySelector('.room');
 
   var audio = new Audio();
@@ -230,6 +231,12 @@
     li.appendChild(by);
     var links = document.createElement('span');
     links.className = 'room-lib-links';
+    if (selected) {
+      var now = document.createElement('span');
+      now.className = 'room-lib-now';
+      now.textContent = 'Now playing';
+      links.appendChild(now);
+    }
     core.libraryActions(b).filter(function (action) {
       return !selected || action.label !== 'Listen';
     }).forEach(function (action) {
@@ -378,6 +385,46 @@
     requestAnimationFrame(function () { els.captionWords.classList.remove('swap'); });
   }
 
+  /* Before the first play the stage holds the chapter heading. Under it,
+     set the chapter's opening sentence in the quiet caption tier, so the
+     room shows a line of the book itself; pointing at Play lights its
+     first word (CSS), a preview of the read-along that play starts. The
+     line is visual only: captionWords is aria-hidden, and it is gone once
+     playback starts or the cue changes. */
+  function showPreview() {
+    if (hasStarted || currentBlockId === null) return;
+    var at = -1;
+    for (var i = 0; i < blocks.length; i++) {
+      if (blocks[i].id === currentBlockId) { at = i; break; }
+    }
+    if (at === -1 || blocks[at].kind !== 'heading') return;
+    var next = null;
+    for (var j = at + 1; j < blocks.length; j++) {
+      var candidate = blocks[j];
+      if (candidate.kind === 'heading') break;
+      if (candidate.kind === 'paragraph' && typeof candidate.text === 'string' && candidate.text.trim() &&
+          candidate.chapterIndex !== null && candidate.chapterIndex !== undefined) {
+        next = candidate;
+        break;
+      }
+    }
+    if (!next) return;
+    var text = next.text.trim();
+    var sentence = text.match(/^[\s\S]*?[.!?\u2026]["\u201d\u2019)]?(?=\s|$)/);
+    var words = (sentence ? sentence[0] : text).split(/\s+/);
+    if (words.length > 28) words = words.slice(0, 28).concat('\u2026');
+    var line = document.createElement('span');
+    line.className = 'room-preview';
+    words.forEach(function (word, k) {
+      var span = document.createElement('span');
+      span.className = 'pw';
+      span.textContent = word;
+      line.appendChild(span);
+      if (k < words.length - 1) line.appendChild(document.createTextNode(' '));
+    });
+    els.captionWords.appendChild(line);
+  }
+
   /* ── Figure stage (slideshow) ───────────────────────── */
   /* The stage elements are feature-checked so a cached pre-slideshow
      index.html served alongside this script degrades to captions-only
@@ -447,7 +494,10 @@
       if (currentBlockId !== null || !els.captionWords.firstChild) showQuiet('· · ·');
       return;
     }
-    if (cue.blockId !== currentBlockId) rebuildCaption(cue);
+    if (cue.blockId !== currentBlockId) {
+      rebuildCaption(cue);
+      showPreview();
+    }
     for (var i = 0; i < captionSpans.length; i++) {
       var cls = 'w';
       if (i < cue.alreadyHeardWordCount) cls += ' heard';
@@ -462,6 +512,12 @@
     els.iconPause.style.display = playing ? 'block' : 'none';
     els.playPause.setAttribute('aria-label', playing ? 'Pause' : 'Play');
     main.classList.toggle('playing', playing);
+    // The first play retires the idle caption state (and its hint) for good.
+    if (playing) {
+      hasStarted = true;
+      main.classList.add('started');
+      if (els.cueHint) els.cueHint.hidden = true;
+    }
     if ('mediaSession' in navigator) {
       navigator.mediaSession.playbackState = playing ? 'playing' : 'paused';
     }
@@ -679,6 +735,8 @@
         }
       });
       tick(audio.currentTime);
+      // Captions are ready: until the first play, say what they will do.
+      if (els.cueHint && !main.classList.contains('started')) els.cueHint.hidden = false;
     }).catch(function (err) {
       console.debug('[listen] read-along unavailable:', err);
       showQuiet('Read-along captions couldn’t load — audio still works.');

@@ -175,6 +175,7 @@ export async function renderCrossword(root, store) {
   board.setAttribute('style', `--crossword-size:${state.definition.size}`);
   const clues = element('div', { class: 'crossword-clues' });
   const clueButtons = new Map();
+  const clueAnswers = new Map();
   for (const direction of ['across', 'down']) {
     const list = element('ul', { 'aria-label': direction === 'across' ? 'Across clues' : 'Down clues' });
     state.definition.answers.filter((answer) => answer.direction === direction).forEach((answer) => {
@@ -182,16 +183,22 @@ export async function renderCrossword(root, store) {
       const button = element('button', { type: 'button', 'data-clue': key, text: `${answer.number}. ${answer.clue}` });
       button.addEventListener('click', () => dispatch({ type: 'select', row: answer.row, column: answer.column, direction }, true));
       clueButtons.set(key, button);
+      clueAnswers.set(key, answer);
       list.append(element('li', {}, button));
     });
     clues.append(element('section', {}, element('h2', { text: direction === 'across' ? 'Across' : 'Down' }), list));
   }
   const boardScroll = element('div', { class: 'game-board-scroll' }, board);
-  layout.append(boardScroll, clues);
   const hint = element('button', { type: 'button', 'data-hint': '', text: 'Reveal Letter' });
   const check = element('button', { type: 'button', 'data-check': '', text: 'Check Entry' });
   const checkAll = element('button', { type: 'button', 'data-check-all': '', text: 'Check Puzzle' });
   const controls = element('div', { class: 'game-controls' }, hint, check, checkAll);
+  // Phones stack the clue list far below the grid, so the active clue is
+  // echoed right under the board (visual only; the list stays the source).
+  const currentClue = element('p', { class: 'crossword-current-clue', 'aria-hidden': 'true', text: '' });
+  // The entry controls belong to the board: they sit directly under it.
+  const boardColumn = element('div', { class: 'crossword-board-column' }, boardScroll, currentClue, controls);
+  layout.append(boardColumn, clues);
   let completed = false;
 
   // Effects-only audio: lazily started on the player's first gesture (a
@@ -217,7 +224,7 @@ export async function renderCrossword(root, store) {
     if (!completed) void puzzleAudio.dispose();
   });
 
-  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, layout, controls, audioControls.element, shell.live);
+  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, layout, audioControls.element, shell.live);
 
   // Build the grid inputs (and their number markers) once. draw() below only
   // ever patches attributes/classes/value on these same nodes so cell and
@@ -269,7 +276,15 @@ export async function renderCrossword(root, store) {
       input.value = state.values[rowIndex][columnIndex];
       input.setAttribute('tabindex', selected ? '0' : '-1');
     }));
-    for (const [key, button] of clueButtons) button.classList.toggle('is-active', key === activeClueKey);
+    for (const [key, button] of clueButtons) {
+      button.classList.toggle('is-active', key === activeClueKey);
+      // A fully lettered entry dims in the list, so the list fills in as the grid does.
+      const filled = positions(clueAnswers.get(key)).every(({ row, column }) => state.values[row]?.[column]);
+      button.classList.toggle('is-filled', filled);
+    }
+    currentClue.textContent = activeEntry
+      ? `${activeEntry.number} ${activeEntry.direction === 'across' ? 'Across' : 'Down'}. ${activeEntry.clue}`
+      : '';
     shell.timer.textContent = formatElapsed(session.elapsed());
     if (state.completed && !completed) {
       completed = true;

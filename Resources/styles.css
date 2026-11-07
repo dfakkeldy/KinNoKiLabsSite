@@ -375,8 +375,6 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 .page > * + * { margin-top: var(--block-gap); }
 .page > .page-footnote { margin-top: 28px; }
 .page > .scope-chips { margin-top: clamp(36px, 5vw, 48px); }
-/* The featured Echo row and the other apps read as one list. */
-.page > .echo-row + .app-list { margin-top: 0; }
 
 .page-head { max-width: 760px; }
 .page-head .eyebrow { margin-bottom: 16px; }
@@ -421,12 +419,12 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
   background: radial-gradient(ellipse 55% 42% at 50% 34%, color-mix(in srgb, var(--gold-500) 13%, transparent), transparent 70%);
 }
 .hero-backdrop .tree {
-  width: min(640px, 92vw); margin-top: 12px; object-fit: contain; opacity: 0.3;
+  width: min(640px, 92vw); margin-top: 12px; object-fit: contain; opacity: 0.15;
   /* Keep the canopy behind the headline; fade the trunk out before the copy. */
   -webkit-mask-image: linear-gradient(to bottom, #000 20%, rgba(0, 0, 0, 0.3) 46%, transparent 66%);
   mask-image: linear-gradient(to bottom, #000 20%, rgba(0, 0, 0, 0.3) 46%, transparent 66%);
 }
-[data-theme="light"] .hero-backdrop .tree { opacity: 0.16; filter: sepia(0.6) saturate(1.5); }
+[data-theme="light"] .hero-backdrop .tree { opacity: 0.08; filter: sepia(0.6) saturate(1.5); }
 .hero-backdrop .fade { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 22%, var(--bg) 70%); }
 
 .hero-copy { position: relative; max-width: 960px; margin: 0 auto; padding: clamp(88px, 12vw, 152px) var(--gutter) clamp(48px, 6vw, 72px); text-align: center; }
@@ -471,6 +469,9 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
   background: color-mix(in srgb, var(--gold-500) 70%, var(--text-muted));
 }
 .proof-strip .link-quiet { font-size: inherit; }
+/* The one plain fact leads the strip at the same weight as the two proofs
+   after it; only the underline marks which items are links. */
+.proof-strip li > span { color: var(--text-muted); }
 @media (max-width: 939px) {
   .proof-strip { flex-direction: column; gap: 6px; }
   .proof-strip li + li::before { display: none; }
@@ -542,7 +543,12 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 
 .closing { max-width: 780px; margin: 0 auto; padding: var(--section-gap) var(--gutter) 0; text-align: center; }
 .closing-quote { font-size: clamp(20px, 2.6vw, 26px); font-weight: 400; line-height: 1.5; letter-spacing: -0.012em; margin: 0 0 22px; text-wrap: balance; }
-.closing-quote span { color: var(--text-muted); }
+.closing-quote span { color: var(--gold-text); }
+/* The closing beat: eyebrow, statement, one quiet button to /about. The
+   footer then follows at the page's normal block gap, not a section gap. */
+.closing .eyebrow { margin-bottom: 18px; }
+.closing .btn { gap: 8px; }
+body:has(.closing) .site-footer { margin-top: var(--block-gap); }
 .row-link-gold, .row-link-gold:hover { color: var(--gold-text); }
 
 /* ── Bento & cards ──────────────────────────────────── */
@@ -612,23 +618,39 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 .app-list { display: flex; flex-direction: column; gap: 12px; }
 .app-list > .app-card {
   display: grid;
-  grid-template-columns: 64px minmax(0, 1fr) minmax(150px, 200px);
+  grid-template-columns: 64px minmax(0, 1fr) minmax(150px, 200px) 20px;
   column-gap: clamp(20px, 3vw, 36px);
   align-items: start;
   padding: clamp(22px, 3vw, 30px) clamp(22px, 3.5vw, 36px);
 }
 .app-list > .app-card .app-icon { grid-row: 1 / span 3; width: 64px; height: 64px; margin: 0; }
-.app-list > .app-card > :not(.app-icon):not(.app-card-meta) { grid-column: 2; }
-.app-list > .app-card h3 { margin: 2px 0 6px; font-size: 19px; }
+.app-list > .app-card > :not(.app-icon):not(.app-card-meta):not(.app-card-chevron) { grid-column: 2; }
+.app-list > .app-card h3, .app-list > .app-card h2 { margin: 2px 0 6px; font-size: 19px; letter-spacing: -0.015em; }
+/* Every app row ends in the same chevron, so all four advertise one affordance. */
+.app-list > .app-card > .app-card-chevron { grid-column: 4; grid-row: 1 / span 3; align-self: center; color: var(--text-muted); transition: transform 0.2s var(--ease), color 0.2s ease; }
+.app-list > .app-card:hover > .app-card-chevron { color: var(--gold-text); transform: translateX(3px); }
+/* The flagship leads the list: same geometry and icon column (so all four
+   titles share one left edge), a larger title and a gold edge. */
+.app-list > .app-card-featured { border-color: color-mix(in srgb, var(--gold-500) 28%, var(--separator)); }
+.app-list > .app-card-featured h2 { font-size: clamp(21px, 2.2vw, 24px); }
+/* Echo's four platforms wrap inside the narrow meta column, in balanced
+   lines so "Apple Watch" never splits. */
+.app-list > .app-card .app-card-meta .platforms { white-space: normal; text-wrap: balance; }
+/* Hover: the row's edge warms to the gold hairline as its chevron nudges. */
+.app-list > .app-card:hover { border-color: color-mix(in srgb, var(--gold-500) 45%, var(--separator)); }
+/* The closing pointer is a quiet row link, at the page's normal rhythm. */
+.page > .app-list + .page-footnote { margin-top: 24px; }
+body:has(.app-list) .site-footer { margin-top: var(--block-gap); }
 .app-list > .app-card p { margin: 0; flex: none; max-width: 68ch; }
 .app-list > .app-card .app-card-note { margin-top: 8px; }
 .app-list > .app-card .app-card-meta { grid-column: 3; grid-row: 1 / span 3; flex-direction: column; align-items: flex-start; gap: 8px; margin: 2px 0 0; padding: 0 0 0 clamp(16px, 2.5vw, 28px); border-top: 0; border-left: 1px solid var(--separator); align-self: stretch; }
 @media (max-width: 759px) {
-  .app-list > .app-card { grid-template-columns: 52px minmax(0, 1fr); }
+  .app-list > .app-card { grid-template-columns: 52px minmax(0, 1fr) 20px; }
   .app-list > .app-card .app-icon { grid-row: auto; width: 52px; height: 52px; }
-  .app-list > .app-card > :not(.app-icon):not(.app-card-meta),
+  .app-list > .app-card > :not(.app-icon):not(.app-card-meta):not(.app-card-chevron),
   .app-list > .app-card .app-card-meta { grid-column: 1 / -1; }
-  .app-list > .app-card > h3:not(.app-icon):not(.app-card-meta) { grid-column: 2; grid-row: 1; align-self: center; margin: 0; }
+  .app-list > .app-card > :is(h2, h3):not(.app-icon):not(.app-card-meta):not(.app-card-chevron) { grid-column: 2; grid-row: 1; align-self: center; margin: 0; }
+  .app-list > .app-card > .app-card-chevron { grid-column: 3; grid-row: 1; }
   .app-list > .app-card .app-card-meta { grid-row: auto; flex-direction: row; flex-wrap: wrap; margin-top: 16px; padding: 14px 0 0; border-left: 0; border-top: 1px solid var(--separator); }
   .app-list > .app-card p:first-of-type { margin-top: 14px; }
 }
@@ -641,6 +663,14 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
   padding: 4px 11px;
   white-space: nowrap;
 }
+/* Marketing: every app status chip leads with a state dot, so "where each
+   one stands" reads at a glance down a list. A discontinued app gets the
+   neutral variant (grey chip, hollow dot) instead of live gold. */
+.status-chip { display: inline-flex; align-items: center; gap: 6px; }
+.status-chip::before { content: ""; width: 6px; height: 6px; flex: none; border-radius: var(--radius-pill); background: currentColor; }
+.status-chip-muted { color: var(--text-muted); background: transparent; box-shadow: inset 0 0 0 1px var(--separator); }
+.status-chip-muted::before { background: transparent; box-shadow: inset 0 0 0 1.5px currentColor; }
+.app-hero-copy:has(.status-chip-muted) .app-hero-tagline { color: var(--text-muted); }
 .platforms { font-size: 12.5px; color: var(--text-muted); }
 
 .badge-pill {
@@ -702,6 +732,12 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip { font-size: 14px; font-weight: 500; border: 1px solid var(--separator); border-radius: var(--radius-pill); padding: 8px 16px; background: var(--surface); }
 .chip-optional { color: var(--text-muted); border-style: dashed; border-color: color-mix(in srgb, var(--text) 28%, transparent); border-radius: 16px; }
+/* Link chips (tag lists): a pill, not underlined text, and a full tap target. */
+a.chip { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding-block: 0; color: var(--text); text-decoration: none; transition: border-color 0.15s ease, background-color 0.15s ease; }
+a.chip:hover { border-color: color-mix(in srgb, var(--gold-500) 45%, var(--separator)); background: color-mix(in srgb, var(--gold-500) 6%, var(--surface)); }
+a.chip:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px; }
+.chip-count { color: var(--text-muted); font-weight: 500; }
+.chip-count::before { content: "·"; margin-right: 8px; }
 
 /* ── Dark identity band (Echo hero / CTA) ───────────── */
 .band-dark { position: relative; overflow: hidden; background: #0a0a0c; color: #f5f5f7; }
@@ -743,9 +779,9 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 
 /* New hover motion stays still for people who ask for less motion. */
 @media (prefers-reduced-motion: reduce) {
-  .app-card, .post-card, .echo-row, .support-row, .tool-hub-grid .tool-card, .row-link svg, .back-link svg, .echo-row-chevron, .support-row .row-chevron { transition: none; }
-  .app-card:hover, .post-card:hover, .echo-row:hover, .support-row:hover, .tool-hub-grid .tool-card:hover,
-  .row-link:hover svg, .back-link:hover svg, .echo-row:hover .echo-row-chevron, .support-row:hover .row-chevron,
+  .app-card, .post-card, .support-row, .tool-hub-grid .tool-card, .row-link svg, .back-link svg, .app-card-chevron, .support-row .row-chevron { transition: none; }
+  .app-card:hover, .post-card:hover, .support-row:hover, .tool-hub-grid .tool-card:hover,
+  .row-link:hover svg, .back-link:hover svg, .app-list > .app-card:hover > .app-card-chevron, .support-row:hover .row-chevron,
   .btn-outline:hover, .btn-outline:active { transform: none; }
 }
 
@@ -776,34 +812,16 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 
 /* ── Responsive split grids ─────────────────────────── */
 .split-services { display: grid; grid-template-columns: 1.45fr 1fr; gap: clamp(28px, 4vw, 56px); align-items: center; }
-.echo-row {
-  display: grid; grid-template-columns: auto 1fr auto;
-  gap: clamp(20px, 3vw, 36px); align-items: center;
-  background: var(--surface);
-  border: 1px solid color-mix(in srgb, var(--gold-500) 28%, var(--separator));
-  border-radius: var(--radius-bento);
-  box-shadow: var(--shadow-card);
-  padding: clamp(24px, 3.5vw, 40px) clamp(22px, 3.5vw, 36px);
-  margin-bottom: 12px;
-  text-decoration: none;
-  color: var(--text);
-  transition: transform 0.2s var(--ease), box-shadow 0.2s ease, border-color 0.2s ease;
-}
-.echo-row:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--gold-500) 50%, var(--separator)); box-shadow: var(--shadow-card-hover); }
-.echo-row-icon { width: 96px; height: 96px; border-radius: var(--radius-icon); box-shadow: 0 0 0 1px var(--separator), 0 2px 12px rgba(0, 0, 0, 0.25); }
-.echo-row-body { min-width: 0; }
-.echo-row-title { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 8px; }
-.echo-row-title h2 { font-weight: 600; font-size: clamp(22px, 2.6vw, 28px); letter-spacing: -0.02em; margin: 0; }
-.echo-row-body p { font-size: 15.5px; line-height: 1.6; color: var(--text-muted); margin: 0 0 12px; max-width: 64ch; }
-.echo-row-chevron { color: var(--text-quaternary); justify-self: end; transition: transform 0.2s var(--ease), color 0.2s ease; }
-.echo-row:hover .echo-row-chevron { color: var(--gold-text); transform: translateX(3px); }
 @media (max-width: 759px) {
   .split-flagship { grid-template-columns: 1fr; }
-  .flagship-visual { min-height: 480px; }
+  /* Phone: the card opens on the product, and the whole phone shows inside
+     the panel with equal margins top and bottom, so no control row is cut. */
+  .flagship-visual { order: -1; min-height: 0; height: 468px; }
+  .flagship-phone { top: 30px; bottom: 30px; }
+  .flagship-phone-frame { border-bottom: 1px solid rgba(255, 255, 255, 0.14); border-radius: 34px; padding: 8px; }
+  .flagship-phone-frame img { border-radius: 27px; }
+  [data-theme="light"] .flagship-phone-frame { border-color: rgba(0, 0, 0, 0.2); }
   .split-services, .home-services { grid-template-columns: minmax(0, 1fr); }
-  .echo-row { grid-template-columns: 1fr; gap: 18px; }
-  .echo-row-icon { width: 64px; height: 64px; }
-  .echo-row-chevron { display: none; }
 }
 @media (max-width: 559px) {
   .split-services.band { padding: 24px 20px; }
@@ -831,6 +849,27 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 .system-map-result { position: relative; display: flex; flex-direction: column; gap: 2px; background: color-mix(in srgb, var(--gold-500) 11%, var(--surface)); border: 1px solid color-mix(in srgb, var(--gold-500) 35%, var(--separator)); border-radius: 14px; padding: 15px 16px; text-align: center; }
 .system-map-result span { color: var(--gold-text); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
 .system-map-result strong { font-size: 14px; font-weight: 600; }
+/* Services: the diagram holds its weight (body-small inputs in text colour,
+   the method named on the connector), the first contact path sits in the
+   hero, and the problem list reads as flat tags, not buttons. */
+.system-map .system-map-node { color: var(--text); font-size: 14px; }
+.system-map-method { position: relative; margin: 6px auto; width: fit-content; padding: 3px 12px; border: 1px solid var(--gold-hairline); border-radius: var(--radius-pill); background: var(--surface); color: var(--gold-text); font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.04em; }
+.system-map-method + .system-map-connector { background: linear-gradient(var(--gold-500), var(--gold-500)); }
+.services-hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; margin-top: 30px; }
+#how-engagements-start { scroll-margin-top: 88px; }
+.scope-chips .chip-row { gap: 10px 28px; }
+.scope-chips .chip { display: inline-flex; align-items: baseline; gap: 10px; padding: 0; border: 0; border-radius: 0; background: none; font-size: 15px; color: var(--text); }
+.scope-chips .chip::before { content: ""; width: 6px; height: 6px; flex: none; border-radius: var(--radius-pill); background: color-mix(in srgb, var(--gold-500) 75%, var(--text)); transform: translateY(-2px); }
+.scope-chips .chip-optional { color: var(--text-muted); }
+.scope-chips .chip-optional::before { background: transparent; box-shadow: inset 0 0 0 1.5px currentColor; }
+/* The scope list sits on a fixed grid so its rows align (3 / 2 / 1 across). */
+.scope-chips .chip-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 32px; }
+@media (max-width: 959px) { .scope-chips .chip-row { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 559px) { .scope-chips .chip-row { grid-template-columns: minmax(0, 1fr); } }
+/* The diagram's inputs are labels, not controls: no tile, no border, just a
+   leading dot, so nothing in the map looks pressable. */
+.system-map .system-map-node { gap: 9px; padding: 6px 0; background: none; border: 0; border-radius: 0; }
+.system-map .system-map-node::before { content: ""; width: 6px; height: 6px; flex: none; border-radius: var(--radius-pill); background: color-mix(in srgb, var(--gold-500) 60%, var(--text-muted)); }
 .offer-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
 @media (min-width: 960px) {
   /* Subgrid rows keep the three cards' parts (and the note rules) aligned. */
@@ -881,16 +920,21 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 @media (min-width: 1072px) {
   .about-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
-.about-card { background: var(--surface); border: 1px solid var(--separator); border-radius: var(--radius-card); box-shadow: var(--shadow-card); padding: 26px; }
+/* One object, not four floating tiles: a hairline lattice (gap-as-divider,
+   like the Echo principles strip), so the rules are right at every column count. */
+.about-grid { gap: 1px; background: var(--separator); border: 1px solid var(--separator); border-radius: var(--radius-card); overflow: hidden; }
+.about-card { background: var(--bg); padding: clamp(22px, 2.6vw, 28px); }
 .about-card h2 { font-weight: 600; font-size: 17.5px; letter-spacing: -0.01em; line-height: 1.25; margin: 0 0 8px; }
-.about-card p { font-size: 14.5px; line-height: 1.6; color: var(--text-muted); margin: 0; }
+.about-card p { font-size: 16px; line-height: 1.55; color: var(--text-muted); margin: 0; }
 .story { max-width: 720px; }
 .story-lead { font-size: var(--text-lede); line-height: 1.65; margin: 0 0 16px; max-width: 62ch; }
 .story-body { font-size: 17px; line-height: 1.7; color: var(--text-muted); margin: 0; max-width: 62ch; }
 /* About: the Background eyebrow becomes a side label under the first card,
    and the text starts at the second card's edge (only with four columns). */
 @media (min-width: 1072px) {
-  .page > .story { max-width: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 16px; }
+  .page > .story { max-width: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 1px; padding-inline: 1px; }
+  /* Label and text start on the lattice cells' text edges above them. */
+  .page > .story > * { padding-inline: clamp(22px, 2.6vw, 28px); }
   .page > .story > .eyebrow { grid-column: 1; grid-row: 1 / span 2; margin-top: 6px; }
   .page > .story > p { grid-column: 2 / -1; }
 }
@@ -906,14 +950,31 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 .contact-band-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; }
 .contact-band-copy { flex: 1 1 28rem; max-width: 40rem; }
 .contact-band-lede { color: var(--text-muted); font-size: 1rem; line-height: 1.65; margin: 0; }
+/* About: on phone the two contact buttons stack at one width, gold first,
+   and read as a single decision block. */
+@media (max-width: 479px) {
+  .about-grid ~ .contact-band .contact-band-actions { flex-direction: column; align-items: stretch; width: 100%; }
+  .about-grid ~ .contact-band .contact-band-actions .btn { justify-content: center; }
+}
 
 /* ── Support list rows ──────────────────────────────── */
 .support-row { display: flex; align-items: center; gap: 14px; background: var(--surface); border: 1px solid var(--separator); border-radius: 14px; box-shadow: var(--shadow-card); padding: 15px 18px; text-decoration: none; color: var(--text); font-weight: 500; font-size: 16px; transition: border-color 0.15s ease, transform 0.2s var(--ease); }
 .support-row:hover { transform: translateY(-1px); border-color: color-mix(in srgb, var(--gold-500) 45%, var(--separator)); }
-.support-row .row-chevron { margin-left: auto; color: var(--text-quaternary); transition: transform 0.2s var(--ease), color 0.2s ease; }
+.support-row .row-chevron { flex: none; margin-left: auto; color: var(--text-muted); transition: transform 0.2s var(--ease), color 0.2s ease; }
 .support-row:hover .row-chevron { color: var(--gold-text); transform: translateX(2px); }
-.support-row-icon { width: 36px; height: 36px; flex: none; }
+/* One radius and a hairline ring for every app icon, so dark icons keep an
+   edge on dark rows. */
+.support-row-icon { width: 36px; height: 36px; flex: none; border-radius: var(--radius-icon); object-fit: cover; box-shadow: 0 0 0 1px var(--separator); }
+/* A row's release state leads its subline as a small status chip. */
+.support-row-sub .status-chip { display: inline-flex; gap: 5px; margin: 1px 6px 1px 0; padding: 1px 8px; font-size: 11px; line-height: 1.5; vertical-align: 1px; }
 .support-row:has(.support-row-icon) { padding: 12px 18px 12px 12px; }
+/* Two-line rows (Support, 404): the destination, then what you will find there. */
+.support-row-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.support-row-text > span:first-child { overflow-wrap: anywhere; }
+.support-row-sub { font-size: 13.5px; font-weight: 400; line-height: 1.4; color: var(--text-muted); }
+/* The email row's icon: a mail glyph on the same 36px tile as the app icons. */
+.support-row-glyph { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; flex: none; border-radius: var(--radius-icon); background: color-mix(in srgb, var(--gold-500) 12%, var(--surface-2)); color: var(--gold-text); }
+.support-row:has(.support-row-glyph) { padding: 12px 18px 12px 12px; }
 
 /* ── Learning audiobook library / flyer intake ──────── */
 .learn-main { max-width: var(--max-width); margin: 0 auto; padding: var(--page-pad-top) var(--gutter) 24px; }
@@ -980,6 +1041,70 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
   .learn-book-cover { grid-row: 1; align-self: start; }
   .learn-book-links { grid-column: 1 / -1; }
 }
+/* Learn refinements: the hero is one column now that the topic request
+   lives only in its own section; card actions share one colour (gold is
+   the hover/underline accent, Listen leads by weight); the library tile is
+   the same solid card material as its neighbours; phone links get 44px. */
+.learn-hero { grid-template-columns: minmax(0, 1fr); }
+.learn-book-links a:first-child { color: var(--text); font-weight: 650; }
+.learn-book-links a:hover { color: var(--gold-text); }
+.learn-library-tile { border: 1px solid var(--separator); background: var(--surface); box-shadow: var(--shadow-card); color: var(--text); }
+.learn-library-tile svg { color: var(--gold-text); }
+.learn-library-tile:hover { border-color: color-mix(in srgb, var(--gold-500) 40%, var(--separator)); color: var(--gold-text); }
+@media (max-width: 759px) {
+  .learn-book-links { gap: 0 20px; padding-top: 4px; }
+  .learn-book-links a { display: inline-flex; align-items: center; min-height: 44px; padding-block: 0; font-size: 0.95rem; }
+}
+/* ── Learn round 2 (listening-data stream) ── */
+/* The hero pairs the promise with the try-it-now action: the Listening
+   Room card is the hero's right column on desktop, stacked under the
+   copy below 1024px. */
+.learn-hero { grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.85fr); }
+.learn-hero-room { align-self: center; }
+.learn-hero-room .btn { align-self: flex-start; margin-top: 4px; }
+@media (max-width: 1023px) {
+  .learn-hero { grid-template-columns: minmax(0, 1fr); }
+}
+.learn-request-grid { scroll-margin-top: 88px; }
+/* The cover is a one-tap way into the Listening Room for that book (a
+   mouse shortcut; the "Listen" link stays the keyboard and reader route).
+   Pointing at it shows a small gold play disc. */
+.learn-book-cover-link { grid-row: 1 / span 2; position: relative; display: block; align-self: start; border-radius: 8px; }
+.learn-book-cover-link .learn-book-cover { display: block; }
+.learn-book-cover-link::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--grad-gold);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.learn-book-cover-link::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: 24px;
+  bottom: 21px;
+  border-style: solid;
+  border-width: 6px 0 6px 10px;
+  border-color: transparent transparent transparent #1d1d1f;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.learn-book-card:hover .learn-book-cover-link::after { opacity: 1; transform: none; }
+.learn-book-card:hover .learn-book-cover-link::before { opacity: 1; }
+/* The library tile reads as a link row: text then arrow, left-aligned,
+   on the gold-tinted intake material rather than an empty book card. */
+.learn-library-tile { justify-content: flex-start; text-align: left; background: color-mix(in srgb, var(--gold-500) 7%, var(--surface)); border-color: var(--gold-hairline); }
+@media (max-width: 559px) {
+  .learn-book-cover-link { grid-row: 1; }
+}
 
 /* ── Echo detail: hero / gallery / ladder / features / principles / CTA */
 .echo-hero { text-align: center; }
@@ -1002,7 +1127,7 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 .echo-section-last { padding-bottom: 24px; }
 .echo-section .story { max-width: 720px; }
 
-.ladder { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; max-width: 880px; }
+.ladder { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
 .ladder-row { display: grid; grid-template-columns: 44px 1fr; gap: 16px; align-items: baseline; background: var(--surface); border: 1px solid var(--separator); border-radius: 16px; box-shadow: var(--shadow-card); padding: 20px 24px; }
 .ladder-row p { margin: 0; font-size: 15.5px; line-height: 1.6; }
 .ladder-row strong { font-weight: 600; }
@@ -1027,6 +1152,41 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
   .feature-grid > .feature-card:last-child:nth-child(3n + 1) { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); column-gap: 32px; align-items: baseline; }
   .feature-grid > .feature-card:last-child:nth-child(3n + 1) h3 { margin: 0; }
 }
+/* Echo features in two labelled groups (listening, studying): a beat
+   between them instead of one uniform wall; the study pair grid stays 2-up. */
+.feature-group-label { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-text); margin: 0 0 14px; }
+.feature-grid + .feature-group-label { margin-top: clamp(32px, 4vw, 44px); }
+@media (min-width: 960px) {
+  .feature-grid-pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .feature-grid-pair > .feature-card:last-child:nth-child(3n + 1) { grid-column: auto; display: block; }
+  .feature-grid-pair > .feature-card:last-child:nth-child(3n + 1) h3 { margin: 0 0 8px; }
+}
+/* The dark Echo hero is an inset panel in both themes (like the closing CTA
+   panel), so it reads as one object and never butts against the nav. */
+.echo-hero { width: min(calc(100% - 2 * var(--gutter)), calc(var(--max-width) - 2 * var(--gutter))); margin: clamp(12px, 2vw, 24px) auto 0; border-radius: var(--radius-bento); }
+:root:not([data-theme="light"]) .echo-hero { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08); }
+/* The two Watch shots sit on their own stage under the phones, so the pair
+   reads as a deliberate second row rather than an orphan. */
+.echo-gallery .watch-row { padding: clamp(24px, 4vw, 40px) clamp(16px, 3vw, 32px); background: var(--surface); border: 1px solid var(--separator); border-radius: var(--radius-bento); box-shadow: var(--shadow-card); }
+/* Why Echo exists: on desktop the statement and the answer sit side by side. */
+@media (min-width: 1000px) {
+  .echo-section .story { max-width: none; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); column-gap: clamp(40px, 5vw, 72px); align-items: start; }
+  .echo-section .story > .eyebrow { grid-column: 1 / -1; }
+  .echo-section .story > .story-lead { margin: 0; }
+  .echo-section .story > .story-body { padding-top: 4px; }
+}
+/* Phone: feature cards drop their chrome and become hairline rows, so the
+   ten features scroll as one compact list. */
+@media (max-width: 639px) {
+  .echo-section .feature-grid { gap: 0; }
+  .echo-section .feature-card { padding: 16px 0; background: none; border: 0; border-top: 1px solid var(--separator); border-radius: 0; box-shadow: none; }
+  .echo-section .feature-card h3 { margin-bottom: 4px; }
+}
+/* The privacy link inside its principle cell gets a 44px touch target
+   without changing the line it sits in. */
+@media (pointer: coarse) {
+  .principle-card a { display: inline-block; padding-block: 12px; margin-block: -12px; }
+}
 
 /* Principles: one hairline spec strip under the features (gap-as-divider,
    so the rules are right at every column count). */
@@ -1034,14 +1194,16 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 .principle-card { background: var(--bg); padding: 20px 22px; }
 .principle-card h3 { font-weight: 600; font-size: 15px; margin: 0 0 6px; }
 .principle-card p { font-size: 13.5px; line-height: 1.55; color: var(--text-muted); margin: 0; }
+/* Three principles: the privacy cell (the only one with a second sentence
+   and a link) spans the first row at two columns, then one row where it
+   gets double width so all three end level. */
 @media (min-width: 640px) {
-  .principles-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-  .principle-card { grid-column: span 2; }
-  .principle-card:nth-child(n + 4) { grid-column: span 3; }
+  .principles-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .principles-grid > .principle-card:first-child { grid-column: 1 / -1; }
 }
 @media (min-width: 1000px) {
-  .principles-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-  .principle-card, .principle-card:nth-child(n + 4) { grid-column: auto; }
+  .principles-grid { grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr)); }
+  .principles-grid > .principle-card:first-child { grid-column: auto; }
 }
 
 .echo-back { display: inline-flex; align-items: center; gap: 6px; color: rgba(245, 245, 247, 0.62); font-size: 13.5px; font-weight: 500; text-decoration: none; margin-bottom: 36px; }
@@ -1050,7 +1212,12 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 .echo-cta-inner { position: relative; }
 .echo-cta-title { font-weight: 600; font-size: var(--text-h2); letter-spacing: -0.025em; margin: 0 0 12px; color: #f5f5f7; }
 .echo-cta-lede { font-size: 16px; line-height: 1.6; color: rgba(245, 245, 247, 0.68); margin: 0 auto 28px; max-width: 54ch; }
-.echo-cta-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 24px; max-width: 900px; margin: 32px auto 0; padding-top: 24px; border-top: 1px solid rgba(255, 255, 255, 0.10); font-size: 13.5px; }
+.echo-cta-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 24px; max-width: 900px; margin: 12px auto 0; font-size: 13.5px; }
+/* The guides sit under a hairline and a small label, one step below the two actions. */
+.echo-cta-links-label { max-width: 900px; margin: 32px auto 0; padding-top: 24px; border-top: 1px solid rgba(255, 255, 255, 0.10); font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(245, 245, 247, 0.62); }
+/* A secondary button on the always-dark panels stays dark glass in both themes. */
+.band-dark .btn-gray, [data-theme="light"] .band-dark .btn-gray { background: rgba(255, 255, 255, 0.10); color: #f5f5f7; border-color: rgba(255, 255, 255, 0.16); box-shadow: none; }
+.band-dark .btn-gray:hover { border-color: rgba(201, 162, 75, 0.55); }
 .echo-cta-link { color: rgba(245, 245, 247, 0.72); text-decoration: underline; text-decoration-color: rgba(201, 162, 75, 0.5); text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
 .echo-cta-link:hover { color: #f5f5f7; }
 @media (max-width: 759px) {
@@ -1066,39 +1233,144 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 .app-hero-tagline { font-size: 17px; font-weight: 500; color: var(--gold-text); margin: 0 0 14px; }
 .app-hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
 .app-monogram { display: inline-flex; align-items: center; justify-content: center; background: var(--fill); font-weight: 600; font-size: 40px; color: var(--gold-text); }
-.app-case-study-callout { margin-top: 40px; padding: 24px; border: 1px solid color-mix(in srgb, #5e8467 55%, var(--separator)); border-radius: var(--radius-card); background: color-mix(in srgb, #5e8467 9%, var(--surface)); }
+.app-case-study-callout { margin-top: 40px; padding: 24px; border: 1px solid var(--gold-hairline); border-radius: var(--radius-card); background: color-mix(in srgb, var(--gold-500) 7%, var(--surface)); }
 .app-case-study-callout p:not(.eyebrow) { margin: 0 0 14px; color: var(--text-muted); font-size: .94rem; line-height: 1.6; }
-/* The closing "Project Site | Source | Help" line of an app page becomes a
-   row of pills. font-size:0 drops the pipe separators between them. */
-.app-hero + .prose > hr { margin: 44px 0 24px; }
+/* The closing "Project site | Source | Help" line of an app page is a quiet
+   row of text links: the primary action already sits under the hero, so
+   these read as a footnote, not as competing buttons. font-size:0 drops the
+   pipe separators between them. */
+.app-hero + .prose > hr { margin: 56px 0 16px; }
 .app-hero + .prose > hr + p:last-child { font-size: 0; margin: 0; }
-.app-hero + .prose > hr + p:last-child a { display: inline-block; margin: 0 10px 10px 0; padding: 8px 16px; font-size: 14.5px; line-height: 1.4; font-weight: 500; color: var(--text); text-decoration: none; background: var(--surface); border: 1px solid var(--separator); border-radius: var(--radius-pill); }
-.app-hero + .prose > hr + p:last-child a:hover { border-color: color-mix(in srgb, var(--gold-500) 45%, var(--separator)); color: var(--text); }
-/* Primary actions near the top of an app page (App Store, Open the map),
-   written in the Markdown as <p class="app-actions"><a class="btn …">. */
-.app-hero + .prose > .app-actions { display: flex; flex-wrap: wrap; gap: 10px 14px; margin: 0 0 28px; }
+.app-hero + .prose > hr + p:last-child a { display: inline-flex; align-items: center; min-height: 32px; margin: 0 24px 4px 0; font-size: 15px; line-height: 1.4; font-weight: 500; color: var(--text-muted); }
+.app-hero + .prose > hr + p:last-child a:last-child { margin-right: 0; }
+.app-hero + .prose > hr + p:last-child a:hover { color: var(--text); }
+@media (pointer: coarse) {
+  .app-hero + .prose > hr + p:last-child a { min-height: 44px; }
+}
+/* Primary actions near the top of an app page (App Store, Open the map) and
+   on the TestFlight page, written in the Markdown as
+   <p class="app-actions"><a class="btn …">. */
+.prose > .app-actions { display: flex; flex-wrap: wrap; gap: 10px 14px; margin: 0 0 28px; }
 .prose a.btn { text-decoration: none; }
 .prose a.btn-gold, .prose a.btn-gold:hover { color: #1d1d1f; }
 .prose a.btn-outline, .prose a.btn-outline:hover { color: var(--text); }
+/* App pages: one product screenshot right under the actions, framed like
+   the site's other screens, with a short caption. */
+.app-hero + .prose > .app-shot { margin: 8px 0 8px; }
+.app-hero + .prose > .app-shot img { display: block; width: 100%; height: auto; border-radius: var(--radius-card); border: 1px solid var(--separator); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22); }
+.app-hero + .prose > .app-shot figcaption { margin-top: 12px; font-size: 13.5px; line-height: 1.5; color: var(--text-muted); }
+/* MacroMark's verbal macros: what you say, and the Markdown it writes. The
+   table is the page's signature moment, so it gets the full measure in a
+   gold-edged card, with the written Markdown set larger in mono. */
+.app-hero + .prose .macro-table { display: table; width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 0; margin: 8px 0 8px; background: var(--surface); border: 1px solid var(--gold-hairline); border-radius: var(--radius-card); box-shadow: var(--shadow-card); overflow: hidden; font-size: 16px; }
+.app-hero + .prose .macro-table th { width: 44%; padding: 14px 24px 12px; background: color-mix(in srgb, var(--gold-500) 7%, var(--surface)); }
+.app-hero + .prose .macro-table th + th { width: auto; }
+.app-hero + .prose .macro-table td { padding: 14px 24px; vertical-align: middle; }
+.app-hero + .prose .macro-table tr:last-child td { border-bottom: 0; }
+.app-hero + .prose .macro-table td:first-child { font-weight: 500; color: var(--text); }
+.app-hero + .prose .macro-table td:last-child code { white-space: nowrap; padding: 0; background: none; box-shadow: none; font-size: 17px; font-weight: 600; color: var(--gold-text); }
+@media (max-width: 559px) {
+  .app-hero + .prose .macro-table { font-size: 15px; }
+  .app-hero + .prose .macro-table th, .app-hero + .prose .macro-table td { padding-inline: 14px; }
+  .app-hero + .prose .macro-table td:last-child code { font-size: 14px; }
+}
+/* TestFlight page: each beta is a matched block. The icon sits beside its
+   heading, and one hairline separates the two betas. */
+.prose > .beta-icon { float: left; width: 48px; height: 48px; margin: 4px 16px 0 0; border-radius: var(--radius-icon); box-shadow: 0 0 0 1px var(--separator), 0 2px 10px rgba(0, 0, 0, 0.18); }
+.prose > .beta-icon + h2 { margin-top: 0; line-height: 56px; }
+.prose > .beta-icon + h2 + p { clear: left; }
+.prose > p:has(+ .beta-icon) { margin-bottom: 44px; }
+/* The page leads with the choice; the install how-to steps down beneath it. */
+.prose > h1 + p:has(+ .beta-note) { font-size: var(--text-lede); line-height: 1.6; margin-bottom: 10px; }
+.prose > .beta-note { font-size: 15px; line-height: 1.6; color: var(--text-muted); }
+.prose > .app-actions + hr { margin: 40px 0; }
+.prose > .eyebrow { margin-bottom: 14px; }
 @media (max-width: 559px) {
   .app-hero { flex-direction: column; align-items: flex-start; gap: 16px; }
   .app-hero-icon { width: 72px; height: 72px; }
 }
+/* ── App detail pacing (design council, round 2) ──────
+   Long app pages get their structure from the Markdown already there:
+   - the first paragraph is the lede; later body text steps down to
+     --text-muted, so headings, bold labels and links carry the hierarchy;
+   - every h2 opens a new beat under a hairline;
+   - a "**Label:** text" bullet list becomes a spec card: labels in a left
+     column you can scan, the detail beside them (stacked on phone);
+   - an ordered list becomes numbered step cards (01, 02, 03). */
+.app-hero + .prose > p:first-child { font-size: var(--text-lede); line-height: 1.65; }
+.app-hero + .prose > :is(p, ul, ol):not(:first-child):not(.app-actions) { color: var(--text-muted); }
+.app-hero + .prose strong { color: var(--text); }
+.app-hero + .prose > h2 { margin-top: 56px; padding-top: 32px; border-top: 1px solid var(--separator); }
+.app-hero + .prose > h2 + p { margin-bottom: 20px; }
+
+.app-hero + .prose > ul:has(> li > strong:first-child) { --spec-label: 10.5rem; list-style: none; padding: 0; gap: 0; margin: 4px 0 24px; background: var(--surface); border: 1px solid var(--separator); border-radius: var(--radius-card); box-shadow: var(--shadow-card); }
+.app-hero + .prose > ul:has(> li > strong:first-child) > li { display: flow-root; padding: 16px 24px 16px calc(24px + var(--spec-label) + 24px); font-size: 15.5px; line-height: 1.6; }
+.app-hero + .prose > ul:has(> li > strong:first-child) > li + li { border-top: 1px solid var(--separator); }
+.app-hero + .prose > ul:has(> li > strong:first-child) > li > strong:first-child { float: left; width: var(--spec-label); margin-left: calc(-1 * (var(--spec-label) + 24px)); font-weight: 600; }
+
+.app-hero + .prose > ol { list-style: none; padding: 0; gap: 10px; margin: 4px 0 24px; counter-reset: app-step; }
+.app-hero + .prose > ol > li { position: relative; counter-increment: app-step; padding: 16px 24px 16px 68px; font-size: 15.5px; line-height: 1.6; background: var(--surface); border: 1px solid var(--separator); border-radius: 16px; box-shadow: var(--shadow-card); }
+.app-hero + .prose > ol > li::before { content: counter(app-step, decimal-leading-zero); position: absolute; left: 24px; top: 16px; font-family: var(--font-mono); font-size: 14px; font-weight: 600; line-height: 24.8px; color: var(--gold-text); }
+@media (max-width: 559px) {
+  .app-hero + .prose > ul:has(> li > strong:first-child) > li { padding: 14px 18px; }
+  .app-hero + .prose > ul:has(> li > strong:first-child) > li > strong:first-child { float: none; display: block; width: auto; margin: 0 0 2px; }
+  .app-hero + .prose > ol > li { padding: 14px 18px 14px 56px; }
+  .app-hero + .prose > ol > li::before { left: 18px; top: 14px; }
+}
+/* Phone: stacked action buttons share one full width. */
+@media (max-width: 479px) {
+  .prose > .app-actions { flex-direction: column; align-items: stretch; }
+  .prose > .app-actions .btn { justify-content: center; }
+}
+/* A discontinued app's status note uses the same neutral material as its
+   muted chip, set as an annotation rather than a feature callout. */
+.app-hero:has(.status-chip-muted) + .prose blockquote { padding: 12px 16px; background: var(--surface); border-color: var(--separator); border-left-color: var(--text-muted); font-size: 15.5px; }
+/* Its closing row leads with the live path forward. */
+.app-hero:has(.status-chip-muted) + .prose > hr + p:last-child a:first-child { color: var(--text); }
 
 /* ── Posts list + tag lists ─────────────────────────── */
 .post-list { display: flex; flex-direction: column; gap: 14px; }
 .post-card { display: block; background: var(--surface); border: 1px solid var(--separator); border-radius: var(--radius-card); box-shadow: var(--shadow-card); padding: 28px 30px; text-decoration: none; color: var(--text); transition: transform 0.2s var(--ease), border-color 0.2s ease, box-shadow 0.2s ease; }
 .post-card:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--gold-500) 45%, var(--separator)); box-shadow: var(--shadow-card-hover); }
 .post-card h2 { font-weight: 600; font-size: 22px; line-height: 1.25; letter-spacing: -0.02em; margin: 0 0 8px; }
-.post-kicker { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold-text); margin: 0 0 10px; }
+/* The card kicker is the date only; gold is kept for the link cue below. */
+.post-kicker { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin: 0 0 10px; }
 .post-card-desc { font-size: 15px; line-height: 1.6; color: var(--text-muted); margin: 0; }
+/* At-rest link cue for whole-card links (post and tender cards): touch has no hover. */
+.card-cue { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; font-size: 14px; font-weight: 600; color: var(--gold-text); }
+.card-cue svg { transition: transform 0.2s var(--ease); }
+.post-card:hover .card-cue svg, .tender-card:hover .card-cue svg { transform: translateX(2px); }
+@media (prefers-reduced-motion: reduce) {
+  .card-cue svg { transition: none; }
+  .post-card:hover .card-cue svg, .tender-card:hover .card-cue svg { transform: none; }
+}
+/* Short indexes (posts, tags): enough height that a one-card list does not
+   hug the footer, but the footer's top rule still shows in the first
+   viewport, so the page reads as complete rather than unfinished. */
+.page-short-index { min-height: min(60svh, 560px); }
+.page > .back-link + .page-head { margin-top: 0; }
+.tag-more .post-end-label { margin: 0 0 12px; }
+/* Closing line on a short index: a quiet "that's all" and the sibling index. */
+.index-end { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; margin: 28px 0 0; padding-top: 20px; border-top: 1px solid var(--separator); }
+.index-end-note { margin: 0; font-size: 14px; color: var(--text-muted); }
+.index-end .back-link { margin: 0; color: var(--text); }
+.index-end .back-link:hover { color: var(--gold-text); }
+.tag-more { margin-top: 28px; }
 
-/* ── Back link (posts/apps detail) ──────────────────── */
-.back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted); font-size: 13.5px; font-weight: 500; text-decoration: none; margin-bottom: 28px; }
+/* ── Back link (posts/apps/tenders/tags) ────────────── */
+/* 44px tall on every pointer; the label keeps its small size. */
+.back-link { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--text-muted); font-size: 13.5px; font-weight: 500; text-decoration: none; margin-bottom: 16px; }
 .back-link:hover { color: var(--text); }
 .back-link svg { transition: transform 0.2s var(--ease); }
 .back-link:hover svg { transform: translateX(-2px); }
-.post-end { margin: 32px 0 0; }
+/* A forward link in the back-link style: its arrow moves forward on hover. */
+.back-link-next:hover svg { transform: translateX(2px); }
+@media (prefers-reduced-motion: reduce) { .back-link-next:hover svg { transform: none; } }
+/* Post closing: its tags and the way back, in one row. */
+.post-end { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; margin: 28px 0 0; }
+.post-end .back-link { margin: 0; }
+.post-end-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.post-end-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-right: 4px; }
 
 /* ── Prose (markdown pages: privacy, guides, post body) */
 .article-page { max-width: calc(var(--narrow-width) + 2 * var(--gutter)); margin: 0 auto; padding: var(--page-pad-top) var(--gutter) 24px; }
@@ -1108,6 +1380,9 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 .prose h1 { font-weight: 650; font-size: var(--text-title); line-height: 1.08; letter-spacing: -0.028em; margin: 0 0 20px; }
 .prose-post > h1 + p { font-size: clamp(18px, 1.9vw, 20px); line-height: 1.55; color: var(--text-muted); margin-bottom: 24px; }
 .prose-post { padding-bottom: 32px; border-bottom: 1px solid var(--separator); }
+/* The closing paragraph ends on a nowrap email; "pretty" would pull words
+   down and leave a stubby first line, so it fills lines normally. */
+.prose-post > p:last-of-type { text-wrap: wrap; }
 .prose h2 { font-weight: 600; font-size: clamp(22px, 2.4vw, 26px); line-height: 1.22; letter-spacing: -0.02em; margin: 52px 0 14px; }
 .prose h3 { font-weight: 600; font-size: 19px; line-height: 1.3; letter-spacing: -0.01em; margin: 36px 0 8px; }
 .prose h2 + h3 { margin-top: 16px; }
@@ -1120,8 +1395,10 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 .prose ol li::marker { font-family: var(--font-mono); font-size: 0.88em; }
 .prose a { color: var(--text); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent); text-decoration-thickness: 1.5px; text-underline-offset: 4px; transition: color 0.15s ease, text-decoration-color 0.15s ease; }
 .prose a:hover { color: var(--gold-text); text-decoration-color: var(--gold-500); }
+/* An email address never breaks across lines. */
+.prose a[href^="mailto:"] { white-space: nowrap; }
 .prose strong { font-weight: 600; }
-.prose blockquote { margin: 0 0 24px; padding: 14px 18px; background: color-mix(in srgb, var(--gold-500) 6%, var(--surface)); border: 1px solid var(--gold-hairline); border-left: 3px solid color-mix(in srgb, var(--gold-500) 70%, transparent); border-radius: 12px; color: var(--text); font-size: 15.5px; line-height: 1.6; }
+.prose blockquote { margin: 0 0 24px; padding: 14px 18px; background: color-mix(in srgb, var(--gold-500) 6%, var(--surface)); border: 1px solid var(--gold-hairline); border-left: 3px solid color-mix(in srgb, var(--gold-500) 70%, transparent); border-radius: 12px; color: var(--text); font-size: 16px; line-height: 1.6; }
 .prose blockquote > :last-child { margin-bottom: 0; }
 .prose code { font-family: var(--font-mono); font-size: 0.88em; background: var(--fill-2); border-radius: 5px; padding: 1px 6px; }
 [data-theme="light"] .prose :not(pre) > code { background: var(--surface); box-shadow: inset 0 0 0 1px var(--separator); }
@@ -1132,6 +1409,111 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 .prose table { width: 100%; border-collapse: collapse; margin: 0 0 24px; font-size: 15px; line-height: 1.5; display: block; overflow-x: auto; }
 .prose th, .prose td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--separator); vertical-align: top; }
 .prose th { font-weight: 600; font-size: 13px; letter-spacing: 0.02em; color: var(--text-muted); border-bottom-color: color-mix(in srgb, var(--gold-500) 35%, var(--separator)); }
+
+/* ── Guides (help, manuals, policies: proseMain adds .prose-guide;
+      .prose-long when the page has 4+ h2s and an "On this page" list) ── */
+/* Long-form headings fill the measure and wrap only their tail. */
+.prose h1, .prose h2, .prose h3 { text-wrap: pretty; }
+.prose h2, .prose h3, .prose .prose-toc-title { scroll-margin-top: 88px; }
+/* A policy's effective date reads as the page's meta line. */
+.prose .prose-meta { margin-bottom: 24px; font-size: 14.5px; color: var(--text-muted); }
+.prose .prose-meta strong { font-weight: 500; }
+/* Guides with 3+ h2s (.prose-chapters; long guides too): every h2 opens a chapter plane. */
+.prose-long > h2, .prose-chapters > h2 { margin-top: 64px; padding-top: 28px; border-top: 1px solid var(--separator); }
+.prose-long > .prose-toc + h2 { margin-top: 48px; padding-top: 0; border-top: 0; }
+/* A lone italic line under an h2 becomes its dateline (devlog weeks). */
+.prose .prose-dateline { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: -6px 0 20px; font-family: var(--font-mono); font-size: 13.5px; letter-spacing: 0.03em; color: var(--text-muted); }
+/* "· 92 commits" becomes a count pill; the busiest week alone is gold. */
+.prose .prose-dateline-count { display: inline-block; padding: 1px 9px; border-radius: var(--radius-pill); background: var(--fill-2); color: var(--text); font-size: 12.5px; font-variant-numeric: tabular-nums; line-height: 1.6; }
+.prose .prose-dateline-peak { background: color-mix(in srgb, var(--gold-500) 14%, transparent); color: var(--gold-text); font-weight: 600; }
+/* "On this page": a quiet ruled index, two columns where there is room. */
+.prose-toc { margin: 32px 0 0; padding: 18px 0 12px; border-top: 1px solid var(--separator); border-bottom: 1px solid var(--separator); }
+.prose .prose-toc-title { margin: 0 0 8px; font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+.prose .prose-toc ul { display: block; columns: 2; column-gap: 32px; margin: 0; padding: 0; list-style: none; }
+.prose .prose-toc li { break-inside: avoid; padding: 0; line-height: 1.45; }
+.prose .prose-toc a { display: block; padding: 5px 0; font-size: 15px; color: color-mix(in srgb, var(--text) 78%, var(--bg)); text-decoration: none; }
+/* Numbered entries: the number hangs in its own column, so wrapped labels align. */
+.prose .prose-toc a:has(.prose-toc-num) { display: grid; grid-template-columns: 2.2em minmax(0, 1fr); align-items: baseline; }
+.prose .prose-toc-num { font-family: var(--font-mono); font-size: 0.84em; font-variant-numeric: tabular-nums; color: var(--gold-text); }
+/* Unnumbered closers ("Sources") line up with the numbered labels. */
+.prose .prose-toc ul:has(.prose-toc-num) a:not(:has(.prose-toc-num)) { padding-left: 2.2em; }
+.prose .prose-toc a:hover { color: var(--text); text-decoration: underline; text-decoration-color: var(--gold-500); }
+@media (max-width: 600px) {
+  .prose .prose-toc ul { columns: 1; }
+  /* Code blocks (the manual's folder tree) keep more of each line on a phone. */
+  .prose pre { font-size: 12.5px; }
+}
+@media (pointer: coarse) {
+  .prose .prose-toc a { display: flex; align-items: center; min-height: 44px; padding: 2px 0; }
+  .prose .prose-toc a:has(.prose-toc-num) { align-items: center; }
+}
+/* Release markers (🚧 / 🔭 in the Markdown) become labelled pills. */
+.prose .status-tag { display: inline-block; padding: 0 8px; border-radius: var(--radius-pill); background: color-mix(in srgb, var(--gold-500) 12%, transparent); color: var(--gold-text); font-size: 0.78em; font-weight: 600; line-height: 1.6; letter-spacing: 0.01em; vertical-align: 0.08em; white-space: nowrap; }
+.prose .status-tag-later { background: var(--fill-2); color: var(--text-muted); }
+.prose h2 .status-tag, .prose h3 .status-tag { font-size: 13px; letter-spacing: 0.02em; vertical-align: 0.25em; }
+/* Small mono labels for a guide's repeated beats ("How to use it"). */
+.prose-guide h4 { margin: 24px 0 10px; font-family: var(--font-mono); font-size: 12.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold-text); }
+/* The closing "Echo | Manual | Beta" line becomes a row of pill links. */
+.prose-guide > hr + p:last-child { font-size: 0; margin: 0; }
+.prose-guide > hr + p:last-child a { display: inline-flex; align-items: center; margin: 0 10px 10px 0; padding: 8px 16px; font-size: 14.5px; line-height: 1.4; font-weight: 500; color: var(--text); text-decoration: none; background: var(--surface); border: 1px solid var(--separator); border-radius: var(--radius-pill); }
+.prose-guide > hr + p:last-child a:hover { border-color: color-mix(in srgb, var(--gold-500) 45%, var(--separator)); color: var(--text); }
+@media (pointer: coarse) { .prose-guide > hr + p:last-child a { min-height: 44px; } }
+
+/* ── Guides, round 2: wayfinding and set pieces (guideBody() markup) ── */
+/* Code blocks show they scroll: a soft shadow sits on whichever edge hides
+   more text, and the "local" covers slide over it at each end. */
+.prose pre {
+  background:
+    linear-gradient(to right, var(--surface) 30%, transparent) left center / 40px 100% no-repeat local,
+    linear-gradient(to left, var(--surface) 30%, transparent) right center / 40px 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, color-mix(in srgb, var(--text) 22%, transparent), transparent) left center / 14px 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, color-mix(in srgb, var(--text) 22%, transparent), transparent) right center / 14px 100% no-repeat scroll,
+    var(--surface);
+}
+/* Numbered chapters: the number becomes a mono eyebrow ("SECTION 11"), so
+   "see section 22" in the copy is findable while scrolling. */
+.prose .prose-h2-num { display: block; margin-bottom: 6px; font-family: var(--font-mono); font-size: 12.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; font-variant-numeric: tabular-nums; color: var(--gold-text); }
+.prose .prose-h2-num::before { content: "Section "; content: "Section " / ""; }
+/* A way back to the contents at the end of every chapter, and a phone jump
+   to it under the title (the list can sit a long scroll down). */
+.prose .prose-toc-return { margin: 28px 0 0; font-size: 14px; line-height: 1.4; }
+.prose .prose-toc-jump { display: none; margin: -6px 0 22px; font-size: 14px; line-height: 1.4; }
+.prose .prose-toc-return a, .prose .prose-toc-jump a { display: inline-flex; align-items: center; min-height: 32px; color: var(--text-muted); text-decoration-color: var(--separator); }
+.prose .prose-toc-return a:hover, .prose .prose-toc-jump a:hover { color: var(--text); text-decoration-color: var(--gold-500); }
+@media (max-width: 900px) { .prose .prose-toc-jump { display: block; } }
+@media (pointer: coarse) { .prose .prose-toc-return a, .prose .prose-toc-jump a { min-height: 44px; } }
+/* Wide screens: "On this page" leaves the flow and becomes a sticky rail in
+   the empty left margin, so every chapter stays one click away. */
+@media (min-width: 1320px) {
+  .prose-long > .prose-toc { position: sticky; top: 96px; float: left; width: 208px; margin: 4px 0 0 -264px; padding: 0 12px 0 0; border: 0; max-height: calc(100vh - 128px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+  .prose-long > .prose-toc ul { columns: 1; }
+  .prose-long > .prose-toc li { line-height: 1.3; }
+  .prose-long > .prose-toc a { padding: 3px 0; font-size: 13.5px; }
+  .prose-long > .prose-toc + h2 { margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--separator); }
+  .prose-long .prose-toc-return, .prose-long .prose-toc-jump { display: none; }
+}
+/* Plan headings: "Plan A — The Commute Run" plus a quiet scope note. */
+.prose-guide h3 { margin: 32px 0 10px; }
+.prose-guide h3 em { font-style: normal; font-weight: 400; color: var(--text-muted); }
+/* The Focus guide's recurring "How Echo helps" beat: a gold rule and a mono
+   eyebrow, so the one plain blockquote (the disclaimer) is the only full callout. */
+.prose blockquote.prose-aside-echo { padding: 2px 0 2px 18px; background: none; border: 0; border-left: 2px solid color-mix(in srgb, var(--gold-500) 70%, transparent); border-radius: 0; }
+.prose .prose-aside-label { display: block; margin-bottom: 4px; font-family: var(--font-mono); font-size: 12.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold-text); }
+.prose .prose-aside-label::before { content: "∞ "; content: "∞ " / ""; }
+/* The Learning guide's "The science: X" beat: the eyebrow, then the idea's name. */
+.prose-guide h4.prose-h4-titled { font-family: var(--font-sans); font-size: 17px; font-weight: 600; line-height: 1.4; letter-spacing: -0.005em; text-transform: none; color: var(--text); }
+.prose-guide .prose-beat { display: block; margin-bottom: 4px; font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold-text); }
+.prose-guide h2 + h4 { margin-top: 18px; }
+/* Help-page contact list rendered as support rows (marketing's .support-row,
+   reset here only for the .prose link styles it sits inside). */
+.prose .prose-contact { margin: 8px 0 24px; }
+.prose a.support-row { line-height: 1.4; color: var(--text); text-decoration: none; white-space: normal; }
+.prose a.support-row:hover { color: var(--text); }
+.prose .prose-contact .support-row-sub { overflow-wrap: anywhere; }
+/* Inline path and hostname chips sit in the line and may break on a phone. */
+.prose-guide :not(pre) > code { padding: 1px 5px; vertical-align: 0.04em; overflow-wrap: anywhere; }
+/* Short guides end on their own closing row, not against the footer. */
+.article-page:has(> .prose-guide:not(.prose-chapters):not(.prose-long)) { padding-bottom: var(--block-gap); }
 
 /* ── Arcade Hall + shared game system ───────────────── */
 .games-main {
@@ -1154,7 +1536,6 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 .game-card {
   display: flex;
   min-width: 0;
-  min-height: 440px;
   flex-direction: column;
   padding: clamp(22px, 3vw, 30px);
   overflow: hidden;
@@ -1163,13 +1544,10 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
   border-top-width: 2px;
   border-top-color: var(--card-accent, color-mix(in srgb, var(--gold-500) 42%, var(--separator)));
   border-radius: var(--radius-bento);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18), inset 0 1px rgba(255, 255, 255, 0.04);
-  transition: transform 0.2s var(--ease), border-color 0.2s ease, box-shadow 0.2s ease;
-}
-.game-card:hover {
-  transform: translateY(-3px);
-  border-color: color-mix(in srgb, var(--gold-500) 48%, var(--separator));
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18), inset 0 1px rgba(255, 255, 255, 0.04), 0 0 0 1px var(--gold-hairline), var(--shadow-card-hover);
+  /* The card is not a link (its difficulty buttons are), so it does not lift
+     on hover, and it uses the site's short card shadow so neighbours never
+     pool into a grey slab in light theme. */
+  box-shadow: var(--shadow-card);
 }
 .game-card-topline { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 26px; }
 .game-card-eyebrow { color: var(--game-text-accent); font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
@@ -1196,6 +1574,8 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 .game-card-stats div { min-width: 0; }
 .game-card-stats dt { color: var(--game-text-tertiary); font-size: 0.7rem; }
 .game-card-stats dd { margin-top: 3px; color: var(--game-text-primary); font-family: var(--font-mono); font-size: 0.82rem; }
+/* First visit: one quiet line instead of a grid of "—" placeholders. */
+.game-card-stats-empty { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--separator); color: var(--game-text-secondary); font-size: 0.82rem; }
 .games-stats { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: clamp(22px, 4vw, 48px); align-items: center; margin-top: clamp(36px, 6vw, 64px); padding: clamp(24px, 4vw, 36px); background: color-mix(in srgb, var(--gold-500) 6%, var(--surface)); border: 1px solid var(--gold-hairline); border-radius: var(--radius-bento); }
 .games-stats h2 { margin-bottom: 7px; font-size: clamp(1.35rem, 3vw, 1.75rem); }
 .games-stats > div > p:last-child { color: var(--game-text-secondary); font-size: 0.88rem; }
@@ -1252,10 +1632,20 @@ dialog.game-dialog[open] { animation: games-fade-up 0.2s ease; }
 .stack-controls button {
   min-width: 44px;
   min-height: 44px;
+  padding: 8px 12px;
+  color: var(--game-text-primary);
+  background: var(--surface-2);
+  border: 1px solid var(--separator);
+  border-radius: 9px;
 }
 .yard-controls button {
   min-width: 44px;
   min-height: 44px;
+  padding: 8px 12px;
+  color: var(--game-text-primary);
+  background: var(--surface-2);
+  border: 1px solid var(--separator);
+  border-radius: 9px;
 }
 .yard-cell {
   min-width: 44px;
@@ -1268,6 +1658,11 @@ dialog.game-dialog[open] { animation: games-fade-up 0.2s ease; }
 .yard-pan-controls button {
   min-width: 44px;
   min-height: 44px;
+  padding: 8px 12px;
+  color: var(--game-text-primary);
+  background: var(--surface-2);
+  border: 1px solid var(--separator);
+  border-radius: 9px;
 }
 .game-audio-controls button {
   min-width: 44px;
@@ -1291,11 +1686,21 @@ dialog.game-dialog[open] { animation: games-fade-up 0.2s ease; }
   min-width: 44px;
   min-height: 44px;
 }
-fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius: 12px; background: var(--surface); padding: 0.75rem 1rem; }
+fieldset.game-audio-controls { align-items: center; gap: 10px 28px; margin-top: 28px; border: 1px solid var(--separator); border-radius: 12px; background: var(--surface); padding: 14px 18px; }
+/* A floated legend leaves the fieldset border, so "Audio" sits inside the
+   panel as a small label row instead of colliding with the top edge. */
+fieldset.game-audio-controls legend { float: left; width: 100%; padding: 0; color: var(--game-text-secondary); font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
 .game-audio-channel { display: flex; align-items: center; gap: 0.75rem; }
+.game-audio-channel label { display: inline-flex; align-items: center; gap: 10px; color: var(--game-text-secondary); font-size: 0.88rem; }
 .game-audio-channel input[type="range"] { accent-color: var(--gold-500); }
 .game-toolbar, .game-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
-.game-toolbar { margin-bottom: 22px; }
+.game-toolbar { align-items: flex-end; margin-bottom: 22px; }
+/* Breadcrumb over title: one left edge, one baseline for the H1. */
+.game-title { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 6px; margin-right: auto; }
+.game-title .back-link { margin-bottom: 0; }
+/* Game controls use the site typeface, not the browser's default. Zero
+   specificity, so cell and pad rules that set mono type still win. */
+:where(.games-app) :where(button, select, input) { font: inherit; }
 .game-board { width: min(100%, 42rem); margin: 0 auto; background: var(--surface); border: 1px solid var(--game-board-frame); box-shadow: inset 0 0 0 1px var(--gold-hairline); border-radius: 12px; overflow: hidden; }
 .game-board-scroll { width: 100%; max-width: 100%; min-width: 0; overflow-x: auto; overscroll-behavior-inline: contain; }
 .game-controls { justify-content: center; margin-top: 22px; }
@@ -1385,7 +1790,7 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
   transform: scale(.97);
 }
 
-.game-toolbar h1 { margin: 0 auto 0 0; font-size: clamp(1.7rem, 4vw, 2.5rem); }
+.game-toolbar h1 { margin: 0; font-size: clamp(1.7rem, 4vw, 2.5rem); line-height: 1.1; }
 .game-toolbar label { display: inline-flex; align-items: center; gap: 8px; color: var(--game-text-secondary); font-size: 0.85rem; }
 .game-toolbar select, .game-toolbar button, .game-controls button, .sudoku-number-pad button {
   min-width: 44px;
@@ -1395,9 +1800,10 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
   background: var(--surface-2);
   border: 1px solid var(--separator);
   border-radius: 9px;
+  font-size: 0.9rem;
 }
 .game-toolbar time { min-width: 4ch; color: var(--game-text-accent); font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
-.games-app details { max-width: 52rem; margin: 0 auto 20px; color: var(--game-text-secondary); }
+.games-app details { max-width: 52rem; margin: 0 0 20px; color: var(--game-text-secondary); }
 .games-app details summary { min-height: 44px; cursor: pointer; color: var(--game-text-primary); font-weight: 600; }
 .games-app details p { margin-top: 8px; }
 
@@ -1477,11 +1883,11 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
   animation-delay: var(--cell-delay, 0ms);
 }
 
-.game-assisted-status { margin: 12px auto; color: var(--game-text-secondary); text-align: center; }
+.game-assisted-status { margin: 0 0 6px; color: var(--game-text-secondary); font-size: 0.88rem; text-align: left; }
 .crossword-clues { display: grid; gap: 24px; }
 .crossword-clues h2 { margin-bottom: 8px; font-size: 1.1rem; }
-.crossword-clues ul { display: grid; gap: 5px; padding-left: 1.5rem; }
-.crossword-clues button { min-height: 44px; padding: 6px 8px; color: var(--game-text-secondary); background: transparent; border: 0; text-align: left; }
+.crossword-clues ul { display: grid; gap: 2px; padding-left: 0; list-style: none; }
+.crossword-clues button { width: 100%; min-height: 44px; padding: 6px 8px; color: var(--game-text-secondary); background: transparent; border: 1px solid transparent; border-radius: 8px; font-size: 0.92rem; line-height: 1.4; text-align: left; }
 .crossword-clues button:hover, .crossword-clues button:focus-visible { color: var(--game-text-accent); }
 /* Non-colour cue for the active clue: a gold hairline plus a bolder weight, not just a tint. */
 [data-clue].is-active { border: 1px solid var(--gold-hairline); font-weight: 800; }
@@ -1503,7 +1909,7 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
 .word-search-cell.is-rejected { outline: 3px solid #ef8d87; outline-offset: -3px; animation: games-cell-shake 200ms ease; }
 .word-search-cell.is-celebrating { animation: games-cell-bloom .5s ease both; animation-delay: var(--cell-delay, 0ms); }
 .word-search-list { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 12px; list-style: none; }
-.word-search-list li { color: var(--game-text-primary); font-family: var(--font-mono); font-size: 0.85rem; }
+.word-search-list li { padding: 4px 10px; color: var(--game-text-primary); background: var(--fill-2); border: 1px solid var(--separator); border-radius: 6px; font-family: var(--font-mono); font-size: 0.85rem; }
 /* Non-colour cue for a found word: the strike-through itself, not the tone
    change, is what still reads it as "solved" for colour-vision-deficient
    sighted users; opacity settles in with a transition ("strike-in"). */
@@ -1735,8 +2141,8 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
 }
 .yard-grid {
   display: grid;
-  grid-template-columns: repeat(var(--yard-columns), 44px);
-  width: calc(var(--yard-columns) * 44px);
+  grid-template-columns: repeat(var(--yard-columns), var(--yard-cell, 44px));
+  width: calc(var(--yard-columns) * var(--yard-cell, 44px));
 }
 .yard-row { display: contents; }
 .yard-gridcell {
@@ -1745,8 +2151,8 @@ fieldset.game-audio-controls { border: 1px solid var(--separator); border-radius
   min-height: 44px;
 }
 .yard-cell {
-  width: 44px;
-  height: 44px;
+  width: var(--yard-cell, 44px);
+  height: var(--yard-cell, 44px);
   padding: 0;
   color: var(--game-text-primary);
   background-color: var(--surface);
@@ -1854,8 +2260,16 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   border: 1px solid var(--separator);
   border-radius: 9px;
 }
+/* Hint and Check read as two buttons, centred under the puzzle. */
+.charts-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 20px; }
+/* The puzzle (clues + grid) is centred in the column; auto margins collapse
+   to 0 when a hard board overflows, so the scroller still reaches the left
+   edge. --charts-cell grows the cells on wide screens. */
 .charts-layout {
-  display: inline-grid;
+  --charts-cell: 44px;
+  display: grid;
+  width: max-content;
+  margin-inline: auto;
   grid-template-columns: auto 1fr;
   grid-template-rows: auto 1fr;
   grid-template-areas: "corner columns" "rows board";
@@ -1865,22 +2279,22 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .charts-columns {
   grid-area: columns;
   display: grid;
-  grid-template-columns: repeat(var(--charts-size), minmax(44px, 1fr));
+  grid-template-columns: repeat(var(--charts-size), var(--charts-cell, 44px));
   align-items: end;
 }
 .charts-rows {
   grid-area: rows;
   display: grid;
-  grid-template-rows: repeat(var(--charts-size), minmax(44px, 1fr));
+  grid-template-rows: repeat(var(--charts-size), var(--charts-cell, 44px));
   align-items: center;
   justify-items: end;
 }
 .charts-board {
   grid-area: board;
   display: grid;
-  grid-template-columns: repeat(var(--charts-size), minmax(44px, 1fr));
-  grid-template-rows: repeat(var(--charts-size), minmax(44px, 1fr));
-  min-width: calc(var(--charts-size) * 44px);
+  grid-template-columns: repeat(var(--charts-size), var(--charts-cell, 44px));
+  grid-template-rows: repeat(var(--charts-size), var(--charts-cell, 44px));
+  min-width: calc(var(--charts-size) * var(--charts-cell, 44px));
   aspect-ratio: 1;
   background: var(--surface);
   border: 1px solid var(--game-board-frame);
@@ -1892,9 +2306,9 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .charts-gridcell { display: flex; min-width: 44px; min-height: 44px; }
 .charts-clue {
   padding: 2px 6px;
-  color: var(--game-text-secondary);
+  color: var(--game-text-primary);
   font-family: var(--font-mono);
-  font-size: clamp(0.68rem, 2.4vw, 0.85rem);
+  font-size: clamp(0.8rem, 2.6vw, 0.95rem);
   line-height: 1.2;
   white-space: pre-line;
   transition: opacity .2s ease;
@@ -1946,6 +2360,103 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   100% { transform: scale(1); background-color: var(--gold-500); color: var(--bg); }
 }
 
+/* ── Game polish (design council pass) ───────────────── */
+/* Disabled controls stay legible: AA-measured secondary text on the page
+   background, with a dashed edge as the non-colour "not available" cue. */
+.game-toolbar button:disabled, .game-toolbar select:disabled, .game-controls button:disabled,
+.sudoku-number-pad button:disabled, .word-search-pan button:disabled, .stack-controls button:disabled,
+.yard-controls button:disabled, .yard-pan-controls button:disabled, .charts-controls button:disabled,
+.game-audio-controls button:disabled, .game-preplay button:disabled {
+  color: var(--game-text-secondary);
+  background: transparent;
+  border-style: dashed;
+  border-color: var(--separator);
+  cursor: not-allowed;
+  transform: none;
+}
+/* One control size across every game: labels stay on one line. */
+.game-preplay button, .stack-controls button, .yard-controls button, .yard-pan-controls button,
+.game-audio-controls button, .charts-controls button, .word-search-pan button, .game-controls > button {
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+.stack-controls button { padding-inline: 8px; font-size: 0.86rem; }
+
+/* Sudoku: tools on one row, digits on a full-width pad below, so entry and
+   tools read as different control types and digits never orphan. */
+.sudoku-controls { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); width: min(100%, 42rem); margin-inline: auto; gap: 8px; }
+.sudoku-number-pad { display: grid; grid-column: 1 / -1; grid-template-columns: repeat(9, minmax(44px, 1fr)); gap: 6px; margin-top: 4px; }
+.sudoku-number-pad button { min-height: 52px; font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; }
+/* Player entries carry the gold accent; givens stay primary and bold. */
+.sudoku-cell:where(:not(.is-given)) { color: var(--game-text-accent); }
+
+/* Crossword: blocked squares read as deliberate black squares. */
+.crossword-board { background-image: repeating-linear-gradient(135deg, transparent 0 6px, color-mix(in srgb, var(--game-board-frame) 30%, transparent) 6px 7px); }
+/* Crossword and Word Search: Hint/Check sit under the board, on its edge. */
+.crossword-layout + .game-controls, .word-search-layout + .game-controls { justify-content: flex-start; }
+.word-search-layout h2 { font-size: clamp(1.25rem, 2.5vw, 1.6rem); }
+.word-search-list li.is-found-item { background: transparent; border-style: dashed; }
+/* The pan rail only appears when the board is wider than its column. */
+.word-search-board-column.is-fitting .word-search-pan,
+.yard-board-column.is-fitting .yard-pan-controls { display: none; }
+
+@media (min-width: 760px) {
+  .charts-layout { --charts-cell: clamp(44px, 4.2vw, 56px); }
+}
+
+/* KinNoKi Stack and Yard: the board leads; a side panel holds the run
+   controls, next cargo / tray, and compact status tiles. */
+.game-mode-note { margin: 0; color: var(--game-text-secondary); font-size: 0.92rem; line-height: 1.5; }
+.stack-layout, .yard-layout { display: grid; gap: 18px; }
+.stack-layout > *, .yard-layout > * { min-width: 0; }
+.stack-next, .yard-tray-panel { display: grid; gap: 8px; }
+.stack-next h2, .yard-tray-panel h2 { margin: 0; color: var(--game-text-secondary); font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+.stack-preview { margin: 0; }
+.stack-layout .game-status-grid, .yard-layout .game-status-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+  margin: 0;
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--separator);
+  border-radius: 12px;
+}
+.stack-layout .game-status-grid > div:nth-child(n + 5), .yard-layout .game-status-grid > div:nth-child(n + 5) { grid-column: 1 / -1; }
+.stack-layout .game-status-grid dt, .yard-layout .game-status-grid dt { color: var(--game-text-secondary); font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.stack-layout .game-status-grid dd, .yard-layout .game-status-grid dd { margin: 3px 0 0; color: var(--game-text-primary); font-size: 0.88rem; line-height: 1.4; }
+.stack-layout .game-status-grid > div:nth-child(-n + 4) dd, .yard-layout .game-status-grid > div:nth-child(-n + 4) dd { font-family: var(--font-mono); font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+.stack-layout details, .yard-layout details { margin: 0; }
+.stack-controls { display: grid; grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr)); gap: 8px; }
+.yard-board-column { display: grid; gap: 12px; align-content: start; }
+.yard-controls { justify-content: center; gap: 8px; }
+.stack-dock-description:empty { display: none; }
+.stack-crane-line { padding-right: 6px; }
+.yard-cell-target { border-color: var(--game-text-accent); }
+.yard-board-scroll { width: fit-content; margin-inline: auto; }
+
+@media (min-width: 960px) {
+  .stack-layout, .yard-layout {
+    grid-template-columns: minmax(0, var(--board-track)) minmax(16rem, 20rem);
+    grid-template-rows: auto auto auto auto 1fr auto auto;
+    justify-content: center;
+    column-gap: clamp(28px, 4vw, 48px);
+    row-gap: 18px;
+    align-items: start;
+  }
+  .stack-layout { --board-track: calc(12 * 44px); }
+  .yard-layout { --board-track: max-content; }
+  .stack-layout > .game-mode-note, .yard-layout > .game-mode-note { grid-column: 2; grid-row: 1; }
+  .stack-layout > .game-preplay, .yard-layout > .game-preplay { grid-column: 2; grid-row: 2; }
+  .stack-layout > .stack-next, .yard-layout > .yard-tray-panel { grid-column: 2; grid-row: 3; }
+  .stack-layout > .game-status-grid, .yard-layout > .game-status-grid { grid-column: 2; grid-row: 4; }
+  .stack-layout > details, .yard-layout > details { grid-column: 2; grid-row: 5; }
+  .stack-layout > .stack-dock, .yard-layout > .yard-board-column { grid-column: 1; grid-row: 1 / 6; }
+  .stack-layout > .stack-controls { grid-column: 1; grid-row: 6; }
+  .stack-layout > .stack-dock-description { grid-column: 1; grid-row: 7; }
+  .yard-layout > .yard-board-column { min-width: 20rem; }
+}
+
 @media (max-width: 759px) {
   .game-card-grid { grid-template-columns: 1fr; }
   .game-card { min-height: 0; }
@@ -1954,27 +2465,187 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   .games-reset { width: 100%; }
   .game-dialog-actions { flex-direction: column-reverse; }
   .game-dialog-actions .btn { width: 100%; }
-  .game-toolbar h1 { width: 100%; order: -1; }
+  .game-title { width: 100%; }
   .crossword-layout, .word-search-layout { grid-template-columns: 1fr; }
   .crossword-layout .game-board, .word-search-layout .game-board { width: 100%; }
+  /* Boards fit the phone column instead of clipping: cells shrink with the
+     column (easy/medium grids stay 32-40px) down to a 26px floor (above
+     WCAG 2.5.8's 24px); only the largest grids scroll, with the pan rail. */
+  .sudoku-board { min-width: calc(9 * 26px); }
+  .sudoku-gridcell, .sudoku-cell { min-width: 0; min-height: 0; }
+  .crossword-board { min-width: calc(var(--crossword-size) * 26px); }
+  .crossword-gridcell { min-width: 0; min-height: 0; }
+  .word-search-board { min-width: calc(var(--word-search-size) * 26px); }
+  .word-search-gridcell, .word-search-cell { min-width: 0; min-height: 0; }
+  .charts-layout { --charts-cell: clamp(26px, calc((100vw - 2 * var(--gutter) - 4.5rem) / var(--charts-size)), 44px); }
+  .charts-gridcell, .charts-cell { min-width: 0; min-height: 0; }
+  /* Targets first: the word list sits above the board while scanning. */
+  .word-search-layout > section { order: -1; }
+  .sudoku-number-pad { grid-template-columns: repeat(5, minmax(44px, 1fr)); }
+  /* Five tools in one row over the five-column pad. */
+  .sudoku-controls { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+  .sudoku-controls > button { padding-inline: 4px; }
+  .sudoku-controls .sudoku-number-pad { grid-column: 1 / -1; width: 100%; }
+  .word-search-cell { font-size: clamp(0.8rem, 3.6vw, 1.2rem); }
+  /* Toolbar: difficulty and timer on one row, Restart / New Game as a pair. */
+  .game-toolbar > time { margin-left: auto; }
+  .game-toolbar > button { flex: 1 1 40%; }
+  .game-audio-channel { flex-wrap: wrap; }
+  .crossword-layout + .game-controls, .word-search-layout + .game-controls { justify-content: center; }
 }
 
 @media (max-width: 759px) {
-  .stack-game .game-status-grid,
-  .yard-game .game-status-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-  }
-
   .stack-controls,
-  .yard-controls,
-  .game-audio-controls { align-items: stretch; }
+  .yard-controls { align-items: stretch; }
 
-  .stack-controls button,
-  .yard-controls button { flex: 1 1 8rem; }
+  .yard-controls button { flex: 1 1 4.5rem; }
 
   .yard-pan-controls { display: flex; }
   .yard-board-scroll { max-width: 100%; }
+}
+
+/* ── Games round 2 (design council) ───────────────── */
+/* Hub: difficulty follows the description at a fixed gap, and spare card
+   height collects above the footer rule, so cards in a row share lines. */
+.game-mode-actions { margin-top: 24px; margin-bottom: 22px; }
+.game-card-stats, .game-card-stats-empty { margin-top: auto; }
+.games-stats > div > p a { color: var(--gold-text); font-weight: 600; text-underline-offset: 3px; }
+/* Nothing stored: reset is shown, but in the shared disabled skin. */
+.games-reset:disabled, .games-reset:disabled:hover {
+  color: var(--game-text-secondary);
+  background: transparent;
+  border: 1px dashed var(--separator);
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Shared furniture. The timer gets the controls' 44px box, so it sits on
+   their centre line instead of hanging below it. */
+.game-toolbar > time { display: inline-flex; min-height: 44px; align-items: center; }
+/* Audio is a compact utility strip, not a full-width section. */
+fieldset.game-audio-controls { width: fit-content; max-width: 100%; }
+/* The one go-button (Start, Continue or Resume; only one shows) is primary. */
+.game-preplay button:is([data-start-game], [data-continue-game], [data-resume-game]) {
+  color: #1d1d1f;
+  background: var(--grad-gold);
+  border-color: rgba(0, 0, 0, 0.12);
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+}
+[data-theme="light"] .game-preplay button:is([data-start-game], [data-continue-game], [data-resume-game]) {
+  border-color: color-mix(in srgb, var(--gold-700) 45%, transparent);
+  box-shadow: 0 1px 2px rgba(60, 45, 15, 0.18), 0 4px 12px color-mix(in srgb, var(--gold-700) 22%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+.game-preplay button:is([data-start-game], [data-continue-game], [data-resume-game]):hover { border-color: rgba(0, 0, 0, 0.12); filter: brightness(1.06); }
+/* Names the button that unlocks the dashed (disabled) play controls. */
+.game-controls-hint { margin: 0; color: var(--game-text-secondary); font-size: 0.85rem; line-height: 1.4; text-align: center; }
+.game-controls-hint[hidden] { display: none; }
+
+/* Stack: one crisp crane rule, not a double line that reads as a seam. */
+.stack-crane-line { border-top: 2px solid currentColor; }
+.stack-layout > .game-controls-hint { grid-column: 1 / -1; }
+
+/* Yard: cells scale to the board column (44px floor for touch, 80px cap),
+   and the tray is a grid of equal squares whatever the cargo's shape. */
+.yard-board-column { container-type: inline-size; }
+.yard-grid { --yard-cell: clamp(44px, calc((100cqw - 2px) / var(--yard-columns)), 80px); }
+.yard-tray { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 10px; }
+.yard-tray-piece { aspect-ratio: 1; justify-content: center; padding: 8px; }
+.yard-tray-piece .cargo-thumb {
+  width: calc(2.6rem * var(--cargo-thumb-columns, 1) / max(var(--cargo-thumb-columns, 1), var(--cargo-thumb-rows, 1)));
+}
+
+/* Charts: cells grow to fill a laptop column (76px on a 5×5, 44px on a
+   15×15); Hint/Check live in the layout grid, centred under the board;
+   10×10 and 15×15 boards get a faint gold graticule every five cells. */
+.charts-layout { grid-template-rows: auto 1fr auto; grid-template-areas: "corner columns" "rows board" ". controls"; }
+.charts-layout > .charts-controls { grid-area: controls; margin-top: 16px; }
+.charts-board:not([data-size="5"]) .charts-gridcell:nth-child(5n):not(:last-child) .charts-cell { box-shadow: inset -2px 0 0 var(--gold-hairline); }
+.charts-board:not([data-size="5"]) .charts-row:nth-child(5n):not(:last-child) .charts-cell { box-shadow: inset 0 -2px 0 var(--gold-hairline); }
+.charts-board:not([data-size="5"]) .charts-row:nth-child(5n):not(:last-child) .charts-gridcell:nth-child(5n):not(:last-child) .charts-cell { box-shadow: inset -2px -2px 0 var(--gold-hairline); }
+@media (min-width: 760px) {
+  .charts-layout { --charts-cell: clamp(44px, calc(38rem / var(--charts-size)), 76px); }
+}
+
+/* Crossword and Word Search: entry controls sit directly under the board. */
+.crossword-board-column { min-width: 0; }
+.crossword-board-column > .game-controls, .word-search-layout + .game-controls { justify-content: flex-start; }
+.crossword-current-clue { display: none; }
+.crossword-clues button.is-filled:not(.is-active) { color: var(--game-text-tertiary); }
+.crossword-number { color: var(--game-text-secondary); font-size: 0.68rem; }
+/* Word Search: the word list is a plain checklist (it is not clickable),
+   one word per line beside the board. */
+.word-search-list { flex-direction: column; gap: 4px; }
+.word-search-list li { padding: 6px 0; background: none; border: 0; border-bottom: 1px solid var(--separator); border-radius: 0; font-size: 0.92rem; letter-spacing: 0.04em; }
+.word-search-list li.is-found-item { background: none; border-style: solid; }
+
+@media (min-width: 960px) {
+  /* Stack: the board starts on the title's left edge; the panel takes the rest. */
+  .stack-layout { grid-template-columns: var(--board-track) minmax(16rem, 1fr); justify-content: start; }
+  .stack-layout > .game-controls-hint { grid-column: 1; grid-row: 7; }
+  .stack-layout > .stack-dock-description { grid-row: 8; }
+  /* Yard: the board is sized for a laptop (34rem across, 96px cap) and
+     starts on the title's edge; the side panel takes the remaining width,
+     so board and panel end close together instead of beside a void. */
+  .yard-layout { grid-template-columns: max-content minmax(18rem, 1fr); justify-content: start; }
+  .yard-layout > .yard-board-column { min-width: 0; }
+  .yard-board-column { container-type: normal; }
+  .yard-grid { --yard-cell: clamp(44px, calc(34rem / var(--yard-columns)), 96px); }
+  .yard-board-scroll { margin-inline: 0; }
+  /* The wider panel holds the status as one row of four tiles over the
+     longer rows, instead of a tall two-column card. */
+  .stack-layout .game-status-grid, .yard-layout .game-status-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .stack-layout .game-status-grid > div:nth-child(n + 5), .yard-layout .game-status-grid > div:nth-child(n + 5) { grid-column: span 2; }
+  .yard-layout .game-status-grid > div:nth-child(n + 6) { grid-column: span 1; }
+  .yard-controls { justify-content: flex-start; }
+  .yard-board-column > .game-controls-hint { text-align: left; }
+  /* Sudoku: tools and a 3×3 keypad sit beside a board sized to the screen,
+     so a 1440×900 laptop shows board, tools and every digit at once. */
+  .games-app:has(> .sudoku-controls) { display: grid; grid-template-columns: max-content minmax(14rem, 1fr); column-gap: clamp(24px, 3vw, 40px); align-items: start; }
+  .games-app:has(> .sudoku-controls) > * { grid-column: 1 / -1; }
+  .games-app:has(> .sudoku-controls) > .game-board-scroll { grid-column: 1; }
+  .games-app:has(> .sudoku-controls) > .sudoku-controls { grid-column: 2; width: 100%; max-width: 17rem; margin: 0; grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .sudoku-board { width: clamp(28rem, calc(100svh - 24rem), 42rem); }
+  .sudoku-controls > button:nth-child(-n + 3) { grid-column: span 2; }
+  .sudoku-controls > button:nth-child(4), .sudoku-controls > button:nth-child(5) { grid-column: span 3; }
+  .sudoku-controls .sudoku-number-pad { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 8px; }
+  .sudoku-controls .sudoku-number-pad button { min-height: 64px; font-size: 1.35rem; }
+  /* Word Search: the checklist runs beside the board. */
+  .word-search-layout > section { position: sticky; top: 96px; }
+}
+
+@media (max-width: 759px) {
+  /* Charts: a 5×5 fills the phone column (up to 60px cells). */
+  .charts-layout { --charts-cell: clamp(26px, calc((100vw - 2 * var(--gutter) - 4.5rem) / var(--charts-size)), 60px); }
+  /* Sudoku: the board bleeds to 4px from the screen edge (~42px cells on a
+     390px phone); the 52px pad stays the main input. Digits 6-9 centre
+     under 1-5 instead of leaving a hole. */
+  .games-app:has(> .sudoku-controls) { overflow-x: visible; }
+  .games-app:has(> .sudoku-controls) > .game-board-scroll { width: auto; max-width: none; margin-inline: calc(4px - var(--gutter)); }
+  .sudoku-controls .sudoku-number-pad { display: flex; flex-wrap: wrap; justify-content: center; }
+  .sudoku-controls .sudoku-number-pad button { flex: 0 0 calc((100% - 24px) / 5); }
+  /* Crossword: the active clue shows under the board; the three checks are
+     one even row. */
+  .crossword-layout { display: block; }
+  .crossword-layout > .crossword-clues { margin-top: 28px; }
+  .crossword-current-clue { display: block; min-height: 2.9em; margin: 12px 0 0; padding: 10px 14px; color: var(--game-text-primary); background: color-mix(in srgb, var(--gold-500) 8%, var(--surface)); border-left: 3px solid var(--gold-500); border-radius: 8px; font-size: 0.92rem; line-height: 1.4; }
+  .crossword-current-clue:empty { display: none; }
+  .crossword-board-column > .game-controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+  .crossword-board-column > .game-controls > button { padding-inline: 4px; font-size: 0.84rem; }
+  .word-search-layout + .game-controls { justify-content: flex-start; }
+  /* Word Search: the checklist takes two columns so the board stays close. */
+  .word-search-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 20px; }
+  .word-search-list li { padding: 5px 0; }
+  /* Yard: Mode and Difficulty share one row, labels over the selects. */
+  .yard-game .game-toolbar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: end; }
+  .yard-game .game-toolbar > .game-title { grid-column: 1 / -1; }
+  .yard-game .game-toolbar > label { flex-direction: column; align-items: stretch; gap: 6px; }
+  .yard-game .game-toolbar > label select { width: 100%; }
+  /* Stack: the four headline tiles in one compact row. */
+  .stack-layout .game-status-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px 10px; padding: 14px; }
+  .stack-layout .game-status-grid > div:nth-child(n + 5) { grid-column: 1 / -1; }
+  .stack-layout .game-status-grid > div:nth-child(-n + 4) dd { font-size: 0.95rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2102,8 +2773,8 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .tool-tab { min-height: 44px; padding: 8px 12px; color: var(--game-text-secondary); background: var(--surface-2); border: 1px solid var(--separator); border-radius: 9px; font: inherit; }
 .tool-tab.is-active { color: var(--game-text-primary); border-color: var(--gold-500); }
 .qr-stage { max-width: 320px; padding: 16px; background: #fff; border-radius: 12px; }
-.contrast-preview { padding: 20px; background: var(--surface); border: 1px solid var(--separator); border-radius: 12px; }
-.contrast-swatch { min-width: 44px; min-height: 44px; border: 1px solid var(--separator); border-radius: 9px; }
+.contrast-preview { display: grid; gap: 14px; padding: 16px; background: var(--surface); border: 1px solid var(--separator); border-radius: 12px; }
+.contrast-swatch { min-width: 44px; min-height: 44px; margin: 0; padding: 14px 16px; border: 1px solid var(--separator); border-radius: 9px; font-size: 1.05rem; line-height: 1.45; }
 .tool-connectivity-status:not(:empty) { margin-top: 12px; }
 .tool-offline-chip { display: inline-flex; align-items: center; min-height: 28px; padding: 4px 10px; color: var(--game-text-accent); background: var(--fill-2); border: 1px solid var(--gold-hairline); border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 600; }
 
@@ -2118,10 +2789,14 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .click-counter-fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
 .click-counter-fieldset legend,
 .click-counter-target label { margin-bottom: 10px; color: var(--game-text-primary); font-size: 1rem; font-weight: 700; }
+/* One segmented control: the 1px gaps over a separator-coloured track draw
+   the hairlines, so the 6-up and 3x2 layouts have no doubled borders. */
 .click-counter-presets {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1px;
   overflow: hidden;
+  background: var(--separator);
   border: 1px solid var(--separator);
   border-radius: 10px;
 }
@@ -2131,11 +2806,9 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   color: var(--game-text-primary);
   background: var(--surface);
   border: 0;
-  border-right: 1px solid var(--separator);
   border-radius: 0;
   font: 600 1rem/1 var(--font-sans);
 }
-.click-counter-preset:last-child { border-right: 0; }
 .click-counter-preset[aria-pressed="true"] {
   position: relative;
   z-index: 1;
@@ -2149,11 +2822,12 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .click-counter-target input { min-height: 58px; font-size: 1.2rem; }
 .click-counter-result {
   display: grid;
-  justify-items: center;
-  gap: 4px;
+  justify-items: start;
+  align-content: center;
+  gap: 6px;
   min-height: 132px;
-  padding: 18px 20px;
-  text-align: center;
+  padding: 22px 24px;
+  text-align: start;
 }
 .click-counter-result.tool-error { align-content: center; }
 .click-counter-value {
@@ -2165,19 +2839,12 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 }
 .click-counter-number { color: var(--game-text-accent); }
 .click-counter-equation { margin: 0; color: var(--game-text-secondary); font-size: 1rem; }
-.click-counter-actions { justify-content: center; }
+.click-counter-actions { justify-content: flex-start; }
 .click-counter-actions button { min-width: 160px; }
-.click-counter-copy { color: var(--game-text-accent) !important; border-color: var(--gold-500) !important; }
-.click-counter-copy-status,
-.click-counter-local-note { min-height: 1.4em; margin: -12px 0 0; text-align: center; }
-.click-counter-copy-status { color: var(--game-text-accent); font-weight: 600; }
-.click-counter-local-note { color: var(--game-text-secondary); font-size: 0.85rem; }
+.click-counter-copy-status { min-height: 1.4em; margin: -12px 0 0; color: var(--game-text-accent); font-weight: 600; }
 
 @media (max-width: 640px) {
   .click-counter-presets { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .click-counter-preset { border-bottom: 1px solid var(--separator); }
-  .click-counter-preset:nth-child(3n) { border-right: 0; }
-  .click-counter-preset:nth-child(n + 4) { border-bottom: 0; }
   .click-counter-actions { flex-direction: column; }
   .click-counter-actions button { width: 100%; }
 }
@@ -2264,6 +2931,366 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 
 @media (min-width: 900px) {
   .epub-library-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* --- Tools: design-council pass (shared shell, states, per-tool layout) --- */
+/* Shared shell: one way back on every tool, privacy line set apart from the lede. */
+.tool-shell .tool-back-link { display: inline-flex; align-items: center; min-height: 44px; margin: -10px 0 10px; text-decoration: none; }
+.tool-shell .tool-back-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.tool-shell .tool-privacy { margin-top: 10px; color: var(--text-muted); font-size: 14px; line-height: 1.5; }
+[data-theme="light"] .tool-error { color: #9e2a24; border-color: #c4554e; }
+
+/* Shared form: a single shrinkable column, spacing after tabs, and three
+   button weights — primary (gold, one per tool), default, quiet. */
+.tool-form { grid-template-columns: minmax(0, 1fr); }
+.tool-form > * { min-width: 0; }
+.tool-form textarea { width: 100%; }
+.tool-tabs { margin-bottom: 24px; }
+.tool-tab { cursor: pointer; }
+.tool-tab:hover { color: var(--game-text-primary); }
+.tool-tab.is-active { background: var(--fill-2); }
+.tool-form button:not(:disabled) { cursor: pointer; }
+.tool-form button:not(:disabled):hover { border-color: color-mix(in srgb, var(--gold-500) 45%, var(--separator)); }
+.tool-form .tool-primary {
+  padding: 10px 20px;
+  color: #1d1d1f;
+  background: var(--grad-gold);
+  border-color: rgba(0, 0, 0, 0.12);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+}
+.tool-form .tool-primary:not(:disabled):hover { border-color: rgba(0, 0, 0, 0.2); filter: brightness(1.05); }
+[data-theme="light"] .tool-form .tool-primary { border-color: color-mix(in srgb, var(--gold-700) 45%, transparent); box-shadow: 0 1px 2px rgba(60, 45, 15, 0.18); }
+.tool-form .tool-quiet { color: var(--game-text-secondary); background: transparent; }
+.tool-form .tool-quiet:not(:disabled):hover { color: var(--game-text-primary); background: var(--fill-2); }
+.tool-form button:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; filter: none; }
+.tool-hint { margin: 2px 0 0; color: var(--text-muted); font-size: 13px; line-height: 1.45; }
+.tool-inline { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 8.5rem); gap: 8px; }
+
+/* Results: an answer keeps its box; the waiting state is a quiet line. */
+.tool-result { margin: 0; }
+.tool-result:empty { display: none; }
+.tool-result.tool-result-strong { color: var(--game-text-primary); font-size: 1.1rem; font-weight: 500; line-height: 1.5; }
+.tool-result.tool-result-strong strong { color: var(--game-text-accent); font-weight: 700; font-variant-numeric: tabular-nums; }
+.tool-result-empty { color: var(--text-muted); }
+
+/* Hub: Gas Price Watch is a second, labelled section built like a hub card. */
+.tool-live-eyebrow { margin: clamp(40px, 6vw, 64px) 0 14px; }
+.tool-live-data {
+  position: relative;
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  padding: clamp(22px, 3vw, 30px);
+  background: var(--surface);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s var(--ease), border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.tool-live-data h2 { margin: 0; font-size: 1.2rem; }
+.tool-live-data h2 a { color: var(--text); text-decoration: none; }
+.tool-live-data h2 a::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.tool-live-data h2 a:focus-visible { outline: none; }
+.tool-live-data:focus-within { outline: 2px solid var(--gold-text); outline-offset: 2px; }
+.tool-live-data:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--gold-500) 45%, var(--separator)); box-shadow: var(--shadow-card-hover); }
+.tool-live-data:hover h2 a { color: var(--game-text-accent); }
+.tool-live-data p { margin: 0; color: var(--game-text-secondary); font-size: 15px; line-height: 1.5; }
+.tool-online-chip { display: inline-flex; align-items: center; min-height: 28px; margin-top: 4px; padding: 4px 10px; color: var(--game-text-secondary); background: var(--fill-2); border: 1px solid var(--separator); border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 600; }
+@media (min-width: 700px) {
+  .tool-live-data { grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 24px; }
+  .tool-live-data > :not(.tool-online-chip) { grid-column: 1; }
+  .tool-live-data .tool-online-chip { grid-column: 2; grid-row: 1 / span 2; margin: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tool-live-data { transition: none; }
+  .tool-live-data:hover { transform: none; }
+}
+
+/* Click counter: presets beat the generic .tool-form button box so the
+   segmented control has no per-button radius or border; solid fills keep
+   the separator track from showing through. Result sits on the form edge. */
+.tool-form .click-counter-preset { background: var(--surface); border: 0; border-radius: 0; }
+.tool-form .click-counter-preset:hover { background: var(--surface-2); }
+.tool-form .click-counter-preset[aria-pressed="true"] { background: color-mix(in srgb, var(--gold-500) 12%, var(--surface)); }
+.click-counter-result:not(.tool-error) { padding-inline: 0; }
+
+/* Dilution: one narrow column of stacked fields, chip rows for presets. */
+.tools-main[data-tool-page="dilution"] .tool-tabs,
+.tools-main[data-tool-page="dilution"] .tool-form,
+.tools-main[data-tool-page="passphrase"] .tool-tabs,
+.tools-main[data-tool-page="passphrase"] .tool-form { max-width: 600px; }
+.tool-quick-picks,
+.tool-bottle-presets,
+.tool-strengths { display: flex; flex-wrap: wrap; gap: 8px; margin-top: -6px; }
+.tool-form .tool-quick-pick,
+.tool-form .tool-bottle-preset,
+.tool-form .tool-strength { min-width: 64px; padding: 8px 16px; border-radius: var(--radius-pill); font-variant-numeric: tabular-nums; }
+.tool-form .tool-strength[aria-pressed="true"] { color: var(--game-text-accent); background: var(--fill-2); border-color: var(--gold-500); }
+
+/* Contrast: swatch beside its hex, the ratio as the headline, verdict tiles. */
+.contrast-input-row { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 8px; }
+.tool-field input.contrast-picker { width: 44px; height: 44px; min-height: 44px; padding: 3px; cursor: pointer; }
+.contrast-picker::-webkit-color-swatch-wrapper { padding: 0; }
+.contrast-picker::-webkit-color-swatch { border: 0; border-radius: 6px; }
+.contrast-picker::-moz-color-swatch { border: 0; border-radius: 6px; }
+.contrast-input-row input[type="text"] { font-family: var(--font-mono); }
+.contrast-results { display: grid; gap: 16px; min-width: 0; }
+.contrast-ratio { margin: 8px 0 0; font-size: clamp(2.2rem, 5vw, 3.2rem); font-weight: 750; letter-spacing: -0.03em; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.tool-verdicts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
+.tool-verdict { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 10px 12px; color: var(--game-text-primary); background: var(--surface); border: 1px solid var(--separator); border-radius: 9px; font-size: 0.92rem; line-height: 1.3; }
+.tool-verdict::before { flex: none; display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; font-size: 13px; font-weight: 800; line-height: 1; }
+.tool-verdict.is-pass { border-color: var(--gold-hairline); }
+.tool-verdict.is-pass::before { content: "✓" / ""; color: #1d1d1f; background: var(--gold-500); }
+.tool-verdict.is-fail { color: var(--game-text-secondary); }
+.tool-verdict.is-fail::before { content: "✕" / ""; color: #ef8d87; border: 1.5px solid currentColor; }
+[data-theme="light"] .tool-verdict.is-fail::before { color: #b3261e; }
+.contrast-sample { display: grid; gap: 6px; }
+.contrast-sample-label { margin: 0; color: var(--text-muted); font-size: 13px; }
+.contrast-suggestion { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.contrast-suggestion label { flex-basis: 100%; color: var(--game-text-secondary); font-size: 0.88rem; }
+.contrast-suggestion select { min-width: 9rem; }
+.contrast-suggestion .tool-error { flex-basis: 100%; }
+@media (min-width: 700px) {
+  .tools-main[data-tool-page="contrast"] .tool-form { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 20px; }
+  .tools-main[data-tool-page="contrast"] .contrast-results { grid-column: 1 / -1; }
+}
+
+/* QR: the stage is a reserved square (a dashed placeholder until there is a
+   code), beside the inputs on wide screens. */
+.qr-stage { width: min(320px, 100%); box-sizing: border-box; }
+.qr-stage svg { display: block; width: 100%; height: auto; }
+.qr-stage:empty { aspect-ratio: 1; background: var(--surface); border: 2px dashed var(--separator); }
+.qr-hint { margin: 0; color: var(--text-muted); font-size: 14px; }
+.qr-action-status:empty { display: none; }
+@media (min-width: 760px) {
+  .qr-form { grid-template-columns: minmax(0, 1fr) 300px; grid-template-rows: repeat(4, auto) 1fr; column-gap: 32px; align-items: start; }
+  .qr-form > * { grid-column: 1; }
+  .qr-form > .qr-stage { grid-column: 2; grid-row: 1 / span 5; }
+}
+
+/* Passphrase: the result box leads, then the action, then the options. */
+.passphrase-result { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px 16px; min-height: 96px; padding: 18px 20px; background: var(--surface); border: 1px solid var(--separator); border-radius: 12px; }
+.passphrase-result:has(.passphrase-placeholder) { border-style: dashed; }
+.passphrase-result:has(> .tool-error:only-child) { min-height: 0; padding: 0; background: none; border: 0; }
+.passphrase-placeholder { grid-column: 1 / -1; margin: 0; color: var(--text-muted); }
+.passphrase-result .tool-result-strong { grid-column: 1; margin: 0; color: var(--game-text-primary); font-family: var(--font-mono); font-size: clamp(1.15rem, 3vw, 1.6rem); font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; }
+.passphrase-result .tool-result { grid-column: 1; padding: 0; color: var(--text-muted); background: none; border: 0; font-size: 14px; }
+.passphrase-result .passphrase-copy { grid-column: 2; grid-row: 1 / span 2; }
+.passphrase-result .tool-error { grid-column: 1 / -1; }
+.passphrase-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; padding-top: 20px; border-top: 1px solid var(--separator); }
+.tool-check { color: var(--game-text-primary); cursor: pointer; }
+.tool-check input { flex: none; width: 20px; height: 20px; margin: 0; accent-color: var(--gold-500); }
+.tool-muted { margin: 0; color: var(--text-muted); font-size: 13px; }
+
+/* Unit converter: value and unit share a row; From = To reads as one line. */
+.unit-pair { display: grid; gap: 8px; }
+.unit-equals { justify-self: center; color: var(--text-muted); font-size: 1.25rem; font-weight: 600; line-height: 1; }
+.tool-inline.unit-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
+.unit-row input { font-size: 1.15rem; font-variant-numeric: tabular-nums; }
+.tool-result-strong.unit-summary { margin: 0; color: var(--text-muted); font-size: 0.95rem; font-weight: 500; font-variant-numeric: tabular-nums; }
+@media (min-width: 760px) {
+  .unit-pair { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: end; column-gap: 16px; }
+  .unit-equals { padding-bottom: 12px; }
+}
+
+/* Word counter: stat tiles (Words and Read aloud lead) beside the text on
+   wide screens. */
+.word-count { gap: 20px; }
+.word-count-input { display: grid; gap: 6px; min-width: 0; }
+.word-count-input label { color: var(--game-text-secondary); font-size: 0.88rem; }
+.word-count textarea { min-height: 180px; resize: vertical; line-height: 1.55; }
+.word-count-actions { display: flex; justify-content: flex-end; margin-top: 4px; }
+.tool-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; gap: 10px; margin: 0; }
+.tool-stat { min-width: 0; padding: 12px 14px; background: var(--surface); border: 1px solid var(--separator); border-radius: 12px; }
+.tool-stat dt { color: var(--text-muted); font-size: 13px; line-height: 1.3; }
+.tool-stat dd { margin: 4px 0 0; color: var(--game-text-primary); font-size: 1.2rem; font-weight: 650; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.tool-stat.is-headline { grid-column: 1 / -1; border-color: var(--gold-hairline); }
+.tool-stat.is-headline dd { color: var(--game-text-accent); font-size: 1.7rem; }
+@media (min-width: 860px) {
+  .word-count { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); align-items: start; }
+  .word-count textarea { min-height: 360px; }
+}
+
+/* EPUB: the dashed zone is the single picker, with a real-looking button. */
+.epub-import { position: relative; }
+.tool-form input.epub-file-input { position: absolute; width: 1px; height: 1px; min-height: 0; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; opacity: 0; }
+.epub-file-input:focus + .epub-drop { outline: 2px solid var(--gold-text); outline-offset: 2px; }
+.epub-drop { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; min-width: 0; min-height: 180px; text-align: center; transition: border-color 0.2s ease, background-color 0.2s ease; }
+.epub-drop:not([aria-disabled="true"]):hover { border-color: color-mix(in srgb, var(--gold-500) 45%, var(--separator)); }
+.epub-drop[aria-disabled="true"] { cursor: not-allowed; }
+.epub-drop[aria-disabled="true"] .epub-drop-button { opacity: 0.45; }
+.epub-drop-title { color: var(--game-text-primary); font-size: 1.1rem; font-weight: 600; }
+.epub-drop-or { color: var(--text-muted); font-size: 13px; }
+.epub-drop-button { display: inline-flex; align-items: center; min-height: 44px; padding: 10px 20px; color: #1d1d1f; background: var(--grad-gold); border: 1px solid rgba(0, 0, 0, 0.12); border-radius: 9px; font-weight: 600; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.3); }
+.epub-library-status:empty { display: none; }
+.epub-import + .epub-library-grid { margin-top: 24px; }
+.epub-empty { grid-column: 1 / -1; margin: 0; color: var(--game-text-secondary); }
+.epub-storage { margin: 14px 0 0; color: var(--text-muted); font-size: 13px; }
+.epub-storage:empty { display: none; }
+
+/* --- Tools: design-council round 2 (hub glyphs, states, segmented tabs) --- */
+/* Hub: each card opens with its tool's glyph (a CSS mask in --gold-text,
+   picked by data-tool) and ends in the site's chevron, so the whole tile
+   reads as a link and shows its job at a glance. */
+.tools-main [data-tool="qr-code"] { --tool-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7' height='7' rx='1.5'/%3E%3Crect x='14' y='3' width='7' height='7' rx='1.5'/%3E%3Crect x='3' y='14' width='7' height='7' rx='1.5'/%3E%3Cpath d='M14 14h3v3M21 14v.01M14 20.5v.01M17.5 20.5H21V17'/%3E%3C/svg%3E"); }
+.tools-main [data-tool="epub-reader"] { --tool-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 4.5h6a4 4 0 0 1 4 4V21a3 3 0 0 0-3-3H2z'/%3E%3Cpath d='M22 4.5h-6a4 4 0 0 0-4 4V21a3 3 0 0 1 3-3h7z'/%3E%3C/svg%3E"); }
+.tools-main [data-tool="dilution"] { --tool-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 21.5a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5s-3 3.5-3 5.5a7 7 0 0 0 7 7z'/%3E%3Cpath d='M8.5 14.5h7'/%3E%3C/svg%3E"); }
+.tools-main [data-tool="contrast"] { --tool-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 3a9 9 0 0 1 0 18z' fill='black'/%3E%3C/svg%3E"); }
+.tools-main [data-tool="word-count"] { --tool-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6h16M4 11h16M4 16h11M4 21h6'/%3E%3C/svg%3E"); }
+.tools-main [data-tool="unit-converter"] { --tool-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2.5' y='8' width='19' height='8' rx='1.5'/%3E%3Cpath d='M6.5 8v3.5M10.5 8v2M14.5 8v3.5M18.5 8v2'/%3E%3C/svg%3E"); }
+.tools-main [data-tool="click-counter"] { --tool-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 3v2.5M21 12h-2.5M12 21v-2.5M3 12h2.5M12 12l4-4'/%3E%3C/svg%3E"); }
+.tools-main [data-tool="passphrase"] { --tool-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='8' cy='15.5' r='4.5'/%3E%3Cpath d='M11.2 12.3 20.5 3M17 6.5l3 3M14.5 9l2 2'/%3E%3C/svg%3E"); }
+.tools-main [data-tool="turn-timer"] { --tool-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='13.5' r='8'/%3E%3Cpath d='M10 2.5h4M12 13.5l3.5-3.5M19.5 5.5l-1.5 1.5'/%3E%3C/svg%3E"); }
+.tools-main [data-tool="gas"] { --tool-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 21.5V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16.5M2.5 21.5h13M4 10h10M14 12.5h2a2 2 0 0 1 2 2v2.5a1.75 1.75 0 0 0 3.5 0V9.5L18 6'/%3E%3C/svg%3E"); }
+.tool-hub-grid { --tool-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 18 6-6-6-6'/%3E%3C/svg%3E"); }
+.tool-hub-grid .tool-card { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-content: start; column-gap: 12px; padding: 24px 26px; }
+.tool-hub-grid .tool-card::before,
+.tool-live-data::before { content: ""; width: 28px; height: 28px; background: var(--gold-text); -webkit-mask: var(--tool-glyph) center / contain no-repeat; mask: var(--tool-glyph) center / contain no-repeat; }
+.tool-hub-grid .tool-card::before { grid-column: 1; grid-row: 1; margin-bottom: 16px; }
+.tool-hub-grid .tool-card::after { content: ""; grid-column: 2; grid-row: 1; width: 20px; height: 20px; background: var(--text-quaternary); -webkit-mask: var(--tool-chevron) center / contain no-repeat; mask: var(--tool-chevron) center / contain no-repeat; transition: background-color 0.2s ease, transform 0.2s var(--ease); }
+.tool-hub-grid .tool-card:hover::after { background: var(--gold-text); transform: translateX(2px); }
+.tool-hub-grid .tool-card h2 { grid-column: 1 / -1; grid-row: 2; margin-bottom: 6px; }
+.tool-hub-grid .tool-card p { grid-column: 1 / -1; grid-row: 3; margin: 0; text-wrap: balance; }
+.tool-online-chip { gap: 6px; }
+.tool-online-chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.7; }
+@media (max-width: 699px) {
+  /* Phones: a compact menu, glyph left, chevron right. */
+  .tool-hub-grid { gap: 10px; }
+  .tool-hub-grid .tool-card { grid-template-columns: 28px minmax(0, 1fr) 20px; column-gap: 14px; align-items: center; padding: 16px 18px; }
+  .tool-hub-grid .tool-card::before { grid-row: 1 / span 2; margin: 0; }
+  .tool-hub-grid .tool-card::after { grid-column: 3; grid-row: 1 / span 2; }
+  .tool-hub-grid .tool-card h2 { grid-column: 2; grid-row: 1; margin-bottom: 2px; font-size: 1.05rem; }
+  .tool-hub-grid .tool-card p { grid-column: 2; grid-row: 2; font-size: 14px; text-wrap: pretty; }
+  .tool-live-data { grid-template-columns: 28px minmax(0, 1fr); column-gap: 14px; padding: 16px 18px; }
+  .tool-live-data::before { grid-row: 1 / span 2; align-self: center; }
+  .tool-live-data > * { grid-column: 2; }
+  .tool-live-data h2 { font-size: 1.05rem; }
+  .tool-live-data p { font-size: 14px; }
+}
+@media (min-width: 700px) {
+  .tool-live-data { grid-template-columns: 28px minmax(0, 1fr) auto; }
+  .tool-live-data::before { grid-column: 1; grid-row: 1 / span 2; align-self: center; }
+  .tool-live-data > :not(.tool-online-chip) { grid-column: 2; }
+  .tool-live-data .tool-online-chip { grid-column: 3; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tool-hub-grid .tool-card::after { transition: none; }
+  .tool-hub-grid .tool-card:hover::after { transform: none; }
+}
+
+/* Shared: a phrase like "60-click" never splits at its hyphen; buttons keep
+   their edges in dark; disabled primaries go flat grey instead of dim gold. */
+.tool-lede { hyphens: manual; }
+.tool-form .tool-quiet { border-color: color-mix(in srgb, var(--text) 22%, transparent); }
+.tool-form .tool-quiet:disabled { opacity: 0.6; }
+.tool-form .tool-primary:disabled { color: var(--text-muted); background: var(--fill-2); background-image: none; border-color: var(--separator); box-shadow: none; opacity: 1; }
+
+/* Mode tabs: one segmented control. Inactive segments sit on the track in
+   full text colour; the chosen one is a raised tile with a gold edge. */
+.tool-tabs { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(max-content, 1fr); gap: 3px; width: fit-content; max-width: 100%; padding: 3px; background: color-mix(in srgb, var(--text) 10%, var(--surface)); border-radius: 12px; }
+.tool-tab { padding: 8px 18px; color: var(--game-text-primary); background: transparent; border-color: transparent; font-size: 0.95rem; font-weight: 500; line-height: 1.2; }
+.tool-tab:hover { background: var(--fill-2); }
+.tool-tab.is-active { background: var(--surface); border-color: var(--gold-500); font-weight: 600; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25); }
+.tool-tab:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 1px; }
+@media (max-width: 479px) {
+  .tool-tabs { width: 100%; }
+  .tool-tab { padding: 6px 8px; }
+}
+
+/* Waiting state: a dashed outline previewing the answer's shape, so it reads
+   as a slot for the result rather than a result. */
+.tool-result.tool-result-empty { display: grid; gap: 4px; padding: 14px 16px; background: none; border: 1.5px dashed color-mix(in srgb, var(--text) 20%, transparent); }
+.tool-result-shape { color: var(--game-text-secondary); font-size: 1.05rem; }
+.tool-result-shape strong { color: var(--text-muted); font-weight: 600; }
+.tool-result-hint { color: var(--text-muted); font-size: 0.95rem; }
+
+/* Click counter: a padded track with rounded segments, so every target has
+   a visible edge in both themes; one 600px column like its siblings. */
+.click-counter { max-width: 600px; }
+.click-counter-presets { gap: 3px; padding: 3px; background: color-mix(in srgb, var(--text) 10%, var(--surface)); border-color: transparent; border-radius: 12px; }
+.tool-form .click-counter-preset { border-radius: 9px; }
+.click-counter-share { margin: 2px 0 0; color: var(--game-text-secondary); font-size: 1rem; font-weight: 600; }
+.click-counter-equation { margin-top: 4px; color: var(--text-muted); font-size: 14px; font-variant-numeric: tabular-nums; }
+
+/* Dilution: on wide screens the answer sits beside the fields it answers. */
+@media (min-width: 900px) {
+  .tools-main[data-tool-page="dilution"] .tool-form { max-width: none; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); grid-template-rows: repeat(5, auto) 1fr; column-gap: 32px; align-items: start; }
+  .tools-main[data-tool-page="dilution"] .tool-form > * { grid-column: 1; }
+  .tools-main[data-tool-page="dilution"] .tool-form > .tool-result,
+  .tools-main[data-tool-page="dilution"] .tool-form > .tool-error { grid-column: 2; grid-row: 1 / span 6; position: sticky; top: 96px; }
+}
+
+/* Contrast: the ratio in neutral text with its grade beside it; verdicts in
+   AA/AAA pairs with UI components across the foot (or one line when all pass). */
+.contrast-headline { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; margin-top: 8px; }
+.contrast-headline .contrast-ratio { margin: 0; color: var(--game-text-primary); }
+.contrast-grade { margin: 0; color: var(--game-text-secondary); font-size: 1.05rem; font-weight: 600; }
+.tool-verdicts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.tool-verdicts > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+.contrast-suggestion-note { flex-basis: 100%; margin: 0; }
+@media (max-width: 699px) {
+  .tool-verdict { gap: 8px; padding: 8px 10px; font-size: 0.85rem; }
+}
+
+/* QR: the empty stage previews a code's finder squares. On phones the result
+   follows the text field, the empty stage is a short strip that carries the
+   hint itself, the primary action leads its own row, and error correction
+   comes last. */
+.qr-stage:empty { background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='%238e8e93' stroke-width='3' opacity='.45'%3E%3Crect x='6.5' y='6.5' width='22' height='22' rx='3'/%3E%3Crect x='71.5' y='6.5' width='22' height='22' rx='3'/%3E%3Crect x='6.5' y='71.5' width='22' height='22' rx='3'/%3E%3C/g%3E%3Cg fill='%238e8e93' opacity='.45'%3E%3Crect x='12' y='12' width='11' height='11' rx='1.5'/%3E%3Crect x='77' y='12' width='11' height='11' rx='1.5'/%3E%3Crect x='12' y='77' width='11' height='11' rx='1.5'/%3E%3C/g%3E%3Cg fill='%238e8e93' opacity='.22'%3E%3Crect x='40' y='8' width='8' height='8'/%3E%3Crect x='52' y='20' width='8' height='8'/%3E%3Crect x='40' y='40' width='8' height='8'/%3E%3Crect x='64' y='40' width='8' height='8'/%3E%3Crect x='52' y='52' width='8' height='8'/%3E%3Crect x='76' y='64' width='8' height='8'/%3E%3Crect x='40' y='76' width='8' height='8'/%3E%3Crect x='64' y='84' width='8' height='8'/%3E%3Crect x='8' y='44' width='8' height='8'/%3E%3Crect x='24' y='52' width='8' height='8'/%3E%3C/g%3E%3C/svg%3E") center / 78% no-repeat; border-color: color-mix(in srgb, var(--text) 20%, transparent); }
+@media (max-width: 759px) {
+  .qr-form > .tool-field:nth-child(2) { order: 1; }
+  .qr-stage { width: 100%; max-width: 360px; margin-inline: auto; }
+  .qr-stage:empty { display: grid; place-items: center; max-width: none; min-height: 120px; aspect-ratio: auto; padding: 16px 20px; background-image: none; }
+  .qr-stage:empty::before { content: attr(data-empty-hint); color: var(--text-muted); font-size: 15px; line-height: 1.45; text-align: center; }
+  .qr-form:has(.qr-stage:empty) .qr-status:has(.qr-hint) { display: none; }
+  .qr-form:has(.qr-status .tool-error) .qr-stage:empty { display: none; }
+  .qr-form .tool-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .qr-form .tool-actions .tool-primary { grid-column: 1 / -1; }
+}
+
+/* Passphrase: themed checkboxes (the native ones were the one unthemed
+   control in dark), options pulled closer to the result they change. */
+.passphrase-options { padding-top: 16px; }
+.tool-check input { -webkit-appearance: none; appearance: none; display: inline-grid; place-content: center; width: 22px; height: 22px; background: var(--surface-2); border: 1.5px solid color-mix(in srgb, var(--text) 50%, transparent); border-radius: 6px; cursor: pointer; transition: background-color 0.15s ease, border-color 0.15s ease; }
+.tool-check:hover input:not(:checked) { border-color: var(--gold-500); }
+.tool-check input:checked { background: var(--gold-500) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231d1d1f' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / 16px no-repeat; border-color: var(--gold-500); }
+.tool-check input:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px; }
+@media (max-width: 419px) {
+  .passphrase-options { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Unit converter: on phones the rows stack, so the floating "=" goes; the
+   visible line is the reverse rate (the boxes already show the answer). */
+.unit-rate { margin: 0; color: var(--game-text-primary); font-size: 1.05rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.unit-rate:empty { display: none; }
+.unit-rate-label { color: var(--text-muted); font-weight: 500; }
+.tool-hint.unit-hint { margin-top: -6px; }
+@media (max-width: 759px) {
+  .unit-equals { display: none; }
+}
+
+/* Word counter: Silent reading spans the row under the two headline tiles,
+   leaving the four counts as an even 2 x 2; values sit on a common baseline. */
+.tool-stat { display: grid; grid-template-rows: auto 1fr; }
+.tool-stat dd { align-self: end; }
+.tool-stats > .tool-stat:nth-child(3) { grid-column: 1 / -1; }
+@media (max-width: 859px) {
+  .word-count textarea { min-height: 150px; }
+}
+
+/* EPUB: a drop zone that is visible in light, a ruled "or", and a quieter
+   empty shelf. Touch screens (and phone widths, where touch detection is
+   unreliable) cannot drop files, so they get the button only. */
+.epub-drop { border-color: color-mix(in srgb, var(--text) 22%, transparent); }
+.epub-drop-or { display: flex; align-items: center; gap: 10px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
+.epub-drop-or::before,
+.epub-drop-or::after { content: ""; width: 24px; height: 1px; background: currentColor; opacity: 0.5; }
+.epub-empty { padding-top: 16px; border-top: 1px solid var(--separator); color: var(--text-muted); font-size: 14px; }
+@media (hover: none) and (pointer: coarse), (max-width: 599px) {
+  .epub-drop-title,
+  .epub-drop-or { display: none; }
+  .epub-drop { min-height: 120px; }
 }
 
 /* ===== Nova Scotia tax-sale hub ===== */
@@ -2417,7 +3444,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .tax-button-solid { color: var(--tax-inverse); background: var(--tax-blue); }
 .tax-button-line { color: var(--tax-accent-strong); background: transparent; }
 .tax-button-line:hover { color: var(--tax-inverse); background: var(--tax-deep-water); border-color: var(--tax-deep-water); }
-.tax-refreshed { margin: 28px 0 0; color: var(--tax-muted); font: 0.69rem var(--font-mono); }
+.tax-refreshed { margin: 28px 0 0; color: var(--tax-muted); font: 0.75rem var(--font-mono); }
 
 .tax-desk {
   position: relative;
@@ -2450,12 +3477,15 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 }
 .tax-desk-day { color: var(--tax-red); font-family: var(--tax-display); font-size: 4.3rem; line-height: 0.8; }
 .tax-desk-date:nth-of-type(3) .tax-desk-day { color: var(--tax-accent-strong); }
-.tax-desk-date strong { display: block; font-size: 1.25rem; }
-.tax-desk-date small { display: block; margin-top: 6px; color: var(--tax-muted); font: 0.68rem var(--font-mono); }
+/* One system for all three desk facts: a display numeral, then a mono
+   caption. "November" is the month label of the numeral, set like the
+   calendar tiles' NOV/DEC, not as a third type style. */
+.tax-desk-date strong { display: block; color: var(--tax-ink); font: 600 0.75rem/1.4 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; }
+.tax-desk-date small { display: block; margin-top: 6px; color: var(--tax-muted); font: 0.75rem/1.5 var(--font-mono); }
 .tax-desk-rule { margin: 4px 0 18px; border-top: 1px solid var(--tax-line); }
-.tax-desk > p { display: flex; align-items: baseline; gap: 10px; color: var(--tax-muted); font-size: 0.8rem; }
-.tax-desk > p strong { color: var(--tax-ink); font-family: var(--tax-display); font-size: 2rem; font-weight: 400; }
-.tax-desk > small { display: block; margin-top: 18px; color: var(--tax-muted); font-size: 0.66rem; line-height: 1.55; }
+.tax-desk > p { display: flex; align-items: baseline; gap: 10px; color: var(--tax-muted); font: 0.75rem/1.5 var(--font-mono); }
+.tax-desk > p strong { flex: 0 0 7.4rem; color: var(--tax-ink); font-family: var(--tax-display); font-size: 2rem; font-weight: 400; white-space: nowrap; }
+.tax-desk > small { display: block; margin-top: 18px; color: var(--tax-muted); font-size: 0.75rem; line-height: 1.55; }
 
 .tax-section { padding: clamp(88px, 12vw, 168px) 0; border-bottom: 1px solid var(--tax-line); }
 .tax-section-intro,
@@ -2480,7 +3510,8 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   display: grid;
   grid-template-columns: 150px minmax(0, 1fr) minmax(190px, 0.45fr);
   gap: clamp(26px, 5vw, 72px);
-  align-items: center;
+  /* Tile top, eyebrow and first action share one top line. */
+  align-items: start;
   padding: clamp(30px, 5vw, 58px) 0;
   border-bottom: 1px solid var(--tax-line);
 }
@@ -2495,22 +3526,55 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 }
 .tax-date-card:nth-of-type(even) .tax-date-calendar { border-top-color: var(--tax-blue); }
 .tax-date-calendar span,
-.tax-date-calendar small { display: block; font: 0.65rem var(--font-mono); letter-spacing: 0.12em; }
+.tax-date-calendar small { display: block; font: 0.72rem var(--font-mono); letter-spacing: 0.12em; }
 .tax-date-calendar strong { display: block; margin: 7px 0 3px; font-family: var(--tax-display); font-size: 4rem; font-weight: 400; line-height: 0.85; }
 .tax-date-copy h3 { margin: 8px 0 13px; font-family: var(--tax-display); font-size: clamp(1.7rem, 3vw, 2.5rem); font-weight: 400; }
 .tax-date-copy > p:not(.tax-status) { color: var(--tax-muted); line-height: 1.6; }
 .tax-date-copy strong { color: var(--tax-ink); }
-.tax-date-detail { margin-top: 15px; font: 0.7rem var(--font-mono); }
-.tax-status { color: var(--tax-muted); font: 0.65rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.tax-date-detail { margin-top: 15px; color: color-mix(in srgb, var(--tax-ink) 82%, var(--tax-paper)); font: 0.76rem/1.6 var(--font-mono); }
+.tax-status { color: var(--tax-muted); font: 0.75rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
 .tax-status::before { content: '○'; margin-right: 7px; }
 .tax-status-active,
 .tax-status-soon { color: var(--tax-red); }
 .tax-status-active::before,
 .tax-status-soon::before { content: '●'; }
 .tax-date-actions { display: grid; gap: 14px; justify-items: start; }
-.tax-past-heading { margin: clamp(60px, 9vw, 110px) 0 0; color: var(--tax-muted); font: 0.65rem var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; }
+.tax-past-heading { margin: clamp(60px, 9vw, 110px) 0 0; color: var(--tax-muted); font: 0.75rem var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; }
 .tax-past-list { margin-top: 24px; }
-.tax-date-card.tax-date-past .tax-date-calendar { border-top-color: var(--tax-line); opacity: 0.55; }
+/* Past sales: a compact ledger under the upcoming ones. The tile keeps its
+   ink (no fading below AA); "passed" is the grey top bar plus the status
+   line, and the smaller scale lets the upcoming tiles carry the weight. */
+.tax-date-card.tax-date-past .tax-date-calendar { border-top-color: var(--tax-line); }
+.tax-past-list .tax-date-card { grid-template-columns: 96px minmax(0, 1fr) minmax(190px, 0.45fr); align-items: start; padding: clamp(20px, 3vw, 30px) 0; }
+.tax-past-list .tax-date-calendar { width: 76px; padding: 8px 0 10px; border-top-width: 4px; }
+.tax-past-list .tax-date-calendar strong { margin: 5px 0 2px; font-size: 2.3rem; }
+.tax-past-list .tax-date-copy h3 { margin: 6px 0 8px; font-size: clamp(1.3rem, 2vw, 1.6rem); }
+.tax-past-list .tax-date-copy > p:not(.tax-status) { font-size: 0.92rem; }
+.tax-past-list .tax-date-detail { margin-top: 10px; }
+@media (max-width: 880px) {
+  .tax-past-list .tax-date-card { grid-template-columns: 96px 1fr; }
+  /* On a phone the date list follows the hero directly, so the desk's
+     summary of the same two dates would only repeat it. */
+  .tax-desk { display: none; }
+}
+@media (max-width: 580px) {
+  .tax-past-list .tax-date-card { grid-template-columns: 76px minmax(0, 1fr); gap: 8px 18px; }
+  .tax-past-list .tax-date-actions { grid-column: 2; }
+  .tax-map-section .tax-split h2 { font-size: clamp(2.6rem, 12.4vw, 4.5rem); }
+  /* Upcoming sales use the same tile-beside-copy layout as past ones on a
+     phone, so the two lists read as one component; the eyebrow gets air. */
+  .tax-date-list > .tax-date-card:not(.tax-date-past) { grid-template-columns: 76px minmax(0, 1fr); gap: 8px 18px; }
+  .tax-date-list > .tax-date-card:not(.tax-date-past) .tax-date-actions { grid-column: 2; }
+  .tax-date-list > .tax-date-card:not(.tax-date-past) .tax-date-calendar { width: 76px; padding: 8px 0 10px; border-top-width: 4px; }
+  .tax-date-list > .tax-date-card:not(.tax-date-past) .tax-date-calendar strong { margin: 5px 0 2px; font-size: 2.3rem; }
+  .tax-status { line-height: 1.5; letter-spacing: 0.06em; }
+}
+.tax-split h2 { text-wrap: balance; }
+/* Desktop: the map-section headline sets in two or three lines instead of
+   one word per line over its paragraph. */
+@media (min-width: 881px) {
+  .tax-map-section .tax-split h2 { font-size: clamp(3rem, 5.4vw, 4.6rem); }
+}
 .tax-date-actions a,
 .tax-format-card a { color: var(--tax-accent-strong); font-size: 0.82rem; font-weight: 650; text-decoration: none; border-bottom: 1px solid currentColor; }
 .tax-date-actions a:hover,
@@ -2530,7 +3594,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 
 .tax-map-section {
   background-color: var(--tax-water-soft);
-  background-image: linear-gradient(118deg, transparent 0 62%, #d69be81f 62% 63%, transparent 63%);
+  /* No survey stripe here: clipped to the corner it read as an artefact. */
 }
 .tax-split { align-items: start; }
 .tax-split-copy { max-width: 690px; }
@@ -2747,9 +3811,12 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 
 /* Source note */
 .tender-source-note {
-  font-size: 14px;
+  font-size: 15px;
+  line-height: 1.6;
   color: var(--text-muted);
   margin: 0 0 24px;
+  max-width: 62ch;
+  text-wrap: pretty;
 }
 
 /* Current grid */
@@ -2788,6 +3855,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   letter-spacing: -0.015em;
   margin: 0;
   line-height: 1.35;
+  text-wrap: pretty;
 }
 
 /* State row */
@@ -2804,7 +3872,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--gold-500) 13%, transparent);
   color: var(--gold-text);
-  font-size: 11.5px;
+  font-size: 12.5px;
   white-space: nowrap;
 }
 .tender-checked {
@@ -2838,6 +3906,15 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   color: var(--gold-text);
   font-weight: 500;
   margin-top: 4px;
+}
+/* The shared .card-cue sits on the card's bottom edge, so cues line up
+   across a row whatever the title length. */
+.tender-card .card-cue { margin-top: auto; padding-top: 4px; }
+@media (max-width: 599px) {
+  .tender-card { padding: 18px; gap: 10px; }
+  .tender-card h3 { font-size: 16.5px; }
+  .tender-offers .btn { width: 100%; }
+  .tender-download { justify-content: center; }
 }
 
 /* Featured demonstration */
@@ -2940,9 +4017,9 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 @media (min-width: 700px) {
   .tender-archive-grid { grid-template-columns: 1fr 1fr; }
 }
-/* Archived briefs read as secondary through a muted state chip, not
-   opacity (which would also drop the title's contrast). */
-.tender-card-archive .tender-state-label,
+/* A closed brief reads as secondary through a muted state chip, not
+   opacity (which would also drop the title's contrast). Archive cards
+   carry no chip: the section note says every example is closed. */
 .tender-detail .tender-state-label {
   background: var(--fill-2);
   color: color-mix(in srgb, var(--text-muted) 70%, var(--text));
@@ -2983,6 +4060,12 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   max-width: 28ch;
   text-wrap: balance;
 }
+/* Procurement titles past ~70 characters step down a size. */
+.tender-detail-long-title h1 {
+  font-size: clamp(26px, 3.2vw, 34px);
+  line-height: 1.15;
+  max-width: 40ch;
+}
 
 /* Source facts: the verified frontmatter, set apart as one card. */
 .tender-detail > .tender-state { margin-bottom: 32px; }
@@ -3022,9 +4105,12 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   font-weight: 500;
 }
 .tender-fact-grid > div { padding: 10px 0; border-bottom: 1px solid var(--separator); line-height: 1.5; }
+/* Phone: short facts keep a label/value row; only the two long prose
+   rows stack, which roughly halves the card before the analysis. */
 @media (max-width: 599px) {
-  .tender-fact-grid > div { grid-template-columns: 1fr; gap: 2px; }
-  .tender-fact-grid dt { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .tender-fact-grid > div { grid-template-columns: 7.5rem minmax(0, 1fr); gap: 10px; font-size: 14px; }
+  .tender-fact-grid > .tender-fact-long { grid-template-columns: 1fr; gap: 2px; }
+  .tender-fact-grid > .tender-fact-long dt { margin-bottom: 2px; }
 }
 .tender-fact-grid dd {
   color: var(--text);
@@ -3067,11 +4153,47 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   color: var(--text);
 }
 .tender-analysis.prose > h2:first-child { margin-top: 0; }
+/* The analysis is the editorial body: full text colour, as in posts. */
 .tender-analysis.prose p,
 .tender-analysis.prose li {
   font-size: 16px;
   line-height: 1.7;
+  color: var(--text);
+}
+
+/* Closing step on a brief: the free preview, the official notice, and
+   the way back. The disclaimer then sits under it as fine print. */
+.tender-next {
+  margin-top: var(--block-gap);
+  padding-top: 28px;
+  border-top: 1px solid var(--separator);
+}
+.tender-detail .tender-next { margin-bottom: 0; }
+.tender-next h2 {
+  font-weight: 600;
+  font-size: clamp(20px, 2.2vw, 23px);
+  letter-spacing: -0.015em;
+  margin: 0 0 8px;
+}
+.tender-next p {
+  font-size: 16px;
+  line-height: 1.6;
   color: var(--text-muted);
+  margin: 0 0 20px;
+  max-width: 60ch;
+}
+.tender-next .tender-actions { margin-bottom: 12px; }
+.tender-next .back-link { margin-bottom: 0; }
+.tender-detail > .tender-disclaimer { margin-top: 24px; }
+/* Phone: the three official links stack as equal full-width rows; long
+   procurement titles step down again so the facts card starts in view. */
+@media (max-width: 599px) {
+  .tender-next .tender-actions .btn { width: 100%; }
+  .tender-official-links { flex-direction: column; gap: 8px; }
+  .tender-official-links li { flex: none; }
+  .tender-official-links a { width: 100%; justify-content: center; }
+  .tender-detail-long-title h1 { font-size: 22px; line-height: 1.2; letter-spacing: -0.015em; }
+  .tender-detail > .tender-state { margin-bottom: 24px; }
 }
 .tender-analysis.prose ul,
 .tender-analysis.prose ol {
@@ -3108,11 +4230,15 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .gis-main {
   --gis-spruce: #5e8467;
   --gis-water: #77b8c6;
-  --gis-flag: #df62c9;
+  /* The flag (boundary rules, pull-quote) uses the site gold, not a fourth accent. */
+  --gis-flag: var(--gold-500);
   --gis-survey: #4e8fd7;
   --gis-paper: #eef1e9;
   /* Teal as text: lifted toward --text in light so labels stay readable. */
   --gis-water-text: var(--gis-water);
+  /* Spruce as small text (caption labels, the ledger tick): mixed toward
+     --text so it clears 4.5:1 in both themes. */
+  --gis-spruce-text: color-mix(in srgb, var(--gis-spruce) 55%, var(--text));
   max-width: var(--max-width);
   min-height: 60vh;
   margin: 0 auto;
@@ -3210,7 +4336,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   flex-direction: column;
   justify-content: center;
   padding: 10px 18px;
-  color: var(--text-muted);
+  color: var(--text);
   font-size: .8rem;
   line-height: 1.35;
   text-decoration: none;
@@ -3222,6 +4348,11 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   font-weight: 650;
 }
 .gis-timeline-nav a:hover { color: var(--text); background: var(--fill); }
+/* The strip is a set of jump links: a down arrow after each year and an
+   underline on hover say so. */
+.gis-timeline-nav a span::after { content: " ↓"; content: " ↓" / ""; color: var(--text-muted); }
+.gis-timeline-nav a:hover,
+.gis-timeline-nav a:focus-visible { text-decoration: underline; text-decoration-color: var(--gold-500); text-underline-offset: 3px; }
 .gis-transect { position: relative; }
 .gis-transect::before {
   position: absolute;
@@ -3238,8 +4369,9 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: clamp(58px, 8vw, 102px);
-  align-items: center;
-  margin-bottom: clamp(94px, 12vw, 154px);
+  /* Figure and copy start level with the stop marker: no empty bays. */
+  align-items: start;
+  margin-bottom: clamp(72px, 9vw, 120px);
   scroll-margin-top: 110px;
 }
 .gis-stop-reverse .gis-figure { order: 2; }
@@ -3263,8 +4395,9 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .gis-marker span {
   color: #fff;
   font-family: var(--font-mono);
-  font-size: .58rem;
+  font-size: .66rem;
   font-weight: 700;
+  letter-spacing: .02em;
 }
 .gis-figure {
   margin: 0;
@@ -3293,7 +4426,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   font-size: .78rem;
   line-height: 1.5;
 }
-.gis-figure figcaption span { display: block; margin-bottom: 3px; color: var(--gis-spruce); }
+.gis-figure figcaption span { display: block; margin-bottom: 3px; color: var(--gis-spruce-text); }
 .gis-era { margin: 0 0 12px; color: var(--gis-water-text); }
 .gis-stop-copy h2 {
   margin: 0 0 24px;
@@ -3332,14 +4465,21 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   margin-top: 22px;
   padding: 17px 18px;
   border-left: 3px solid var(--gis-flag);
+  /* Same corner as the site's blockquote callouts; square on the rule side. */
+  border-radius: 0 12px 12px 0;
   background: color-mix(in srgb, var(--gis-flag) 6%, var(--surface));
 }
 .gis-boundary strong { color: var(--text); font-weight: 620; }
+/* The evidence ledger: a mark before each side, supported vs not established. */
+.gis-boundary p strong::before { display: inline-block; width: 1.3em; font-weight: 700; }
+.gis-boundary p:first-child strong::before { content: "✓"; content: "✓" / ""; color: var(--gis-spruce-text); }
+.gis-boundary p:nth-child(2) strong::before { content: "–"; content: "–" / ""; color: var(--gold-text); }
+.gis-boundary p:nth-child(2) { padding-top: 8px; border-top: 1px solid var(--separator); }
 .gis-rights-note { margin-top: 16px; font-size: .78rem; }
 .gis-rights-note a,
 .gis-stop-copy a {
   color: var(--text);
-  text-decoration-color: color-mix(in srgb, var(--gis-water) 70%, transparent);
+  text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent);
   text-decoration-thickness: 1.5px;
   text-underline-offset: 3px;
 }
@@ -3428,6 +4568,45 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   .gis-practice { padding: 24px 20px; }
   .gis-disclaimer { gap: 8px; }
   .gis-cta { gap: 26px; padding: 28px 22px; }
+  /* The strip scrolls: a fading right edge and snap points say so, and
+     the trailing pad lets the last stop clear the fade. */
+  .gis-timeline-nav {
+    scroll-snap-type: x proximity;
+    -webkit-mask-image: linear-gradient(90deg, #000 82%, transparent);
+    mask-image: linear-gradient(90deg, #000 82%, transparent);
+  }
+  .gis-timeline-nav ol { min-width: 760px; padding-right: 50px; }
+  .gis-timeline-nav li { scroll-snap-align: start; }
+}
+/* One column: each stop reads year, heading, figure, then the brief, so
+   the picture never arrives before its name. */
+@media (max-width: 940px) {
+  .gis-stop { row-gap: 0; }
+  .gis-stop .gis-stop-copy { display: contents; }
+  .gis-stop .gis-era { order: 1; }
+  .gis-stop .gis-stop-copy h2 { order: 2; margin-bottom: 20px; }
+  .gis-stop .gis-figure { order: 3; margin-bottom: 24px; }
+  .gis-stop .gis-brief,
+  .gis-stop .gis-boundary,
+  .gis-stop .gis-rights-note { order: 4; }
+}
+/* Guides stream, round 2. Desktop: the hero's scope card sits level with the
+   lede as its key, and the short 2015 band travels with its long copy instead
+   of leaving an empty bay beside it. */
+@media (min-width: 941px) {
+  .gis-hero .gis-scope-note { align-self: center; }
+  .gis-stop:has(.gis-figure-wide) > .gis-figure { position: sticky; top: 112px; }
+}
+/* Phone: all five stops show at once as a two-column grid (the last spans
+   both), so no label is clipped and nothing needs a scroll cue. */
+@media (max-width: 620px) {
+  .gis-timeline-nav { margin-right: 0; margin-left: 0; padding-left: 0; overflow: visible; -webkit-mask-image: none; mask-image: none; }
+  .gis-timeline-nav ol { grid-template-columns: repeat(2, minmax(0, 1fr)); min-width: 0; padding-right: 0; }
+  .gis-timeline-nav li:not(:last-child)::after { display: none; }
+  .gis-timeline-nav li { border-bottom: 1px solid var(--separator); }
+  .gis-timeline-nav li:nth-child(odd):not(:last-child) { border-right: 1px solid var(--separator); }
+  .gis-timeline-nav li:last-child { grid-column: 1 / -1; border-bottom: 0; }
+  .gis-timeline-nav a { min-height: 60px; padding: 10px 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .gis-main .reveal { opacity: 1; transform: none; }
@@ -3445,6 +4624,9 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   .gis-transect::before,
   .gis-marker { display: none; }
   .gis-stop { padding: 0; page-break-inside: avoid; }
+  /* Undo the one-column reorder, which a print page's width also triggers. */
+  .gis-stop .gis-stop-copy { display: block; }
+  .gis-stop .gis-figure { order: 0; }
   .gis-stop-copy h2,
   .gis-brief h3,
   .gis-boundary strong,
@@ -3506,8 +4688,9 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   line-height: 28px;
   overflow-wrap: anywhere;
 }
-.shakespeare-main h1 { font-size: 52px; line-height: 58px; margin-bottom: 12px; }
-.shakespeare-main h2 { font-size: 32px; line-height: 38px; margin-bottom: 10px; }
+/* The site's shared heading scale, so the collection sets like its siblings. */
+.shakespeare-main h1 { font-size: var(--text-display); line-height: 1.08; letter-spacing: -0.028em; margin-bottom: 12px; }
+.shakespeare-main h2 { font-size: var(--text-h2); line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 10px; }
 .shakespeare-main h3 { font-size: 24px; line-height: 30px; margin-bottom: 12px; }
 .shakespeare-main .eyebrow {
   color: var(--shakespeare-accent);
@@ -3631,14 +4814,16 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   outline-offset: -6px;
   box-shadow: inset 0 0 0 9px #101012;
 }
+/* A status line, not a link: secondary text at regular weight with only the
+   dot in gold. Bold gold stays reserved for links and eyebrows. */
 .shakespeare-status {
   display: flex;
   align-items: baseline;
   gap: 9px;
-  color: var(--shakespeare-accent);
+  color: var(--shakespeare-secondary);
   font-size: 15px;
   line-height: 22px;
-  font-weight: 600;
+  font-weight: 400;
   margin-block: 18px 10px;
 }
 .shakespeare-status::before {
@@ -3648,7 +4833,7 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   flex: 0 0 5px;
   align-self: center;
   border-radius: 50%;
-  background: currentColor;
+  background: var(--shakespeare-accent);
 }
 .shakespeare-album-card,
 .shakespeare-edition,
@@ -3759,8 +4944,6 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   .shakespeare-work-grid { grid-template-columns: minmax(0, 1fr); }
   .shakespeare-work-card { padding: 20px; }
   .shakespeare-main { padding-top: 36px; font-size: 17px; line-height: 26px; }
-  .shakespeare-main h1 { font-size: 36px; line-height: 42px; }
-  .shakespeare-main h2 { font-size: 26px; line-height: 32px; }
   .shakespeare-main h3 { font-size: 20px; line-height: 26px; }
   .shakespeare-section { margin-top: 36px; padding-top: 24px; }
   .shakespeare-index { gap: 4px 18px; }
@@ -3774,6 +4957,86 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
   .page-shakespeare .site-nav > div { gap: 8px !important; }
   .page-shakespeare .nav-brand { gap: 8px; font-size: 15px; min-width: 0; white-space: normal; line-height: 20px; }
   .page-shakespeare .nav-brand img { width: 28px; height: 28px; }
+}
+/* ── Shakespeare refinements ──
+   Collection: each card leads with art (the Word Is Bond still, or a set
+   type plate for the unreleased Midsummer), the whole card is the link,
+   and the arrow always sits top-right. Work pages: the in-browser listen
+   is the one gold lead per edition, the other formats are outline buttons;
+   Midsummer opens on its epigraph with one release card below. */
+.shakespeare-work-card { position: relative; display: flex; flex-direction: column; transition: border-color 0.15s ease; }
+.shakespeare-work-card:hover { border-color: color-mix(in srgb, var(--shakespeare-accent) 55%, var(--separator)); }
+.shakespeare-work-card h2 a { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
+.shakespeare-work-card h2 a::after { content: ""; position: absolute; inset: 0; border-radius: 20px; }
+.shakespeare-work-card h2 a span { padding-top: 2px; }
+.shakespeare-card-art { margin: -8px -8px 22px; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; background: var(--surface-2); }
+.shakespeare-card-art img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.shakespeare-card-plate { display: grid; place-items: center; padding: 20px; border: 1px solid var(--separator); background: radial-gradient(ellipse at 50% 120%, color-mix(in srgb, var(--shakespeare-accent) 18%, transparent), transparent 70%), var(--surface-2); }
+.shakespeare-card-plate span { color: var(--shakespeare-accent); font-family: Georgia, 'Iowan Old Style', serif; font-style: italic; font-size: clamp(26px, 3.4vw, 36px); line-height: 1.15; text-align: center; }
+.page-shakespeare .shakespeare-downloads .shakespeare-download[href^="/fiction/"] { background: var(--grad-gold); border-color: #c9a24b; }
+.page-shakespeare .shakespeare-downloads .shakespeare-download:not([href^="/fiction/"]) { background: transparent; color: var(--text); border: 1px solid color-mix(in srgb, var(--text) 50%, transparent); }
+.page-shakespeare .shakespeare-downloads .shakespeare-download:not([href^="/fiction/"]):hover { background: var(--fill-2); }
+.shakespeare-related .eyebrow { margin-bottom: 4px; }
+/* A short gold hairline as an ornament over the verse, not a full rule. */
+.shakespeare-epigraph { max-width: 640px; margin: 40px 0 0; padding: 0; }
+.shakespeare-epigraph::before { content: ""; display: block; width: 32px; height: 2px; margin-bottom: 26px; border-radius: 1px; background: var(--shakespeare-accent); }
+.shakespeare-epigraph blockquote { margin: 0; }
+.shakespeare-epigraph blockquote p { color: var(--text); font-family: Georgia, 'Iowan Old Style', serif; font-style: italic; font-size: clamp(22px, 2.6vw, 28px); line-height: 1.5; }
+.shakespeare-epigraph figcaption { margin-top: 12px; color: var(--shakespeare-muted); font-size: 15px; line-height: 22px; }
+.shakespeare-release-card { max-width: 640px; padding: 24px; background: var(--surface); border: 1px solid var(--separator); border-radius: 20px; }
+.shakespeare-release-card h2 { margin-bottom: 6px; }
+/* ── Shakespeare round 2 (listening-data stream) ── */
+/* Collection cards: the formats block sits on the card's bottom edge, so
+   the dividers of the two cards line up whatever the copy above them. */
+.shakespeare-work-card .shakespeare-formats { margin-top: auto; padding-top: 24px; }
+/* Midsummer release card: one line per format, label left and a quiet
+   status right, so the per-format state stays without the words stacking. */
+.shakespeare-release-status > div { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding-top: 12px; margin-top: 12px; }
+.shakespeare-release-status dt { margin-bottom: 0; color: var(--shakespeare-secondary); font-weight: 500; }
+.shakespeare-release-status dd { color: var(--shakespeare-muted); font-size: 14px; text-align: right; }
+/* Merchant: the one gold action per edition is "Listen in browser"; the
+   off-site routes (YouTube, Suno) are outline buttons like EPUB and M4B. */
+.page-shakespeare .shakespeare-action-row:not(.shakespeare-downloads) :is(.shakespeare-suno, .shakespeare-download) { background: transparent; color: var(--text); border: 1px solid color-mix(in srgb, var(--text) 50%, transparent); }
+.page-shakespeare .shakespeare-action-row:not(.shakespeare-downloads) :is(.shakespeare-suno, .shakespeare-download):hover { background: var(--fill-2); }
+@media (min-width: 900px) {
+  /* Midsummer: title, byline and epigraph on the left, the release card on
+     the right, so the first screen fills the frame and the verse has room. */
+  .shakespeare-main:has(> .shakespeare-release-card) { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); column-gap: 56px; align-items: start; }
+  .shakespeare-main:has(> .shakespeare-release-card) > :is(.shakespeare-back-link, .shakespeare-related) { grid-column: 1 / -1; }
+  .shakespeare-main:has(> .shakespeare-release-card) > .shakespeare-back-link { justify-self: start; }
+  .shakespeare-main:has(> .shakespeare-release-card) > .shakespeare-collection-header { grid-column: 1; grid-row: 2; }
+  .shakespeare-main:has(> .shakespeare-release-card) > .shakespeare-epigraph { grid-column: 1; grid-row: 3; }
+  .shakespeare-main:has(> .shakespeare-release-card) > .shakespeare-release-card { grid-column: 2; grid-row: 2 / 4; align-self: end; margin-top: 0; max-width: none; }
+}
+@media (max-width: 899px) {
+  /* Phone: the film comes before the copy that refers to it. */
+  .shakespeare-watch-grid > .shakespeare-film-panel { order: -1; }
+}
+/* Edition cards: cover and details side by side, then the actions across
+   the full card width, so all three sit in one row on desktop instead of
+   "Download M4B" dropping alone, and in a short wrap on a phone. */
+.shakespeare-edition { row-gap: 2px; }
+.shakespeare-edition-copy { display: contents; }
+.shakespeare-edition > .shakespeare-cover { grid-row: 1 / span 3; }
+.shakespeare-edition-copy > :not(.shakespeare-downloads, .shakespeare-edition-notice) { grid-column: 2; }
+.shakespeare-edition-copy > :is(.shakespeare-downloads, .shakespeare-edition-notice) { grid-column: 1 / -1; }
+.shakespeare-edition .shakespeare-downloads { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; }
+@media (max-width: 899px) {
+  /* Phone/tablet hero: the art follows the title and byline, before the
+     intro and the section index, so it lands in the first screen. */
+  .shakespeare-hero { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
+  .shakespeare-hero-copy { display: contents; }
+  .shakespeare-hero-art { order: 1; margin: 4px 0 24px; max-width: none; }
+  .shakespeare-hero .shakespeare-intro, .shakespeare-hero .shakespeare-index { order: 2; }
+}
+@media (max-width: 639px) {
+  /* All five entries stay visible on a phone: the index wraps rather than
+     scrolling "Code" off the right edge with no hint it is there. */
+  .shakespeare-index { flex-wrap: wrap; gap: 0 18px; }
+  .shakespeare-index a { flex: 0 0 auto; white-space: nowrap; }
+  .shakespeare-source-links a, .shakespeare-code-links a { display: block; width: auto; padding-block: 10px; }
+  .shakespeare-source-links li, .shakespeare-code-links li { padding-block: 12px; }
+  .shakespeare-card-art { margin: -4px -4px 18px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html:has(.page-shakespeare) { scroll-behavior: auto; }

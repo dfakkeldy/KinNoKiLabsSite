@@ -14,7 +14,7 @@ import { createGameAudio } from './game-audio.js';
 import {
   cargoThumb, createAudioControls, createEventAnnouncer, createGameLifecycle,
   defaultSeedFactory, element, formatElapsed, makeGameTerminal,
-  prefersReducedMotion, renderGameError,
+  prefersReducedMotion, renderGameError, syncControlsHint,
 } from './controller-common.js';
 import { celebrate } from './celebration.js';
 import { safeLocalStorage } from './hub-ui.js';
@@ -84,6 +84,9 @@ function buildStackShell(root, difficulty, audioControls) {
   const stat = (label, value) => element(
     'div', {}, element('dt', { text: label }), element('dd', {}, value),
   );
+  // Easy has no tides at all; the mode note already says so, so the row only
+  // appears on difficulties that forecast one.
+  const tideRow = stat('Tide forecast', tide);
   const stats = element(
     'dl',
     { class: 'game-status-grid' },
@@ -93,17 +96,17 @@ function buildStackShell(root, difficulty, audioControls) {
     stat('High score', highScore),
     stat('Record status', assisted),
     stat('Cargo Manifest', manifest),
-    stat('Tide forecast', tide),
+    tideRow,
   );
 
   const preview = element('ol', {
     class: 'stack-preview', 'data-stack-preview': '', 'aria-label': 'Next cargo',
   });
   const dockDescription = element('p', {
-    'data-dock-description': '', role: 'status', text: '',
+    class: 'stack-dock-description', 'data-dock-description': '', role: 'status', text: '',
   });
   const difficultyExplanation = element('p', {
-    'data-difficulty-explanation': '', text: DIFFICULTY_COPY[difficulty],
+    class: 'game-mode-note', 'data-difficulty-explanation': '', text: DIFFICULTY_COPY[difficulty],
   });
   const keyboardHelp = element(
     'details',
@@ -169,6 +172,9 @@ function buildStackShell(root, difficulty, audioControls) {
   };
   controls.advance.hidden = true;
   controls.describe.disabled = false;
+  const controlsHint = element('p', {
+    class: 'game-controls-hint', 'data-controls-hint': '', text: '',
+  });
 
   const start = element('button', {
     type: 'button', 'data-start-game': '', text: 'Start',
@@ -192,32 +198,44 @@ function buildStackShell(root, difficulty, audioControls) {
     element(
       'div',
       { class: 'game-toolbar' },
-      element('a', { href: '/games', class: 'back-link', text: '← Games' }),
-      element('h1', { text: 'KinNoKi Stack' }),
+      element(
+        'div',
+        { class: 'game-title' },
+        element('a', { href: '/games', class: 'back-link', text: '← Games' }),
+        element('h1', { text: 'KinNoKi Stack' }),
+      ),
       element('label', {}, element('span', { text: 'Difficulty' }), difficultySelect),
     ),
     notice,
     eventRegion,
-    difficultyExplanation,
-    stats,
+    // Phone reading order: what to do, the next cargo, the dock and its
+    // controls, then the status tiles. Wide screens move the run panel
+    // beside the dock (see .stack-layout in styles.css).
     element(
       'div',
-      { class: 'game-preplay' },
-      start, continueGame, resume, restart, newRun,
+      { class: 'stack-layout' },
+      difficultyExplanation,
+      element(
+        'div',
+        { class: 'game-preplay' },
+        start, continueGame, resume, restart, newRun,
+      ),
+      element('section', { class: 'stack-next', 'aria-label': 'Next cargo' },
+        element('h2', { text: 'Next cargo' }), preview),
+      dock,
+      element('div', { class: 'stack-controls' }, Object.values(controls)),
+      controlsHint,
+      dockDescription,
+      stats,
+      keyboardHelp,
     ),
-    element('section', { 'aria-label': 'Next cargo' },
-      element('h2', { text: 'Next cargo' }), preview),
-    keyboardHelp,
-    dock,
-    element('div', { class: 'stack-controls' }, Object.values(controls)),
-    dockDescription,
     audioControls.element,
   );
   root.replaceChildren(shell);
 
   return {
     shell, difficultySelect, timer, score, highScore, assisted, manifest,
-    tide, status, notice, eventRegion, difficultyExplanation, preview,
+    tide, tideRow, controlsHint, status, notice, eventRegion, difficultyExplanation, preview,
     dockDescription, cells, controls, start, continueGame, resume, restart, newRun,
     dock, overlay, scorePopLayer,
   };
@@ -354,6 +372,7 @@ function paintStack(view, state, {
   );
   view.manifest.textContent = state.manifests.length
     + ' active · ' + completedCells + '/' + requiredCells + ' cells filled';
+  view.tideRow.hidden = state.tide.direction === null;
   view.tide.textContent = state.tide.direction === null
     ? 'No tides'
     : titleCase(state.tide.direction) + ' in '
@@ -443,6 +462,7 @@ function paintStack(view, state, {
   view.start.hidden = entryKind !== 'start';
   view.continueGame.hidden = entryKind !== 'continue';
   view.resume.hidden = entryKind !== 'resume';
+  syncControlsHint(view, { status: state.status, entryKind });
 }
 
 class StackPersistence {

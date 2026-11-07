@@ -1,4 +1,4 @@
-import { loadGameStore, resetGameStore } from './core.js';
+import { createEmptyGameStore, loadGameStore, resetGameStore } from './core.js';
 
 export const GAMES = Object.freeze([
   {
@@ -265,6 +265,11 @@ const recordMarkup = (game, stats) => {
   ].join('');
 };
 
+// A game with no finishes and no records shows one quiet line instead of a
+// grid of placeholder dashes; the full record grid appears after a finish.
+const unplayed = (stats) => stats.completed === '0 completed'
+  && Object.entries(stats).every(([key, value]) => key === 'completed' || value === '—');
+
 const cardMarkup = (store, game) => {
   const card = gameCardModel(store, game);
   const stats = statsModel(store).games[game.id];
@@ -278,12 +283,24 @@ const cardMarkup = (store, game) => {
       <p class="game-card-description">${escapeHTML(card.description)}</p>
       ${card.continueHref ? `<a class="btn btn-gold game-continue" href="${escapeHTML(card.continueHref)}">${escapeHTML(card.continueLabel)}</a>` : ''}
       <div class="game-mode-actions">${modeGroupsMarkup(card)}</div>
-      <dl class="game-card-stats">${recordMarkup(game, stats)}</dl>
+      ${unplayed(stats)
+        ? '<p class="game-card-stats-empty">Not played yet</p>'
+        : `<dl class="game-card-stats">${recordMarkup(game, stats)}</dl>`}
     </article>`;
 };
 
+// True once anything at all is stored: a finish, an unfinished run, a seed
+// history entry or a changed audio preference. Reset is only offered then.
+export function hasStoredGameData(store) {
+  return JSON.stringify(store) !== JSON.stringify(createEmptyGameStore());
+}
+
 export function renderHubMarkup(store) {
   const stats = statsModel(store);
+  const stored = hasStoredGameData(store);
+  // An empty record book names one easy first step.
+  const firstStep = stored ? '' : ' <a href="/games/' + GAMES[0].id
+    + '?difficulty=easy">Start with an Easy ' + escapeHTML(GAMES[0].title) + '</a>.';
   return `
     <header class="games-hero">
       <p class="eyebrow">KinNoKi Arcade Hall</p>
@@ -300,13 +317,13 @@ export function renderHubMarkup(store) {
       <div>
         <p class="eyebrow">On this device</p>
         <h2 id="local-stats-heading">Your local records</h2>
-        <p>${escapeHTML(stats.zeroState)}</p>
+        <p>${escapeHTML(stats.zeroState)}${firstStep}</p>
       </div>
       <dl class="games-stats-summary">
         <div><dt>${escapeHTML(stats.totalLabel)}</dt><dd>${escapeHTML(stats.total)}</dd></div>
         <div><dt>${escapeHTML(stats.streakLabel)}</dt><dd>${escapeHTML(stats.streak)}</dd></div>
       </dl>
-      <button class="btn btn-gray games-reset" type="button" data-reset-games>Reset Game Data</button>
+      <button class="btn btn-gray games-reset" type="button" data-reset-games${stored ? '' : ' disabled'}>Reset Game Data</button>
     </section>
     <dialog class="game-dialog" data-reset-dialog aria-labelledby="reset-dialog-title">
       <form method="dialog">

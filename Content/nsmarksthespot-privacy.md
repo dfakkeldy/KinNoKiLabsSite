@@ -1,7 +1,10 @@
-
 # NS Marks The Spot Privacy Policy
 
-NS Marks The Spot is made by Daniel Vincent Fakkeldy, operating as KinNoKi Labs. This policy describes the native iPhone and iPad app. You can use the app without creating an NS Marks account. Your imported maps, drawings, saved marks and tracks, attached photos and app settings are stored on the device. The app's map and property-research features also contact the services described below.
+NS Marks The Spot is made by Daniel Vincent Fakkeldy, operating as KinNoKi Labs. This policy describes the native iPhone and iPad app. In short:
+
+- You can use the app without creating an NS Marks account.
+- Your imported maps, drawings, saved marks and tracks, attached photos and app settings are stored on the device.
+- The app's map and property-research features also contact the services described below.
 
 ## Map and public-data requests
 
@@ -37,4 +40,12 @@ Opening driving directions passes the selected destination to Google Maps. Openi
 
 You can deny or change location, Precise Location, Camera and Photos permissions in iOS Settings, stop a recording, choose which layers to request, and remove local content or offline downloads using the app's controls. Removing local data does not delete providers' request records, system backups or copies you previously exported.
 
-If you email support, we receive your email address and whatever you send. We retain support emails indefinitely. We do not currently operate a support-email deletion system. The app's feedback link can prepare a subject containing the app version; you choose whether to send the email. For app support contact [map@kinnokilabs.com](mailto:map@kinnokilabs.com). For privacy questions or requests contact [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com). Mail sent to these KinNoKi support and privacy addresses is routed through Apple iCloud Mail, subject to [Apple's privacy policy](https://www.apple.com/legal/privacy/en-ww/).
+If you email support, we receive your email address and whatever you send. We retain support emails indefinitely. We do not currently operate a support-email deletion system. The app's feedback link can prepare a subject containing the app version; you choose whether to send the email.
+
+- **App support:** [map@kinnokilabs.com](mailto:map@kinnokilabs.com)
+- **Privacy questions or requests:** [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com)
+
+Mail sent to these KinNoKi support and privacy addresses is routed through Apple iCloud Mail, subject to [Apple's privacy policy](https://www.apple.com/legal/privacy/en-ww/).
+
+---
+[NS Marks The Spot](/apps/nsmarksthespot/) | [Help](/nsmarksthespot-help/) | [Site privacy](/privacy/)
