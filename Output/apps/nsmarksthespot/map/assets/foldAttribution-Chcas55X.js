@@ -1,0 +1,1 @@
+function e(e,t=!1){if(!t&&!window.matchMedia?.(`(max-width: 860px)`).matches)return;let n=()=>e.getContainer().querySelector(`.maplibregl-ctrl-attrib`)?.classList.remove(`maplibregl-compact-show`);n(),e.once(`load`,n),e.once(`idle`,n)}export{e as t};
