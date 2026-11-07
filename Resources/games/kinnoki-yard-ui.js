@@ -28,14 +28,14 @@ const MODE_LABELS = Object.freeze({
 });
 const DIFFICULTY_COPY = Object.freeze({
   contracts: Object.freeze({
-    easy: 'Easy Contract: a compact, open target with full rotation choices.',
-    medium: 'Medium Contract: a larger concave target with selected rotations.',
-    hard: 'Hard Contract: a large target with narrow bays and tight rotations.',
+    easy: 'Easy Contract: a compact, open target with full rotation choices. Fill every dashed cell with tray cargo.',
+    medium: 'Medium Contract: a larger concave target with selected rotations. Fill every dashed cell with tray cargo.',
+    hard: 'Hard Contract: a large target with narrow bays and tight rotations. Fill every dashed cell with tray cargo.',
   }),
   endless: Object.freeze({
-    easy: 'Easy Yard: a larger yard with every cargo rotation available.',
-    medium: 'Medium Yard: less open space and selected cargo rotations.',
-    hard: 'Hard Yard: the tightest yard and the narrowest rotation choices.',
+    easy: 'Easy Yard: a larger yard with every cargo rotation available. Fill a dashed manifest to dispatch it.',
+    medium: 'Medium Yard: less open space and selected cargo rotations. Fill a dashed manifest to dispatch it.',
+    hard: 'Hard Yard: the tightest yard and the narrowest rotation choices. Fill a dashed manifest to dispatch it.',
   }),
 });
 const CARGO_BY_ID = new Map(CARGO_CATALOG.map((cargo) => [cargo.id, cargo]));
@@ -147,7 +147,7 @@ function buildYardShell(root, model, audioControls) {
   const score = element('span', { 'data-yard-score': '', text: '0' });
   const record = element('span', { 'data-yard-record': '', text: '—' });
   const assisted = element('span', {
-    'data-assisted-status': '', text: 'Unassisted · eligible for records',
+    'data-assisted-status': '', text: 'Eligible for records',
   });
   const status = element('span', { 'data-yard-status': '', text: 'Ready' });
   const summary = element('span', { 'data-yard-summary': '', text: 'Preparing yard' });
@@ -244,8 +244,9 @@ function buildYardShell(root, model, audioControls) {
           Object.values(controls).filter(Boolean)),
         controlsHint),
       stats,
-      help),
-    audioControls.element);
+      help,
+      // Audio closes the run panel beside the yard on wide screens.
+      audioControls.element));
   root.replaceChildren(shell);
   return {
     shell,
@@ -414,11 +415,13 @@ function yardRecordText(store, state) {
   if (state.kind === 'contracts') {
     const time = bucket?.records?.time?.[difficulty];
     const moves = bucket?.records?.moves?.[difficulty];
+    if (!Number.isSafeInteger(time) && !Number.isSafeInteger(moves)) return 'None yet';
     return (Number.isSafeInteger(time) ? formatElapsed(time) : '—')
       + ' · ' + (Number.isSafeInteger(moves) ? moves + ' moves' : '—');
   }
   const score = bucket?.records?.score?.[difficulty];
   const combo = bucket?.records?.combo?.[difficulty];
+  if (!Number.isSafeInteger(score) && !Number.isSafeInteger(combo)) return 'None yet';
   return (Number.isSafeInteger(score) ? score.toLocaleString('en-CA') : '—')
     + ' · ' + (Number.isSafeInteger(combo) ? combo + '×' : '—');
 }
@@ -448,7 +451,7 @@ function paintYard(view, state, {
   view.record.textContent = yardRecordText(store, state);
   view.assisted.textContent = state.assisted
     ? 'Assisted run · records excluded'
-    : 'Unassisted · eligible for records';
+    : 'Eligible for records';
   view.status.textContent = titleCase(state.status);
   view.summary.textContent = mode === 'contracts'
     ? Object.keys(state.placements).length + '/' + state.definition.pieces.length

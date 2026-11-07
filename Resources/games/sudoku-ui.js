@@ -4,6 +4,7 @@ import { createGameAudio } from './game-audio.js';
 import {
   completionPanel, createAudioControls, createConfirmDialog, createSession, element,
   formatElapsed, makeGameTerminal, prefersReducedMotion, renderReplacementKept, sharedShell,
+  ASSIST_RULE,
 } from './controller-common.js';
 
 const blankNotes = () => Array.from({ length: 81 }, () => []);
@@ -141,7 +142,7 @@ export async function renderSudoku(root, store) {
   shell.setAssisted(state.assisted);
   const instructions = element('details', { 'data-instructions': '' },
     element('summary', { text: 'How to play' }),
-    element('p', { text: 'Choose a cell and enter 1–9. Arrow keys move, P toggles pencil marks, U undoes, and Delete erases.' }));
+    element('p', { text: 'Choose a cell and enter 1–9. Arrow keys move, P toggles pencil marks, U undoes, and Delete erases. ' + ASSIST_RULE }));
   const board = element('div', { class: 'game-board sudoku-board', role: 'grid', 'aria-label': 'Sudoku puzzle', 'aria-rowcount': '9', 'aria-colcount': '9' });
   const controls = element('div', { class: 'game-controls sudoku-controls' });
   const hint = element('button', { type: 'button', 'data-hint': '', text: 'Hint' });
@@ -178,7 +179,10 @@ export async function renderSudoku(root, store) {
     if (!completed) void puzzleAudio.dispose();
   });
 
-  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, boardScroll, controls, audioControls.element, shell.live);
+  // Tools, digits and audio share one side column beside the board on wide
+  // screens; phones stack them under it.
+  const side = element('div', { class: 'game-side' }, controls, audioControls.element);
+  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, boardScroll, side, shell.live);
 
   // Build the 81 cell buttons (and their wrappers + fixed 9-slot notes grids)
   // once. draw() below only ever patches attributes/classes/content on these

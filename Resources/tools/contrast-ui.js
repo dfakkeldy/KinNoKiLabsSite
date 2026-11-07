@@ -223,7 +223,8 @@ export function renderContrastTool(root, deps = {}) {
     results.replaceChildren(
       element('div', { class: 'contrast-headline', ownerDocument: doc },
         element('p', { class: 'tool-result-strong contrast-ratio', text: headline, ownerDocument: doc }),
-        element('p', { class: 'contrast-grade', text: gradeFor(checks), ownerDocument: doc })),
+        // When everything passes, the summary line below already says AAA.
+        ...(allPass ? [] : [element('p', { class: 'contrast-grade', text: gradeFor(checks), ownerDocument: doc })])),
       verdictList,
       preview,
       ...(ratio < HIGHEST_TARGET ? [suggestion] : []),

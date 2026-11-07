@@ -246,3 +246,17 @@
 @media (max-width: 420px) {
   .fiction-shelf ul { grid-template-columns: 1fr; }
 }
+
+/* ── Round 4 (listening family, pass C) ─────────────── */
+/* The now-playing strip is a marker: its format links sit under the
+   player already, so the strip shows cover, title and the tag only. */
+.fiction-shelf li[aria-current="page"] .fic-formats { display: none; }
+/* Coming soon: the production note takes its own line under the badge,
+   so every coming-soon card in a row ends on the same two-line block. */
+.fiction-shelf li .fic-state:has(.fic-badge) .fic-status { display: block; margin-top: 2px; }
+.fiction-shelf li .fic-status::before { content: none; }
+/* "In the wings", not "missing": a solid quiet hairline instead of a
+   dashed placeholder, and a softened cover that comes up on hover. */
+.fiction-shelf li:not(.is-playable) { border-style: solid; border-color: color-mix(in srgb, var(--gold-500) 22%, var(--separator)); }
+.fiction-shelf li:not(.is-playable) .fic-cover { filter: saturate(0.55); transition: filter 0.2s ease; }
+.fiction-shelf li:not(.is-playable):hover .fic-cover { filter: none; }

@@ -244,7 +244,7 @@ export function renderEpubTool(root, deps = {}) {
 
   const body = toolShell(root, {
     title: 'EPUB Reader',
-    lede: 'Keep a private, on-device library and read without an account or upload.',
+    lede: 'A private library for your own EPUB files, with no account needed.',
   });
 
   const current = (token) => !disposed && token === revision;
@@ -587,7 +587,7 @@ export function renderEpubTool(root, deps = {}) {
       const grid = element('div', { class: 'epub-library-grid', ownerDocument: doc });
       if (books.length === 0) {
         grid.append(element('p', {
-          class: 'epub-empty', text: 'No books yet. Books you add stay on this device and open where you left off.', ownerDocument: doc,
+          class: 'epub-empty', text: 'No books yet. Each book reopens where you left off.', ownerDocument: doc,
         }));
       } else {
         grid.append(...books.map((book, index) => renderBookCard(book, positions[index], status)));

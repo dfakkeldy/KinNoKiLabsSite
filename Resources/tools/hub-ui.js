@@ -2,14 +2,14 @@ import { element } from './core.js';
 
 export const TOOLS = Object.freeze([
   Object.freeze({ id: 'qr-code', title: 'QR Code Generator', tagline: 'Text or link in, crisp SVG out.', href: '/tools/qr-code' }),
-  Object.freeze({ id: 'epub-reader', title: 'EPUB Reader', tagline: 'Read your own books, kept on this device.', href: '/tools/epub-reader' }),
-  Object.freeze({ id: 'dilution', title: 'Dilution Calculator', tagline: 'Concentrate + water, without the algebra.', href: '/tools/dilution' }),
+  Object.freeze({ id: 'epub-reader', title: 'EPUB Reader', tagline: 'Your own books, kept on this device.', href: '/tools/epub-reader' }),
+  Object.freeze({ id: 'dilution', title: 'Dilution Calculator', tagline: 'Mix ratios without the algebra.', href: '/tools/dilution' }),
   Object.freeze({ id: 'contrast', title: 'Contrast Checker', tagline: 'WCAG verdicts with fix suggestions.', href: '/tools/contrast' }),
-  Object.freeze({ id: 'word-count', title: 'Word Counter', tagline: 'Counts plus reading and narration time.', href: '/tools/word-count' }),
+  Object.freeze({ id: 'word-count', title: 'Word Counter', tagline: 'Counts plus read-aloud time.', href: '/tools/word-count' }),
   Object.freeze({ id: 'unit-converter', title: 'Unit Converter', tagline: 'Length to data sizes, converted live.', href: '/tools/unit-converter' }),
   Object.freeze({ id: 'click-counter', title: 'Click Counter', tagline: 'Scale a number to 60 whole clicks.', href: '/tools/click-counter' }),
   Object.freeze({ id: 'passphrase', title: 'Passphrase Generator', tagline: 'Strong passphrases, generated locally.', href: '/tools/passphrase' }),
-  Object.freeze({ id: 'turn-timer', title: 'Turn Timer', tagline: 'Visual turns, routines, and reusable countdowns.', href: '/tools/turn-timer/' }),
+  Object.freeze({ id: 'turn-timer', title: 'Turn Timer', tagline: 'Visual turns, routines, countdowns.', href: '/tools/turn-timer/' }),
 ]);
 
 export function renderToolsHub(root) {
@@ -31,6 +31,6 @@ export function renderToolsHub(root) {
     element('section', { class: 'tool-live-data', 'data-tool': 'gas', ownerDocument: doc },
       element('h2', { ownerDocument: doc }, element('a', { href: '/gas/', text: 'Gas Price Watch', ownerDocument: doc })),
       element('p', { text: 'Official Nova Scotia gasoline prices and experimental rolling estimates.', ownerDocument: doc }),
-      element('span', { class: 'tool-online-chip', text: 'Latest prices need a connection', ownerDocument: doc }))
+      element('span', { class: 'tool-online-chip', text: 'Needs a connection for the latest prices', ownerDocument: doc }))
   );
 }

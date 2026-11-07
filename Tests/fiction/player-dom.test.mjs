@@ -220,7 +220,8 @@ test('opens on the featured book and names it honestly', async () => {
   assert.equal(harness.document.title,
     'Six Months Behind — Fiction Listening Room — KinNoKi Labs');
   assert.equal(el(harness, 'bookForm').textContent,
-    'Original fiction · Novel · Techno-thriller');
+    // A no-break space before each dot keeps a wrapped line from starting on one.
+    'Original fiction\u00a0· Novel\u00a0· Techno-thriller');
   assert.match(el(harness, 'bookByline').textContent,
     /^Created by Dan Fakkeldy with AI · 34 chapters · ~80\.1k words · ≈9 h once narrated$/);
 });
@@ -451,7 +452,7 @@ for (const slug of ['merchant-of-venice-play', 'merchant-of-venice-novel']) {
     const anchors = JSON.parse(readFileSync(new URL(selected.alignment.sidecar, fictionRoot)));
     const harness = await bootPlayer({ search: `?book=${slug}`, blocks, anchors });
     assert.equal(el(harness, 'bookTitle').textContent, selected.title);
-    assert.equal(el(harness, 'bookForm').textContent, `Shakespeare adaptation · ${selected.form} · ${selected.genre}`);
+    assert.equal(el(harness, 'bookForm').textContent, `Shakespeare adaptation\u00a0· ${selected.form}\u00a0· ${selected.genre}`);
     assert.match(el(harness, 'bookByline').textContent, /^by William Shakespeare · 20 chapters/);
     assert.equal(el(harness, 'cover').src, selected.cover);
     assert.equal(harness.audio.children[0].src, selected.audio.url);

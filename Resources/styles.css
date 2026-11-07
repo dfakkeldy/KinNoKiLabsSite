@@ -477,7 +477,8 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
   border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--gold-500) 70%, var(--text-muted));
 }
-.proof-strip .link-quiet { font-size: inherit; }
+.proof-strip { font-size: 14px; }
+.proof-strip .link-quiet { font-size: inherit; text-decoration-thickness: 1px; text-underline-offset: 4px; }
 /* The one plain fact leads the strip at the same weight as the two proofs
    after it; only the underline marks which items are links. */
 .proof-strip li > span { color: var(--text-muted); }
@@ -512,9 +513,11 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 .flagship-glow { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 62% at 50% 46%, rgba(201, 162, 75, 0.17), transparent 74%); }
 /* The frame's width follows its height at the screenshot's ratio, so the
    screen is never cropped at the sides. */
-.flagship-phone { position: absolute; left: 50%; transform: translateX(-50%); top: clamp(36px, 5vw, 56px); bottom: -80px; width: auto; aspect-ratio: 12 / 25; max-width: 86%; }
-.flagship-phone-frame { height: 100%; background: #050506; border: 1px solid rgba(255, 255, 255, 0.14); border-bottom: none; border-radius: 44px 44px 0 0; padding: 9px 9px 0; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 70px rgba(201, 162, 75, 0.10); }
-.flagship-phone-frame img { width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 35px 35px 0 0; display: block; }
+/* The whole phone sits inside the panel with equal margins top and bottom,
+   so its control row is never sliced by the card edge. */
+.flagship-phone { position: absolute; left: 50%; transform: translateX(-50%); top: clamp(36px, 5vw, 56px); bottom: clamp(36px, 5vw, 56px); width: auto; aspect-ratio: 12 / 25; max-width: 86%; }
+.flagship-phone-frame { height: 100%; background: #050506; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 44px; padding: 9px; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 70px rgba(201, 162, 75, 0.10); }
+.flagship-phone-frame img { width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 35px; display: block; }
 .flagship-edge { position: absolute; inset: 0; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06); pointer-events: none; }
 /* Light theme: the phone sits on a warm sand stage instead of a black slab. */
 [data-theme="light"] .flagship-visual { background: linear-gradient(180deg, color-mix(in srgb, var(--gold-500) 12%, var(--surface-2)), color-mix(in srgb, var(--gold-500) 20%, var(--surface-2))); }
@@ -545,7 +548,14 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 .band-note { font-size: 13.5px; line-height: 1.55; color: var(--text-muted); margin: 0; }
 /* Home services band: pitch and actions left, the three offerings as a
    hairline list right. */
-.home-services { grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); }
+.split-services.home-services { grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); grid-template-areas: "copy list" "actions list"; row-gap: 0; }
+/* Copy, offerings, then actions: on desktop the actions sit under the copy
+   beside the list; on phone the card reads pitch, offerings, then the CTA
+   closes it (marketing-a pass C). */
+.home-services-copy { grid-area: copy; align-self: end; }
+.home-services-actions { grid-area: actions; align-self: start; }
+.home-services > .offer-lines { grid-area: list; }
+.home-services-copy .band-lede { margin-bottom: 24px; }
 .offer-lines { gap: 0; }
 .offer-lines li { padding: 16px 0; border-top: 1px solid var(--gold-hairline); line-height: 1.4; }
 .offer-lines li:last-child { border-bottom: 1px solid var(--gold-hairline); }
@@ -648,10 +658,24 @@ body:has(.closing) .site-footer { margin-top: var(--block-gap); }
 /* Hover: the row's edge warms to the gold hairline as its chevron nudges. */
 .app-list > .app-card:hover { border-color: color-mix(in srgb, var(--gold-500) 45%, var(--separator)); }
 /* The closing pointer is a quiet row link, at the page's normal rhythm. */
-.page > .app-list + .page-footnote { margin-top: 24px; }
+.page > .app-list + .page-footnote { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--separator); max-width: none; }
+/* The closing link keeps its arrow right after the words when it wraps on a
+   phone, instead of pinning it to the far edge. */
+.page > .app-list + .page-footnote .row-link { display: inline; }
+.page > .app-list + .page-footnote .row-link svg { display: inline-block; margin-left: 6px; vertical-align: -2px; }
+@media (pointer: coarse) {
+  .page > .app-list + .page-footnote .row-link { display: inline-block; padding-block: 12px; }
+}
+/* Echo's licence is its own meta line in the desktop column; on phone,
+   where the meta is one row, it follows the platforms after a dot. */
+@media (max-width: 759px) {
+  .app-list > .app-card .app-card-meta .platforms + .platforms { margin-left: -4px; }
+  .app-list > .app-card .app-card-meta .platforms + .platforms::before { content: "· "; }
+}
+/* One title size for all four rows; the gold edge marks the flagship. */
+.app-list > .app-card-featured h2 { font-size: 19px; }
 body:has(.app-list) .site-footer { margin-top: var(--block-gap); }
 .app-list > .app-card p { margin: 0; flex: none; max-width: 68ch; }
-.app-list > .app-card .app-card-note { margin-top: 8px; }
 .app-list > .app-card .app-card-meta { grid-column: 3; grid-row: 1 / span 3; flex-direction: column; align-items: flex-start; gap: 8px; margin: 2px 0 0; padding: 0 0 0 clamp(16px, 2.5vw, 28px); border-top: 0; border-left: 1px solid var(--separator); align-self: stretch; }
 @media (max-width: 759px) {
   .app-list > .app-card { grid-template-columns: 52px minmax(0, 1fr) 20px; }
@@ -831,6 +855,8 @@ a.chip:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px;
   .flagship-phone-frame img { border-radius: 27px; }
   [data-theme="light"] .flagship-phone-frame { border-color: rgba(0, 0, 0, 0.2); }
   .split-services, .home-services { grid-template-columns: minmax(0, 1fr); }
+  .split-services.home-services { grid-template-columns: minmax(0, 1fr); grid-template-areas: "copy" "list" "actions"; row-gap: 24px; }
+  .home-services-copy .band-lede { margin-bottom: 0; }
 }
 @media (max-width: 559px) {
   .split-services.band { padding: 24px 20px; }
@@ -931,6 +957,23 @@ a.chip:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px;
 @media (max-width: 759px) {
   .services-hero-grid { grid-template-columns: 1fr; }
 }
+/* ── Services, pass C (marketing-a) ──
+   - phone: the diagram follows the first lede, so the first scroll shows a
+     picture of the problem before the introduction and the email button;
+   - card footnotes step clearly below the 15px card body;
+   - the two proof cards' buttons span their cards, so the pair ends level;
+   - the one secondary scope item is a plain "Also:" line, not a hollow dot. */
+@media (max-width: 759px) {
+  .services-hero-grid { gap: 0; }
+  .services-hero-grid > .page-head { display: contents; }
+  .services-hero-grid > .page-head > .page-title + .page-lede { order: 1; }
+  .services-hero-grid > .system-map { order: 2; margin: 8px 0 28px; }
+  .services-hero-grid > .page-head > .page-lede + .page-lede { order: 3; }
+  .services-hero-grid > .page-head > .services-hero-actions { order: 4; margin-top: 4px; }
+}
+.offer-card .offer-note { font-size: 13.5px; }
+.page > .proof-grid > .tender-proof-callout > .btn { align-self: stretch; }
+.scope-chips .scope-note { margin: 18px 0 0; font-size: 14px; line-height: 1.6; color: var(--text-muted); }
 @media (max-width: 339px) {
   .system-map-nodes { grid-template-columns: 1fr; }
 }
@@ -982,6 +1025,24 @@ a.chip:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px;
   .about-grid ~ .contact-band .contact-band-actions { flex-direction: column; align-items: stretch; width: 100%; }
   .about-grid ~ .contact-band .contact-band-actions .btn { justify-content: center; }
 }
+/* About (council pass C, marketing-b). The studio statement outranks the
+   supporting story, and every inline link reads at the colour of its own
+   sentence with the gold underline (one link colour on the page). */
+.page-head:has(+ .about-grid) .page-lede { color: var(--text); }
+.about-card .link-quiet, .story-lead .link-quiet { color: var(--text); font-weight: inherit; }
+.about-card .link-quiet:hover, .story-lead .link-quiet:hover { color: var(--gold-text); }
+/* Four columns: the hero spans the lattice below it (headline over the first
+   two cells, the lede beside it over the last two) so the opening fills the
+   frame the grid sets and hands straight down to it. The Background label
+   sits on the page edge, like the About eyebrow above it. */
+@media (min-width: 1072px) {
+  .page-head:has(+ .about-grid) { max-width: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 1px; align-items: end; padding-inline: 1px; }
+  .page-head:has(+ .about-grid) > .eyebrow { grid-column: 1 / -1; }
+  .page-head:has(+ .about-grid) > .page-title { grid-column: 1 / 3; padding-right: 24px; }
+  .page-head:has(+ .about-grid) > .page-lede { grid-column: 3 / -1; margin: 0; max-width: none; padding-inline: clamp(22px, 2.6vw, 28px); font-size: 19px; line-height: 1.6; }
+  .page > .page-head + .about-grid { margin-top: 48px; }
+  .page > .story > .eyebrow { padding-left: 0; }
+}
 
 /* ── Support list rows ──────────────────────────────── */
 .support-row { display: flex; align-items: center; gap: 14px; background: var(--surface); border: 1px solid var(--separator); border-radius: 14px; box-shadow: var(--shadow-card); padding: 15px 18px; text-decoration: none; color: var(--text); font-weight: 500; font-size: 16px; transition: border-color 0.15s ease, transform 0.2s var(--ease); }
@@ -990,7 +1051,7 @@ a.chip:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px;
 .support-row:hover .row-chevron { color: var(--gold-text); transform: translateX(2px); }
 /* One radius and a hairline ring for every app icon, so dark icons keep an
    edge on dark rows. */
-.support-row-icon { width: 36px; height: 36px; flex: none; border-radius: var(--radius-icon); object-fit: cover; box-shadow: 0 0 0 1px var(--separator); }
+.support-row-icon { width: 36px; height: 36px; flex: none; border-radius: var(--radius-icon); object-fit: cover; box-shadow: 0 0 0 1px color-mix(in srgb, var(--text) 16%, transparent); }
 /* A row's release state leads its subline as a small status chip. */
 .support-row-sub .status-chip { display: inline-flex; gap: 5px; margin: 1px 6px 1px 0; padding: 1px 8px; font-size: 11px; line-height: 1.5; vertical-align: 1px; }
 .support-row:has(.support-row-icon) { padding: 12px 18px 12px 12px; }
@@ -1001,6 +1062,17 @@ a.chip:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px;
 /* The email row's icon: a mail glyph on the same 36px tile as the app icons. */
 .support-row-glyph { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; flex: none; border-radius: var(--radius-icon); background: color-mix(in srgb, var(--gold-500) 12%, var(--surface-2)); color: var(--gold-text); }
 .support-row:has(.support-row-glyph) { padding: 12px 18px 12px 12px; }
+/* Support and 404 lists (council pass C, marketing-b). The catch-all email
+   row closes the list: it stands a step apart on a gold hairline. */
+.row-list > .support-row[href^="mailto:"] { margin-top: 10px; border-color: var(--gold-hairline); }
+/* Phone: the status chip and the description each take their own line, so
+   every app row has the same three-line build and no phrase is orphaned
+   under the chip. The description is the sub-line's text node, which a
+   column flexbox lays out as its own item. */
+@media (max-width: 559px) {
+  .row-list .support-row-sub:has(.status-chip) { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+  .row-list .support-row-sub:has(.status-chip) .status-chip { margin: 2px 0 0; }
+}
 
 /* ── Learning audiobook library / flyer intake ──────── */
 .learn-main { max-width: var(--max-width); margin: 0 auto; padding: var(--page-pad-top) var(--gutter) 24px; }
@@ -1131,6 +1203,30 @@ a.chip:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px;
 @media (max-width: 559px) {
   .learn-book-cover-link { grid-row: 1; }
 }
+/* ── Learn round 4 (listening family, pass C) ──
+   Hero: one button (Try Echo) and a text link down to the request, so the
+   gold Listening Room card is the hero's only primary action. On a phone
+   the two sit side by side instead of as two full-width bars. */
+.learn-ctas { align-items: center; gap: 12px 24px; }
+.learn-text-link { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--text); font-weight: 600; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent); text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+.learn-text-link:hover { color: var(--gold-text); }
+@media (max-width: 559px) {
+  .learn-ctas { display: flex; }
+  .learn-ctas .btn { width: auto; }
+}
+/* Library tile: a card of its own (label, what the repo holds, then the
+   link line at the foot) so the odd grid slot carries information. */
+.learn-library-tile { flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 12px; padding: 24px 28px; font-weight: 400; }
+.learn-library-tile .learn-card-label { margin: 0; }
+.learn-library-tile-text { color: var(--text-muted); font-size: 0.93rem; line-height: 1.6; max-width: 34rem; }
+.learn-library-tile-cta { display: block; margin-top: auto; padding-top: 12px; color: var(--text); font-weight: 600; font-size: 15px; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent); text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+.learn-library-tile-cta svg { display: inline; margin-left: 6px; vertical-align: -2px; }
+.learn-library-tile:hover .learn-library-tile-cta { color: var(--gold-text); }
+.learn-library-tile:hover { color: inherit; }
+/* Request: the button says what it does; the address sits beside it. */
+.learn-request-action { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-top: 24px; }
+.learn-request-grid .learn-request-action .btn { margin-top: 0; }
+.learn-request-address { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; }
 
 /* ── Echo detail: hero / gallery / ladder / features / principles / CTA */
 .echo-hero { text-align: center; }
@@ -1194,12 +1290,26 @@ a.chip:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px;
 /* The two Watch shots sit on their own stage under the phones, so the pair
    reads as a deliberate second row rather than an orphan. */
 .echo-gallery .watch-row { padding: clamp(24px, 4vw, 40px) clamp(16px, 3vw, 32px); background: var(--surface); border: 1px solid var(--separator); border-radius: var(--radius-bento); box-shadow: var(--shadow-card); }
-/* Why Echo exists: on desktop the statement and the answer sit side by side. */
-@media (min-width: 1000px) {
-  .echo-section .story { max-width: none; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); column-gap: clamp(40px, 5vw, 72px); align-items: start; }
-  .echo-section .story > .eyebrow { grid-column: 1 / -1; }
-  .echo-section .story > .story-lead { margin: 0; }
-  .echo-section .story > .story-body { padding-top: 4px; }
+/* Why Echo exists: one column, so the answer reads as the statement's
+   continuation (marketing-a pass C: the side-by-side split read as two
+   unrelated blocks). The base .story rules already stack it at 62ch. */
+/* The two Watch shots: the stage hugs the pair instead of spanning the
+   container with empty flanks. */
+@media (min-width: 760px) {
+  .echo-gallery .watch-row { width: fit-content; margin-inline: auto; padding-inline: clamp(32px, 5vw, 56px); }
+  .echo-gallery .watch-row > .watch-figure { width: 238px; }
+}
+/* Phones: a quiet cue under the screenshot rail, since an edge peek alone
+   is easy to miss. Hidden where all three screens show. */
+.screens-hint { display: none; }
+@media (max-width: 759px) {
+  .screens-hint { display: block; margin: 10px 0 0; text-align: center; font-size: 13px; font-weight: 500; color: var(--text-muted); }
+  .screens-hint span { color: var(--gold-text); }
+}
+/* Phone: ladder numbers sit above their text so the copy gets the card's
+   full width. */
+@media (max-width: 559px) {
+  .ladder-row { grid-template-columns: 1fr; gap: 6px; padding: 18px 20px; }
 }
 /* Phone: feature cards drop their chrome and become hairline rows, so the
    ten features scroll as one compact list. */
@@ -1246,11 +1356,26 @@ a.chip:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px;
 .band-dark .btn-gray:hover { border-color: rgba(201, 162, 75, 0.55); }
 .echo-cta-link { color: rgba(245, 245, 247, 0.72); text-decoration: underline; text-decoration-color: rgba(201, 162, 75, 0.5); text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
 .echo-cta-link:hover { color: #f5f5f7; }
+/* Phone: the guides become a left-aligned list of full-width 44px rows
+   under the centred actions, so they scan as one column. */
 @media (max-width: 759px) {
-  .echo-cta-links { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; justify-items: center; }
-  .echo-cta-link { display: inline-block; padding-block: 8px; }
-  .echo-cta-links > .echo-cta-link:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .echo-cta-links-label { text-align: left; }
+  .echo-cta-actions { flex-direction: column; align-items: stretch; gap: 12px; }
+  .echo-cta-links { display: flex; flex-direction: column; align-items: stretch; gap: 0; margin-top: 8px; text-align: left; }
+  .echo-cta-link { display: flex; align-items: center; min-height: 44px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); font-size: 15px; }
+  .echo-cta-link:last-child { border-bottom: 0; }
 }
+/* Light theme: the closing panel takes the light gold-tint material, so the
+   page is not bookended by two black slabs (the hero stays the one dark
+   identity panel). */
+[data-theme="light"] .echo-cta { background: color-mix(in srgb, var(--gold-500) 8%, var(--surface)); color: var(--text); border: 1px solid var(--gold-hairline); box-shadow: var(--shadow-card); }
+[data-theme="light"] .echo-cta .glow-bottom { background: radial-gradient(ellipse 65% 80% at 50% 100%, color-mix(in srgb, var(--gold-300) 30%, transparent), transparent 70%); }
+[data-theme="light"] .echo-cta-title { color: var(--text); }
+[data-theme="light"] .echo-cta-lede, [data-theme="light"] .echo-cta-links-label { color: var(--text-muted); }
+[data-theme="light"] .echo-cta-links-label { border-top-color: var(--separator); }
+[data-theme="light"] .echo-cta-link { color: var(--text); text-decoration-color: var(--gold-hairline); border-bottom-color: var(--separator); }
+[data-theme="light"] .echo-cta-link:hover { color: var(--gold-text); }
+[data-theme="light"] .echo-cta .btn-gray { background: var(--surface); color: var(--text); border-color: var(--separator); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); }
 
 /* ── App item pages (macromark, nsmarksthespot, …) ──── */
 .app-hero { display: flex; align-items: center; gap: 22px; margin: 0 0 36px; padding-bottom: 32px; border-bottom: 1px solid var(--separator); }
@@ -1267,7 +1392,7 @@ a.chip:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px;
    pipe separators between them. */
 .app-hero + .prose > hr { margin: 56px 0 16px; }
 .app-hero + .prose > hr + p:last-child { font-size: 0; margin: 0; }
-.app-hero + .prose > hr + p:last-child a { display: inline-flex; align-items: center; min-height: 32px; margin: 0 24px 4px 0; font-size: 15px; line-height: 1.4; font-weight: 500; color: var(--text-muted); }
+.app-hero + .prose > hr + p:last-child a { display: inline-flex; align-items: center; min-height: 44px; margin: 0 24px 4px 0; font-size: 15px; line-height: 1.4; font-weight: 500; color: var(--text-muted); }
 .app-hero + .prose > hr + p:last-child a:last-child { margin-right: 0; }
 .app-hero + .prose > hr + p:last-child a:hover { color: var(--text); }
 @media (pointer: coarse) {
@@ -1300,15 +1425,29 @@ a.chip:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px;
   .app-hero + .prose .macro-table th, .app-hero + .prose .macro-table td { padding-inline: 14px; }
   .app-hero + .prose .macro-table td:last-child code { font-size: 14px; }
 }
-/* TestFlight page: each beta is a matched block. The icon sits beside its
-   heading, and one hairline separates the two betas. */
-.prose > .beta-icon { float: left; width: 48px; height: 48px; margin: 4px 16px 0 0; border-radius: var(--radius-icon); box-shadow: 0 0 0 1px var(--separator), 0 2px 10px rgba(0, 0, 0, 0.18); }
-.prose > .beta-icon + h2 { margin-top: 0; line-height: 56px; }
-.prose > .beta-icon + h2 + p { clear: left; }
-.prose > p:has(+ .beta-icon) { margin-bottom: 44px; }
-/* The page leads with the choice; the install how-to steps down beneath it. */
-.prose > h1 + p:has(+ .beta-note) { font-size: var(--text-lede); line-height: 1.6; margin-bottom: 10px; }
-.prose > .beta-note { font-size: 15px; line-height: 1.6; color: var(--text-muted); }
+/* TestFlight page (council pass C, marketing-b). It leads with the two
+   steps that come before any Join button, numbered in rings so the order is
+   the first thing read; then the betas sit side by side as a matched choice
+   (stacked on phone), each closing on its own buttons; then a way to help.
+   The cards carry no shadow or hover: only their buttons are actions. */
+.prose > h1 + p:has(+ .beta-steps) { font-size: var(--text-lede); line-height: 1.6; margin-bottom: 18px; }
+.prose > .beta-steps { list-style: none; padding: 0; gap: 0; margin: 0 0 14px; counter-reset: beta-step; border-block: 1px solid var(--separator); }
+.prose > .beta-steps > li { position: relative; counter-increment: beta-step; padding: 16px 0 16px 52px; font-size: 16px; line-height: 1.6; color: var(--text-muted); }
+.prose > .beta-steps > li + li { border-top: 1px solid var(--separator); }
+.prose > .beta-steps > li::before { content: counter(beta-step); position: absolute; left: 0; top: 13px; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--gold-hairline); font-family: var(--font-mono); font-size: 14px; font-weight: 600; line-height: 1; color: var(--gold-text); }
+.prose > .beta-steps strong { color: var(--text); font-weight: 600; }
+.prose > .beta-note { font-size: 16px; line-height: 1.6; color: var(--text-muted); margin: 0; }
+.prose > .beta-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin: 40px 0 32px; }
+@media (min-width: 640px) {
+  .prose > .beta-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.beta-card { display: flex; flex-direction: column; padding: 24px; background: var(--surface); border: 1px solid var(--separator); border-radius: var(--radius-card); }
+.beta-card > .beta-icon { display: block; width: 56px; height: 56px; margin: 0 0 18px; border-radius: var(--radius-icon); box-shadow: 0 0 0 1px color-mix(in srgb, var(--text) 16%, transparent), 0 2px 10px rgba(0, 0, 0, 0.18); }
+.prose .beta-card > h2 { margin: 0 0 6px; padding: 0; border: 0; font-size: 22px; line-height: 1.25; }
+.beta-card > p:not(.beta-actions) { flex: 1; margin: 0 0 22px; font-size: 16px; line-height: 1.6; color: var(--text-muted); }
+.beta-card > .beta-actions { display: flex; flex-direction: column; gap: 10px; margin: 0; }
+.beta-card > .beta-actions .btn { justify-content: center; }
+.prose > .beta-help { margin: 0; font-size: 16px; line-height: 1.6; color: var(--text-muted); }
 .prose > .app-actions + hr { margin: 40px 0; }
 .prose > .eyebrow { margin-bottom: 14px; }
 @media (max-width: 559px) {
@@ -1348,11 +1487,84 @@ a.chip:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px;
   .prose > .app-actions { flex-direction: column; align-items: stretch; }
   .prose > .app-actions .btn { justify-content: center; }
 }
-/* A discontinued app's status note uses the same neutral material as its
-   muted chip, set as an annotation rather than a feature callout. */
-.app-hero:has(.status-chip-muted) + .prose blockquote { padding: 12px 16px; background: var(--surface); border-color: var(--separator); border-left-color: var(--text-muted); font-size: 15.5px; }
-/* Its closing row leads with the live path forward. */
-.app-hero:has(.status-chip-muted) + .prose > hr + p:last-child a:first-child { color: var(--text); }
+/* A discontinued app (Routey; council pass C, marketing-b). Archived reads
+   at a glance: the icon is desaturated, the status note is a quiet margin
+   annotation under the intro, the disclaimer is fine print, and the closing
+   row leads with one clear way forward (a small outline pill) beside a plain
+   text link, both at full text colour. */
+.app-hero:has(.status-chip-muted) .app-hero-icon { filter: grayscale(0.85); opacity: 0.85; }
+.app-hero:has(.status-chip-muted) + .prose blockquote { margin: 0 0 24px; padding: 2px 0 2px 16px; background: transparent; border: 0; border-left: 2px solid var(--text-muted); border-radius: 0; font-size: 16px; line-height: 1.65; color: var(--text); }
+.app-hero:has(.status-chip-muted) + .prose > blockquote + p { font-size: 13.5px; line-height: 1.55; margin: 0; }
+.app-hero:has(.status-chip-muted) + .prose > hr + p:last-child { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; }
+.app-hero:has(.status-chip-muted) + .prose > hr + p:last-child a { margin: 0; color: var(--text); }
+.app-hero:has(.status-chip-muted) + .prose > hr + p:last-child a:first-child { min-height: 40px; padding: 0 18px; border: 1px solid var(--gold-hairline); border-radius: var(--radius-pill); text-decoration: none; }
+.app-hero:has(.status-chip-muted) + .prose > hr + p:last-child a:first-child:hover { border-color: var(--gold-500); color: var(--text); }
+@media (pointer: coarse) {
+  .app-hero:has(.status-chip-muted) + .prose > hr + p:last-child a:first-child { min-height: 44px; }
+}
+
+/* Turn Timer (council pass C, marketing-b). The steps are a numbered list,
+   not cards: hairlines between them, each number in a ring of one of the
+   app's round colours (blue, teal, amber, from its icon), so the steps echo
+   the colour-coded rounds. The free/Pro split is the page's closing
+   decision aid: two lists side by side (stacked on phone), Pro on gold. */
+.tt-steps { --tt-round-1: #4dabf7; --tt-round-2: #38d9a9; --tt-round-3: #fcc419; }
+[data-theme="light"] .tt-steps { --tt-round-1: #1971c2; --tt-round-2: #0c8a6c; --tt-round-3: #b86e00; }
+.app-hero + .prose > ol.tt-steps { gap: 0; margin: 0 0 8px; counter-reset: tt-step; }
+.app-hero + .prose > ol.tt-steps > li { counter-increment: tt-step; padding: 18px 0 18px 58px; font-size: 16px; line-height: 1.65; background: none; border: 0; border-radius: 0; box-shadow: none; }
+.app-hero + .prose > ol.tt-steps > li + li { border-top: 1px solid var(--separator); }
+.app-hero + .prose > ol.tt-steps > li::before { content: counter(tt-step); left: 0; top: 16px; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; box-shadow: inset 0 0 0 2px var(--tt-ring); font-size: 14px; line-height: 1; color: var(--text); }
+.tt-steps > li:nth-child(3n + 1) { --tt-ring: var(--tt-round-1); }
+.tt-steps > li:nth-child(3n + 2) { --tt-ring: var(--tt-round-2); }
+.tt-steps > li:nth-child(3n + 3) { --tt-ring: var(--tt-round-3); }
+.tt-steps code { color: var(--text); background: color-mix(in srgb, var(--text) 10%, transparent); }
+.tt-plans { display: grid; grid-template-columns: 1fr; gap: 14px; margin: 20px 0 20px; }
+@media (min-width: 640px) {
+  .tt-plans { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.tt-plan { padding: 22px 24px 14px; border: 1px solid var(--separator); border-radius: var(--radius-card); }
+.tt-plan-pro { border-color: var(--gold-hairline); background: color-mix(in srgb, var(--gold-500) 7%, transparent); }
+.prose .tt-plan h3 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; margin: 0 0 8px; font-size: 18px; }
+.tt-plan-note { font-size: 13px; font-weight: 500; letter-spacing: 0; color: var(--gold-text); }
+.prose .tt-plan ul { list-style: none; padding: 0; margin: 0; gap: 0; }
+.prose .tt-plan li { position: relative; padding: 9px 0 9px 18px; font-size: 15.5px; line-height: 1.5; color: var(--text); }
+.prose .tt-plan li + li { border-top: 1px solid var(--separator); }
+.prose .tt-plan li::before { content: ""; position: absolute; left: 1px; top: calc(9px + 0.75em - 3px); width: 6px; height: 6px; border-radius: 50%; background: var(--text-muted); }
+.prose .tt-plan-pro li::before { background: var(--gold-500); }
+
+/* ── App detail, long pages (marketing-a, pass C) ──────
+   NS Marks is the longest app page, so it gets wayfinding and a change of
+   material for its two focused maps, all from Markdown it already has:
+   - an "On this page" chip row under the screenshot, pointing at empty
+     .app-anchor targets that sit before each h2 (the h2s stay bare);
+   - the focused-map sections (Rhodena Wind, Fishing) join their intro
+     paragraph and spec list into one card with a tinted header;
+   - short addresses (/rhodena, /fishmap, the map path) are set as mono
+     address tags, since the path is the thing a reader types or shares;
+   - the archive figure (a Fletcher sheet crop) sits on a paper-toned mat. */
+.app-hero + .prose > .app-toc { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 28px 0 0; }
+.app-hero + .prose > .app-toc a.chip { color: var(--text); text-decoration: none; }
+/* A page can close on its primary action again, just above the footnote row. */
+.prose > .app-actions-end { margin: 36px 0 0; }
+.app-toc-label { margin-right: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+.app-hero + .prose > .app-anchor { height: 0; margin: 0; scroll-margin-top: 88px; }
+.app-hero + .prose > :is(#rhodena, #fishing) + h2 + p { margin: 0; padding: 20px 24px; color: var(--text); font-size: 15.5px; line-height: 1.65; background: color-mix(in srgb, var(--gold-500) 7%, var(--surface)); border: 1px solid var(--gold-hairline); border-bottom-color: var(--separator); border-radius: var(--radius-card) var(--radius-card) 0 0; }
+.app-hero + .prose > :is(#rhodena, #fishing) + h2 + p + ul { margin-top: 0; border-top: 0; border-color: var(--gold-hairline); border-radius: 0 0 var(--radius-card) var(--radius-card); }
+.app-hero + .prose > h2 + p a:is([href="/rhodena"], [href="/fishmap"], [href="/apps/nsmarksthespot/map/"]) { display: inline-block; padding: 0 7px; font-family: var(--font-mono); font-size: 0.88em; font-weight: 600; line-height: 1.6; color: var(--gold-text); text-decoration: none; background: var(--fill-2); border: 1px solid var(--gold-hairline); border-radius: 6px; overflow-wrap: anywhere; }
+.app-hero + .prose > h2 + p a:is([href="/rhodena"], [href="/fishmap"], [href="/apps/nsmarksthespot/map/"]):hover { border-color: var(--gold-text); }
+.app-hero + .prose > .app-shot-archive { margin: 4px 0 24px; padding: 12px; background: #e9e1cc; border-radius: var(--radius-card); border: 1px solid var(--separator); }
+.app-hero + .prose > .app-shot-archive img { aspect-ratio: 2 / 1; object-fit: cover; object-position: 50% 72%; border-radius: 10px; border: 0; box-shadow: none; }
+.app-hero + .prose > .app-shot-archive figcaption { margin: 12px 4px 0; color: #4a4536; }
+.app-hero + .prose > .app-shot-archive figcaption a { color: #3d3626; text-decoration-color: rgba(61, 54, 38, 0.45); }
+@media (max-width: 559px) {
+  /* Phone: the product shot crops to the search panel and the map's west
+     edge, so the interface reads at about 40% instead of 24% scale. */
+  .app-hero + .prose > .app-shot img[src*="ns-marks-product"] { aspect-ratio: 1; object-fit: cover; object-position: left center; }
+  .app-hero + .prose > :is(#rhodena, #fishing) + h2 + p { padding: 16px 18px; }
+  .app-toc-label { flex-basis: 100%; }
+  .app-hero + .prose > .app-shot-archive { padding: 8px; }
+  .app-hero + .prose > .app-shot-archive img { aspect-ratio: 4 / 3; }
+}
 
 /* ── Posts list + tag lists ─────────────────────────── */
 .post-list { display: flex; flex-direction: column; gap: 14px; }
@@ -1397,6 +1609,19 @@ a.chip:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px;
 .post-end .back-link { margin: 0; }
 .post-end-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .post-end-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-right: 4px; }
+/* ── Editorial pass C (posts, tags, tender briefs) ── */
+/* The post's forward close reads as a link at full text colour. */
+.post-end .back-link-next { color: var(--text); }
+.post-end .back-link-next:hover { color: var(--gold-text); }
+/* Update callout on a post: square on the rule side so the gold rule runs
+   straight (same corner as the site's other rule-side callouts). */
+.prose.prose-post blockquote { border-radius: 0 12px 12px 0; }
+/* Light theme: the 55% gold underline is ~1.7:1 on the pale page, so
+   inline links in notes and briefs take the AA-tuned gold text tone. */
+[data-theme="light"] .prose-post a,
+[data-theme="light"] .tender-analysis a { text-decoration-color: var(--gold-text); }
+[data-theme="light"] .prose-post a:hover,
+[data-theme="light"] .tender-analysis a:hover { text-decoration-color: var(--gold-500); }
 
 /* ── Prose (markdown pages: privacy, guides, post body) */
 .article-page { max-width: calc(var(--narrow-width) + 2 * var(--gutter)); margin: 0 auto; padding: var(--page-pad-top) var(--gutter) 24px; }
@@ -1449,15 +1674,37 @@ a.chip:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px;
 .prose .prose-meta strong { font-weight: 500; }
 /* Guides with 3+ h2s (.prose-chapters; long guides too): every h2 opens a chapter plane. */
 .prose-long > h2, .prose-chapters > h2 { margin-top: 64px; padding-top: 28px; border-top: 1px solid var(--separator); }
-.prose-long > .prose-toc + h2 { margin-top: 48px; padding-top: 0; border-top: 0; }
 /* A lone italic line under an h2 becomes its dateline (devlog weeks). */
 .prose .prose-dateline { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: -6px 0 20px; font-family: var(--font-mono); font-size: 13.5px; letter-spacing: 0.03em; color: var(--text-muted); }
 /* "· 92 commits" becomes a count pill; the busiest week alone is gold. */
 .prose .prose-dateline-count { display: inline-block; padding: 1px 9px; border-radius: var(--radius-pill); background: var(--fill-2); color: var(--text); font-size: 12.5px; font-variant-numeric: tabular-nums; line-height: 1.6; }
 .prose .prose-dateline-peak { background: color-mix(in srgb, var(--gold-500) 14%, transparent); color: var(--gold-text); font-weight: 600; }
-/* "On this page": a quiet ruled index, two columns where there is room. */
-.prose-toc { margin: 32px 0 0; padding: 18px 0 12px; border-top: 1px solid var(--separator); border-bottom: 1px solid var(--separator); }
-.prose .prose-toc-title { margin: 0 0 8px; font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+/* Each count draws a bar scaled to the busiest week (guideBody's twelve
+   steps), so scrolling the weeks shows the build's rise and taper. */
+.prose .prose-dateline-bar { position: relative; flex: none; width: clamp(88px, 24%, 144px); height: 4px; margin-left: auto; border-radius: 2px; background: var(--fill-2); overflow: hidden; }
+.prose .prose-dateline-bar::before { content: ""; position: absolute; inset: 0 auto 0 0; width: calc(var(--bar-step, 1) * 100% / 12); border-radius: inherit; background: color-mix(in srgb, var(--text-muted) 70%, transparent); }
+.prose .prose-dateline-peak + .prose-dateline-bar::before { background: var(--gold-500); }
+.prose-bar-1 { --bar-step: 1; } .prose-bar-2 { --bar-step: 2; } .prose-bar-3 { --bar-step: 3; } .prose-bar-4 { --bar-step: 4; }
+.prose-bar-5 { --bar-step: 5; } .prose-bar-6 { --bar-step: 6; } .prose-bar-7 { --bar-step: 7; } .prose-bar-8 { --bar-step: 8; }
+.prose-bar-9 { --bar-step: 9; } .prose-bar-10 { --bar-step: 10; } .prose-bar-11 { --bar-step: 11; } .prose-bar-12 { --bar-step: 12; }
+/* "On this page": a ruled row under the title that folds open (site.js
+   folds it below the rail width), two columns where there is room. */
+.prose-toc { margin: 4px 0 32px; border-top: 1px solid var(--separator); border-bottom: 1px solid var(--separator); }
+.prose .prose-toc-title { display: flex; align-items: center; gap: 12px; min-height: 48px; margin: 0; font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text); cursor: pointer; list-style: none; }
+.prose .prose-toc-title::-webkit-details-marker { display: none; }
+.prose .prose-toc-count { margin-left: -8px; font-weight: 500; color: var(--text-muted); }
+/* The disclosure chevron: points down when folded, up when open. */
+.prose .prose-toc-title::after { content: ""; flex: none; width: 7px; height: 7px; margin: -3px 4px 0 auto; border-right: 1.5px solid var(--gold-text); border-bottom: 1.5px solid var(--gold-text); transform: rotate(45deg); transition: transform 0.2s ease; }
+.prose .prose-toc-fold[open] > .prose-toc-title::after { margin-top: 4px; transform: rotate(-135deg); }
+.prose .prose-toc-title:hover { color: var(--gold-text); }
+.prose .prose-toc-fold[open] { padding-bottom: 12px; }
+/* Before site.js decides, a scripted page shows the list folded, so a
+   phone never sees it flash open under the title. */
+@media (max-width: 1199.98px) {
+  .js .prose .prose-toc-fold:not(.is-ready) { padding-bottom: 0; }
+  .js .prose .prose-toc-fold:not(.is-ready) > ul { display: none; }
+  .js .prose .prose-toc-fold:not(.is-ready) > .prose-toc-title::after { margin-top: -3px; transform: rotate(45deg); }
+}
 .prose .prose-toc ul { display: block; columns: 2; column-gap: 32px; margin: 0; padding: 0; list-style: none; }
 .prose .prose-toc li { break-inside: avoid; padding: 0; line-height: 1.45; }
 .prose .prose-toc a { display: block; padding: 5px 0; font-size: 15px; color: color-mix(in srgb, var(--text) 78%, var(--bg)); text-decoration: none; }
@@ -1503,41 +1750,60 @@ a.chip:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px;
    "see section 22" in the copy is findable while scrolling. */
 .prose .prose-h2-num { display: block; margin-bottom: 6px; font-family: var(--font-mono); font-size: 12.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; font-variant-numeric: tabular-nums; color: var(--gold-text); }
 .prose .prose-h2-num::before { content: "Section "; content: "Section " / ""; }
-/* A way back to the contents at the end of every chapter, and a phone jump
-   to it under the title (the list can sit a long scroll down). */
+/* A long chapter ends with a way back to the contents (site.js opens the
+   folded list it returns to). */
 .prose .prose-toc-return { margin: 28px 0 0; font-size: 14px; line-height: 1.4; }
-.prose .prose-toc-jump { display: none; margin: -6px 0 22px; font-size: 14px; line-height: 1.4; }
-.prose .prose-toc-return a, .prose .prose-toc-jump a { display: inline-flex; align-items: center; gap: 0.35em; min-height: 32px; color: var(--text-muted); text-decoration-color: var(--separator); }
-.prose .prose-toc-return a:hover, .prose .prose-toc-jump a:hover { color: var(--text); text-decoration-color: var(--gold-500); }
-@media (max-width: 900px) { .prose .prose-toc-jump { display: block; } }
-@media (pointer: coarse) { .prose .prose-toc-return a, .prose .prose-toc-jump a { min-height: 44px; } }
-/* Wide screens: "On this page" leaves the flow and becomes a sticky rail in
-   the empty left margin, so every chapter stays one click away. */
-@media (min-width: 1320px) {
+.prose .prose-toc-return a { display: inline-flex; align-items: center; gap: 0.35em; min-height: 44px; color: var(--text-muted); text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent); }
+.prose .prose-toc-return a:hover { color: var(--text); text-decoration-color: var(--gold-500); }
+/* Guides keep a reading measure of about 70 characters a line. */
+.article-page:has(> .prose-guide) { --guide-measure: 600px; max-width: calc(var(--guide-measure) + 2 * var(--gutter)); }
+/* Wide screens: "On this page" leaves the flow and becomes a sticky rail
+   beside the article, so every chapter stays one click away. The page
+   widens by the rail, so rail and text sit centred as one composition. */
+@media (min-width: 1200px) {
+  .article-page:has(> .prose-long) { max-width: calc(var(--guide-measure) + 264px + 2 * var(--gutter)); padding-left: calc(var(--gutter) + 264px); }
   /* The rail is a full-height column beside the article, so it starts
-     level with the h1 (not after the intro), while the text keeps normal
-     block flow and margin collapsing. Its title and list stick inside it. */
+     level with the h1 while the text keeps normal block flow. The fold
+     inside it sticks; a click on its title does not fold it (site.js). */
   .prose-long { position: relative; }
-  .prose-long > .prose-toc { position: absolute; top: 0; bottom: 0; left: -264px; width: 208px; margin: 0; padding: 6px 12px 0 0; border: 0; }
-  .prose-long > .prose-toc .prose-toc-title { position: sticky; top: 96px; margin: 0; padding-bottom: 8px; background: var(--bg); }
-  .prose-long > .prose-toc ul { position: sticky; top: 124px; columns: 1; max-height: calc(100vh - 156px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+  .prose-long > .prose-toc { position: absolute; top: 0; bottom: 0; left: -264px; width: 220px; margin: 0; border: 0; }
+  .prose-long .prose-toc-fold { position: sticky; top: 96px; padding: 0; }
+  .prose-long .prose-toc-title { min-height: 0; padding: 6px 0 10px 12px; color: var(--text-muted); cursor: default; }
+  .prose-long .prose-toc-title:hover { color: var(--text-muted); }
+  .prose-long .prose-toc-title::after, .prose-long .prose-toc-count { display: none; }
+  /* columns: auto, not 1: a one-column multicol box with a max-height
+     spills into extra columns sideways instead of scrolling. */
+  .prose-long > .prose-toc ul { columns: auto; max-height: calc(100vh - 140px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
   .prose-long > .prose-toc li { line-height: 1.3; }
-  .prose-long > .prose-toc a { padding: 3px 0; font-size: 13.5px; text-wrap: balance; }
-  .prose-long > .prose-toc + h2 { margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--separator); }
-  .prose-long .prose-toc-return, .prose-long .prose-toc-jump { display: none; }
+  .prose-long > .prose-toc a { padding: 4px 0 4px 10px; border-left: 2px solid transparent; font-size: 13.5px; text-wrap: balance; }
+  /* "You are here": site.js marks the chapter in view. */
+  .prose-long > .prose-toc ul:has(.prose-toc-num) a:not(:has(.prose-toc-num)) { padding-left: calc(10px + 2.2em); }
+  .prose-long > .prose-toc a[aria-current] { color: var(--text); border-left-color: var(--gold-500); }
+  .prose-long .prose-toc-return { display: none; }
 }
 /* Plan headings: "Plan A — The Commute Run" plus a quiet scope note. */
 .prose-guide h3 { margin: 32px 0 10px; }
 .prose-guide h3 em { font-style: normal; font-weight: 400; color: var(--text-muted); }
+/* A plan's scope note is its tag: a mono line under the name, so a tester
+   can scan the plans for the one that fits their week. */
+.prose-guide h3[id^="plan-"] em { display: block; margin-top: 4px; font-family: var(--font-mono); font-size: 12.5px; font-weight: 500; letter-spacing: 0.06em; line-height: 1.5; text-transform: uppercase; }
 /* The Focus guide's recurring "How Echo helps" beat: a gold rule and a mono
    eyebrow, so the one plain blockquote (the disclaimer) is the only full callout. */
-.prose blockquote.prose-aside-echo { padding: 2px 0 2px 18px; background: none; border: 0; border-left: 2px solid color-mix(in srgb, var(--gold-500) 70%, transparent); border-radius: 0; }
+.prose blockquote.prose-aside-echo { padding: 2px 0 2px 18px; background: none; border: 0; border-left: 2px solid color-mix(in srgb, var(--gold-500) 70%, transparent); border-radius: 0; font-size: 17px; line-height: 1.7; }
+/* A guide's preamble note (before the first chapter: a disclaimer, "Not
+   here to study?", the status-tag key) is a neutral card about the page,
+   so the gold callouts inside chapters stay the special moments. */
+.prose-guide > blockquote:not(h2 ~ blockquote) { background: var(--surface); border-color: var(--separator); border-left: 3px solid color-mix(in srgb, var(--text-muted) 55%, transparent); }
 .prose .prose-aside-label { display: block; margin-bottom: 4px; font-family: var(--font-mono); font-size: 12.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold-text); }
 .prose .prose-aside-label::before { content: "∞ "; content: "∞ " / ""; }
 /* The Learning guide's "The science: X" beat: the eyebrow, then the idea's name. */
 .prose-guide h4.prose-h4-titled { font-family: var(--font-sans); font-size: 17px; font-weight: 600; line-height: 1.4; letter-spacing: -0.005em; text-transform: none; color: var(--text); }
-.prose-guide .prose-beat { display: block; margin-bottom: 4px; font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold-text); }
+.prose-guide .prose-beat { margin-right: 0.75em; font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
 .prose-guide h2 + h4 { margin-top: 18px; }
+/* Beats inside a chapter ("What it does", "The science", "How to use it")
+   are a quieter tier than the gold "SECTION N" eyebrow: muted mono, with
+   "The science" and the idea's name sharing one line. */
+.prose-guide h4:not(.prose-h4-titled) { color: var(--text-muted); }
 /* Help-page contact list rendered as support rows (marketing's .support-row,
    reset here only for the .prose link styles it sits inside). */
 .prose .prose-contact { margin: 8px 0 24px; }
@@ -2652,10 +2918,11 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   .yard-board-column > .game-controls-hint { text-align: left; }
   /* Sudoku: tools and a 3×3 keypad sit beside a board sized to the screen,
      so a 1440×900 laptop shows board, tools and every digit at once. */
-  .games-app:has(> .sudoku-controls) { display: grid; grid-template-columns: max-content minmax(14rem, 1fr); column-gap: clamp(24px, 3vw, 40px); align-items: start; }
-  .games-app:has(> .sudoku-controls) > * { grid-column: 1 / -1; }
-  .games-app:has(> .sudoku-controls) > .game-board-scroll { grid-column: 1; }
-  .games-app:has(> .sudoku-controls) > .sudoku-controls { grid-column: 2; width: 100%; max-width: 17rem; margin: 0; grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .games-app:has(> .game-side > .sudoku-controls) { display: grid; grid-template-columns: max-content minmax(14rem, 1fr); column-gap: clamp(24px, 3vw, 40px); align-items: start; }
+  .games-app:has(> .game-side > .sudoku-controls) > * { grid-column: 1 / -1; }
+  .games-app:has(> .game-side > .sudoku-controls) > .game-board-scroll { grid-column: 1; }
+  .games-app:has(> .game-side > .sudoku-controls) > .game-side { grid-column: 2; }
+  .game-side > .sudoku-controls { width: 100%; margin: 0; grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .sudoku-board { width: clamp(28rem, calc(100svh - 24rem), 42rem); }
   .sudoku-controls > button:nth-child(-n + 3) { grid-column: span 2; }
   .sudoku-controls > button:nth-child(4), .sudoku-controls > button:nth-child(5) { grid-column: span 3; }
@@ -2671,8 +2938,8 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   /* Sudoku: the board bleeds to 4px from the screen edge (~42px cells on a
      390px phone); the 52px pad stays the main input. Digits 6-9 centre
      under 1-5 instead of leaving a hole. */
-  .games-app:has(> .sudoku-controls) { overflow-x: visible; }
-  .games-app:has(> .sudoku-controls) > .game-board-scroll { width: auto; max-width: none; margin-inline: calc(4px - var(--gutter)); }
+  .games-app:has(> .game-side > .sudoku-controls) { overflow-x: visible; }
+  .games-app:has(> .game-side > .sudoku-controls) > .game-board-scroll { width: auto; max-width: none; margin-inline: calc(4px - var(--gutter)); }
   .sudoku-controls .sudoku-number-pad { display: flex; flex-wrap: wrap; justify-content: center; }
   .sudoku-controls .sudoku-number-pad button { flex: 0 0 calc((100% - 24px) / 5); }
   /* Crossword: the active clue shows under the board; the three checks are
@@ -2696,6 +2963,124 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   .stack-layout .game-status-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px 10px; padding: 14px; }
   .stack-layout .game-status-grid > div:nth-child(n + 5) { grid-column: 1 / -1; }
   .stack-layout .game-status-grid > div:nth-child(-n + 4) dd { font-size: 0.95rem; }
+}
+
+/* ── Games round 3 (pass C, games family) ───────────────── */
+/* Hub: the title is a real link (to Easy, or to the unfinished run), with a
+   hover underline. Spare card height now sits above the difficulty rows, so
+   every card in a row ends on the same chip line and the same bottom edge;
+   unplayed cards have no record row (the records band says it once). */
+.game-card h2 .game-card-title { color: inherit; text-decoration: none; }
+.game-card h2 .game-card-title:hover { color: var(--game-text-accent); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; }
+.game-card h2 .game-card-title:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 3px; border-radius: 4px; }
+.game-mode-actions { margin-top: auto; margin-bottom: 0; }
+/* Records (after a first finish) sit between description and chips. */
+.game-card-stats { margin-top: 20px; padding: 14px 0 0; border-top: 1px solid var(--separator); }
+/* One mono label per card (the eyebrow); the difficulty row label is sans. */
+.difficulty-links > span { font-family: inherit; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.02em; text-transform: none; color: var(--game-text-secondary); }
+.games-reset[hidden] { display: none; }
+
+/* Puzzle pages: the record rule lives in How to play; this line appears only
+   after a hint or check. */
+.game-assisted-status[hidden] { display: none; }
+.game-assisted-status { margin: 0 0 14px; color: var(--game-text-accent); font-weight: 600; }
+/* Side column (Sudoku tools + audio, Charts legend + audio) and audio inside
+   a column: the panel fills the column instead of floating at fit-content. */
+.game-side { display: grid; min-width: 0; gap: 20px; align-content: start; margin-top: 22px; }
+.game-side > fieldset.game-audio-controls,
+.crossword-clues > fieldset.game-audio-controls,
+.word-search-words > fieldset.game-audio-controls,
+.stack-layout > fieldset.game-audio-controls,
+.yard-layout > fieldset.game-audio-controls { width: 100%; margin: 0; grid-template-columns: max-content minmax(0, 1fr) max-content; }
+.game-board-legend { margin: 0; color: var(--game-text-secondary); font-size: 0.9rem; line-height: 1.5; }
+
+/* Crossword: the active clue sits under the board at every width, so the
+   clue and its entry are read together; numbers and blocks are calmer. */
+.crossword-current-clue { display: block; min-height: 2.9em; margin: 12px 0 0; padding: 10px 14px; color: var(--game-text-primary); background: color-mix(in srgb, var(--gold-500) 8%, var(--surface)); border-left: 3px solid var(--gold-500); border-radius: 8px; font-size: 0.95rem; line-height: 1.4; }
+.crossword-current-clue:empty { display: none; }
+.crossword-number { top: 3px; font-size: 0.72rem; }
+.crossword-cell.is-active-entry { background: color-mix(in srgb, var(--gold-500) 14%, var(--surface)); }
+.crossword-board { background-image: repeating-linear-gradient(135deg, transparent 0 6px, color-mix(in srgb, var(--game-board-frame) 16%, transparent) 6px 7px); }
+.crossword-clues > fieldset.game-audio-controls { margin-top: 4px; }
+/* The clue-list button reset must not reach the audio panel's mute button. */
+.crossword-clues .game-audio-controls button { width: auto; padding: 8px 12px; color: var(--game-text-primary); background: var(--surface-2); border: 1px solid var(--separator); border-radius: 9px; font-size: 0.9rem; line-height: normal; text-align: center; }
+.crossword-clues .game-audio-controls button:hover { color: var(--game-text-primary); border-color: var(--gold-500); }
+
+/* Word Search: Hint/Check belong to the board; audio ends the word column. */
+.word-search-board-column > .game-controls { justify-content: flex-start; margin-top: 16px; }
+.word-search-words > fieldset.game-audio-controls { margin-top: 24px; }
+
+/* Charts: a zero line is satisfied from the start; it reads as a quiet "0",
+   not a struck one (a struck mono 0 reads as theta). Satisfied clues use the
+   AA secondary text colour instead of a low opacity. */
+.charts-clue.is-satisfied { opacity: 1; color: var(--game-text-secondary); }
+.charts-clue.is-zero.is-satisfied { text-decoration: none; }
+/* The mono face slashes its zero; a lone "0" clue uses the sans figure. */
+.charts-clue.is-zero { font-family: var(--font-sans); }
+
+/* Stack: movement is the pad (three per row); Describe Dock and Step Mode
+   are a quieter row of text buttons beneath it. */
+.stack-controls { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.stack-controls > button { grid-column: span 2; }
+.stack-controls > .stack-tool { grid-column: span 3; }
+.stack-controls:has(> [data-advance-step]:not([hidden])) > .stack-tool { grid-column: span 2; }
+.stack-controls > .stack-tool,
+.stack-controls > .stack-tool:disabled { color: var(--game-text-secondary); background: transparent; border-color: transparent; font-size: 0.84rem; text-decoration: underline; text-decoration-color: var(--separator); text-underline-offset: 4px; }
+.stack-controls > .stack-tool:not(:disabled):hover { color: var(--game-text-accent); border-color: transparent; text-decoration-color: currentColor; }
+.stack-controls > .stack-tool:disabled { text-decoration: none; }
+.stack-controls > .stack-tool[aria-pressed="true"] { color: var(--gold-text); text-decoration-color: currentColor; }
+/* The crane label sits above its rule, so a manifest drawn just under the
+   line never runs through the words. */
+.stack-crane-line { height: 1.25em; padding: 0 6px 0 0; border-top: 0; border-bottom: 2px solid currentColor; line-height: 1.25; transform: translateY(calc(-100% + 1px)); }
+
+@media (min-width: 960px) {
+  /* Stack and Yard: audio closes the side panel, so the panel runs down
+     beside the board instead of leaving the strip under both columns. */
+  .stack-layout, .yard-layout { grid-template-rows: repeat(5, auto) 1fr repeat(3, auto); }
+  .stack-layout > fieldset.game-audio-controls, .yard-layout > fieldset.game-audio-controls { grid-column: 2; grid-row: 6; align-self: start; }
+  .stack-layout > .stack-dock, .yard-layout > .yard-board-column { grid-row: 1 / 7; }
+  .stack-layout > .stack-controls { grid-row: 7; }
+  .stack-layout > .game-controls-hint { grid-row: 8; }
+  .stack-layout > .stack-dock-description { grid-row: 9; }
+  /* Yard status: record status and contract share a row, the selected
+     piece gets its own, so no value wraps into a narrow tile. */
+  .yard-layout .game-status-grid > div:nth-child(n + 5) { grid-column: span 2; }
+  .yard-layout .game-status-grid > div:nth-child(7) { grid-column: 1 / -1; }
+  /* Sudoku: the side column ends on the toolbar's right edge. */
+  .games-app:has(> .game-side > .sudoku-controls) { grid-template-columns: max-content minmax(16rem, 20rem); justify-content: space-between; }
+  .game-side { margin-top: 0; }
+  /* Charts: board on the title's edge, legend and audio in a side column on
+     panel that runs to the toolbar's right edge (as Stack and Yard do);
+     a 5×5 board grows to 92px cells. */
+  .games-app:has(> .game-side > .game-board-legend) { display: grid; grid-template-columns: max-content minmax(16rem, 1fr); column-gap: clamp(28px, 4vw, 48px); align-items: start; }
+  .games-app:has(> .game-side > .game-board-legend) > * { grid-column: 1 / -1; }
+  .games-app:has(> .game-side > .game-board-legend) > .game-board-scroll { grid-column: 1; }
+  .games-app:has(> .game-side > .game-board-legend) > .game-side { grid-column: 2; }
+  .games-app:has(> .game-side > .game-board-legend) .charts-layout { margin-inline: 0; --charts-cell: clamp(44px, calc(38rem / var(--charts-size)), 92px); }
+  /* Word Search: a tighter board (one block of letters), the word column on
+     the toolbar's right edge. */
+  .word-search-layout { grid-template-columns: minmax(0, 36rem) minmax(15rem, 20rem); justify-content: space-between; }
+}
+
+@media (max-width: 759px) {
+  /* Hub: compact cards so the records band arrives sooner. */
+  .game-card-topline { margin-bottom: 14px; }
+  .difficulty-links { padding-top: 16px; }
+  .game-card-description { line-height: 1.55; }
+  /* Word Search: words above the board, the board bleeds to 4px from the
+     screen edge like Sudoku (~38px cells on a 390px phone), audio last. */
+  .word-search-layout { row-gap: 14px; }
+  .word-search-layout > .word-search-words { display: contents; }
+  .word-search-words > h2, .word-search-words > .word-search-list { order: -1; }
+  .word-search-words > h2 { margin-bottom: -6px; }
+  .word-search-words > fieldset.game-audio-controls { order: 1; margin-top: 8px; }
+  .games-app:has(.word-search-board-column) { overflow-x: visible; }
+  .word-search-board-column > .game-board-scroll { width: auto; max-width: none; margin-inline: calc(4px - var(--gutter)); }
+  .word-search-board-column > .game-controls { justify-content: center; }
+  /* Yard: the whole tray on one row (equal 44px+ squares). */
+  .yard-tray { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(44px, 1fr); gap: 8px; overflow-x: auto; }
+  .yard-tray-piece { padding: 4px; }
+  .yard-tray-piece .cargo-thumb { max-width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3256,8 +3641,6 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 /* Waiting state: a dashed outline previewing the answer's shape, so it reads
    as a slot for the result rather than a result. */
 .tool-result.tool-result-empty { display: grid; gap: 4px; padding: 14px 16px; background: none; border: 1.5px dashed color-mix(in srgb, var(--text) 20%, transparent); }
-.tool-result-shape { color: var(--game-text-secondary); font-size: 1.05rem; }
-.tool-result-shape strong { color: var(--text-muted); font-weight: 600; }
 .tool-result-hint { color: var(--text-muted); font-size: 0.95rem; }
 
 /* Click counter: a padded track with rounded segments, so every target has
@@ -3288,13 +3671,10 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   .tool-verdict { gap: 8px; padding: 8px 10px; font-size: 0.85rem; }
 }
 
-/* QR: the empty stage previews a code's finder squares. On phones the result
-   follows the text field, the empty stage is a short strip that carries the
-   hint itself, the primary action leads its own row, and error correction
-   comes last. */
+/* QR: the empty stage previews a code's finder squares. On phones the
+   primary action leads its own row (pass C below reshapes the empty stage). */
 .qr-stage:empty { background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='%238e8e93' stroke-width='3' opacity='.45'%3E%3Crect x='6.5' y='6.5' width='22' height='22' rx='3'/%3E%3Crect x='71.5' y='6.5' width='22' height='22' rx='3'/%3E%3Crect x='6.5' y='71.5' width='22' height='22' rx='3'/%3E%3C/g%3E%3Cg fill='%238e8e93' opacity='.45'%3E%3Crect x='12' y='12' width='11' height='11' rx='1.5'/%3E%3Crect x='77' y='12' width='11' height='11' rx='1.5'/%3E%3Crect x='12' y='77' width='11' height='11' rx='1.5'/%3E%3C/g%3E%3Cg fill='%238e8e93' opacity='.22'%3E%3Crect x='40' y='8' width='8' height='8'/%3E%3Crect x='52' y='20' width='8' height='8'/%3E%3Crect x='40' y='40' width='8' height='8'/%3E%3Crect x='64' y='40' width='8' height='8'/%3E%3Crect x='52' y='52' width='8' height='8'/%3E%3Crect x='76' y='64' width='8' height='8'/%3E%3Crect x='40' y='76' width='8' height='8'/%3E%3Crect x='64' y='84' width='8' height='8'/%3E%3Crect x='8' y='44' width='8' height='8'/%3E%3Crect x='24' y='52' width='8' height='8'/%3E%3C/g%3E%3C/svg%3E") center / 78% no-repeat; border-color: color-mix(in srgb, var(--text) 20%, transparent); }
 @media (max-width: 759px) {
-  .qr-form > .tool-field:nth-child(2) { order: 1; }
   .qr-stage { width: 100%; max-width: 360px; margin-inline: auto; }
   .qr-stage:empty { display: grid; place-items: center; max-width: none; min-height: 120px; aspect-ratio: auto; padding: 16px 20px; background-image: none; }
   .qr-stage:empty::before { content: attr(data-empty-hint); color: var(--text-muted); font-size: 15px; line-height: 1.45; text-align: center; }
@@ -3347,6 +3727,127 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   .epub-drop-or { display: none; }
   .epub-drop { min-height: 120px; }
 }
+
+/* --- Tools: pass C (family owner) --- */
+/* A control with nothing to do yet is hidden, not shown disabled. The flex
+   and grid action rows are author rules, so restate [hidden] above them. */
+.tool-form .tool-actions[hidden],
+.tool-form .tool-actions > [hidden],
+.word-count-actions > [hidden] { display: none; }
+/* A working quiet button reads as working: primary text on its edge, so the
+   dashed "not yet" skin is the only thing that ever looks disabled. */
+.tool-form .tool-quiet:not(:disabled) { color: var(--game-text-primary); }
+
+/* Hub: taglines wrap only when they must, so rows of cards stay one height;
+   Live data is a new section under a hairline, and its card shares the
+   tool cards' chevron with the connection note set as quiet metadata. */
+@media (min-width: 700px) {
+  .tool-hub-grid .tool-card p { text-wrap: pretty; }
+}
+.tool-live-eyebrow { margin-top: clamp(48px, 7vw, 80px); padding-top: clamp(24px, 3vw, 32px); border-top: 1px solid var(--separator); }
+.tools-main .tool-live-data { --tool-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 18 6-6-6-6'/%3E%3C/svg%3E"); grid-template-columns: 28px minmax(0, 1fr) 20px; column-gap: clamp(14px, 2vw, 20px); row-gap: 4px; align-items: center; }
+.tools-main .tool-live-data::before { grid-column: 1; grid-row: 1 / span 3; align-self: center; }
+.tools-main .tool-live-data > h2,
+.tools-main .tool-live-data > p,
+.tools-main .tool-live-data > .tool-online-chip { grid-column: 2; grid-row: auto; }
+.tools-main .tool-live-data::after { content: ""; grid-column: 3; grid-row: 1 / span 3; align-self: center; width: 20px; height: 20px; background: var(--text-quaternary); -webkit-mask: var(--tool-chevron) center / contain no-repeat; mask: var(--tool-chevron) center / contain no-repeat; transition: background-color 0.2s ease, transform 0.2s var(--ease); }
+.tools-main .tool-live-data:hover::after { background: var(--gold-text); transform: translateX(2px); }
+.tools-main .tool-online-chip { justify-self: start; min-height: 0; margin: 2px 0 0; padding: 0; color: var(--text-muted); background: none; border: 0; border-radius: 0; font-size: 13px; font-weight: 500; }
+@media (prefers-reduced-motion: reduce) {
+  .tools-main .tool-live-data::after { transition: none; }
+  .tools-main .tool-live-data:hover::after { transform: none; }
+}
+
+/* Click counter: on wide screens the answer sits beside the inputs that
+   drive it, with its actions under it. */
+@media (min-width: 900px) {
+  .tool-form.click-counter { max-width: none; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: clamp(32px, 4vw, 56px); align-items: start; }
+  .click-counter > .click-counter-fieldset { grid-column: 1; grid-row: 1; }
+  .click-counter > .click-counter-target { grid-column: 1; grid-row: 2; }
+  .click-counter > .click-counter-result { grid-column: 2; grid-row: 1 / span 2; align-self: center; min-height: 0; padding-block: 0; }
+  .click-counter > .click-counter-result.tool-error { padding: 18px 20px; }
+  .click-counter > .click-counter-actions { grid-column: 2; grid-row: 3; }
+  .click-counter > .click-counter-copy-status { grid-column: 2; grid-row: 4; }
+  .click-counter-value { font-size: clamp(3rem, 6vw, 4.75rem); }
+}
+
+/* Dilution: the tab track matches the field column, and the answer's top
+   edge lines up with the first input rather than its label. */
+.tool-result.tool-result-strong strong { white-space: nowrap; }
+.tool-result-strong .tool-parts-result { margin-top: 6px; color: var(--game-text-secondary); font-size: 0.95rem; }
+@media (min-width: 900px) {
+  .tools-main[data-tool-page="dilution"] .tool-tabs { width: 420px; }
+  .tools-main[data-tool-page="dilution"] .tool-form > .tool-result,
+  .tools-main[data-tool-page="dilution"] .tool-form > .tool-error { margin-top: calc(0.88rem * 1.6 + 6px); }
+}
+
+/* Contrast: the swatch keeps an edge when the colour matches the page, the
+   two samples sit on the page (one container, not three), and the verdict
+   starts a new beat under a hairline. */
+.contrast-picker::-webkit-color-swatch { border: 1px solid color-mix(in srgb, var(--text) 25%, transparent); }
+.contrast-picker::-moz-color-swatch { border: 1px solid color-mix(in srgb, var(--text) 25%, transparent); }
+.tool-field input.contrast-picker:hover { border-color: color-mix(in srgb, var(--gold-500) 45%, var(--separator)); }
+.contrast-preview { padding: 0; background: none; border: 0; border-radius: 0; }
+.contrast-results { padding-top: 20px; border-top: 1px solid var(--separator); }
+
+/* QR: the export row is hidden until there is a code, so the empty stage
+   alone carries the instruction (the status hint would repeat it). The
+   stage is the same captioned ghost code at every width; its top edge meets
+   the first input. Desktop and phone share one order: text, error
+   correction, code, actions. */
+.qr-form:has(.qr-stage:empty) .qr-status:has(.qr-hint) { display: none; }
+.qr-stage:empty { display: grid; align-content: end; justify-items: center; padding: 16px 18px; background-size: 58%; background-position: center 34%; }
+.qr-stage:empty::before { content: attr(data-empty-hint); color: var(--text-muted); font-size: 14px; line-height: 1.4; text-align: center; text-wrap: balance; }
+.qr-form:has(.qr-status .tool-error) .qr-stage:empty::before { content: none; }
+@media (min-width: 760px) {
+  .qr-form > .qr-stage { margin-top: calc(0.88rem * 1.6 + 6px); }
+}
+@media (max-width: 759px) {
+  .qr-stage:empty { width: min(260px, 100%); min-height: 0; aspect-ratio: 1; margin-inline: auto; padding: 14px 16px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='%238e8e93' stroke-width='3' opacity='.45'%3E%3Crect x='6.5' y='6.5' width='22' height='22' rx='3'/%3E%3Crect x='71.5' y='6.5' width='22' height='22' rx='3'/%3E%3Crect x='6.5' y='71.5' width='22' height='22' rx='3'/%3E%3C/g%3E%3Cg fill='%238e8e93' opacity='.45'%3E%3Crect x='12' y='12' width='11' height='11' rx='1.5'/%3E%3Crect x='77' y='12' width='11' height='11' rx='1.5'/%3E%3Crect x='12' y='77' width='11' height='11' rx='1.5'/%3E%3C/g%3E%3Cg fill='%238e8e93' opacity='.22'%3E%3Crect x='40' y='8' width='8' height='8'/%3E%3Crect x='52' y='20' width='8' height='8'/%3E%3Crect x='40' y='40' width='8' height='8'/%3E%3Crect x='64' y='40' width='8' height='8'/%3E%3Crect x='52' y='52' width='8' height='8'/%3E%3Crect x='76' y='64' width='8' height='8'/%3E%3Crect x='40' y='76' width='8' height='8'/%3E%3Crect x='64' y='84' width='8' height='8'/%3E%3Crect x='8' y='44' width='8' height='8'/%3E%3Crect x='24' y='52' width='8' height='8'/%3E%3C/g%3E%3C/svg%3E"); }
+  .qr-stage:empty::before { font-size: 14px; }
+}
+
+/* Passphrase: on wide screens the tool takes the full working measure, so
+   a long result fits one line and the options sit in a single row. The
+   waiting slot uses the shared dashed edge (visible in light), and option
+   labels sit one step above field labels, not three. */
+@media (min-width: 900px) {
+  .tools-main[data-tool-page="passphrase"] .tool-form { max-width: none; }
+  .passphrase-options { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); align-items: end; }
+}
+.passphrase-result:has(.passphrase-placeholder) { background: none; border: 1.5px dashed color-mix(in srgb, var(--text) 22%, transparent); }
+.tool-check { font-size: 0.95rem; }
+
+/* Unit converter: the To box is visibly the answer (still editable), and on
+   phones the unit names clear their chevrons. */
+.tool-form .unit-row.unit-row-to input { color: var(--game-text-accent); font-weight: 650; border-color: var(--gold-hairline); }
+@media (max-width: 759px) {
+  .tool-inline.unit-row { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
+  .unit-row select { padding-right: 32px; }
+}
+
+/* Word counter: Clear sits on the label row (a fixed 44px row, so nothing
+   jumps when it appears), and on phones Words and Read aloud share a row
+   right under a shorter box, so the counts stay in view while typing. */
+.word-count-input { grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: minmax(44px, auto) auto; align-items: end; }
+.word-count-input > label { grid-column: 1; grid-row: 1; padding-bottom: 2px; }
+.word-count-input > .word-count-actions { grid-column: 2; grid-row: 1; margin: 0; }
+.word-count-input > textarea { grid-column: 1 / -1; grid-row: 2; }
+@media (min-width: 860px) {
+  .word-count > .tool-stats { margin-top: 50px; }
+}
+@media (max-width: 859px) {
+  .word-count textarea { height: 150px; min-height: 120px; }
+  .tool-stat.is-headline { grid-column: auto; }
+  .tool-stat.is-headline dd { font-size: 1.4rem; }
+}
+
+/* EPUB: the drop zone anchors the page on desktop; the empty shelf needs no
+   rule of its own under it. */
+@media (min-width: 760px) {
+  .epub-drop { min-height: 220px; }
+}
+.epub-empty { padding-top: 0; border-top: 0; }
 
 /* ===== Nova Scotia tax-sale hub ===== */
 .page-tax-sale {
@@ -3410,7 +3911,7 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   margin: 0 0 20px;
   color: var(--tax-muted);
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 650;
   line-height: 1.4;
   letter-spacing: 0.13em;
@@ -3517,7 +4018,7 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   justify-content: space-between;
   margin-bottom: 25px;
   color: var(--tax-muted);
-  font: 0.62rem var(--font-mono);
+  font: 0.75rem var(--font-mono);
   letter-spacing: 0.09em;
   text-transform: uppercase;
 }
@@ -3536,13 +4037,16 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
    caption. "November" is the month label of the numeral, set like the
    calendar tiles' NOV/DEC, not as a third type style. */
 .tax-desk-date strong { display: block; color: var(--tax-ink); font: 600 0.75rem/1.4 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; }
-.tax-desk-date small { display: block; margin-top: 6px; color: var(--tax-muted); font: 0.75rem/1.5 var(--font-mono); }
+.tax-desk-date small { display: block; margin-top: 6px; color: var(--tax-muted); font: 0.8rem/1.5 var(--font-mono); }
 .tax-desk-rule { margin: 4px 0 18px; border-top: 1px solid var(--tax-line); }
-.tax-desk > p { display: flex; align-items: baseline; gap: 10px; color: var(--tax-muted); font: 0.75rem/1.5 var(--font-mono); }
-.tax-desk > p strong { flex: 0 0 7.4rem; color: var(--tax-ink); font-family: var(--tax-display); font-size: 2rem; font-weight: 400; white-space: nowrap; }
-.tax-desk > small { display: block; margin-top: 18px; color: var(--tax-muted); font-size: 0.75rem; line-height: 1.55; }
+/* The 30-day rule is a footnote under the hairline, in the same mono
+   label + caption pair as "November" above: one numeral, one type system. */
+.tax-desk > p { display: grid; grid-template-columns: 7.2em minmax(0, 1fr); gap: 12px; align-items: baseline; color: var(--tax-muted); font: 0.8rem/1.55 var(--font-mono); }
+.tax-desk > p + p { margin-top: 10px; }
+.tax-desk > p strong { color: var(--tax-ink); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; }
+.tax-desk > small { display: block; margin-top: 14px; color: var(--tax-muted); font-size: 0.82rem; line-height: 1.55; }
 
-.tax-section { padding: clamp(88px, 12vw, 168px) 0; border-bottom: 1px solid var(--tax-line); }
+.tax-section { padding: clamp(80px, 9vw, 128px) 0; border-bottom: 1px solid var(--tax-line); }
 .tax-section-intro,
 .tax-split {
   display: grid;
@@ -3579,14 +4083,16 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   border: 1px solid var(--tax-line);
   border-top: 6px solid var(--tax-survey-red);
 }
-.tax-date-card:nth-of-type(even) .tax-date-calendar { border-top-color: var(--tax-blue); }
+/* Red marks only the next sale (it matches the desk's red numeral); later
+   upcoming sales take the accent blue; past sales take the grey line. */
+.tax-date-list > .tax-date-card ~ .tax-date-card:not(.tax-date-past) .tax-date-calendar { border-top-color: var(--tax-blue); }
 .tax-date-calendar span,
 .tax-date-calendar small { display: block; font: 0.72rem var(--font-mono); letter-spacing: 0.12em; }
 .tax-date-calendar strong { display: block; margin: 7px 0 3px; font-family: var(--tax-display); font-size: 4rem; font-weight: 400; line-height: 0.85; }
 .tax-date-copy h3 { margin: 8px 0 13px; font-family: var(--tax-display); font-size: clamp(1.7rem, 3vw, 2.5rem); font-weight: 400; }
 .tax-date-copy > p:not(.tax-status) { color: var(--tax-muted); line-height: 1.6; }
 .tax-date-copy strong { color: var(--tax-ink); }
-.tax-date-detail { margin-top: 15px; color: color-mix(in srgb, var(--tax-ink) 82%, var(--tax-paper)); font: 0.76rem/1.6 var(--font-mono); }
+.tax-date-detail { margin-top: 15px; color: color-mix(in srgb, var(--tax-ink) 82%, var(--tax-paper)); font: 0.82rem/1.6 var(--font-mono); }
 .tax-status { color: var(--tax-muted); font: 0.75rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
 .tax-status::before { content: '○'; margin-right: 7px; }
 .tax-status-active,
@@ -3599,15 +4105,17 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 /* Past sales: a compact ledger under the upcoming ones. The tile keeps its
    ink (no fading below AA); "passed" is the grey top bar plus the status
    line, and the smaller scale lets the upcoming tiles carry the weight. */
-.tax-date-card.tax-date-past .tax-date-calendar { border-top-color: var(--tax-line); }
-.tax-past-list .tax-date-card { grid-template-columns: 96px minmax(0, 1fr) minmax(190px, 0.45fr); align-items: start; padding: clamp(20px, 3vw, 30px) 0; }
+.tax-date-card.tax-date-past .tax-date-calendar { border-top-color: var(--tax-line); background: transparent; }
+/* Same first column as the upcoming list, so every municipality name in
+   both ledgers starts on one vertical line. */
+.tax-past-list .tax-date-card { grid-template-columns: 150px minmax(0, 1fr) minmax(190px, 0.45fr); align-items: start; padding: clamp(20px, 3vw, 30px) 0; }
 .tax-past-list .tax-date-calendar { width: 76px; padding: 8px 0 10px; border-top-width: 4px; }
 .tax-past-list .tax-date-calendar strong { margin: 5px 0 2px; font-size: 2.3rem; }
 .tax-past-list .tax-date-copy h3 { margin: 6px 0 8px; font-size: clamp(1.3rem, 2vw, 1.6rem); }
-.tax-past-list .tax-date-copy > p:not(.tax-status) { font-size: 0.92rem; }
+.tax-past-list .tax-date-copy > p:not(.tax-status, .tax-date-detail) { font-size: 0.92rem; }
 .tax-past-list .tax-date-detail { margin-top: 10px; }
 @media (max-width: 880px) {
-  .tax-past-list .tax-date-card { grid-template-columns: 96px 1fr; }
+  .tax-past-list .tax-date-card { grid-template-columns: 124px 1fr; }
   /* On a phone the date list follows the hero directly, so the desk's
      summary of the same two dates would only repeat it. */
   .tax-desk { display: none; }
@@ -3628,7 +4136,10 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 /* Desktop: the map-section headline sets in two or three lines instead of
    one word per line over its paragraph. */
 @media (min-width: 881px) {
-  .tax-map-section .tax-split h2 { font-size: clamp(3rem, 5.4vw, 4.6rem); }
+  /* Two even columns give the headline room for "From notice row" on one
+     line before its break, so no word is left alone (measured 900-1920px). */
+  .tax-map-section .tax-split { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .tax-map-section .tax-split h2 { font-size: clamp(2.6rem, 4.1vw, 3.7rem); }
 }
 .tax-date-actions a,
 .tax-format-card a { color: var(--tax-accent-strong); font-size: 0.82rem; font-weight: 650; text-decoration: none; border-bottom: 1px solid currentColor; }
@@ -3648,9 +4159,12 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   gap: 28px;
   margin-top: 36px;
   padding: 24px 28px;
-  background: color-mix(in srgb, var(--tax-peach) 18%, var(--tax-sheet));
+  /* Dark: the plain survey sheet behind the red rule (any red or peach mix
+     over the teal turns grey-green). Light keeps its warm peach wash. */
+  background: var(--tax-sheet);
   border-left: 4px solid var(--tax-survey-red);
 }
+[data-theme="light"] .tax-notice { background: color-mix(in srgb, var(--tax-peach) 18%, var(--tax-sheet)); }
 .tax-notice strong { font-family: var(--tax-display); font-size: 1.25rem; font-weight: 400; }
 .tax-notice p { color: var(--tax-muted); font-size: 0.9rem; line-height: 1.65; }
 
@@ -3668,7 +4182,7 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   padding: 18px 0;
   border-bottom: 1px solid var(--tax-line);
 }
-.tax-facts span { color: var(--tax-muted); font: 0.69rem var(--font-mono); text-transform: uppercase; }
+.tax-facts span { color: var(--tax-muted); font: 0.75rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
 .tax-facts strong { font-size: 0.94rem; font-weight: 570; }
 .tax-text-link {
   display: inline-flex;
@@ -3699,7 +4213,7 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 }
 .tax-guide-copy h2 { margin: 18px 0 36px; font-size: clamp(3.8rem, 7vw, 7.2rem); line-height: 0.91; letter-spacing: -0.055em; }
 .tax-guide-actions { margin-top: 30px; }
-.tax-guide-meta { margin-top: 20px; color: var(--tax-muted); font: 0.68rem var(--font-mono); }
+.tax-guide-meta { margin-top: 20px; color: var(--tax-muted); font: 0.8rem/1.55 var(--font-mono); }
 .tax-development-link { margin-top: 34px; }
 .tax-format-grid {
   display: grid;
@@ -3713,7 +4227,7 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 .tax-format-card:nth-child(1) { border-top: 6px solid var(--tax-lichen); }
 .tax-format-card:nth-child(2) { border-top: 6px solid var(--tax-blue); }
 .tax-format-card:nth-child(3) { border-top: 6px solid var(--tax-lavender); }
-.tax-format-number { margin-bottom: 54px; color: var(--tax-muted); font: 0.7rem var(--font-mono); }
+.tax-format-number { margin-bottom: 54px; color: var(--tax-muted); font: 0.75rem var(--font-mono); }
 .tax-format-card h3 { margin: 22px 0 16px; font-family: var(--tax-display); font-size: clamp(1.85rem, 2.7vw, 2.6rem); font-weight: 400; }
 .tax-format-card > p:not(.tax-format-number, .tax-status) { min-height: 112px; color: var(--tax-muted); font-size: 0.92rem; line-height: 1.68; }
 
@@ -3729,7 +4243,7 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   border-bottom: 1px solid var(--tax-line);
   text-decoration: none;
 }
-.tax-source-list span { color: var(--tax-muted); font: 0.67rem var(--font-mono); text-transform: uppercase; }
+.tax-source-list span { color: var(--tax-muted); font: 0.75rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
 .tax-source-list strong { font-size: 0.95rem; font-weight: 570; }
 .tax-source-list b { color: var(--tax-accent-strong); font-weight: 400; transition: transform 160ms ease; }
 .tax-source-list a:hover b { transform: translate(3px, -3px); }
@@ -3752,7 +4266,7 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 }
 .tax-final h2 { margin: 0; font-size: clamp(3.55rem, 7.5vw, 7.8rem); line-height: 0.89; letter-spacing: -0.061em; }
 .tax-final-actions { justify-content: center; }
-.tax-fine-print { max-width: 760px; margin: 40px auto 0; color: var(--tax-muted); font-size: 0.7rem; }
+.tax-fine-print { max-width: 760px; margin: 40px auto 0; color: var(--tax-muted); font-size: 0.82rem; line-height: 1.6; }
 
 @media (max-width: 880px) {
   .tax-hero-grid,
@@ -4026,6 +4540,10 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 .tender-main .tender-offers > section { display: flex; flex-direction: column; align-items: flex-start; margin: 0; }
 .tender-offers .btn { margin-top: auto; }
 .tender-offers > section > h2 { font-size: clamp(21px, 2.4vw, 25px); }
+/* Each offer scans headline -> lead -> fine print -> action: the lead is
+   body text, everything after it is smaller and muted. */
+.tender-offers .tender-offer-lead { font-size: 16px; color: var(--text); }
+.tender-offers .tender-source-note { font-size: 14px; margin: 0 0 24px; }
 
 /* Download button */
 .tender-download {
@@ -4097,36 +4615,37 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   border-radius: var(--radius-card);
 }
 
-/* Disclaimer */
+/* Disclaimer: fine print, said once per page. On the hub it closes the
+   page as a single muted line; on a brief it closes the facts card. */
 .tender-disclaimer {
   font-size: 13.5px;
   color: var(--text-muted);
-  padding: 16px 20px;
-  border: 1px solid var(--gold-hairline);
-  border-left: 3px solid color-mix(in srgb, var(--gold-500) 60%, var(--separator));
-  background: color-mix(in srgb, var(--gold-500) 6%, var(--surface));
-  border-radius: 12px;
-  margin-top: var(--block-gap);
+  margin: 0;
   line-height: 1.5;
+  max-width: 72ch;
+  text-wrap: pretty;
 }
+.tender-main > .tender-disclaimer {
+  max-width: none;
+  padding-top: 20px;
+  border-top: 1px solid var(--separator);
+}
+.tender-source-facts .tender-disclaimer { margin-top: 16px; }
 
 /* Detail page (its back link is the shared .back-link) */
 
 .tender-detail .eyebrow { margin-bottom: 16px; }
+/* Every brief title sets at one size: procurement titles are labels, not
+   display headlines, and siblings should read as one family. Long titles
+   use the full column (no ch cap) so they wrap in fewer lines. */
 .tender-detail h1 {
   font-weight: 650;
-  font-size: var(--text-title);
-  line-height: 1.08;
-  letter-spacing: -0.025em;
-  margin: 0 0 20px;
-  max-width: 28ch;
+  font-size: clamp(25px, 2.7vw, 31px);
+  line-height: 1.16;
+  letter-spacing: -0.02em;
+  margin: 0 0 18px;
+  max-width: none;
   text-wrap: balance;
-}
-/* Procurement titles past ~70 characters step down a size. */
-.tender-detail-long-title h1 {
-  font-size: clamp(26px, 3.2vw, 34px);
-  line-height: 1.15;
-  max-width: 40ch;
 }
 
 /* Source facts: the verified frontmatter, set apart as one card. */
@@ -4204,6 +4723,14 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   color: var(--text);
   background: color-mix(in srgb, var(--gold-500) 8%, transparent);
 }
+/* The notice is the authoritative page, so it is the first link and
+   carries a faint fill; the documents link stays an outline. */
+.tender-official-links li:first-child a {
+  background: color-mix(in srgb, var(--gold-500) 9%, transparent);
+}
+.tender-official-links li:first-child a:hover {
+  background: color-mix(in srgb, var(--gold-500) 15%, transparent);
+}
 
 /* Editorial analysis body */
 .tender-analysis.prose { margin-top: var(--block-gap); }
@@ -4211,10 +4738,31 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   font-weight: 600;
   font-size: clamp(20px, 2.2vw, 23px);
   letter-spacing: -0.015em;
-  margin: 40px 0 10px;
+  margin: 48px 0 12px;
   color: var(--text);
 }
 .tender-analysis.prose > h2:first-child { margin-top: 0; }
+/* "KinNoKi analysis" is always the last of the five sections: the payoff
+   after the restated source, set apart by a gold hairline. */
+.tender-analysis.prose > h2:last-of-type {
+  margin-top: 56px;
+  padding-top: 28px;
+  border-top: 1px solid var(--gold-hairline);
+}
+/* "Questions to verify" is the brief's only bullet list: open boxes, as
+   in the review workbook, so it reads as a checklist to work through. */
+.tender-analysis.prose > ul { list-style: none; padding-left: 0; }
+.tender-analysis.prose > ul > li { position: relative; padding-left: 30px; }
+.tender-analysis.prose > ul > li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0.42em;
+  width: 13px;
+  height: 13px;
+  border: 1.5px solid color-mix(in srgb, var(--gold-500) 70%, var(--text));
+  border-radius: 3px;
+}
 /* The analysis is the editorial body: full text colour, as in posts. */
 .tender-analysis.prose p,
 .tender-analysis.prose li {
@@ -4246,16 +4794,19 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 }
 .tender-next .tender-actions { margin-bottom: 12px; }
 .tender-next .back-link { margin-bottom: 0; }
-.tender-detail > .tender-disclaimer { margin-top: 24px; }
-/* Phone: the three official links stack as equal full-width rows; long
-   procurement titles step down again so the facts card starts in view. */
+/* Phone: the official links stay compact wrapping chips (not full-width
+   bars that read as primary buttons); every brief title steps down to
+   one phone size, long ones a little further so the facts card starts
+   in view. */
 @media (max-width: 599px) {
   .tender-next .tender-actions .btn { width: 100%; }
-  .tender-official-links { flex-direction: column; gap: 8px; }
-  .tender-official-links li { flex: none; }
-  .tender-official-links a { width: 100%; justify-content: center; }
-  .tender-detail-long-title h1 { font-size: 22px; line-height: 1.2; letter-spacing: -0.015em; }
+  .tender-official-links { gap: 8px; }
+  .tender-official-links a { padding: 0 14px; }
+  .tender-detail h1 { font-size: 25px; line-height: 1.18; letter-spacing: -0.018em; }
+  .tender-detail-long-title h1 { font-size: 21px; line-height: 1.22; letter-spacing: -0.012em; }
   .tender-detail > .tender-state { margin-bottom: 24px; }
+  .tender-analysis.prose h2 { margin-top: 40px; }
+  .tender-analysis.prose > h2:last-of-type { margin-top: 44px; padding-top: 24px; }
 }
 .tender-analysis.prose ul,
 .tender-analysis.prose ol {
@@ -4263,6 +4814,7 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   margin: 0 0 16px;
 }
 .tender-analysis.prose ol { padding-left: 1.75em; }
+.tender-analysis.prose > ul { padding-left: 0; }
 
 /* Focus-visible (interactive tender elements) */
 .tender-card:focus-visible,
@@ -4467,7 +5019,8 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   border: 1px solid color-mix(in srgb, var(--gis-spruce) 48%, var(--separator));
   border-radius: clamp(16px, 2.5vw, 24px);
   background: var(--gis-paper);
-  box-shadow: 0 22px 70px rgba(0, 0, 0, .18);
+  /* The site card elevation: flat in dark, a soft lift in light. */
+  box-shadow: var(--shadow-card);
 }
 .gis-figure img {
   display: block;
@@ -4618,9 +5171,11 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   .gis-hero h1 { font-size: clamp(2.75rem, 14vw, 4rem); }
   .gis-hero blockquote { font-size: 1.14rem; }
   .gis-timeline-nav { margin-right: -16px; margin-left: -16px; padding-left: 16px; }
-  .gis-stop { gap: 22px; margin-bottom: 84px; padding-left: 44px; }
-  .gis-transect::before { left: 10px; }
-  .gis-marker { left: 10px; width: 42px; height: 42px; }
+  /* Spine and 42px marker centred at 21px, so the marker's left edge sits on
+     the content edge instead of hanging into the 16px page gutter. */
+  .gis-stop { gap: 22px; margin-bottom: 84px; padding-left: 56px; }
+  .gis-transect::before { left: 21px; }
+  .gis-marker { left: 21px; width: 42px; height: 42px; }
   .gis-figure { border-radius: 14px; }
   .gis-brief,
   .gis-practice-grid,
@@ -4652,13 +5207,15 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   .gis-stop .gis-boundary,
   .gis-stop .gis-rights-note { order: 4; }
 }
-/* Guides stream, round 2. Desktop: the hero's scope card sits level with the
-   lede as its key, and the short 2015 band travels with its long copy instead
-   of leaving an empty bay beside it. */
+/* Desktop: the hero's scope card keeps the grid's end alignment, so its
+   bottom edge sits on the pull-quote's bottom edge (round 2's centring
+   floated it level with nothing). Every figure shorter than its copy travels
+   with that copy instead of leaving an empty bay beside it. */
 @media (min-width: 941px) {
-  .gis-hero .gis-scope-note { align-self: center; }
-  .gis-stop:has(.gis-figure-wide) > .gis-figure { position: sticky; top: 112px; }
+  .gis-stop > .gis-figure { position: sticky; top: 112px; }
 }
+/* Pass C: the brief is the page's longest reading; set it a touch larger. */
+.gis-brief p { font-size: .95rem; }
 /* Phone: all five stops show at once as a two-column grid (the last spans
    both), so no label is clipped and nothing needs a scroll cue. */
 @media (max-width: 620px) {
@@ -5099,6 +5656,52 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   .shakespeare-source-links a, .shakespeare-code-links a { display: block; width: auto; padding-block: 10px; }
   .shakespeare-source-links li, .shakespeare-code-links li { padding-block: 12px; }
   .shakespeare-card-art { margin: -4px -4px 18px; }
+}
+/* ── Shakespeare round 4 (listening family, pass C) ──
+   Collection: the two cards share row tracks (subgrid), so eyebrow, title,
+   status and the "Available" rule sit on one line across the pair whatever
+   wraps; the Midsummer plate gets an inset frame so it reads as a title
+   card, not missing art. */
+@supports (grid-template-rows: subgrid) {
+  @media (min-width: 640px) {
+    .shakespeare-work-grid { grid-template-rows: repeat(5, auto); }
+    .shakespeare-work-card { display: grid; grid-row: span 5; grid-template-rows: subgrid; row-gap: 0; align-content: start; }
+    .shakespeare-work-card .shakespeare-formats { margin-top: 0; padding-top: 8px; }
+  }
+}
+.shakespeare-card-plate { position: relative; }
+.shakespeare-card-plate::after { content: ""; position: absolute; inset: 14px; border: 1px solid color-mix(in srgb, var(--shakespeare-accent) 38%, transparent); border-radius: 6px; pointer-events: none; }
+/* Midsummer: the card heading is a label, not a second headline; the four
+   rows carry the status. The card's top meets the title's cap line. */
+.shakespeare-release-card h2 { font-size: 13px; line-height: 22px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--shakespeare-accent); margin-bottom: 2px; }
+.shakespeare-release-card .shakespeare-release-status { margin-top: 8px; }
+@media (min-width: 900px) {
+  .shakespeare-main:has(> .shakespeare-release-card) > .shakespeare-release-card { align-self: start; margin-top: 52px; }
+}
+/* Merchant: one inline player per film, with YouTube as a quiet text route. */
+.shakespeare-text-link { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 15px; line-height: 22px; color: var(--shakespeare-secondary); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: color-mix(in srgb, currentColor 45%, transparent); }
+.shakespeare-text-link:hover { color: var(--text); }
+.shakespeare-watch-grid .shakespeare-action-row { margin-top: 12px; }
+@media (min-width: 900px) {
+  .shakespeare-watch-grid { align-items: start; }
+}
+/* Edition cards: title and both meta lines stack tight at the cover's top;
+   the spare cover height collects under them, not between them. */
+.shakespeare-edition { grid-template-rows: auto auto 1fr auto auto; }
+.shakespeare-edition > .shakespeare-cover { grid-row: 1 / 4; }
+.shakespeare-edition-copy > h3 { margin-bottom: 6px; }
+.shakespeare-edition-copy > p.shakespeare-secondary { align-self: start; }
+.shakespeare-edition-copy > p.shakespeare-secondary + p.shakespeare-secondary { margin-top: 2px; }
+.shakespeare-edition .shakespeare-downloads { margin-top: 20px; }
+/* One hairline between Code and "Also in the collection", not two. */
+.shakespeare-code-links li:last-child { border-bottom: 0; }
+@media (max-width: 639px) {
+  /* Section index as a 3 + 2 grid with shared columns, not a ragged wrap. */
+  .shakespeare-index { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; column-gap: 20px; }
+  /* Edition actions: the gold listen spans the card, EPUB and M4B pair below. */
+  .shakespeare-edition .shakespeare-downloads { display: grid; grid-template-columns: 1fr 1fr; }
+  .shakespeare-edition .shakespeare-downloads > :first-child { grid-column: 1 / -1; }
+  .page-shakespeare .shakespeare-edition .shakespeare-downloads .btn { justify-content: center; padding-inline: 12px; white-space: nowrap; }
 }
 @media (prefers-reduced-motion: reduce) {
   html:has(.page-shakespeare) { scroll-behavior: auto; }

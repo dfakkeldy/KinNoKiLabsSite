@@ -48,14 +48,14 @@ Alignment bugs are the most valuable reports and need the most context. Include:
 
 Pick whichever matches your life. Each plan is 10–20 minutes of intentional testing.
 
-### Plan A — The Commute Run *(Smart Rewind & interruptions)*
+### Plan A — The Commute Run *Smart Rewind & interruptions*
 
 1. Start a book, then live your interrupted life: pause for seconds, for minutes, for an hour.
 2. Each resume: did Smart Rewind back up a sensible amount? Did it ever dump you somewhere confusing?
 3. Mid-sentence, unplug your headphones / disconnect Bluetooth. Echo should pause — never blast the speaker.
 4. Take a phone call. After it ends, does Echo behave correctly (resume if it was playing, stay paused if you'd paused)?
 
-### Plan B — The Alignment Gauntlet *(EPUB + auto-align)*
+### Plan B — The Alignment Gauntlet *EPUB + auto-align*
 
 1. Put an ePub in the audiobook's folder; confirm Echo imports it automatically.
 2. Run **Auto-Align Chapters** and watch the progress view (plug in for long books — the first run also downloads the ~40 MB speech model).
@@ -63,7 +63,7 @@ Pick whichever matches your life. Each plan is 10–20 minutes of intentional te
 4. Find the worst spot and fix it: long-press → **Align to Now**. Does the surrounding text snap into place?
 5. Search a distinctive phrase; tap the result. Text and audio should jump together.
 
-### Plan C — The Study Session *(bookmarks, flashcards, review)*
+### Plan C — The Study Session *bookmarks, flashcards, review*
 
 1. While listening, make three bookmarks: one plain, one with a **voice memo**, one with a **photo**.
 2. Re-listen across them: does the voice memo play inline? Does the player artwork switch to your photo and back?
@@ -71,14 +71,14 @@ Pick whichever matches your life. Each plan is 10–20 minutes of intentional te
 4. Tomorrow, when the review notification arrives: do your **Daily Review** on the phone — then try a session on the **watch**, hands-free.
 5. Grade honestly and check the stats module updates (due / reviewed today / total).
 
-### Plan D — The Library Stress Test *(formats & playlist)*
+### Plan D — The Library Stress Test *formats & playlist*
 
 1. Load your messiest book: a multi-file M4B, a 100-file LibriVox folder, weird filenames.
 2. Check the chapter list: grouping sensible? Sections under chapters where expected?
 3. Drag-reorder a few tracks; dim one (e.g., a disclaimer track) and confirm playback skips it.
 4. iCloud users: try a book *without* "Keep Downloaded" on cellular — how does Echo cope? Then set Keep Downloaded and compare.
 
-### Plan E — The Wrist‑Only Day *(watch remote)*
+### Plan E — The Wrist‑Only Day *watch remote*
 
 1. From the phone, design your button layout (try filling multiple pages; leave one page empty — it should hide).
 2. Drive a full listening session from the watch only: play, skip, sections, loop, speed, sleep timer, a bookmark with a voice memo.
@@ -93,7 +93,7 @@ Pick whichever matches your life. Each plan is 10–20 minutes of intentional te
 3. If you use VoiceOver: a pass over the player and reader — every control labeled and operable?
 4. Enable Reduce Motion: anything still animating that shouldn't?
 
-### Plan G — The 1.0 Preview *(as builds gain the new features)* 🚧
+### Plan G — The 1.0 Preview *as builds gain the new features* 🚧
 
 The road to 1.0 lands feature-by-feature in beta builds — each build's *What to Test* notes will say which of these are included. When yours has them:
 

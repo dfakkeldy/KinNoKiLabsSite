@@ -13,7 +13,7 @@ MacroMark is voice capture for people whose notes live in Markdown. Tap your Wat
 
 MacroMark 1.0 is [live on the App Store](https://apps.apple.com/ca/app/macromark/id6785081218) and free. Version 1.1 is in testing.
 
-<p class="app-actions"><a class="btn btn-gold btn-md" href="https://apps.apple.com/ca/app/macromark/id6785081218">Download on the App Store</a></p>
+<p class="app-actions"><a class="btn btn-gold" href="https://apps.apple.com/ca/app/macromark/id6785081218">Download on the App Store</a></p>
 
 ## Say the shape of the note
 
@@ -38,11 +38,7 @@ MacroMark is built around the moment when opening a phone would be enough fricti
 1. **Tap from your watch face.** Deep links open instant capture without a hunt through app screens.
 2. **Speak, pause, keep going.** The custom audio path is designed for long, messy thoughts instead of tiny dictated snippets.
 3. **Lower your wrist to save.** Recordings are queued durably on the Watch and delivered to iPhone when the connection is ready.
-4. **Land in today's file.** Processed notes append to a dated Markdown file instead of scattering across throwaway documents.
-
-## Designed for vaults, not inboxes
-
-MacroMark writes to plain-text daily notes in user-owned files on iCloud Drive, so capture lands where PKM users already work. The product is built for Markdown workflows, review by date, and notes that remain useful outside the app.
+4. **Land in today's file.** Processed notes append to a dated, plain-text daily note in your own files on iCloud Drive — where your Markdown vault already lives — instead of scattering across throwaway documents.
 
 ## Built for trust
 
@@ -55,7 +51,9 @@ MacroMark writes to plain-text daily notes in user-owned files on iCloud Drive, 
 
 ## Privacy stays plain
 
-MacroMark is built around local capture, Apple speech services where applicable, and user-owned note files. It is not a social inbox or analytics product.
+MacroMark is built around local capture, Apple speech services where applicable, and user-owned note files that stay useful outside the app. It is not a social inbox or analytics product.
+
+<p class="app-actions app-actions-end"><a class="btn btn-gold" href="https://apps.apple.com/ca/app/macromark/id6785081218">Download on the App Store</a></p>
 
 ---
 [Project site](https://dfakkeldy.github.io/MacroMark/) | [Source on GitHub](https://github.com/dfakkeldy/MacroMark) | [Get help](/macromark-help)

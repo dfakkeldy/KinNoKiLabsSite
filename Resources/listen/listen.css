@@ -696,3 +696,41 @@ body.font-opendyslexic .room-bar .font-toggle {
     transform: translate(-50%, -50%);
   }
 }
+
+/* ── Round 4 (listening family, pass C) ─────────────── */
+/* One reading order at every width: captions, then the transport that
+   plays them, then the quiet status line and the format links. */
+.room-stage > .room-transport { order: 1; }
+.room-stage > :is(.room-status, .room-formats) { order: 2; }
+/* Library cards pack from the top: the link row follows the text instead
+   of being pushed to the card's foot, so short cards end in margin, not
+   in a gap between byline and links. */
+.room-library li .room-lib-links { align-self: start; margin-top: 8px; }
+/* The stage book's card is a marker only: its format links already sit
+   under the player, so the card keeps just the "Now playing" tag. */
+.room-library li[aria-current="page"] .room-lib-links > a { display: none; }
+.room-library li[aria-current="page"] .room-lib-links { margin-top: 4px; }
+/* Footer: on a narrow screen the links wrap, so the middle dots go and
+   the gap does the separating; no line ever ends or starts on a dot. */
+@media (max-width: 759px) {
+  .room-foot { gap: 0 20px; }
+  .room-foot > span[aria-hidden="true"] { display: none; }
+  .room-foot a { display: inline-flex; align-items: center; min-height: 44px; }
+}
+/* …and it is only as tall as that tag needs, not stretched to its row. */
+.room-library li[aria-current="page"] { align-self: start; }
+/* Phone shelves scan as an index: a smaller cover keeps each card close
+   to its text height, so the long list reads as rows, not tall tiles. */
+@media (max-width: 759px) {
+  .room-library li .room-lib-cover { width: 60px; }
+}
+/* Desktop idle panel: before play, the chapter title and opening line
+   sit at the top of the caption panel (the stretch below is where the
+   captions will run), not floating mid-box. */
+@media (min-width: 760px) {
+  .room-main:not(.started) .room-captions { justify-content: flex-start; padding-top: clamp(28px, 3.5vw, 40px); }
+}
+/* Tablets and other touch screens at desktop widths: 44px targets too. */
+@media (pointer: coarse) {
+  .room-formats a, .room-library li .room-lib-links a { display: inline-flex; align-items: center; min-height: 44px; padding-block: 0; margin-block: 0; }
+}

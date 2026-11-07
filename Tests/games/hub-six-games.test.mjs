@@ -45,7 +45,7 @@ test('hub renders six cards without stale three-game language', () => {
   const markup = renderHubMarkup(createEmptyGameStore());
   for (const title of [
     'Sudoku', 'Crossword', 'Word Search', 'KinNoKi Stack', 'KinNoKi Yard', 'KinNoKi Charts',
-  ]) assert.match(markup, new RegExp('<h2[^>]*>' + title + '</h2>'));
+  ]) assert.match(markup, new RegExp('<h2[^>]*><a class="game-card-title" href="[^"]+difficulty=easy">' + title + '</a></h2>'));
   assert.equal([...markup.matchAll(/<article class="game-card/g)].length, 6);
   assert.doesNotMatch(markup, /three familiar|three classics|three games/i);
 });
@@ -176,10 +176,11 @@ test('typed records render exact semantic dl labels once a game has a finish', (
   ]) assert.match(markup, new RegExp('<dt>' + label + '</dt><dd>'));
 });
 
-test('unplayed games show one quiet line instead of placeholder records', () => {
+test('unplayed games show no record row; the records band states the empty book once', () => {
   const markup = renderHubMarkup(createEmptyGameStore());
   assert.doesNotMatch(markup, /<dl class="game-card-stats">/);
-  assert.equal([...markup.matchAll(/class="game-card-stats-empty">Not played yet</g)].length, 6);
+  assert.doesNotMatch(markup, /Not played yet/);
+  assert.match(markup, /start the record book/);
 });
 
 test('reset explanation names every locally removed game-data category', () => {
@@ -192,7 +193,8 @@ test('reset explanation names every locally removed game-data category', () => {
 
 test('an empty record book disables reset and names one easy first game', () => {
   const markup = renderHubMarkup(createEmptyGameStore());
-  assert.match(markup, /<button[^>]+data-reset-games[^>]*\sdisabled>Reset Game Data<\/button>/);
+  // Nothing to reset: the button is hidden (and disabled) until data exists.
+  assert.match(markup, /<button[^>]+data-reset-games[^>]*\shidden disabled>Reset Game Data<\/button>/);
   assert.match(markup, /<a href="\/games\/sudoku\?difficulty=easy">Start with an Easy Sudoku<\/a>/);
 
   const unfinished = createEmptyGameStore();

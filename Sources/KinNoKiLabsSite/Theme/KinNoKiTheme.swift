@@ -159,17 +159,14 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
                     .a(.class("back-link"), .href("/posts"), iconArrowBack(), .text("All posts")),
                     .header(
                         .class("page-head"),
-                        .p(.class("eyebrow"), .text("Tags")),
+                        .p(.class("eyebrow"), .text("Topics")),
                         .h1(.class("page-title"), .text("Notes by topic.")),
                         .p(.class("page-lede"), .text("Studio notes are tagged by topic. Pick one to see every note in it."))
                     ),
-                    .div(.class("chip-row"), .forEach(page.tags.sorted()) { tag in
-                        .a(
-                            .class("chip"),
-                            .href(context.site.path(for: tag)),
-                            .text(tag.string.capitalized),
-                            .span(.class("chip-count"), .text(noteCount(context.items(taggedWith: tag, sortedBy: \.date, order: .descending).count)))
-                        )
+                    // Each topic is a card in the /posts card language: its
+                    // note count, its name, and the newest note it leads to.
+                    .div(.class("post-list tag-list"), .forEach(page.tags.sorted()) { tag in
+                        tagCard(tag, items: context.items(taggedWith: tag, sortedBy: \.date, order: .descending), site: context.site)
                     }),
                     // The way back to All posts is already at the top, so the
                     // close offers the one step this page does not: following.
@@ -183,6 +180,9 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
     func makeTagDetailsHTML(for page: TagDetailsPage, context: PublishingContext<Site>) throws -> HTML? {
         let items = context.items(taggedWith: page.tag, sortedBy: \.date, order: .descending)
         let otherTags = context.allTags.filter { $0 != page.tag }.sorted()
+        // When this topic already holds every post, "All posts" would show
+        // the same list again, so the close offers following instead.
+        let holdsEveryPost = items.count == (context.sections[.posts].items.count)
         return HTML(
             .lang(context.site.language),
             siteHead(for: page, context: context, titleOverride: page.tag.string),
@@ -191,14 +191,17 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
                 siteHeader(active: navSection(for: page.path.string)),
                 .main(
                     .class("site-main page page-narrow page-short-index"),
-                    .a(.class("back-link"), .href("/tags"), iconArrowBack(), .text("All tags")),
+                    .a(.class("back-link"), .href("/tags"), iconArrowBack(), .text("All topics")),
                     .header(
                         .class("page-head"),
-                        .p(.class("eyebrow"), .text("Tagged · \(noteCount(items.count))")),
-                        .h1(.class("page-title"), .text(page.tag.string.capitalized))
+                        .p(.class("eyebrow"), .text("Topic")),
+                        .h1(.class("page-title"), .text(page.tag.string.capitalized)),
+                        .p(.class("page-lede"), .text(items.count == 1 ? "One note so far." : "\(noteCount(items.count)), newest first."))
                     ),
                     .div(.class("post-list"), .forEach(items) { postCard($0) }),
-                    indexEnd(note: "That's every note on this topic.", linkText: "All posts", href: "/posts"),
+                    holdsEveryPost
+                        ? indexEnd(note: "That's every note on this topic.", linkText: "Follow new notes by RSS", href: "/feed.rss")
+                        : indexEnd(note: "That's every note on this topic.", linkText: "All posts", href: "/posts"),
                     .if(!otherTags.isEmpty, .nav(
                         .class("tag-more"),
                         .attribute(named: "aria-label", value: "Other topics"),
@@ -275,7 +278,7 @@ private func siteHead<L: Location>(
         ),
         .stylesheet(shakespeareHead ? "/styles.css?v=20261012-shakespeare-film" : "/styles.css"),
         .element(named: "script", nodes: [
-            .attribute(named: "src", value: "/site.js?v=20260719"),
+            .attribute(named: "src", value: "/site.js?v=20261107-guide-toc"),
             // Non-empty value: Plot omits empty-valued attributes, and without
             // `defer` this head script would run before <body> exists.
             .attribute(named: "defer", value: "defer")
@@ -600,7 +603,7 @@ private func notFoundMain() -> Node<HTML.BodyContext> {
         <a class="support-row" href="/apps"><span class="support-row-text"><span>Apps</span><span class="support-row-sub">Echo, MacroMark, NS Marks The Spot, Turn Timer</span></span>\(svgRowChevron)</a>
         <a class="support-row" href="/support"><span class="support-row-text"><span>Support</span><span class="support-row-sub">Help pages for each app</span></span>\(svgRowChevron)</a>
         <a class="support-row" href="/learn"><span class="support-row-text"><span>Learn</span><span class="support-row-sub">Learning audiobooks to listen to</span></span>\(svgRowChevron)</a>
-        <a class="support-row" href="mailto:hello@kinnokilabs.com"><span class="support-row-glyph" aria-hidden="true">\(svgMail)</span><span class="support-row-text"><span>Looking for something specific?</span><span class="support-row-sub">hello@kinnokilabs.com</span></span>\(svgRowChevron)</a>
+        <a class="support-row" href="mailto:hello@kinnokilabs.com"><span class="support-row-text"><span>Looking for something specific?</span><span class="support-row-sub">hello@kinnokilabs.com</span></span>\(svgRowChevron)</a>
       </div>
     </main>
     """)
@@ -703,7 +706,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                     <p class="tax-kicker">Posted dates</p>
                     <h2 id="tax-dates-heading">What’s<br><em>coming up.</em></h2>
                   </div>
-                  <p>These are the upcoming sales posted on the municipal pages checked October 23; other municipalities may post theirs later. Each property list goes up at least 30 days before its sale and can shrink right up to the day, so open the municipal page again before you go.</p>
+                  <p>These are the upcoming sales posted on the municipal pages; other municipalities may post theirs later. Each property list goes up at least 30 days before its sale and can shrink right up to the day, so open the municipal page again before you go.</p>
                 </div>
 
                 <div class="tax-date-list">
@@ -911,21 +914,22 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
     )
 }
 
+/// The close offers the one useful next step: browsing by topic once there
+/// is more than one topic, otherwise following by RSS (said once, here).
 private func postsListMain(_ section: Section<KinNoKiLabsSite>) -> Node<HTML.BodyContext> {
-    .main(
+    let topicCount = Set(section.items.flatMap { $0.tags }).count
+    return .main(
         .class("site-main page page-narrow page-short-index"),
         .header(
             .class("page-head"),
             .p(.class("eyebrow"), .text("Posts")),
             .h1(.class("page-title"), .text("Studio notes.")),
-            .p(
-                .class("page-lede"),
-                .text("Occasional notes from the studio. "),
-                .a(.class("link-quiet"), .href("/feed.rss"), .text("Follow by RSS"))
-            )
+            .p(.class("page-lede"), .text("Occasional notes from the studio."))
         ),
         .div(.class("post-list"), .forEach(section.items.sorted { $0.date > $1.date }) { postCard($0) }),
-        indexEnd(note: "That's every note so far.", linkText: "Browse by topic", href: "/tags")
+        topicCount > 1
+            ? indexEnd(note: "That's every note so far.", linkText: "Browse by topic", href: "/tags")
+            : indexEnd(note: "That's every note so far.", linkText: "Follow new notes by RSS", href: "/feed.rss")
     )
 }
 
@@ -935,6 +939,21 @@ private func indexEnd(note: String, linkText: String, href: String) -> Node<HTML
         .class("index-end"),
         .p(.class("index-end-note"), .text(note)),
         .a(.class("back-link back-link-next"), .href(href), .text(linkText), iconArrowForward())
+    )
+}
+
+/// A topic on the tags hub: count, name, and the newest note's title, so the
+/// card previews where it leads.
+private func tagCard(_ tag: Tag, items: [Item<KinNoKiLabsSite>], site: KinNoKiLabsSite) -> Node<HTML.BodyContext> {
+    .a(
+        .class("post-card tag-card"),
+        .href(site.path(for: tag)),
+        .p(.class("post-kicker"), .text(noteCount(items.count))),
+        .h2(.text(tag.string.capitalized)),
+        .unwrap(items.first) { latest in
+            .p(.class("post-card-desc"), .text("Latest: \(latest.title)"))
+        },
+        .span(.class("card-cue"), .text("See the notes"), iconArrowForward())
     )
 }
 
@@ -953,7 +972,8 @@ private func postCard(_ item: Item<KinNoKiLabsSite>) -> Node<HTML.BodyContext> {
     )
 }
 
-/// The post closes with its tags (real links) and the way back to the list.
+/// The post closes with its tags (real links) and a forward step, following
+/// new notes; the way back to the list is the back link at the top.
 private func postDetailMain(_ item: Item<KinNoKiLabsSite>, site: KinNoKiLabsSite) -> Node<HTML.BodyContext> {
     .main(
         .class("site-main article-page"),
@@ -969,7 +989,7 @@ private func postDetailMain(_ item: Item<KinNoKiLabsSite>, site: KinNoKiLabsSite
                     .a(.class("chip"), .href(site.path(for: tag)), .text(tag.string.capitalized))
                 }
             )),
-            .a(.class("back-link"), .href("/posts"), iconArrowBack(), .text("All posts"))
+            .a(.class("back-link back-link-next"), .href("/feed.rss"), .text("Follow new notes by RSS"), iconArrowForward())
         )
     )
 }
@@ -1070,9 +1090,10 @@ private let guideRoadmapTag = #"<span class="status-tag status-tag-later">Roadma
 /// Finishes a guide's rendered Markdown: swaps the emoji status markers for
 /// labelled pills, sets a policy's "Effective Date" line as meta, gives every
 /// h2 a stable slug id, turns a lone italic line under an h2 into its
-/// dateline, and, when a page has four or more h2 sections, inserts an
-/// "On this page" list just before the first one, a phone jump to it under
-/// the h1, and a "Back to contents" link at the end of every section.
+/// dateline (a "· 92 commits" tail becomes a pill and a scaled bar), and,
+/// when a page has four or more h2 sections, inserts a folding "On this
+/// page" list under the h1 and a "Back to contents" link after each long
+/// section.
 /// It also numbers chapters ("11. The Reader" -> a mono "11" eyebrow; the
 /// id keeps the number), gives every h3 a slug id, sets the Focus guide's
 /// "How Echo helps" asides and the Learning guide's "The science: X" beats,
@@ -1105,7 +1126,9 @@ private func guideBody(_ source: String) -> GuideBody {
 
     var contents: [(id: String, label: String, number: String?, title: String)] = []
     var sections: [String] = []
-    var peak: (value: Int, text: String) = (0, "")
+    // Commit counts by section index, for the devlog's dateline bars.
+    var counts: [Int: Int] = [:]
+    var peak = 0
     for piece in pieces.dropFirst() {
         guard let close = piece.range(of: "</h2>") else {
             sections.append("<h2>" + piece)
@@ -1136,8 +1159,9 @@ private func guideBody(_ source: String) -> GuideBody {
             if !line.contains("<") {
                 if let dot = line.range(of: " · ", options: .backwards) {
                     let count = String(line[dot.upperBound...])
-                    if let value = Int(String(count.prefix(while: { $0.isNumber }))), value > peak.value {
-                        peak = (value, count)
+                    if let value = Int(String(count.prefix(while: { $0.isNumber }))), value > 0 {
+                        counts[sections.count] = value
+                        peak = max(peak, value)
                     }
                     let date = String(line[..<dot.lowerBound])
                     line = #"\#(date) <span class="prose-dateline-count">\#(count)</span>"#
@@ -1163,12 +1187,20 @@ private func guideBody(_ source: String) -> GuideBody {
             let titleAttribute = short == item.title ? "" : #" title="\#(fullTitle)""#
             return ##"<li><a href="#\##(item.id)""## + titleAttribute + ">" + text + "</a></li>"
         }.joined()
-        toc = #"<nav class="prose-toc" aria-labelledby="prose-toc-title"><p class="prose-toc-title" id="prose-toc-title">On this page</p><ul>"#
-            + items + "</ul></nav>"
-        // On a phone the list can sit a long scroll below the title.
+        // A folding list straight under the title (and a policy's effective
+        // date): one row on a phone or tablet, which site.js folds below the
+        // rail width; open in the markup, so it still works without script.
+        // On wide screens CSS lifts the same list into the side rail.
+        toc = #"<nav class="prose-toc" aria-labelledby="prose-toc-title"><details class="prose-toc-fold" open><summary class="prose-toc-title" id="prose-toc-title">On this page<span class="prose-toc-count"> · \#(contents.count) sections</span></summary><ul>"#
+            + items + "</ul></details></nav>"
         if let h1 = intro.range(of: "</h1>") {
-            // The arrow's spacing comes from the link's CSS gap, not a space.
-            intro.insert(contentsOf: ##"<p class="prose-toc-jump"><a href="#prose-toc-title">Jump to contents<span aria-hidden="true">↓</span></a></p>"##, at: h1.upperBound)
+            var at = h1.upperBound
+            if intro[at...].hasPrefix(#"<p class="prose-meta">"#), let meta = intro.range(of: "</p>", range: at..<intro.endIndex) {
+                at = meta.upperBound
+            }
+            intro.insert(contentsOf: toc, at: at)
+        } else {
+            intro = toc + intro
         }
         // A long section ends with a way back to the list. The last section
         // gets none (the page ends there), and neither does a short one,
@@ -1179,14 +1211,25 @@ private func guideBody(_ source: String) -> GuideBody {
         }
     }
 
-    var body = intro + toc + sections.joined()
-    if peak.value > 0 {
-        // The busiest week gets the one gold count.
-        body = body.replacingOccurrences(
-            of: #"<span class="prose-dateline-count">\#(peak.text)</span>"#,
-            with: #"<span class="prose-dateline-count prose-dateline-peak">\#(peak.text)</span>"#
-        )
+    // Each count also draws a short bar scaled to the busiest week (twelve
+    // class steps, no inline style), so the scroll shows the project's
+    // rhythm; the busiest week alone is gold.
+    for (index, value) in counts where peak > 0 {
+        let step = max(1, min(12, Int((Double(value) * 12 / Double(peak)).rounded())))
+        var section = sections[index]
+        if value == peak {
+            section = section.replacingOccurrences(
+                of: #"<span class="prose-dateline-count">"#,
+                with: #"<span class="prose-dateline-count prose-dateline-peak">"#
+            )
+        }
+        if let end = section.range(of: "</span></p>") {
+            section.replaceSubrange(end, with: #"</span><span class="prose-dateline-bar prose-bar-\#(step)" aria-hidden="true"></span></p>"#)
+        }
+        sections[index] = section
     }
+
+    let body = intro + sections.joined()
     return GuideBody(html: guideH3IDs(body, used: &usedIDs), hasContents: !toc.isEmpty, hasChapters: contents.count >= 3)
 }
 
@@ -1394,21 +1437,21 @@ private func homeMain() -> Node<HTML.BodyContext> {
       </section>
 
       <section class="section section-first reveal">
+        <p class="eyebrow">Services</p>
         <div class="bento-tint split-services band home-services">
-          <div>
-            <p class="eyebrow">Services</p>
+          <div class="home-services-copy">
             <h2 class="band-title">I untangle the technical mess behind the work.</h2>
             <p class="band-lede">When spreadsheets, forms, job folders, websites, and software stop lining up, I map what is really happening and make the smallest useful fix.</p>
-            <div class="band-actions band-actions-row">
-              <a class="btn btn-gold" href="/services">See services</a>
-              <a class="row-link" href="mailto:hello@kinnokilabs.com">\(svgMail)hello@kinnokilabs.com</a>
-            </div>
           </div>
           <ul class="chevron-list offer-lines">
             <li>\(svgCheck)Technical workflow diagnostic — one problem, clearly mapped</li>
             <li>\(svgCheck)Systems cleanup, integrations &amp; automation</li>
             <li>\(svgCheck)Knowledge bases, dashboards &amp; right-sized software</li>
           </ul>
+          <div class="band-actions band-actions-row home-services-actions">
+            <a class="btn btn-gold" href="/services">See services</a>
+            <a class="row-link" href="mailto:hello@kinnokilabs.com">\(svgMail)hello@kinnokilabs.com</a>
+          </div>
         </div>
       </section>
 
@@ -1431,7 +1474,7 @@ private func homeMain() -> Node<HTML.BodyContext> {
               <span class="badge-pill">Mac</span>
             </div>
             <div class="flagship-actions">
-              <a class="btn btn-gold btn-md" href="/apps/echo">Meet Echo</a>
+              <a class="btn btn-gold" href="/apps/echo">Meet Echo</a>
               <a class="link-quiet" href="/echo-beta">Join the TestFlight beta</a>
               <a class="link-quiet" href="/learn">Sample learning audiobooks</a>
             </div>
@@ -1505,19 +1548,19 @@ private func appsMain() -> Node<HTML.BodyContext> {
       <div class="reveal app-list">
         <a class="app-card app-card-featured" href="/apps/echo">
           <img class="app-icon" src="/images/apps/echo.png" alt="Echo app icon">
-          <h2>Echo: Audiobook Study Player</h2>
+          <h2>Echo</h2>
           <p>An audiobook player built for studying, not just listening. Word-perfect read-along, one-tap flashcards, Smart Rewind, and a Watch remote you design.</p>
           <div class="app-card-meta">
             <span class="status-chip">TestFlight beta</span>
-            <span class="platforms">iPhone&nbsp;&amp;&nbsp;iPad · Apple&nbsp;Watch · Mac · GPL-3.0</span>
+            <span class="platforms">iPhone&nbsp;&amp;&nbsp;iPad ·&nbsp;Watch ·&nbsp;Mac</span>
+            <span class="platforms">GPL-3.0</span>
           </div>
           \(svgChevron)
         </a>
         <a class="app-card" href="/apps/macromark/">
           <img class="app-icon" src="/images/apps/macromark.png" alt="MacroMark app icon">
-          <h3>MacroMark</h3>
-          <p class="app-card-lead">Tap your Watch complication, speak, lower your wrist — the note lands in today's Markdown file, ready for Obsidian or Logseq.</p>
-          <p class="app-card-note">Verbal Macros turn speech into structure: say "Task" and get <code>- [ ]</code></p>
+          <h2>MacroMark</h2>
+          <p class="app-card-lead">Tap your Watch complication, speak, lower your wrist — the note lands in today's Markdown file, with verbal macros for headings and tasks.</p>
           <div class="app-card-meta">
             <span class="status-chip">App Store — 1.0</span>
             <span class="platforms">Watch · iPhone</span>
@@ -1526,7 +1569,7 @@ private func appsMain() -> Node<HTML.BodyContext> {
         </a>
         <a class="app-card" href="/apps/nsmarksthespot/">
           <img class="app-icon" src="/images/apps/nsmarksthespot.svg" alt="NS Marks The Spot app icon">
-          <h3>NS Marks The Spot</h3>
+          <h2>NS Marks The Spot</h2>
           <p>A live browser map with parcel search by PID, civic address, or postal community, dated tax-sale notices, Fletcher’s 1880s sheets, and optional live location. The iPhone companion is in internal testing.</p>
           <div class="app-card-meta">
             <span class="status-chip">Live browser map</span>
@@ -1536,7 +1579,7 @@ private func appsMain() -> Node<HTML.BodyContext> {
         </a>
         <a class="app-card" href="/apps/visualtimer/">
           <img class="app-icon" src="/images/apps/turntimer.png" alt="Turn Timer app icon: a clock inside a ring of coloured countdown segments">
-          <h3>Turn Timer</h3>
+          <h2>Turn Timer</h2>
           <p>An Apple-native visual sequence timer — one-tap visual countdowns plus reusable sequences. It also runs in your browser, with nothing to install.</p>
           <div class="app-card-meta">
             <span class="status-chip">TestFlight beta</span>
@@ -1611,8 +1654,8 @@ private func servicesMain() -> Node<HTML.BodyContext> {
           <span class="chip">Integrations &amp; automation</span>
           <span class="chip">Dashboards &amp; knowledge bases</span>
           <span class="chip">Mobile or custom software</span>
-          <span class="chip chip-optional">Apple release support — when that is the actual problem</span>
         </div>
+        <p class="scope-note">Also: Apple release support — when that is the actual problem.</p>
       </section>
 
       <section class="reveal page-block">
@@ -1876,7 +1919,7 @@ private func aboutMain() -> Node<HTML.BodyContext> {
       <section class="reveal contact-band">
         <p class="contact-band-text">Want to work together, or just say hello?</p>
         <div class="contact-band-actions">
-          <a class="btn btn-gold" href="mailto:hello@kinnokilabs.com">hello@kinnokilabs.com</a>
+          <a class="btn btn-gold" href="mailto:hello@kinnokilabs.com">Email me</a>
           <a class="btn btn-outline" href="/services">See services</a>
         </div>
       </section>
@@ -1912,8 +1955,8 @@ private func learnMain() -> Node<HTML.BodyContext> {
           <h1>Learn something by listening.</h1>
           <p class="learn-hero-sub">I make focused, AI-assisted learning audiobooks and test them in Echo, my audiobook study app.</p>
           <div class="learn-ctas">
-            <a class="btn btn-gray" href="#request">Send a topic</a>
             <a class="btn btn-gray" href="/echo-beta">Try Echo</a>
+            <a class="learn-text-link" href="#request">Send a topic <span aria-hidden="true">↓</span></a>
           </div>
         </div>
         <aside class="learn-intake-card learn-hero-room" aria-label="Echo Listening Room">
@@ -1927,7 +1970,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
         <div class="learn-section-heading">
           <p class="eyebrow">Sample books</p>
           <h2>Examples from the public library.</h2>
-          <p>These are examples, not a polished commercial catalog. The public repo holds the EPUB files, readable Markdown, covers, and notes about how each book was made.</p>
+          <p>These are examples, not a polished commercial catalog.</p>
         </div>
 
         <div class="learn-book-grid">
@@ -2004,7 +2047,11 @@ private func learnMain() -> Node<HTML.BodyContext> {
               <a href="https://github.com/dfakkeldy/explainer-audiobooks/blob/main/books/chicken-predators/chicken-predators.md" target="_blank" rel="noopener">Read</a>
             </div>
           </article>
-          <a class="learn-library-tile" href="https://github.com/dfakkeldy/explainer-audiobooks" target="_blank" rel="noopener">Browse the public Explainer Audiobooks library \(svgArrow)</a>
+          <a class="learn-library-tile" href="https://github.com/dfakkeldy/explainer-audiobooks" target="_blank" rel="noopener">
+            <span class="learn-card-label">Public library</span>
+            <span class="learn-library-tile-text">The public repo holds the EPUB files, readable Markdown, covers, and notes about how each book was made.</span>
+            <span class="learn-library-tile-cta">Browse the Explainer Audiobooks library \(svgArrow)</span>
+          </a>
         </div>
       </section>
 
@@ -2013,7 +2060,10 @@ private func learnMain() -> Node<HTML.BodyContext> {
           <p class="eyebrow">Request a topic</p>
           <h2>Tell me what you want to learn.</h2>
           <p>Send me a topic, with as much detail as you want. If it's a good fit, I'll make a short custom audiobook and give you early access to Echo so you can test it.</p>
-          <a class="btn btn-gold" href="mailto:learn@kinnokilabs.com">learn@kinnokilabs.com</a>
+          <div class="learn-request-action">
+            <a class="btn btn-gold" href="mailto:learn@kinnokilabs.com">Email a topic</a>
+            <span class="learn-request-address">learn@kinnokilabs.com</span>
+          </div>
         </div>
         <div class="learn-request-list">
           <p>I take a limited number of requests each month.</p>
@@ -2046,7 +2096,7 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
           <img class="echo-hero-icon" src="/images/apps/echo.png" alt="Echo app icon — an infinity symbol in silver and gold">
           <h1 class="echo-hero-title">Echo</h1>
           <p class="echo-hero-tagline">For Every Mind — turn listening into learning.</p>
-          <p class="echo-hero-lede">The audiobook player that helps you remember what you heard — word-perfect read-along, one-tap flashcards, and a study system built on the real science of memory.</p>
+          <p class="echo-hero-lede">The audiobook player that helps you remember what you heard.</p>
           <div class="echo-hero-pills">
             <span class="echo-pill">iPhone &amp; iPad</span>
             <span class="echo-pill">Apple Watch</span>
@@ -2075,14 +2125,15 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
             <figcaption class="screen-caption"><strong>Read in modern English.</strong> The Novel's text, with audiobook controls close at hand.</figcaption>
           </figure>
         </div>
+        <p class="screens-hint" aria-hidden="true">Swipe for all three screens <span>→</span></p>
         <div class="watch-row">
           <figure class="screen-figure watch-figure">
             <div class="screen-frame watch-frame"><img src="/images/screenshots/echo/merchant-watch-playback.webp" width="416" height="496" loading="lazy" decoding="async" alt="Echo Apple Watch playback controls for The Merchant of Venice — The Novel, with its square audiobook cover"></div>
-            <figcaption class="screen-caption"><strong>Playback controls on Apple Watch.</strong> The Novel's square audiobook cover stays in view.</figcaption>
+            <figcaption class="screen-caption"><strong>Pause without reaching for your phone.</strong> Playback stays on your wrist, with the book's cover in view.</figcaption>
           </figure>
           <figure class="screen-figure watch-figure">
             <div class="screen-frame watch-frame"><img src="/images/screenshots/echo/merchant-watch-volume.webp" width="416" height="496" loading="lazy" decoding="async" alt="Echo Apple Watch volume controls for The Merchant of Venice — The Novel, with teal accents"></div>
-            <figcaption class="screen-caption"><strong>Volume and chapter controls.</strong> The Novel on Apple Watch.</figcaption>
+            <figcaption class="screen-caption"><strong>Turn it up or skip a chapter.</strong> Volume and chapter controls from the Watch.</figcaption>
           </figure>
         </div>
       </section>
@@ -2157,7 +2208,6 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
               <a class="echo-cta-link" href="/echo-beta">Beta guide</a>
               <a class="echo-cta-link" href="/echo-devlog">Devlog</a>
               <a class="echo-cta-link" href="/echo-help">Help &amp; support</a>
-              <a class="echo-cta-link" href="/learn">Sample learning audiobooks</a>
             </div>
           </div>
         </div>

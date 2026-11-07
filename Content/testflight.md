@@ -2,24 +2,28 @@
 
 # TestFlight betas
 
-Two apps are in open beta. Pick one and join on the device you'll test on.
+Two apps are in open beta. Joining takes two steps.
 
-<p class="beta-note">Install Apple's free TestFlight app first, then open the join link. Beta builds may change often and expire after 90 days.</p>
+<ol class="beta-steps">
+<li><strong>Install Apple's free TestFlight app.</strong> It installs and updates the beta builds.</li>
+<li><strong>Tap “Join the beta” for the app you want below.</strong> Do it on the device you'll test on.</li>
+</ol>
 
+<p class="beta-note">Beta builds may change often and expire after 90 days.</p>
+
+<div class="beta-grid">
+<section class="beta-card">
 <img class="beta-icon" src="/images/apps/turntimer.png" alt="" width="56" height="56" />
-
-## Turn Timer
-
-A visual sequence timer for routines, classrooms, kitchens, meetings, and game nights.
-
-<p class="app-actions"><a class="btn btn-gold btn-md" href="https://testflight.apple.com/join/s7w4YGWU">Join the Turn Timer beta</a><a class="btn btn-outline btn-md" href="/apps/visualtimer">About Turn Timer</a></p>
-
----
-
+<h2>Turn Timer</h2>
+<p>A visual sequence timer for routines, classrooms, kitchens, meetings, and game nights.</p>
+<p class="beta-actions"><a class="btn btn-gold btn-md" href="https://testflight.apple.com/join/s7w4YGWU" aria-label="Join the beta: Turn Timer">Join the beta</a><a class="btn btn-outline btn-md" href="/apps/visualtimer">About Turn Timer</a></p>
+</section>
+<section class="beta-card">
 <img class="beta-icon" src="/images/apps/echo.png" alt="" width="56" height="56" />
+<h2>Echo</h2>
+<p>An audiobook player built for studying, not just listening.</p>
+<p class="beta-actions"><a class="btn btn-gold btn-md" href="https://testflight.apple.com/join/Zu9rzg59" aria-label="Join the beta: Echo">Join the beta</a><a class="btn btn-outline btn-md" href="/apps/echo">About Echo</a></p>
+</section>
+</div>
 
-## Echo
-
-An audiobook player built for studying, not just listening.
-
-<p class="app-actions"><a class="btn btn-gold btn-md" href="https://testflight.apple.com/join/Zu9rzg59">Join the Echo beta</a><a class="btn btn-outline btn-md" href="/apps/echo">About Echo</a></p>
+<p class="beta-help">Stuck joining a beta? <a href="/support">Get help on the support page</a>.</p>

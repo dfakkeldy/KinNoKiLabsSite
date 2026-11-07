@@ -2,9 +2,9 @@ import { createAnnouncer, element, toolShell } from './core.js';
 import { analyzeText, formatDuration } from './word-count.js';
 
 // The first two rows are the headline tiles; the rest are secondary counts.
-// With no words there is no reading time, so the time tiles show a dash
-// rather than claiming "under a minute".
-const readingTime = (result, minutes) => (result.words === 0 ? '—' : formatDuration(minutes));
+// With no words the time tiles read "0 min" (a number like every other
+// tile) rather than claiming "under a minute".
+const readingTime = (result, minutes) => (result.words === 0 ? '0 min' : formatDuration(minutes));
 const STAT_ROWS = Object.freeze([
   ['Words', (result) => result.words],
   ['Read aloud', (result) => readingTime(result, result.aloudMinutes)],
@@ -47,6 +47,7 @@ export function renderWordCountTool(root, deps = {}) {
     const result = analyzeText(textarea.value);
     for (const [label, format] of STAT_ROWS) values.get(label).textContent = String(format(result));
     clear.disabled = textarea.value === '';
+    clear.hidden = clear.disabled;
     if (shouldAnnounce) announce(`${result.words} words`);
   };
 
@@ -60,8 +61,8 @@ export function renderWordCountTool(root, deps = {}) {
   form.append(
     element('div', { class: 'word-count-input', ownerDocument: doc },
       element('label', { for: 'word-count-text', text: 'Text to count', ownerDocument: doc }),
-      textarea,
-      element('div', { class: 'word-count-actions', ownerDocument: doc }, clear)),
+      element('div', { class: 'word-count-actions', ownerDocument: doc }, clear),
+      textarea),
     list,
   );
   body.append(form);

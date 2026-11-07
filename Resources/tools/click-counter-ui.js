@@ -86,9 +86,12 @@ export function renderClickCounterTool(root, deps = {}) {
   const resetButton = element('button', {
     class: 'tool-quiet', type: 'button', text: 'Reset', ownerDocument: doc,
   });
-  // Reset only does something once the form has moved off its defaults.
+  // Reset only does something once the form has moved off its defaults, so
+  // it stays out of sight until then rather than sitting there disabled.
   const syncReset = () => {
-    resetButton.disabled = baseNumber === DEFAULT_BASE && parseDecimal(targetInput.value) === DEFAULT_TARGET;
+    const atDefaults = baseNumber === DEFAULT_BASE && parseDecimal(targetInput.value) === DEFAULT_TARGET;
+    resetButton.disabled = atDefaults;
+    resetButton.hidden = atDefaults;
   };
 
   const showResult = ({ shouldAnnounce = false, shouldSave = false } = {}) => {

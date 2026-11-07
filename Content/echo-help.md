@@ -44,7 +44,7 @@ Chapter Study Mode, gentle hyperfocus reminders, a Context Memory map view, .apk
 ## Your data & privacy
 
 ### Does Echo track my location?
-Context Memory is optional and off by default. With permission, the device can provide a precise fix; Echo rounds coordinates before asking Apple's geocoder for a place name and stores the resulting context locally. Delete Context Memory removes the app's local context records, not providers' records or backups. See the [Echo Privacy Policy](/echo-privacy/).
+Context Memory is optional and off by default. With permission, the device can provide a precise fix; Echo rounds coordinates before asking Apple's geocoder for a place name and stores the resulting context locally. **Delete Context Memory** removes the app's local context records, not providers' records or backups. See the [Echo Privacy Policy](/echo-privacy/).
 
 ### Will my flashcards and bookmarks sync between devices?
 This release does not promise complete private synchronization of flashcards, decks, bookmarks or playback position. Files in an iCloud folder follow Apple's file services, and Watch features transfer selected state and voice memos with the paired iPhone. Importing a book may look up matching public alignment anchors when network access is permitted, with local fallback for an ordinary lookup failure. This release does not expose public-alignment uploads. See the [Echo Privacy Policy](/echo-privacy/).

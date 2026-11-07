@@ -8,6 +8,7 @@ import { createGameAudio } from './game-audio.js';
 import {
   completionPanel, createAudioControls, createConfirmDialog, createSession, element,
   formatElapsed, makeGameTerminal, prefersReducedMotion, renderReplacementKept, sharedShell,
+  ASSIST_RULE,
 } from './controller-common.js';
 
 export function createChartsState(definition) {
@@ -83,7 +84,7 @@ export async function renderCharts(root, store) {
     element('p', {
       text: 'Row clues sit to the left of the grid, column clues sit above it. Choose a '
         + 'cell and cycle it blank, filled, or marked to match the clues. Arrow keys move, '
-        + 'Enter or Space cycles the selected cell, and X or M toggles a mark.',
+        + 'Enter or Space cycles the selected cell, and X or M toggles a mark. ' + ASSIST_RULE,
     }));
   const corner = element('div', { class: 'charts-corner', 'aria-hidden': 'true' });
   const columnClueNodes = [];
@@ -91,7 +92,7 @@ export async function renderCharts(root, store) {
   for (let column = 0; column < size; column += 1) {
     const runs = state.definition.clues.columns[column];
     const clue = element('div', {
-      class: 'charts-clue charts-clue-column',
+      class: 'charts-clue charts-clue-column' + (runs.length ? '' : ' is-zero'),
       text: runs.length ? runs.join('\n') : '0',
     });
     columnClueNodes[column] = clue;
@@ -102,7 +103,7 @@ export async function renderCharts(root, store) {
   for (let row = 0; row < size; row += 1) {
     const runs = state.definition.clues.rows[row];
     const clue = element('div', {
-      class: 'charts-clue charts-clue-row',
+      class: 'charts-clue charts-clue-row' + (runs.length ? '' : ' is-zero'),
       text: runs.length ? runs.join(' ') : '0',
     });
     rowClueNodes[row] = clue;
@@ -146,7 +147,12 @@ export async function renderCharts(root, store) {
     if (!completed) void puzzleAudio.dispose();
   });
 
-  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, boardScroll, audioControls.element, shell.live);
+  // One plain line names the input next to the board, so play does not
+  // depend on opening How to play; audio follows it in the side column.
+  const legend = element('p', { class: 'game-board-legend', 'data-charts-legend': '',
+    text: 'Tap a cell to cycle it: blank, filled, marked ×. Filled runs must match the numbers.' });
+  const side = element('div', { class: 'game-side' }, legend, audioControls.element);
+  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, boardScroll, side, shell.live);
 
   // Build the size*size cell buttons (and their gridcell wrappers) once.
   // draw() below only ever patches attributes/classes/content on these same

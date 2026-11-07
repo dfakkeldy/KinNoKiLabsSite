@@ -26,7 +26,7 @@ func shakespeareCollectionMain() -> Node<HTML.BodyContext> {
             <h2 id="midsummer-card-title"><a href="/shakespeare/a-midsummer-nights-dream/">A Midsummer Night's Dream <span aria-hidden="true">→</span></a></h2>
             <p class="shakespeare-status">Edition complete · Release pending</p>
             <dl class="shakespeare-formats">
-              <div><dt>Status</dt><dd>No public releases yet</dd></div>
+              <div><dt>Available</dt><dd>No public releases yet</dd></div>
             </dl>
           </article>
         </div>
@@ -68,8 +68,7 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
             <h2 id="watch-title">Word Is Bond</h2>
             <p class="shakespeare-secondary">An anime music video told from Shylock's side.</p>
             <div class="shakespeare-action-row">
-              <a class="btn shakespeare-download" href="https://www.youtube.com/watch?v=ikYvGMdBV2E" target="_blank" rel="noopener noreferrer" aria-describedby="youtube-new-tab">Watch on YouTube <span aria-hidden="true">↗</span></a>
-              <p id="youtube-new-tab" class="shakespeare-small shakespeare-muted">Opens youtube.com in a new tab</p>
+              <a class="shakespeare-text-link" href="https://www.youtube.com/watch?v=ikYvGMdBV2E" target="_blank" rel="noopener noreferrer" aria-describedby="shakespeare-new-tab">Or watch on YouTube <span aria-hidden="true">↗</span></a>
             </div>
           </div>
           <figure class="shakespeare-film-panel">
@@ -94,8 +93,7 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
             <p class="shakespeare-secondary shakespeare-album-byline">An album by Dan Fakkeldy</p>
             <p>Original songs after Shakespeare's play, including “Word Is Bond”.</p>
             <div class="shakespeare-action-row">
-              <a class="btn shakespeare-suno" href="https://suno.com/playlist/2a02c169-de0a-43e5-a6de-6184c804920f" target="_blank" rel="noopener noreferrer" aria-describedby="suno-new-tab">Listen on Suno <span aria-hidden="true">↗</span></a>
-              <p id="suno-new-tab" class="shakespeare-small shakespeare-muted">Opens suno.com in a new tab</p>
+              <a class="btn shakespeare-suno" href="https://suno.com/playlist/2a02c169-de0a-43e5-a6de-6184c804920f" target="_blank" rel="noopener noreferrer" aria-describedby="shakespeare-new-tab">Listen on Suno <span aria-hidden="true">↗</span></a>
             </div>
           </div>
         </div>
@@ -185,7 +183,7 @@ func shakespeareMidsummerMain() -> Node<HTML.BodyContext> {
         <p class="eyebrow">Shakespeare · A KinNoKi Labs collection</p>
         <h1 id="shakespeare-title">A Midsummer Night's Dream</h1>
         <p class="shakespeare-byline">by William Shakespeare</p>
-        <p class="shakespeare-intro">The edition is complete. Public editions, audio and other media will appear here when they are released.</p>
+        <p class="shakespeare-intro">The edition is complete.</p>
       </header>
       <figure class="shakespeare-epigraph">
         <blockquote><p>If we shadows have offended,<br>Think but this, and all is mended,<br>That you have but slumber’d here<br>While these visions did appear.</p></blockquote>
