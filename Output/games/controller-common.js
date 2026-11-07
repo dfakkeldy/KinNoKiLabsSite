@@ -51,6 +51,21 @@ export function element(tag, attributes = {}, ...children) {
 // never reads layout. `rotation` is recorded as metadata (a data attribute)
 // for callers that want a rotation-aware hook in CSS or tests; it does not
 // re-derive cell coordinates.
+// Stack and Yard keep their play controls disabled outside active play. A
+// one-line caption names the button that unlocks them, so a row of dashed
+// (disabled) controls reads as "waiting for Start", not as broken.
+const GO_LABELS = Object.freeze({ start: 'Start', continue: 'Continue', resume: 'Resume' });
+export function syncControlsHint(view, { status, entryKind }) {
+  const hint = view?.controlsHint;
+  if (!hint) return;
+  const go = entryKind === 'continue' ? view.continueGame
+    : entryKind === 'resume' ? view.resume : view.start;
+  const waiting = status === 'preview' || status === 'paused';
+  hint.hidden = !waiting || !go || go.hidden || !GO_LABELS[entryKind];
+  hint.textContent = hint.hidden ? ''
+    : 'Press ' + GO_LABELS[entryKind] + ' to use these controls.';
+}
+
 export function cargoThumb(cells, { patternClass, rotation = 0 } = {}) {
   const columns = Math.max(...cells.map((cell) => cell.column)) + 1;
   const rows = Math.max(...cells.map((cell) => cell.row)) + 1;

@@ -15,7 +15,9 @@ export const TOOLS = Object.freeze([
 export function renderToolsHub(root) {
   const doc = root.ownerDocument ?? document;
   root.replaceChildren();
-  const cards = TOOLS.map((tool) => element('article', { class: 'tool-card', ownerDocument: doc },
+  // data-tool picks each card's glyph in styles.css (a CSS mask, so the
+  // markup stays text-only and the glyph follows the theme's gold).
+  const cards = TOOLS.map((tool) => element('article', { class: 'tool-card', 'data-tool': tool.id, ownerDocument: doc },
     element('h2', { ownerDocument: doc }, element('a', { href: tool.href, text: tool.title, ownerDocument: doc })),
     element('p', { text: tool.tagline, ownerDocument: doc })));
   root.append(
@@ -26,9 +28,9 @@ export function renderToolsHub(root) {
       element('div', { class: 'tool-connectivity-status', 'data-tool-connectivity': '', ownerDocument: doc })),
     element('div', { class: 'tool-hub-grid', ownerDocument: doc }, ...cards),
     element('p', { class: 'eyebrow tool-live-eyebrow', text: 'Live data', ownerDocument: doc }),
-    element('section', { class: 'tool-live-data', ownerDocument: doc },
+    element('section', { class: 'tool-live-data', 'data-tool': 'gas', ownerDocument: doc },
       element('h2', { ownerDocument: doc }, element('a', { href: '/gas/', text: 'Gas Price Watch', ownerDocument: doc })),
       element('p', { text: 'Official Nova Scotia gasoline prices and experimental rolling estimates.', ownerDocument: doc }),
-      element('span', { class: 'tool-online-chip', text: 'Connection needed for the latest data', ownerDocument: doc }))
+      element('span', { class: 'tool-online-chip', text: 'Latest prices need a connection', ownerDocument: doc }))
   );
 }

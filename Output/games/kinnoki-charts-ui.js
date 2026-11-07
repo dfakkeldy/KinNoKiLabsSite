@@ -110,7 +110,7 @@ export async function renderCharts(root, store) {
   }
   const board = element('div', {
     class: 'charts-board', role: 'grid', 'aria-label': `${state.definition.title} nonogram puzzle`,
-    'aria-rowcount': String(size), 'aria-colcount': String(size),
+    'aria-rowcount': String(size), 'aria-colcount': String(size), 'data-size': String(size),
   });
   const layout = element('div', { class: 'charts-layout' }, corner, columnsContainer, rowsContainer, board);
   layout.style.setProperty('--charts-size', String(size));
@@ -119,6 +119,9 @@ export async function renderCharts(root, store) {
   const hint = element('button', { type: 'button', 'data-hint': '', text: 'Hint' });
   const check = element('button', { type: 'button', 'data-check': '', text: 'Check' });
   controls.append(hint, check);
+  // Hint and Check sit in the layout's own grid, centred under the board
+  // rather than under the board plus its row-clue column.
+  layout.append(controls);
 
   // Effects-only audio: lazily started on the player's first gesture (a
   // click/keydown inside dispatch()), mirroring the sudoku controller so we
@@ -143,7 +146,7 @@ export async function renderCharts(root, store) {
     if (!completed) void puzzleAudio.dispose();
   });
 
-  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, boardScroll, controls, audioControls.element, shell.live);
+  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, boardScroll, audioControls.element, shell.live);
 
   // Build the size*size cell buttons (and their gridcell wrappers) once.
   // draw() below only ever patches attributes/classes/content on these same

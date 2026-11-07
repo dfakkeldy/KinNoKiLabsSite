@@ -18,6 +18,17 @@ const DEFAULT_TARGET = 2.5;
 const savedBase = (value) => BASE_NUMBERS.includes(value) ? value : DEFAULT_BASE;
 const savedTarget = (value) => Number.isFinite(value) && value >= 0 ? value : DEFAULT_TARGET;
 
+// Whole-number shares of the 60-click scale, in words, so the headline says
+// how far along the scale it lands. Other counts need no gloss.
+const SCALE_SHARES = Object.freeze(new Map([
+  [15, 'A quarter of the scale'],
+  [20, 'A third of the scale'],
+  [30, 'Half the scale'],
+  [40, 'Two thirds of the scale'],
+  [45, 'Three quarters of the scale'],
+  [60, 'The full scale'],
+]));
+
 export function renderClickCounterTool(root, deps = {}) {
   const doc = root.ownerDocument ?? document;
   const storage = deps.storage ?? safeLocalStorage();
@@ -31,7 +42,7 @@ export function renderClickCounterTool(root, deps = {}) {
 
   const body = toolShell(root, {
     title: 'Click Counter',
-    lede: 'Convert a target number into clicks on a 60-click scale.',
+    lede: 'Convert a target number into clicks on a scale of 60 clicks.',
   });
 
   const form = element('form', { class: 'tool-form click-counter', ownerDocument: doc });
@@ -72,8 +83,17 @@ export function renderClickCounterTool(root, deps = {}) {
     }
   };
 
+  const resetButton = element('button', {
+    class: 'tool-quiet', type: 'button', text: 'Reset', ownerDocument: doc,
+  });
+  // Reset only does something once the form has moved off its defaults.
+  const syncReset = () => {
+    resetButton.disabled = baseNumber === DEFAULT_BASE && parseDecimal(targetInput.value) === DEFAULT_TARGET;
+  };
+
   const showResult = ({ shouldAnnounce = false, shouldSave = false } = {}) => {
     copyStatus.replaceChildren();
+    syncReset();
     const parsedTarget = parseDecimal(targetInput.value);
     const clicks = parsedTarget === null ? null : countClicks(baseNumber, parsedTarget);
     if (clicks === null) {
@@ -99,7 +119,10 @@ export function renderClickCounterTool(root, deps = {}) {
       text: `${formatNumber(targetNumber, 6)} ÷ ${formatNumber(baseNumber, 6)} × 60`,
       ownerDocument: doc,
     });
-    result.replaceChildren(value, equation);
+    const share = SCALE_SHARES.get(clicks);
+    result.replaceChildren(value, ...(share ? [element('p', {
+      class: 'click-counter-share', text: share, ownerDocument: doc,
+    })] : []), equation);
     if (shouldSave) save();
     if (shouldAnnounce) announce(value.textContent);
   };
@@ -141,9 +164,6 @@ export function renderClickCounterTool(root, deps = {}) {
     }
   });
 
-  const resetButton = element('button', {
-    class: 'tool-quiet', type: 'button', text: 'Reset', ownerDocument: doc,
-  });
   resetButton.addEventListener('click', () => {
     baseNumber = DEFAULT_BASE;
     targetNumber = DEFAULT_TARGET;

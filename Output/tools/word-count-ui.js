@@ -2,10 +2,13 @@ import { createAnnouncer, element, toolShell } from './core.js';
 import { analyzeText, formatDuration } from './word-count.js';
 
 // The first two rows are the headline tiles; the rest are secondary counts.
+// With no words there is no reading time, so the time tiles show a dash
+// rather than claiming "under a minute".
+const readingTime = (result, minutes) => (result.words === 0 ? '—' : formatDuration(minutes));
 const STAT_ROWS = Object.freeze([
   ['Words', (result) => result.words],
-  ['Read aloud', (result) => formatDuration(result.aloudMinutes)],
-  ['Silent reading', (result) => formatDuration(result.silentMinutes)],
+  ['Read aloud', (result) => readingTime(result, result.aloudMinutes)],
+  ['Silent reading', (result) => readingTime(result, result.silentMinutes)],
   ['Characters', (result) => result.characters],
   ['Characters without spaces', (result) => result.charactersNoSpaces],
   ['Sentences', (result) => result.sentences],
@@ -27,7 +30,7 @@ export function renderWordCountTool(root, deps = {}) {
     name: 'text',
     class: 'tool-field',
     rows: '10',
-    placeholder: 'Paste or write text here.',
+    placeholder: 'Paste or write text here. Read-aloud time updates as you type.',
     ownerDocument: doc,
   });
   const clear = element('button', { type: 'button', class: 'tool-quiet', text: 'Clear', ownerDocument: doc });

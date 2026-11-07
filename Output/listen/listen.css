@@ -111,6 +111,7 @@ body.font-opendyslexic .room-bar .font-toggle {
   line-height: 1.45;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  text-wrap: balance;
 }
 /* The meta column reads eyebrow → title → subtitle → byline → series
    progress → edition note. The markup keeps the series context ahead of
@@ -125,20 +126,23 @@ body.font-opendyslexic .room-bar .font-toggle {
   color: var(--room-text-secondary);
   font-size: 12.5px;
 }
+/* Previous/next volume are plain underlined links, like the format links;
+   the left rule belongs to the edition note alone, so the two never read
+   as a pair of quotations. */
 .series-navigation {
   display: flex;
   align-self: flex-start;
-  gap: 8px;
+  gap: 16px;
   margin: 0 0 12px;
-  padding-left: 10px;
-  border-left: 2px solid var(--room-text-accent);
 }
 .book-series[hidden], .series-progress[hidden], .series-navigation[hidden],
 .series-link[hidden], .edition-status[hidden], .room-library[hidden] { display: none; }
 .series-link {
   color: var(--room-text-secondary);
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent);
   text-underline-offset: 3px;
 }
 .series-link:hover { color: var(--room-text-accent); }
@@ -316,6 +320,25 @@ body.font-opendyslexic .room-bar .font-toggle {
   flex: none;
 }
 .room-captions p.room-cue-hint[hidden], .room-main.started .room-captions p.room-cue-hint { display: none; }
+/* The pre-play preview: the chapter's opening sentence under its heading,
+   one tier quieter. Pointing at Play lights the first word, the way the
+   read-along will once it starts. Gone for good after the first play. */
+.room-captions .room-preview {
+  display: block;
+  margin-top: 12px;
+  color: var(--room-text-tertiary);
+  font-size: 0.8em;
+  font-weight: 400;
+  line-height: 1.6;
+}
+.room-main.started .room-captions .room-preview { display: none; }
+.room-main:not(.started):has(.room-play:hover, .room-play:focus-visible) .room-captions .room-preview .pw:first-child {
+  color: var(--text);
+  text-shadow: 0 0 18px color-mix(in srgb, var(--gold-300) 35%, transparent);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .room-captions .room-preview .pw { transition: color 0.25s var(--ease); }
+}
 /* While the idle title is on stage, the chapter label above it would only
    repeat it; it returns with playback, when it tracks the chapter. */
 .room-stage:has(.room-cue-hint:not([hidden])) .room-now { display: none; }
@@ -499,6 +522,9 @@ body.font-opendyslexic .room-bar .font-toggle {
 }
 .series-shelf h3 { margin: 0 0 4px; color: var(--text); font-size: 18px; letter-spacing: -0.01em; }
 .series-shelf-description { margin: 0; color: var(--room-text-secondary); font-size: 13.5px; line-height: 1.55; }
+/* The series count lives here, once: with a series shelf on the page the
+   rail's copy of it would only repeat this line. */
+.room-main:has(.series-shelf) .room-meta .series-progress { display: none; }
 .series-shelf-availability {
   margin: 5px 0 14px;
   color: var(--room-text-accent);
@@ -512,7 +538,10 @@ body.font-opendyslexic .room-bar .font-toggle {
 .room-library li {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-auto-rows: min-content;
+  /* Up to five text rows, then a flexible last row that holds the links,
+     so in a row of cards of different lengths every link row sits on the
+     same bottom edge. */
+  grid-template-rows: repeat(5, min-content) 1fr;
   align-content: start;
   row-gap: 3px;
   border: 1px solid var(--separator);
@@ -522,7 +551,8 @@ body.font-opendyslexic .room-bar .font-toggle {
 }
 .room-library li[aria-current="page"] {
   border-color: var(--room-text-accent);
-  background: var(--fill-2);
+  box-shadow: inset 0 0 0 1px var(--room-text-accent);
+  background: color-mix(in srgb, var(--gold-500) 6%, var(--surface));
 }
 .room-library li:has(> .room-lib-cover) {
   grid-template-columns: auto minmax(0, 1fr);
@@ -550,7 +580,14 @@ body.font-opendyslexic .room-bar .font-toggle {
 .room-library li .room-lib-title { color: var(--text); font-weight: 500; min-width: 0; }
 .room-library li .room-lib-subtitle { color: var(--room-text-secondary); font-size: 12.5px; line-height: 1.45; }
 .room-library li .room-lib-by { color: var(--room-text-tertiary); font-size: 12px; }
-.room-library li .room-lib-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px; align-self: end; justify-self: start; }
+.room-library li .room-lib-links { grid-row: -2 / -1; grid-column: -2 / -1; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px; align-self: end; justify-self: start; }
+/* The current volume's series card is a marker, not a second hero: the
+   stage already shows its subtitle and byline. */
+.series-volume-list li[aria-current="page"] :is(.room-lib-subtitle, .room-lib-by) { display: none; }
+@media (min-width: 760px) {
+  /* Bigger hit areas for the small desktop library links, same layout. */
+  .room-library li .room-lib-links a { padding-block: 6px; margin-block: -6px; }
+}
 .room-library li a { color: var(--room-text-secondary); font-size: 13px; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent); text-underline-offset: 3px; }
 .room-library li a.room-lib-listen {
   color: var(--room-text-accent);

@@ -14,7 +14,7 @@ import { createGameAudio } from './game-audio.js';
 import {
   cargoThumb, createAudioControls, createEventAnnouncer, createGameLifecycle,
   defaultSeedFactory, element, formatElapsed, makeGameTerminal,
-  prefersReducedMotion, renderGameError,
+  prefersReducedMotion, renderGameError, syncControlsHint,
 } from './controller-common.js';
 import { celebrate } from './celebration.js';
 import { safeLocalStorage } from './hub-ui.js';
@@ -152,7 +152,7 @@ function buildYardShell(root, model, audioControls) {
   const status = element('span', { 'data-yard-status': '', text: 'Ready' });
   const summary = element('span', { 'data-yard-summary': '', text: 'Preparing yard' });
   const rotation = element('span', {
-    'data-yard-rotation-state': '', text: 'Rotation 0°',
+    'data-yard-rotation-state': '', text: 'None selected',
   });
   const difficultyExplanation = element('p', {
     class: 'game-mode-note',
@@ -179,6 +179,9 @@ function buildYardShell(root, model, audioControls) {
     hint: mode === 'contracts' ? control('Hint', 'data-yard-hint') : null,
     pause: control('Pause', 'data-pause-game'),
   };
+  const controlsHint = element('p', {
+    class: 'game-controls-hint', 'data-controls-hint': '', text: '',
+  });
   const start = element('button', {
     type: 'button', 'data-start-game': '', text: 'Start',
   });
@@ -208,7 +211,7 @@ function buildYardShell(root, model, audioControls) {
     stat('Local record', record),
     stat('Record status', assisted),
     stat(mode === 'contracts' ? 'Contract' : 'Cargo Manifests', summary),
-    stat('Rotation', rotation));
+    stat('Selected piece', rotation));
   const help = element('details', { 'data-yard-keyboard-help': '' },
     element('summary', { text: 'Keyboard controls' }),
     element('p', {
@@ -238,7 +241,8 @@ function buildYardShell(root, model, audioControls) {
       element('div', { class: 'yard-board-column' },
         board.scroll, board.pan,
         element('div', { class: 'yard-controls' },
-          Object.values(controls).filter(Boolean))),
+          Object.values(controls).filter(Boolean)),
+        controlsHint),
       stats,
       help),
     audioControls.element);
@@ -248,7 +252,7 @@ function buildYardShell(root, model, audioControls) {
     ...selectors,
     ...board,
     timer, moves, score, record, assisted, status, summary, rotation,
-    difficultyExplanation, notice, eventRegion, tray, controls,
+    difficultyExplanation, notice, eventRegion, tray, controls, controlsHint,
     start, continueGame, resume, restart, newGame,
   };
 }
@@ -455,8 +459,13 @@ function paintYard(view, state, {
   const selected = selectedPiece(state);
   const selectedRotation = mode === 'contracts'
     ? state.selectedRotation : selected?.rotation ?? 0;
-  view.rotation.textContent = 'Rotation ' + ((selectedRotation % 4) * 90)
-    + '° · ' + (selected?.allowedRotations?.length ?? 0) + ' allowed';
+  // About the selected tray piece, not the Contract: a square has one
+  // orientation even on difficulties that allow every rotation.
+  const orientations = selected?.allowedRotations?.length ?? 0;
+  view.rotation.textContent = selected
+    ? 'Rotation ' + ((selectedRotation % 4) * 90) + '° · ' + orientations
+      + (orientations === 1 ? ' orientation' : ' orientations')
+    : 'None selected';
 
   const hintPlacement = state.hint?.status === 'solved' ? state.hint.placement : null;
   const hintKeys = contractHintKeys(state);
@@ -519,6 +528,7 @@ function paintYard(view, state, {
   view.continueGame.textContent = 'Continue ' + modeLabel(mode)
     + ' · ' + titleCase(difficulty);
   view.newGame.textContent = mode === 'contracts' ? 'New Puzzle' : 'New Yard';
+  syncControlsHint(view, { status: state.status, entryKind });
 }
 class YardPersistence {
   constructor({ storage, store, wallNow }) {

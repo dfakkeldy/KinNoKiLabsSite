@@ -193,7 +193,9 @@ export function renderQrTool(root, deps = {}) {
     id: 'qr-level', name: 'level', 'aria-describedby': 'qr-level-hint', ownerDocument: doc,
   }, ...LEVELS.map((value) => option(doc, value)));
   levelSelect.value = level;
-  const stage = element('div', { class: 'qr-stage', ownerDocument: doc });
+  // The empty stage shows the hint itself on phones (styles.css reads the
+  // attribute), so it stays a childless placeholder until there is a code.
+  const stage = element('div', { class: 'qr-stage', 'data-empty-hint': EMPTY_HINT, ownerDocument: doc });
   const status = element('div', { class: 'qr-status', ownerDocument: doc });
   const actionStatus = element('div', { class: 'qr-action-status', ownerDocument: doc });
   const downloadSvg = element('button', {
