@@ -43,7 +43,8 @@ test('mounts synchronized labelled colour fields, five WCAG verdicts, and both p
   const fields = fixture.root.querySelectorAll('.tool-field');
   assert.equal(fields.length, 2);
   assert.match(fixture.root.querySelector('label').textContent, /foreground/i);
-  assert.ok(fixture.root.querySelectorAll('label').some((label) => /suggestion target/i.test(label.textContent)));
+  // The default pair passes every check, so there is nothing to suggest yet.
+  assert.equal(fixture.root.querySelector('.contrast-suggestion'), null);
 
   const foreground = fieldInput(fixture.root, 'foreground');
   const foregroundColour = fieldInput(fixture.root, 'foregroundColor');
@@ -55,6 +56,7 @@ test('mounts synchronized labelled colour fields, five WCAG verdicts, and both p
   assert.equal(foregroundColour.value, '#ffffff');
   setInput(fixture.root, 'foregroundColor', '#123456');
   assert.equal(foreground.value, '#123456');
+  assert.ok(fixture.root.querySelectorAll('label').some((label) => /suggest a fix to reach/i.test(label.textContent)));
 
   const ratio = contrastRatio('#123456', '#0b0b0c');
   const result = fixture.root.querySelector('.tool-result-strong');

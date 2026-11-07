@@ -13,6 +13,7 @@ const messages = {
   official_pending: "Waiting for this Friday's official order before estimating the following week. Estimates and watch are hidden.",
   invalid_estimate: 'The estimate could not be validated. Estimates and watch are hidden; the last verified official order is shown below.',
 };
+const WITHHELD_POINTER = 'Withheld for now. The notice at the top of the page says why.';
 const modeLabels = { complete: 'All quotes observed', provisional: 'Some quotes assumed', extrapolation: 'Outside training range' };
 const count = (value) => Number.isInteger(value) && value >= 0 ? String(value) : 'Unavailable';
 
@@ -90,10 +91,15 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
   function estimateCard(view) {
     const card = el('article', 'gas-card gas-card-estimate');
     const top = el('div', 'gas-card-top');
-    top.append(el('h2', '', 'Conditional Friday estimate'), el('span', 'gas-badge', 'Experimental')); card.append(top);
     const estimate = view.estimate; const price = selected(estimate?.zones);
+    // The Experimental badge describes a live estimate; a withheld card
+    // carries only the explanation.
+    top.append(el('h2', '', 'Conditional Friday estimate')); if (price) top.append(el('span', 'gas-badge', 'Experimental')); card.append(top);
     if (!price) {
-      card.append(el('p', 'gas-empty', 'Estimate withheld'), el('p', 'gas-card-note', view.reason ? messages[view.reason] : 'Waiting for enough verified data to issue an estimate.'),
+      // The full reason is printed once, in the notice at the top of the
+      // page; the card points to it instead of repeating it.
+      if (view.reason) card.append(el('p', 'gas-empty', 'Estimate withheld'), el('p', 'gas-card-note', WITHHELD_POINTER));
+      else card.append(el('p', 'gas-empty', 'Estimate withheld'), el('p', 'gas-card-note', 'Waiting for enough verified data to issue an estimate.'),
         el('p', 'gas-card-note', 'A fresh official order and recent source check are required.'));
       return card;
     }
@@ -152,9 +158,9 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
   function watchSection(view) {
     const node = el('section', 'gas-watch');
     const heading = el('div', 'gas-watch-heading');
-    heading.append(el('h2', 'section-title', 'Interrupter watch'), el('span', 'gas-badge', 'Experimental')); node.append(heading);
     const watch = view.watch;
-    if (!watch) node.append(el('p', 'gas-watch-status', 'Watch withheld'), el('p', 'gas-watch-description', view.reason ? messages[view.reason] : 'No verified quote signal is available.'));
+    heading.append(el('h2', 'section-title', 'Interrupter watch')); if (watch) heading.append(el('span', 'gas-badge', 'Experimental')); node.append(heading);
+    if (!watch) node.append(el('p', 'gas-watch-status', 'Watch withheld'), el('p', 'gas-watch-description', view.reason ? WITHHELD_POINTER : 'No verified quote signal is available.'));
     else {
       const labels = { below_reference: `Below the ${formatCents(watch.reference_cents)} reference`, single_quote_move: 'One quote crosses the reference', sustained_proxy_move: 'Sustained quote move across the reference', waiting_for_quotes: 'Waiting for real quotes', unavailable: 'Quote signal unavailable' };
       node.append(el('p', 'gas-watch-status', labels[watch.status]));
@@ -257,6 +263,7 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
     feedStatus.setAttribute('data-state', view.reason || source !== 'live' ? 'withheld' : 'fresh');
     const summary = el('section', 'gas-summary', null, { 'aria-label': `Zone ${zone} regular self-service gasoline prices` });
     const prices = el('div', 'gas-price-grid'); prices.append(currentCard(view), estimateCard(view));
+    if (!selected(view.estimate?.zones)) prices.classList.add('is-withheld');
     summary.append(prices, allZones(view));
     const keepComparisonFocus = document.activeElement?.id === 'gas-comparison-issue';
     content.replaceChildren(summary, ledgerSection(at), performanceSection(), watchSection(view), sourcesSection());

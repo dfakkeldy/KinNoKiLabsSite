@@ -67,4 +67,10 @@ If you choose to email support, we receive your email address and the content yo
 
 You can remove local content using Echo's controls, disable optional permissions in system Settings, remove an AI token, disconnect Audiobookshelf, and choose what to export or share. Copies in backups, exports, public alignment records and external services have separate handling. We do not promise a single deletion deadline for all of them.
 
-For privacy questions or requests, contact [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com). Echo support is available at [echo@kinnokilabs.com](mailto:echo@kinnokilabs.com). Mail sent to these KinNoKi support and privacy addresses is routed through Apple iCloud Mail, subject to [Apple's privacy policy](https://www.apple.com/legal/privacy/en-ww/).
+- **Privacy questions or requests:** [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com)
+- **Echo support:** [echo@kinnokilabs.com](mailto:echo@kinnokilabs.com)
+
+Mail sent to these KinNoKi support and privacy addresses is routed through Apple iCloud Mail, subject to [Apple's privacy policy](https://www.apple.com/legal/privacy/en-ww/).
+
+---
+[Echo](/apps/echo) | [Help & Support](/echo-help) | [User Manual](/echo-manual) | [Site privacy](/privacy/)

@@ -221,6 +221,33 @@ private func withoutSourceReminder(_ text: String) -> String {
     return text
 }
 
+/// Frontmatter prose may carry an ISO day ("at review time on 2026-07-24").
+/// The page shows every date in one long form ("July 24, 2026"), which also
+/// keeps a phone from breaking the date at its hyphen. The frontmatter keeps
+/// the ISO value.
+private let isoDayPattern = try! NSRegularExpression(pattern: #"\b(\d{4})-(\d{2})-(\d{2})\b"#)
+private let isoDayParser = halifaxFormatter("yyyy-MM-dd")
+
+private func withLongFormDays(_ text: String) -> String {
+    let source = text as NSString
+    var result = ""
+    var cursor = 0
+    for match in isoDayPattern.matches(in: text, range: NSRange(location: 0, length: source.length)) {
+        let iso = source.substring(with: match.range)
+        guard let date = isoDayParser.date(from: iso) else { continue }
+        result += source.substring(with: NSRange(location: cursor, length: match.range.location - cursor))
+        result += formattedDate(date)
+        cursor = match.range.location + match.range.length
+    }
+    result += source.substring(from: cursor)
+    return result
+}
+
+/// A long fact row as the page shows it: no trailing reminder, long-form days.
+private func displayFact(_ text: String) -> String {
+    withLongFormDays(withoutSourceReminder(text))
+}
+
 private let tenderRequestHref =
     "mailto:hello@kinnokilabs.com"
     + "?subject=Free%20Custom%20Tender%20Preview%20Request"
@@ -245,8 +272,8 @@ private func factGrid(for record: TenderRecord) -> Node<HTML.BodyContext> {
             .div(.dt(.text("Delivery region")), .dd(.text(record.deliveryRegion)))),
         .div(.dt(.text("Published")), .dd(timeNode(record.publishedAt, formattedDateTime(record.publishedAt)))),
         .div(.dt(.text("Closing")), .dd(timeNode(record.closingAt, formattedDateTime(record.closingAt)))),
-        .div(.class("tender-fact-long"), .dt(.text("Document access")), .dd(.text(withoutSourceReminder(record.documentAccess)))),
-        .div(.class("tender-fact-long"), .dt(.text("Addenda status")), .dd(.text(withoutSourceReminder(record.addendaStatus))))
+        .div(.class("tender-fact-long"), .dt(.text("Document access")), .dd(.text(displayFact(record.documentAccess)))),
+        .div(.class("tender-fact-long"), .dt(.text("Addenda status")), .dd(.text(displayFact(record.addendaStatus))))
     )
 }
 

@@ -48,8 +48,22 @@ const numericInput = (doc, { id, name, label, value = '', placeholder, onInput, 
     extra ? element('div', { class: 'tool-inline', ownerDocument: doc }, input, extra) : input);
 };
 
-const resultDisplay = (doc, announce, emptyText) => {
-  const result = element('p', { class: 'tool-result tool-result-empty', text: emptyText, ownerDocument: doc });
+// The empty answer previews its own shape ("Mix — ml … + — ml water") above
+// the instruction, so the slot shows what will appear. The dashes are visual
+// only; screen readers get the instruction.
+const emptyResult = (doc, shape, hint) => element('p', { class: 'tool-result tool-result-empty', ownerDocument: doc },
+  element('span', { class: 'tool-result-shape', 'aria-hidden': 'true', ownerDocument: doc },
+    ...shape.map((part) => (part === null
+      ? element('strong', { text: '— ml', ownerDocument: doc })
+      : element('span', { text: part, ownerDocument: doc })))),
+  element('span', { class: 'tool-result-hint', text: hint, ownerDocument: doc }));
+
+const STOCK_SHAPE = Object.freeze(['Mix ', null, ' stock solution + ', null, ' water']);
+const MIX_SHAPE = Object.freeze(['Mix ', null, ' concentrate + ', null, ' water']);
+const DOSE_SHAPE = Object.freeze(['Add ', null, ' of feed']);
+
+const resultDisplay = (doc, announce, shape, hint) => {
+  const result = emptyResult(doc, shape, hint);
   const error = (code) => {
     const text = ERROR_COPY[code] ?? ERROR_COPY.invalid;
     result.setAttribute('class', 'tool-error');
@@ -109,7 +123,7 @@ export function renderDilutionTool(root, deps = {}) {
 
   const renderGeneral = () => {
     const form = element('form', { class: 'tool-form', ownerDocument: doc });
-    const display = resultDisplay(doc, announce, 'Fill in all three to see how much concentrate and water to mix.');
+    const display = resultDisplay(doc, announce, STOCK_SHAPE, 'Fill in all three to see how much stock and water to mix.');
     const values = { stockPercent: '', targetPercent: '', totalMl: '' };
     const calculate = () => {
       const result = computeGeneral({
@@ -136,7 +150,7 @@ export function renderDilutionTool(root, deps = {}) {
 
   const renderRatio = () => {
     const form = element('form', { class: 'tool-form', ownerDocument: doc });
-    const display = resultDisplay(doc, announce, 'Pick a ratio and a bottle size to see the mix.');
+    const display = resultDisplay(doc, announce, MIX_SHAPE, 'Pick a ratio and a bottle size to see the mix.');
     const ratioPrefs = toolPrefs(prefs, 'dilution');
     const values = {
       parts: ratioPrefs.ratioParts == null ? '' : String(ratioPrefs.ratioParts),
@@ -194,7 +208,7 @@ export function renderDilutionTool(root, deps = {}) {
 
   const renderDose = () => {
     const form = element('form', { class: 'tool-form', ownerDocument: doc });
-    const display = resultDisplay(doc, announce, 'Enter the feed dose and water volume to see how much feed to add.');
+    const display = resultDisplay(doc, announce, DOSE_SHAPE, 'Enter the feed dose and water volume to see how much feed to add.');
     const dosePrefs = toolPrefs(prefs, 'dilution');
     const values = {
       dosePerL: '',
@@ -253,7 +267,7 @@ export function renderDilutionTool(root, deps = {}) {
   };
 
   const render = () => {
-    const tabs = element('div', { class: 'tool-tabs', ownerDocument: doc }, ...MODES.map(({ id, label }) => {
+    const tabs = element('div', { class: 'tool-tabs', role: 'group', 'aria-label': 'Calculator', ownerDocument: doc }, ...MODES.map(({ id, label }) => {
       const tab = element('button', {
         type: 'button', class: `tool-tab${mode === id ? ' is-active' : ''}`, text: label,
         'aria-pressed': String(mode === id), ownerDocument: doc,

@@ -37,6 +37,10 @@ const SEPARATORS = Object.freeze([
   Object.freeze({ value: '.', label: 'Period (.)' }),
 ]);
 
+const SEPARATOR_WORDS = Object.freeze({
+  '-': 'hyphens', ' ': 'spaces', _: 'underscores', '.': 'periods',
+});
+
 const isWordCount = (value) => Number.isInteger(value) && value >= 3 && value <= 8;
 const isLength = (value) => Number.isInteger(value) && value >= 1 && value <= 1024;
 const isSeparator = (value) => SEPARATORS.some(({ value: option }) => option === value);
@@ -143,11 +147,43 @@ export function renderPassphraseTool(root, deps = {}) {
     announce(text);
   };
 
-  const resultArea = (kind) => element('div', {
-    class: 'passphrase-result', ownerDocument: doc,
-  }, element('p', {
-    class: 'passphrase-placeholder', text: `Your ${kind} will appear here.`, ownerDocument: doc,
-  }));
+  // Before the first Generate the slot describes what the current options
+  // will make, so every option shows its effect. Nothing is generated until
+  // asked; after that, changing an option rolls a fresh value.
+  const resultArea = (describe) => {
+    const placeholder = element('p', { class: 'passphrase-placeholder', ownerDocument: doc });
+    const container = element('div', { class: 'passphrase-result', ownerDocument: doc }, placeholder);
+    const refresh = () => { placeholder.textContent = describe(); };
+    refresh();
+    return { container, refresh };
+  };
+
+  const describePassphrase = () => {
+    const extras = [values.capitalize ? 'capitalized' : null, values.includeNumber ? 'with a number' : null]
+      .filter(Boolean).join(', ');
+    return `Press Generate for ${values.words} words joined with ${SEPARATOR_WORDS[values.separator] ?? 'a separator'}${extras ? `, ${extras}` : ''}.`;
+  };
+
+  const describeString = () => {
+    const sets = [
+      values.lower ? 'lowercase' : null, values.upper ? 'uppercase' : null,
+      values.digits ? 'digits' : null, values.symbols ? 'symbols' : null,
+    ].filter(Boolean);
+    if (sets.length === 0) return 'Choose at least one character set below.';
+    const list = sets.length === 1 ? sets[0] : `${sets.slice(0, -1).join(', ')} and ${sets.at(-1)}`;
+    return `Press Generate for ${values.length} characters of ${list}.`;
+  };
+
+  const optionFlow = (run, area) => {
+    let generated = false;
+    return {
+      generate: () => { generated = true; run(); },
+      changed: () => {
+        save();
+        if (generated) run(); else area.refresh();
+      },
+    };
+  };
 
   const labelledField = (id, label, control) => element('div', { class: 'tool-field', ownerDocument: doc },
     element('label', { for: id, text: label, ownerDocument: doc }), control);
@@ -160,18 +196,18 @@ export function renderPassphraseTool(root, deps = {}) {
     words.value = String(values.words);
     words.addEventListener('change', (event) => {
       values.words = Number(event.currentTarget.value);
-      save();
+      flow.changed();
     });
     const separator = element('select', { id: 'passphrase-separator', name: 'separator', ownerDocument: doc },
       ...SEPARATORS.map(({ value, label }) => option(doc, value, label)));
     separator.value = values.separator;
     separator.addEventListener('change', (event) => {
       values.separator = event.currentTarget.value;
-      save();
+      flow.changed();
     });
-    const results = resultArea('passphrase');
-    const generate = element('button', { type: 'button', class: 'tool-primary', text: 'Generate', ownerDocument: doc });
-    generate.addEventListener('click', () => {
+    const area = resultArea(describePassphrase);
+    const results = area.container;
+    const flow = optionFlow(() => {
       try {
         renderResult(results, generatePassphraseFn({
           words: values.words,
@@ -182,7 +218,9 @@ export function renderPassphraseTool(root, deps = {}) {
       } catch {
         renderError(results);
       }
-    });
+    }, area);
+    const generate = element('button', { type: 'button', class: 'tool-primary', text: 'Generate', ownerDocument: doc });
+    generate.addEventListener('click', flow.generate);
     form.append(
       results,
       element('div', { class: 'tool-actions', ownerDocument: doc }, generate),
@@ -191,11 +229,11 @@ export function renderPassphraseTool(root, deps = {}) {
         labelledField('passphrase-separator', 'Separator', separator),
         checkbox(doc, {
           name: 'capitalize', label: 'Capitalize words', checked: values.capitalize,
-          onChange: (event) => { values.capitalize = event.currentTarget.checked; save(); },
+          onChange: (event) => { values.capitalize = event.currentTarget.checked; flow.changed(); },
         }),
         checkbox(doc, {
           name: 'includeNumber', label: 'Include a number', checked: values.includeNumber,
-          onChange: (event) => { values.includeNumber = event.currentTarget.checked; save(); },
+          onChange: (event) => { values.includeNumber = event.currentTarget.checked; flow.changed(); },
         })),
       element('p', { class: 'tool-muted', text: 'Wordlist: EFF large wordlist (CC BY 3.0)', ownerDocument: doc }),
     );
@@ -211,11 +249,11 @@ export function renderPassphraseTool(root, deps = {}) {
     length.value = String(values.length);
     length.addEventListener('change', (event) => {
       values.length = Number(event.currentTarget.value);
-      save();
+      flow.changed();
     });
-    const results = resultArea('random string');
-    const generate = element('button', { type: 'button', class: 'tool-primary', text: 'Generate', ownerDocument: doc });
-    generate.addEventListener('click', () => {
+    const area = resultArea(describeString);
+    const results = area.container;
+    const flow = optionFlow(() => {
       try {
         renderResult(results, generateStringFn({
           length: values.length,
@@ -227,7 +265,9 @@ export function renderPassphraseTool(root, deps = {}) {
       } catch {
         renderError(results);
       }
-    });
+    }, area);
+    const generate = element('button', { type: 'button', class: 'tool-primary', text: 'Generate', ownerDocument: doc });
+    generate.addEventListener('click', flow.generate);
     form.append(
       results,
       element('div', { class: 'tool-actions', ownerDocument: doc }, generate),
@@ -235,26 +275,26 @@ export function renderPassphraseTool(root, deps = {}) {
         labelledField('passphrase-length', 'Length', length),
         checkbox(doc, {
           name: 'lower', label: 'Lowercase letters', checked: values.lower,
-          onChange: (event) => { values.lower = event.currentTarget.checked; save(); },
+          onChange: (event) => { values.lower = event.currentTarget.checked; flow.changed(); },
         }),
         checkbox(doc, {
           name: 'upper', label: 'Uppercase letters', checked: values.upper,
-          onChange: (event) => { values.upper = event.currentTarget.checked; save(); },
+          onChange: (event) => { values.upper = event.currentTarget.checked; flow.changed(); },
         }),
         checkbox(doc, {
           name: 'digits', label: 'Digits', checked: values.digits,
-          onChange: (event) => { values.digits = event.currentTarget.checked; save(); },
+          onChange: (event) => { values.digits = event.currentTarget.checked; flow.changed(); },
         }),
         checkbox(doc, {
           name: 'symbols', label: 'Symbols', checked: values.symbols,
-          onChange: (event) => { values.symbols = event.currentTarget.checked; save(); },
+          onChange: (event) => { values.symbols = event.currentTarget.checked; flow.changed(); },
         })),
     );
     return form;
   };
 
   const render = () => {
-    const tabs = element('div', { class: 'tool-tabs', ownerDocument: doc }, ...MODES.map(({ id, label }) => {
+    const tabs = element('div', { class: 'tool-tabs', role: 'group', 'aria-label': 'What to generate', ownerDocument: doc }, ...MODES.map(({ id, label }) => {
       const tab = element('button', {
         type: 'button', class: `tool-tab${values.mode === id ? ' is-active' : ''}`, text: label,
         'aria-pressed': String(values.mode === id), ownerDocument: doc,

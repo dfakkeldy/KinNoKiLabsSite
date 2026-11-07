@@ -22,7 +22,7 @@ Echo does not bypass DRM and cannot play protected Audible/Apple Books titles. T
 
 ### Loading your first book
 
-1. Put the audiobook in a folder — one folder per book is the happy path ([section 2](#2-organizing-your-library) has the full convention). iCloud Drive, "On My iPhone," third-party file providers: all work.
+1. Put the audiobook in a folder — one folder per book is the happy path ([section 2, Organizing Your Library](#2-organizing-your-library) has the full convention). iCloud Drive, "On My iPhone," third-party file providers: all work.
 2. In Echo, choose **Load Folder** and select the book's folder.
 3. Echo scans the folder, builds the chapter list, finds the cover art (embedded, or a `cover.*` image in the folder), and picks up any EPUB or PDF sitting alongside the audio for automatic import.
 4. Press play.
@@ -46,8 +46,10 @@ iCloud Drive/
 └── Audiobooks/
     ├── Thinking, Fast and Slow/
     │   ├── Thinking Fast and Slow.m4b
-    │   ├── Thinking Fast and Slow.epub   ← auto-imported
-    │   └── cover.jpg                     ← optional if art is embedded
+    │   ├── Thinking Fast and Slow.epub
+    │   │   ↑ auto-imported
+    │   └── cover.jpg
+    │       ↑ optional if art is embedded
     ├── Project Hail Mary/
     │   ├── 01 - Chapter 1.mp3
     │   ├── 02 - Chapter 2.mp3
@@ -59,7 +61,7 @@ iCloud Drive/
 - **One parent folder** ("Audiobooks") holds everything: one place to look, one place to back up, one place to point Echo at.
 - **One folder per book**, named by the book title — human-readable ("Project Hail Mary", not `PHM_64kbps_final2`).
 - **Companion text goes in the same folder.** Drop the `.epub` or `.pdf` next to the audio and Echo's auto-import scanner picks it up. One EPUB per book folder.
-- **An Archive subfolder** keeps finished books out of your active view without deleting anything. Export your study notes first ([section 16](#16-exports-your-data)).
+- **An Archive subfolder** keeps finished books out of your active view without deleting anything. Export your study notes first ([section 16, Exports & Your Data](#16-exports-your-data)).
 
 ### File naming that sorts correctly
 
@@ -81,7 +83,7 @@ iCloud Drive/
 ### What lives where
 
 - **Audio, EPUB, PDF files:** your folder, wherever you put it. Echo reads in place and never modifies your files.
-- **Bookmarks, flashcards, notes, alignment, progress:** Echo's local database on the device. Complete private synchronization is not promised in this release; see [section 22](#22-sync-icloud) for file providers, selected Watch transfers and optional public lookup.
+- **Bookmarks, flashcards, notes, alignment, progress:** Echo's local database on the device. Complete private synchronization is not promised in this release; see [section 22, Sync & iCloud](#22-sync-icloud) for file providers, selected Watch transfers and optional public lookup.
 - **Playlist order edits:** Echo's database *plus* a small portable manifest file in the book's folder, so ordering travels with the folder.
 - **Voice memos & bookmark photos:** Echo's app storage on the device.
 
@@ -167,8 +169,8 @@ As playback passes a photo bookmark, the player artwork switches to your photo (
 ### Managing bookmarks
 
 - Bookmarks group under their book, sortable and editable (rename, retime, re-record, swap photo).
-- **Loop between bookmarks** uses them as loop fences ([section 6](#6-loop-modes)).
-- **Export to Markdown:** timestamps, notes, and deep links that reopen Echo at the exact second ([section 16](#16-exports-your-data)).
+- **Loop between bookmarks** uses them as loop fences ([section 6, Loop Modes](#6-loop-modes)).
+- **Export to Markdown:** timestamps, notes, and deep links that reopen Echo at the exact second ([section 16, Exports & Your Data](#16-exports-your-data)).
 - Every bookmark can be promoted to a **flashcard** in one tap.
 
 ## 9. The Study System (Flashcards & Review)
@@ -242,7 +244,7 @@ Bookmarks pin thoughts to a *moment*; flashcards pin them to a *question*. Book 
 - Each book has a **Book Notes** view — newest first, text and voice entries together, inline playback for memos, swipe to delete.
 - **Promote** any note: → *bookmark* (pinned at its capture position) or → *flashcard* (opens the card editor pre-filled).
 - Entry points: a note icon with a count on the book's Timeline toolbar, and a dashboard module when anything's waiting.
-- Notes appear in the Timeline feed and join the study-notes export ([section 16](#16-exports-your-data)).
+- Notes appear in the Timeline feed and join the study-notes export ([section 16, Exports & Your Data](#16-exports-your-data)).
 
 ## 11. The Reader: EPUB
 
@@ -318,7 +320,7 @@ Echo's position on your data: it's yours, in formats you can read, forever. The 
 - **Bookmarks → Markdown** (available today): a book's bookmarks with timestamps, notes, and deep links that reopen Echo at the exact second.
 - **Study Notes bundle**: the whole second brain, per book — one Markdown file (bookmarks, Book Notes, flashcard fronts/backs, chapter headings, place names) plus an assets folder with your voice memos and photos. Obsidian/Logseq/Notion-ready: plain files, relative links, no account. Per book, or bulk-export in Settings.
 - **Deck → JSON** (🚧 **Coming in 1.0**): any deck (or all cards) as a portable file with every field including scheduling state; Echo re-imports its own exports losslessly — backup and device-migration in one.
-- **Anki .apkg import** (🚧 **Coming in 1.0**): inbound — see [section 9](#9-the-study-system-flashcards-review). (.apkg *export* is on the roadmap; JSON export covers backup until then.)
+- **Anki .apkg import** (🚧 **Coming in 1.0**): inbound — see [section 9, The Study System](#9-the-study-system-flashcards-review). (.apkg *export* is on the roadmap; JSON export covers backup until then.)
 
 ## 17. The Playlist & Timeline
 
@@ -418,7 +420,7 @@ Optional — the iOS app's built-in alignment needs none of this.
 
 - Core owned-file playback and reading do not require an Echo account. Local narration and alignment can run on-device with their required files and models present.
 - External AI is optional and sends book text to the configured provider under that provider's retention and training policies. Audiobookshelf uses the server and account you connect, including listening-progress exchange. Model downloads, public alignment lookup and website capture also use a network connection.
-- This release does not expose public-alignment uploads. Optional lookup and the limits for past uploads are described in [section 22](#22-sync-icloud) and the [Echo Privacy Policy](/echo-privacy/).
+- This release does not expose public-alignment uploads. Optional lookup and the limits for past uploads are described in [section 22, Sync & iCloud](#22-sync-icloud) and the [Echo Privacy Policy](/echo-privacy/).
 - Context Memory is optional and off by default. The device may supply a precise fix; coordinates are rounded before Apple's geocoding request. Local deletion does not erase providers' records or backups.
 - Local media, selected Watch transfers, user-chosen exports and backups have separate handling. Support emails are retained indefinitely, and there is no support-email deletion system. See the [Echo Privacy Policy](/echo-privacy/) for these choices and limits.
 - The app is **open source (GPL-3.0)**: [github.com/dfakkeldy/Echo](https://github.com/dfakkeldy/Echo).
@@ -426,7 +428,7 @@ Optional — the iOS app's built-in alignment needs none of this.
 ## 26. Troubleshooting & FAQ
 
 **My book won't play / chapters are missing.**
-Nine times out of ten this is iCloud eviction: the files show a cloud icon and aren't on the device. Long-press the folder in Files → **Keep Downloaded** ([section 2](#2-organizing-your-library)). For multi-file books, confirm the files sort correctly by name — or drag-reorder in the playlist.
+Nine times out of ten this is iCloud eviction: the files show a cloud icon and aren't on the device. Long-press the folder in Files → **Keep Downloaded** ([section 2, Organizing Your Library](#2-organizing-your-library)). For multi-file books, confirm the files sort correctly by name — or drag-reorder in the playlist.
 
 **How should I organize my audiobook and EPUB files?**
 One parent "Audiobooks" folder; one folder per book; the EPUB or PDF in the same folder as the audio; zero-padded track numbers. iCloud Drive for cross-device, "On My iPhone" for always-local. Section 2 has the full guide.
@@ -447,7 +449,7 @@ The first run downloads the on-device speech model (~40 MB) and transcription is
 JSON decks import today. Real `.apkg` files — scheduling history included — arrive with 1.0. Newest-format decks: re-export from Anki with *"Support older Anki versions"* checked. Cloze cards flatten to plain Q&A in v1.
 
 **Can I get my flashcards and notes back out?**
-Yes — that's policy. Bookmarks and full study-notes bundles export to Markdown today, ready for Obsidian/Logseq/Notion. Portable JSON deck export is coming with 1.0. The schema is open source; your data is never hostage. See [section 16](#16-exports-your-data).
+Yes — that's policy. Bookmarks and full study-notes bundles export to Markdown today, ready for Obsidian/Logseq/Notion. Portable JSON deck export is coming with 1.0. The schema is open source; your data is never hostage. See [section 16, Exports & Your Data](#16-exports-your-data).
 
 **Will flashcards interrupt my listening?**
 No. Mid-playback popups are retired: one tap marks a passage into the Card Inbox without pausing, and reviews happen in Daily Review.
@@ -456,13 +458,13 @@ No. Mid-playback popups are retired: one tap marks a passage into the Card Inbox
 A **bookmark** is a *moment* (timestamp, optionally with memo/photo/place). A **note** (🚧) is an *untethered thought* — the brain-dump. A **flashcard** is a *question* you want to keep answering. Notes and bookmarks both promote into flashcards — capture cheap first, decide later.
 
 **Will my flashcards and bookmarks sync between my devices?**
-Alignment anchors sync today; full study sync — cards, decks, bookmarks, playback position — ships in 1.0 through your personal iCloud. See [section 22](#22-sync-icloud).
+Alignment anchors sync today; full study sync — cards, decks, bookmarks, playback position — ships in 1.0 through your personal iCloud. See [section 22, Sync & iCloud](#22-sync-icloud).
 
 **The watch shows a stale book or position.**
 Raise the watch and give it a beat — it requests authoritative state from the phone on wake. Both devices on, nearby, helps.
 
 **Is the location feature tracking me?**
-Context Memory is optional and off by default. With permission, the device can provide a precise fix; Echo rounds coordinates before asking Apple's geocoder for a place name and stores the resulting context locally. Delete Context Memory removes the app's local context records, not providers' records or backups. See [section 15](#15-context-memory-location) and the [Echo Privacy Policy](/echo-privacy/).
+Context Memory is optional and off by default. With permission, the device can provide a precise fix; Echo rounds coordinates before asking Apple's geocoder for a place name and stores the resulting context locally. Delete Context Memory removes the app's local context records, not providers' records or backups. See [section 15, Context Memory](#15-context-memory-location) and the [Echo Privacy Policy](/echo-privacy/).
 
 **Does Echo use AI? Does anything leave my device?**
 Local narration and alignment use on-device models. Optional external-AI features send book text to the provider you configure, under that provider's policies. They are separate from local processing and do not make the same retention promise. The current release does not expose public-alignment uploads; conditional lookup with local fallback remains. See the [Echo Privacy Policy](/echo-privacy/).
@@ -471,7 +473,7 @@ Local narration and alignment use on-device models. Optional external-AI feature
 The honest shortlist: Chapter Study Mode, gentle hyperfocus/transition reminders, a Context Memory map view, .apkg export, CarPlay, full Mac reader parity. The [roadmap](https://github.com/dfakkeldy/Echo/blob/main/ROADMAP.md) is public, like everything else.
 
 **Where are my files? Can I get my data out?**
-Your audio stays where you put it (Echo reads in place and never modifies your files). Echo's own data lives in a local database with an open-source schema; everything exports ([section 16](#16-exports-your-data)). Deleting the app deletes Echo's database — your audio folder is untouched.
+Your audio stays where you put it (Echo reads in place and never modifies your files). Echo's own data lives in a local database with an open-source schema; everything exports ([section 16, Exports & Your Data](#16-exports-your-data)). Deleting the app deletes Echo's database — your audio folder is untouched.
 
 ---
 [Echo](/apps/echo) | [Learning Guide](/echo-learn) | [Focus Field Guide](/echo-focus) | [Join the Beta](/echo-beta) | [Help & Support](/echo-help)

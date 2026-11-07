@@ -370,9 +370,10 @@ test('mounts an accessible empty library and imports a real fixture EPUB locally
     const drop = fixture.root.querySelector('.epub-drop');
     assert.equal(drop.getAttribute('role'), 'button');
     assert.equal(drop.getAttribute('tabindex'), '0');
-    assert.match(fixture.root.textContent, /Using about 2.5 MB/);
+    assert.doesNotMatch(fixture.root.textContent, /Using about/, 'an empty library reports no storage use');
 
     await importThroughInput(fixture.root, epubFile(bookFixture()));
+    await waitFor(() => /Using about 2.5 MB/.test(fixture.root.textContent), 'storage use once a book is stored');
 
     const card = fixture.root.querySelector('.epub-book-card');
     assert.match(card.textContent, /Fixture Book/);

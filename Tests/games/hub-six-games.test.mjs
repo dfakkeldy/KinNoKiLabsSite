@@ -189,3 +189,15 @@ test('reset explanation names every locally removed game-data category', () => {
     'combos', 'music', 'effects',
   ]) assert.match(markup, new RegExp(phrase, 'i'));
 });
+
+test('an empty record book disables reset and names one easy first game', () => {
+  const markup = renderHubMarkup(createEmptyGameStore());
+  assert.match(markup, /<button[^>]+data-reset-games[^>]*\sdisabled>Reset Game Data<\/button>/);
+  assert.match(markup, /<a href="\/games\/sudoku\?difficulty=easy">Start with an Easy Sudoku<\/a>/);
+
+  const unfinished = createEmptyGameStore();
+  unfinished.runs.sudoku = { game: 'sudoku', mode: 'default', difficulty: 'easy' };
+  const stored = renderHubMarkup(unfinished);
+  assert.doesNotMatch(stored, /data-reset-games[^>]*disabled/);
+  assert.doesNotMatch(stored, /Start with an Easy Sudoku/);
+});

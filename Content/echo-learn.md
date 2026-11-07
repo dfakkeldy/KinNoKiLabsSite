@@ -10,9 +10,13 @@ You don't need to read this front to back. Jump to whatever feature you're curio
 
 ## 1. Photo & Place Bookmarks — borrow your brain's sense of place
 
-**What it does:** When you create a bookmark, you can attach a photo — snap something around you or pick one from your photo library. Later, as playback passes that bookmark, Echo switches the player artwork to your photo. Your bookmarks become a visual journal of the book, and each photo becomes a doorway back to what you were hearing.
+#### What it does
 
-**The science: Context-Dependent Memory.** Your brain doesn't file information away in isolation — it *involuntarily* encodes the environment you're in right alongside the thing you're learning. When you return to that environment, or even just see a picture of it, the environment acts as a retrieval cue that pulls the information back up.
+When you create a bookmark, you can attach a photo — snap something around you or pick one from your photo library. Later, as playback passes that bookmark, Echo switches the player artwork to your photo. Your bookmarks become a visual journal of the book, and each photo becomes a doorway back to what you were hearing.
+
+#### The science: Context-Dependent Memory
+
+Your brain doesn't file information away in isolation — it *involuntarily* encodes the environment you're in right alongside the thing you're learning. When you return to that environment, or even just see a picture of it, the environment acts as a retrieval cue that pulls the information back up.
 
 This is one of the most replicated effects in memory research. In the classic 1975 study by Godden and Baddeley, scuba divers memorized word lists either on land or underwater. Divers who learned underwater recalled significantly more *underwater*; divers who learned on dry land recalled more on dry land. A large meta-analysis (Smith & Vela, 2001) confirmed the effect across dozens of studies — and crucially, found that *mentally reinstating* a context (like looking at a photo of it) recovers much of the benefit of physically being there.
 
@@ -29,13 +33,17 @@ This is one of the most replicated effects in memory research. In the classic 19
 
 ## 2. The Study System — spaced repetition, explained from zero
 
-**What it does:** Echo has a built-in flashcard system. Any bookmark, passage, or note can become a card with a front (the prompt) and a back (the answer) — and cards can carry the actual audio clip from the book. Echo schedules reviews for you: a card you know well disappears for weeks; a card you fumbled comes back tomorrow. Your due cards show up in a Daily Review queue on your phone — and on your wrist.
+#### What it does
 
-**Never heard of Anki? Start here.** Anki is beloved flashcard software used by medical students, language learners, and memory nerds worldwide. Its superpower is the *schedule*: instead of cramming, it shows you each card at the moment you're about to forget it — first after a day, then a few days, then weeks, then months. Each successful recall flattens your forgetting curve a little more, until the fact is effectively permanent.
+Echo has a built-in flashcard system. Any bookmark, passage, or note can become a card with a front (the prompt) and a back (the answer) — and cards can carry the actual audio clip from the book. Echo schedules reviews for you: a card you know well disappears for weeks; a card you fumbled comes back tomorrow. Your due cards show up in a Daily Review queue on your phone — and on your wrist.
+
+> **Never heard of Anki? Start here.** Anki is beloved flashcard software used by medical students, language learners, and memory nerds worldwide. Its superpower is the *schedule*: instead of cramming, it shows you each card at the moment you're about to forget it — first after a day, then a few days, then weeks, then months. Each successful recall flattens your forgetting curve a little more, until the fact is effectively permanent.
 
 Echo speaks the same language — it schedules reviews with FSRS, the modern algorithm Anki also offers, imports Anki-style JSON decks today, and with 1.0 imports real **.apkg deck files** directly (🚧 **Coming in 1.0**) — your years of Anki history, scheduling included, carried over. You can also organize everything into **decks with tags**, edit any card, and review one deck at a time. And if you ever leave, your cards export right back out — no lock-in (see Second-Brain Export below).
 
-**The science: the Forgetting Curve and the Spacing Effect.** In the 1880s, Hermann Ebbinghaus measured how quickly memorized material decays: steeply at first, then slowly. He also found the fix: each well-timed review resets the curve and makes it shallower. A century-plus of follow-up research (including Cepeda et al.'s 2006 meta-analysis) keeps confirming it: **spacing reviews out beats massing them together, for essentially everyone, for essentially everything.**
+#### The science: The Forgetting Curve and the Spacing Effect
+
+In the 1880s, Hermann Ebbinghaus measured how quickly memorized material decays: steeply at first, then slowly. He also found the fix: each well-timed review resets the curve and makes it shallower. A century-plus of follow-up research (including Cepeda et al.'s 2006 meta-analysis) keeps confirming it: **spacing reviews out beats massing them together, for essentially everyone, for essentially everything.**
 
 **Why audio flashcards beat paper ones:**
 
@@ -53,9 +61,13 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 ## 3. Honest Grading — the testing effect
 
-**What it does:** After each flashcard, Echo asks you to grade yourself: **Again, Hard, Good, or Easy.** Your answer drives the schedule.
+#### What it does
 
-**The science: retrieval practice.** Testing isn't just measurement — it's the intervention. Roediger and Karpicke's landmark 2006 studies showed that students who *practiced recalling* material remembered far more a week later than students who spent the same time re-reading it, even though re-reading *felt* more effective. The struggle to pull something out of memory is what strengthens it.
+After each flashcard, Echo asks you to grade yourself: **Again, Hard, Good, or Easy.** Your answer drives the schedule.
+
+#### The science: Retrieval practice
+
+Testing isn't just measurement — it's the intervention. Roediger and Karpicke's landmark 2006 studies showed that students who *practiced recalling* material remembered far more a week later than students who spent the same time re-reading it, even though re-reading *felt* more effective. The struggle to pull something out of memory is what strengthens it.
 
 #### How to use it
 
@@ -65,9 +77,13 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 ## 4. Mark Now, Card Later — protect the flow
 
-**What it does:** A single tap — on the transport bar or a watch button — **marks** the passage you just heard, with a few seconds of context on either side, and the narration never stops. Later, your **Card Inbox** shows every mark grouped by book, with its transcript snippet and audio. Turn marks into flashcards when you actually have the bandwidth — or swipe away the ones that didn't age well.
+#### What it does
 
-**The science: attention residue.** Switching tasks isn't free, even for "just a second." Sophie Leroy's research on *attention residue* (2009) shows that part of your attention stays stuck on an interrupted task after you switch — and interruption studies (Monk, Trafton & Boehm-Davis, 2008) show the cost grows with the interruption's depth. Stopping a book mid-argument to type a flashcard is exactly that kind of deep interruption. A one-tap mark is the shallowest possible one: capture intent now, do the work when switching costs nothing.
+A single tap — on the transport bar or a watch button — **marks** the passage you just heard, with a few seconds of context on either side, and the narration never stops. Later, your **Card Inbox** shows every mark grouped by book, with its transcript snippet and audio. Turn marks into flashcards when you actually have the bandwidth — or swipe away the ones that didn't age well.
+
+#### The science: Attention residue
+
+Switching tasks isn't free, even for "just a second." Sophie Leroy's research on *attention residue* (2009) shows that part of your attention stays stuck on an interrupted task after you switch — and interruption studies (Monk, Trafton & Boehm-Davis, 2008) show the cost grows with the interruption's depth. Stopping a book mid-argument to type a flashcard is exactly that kind of deep interruption. A one-tap mark is the shallowest possible one: capture intent now, do the work when switching costs nothing.
 
 #### How to use it
 
@@ -77,9 +93,13 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 ## 5. Brain Dump — close the open loop 🚧
 
-**What it does:** A thought hits you mid-chapter — about the book, or about absolutely anything else ("buy stamps," "that's what Sarah meant on Tuesday"). One tap opens a note; hold to record a voice memo; on the watch, dictate it. Playback never pauses. The thought lands in the book's **Notes inbox**, and later you can **promote** the keepers into bookmarks or flashcards — or just enjoy having had the thought without losing the chapter.
+#### What it does
 
-**The science: the Zeigarnik effect and cognitive offloading.** Unfinished business doesn't wait quietly: interrupted, incomplete tasks intrude on attention (Zeigarnik, 1927). Masicampo & Baumeister (2011) found the fix — you don't have to *do* the nagging thing to silence it; merely capturing it somewhere you trust stops it hijacking attention. And working memory holds only three to five items (Cowan, 2010), so every "don't forget…" you carry is a slot stolen from the book. Offloading to an external store (Risko & Gilbert, 2016) frees the slot.
+A thought hits you mid-chapter — about the book, or about absolutely anything else ("buy stamps," "that's what Sarah meant on Tuesday"). One tap opens a note; hold to record a voice memo; on the watch, dictate it. Playback never pauses. The thought lands in the book's **Notes inbox**, and later you can **promote** the keepers into bookmarks or flashcards — or just enjoy having had the thought without losing the chapter.
+
+#### The science: The Zeigarnik effect and cognitive offloading
+
+Unfinished business doesn't wait quietly: interrupted, incomplete tasks intrude on attention (Zeigarnik, 1927). Masicampo & Baumeister (2011) found the fix — you don't have to *do* the nagging thing to silence it; merely capturing it somewhere you trust stops it hijacking attention. And working memory holds only three to five items (Cowan, 2010), so every "don't forget…" you carry is a slot stolen from the book. Offloading to an external store (Risko & Gilbert, 2016) frees the slot.
 
 #### How to use it
 
@@ -89,9 +109,13 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 ## 6. Chapter Looping — repetition on your terms
 
-**What it does:** Echo can loop a single chapter until you turn looping off — the feature this entire app was born from. Loop the whole playlist, one chapter, or the exact passage between two bookmarks.
+#### What it does
 
-**The science: repetition, then distribution.** Hearing dense material once at highway speed is not learning — repetition genuinely helps build the representation. But research on *distributed practice* shows the bigger win is spreading exposures out: three passes over three days beat six passes in one afternoon. Loop a chapter today; let your flashcards and scheduled reviews carry it across the week.
+Echo can loop a single chapter until you turn looping off — the feature this entire app was born from. Loop the whole playlist, one chapter, or the exact passage between two bookmarks.
+
+#### The science: Repetition, then distribution
+
+Hearing dense material once at highway speed is not learning — repetition genuinely helps build the representation. But research on *distributed practice* shows the bigger win is spreading exposures out: three passes over three days beat six passes in one afternoon. Loop a chapter today; let your flashcards and scheduled reviews carry it across the week.
 
 #### How to use it
 
@@ -103,9 +127,13 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 ## 7. Smart Rewind — pick up where your *mind* left off
 
-**What it does:** When you resume after a pause, Echo automatically rewinds — a little after a short pause, more after minutes, a lot after hours or days. You configure the levels; Echo applies them silently every time you hit play.
+#### What it does
 
-**The science: interruption and resumption.** Research on task interruption (Monk, Trafton & Boehm-Davis, 2008) shows that resuming after a break carries a "resumption lag" while your brain rebuilds the context it dropped. Re-hearing the last stretch is the cheapest way to rebuild it.
+When you resume after a pause, Echo automatically rewinds — a little after a short pause, more after minutes, a lot after hours or days. You configure the levels; Echo applies them silently every time you hit play.
+
+#### The science: Interruption and resumption
+
+Research on task interruption (Monk, Trafton & Boehm-Davis, 2008) shows that resuming after a break carries a "resumption lag" while your brain rebuilds the context it dropped. Re-hearing the last stretch is the cheapest way to rebuild it.
 
 #### How to use it
 
@@ -114,9 +142,13 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 ## 8. Read Along — the synced EPUB & PDF reader
 
-**What it does:** Add the EPUB or PDF next to your audiobook and Echo aligns text to audio — on-device, using its own speech recognition. The Read tab scrolls with the narration, highlighting the active paragraph. Tap any paragraph to jump the audio there. Search the full text and leap to the moment it's *spoken*. And when the narrator says "as shown in the diagram" — the diagram is right there.
+#### What it does
 
-**The science: Dual Coding.** Allan Paivio's dual coding theory holds that information encoded both verbally and visually creates two interconnected memory traces instead of one. Reading along also keeps wandering attention tethered: when your eyes lose the thread, your ears still have it, and vice versa. Many people — especially many neurodivergent people — simply cannot absorb a book through one channel alone. Echo never asks you to.
+Add the EPUB or PDF next to your audiobook and Echo aligns text to audio — on-device, using its own speech recognition. The Read tab scrolls with the narration, highlighting the active paragraph. Tap any paragraph to jump the audio there. Search the full text and leap to the moment it's *spoken*. And when the narrator says "as shown in the diagram" — the diagram is right there.
+
+#### The science: Dual Coding
+
+Allan Paivio's dual coding theory holds that information encoded both verbally and visually creates two interconnected memory traces instead of one. Reading along also keeps wandering attention tethered: when your eyes lose the thread, your ears still have it, and vice versa. Many people — especially many neurodivergent people — simply cannot absorb a book through one channel alone. Echo never asks you to.
 
 #### How to use it
 
@@ -127,9 +159,13 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 ## 9. Voice Memo Bookmarks — think out loud, keep the thought
 
-**What it does:** Hold the bookmark button and talk. Your memo is pinned to that exact second of the book — and Echo can play memos back *inline* when playback reaches them, so past-you briefs present-you right on cue.
+#### What it does
 
-**The science: self-explanation and the production effect.** Explaining material in your own words is one of the most reliable comprehension boosters in the literature (Chi et al., 1989). Separately, material you say *out loud* is remembered better than material you merely think (MacLeod et al., 2010). A voice memo does both at once.
+Hold the bookmark button and talk. Your memo is pinned to that exact second of the book — and Echo can play memos back *inline* when playback reaches them, so past-you briefs present-you right on cue.
+
+#### The science: Self-explanation and the production effect
+
+Explaining material in your own words is one of the most reliable comprehension boosters in the literature (Chi et al., 1989). Separately, material you say *out loud* is remembered better than material you merely think (MacLeod et al., 2010). A voice memo does both at once.
 
 #### How to use it
 
@@ -139,9 +175,13 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 ## 10. Pristine Speed Control — faster without the chipmunks
 
-**What it does:** Echo adjusts playback speed with proper pitch correction, so 1.25× sounds like a quicker human, not a cartoon. Speed is remembered per book.
+#### What it does
 
-**The science: comprehension has a speed budget.** Time-compressed-speech studies show comprehension holds at moderate accelerations, then degrades as speed climbs (Murphy et al., 2021; Foulke & Sticht, 1969). Match speed to difficulty: cruise through familiar territory, slow down where ideas are thick.
+Echo adjusts playback speed with proper pitch correction, so 1.25× sounds like a quicker human, not a cartoon. Speed is remembered per book.
+
+#### The science: Comprehension has a speed budget
+
+Time-compressed-speech studies show comprehension holds at moderate accelerations, then degrades as speed climbs (Murphy et al., 2021; Foulke & Sticht, 1969). Match speed to difficulty: cruise through familiar territory, slow down where ideas are thick.
 
 #### How to use it
 
@@ -151,9 +191,13 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 ## 11. Insights — see yourself learn
 
-**What it does:** A dedicated Insights screen built from your actual listening and review history — computed on your device, never sent anywhere. Listening time by day, week, month, or year. Streaks, with a review-day heatmap still to come (🚧). Per-book **chapter coverage** ("Chapter 7 — 86% covered, listened 3×"). Your speed trend and best time of day, with session lengths still to come (🚧). For flashcards: reviews per day, a retention curve, grade distribution, and a 30-day due forecast. If you use Context Memory, a simple list of the places you listen most.
+#### What it does
 
-**The science: self-monitoring and feedback.** Learners are famously bad at judging their own learning — re-reading *feels* effective precisely when it isn't. Self-regulated-learning research (Zimmerman, 2002) puts accurate self-monitoring at the center of effective studying; Hattie & Timperley (2007) rank concrete feedback among the most powerful influences on learning; and goal-setting research (Locke & Latham, 2002) shows specific, visible progress sustains effort far better than "do your best."
+A dedicated Insights screen built from your actual listening and review history — computed on your device, never sent anywhere. Listening time by day, week, month, or year. Streaks, with a review-day heatmap still to come (🚧). Per-book **chapter coverage** ("Chapter 7 — 86% covered, listened 3×"). Your speed trend and best time of day, with session lengths still to come (🚧). For flashcards: reviews per day, a retention curve, grade distribution, and a 30-day due forecast. If you use Context Memory, a simple list of the places you listen most.
+
+#### The science: Self-monitoring and feedback
+
+Learners are famously bad at judging their own learning — re-reading *feels* effective precisely when it isn't. Self-regulated-learning research (Zimmerman, 2002) puts accurate self-monitoring at the center of effective studying; Hattie & Timperley (2007) rank concrete feedback among the most powerful influences on learning; and goal-setting research (Locke & Latham, 2002) shows specific, visible progress sustains effort far better than "do your best."
 
 #### How to use it
 
@@ -164,9 +208,13 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 ## 12. Second-Brain Export — make it yours forever
 
-**What it does:** One tap exports a book's entire study record as a clean, portable Markdown bundle: every bookmark with its timestamp and note, your brain-dump entries, flashcard fronts and backs, chapter headings — plus an assets folder with your voice memos and photos. Drop the folder into **Obsidian**, **Logseq**, or **Notion**, or just keep it as files. No account, no API, no lock-in.
+#### What it does
 
-**The science: the generation effect and trusted storage.** Material you produce yourself is remembered better than material you receive (Slamecka & Graf, 1978) — and your exported notes are exactly the material you generated. Reorganizing them in your own system is another generation pass, not busywork. And offloading only works when the external store is *trusted* (Risko & Gilbert, 2016): plain files in your own vault are the most trustworthy storage there is.
+One tap exports a book's entire study record as a clean, portable Markdown bundle: every bookmark with its timestamp and note, your brain-dump entries, flashcard fronts and backs, chapter headings — plus an assets folder with your voice memos and photos. Drop the folder into **Obsidian**, **Logseq**, or **Notion**, or just keep it as files. No account, no API, no lock-in.
+
+#### The science: The generation effect and trusted storage
+
+Material you produce yourself is remembered better than material you receive (Slamecka & Graf, 1978) — and your exported notes are exactly the material you generated. Reorganizing them in your own system is another generation pass, not busywork. And offloading only works when the external store is *trusted* (Risko & Gilbert, 2016): plain files in your own vault are the most trustworthy storage there is.
 
 #### How to use it
 
@@ -176,9 +224,13 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 ## 13. Pomodoro Timer — attention is a budget
 
-**What it does:** A focus timer on your wrist, right inside the watch remote: set a work interval, get a persistent alarm when it ends, glance at progress without touching your phone.
+#### What it does
 
-**The science:** The Pomodoro Technique builds on a well-supported finding: sustained attention degrades over long unbroken stretches, and brief breaks keep it from sliding (Ariga & Lleras, 2011).
+A focus timer on your wrist, right inside the watch remote: set a work interval, get a persistent alarm when it ends, glance at progress without touching your phone.
+
+#### The science
+
+The Pomodoro Technique builds on a well-supported finding: sustained attention degrades over long unbroken stretches, and brief breaks keep it from sliding (Ariga & Lleras, 2011).
 
 #### How to use it
 
@@ -187,9 +239,13 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 ## 14. Sleep Timer — end the day, keep the thread
 
-**What it does:** Fade out and pause after a set time or at chapter's end — and tomorrow, Smart Rewind backs you up over the part you drifted through, automatically.
+#### What it does
 
-**The science:** Sleep is when the hippocampus consolidates the day's learning — but material you heard *while falling asleep* was barely encoded to begin with (Diekelmann & Born, 2010; Simon & Emmons, 1956). The honest combination is exactly what Echo does: stop playback when you fade, then re-cover that ground on resume.
+Fade out and pause after a set time or at chapter's end — and tomorrow, Smart Rewind backs you up over the part you drifted through, automatically.
+
+#### The science
+
+Sleep is when the hippocampus consolidates the day's learning — but material you heard *while falling asleep* was barely encoded to begin with (Diekelmann & Born, 2010; Simon & Emmons, 1956). The honest combination is exactly what Echo does: stop playback when you fade, then re-cover that ground on resume.
 
 ## The Echo Method — putting it together
 

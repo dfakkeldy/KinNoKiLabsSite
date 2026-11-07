@@ -28,7 +28,11 @@ kinnokilabs.com is a static site with no accounts, no analytics, and no advertis
 - **[Shakespeare film](/shakespeare/merchant-of-venice/):** The Word Is Bond film plays in YouTube's privacy-enhanced player (youtube-nocookie.com). Nothing from YouTube loads until you press Play. After that, the player is YouTube's, and Google's privacy policy covers it. The "Watch on YouTube" link opens youtube.com instead.
 - **[Echo Listening Room](/listen/) and [Fiction Listening Room](/fiction/):** Playback position, speed, and theme stay in that browser. Audio and text stream from public GitHub URLs when you press play.
 - **[Fishing map](/fishing/):** Your month, species, water and drive-from choices stay in that browser. The map library loads from cdnjs.cloudflare.com and the fonts from Google Fonts, like any web request. Directions open Google Maps or Apple Maps only when you tap them.
-- **[NS Marks The Spot browser map](/apps/nsmarksthespot/map/):** Maps you import, saved setups, and any position this device reports stay in that browser. Map tiles and layer data are fetched from the public sources named in each layer's attribution; those requests carry only the ordinary information any web request carries. Tax-sale listings never show owner names. The address and driveway map at /poker keeps address search, driveway traces, and its offline pack in that browser only; no resident names. Aerial imagery is not stored offline. Clearing this site's data removes it.
+- **[NS Marks The Spot browser map](/apps/nsmarksthespot/map/):** Maps you import, saved setups, and any position this device reports stay in that browser. Map tiles and layer data are fetched from the public sources named in each layer's attribution; those requests carry only the ordinary information any web request carries. Tax-sale listings never show owner names.
+- **Address and driveway map (/poker):** The address and driveway map at /poker keeps address search, driveway traces, and its offline pack in that browser only; no resident names. Aerial imagery is not stored offline. Clearing this site's data removes it.
 
-## Contact Us
-If you have any questions or concerns about this Privacy Policy, please contact us at [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com).
+## Questions
+Email [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com) with any questions or concerns about this Privacy Policy.
+
+---
+[Echo privacy](/echo-privacy/) | [NS Marks The Spot privacy](/nsmarksthespot-privacy/) | [All app support](/support)

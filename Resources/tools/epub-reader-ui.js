@@ -587,7 +587,7 @@ export function renderEpubTool(root, deps = {}) {
       const grid = element('div', { class: 'epub-library-grid', ownerDocument: doc });
       if (books.length === 0) {
         grid.append(element('p', {
-          class: 'epub-empty', text: 'No books yet. Your library will appear here.', ownerDocument: doc,
+          class: 'epub-empty', text: 'No books yet. Books you add stay on this device and open where you left off.', ownerDocument: doc,
         }));
       } else {
         grid.append(...books.map((book, index) => renderBookCard(book, positions[index], status)));
@@ -635,7 +635,8 @@ export function renderEpubTool(root, deps = {}) {
       );
       body.replaceChildren(form, grid, storageLine);
       if (!canInflate) showLibraryError(status, READER_ERRORS.inflate);
-      void estimateStorage(storageLine, token);
+      // Storage use only means something once a book is stored.
+      if (books.length > 0) void estimateStorage(storageLine, token);
     } catch {
       if (!current(token)) return;
       body.replaceChildren(element('p', {

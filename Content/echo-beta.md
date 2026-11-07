@@ -104,6 +104,8 @@ The road to 1.0 lands feature-by-feature in beta builds — each build's *What t
 5. **Context Memory:** opt in, bookmark something on a walk, check the place chip. Then try airplane mode — bookmarks must still save instantly. Then press **Delete Location History** and verify everything's gone.
 6. **Study sync:** with two devices on the same iCloud, create a card on one and review it on the other.
 
+Finished a plan? Send what you found with TestFlight's screenshot feedback or a GitHub issue — [section 2](#2-sending-feedback-that-helps) shows how.
+
 ## 4. Known limitations (current beta)
 
 Honest list — these are known, so you don't need to report them (though opinions on them are welcome):

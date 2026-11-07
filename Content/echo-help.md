@@ -1,14 +1,12 @@
-# Support & Help for Echo
+# Echo help
 
 Thank you for using Echo. The fastest routes to an answer:
 
-- **[User Manual](/echo-manual)** — the complete reference: every feature on iPhone, iPad, Apple Watch, Mac, and widgets, plus a library-organization guide.
+- **[User Manual](/echo-manual)** — the complete reference: every feature on iPhone, iPad, Apple Watch, Mac, and widgets (including the ones still in development on the way to 1.0), plus a library-organization guide.
 - **[Getting the Most Out of Echo](/echo-learn)** — how to use the study features, and the memory science behind them.
 - **[The Focus Field Guide](/echo-focus)** — ADHD & AuDHD strategies for getting started, staying organized, and staying motivated.
 - **[Beta Guide](/echo-beta)** — TestFlight setup, feedback how-to, and structured test plans.
 - **[Devlog](/echo-devlog)** — what's being built, week by week.
-
-> Echo is in open development toward 1.0. The [manual](/echo-manual) describes every feature in full, including the ones still in development.
 
 ## Playback & your files
 
@@ -65,3 +63,6 @@ Stuck, found a bug, or want a feature? Email or open an issue.
 - **Issue Tracker:** [GitHub Issues](https://github.com/dfakkeldy/Echo/issues)
 
 I try to answer within 24–48 hours.
+
+---
+[Echo](/apps/echo) | [User Manual](/echo-manual) | [Echo Privacy](/echo-privacy/) | [All app support](/support)

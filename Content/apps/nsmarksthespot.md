@@ -10,7 +10,7 @@ status: Live browser map
 
 NS Marks The Spot is a Nova Scotia map for property research and local history. Search a parcel by PID, civic address, or postal community, read dated municipal tax-sale notices against live parcel geometry, switch on provincial reference layers, and slide Hugh Fletcher's 1880s geological sheets over today's landscape.
 
-<p class="app-actions"><a class="btn btn-gold btn-md" href="/apps/nsmarksthespot/map/">Open the map</a></p>
+<p class="app-actions"><a class="btn btn-gold btn-md" href="/apps/nsmarksthespot/map/">Open Online Map</a></p>
 
 <figure class="app-shot"><img src="/images/gis/ns-marks-product-2026.webp" width="1440" height="900" decoding="async" alt="The NS Marks The Spot browser map over Cape Breton, with its PID and address search and map layers panel, and the licence footer showing OpenStreetMap and Nova Scotia open data credits." /><figcaption>The browser map over Cape Breton: PID and address search, the map layers panel, and source and licence credits.</figcaption></figure>
 
@@ -20,7 +20,7 @@ Fade between the old survey and the current map to trace where a road bent, wher
 
 ## Where it stands
 
-The current product focus is the **browser map**. [The live map](/apps/nsmarksthespot/map/) runs on any phone, tablet, or desktop with nothing to install. Optional live location draws the position this device reports in the browser and keeps that reading on-device. The native iPhone app is a separate offline and field companion in internal TestFlight builds; it is not on the App Store.
+The current product focus is the **browser map**. The live map runs on any phone, tablet, or desktop with nothing to install. Optional live location draws the position this device reports in the browser and keeps that reading on-device. The native iPhone app is a separate offline and field companion in internal TestFlight builds; it is not on the App Store.
 
 ## What the map does
 

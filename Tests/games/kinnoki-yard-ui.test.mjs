@@ -869,3 +869,21 @@ test('Endless dispatch reuses the Task 8 score pop and dispatch flash', async ()
     controller.dispose();
   } finally { restore(); }
 });
+
+test('preview names the go-button for its dashed controls and labels the selected piece', async () => {
+  const fixture = createDOMFixture({ search: '?mode=contracts&difficulty=easy' });
+  const restore = installDOM(fixture);
+  try {
+    const { renderKinnokiYard } = await import('../../Resources/games/kinnoki-yard-ui.js');
+    const controller = await renderKinnokiYard(fixture.root, createEmptyGameStore(), {
+      audioFactory: silentYardAudioFactory,
+    });
+    const hint = fixture.root.querySelector('[data-controls-hint]');
+    assert.equal(hint.hidden, false);
+    assert.equal(hint.textContent, 'Press Start to use these controls.');
+    assert.match(fixture.root.querySelector('[data-yard-rotation-state]').textContent,
+      /^(None selected|Rotation \d+° · \d+ orientations?)$/);
+    assert.doesNotMatch(fixture.root.textContent ?? '', / allowed$/);
+    controller.dispose();
+  } finally { restore(); }
+});

@@ -39,7 +39,7 @@ const buttonWithText = (root, text) => {
 test('mounts neutral labels, preset buttons, the default result and the local privacy shell', () => withTool(({ fixture }) => {
   assert.equal(fixture.root.querySelector('h1')?.textContent, 'Click Counter');
   assert.equal(fixture.root.querySelector('.tool-lede')?.textContent,
-    'Convert a target number into clicks on a 60-click scale.');
+    'Convert a target number into clicks on a scale of 60 clicks.');
   assert.equal(fixture.root.querySelector('.click-counter-value')?.textContent, '30 clicks');
   assert.equal(fixture.root.querySelector('.click-counter-equation')?.textContent, '2.5 ÷ 5 × 60');
   assert.equal(fixture.root.querySelector('[name=targetNumber]')?.value, '2.5');

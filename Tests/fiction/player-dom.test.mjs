@@ -400,19 +400,21 @@ test('the published shelf marks the streaming editions and counts them', async (
   const harness = await bootPlayer();
   const cards = el(harness, 'shelf').children;
   assert.equal(cards.length, 7);
-  const humanException = cards[1];
-  const reversible = cards[2];
+  // The shelf opens on what can be played: the stage title, then the other
+  // streaming editions in catalog order, then the titles still in production.
+  const humanException = cards[0];
+  const reversible = cards[1];
   assert.equal(humanException.classList.contains('is-playable'), true);
   assert.equal(reversible.classList.contains('is-playable'), true);
   assert.equal(humanException.getAttribute('aria-current'), 'page',
-    'the first streaming book in shelf order holds the stage');
+    'the first streaming book in catalog order holds the stage and leads the shelf');
   assert.equal(descendants(humanException, (node) => node.className === 'fic-badge').length, 0);
   assert.equal(descendants(reversible, (node) => node.className === 'fic-badge').length, 0);
   assert.match(el(harness, 'shelfSub').textContent, /^4 books are streaming now/);
-  assert.equal(cards[5].classList.contains('is-playable'), true);
-  assert.equal(cards[6].classList.contains('is-playable'), true);
+  assert.equal(cards[2].classList.contains('is-playable'), true);
+  assert.equal(cards[3].classList.contains('is-playable'), true);
 
-  for (const card of [cards[0], cards[3], cards[4]]) {
+  for (const card of [cards[4], cards[5], cards[6]]) {
     assert.equal(card.classList.contains('is-playable'), false);
     assert.equal(descendants(card, (node) => node.className === 'fic-badge')[0].textContent, 'Coming soon');
   }

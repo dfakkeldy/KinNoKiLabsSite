@@ -16,17 +16,15 @@ func shakespeareCollectionMain() -> Node<HTML.BodyContext> {
             <p class="eyebrow">I · On the shelf</p>
             <h2 id="merchant-card-title"><a href="/shakespeare/merchant-of-venice/">The Merchant of Venice <span aria-hidden="true">→</span></a></h2>
             <p class="shakespeare-status">Film, album and editions available</p>
-            <p class="shakespeare-secondary">A film, an album of original songs, and two modern-English editions to read or hear.</p>
             <dl class="shakespeare-formats">
               <div><dt>Available</dt><dd>Word Is Bond film · Album on Suno · Play and novel EPUBs · Online listening and M4B audiobooks</dd></div>
             </dl>
           </article>
           <article class="shakespeare-work-card" aria-labelledby="midsummer-card-title">
             <div class="shakespeare-card-art shakespeare-card-plate" aria-hidden="true"><span>A Midsummer<br>Night's Dream</span></div>
-            <p class="eyebrow">II · Edition complete</p>
+            <p class="eyebrow">II · In the wings</p>
             <h2 id="midsummer-card-title"><a href="/shakespeare/a-midsummer-nights-dream/">A Midsummer Night's Dream <span aria-hidden="true">→</span></a></h2>
             <p class="shakespeare-status">Edition complete · Release pending</p>
-            <p class="shakespeare-secondary">A completed edition of Shakespeare's comedy. Its work page will gather public editions and media as they are released.</p>
             <dl class="shakespeare-formats">
               <div><dt>Status</dt><dd>No public releases yet</dd></div>
             </dl>
@@ -51,7 +49,7 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
           <p class="shakespeare-intro">Watch Word Is Bond, explore original songs, and read modern-English editions of the play. Listen along with either edition or explore the album.</p>
           <nav class="shakespeare-index" aria-label="On this page">
             <a href="#watch"><span aria-hidden="true">I</span> Watch</a>
-            <a href="#listen"><span aria-hidden="true">II</span> Listen</a>
+            <a href="#listen"><span aria-hidden="true">II</span> Album</a>
             <a href="#read"><span aria-hidden="true">III</span> Read &amp; listen</a>
             <a href="#sources">Sources</a>
             <a href="#code">Code</a>
@@ -69,7 +67,6 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
           <div>
             <h2 id="watch-title">Word Is Bond</h2>
             <p class="shakespeare-secondary">An anime music video told from Shylock's side.</p>
-            <p class="shakespeare-small shakespeare-muted">Select the film to load the YouTube player here.</p>
             <div class="shakespeare-action-row">
               <a class="btn shakespeare-download" href="https://www.youtube.com/watch?v=ikYvGMdBV2E" target="_blank" rel="noopener noreferrer" aria-describedby="youtube-new-tab">Watch on YouTube <span aria-hidden="true">↗</span></a>
               <p id="youtube-new-tab" class="shakespeare-small shakespeare-muted">Opens youtube.com in a new tab</p>
@@ -86,7 +83,7 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
       </section>
 
       <section id="listen" aria-labelledby="listen-title" class="shakespeare-section">
-        <p class="eyebrow">II · Listen</p>
+        <p class="eyebrow">II · Album</p>
         <div class="shakespeare-album-card">
           <figure class="shakespeare-album-art">
             <img src="/images/shakespeare/merchant-portia-1280.webp?v=frame2592" srcset="/images/shakespeare/merchant-portia-640.webp?v=frame2592 640w, /images/shakespeare/merchant-portia-1280.webp?v=frame2592 1280w" sizes="(max-width: 639px) calc(100vw - 90px), 440px" width="1280" height="720" alt="Portia at Belmont at sunset in a scene from Word Is Bond" loading="lazy" decoding="async">
@@ -185,7 +182,7 @@ func shakespeareMidsummerMain() -> Node<HTML.BodyContext> {
     <main class="shakespeare-main" aria-labelledby="shakespeare-title">
       <a class="shakespeare-back-link" href="/shakespeare/"><span aria-hidden="true">←</span> Shakespeare collection</a>
       <header class="shakespeare-collection-header">
-        <p class="eyebrow">Shakespeare · Edition complete</p>
+        <p class="eyebrow">Shakespeare · A KinNoKi Labs collection</p>
         <h1 id="shakespeare-title">A Midsummer Night's Dream</h1>
         <p class="shakespeare-byline">by William Shakespeare</p>
         <p class="shakespeare-intro">The edition is complete. Public editions, audio and other media will appear here when they are released.</p>
@@ -196,7 +193,6 @@ func shakespeareMidsummerMain() -> Node<HTML.BodyContext> {
       </figure>
       <section id="project-status" class="shakespeare-section shakespeare-release-card" aria-labelledby="project-status-title">
         <h2 id="project-status-title">Public release pending</h2>
-        <p class="shakespeare-secondary">Each of these gets its link here when it is released.</p>
         <dl class="shakespeare-formats shakespeare-release-status">
           <div><dt>Book editions</dt><dd>Release pending</dd></div>
           <div><dt>Audiobook</dt><dd>Release pending</dd></div>
