@@ -296,12 +296,29 @@ private func officialLinks(for record: TenderRecord) -> Node<HTML.BodyContext> {
     var links: [(href: String, label: String)] = [(notice, noticeLabel)]
     if documents != notice { links.append((documents, "Official documents")) }
     if addenda != notice && addenda != documents { links.append((addenda, "Addenda")) }
+    // Each link leaves KinNoKi for the procurement portal, so it carries
+    // a north-east arrow (decorative) and says so to screen readers.
     return .ul(
         .class("tender-official-links"),
         .forEach(links) { link in
-            .li(.a(.href(link.href), .text(link.label)))
+            .li(.a(
+                .href(link.href),
+                .text(link.label),
+                .span(.class("visually-hidden"), .text(" (external site)")),
+                iconExternal()
+            ))
         }
     )
+}
+
+/// Lucide arrow-up-right: "this link leaves the site".
+private func iconExternal<Ctx>() -> Node<Ctx> {
+    .raw(#"<svg class="tender-ext" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg>"#)
+}
+
+/// Lucide arrow-down: an in-page jump.
+private func iconArrowDown<Ctx>() -> Node<Ctx> {
+    .raw(#"<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"></path><path d="m19 12-7 7-7-7"></path></svg>"#)
 }
 
 // MARK: - Hub page
@@ -320,6 +337,14 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
             .p(
                 .class("tender-intro"),
                 .text("Each example takes a real Nova Scotia public tender and turns it into a source-linked starting brief, with the questions to verify first.")
+            ),
+            // The offer sits under the four examples (well below the fold
+            // on a phone), so the hero points straight to it.
+            .a(
+                .class("back-link back-link-next tender-hero-jump"),
+                .href("#preview"),
+                .text("Send your own tender for a free preview"),
+                iconArrowDown()
             )
         ),
         // 2. Current examples (hidden while none are open; the worked examples lead)
@@ -373,16 +398,21 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
                     .class("tender-archive-grid"),
                     .forEach(archived) { card in
                         // No per-card state pill: the note above says every
-                        // worked example is closed.
+                        // worked example is closed. The kicker leads with the
+                        // category so the four scan by type (the post-card
+                        // kicker pattern), then the issuer, then the cue.
                         .a(
                             .class("tender-card tender-card-archive"),
                             .href(card.item.path.absoluteString),
-                            .h3(.text(displayTenderTitle(card.item.title))),
-                            .dl(
-                                .class("tender-meta"),
-                                .div(.dt(.text("Issuer")), .dd(.text(card.issuer))),
-                                .div(.dt(.text("Category")), .dd(.text(card.category))),
-                                .div(.dt(.text("Closed")), .dd(timeNode(card.closingAt, formattedDate(card.closingAt))))
+                            .div(
+                                .class("tender-card-body"),
+                                .p(
+                                    .class("tender-kicker"),
+                                    .span(.text(card.category)),
+                                    .span(.text("Closed "), timeNode(card.closingAt, formattedDate(card.closingAt)))
+                                ),
+                                .h3(.text(displayTenderTitle(card.item.title))),
+                                .p(.class("tender-card-issuer"), .text(card.issuer))
                             ),
                             .span(.class("card-cue"), .text("Read the brief"), iconArrowForward())
                         )
@@ -397,6 +427,7 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
             // Free-preview invitation
             .section(
                 .class("tender-preview reveal"),
+                .id("preview"),
                 .h2(.text("Free custom tender preview")),
                 .p(.class("tender-offer-lead"), .text("Send a public tender URL or ID, your company or work type, contact details, and a short fit explanation. You will receive a free one-page starting brief showing the same source-linked review workflow — no account, no upload, no obligation.")),
                 .p(.class("tender-source-note"), .text("I take a limited number of requests each month. For a deeper fit analysis, the paid Tender-to-Bid Diagnostic expands the starting brief into a compliance check, question map, and document checklist for one specific opportunity.")),
@@ -433,11 +464,12 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
 
 // MARK: - Detail page
 
-/// Source titles join parts with " - "; a no-break space before the hyphen
-/// keeps a wrapped line from starting with a bare dash. Display only: the
-/// frontmatter title and the page <title> keep the source text.
+/// Source titles join parts with a spaced ASCII hyphen (" - "); the page
+/// sets it as the site's spaced en dash, with a no-break space before it so
+/// a wrapped line never starts with a bare dash. Display only: the
+/// frontmatter title, the page <title> and the pack keep the source text.
 func displayTenderTitle(_ title: String) -> String {
-    title.replacingOccurrences(of: " - ", with: "\u{00A0}- ")
+    title.replacingOccurrences(of: " - ", with: "\u{00A0}\u{2013} ")
 }
 
 /// Procurement titles can run past 100 characters; those get a smaller H1.

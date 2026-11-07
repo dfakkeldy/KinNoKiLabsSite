@@ -33,7 +33,8 @@ test('the collection links two real work cards with explicit availability and fo
   const cards = [...collection.main.matchAll(/<article\b[^>]*class="shakespeare-work-card"[^>]*>([\s\S]*?)<\/article>/g)].map(m => m[1]);
   assert.equal(cards.length, 2);
   assert.match(cards[0], /The Merchant of Venice/);
-  assert.match(cards[0], /Film, album and editions available/);
+  // The status line is the state only; the Available list names the items.
+  assert.match(cards[0], /<p class="shakespeare-status">Released<\/p>/);
   assert.match(cards[0], /Album on Suno/);
   assert.match(cards[0], /Word Is Bond film/);
   assert.doesNotMatch(cards[0], /Coming soon|video player/);
@@ -43,7 +44,12 @@ test('the collection links two real work cards with explicit availability and fo
   assert.match(cards[1], /Edition complete · Release pending/);
   // The status line states availability once; the formats block names
   // what is coming instead of an empty "Available" row.
-  assert.match(cards[1], /<dt>Coming<\/dt><dd>Book editions · Audiobook · Video · Project code<\/dd>/);
+  const coming = cards[1].match(/<dt>Coming<\/dt><dd>([\s\S]*?)<\/dd>/)?.[1] ?? '';
+  assert.deepEqual([...coming.matchAll(/<li>([^<]+)<\/li>/g)].map(m => m[1]),
+    ['Book editions', 'Audiobook', 'Video', 'Project code']);
+  const available = cards[0].match(/<dt>Available<\/dt><dd>([\s\S]*?)<\/dd>/)?.[1] ?? '';
+  assert.deepEqual([...available.matchAll(/<li>([^<]+)<\/li>/g)].map(m => m[1]),
+    ['Word Is Bond film', 'Album on Suno', 'Play and novel EPUBs', 'Online listening and M4B audiobooks']);
   assert.doesNotMatch(cards[1], /No public releases yet|<dt>Available<\/dt>/);
   const links = [...collection.main.matchAll(/<a\b[^>]*href="([^"]+)"[^>]*>/g)].map(m => m[1]);
   assert.deepEqual(links, ['/shakespeare/merchant-of-venice/', '/shakespeare/a-midsummer-nights-dream/']);

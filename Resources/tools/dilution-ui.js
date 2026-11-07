@@ -68,22 +68,28 @@ const resultDisplay = (doc, announce, hint) => {
   const mix = ({ concentrateMl, waterMl }, { stockPercent = null } = {}) => {
     const sourceLabel = stockPercent === null ? 'concentrate' : 'stock solution';
     const parts = stockPercent === null ? null : computeMixParts({ concentrateMl, waterMl });
-    const partsText = parts?.waterParts === 0
-      ? `No water needed — use the ${formatNumber(stockPercent)}% stock solution as-is.`
+    // Each half of the mix stays on one line (span.dilution-keep), with the
+    // "+" opening the second half, so a narrow screen breaks only between them.
+    // Text always sits in its own span (never a bare text node beside an
+    // element), which keeps the DOM order simple to read and to test.
+    const span = (text) => element('span', { text, ownerDocument: doc });
+    const keep = (...children) => element('span', { class: 'dilution-keep', ownerDocument: doc },
+      ...children.map((child) => (typeof child === 'string' ? span(child) : child)));
+    const partsChildren = parts?.waterParts === 0
+      ? [span(`No water needed — use the ${formatNumber(stockPercent)}% stock solution as-is.`)]
       : parts
-        ? `About ${partAmount(parts.concentrateParts)} ${formatNumber(stockPercent)}% stock solution + ${partAmount(parts.waterParts)} water.`
+        ? [span('About '), keep(`${partAmount(parts.concentrateParts)} ${formatNumber(stockPercent)}% stock solution`),
+          span(' '), keep(`+ ${partAmount(parts.waterParts)} water.`)]
         : null;
+    const partsText = partsChildren?.map((child) => child.textContent).join('') ?? null;
     const text = `Mix ${amount(concentrateMl)} ${sourceLabel} + ${amount(waterMl)} water${partsText ? ` ${partsText}` : ''}`;
     result.setAttribute('class', 'tool-result tool-result-strong');
     result.replaceChildren(
       element('span', { text: 'Mix ', ownerDocument: doc }),
-      element('strong', { text: amount(concentrateMl), ownerDocument: doc }),
-      element('span', { text: ` ${sourceLabel} + `, ownerDocument: doc }),
-      element('strong', { text: amount(waterMl), ownerDocument: doc }),
-      element('span', { text: ' water', ownerDocument: doc }),
-      ...(partsText ? [element('span', {
-        class: 'tool-parts-result', text: ` ${partsText}`, ownerDocument: doc,
-      })] : []),
+      keep(element('strong', { text: amount(concentrateMl), ownerDocument: doc }), ` ${sourceLabel}`),
+      span(' '),
+      keep('+ ', element('strong', { text: amount(waterMl), ownerDocument: doc }), ' water'),
+      ...(partsChildren ? [element('span', { class: 'tool-parts-result', ownerDocument: doc }, span(' '), ...partsChildren)] : []),
     );
     announce(text);
   };

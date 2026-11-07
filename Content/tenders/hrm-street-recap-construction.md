@@ -22,7 +22,7 @@ featuredPack: true
 
 ## What the official source says
 
-This is a Request for Proposal (Construction) for street recapitalization, intersection reconfigurations, traffic calming, and sidewalk renewals at various locations. The official notice page is the authoritative source for scope, documents, and any addenda.
+This is a Request for Proposal (Construction) for street recapitalization, intersection reconfigurations, traffic calming, and sidewalk renewals at various locations.
 
 ## Who might examine this opportunity
 

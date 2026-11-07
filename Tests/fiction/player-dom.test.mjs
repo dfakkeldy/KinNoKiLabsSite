@@ -389,7 +389,7 @@ test('the published book offers its manuscript in every format it has', async ()
   const links = el(harness, 'selectedFormats');
   assert.equal(links.hidden, false);
   assert.deepEqual(links.children.map((link) => link.textContent),
-    ['Read as Markdown', 'EPUB', 'Book folder']);
+    ['Read', 'EPUB', 'Book folder']);
   for (const link of links.children) {
     assert.equal(link.target, '_blank');
     assert.equal(link.rel, 'noopener');

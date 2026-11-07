@@ -126,7 +126,7 @@ function buildStackShell(root, difficulty, audioControls) {
         + 'Z or Up rotates. P or Escape pauses. Enter advances in Step Mode.',
     }),
     element('p', {
-      text: 'Describe Dock writes out what is on the board. Step Mode stops the drop '
+      text: 'Describe the dock writes out what is on the board. Step Mode stops the drop '
         + 'until you advance, and makes the run ineligible for records.',
     }),
   );
@@ -179,7 +179,7 @@ function buildStackShell(root, difficulty, audioControls) {
     softDrop: control('Soft Drop', 'data-stack-soft-drop'),
     hardDrop: control('Hard Drop', 'data-stack-hard-drop'),
     pause: control('Pause', 'data-pause-game'),
-    describe: control('Describe Dock', 'data-describe-dock'),
+    describe: control('Describe the dock', 'data-describe-dock'),
     stepMode: control('Step Mode', 'data-step-mode'),
     advance: control('Advance', 'data-advance-step'),
   };

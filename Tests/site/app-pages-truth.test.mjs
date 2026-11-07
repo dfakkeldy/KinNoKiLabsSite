@@ -103,7 +103,7 @@ test('NS Marks public copy names the focused Rhodena page and keeps the sight-li
   assert.match(nsMarks, /## Two focused maps/);
   assert.match(nsMarks, /<a class="btn btn-outline" href="\/rhodena">Open Rhodena Wind<\/a>/);
   assert.match(nsMarks, /id="rhodena"/);
-  assert.match(nsMarksHelp, /href=\"\/rhodena\">.*?<span>Rhodena Wind map<\/span><span class=\"support-row-sub\">The same research map with a Rhodena focus</);
+  assert.match(nsMarksHelp, /href=\"\/rhodena\">.*?<span>Rhodena Wind map<\/span><span class=\"support-row-sub\">Research map, Rhodena Wind focus</);
   assert.doesNotMatch(nsMarksHelp, /I haven't written the FAQ yet/);
   assert.match(generatedNsMarks, /<h3 id="rhodena-title">Rhodena Wind<\/h3>/);
   assert.match(generatedNsMarks, /href="\/rhodena">Open Rhodena Wind</);
@@ -125,7 +125,7 @@ test('NS Marks public copy names the fishing focus page at /fishmap, separate fr
   assert.match(nsMarks, /<a class="btn btn-outline" href="\/fishmap">Open the fishing map<\/a>/);
   assert.match(nsMarks, /id="fishing"/);
   assert.match(nsMarks, /separate from the static \[Strait and Bras d'Or Fishing Map\]\(\/fishing\/\)/);
-  assert.match(nsMarksHelp, /href=\"\/fishmap\">.*?<span>Fishing focus map<\/span><span class=\"support-row-sub\">The same research map with a fishing focus</);
+  assert.match(nsMarksHelp, /href=\"\/fishmap\">.*?<span>Fishing focus map<\/span><span class=\"support-row-sub\">Research map, fishing focus</);
   assert.match(nsMarksHelp, /href=\"\/fishing\/\">.*?<span class=\"support-row-sub\">A static fishing guide, separate from the research map</);
   assert.match(generatedNsMarks, /<h3 id="fishing-title">Fishing<\/h3>/);
   for (const source of [nsMarks, generatedNsMarks]) {
@@ -149,10 +149,8 @@ test('NS Marks search copy includes postal communities and labelled mailing addr
   for (const source of [nsMarks, generatedNsMarks]) {
     assert.match(source, /PID, civic address, or postal community/);
     assert.match(source, /a civic address or a postal community/);
-    assert.match(
-      source,
-      /mailing address from Statistics Canada's free National Address Register, labelled as distinct from the provincial civic address/,
-    );
+    assert.match(source, /Mailing addresses come from Statistics Canada's free National Address Register/);
+    assert.match(source, /labelled as distinct from the provincial civic address/);
     assert.match(source, /distinct from the provincial civic address/);
     assert.match(source, /Boundaries are approximate context, never a legal survey/);
     assert.doesNotMatch(source, /Search a parcel by PID or civic address,/);

@@ -5,7 +5,7 @@ func shakespeareCollectionMain() -> Node<HTML.BodyContext> {
     .raw(#"""
     <main class="shakespeare-main" aria-labelledby="shakespeare-title">
       <header class="shakespeare-collection-header">
-        <p class="eyebrow">A KinNoKi Labs collection</p>
+        <p class="eyebrow">A KinNoKi&nbsp;Labs collection</p>
         <h1 id="shakespeare-title">Shakespeare</h1>
         <p class="shakespeare-intro">Songs, films and modern-English editions of Shakespeare, gathered here as each project becomes ready.</p>
       </header>
@@ -15,9 +15,9 @@ func shakespeareCollectionMain() -> Node<HTML.BodyContext> {
             <figure class="shakespeare-card-art"><img src="/images/shakespeare/merchant-shylock-640.webp" width="640" height="360" alt="" loading="lazy" decoding="async"></figure>
             <p class="eyebrow">I · On the shelf</p>
             <h2 id="merchant-card-title"><a href="/shakespeare/merchant-of-venice/">The Merchant of Venice <span aria-hidden="true">→</span></a></h2>
-            <p class="shakespeare-status">Film, album and editions available</p>
+            <p class="shakespeare-status">Released</p>
             <dl class="shakespeare-formats">
-              <div><dt>Available</dt><dd>Word Is Bond film · Album on Suno · Play and novel EPUBs · Online listening and M4B audiobooks</dd></div>
+              <div><dt>Available</dt><dd><ul class="shakespeare-format-list"><li>Word Is Bond film</li> <li>Album on Suno</li> <li>Play and novel EPUBs</li> <li>Online listening and M4B audiobooks</li></ul></dd></div>
             </dl>
           </article>
           <article class="shakespeare-work-card" aria-labelledby="midsummer-card-title">
@@ -26,7 +26,7 @@ func shakespeareCollectionMain() -> Node<HTML.BodyContext> {
             <h2 id="midsummer-card-title"><a href="/shakespeare/a-midsummer-nights-dream/">A Midsummer Night's Dream <span aria-hidden="true">→</span></a></h2>
             <p class="shakespeare-status">Edition complete · Release pending</p>
             <dl class="shakespeare-formats">
-              <div><dt>Coming</dt><dd>Book editions · Audiobook · Video · Project code</dd></div>
+              <div><dt>Coming</dt><dd><ul class="shakespeare-format-list"><li>Book editions</li> <li>Audiobook</li> <li>Video</li> <li>Project code</li></ul></dd></div>
             </dl>
           </article>
         </div>
@@ -43,13 +43,13 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
       <a class="shakespeare-back-link" href="/shakespeare/"><span aria-hidden="true">←</span> Shakespeare collection</a>
       <header class="shakespeare-hero">
         <div class="shakespeare-hero-copy">
-          <p class="eyebrow">Shakespeare · A KinNoKi Labs collection</p>
+          <p class="eyebrow">Shakespeare&nbsp;· A&nbsp;KinNoKi&nbsp;Labs&nbsp;collection</p>
           <h1 id="shakespeare-title">The Merchant of Venice</h1>
           <p class="shakespeare-byline">by William Shakespeare</p>
           <p class="shakespeare-intro">Watch Word Is Bond, explore the album of original songs, and read or listen along with two modern-English editions of the play.</p>
           <nav class="shakespeare-index" aria-label="On this page">
-            <a href="#listen"><span aria-hidden="true">II</span> Album</a>
-            <a href="#read"><span aria-hidden="true">III</span> Read &amp; listen</a>
+            <a href="#listen">Album</a>
+            <a href="#read">Read &amp; listen</a>
             <a href="#sources">Sources</a>
             <a href="#code">Code</a>
           </nav>
@@ -97,8 +97,8 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
             <img class="shakespeare-cover" src="/images/shakespeare/merchant-play-cover.png" width="1024" height="1536" alt="The Merchant of Venice, modern-English play: Shylock portrait cover" loading="lazy">
             <div class="shakespeare-edition-copy">
               <h3>Modern-English play</h3>
-              <p class="shakespeare-small shakespeare-secondary">20 chapters · 2h 19m 14s audio</p>
-              <p class="shakespeare-small shakespeare-secondary">EPUB 1.6 MB · M4B 35.9 MB</p>
+              <p class="shakespeare-small shakespeare-secondary"><span class="shakespeare-fact">20 chapters</span> · <span class="shakespeare-fact">2h 19m 14s audio</span></p>
+              <p class="shakespeare-small shakespeare-secondary"><span class="shakespeare-fact">EPUB 1.6 MB</span> · <span class="shakespeare-fact">M4B 35.9 MB</span></p>
               <div class="shakespeare-action-row shakespeare-downloads">
                 <a class="btn shakespeare-download" href="/fiction/?book=merchant-of-venice-play">Listen in browser</a>
                 <a class="btn shakespeare-download" href="https://github.com/dfakkeldy/explainer-audiobooks/releases/download/classic-merchant-of-venice-play-20261004T050000Z/merchant-of-venice-play.epub">EPUB</a>
@@ -111,8 +111,8 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
             <img class="shakespeare-cover" src="/images/shakespeare/merchant-novel-cover.png" width="1024" height="1536" alt="The Merchant of Venice, modern-English novel: Shylock portrait cover" loading="lazy">
             <div class="shakespeare-edition-copy">
               <h3>Modern-English novel</h3>
-              <p class="shakespeare-small shakespeare-secondary">20 chapters · 2h 06m 18s audio</p>
-              <p class="shakespeare-small shakespeare-secondary">EPUB 1.5 MB · M4B 32.8 MB</p>
+              <p class="shakespeare-small shakespeare-secondary"><span class="shakespeare-fact">20 chapters</span> · <span class="shakespeare-fact">2h 06m 18s audio</span></p>
+              <p class="shakespeare-small shakespeare-secondary"><span class="shakespeare-fact">EPUB 1.5 MB</span> · <span class="shakespeare-fact">M4B 32.8 MB</span></p>
               <div class="shakespeare-action-row shakespeare-downloads">
                 <a class="btn shakespeare-download" href="/fiction/?book=merchant-of-venice-novel">Listen in browser</a>
                 <a class="btn shakespeare-download" href="https://github.com/dfakkeldy/explainer-audiobooks/releases/download/classic-merchant-of-venice-novel-20261004T050000Z/merchant-of-venice-novel.epub">EPUB</a>
@@ -125,7 +125,7 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
       </section>
 
       <section id="sources" aria-labelledby="sources-title" class="shakespeare-section">
-        <p class="eyebrow">Sources</p>
+        <p class="eyebrow">IV · Sources</p>
         <h2 id="sources-title" class="shakespeare-sr-only">Sources</h2>
         <div class="shakespeare-sources-grid">
           <div>
@@ -133,18 +133,20 @@ func shakespeareMerchantMain() -> Node<HTML.BodyContext> {
               <li><a href="https://shakespeare.mit.edu/merchant/full.html" target="_blank" rel="noopener noreferrer" aria-describedby="shakespeare-new-tab">Source text — MIT Shakespeare, full text <span aria-hidden="true">↗</span></a><span class="shakespeare-small shakespeare-muted">shakespeare.mit.edu</span></li>
               <li><a href="https://www.folger.edu/explore/shakespeares-works/the-merchant-of-venice/read/" target="_blank" rel="noopener noreferrer" aria-describedby="shakespeare-new-tab">Reading reference — Folger Shakespeare Library <span aria-hidden="true">↗</span></a><span class="shakespeare-small shakespeare-muted">folger.edu</span></li>
             </ul>
-            <p class="shakespeare-small shakespeare-secondary">Modern adaptation prepared with Codex for Dan Fakkeldy. Character narration is synthetic, voiced with Echo and Kokoro. Cover art is generated.</p>
-            <p class="shakespeare-small shakespeare-secondary shakespeare-rights">Shakespeare's text is in the public domain. The modern adaptation, original notes and selected covers carry CC BY 4.0 terms for the rights Dan holds. Each audiobook has its own recording reuse notice. Music, models, voice packs and software retain their separate terms; see each edition's credits and reuse files.</p>
           </div>
           <aside class="shakespeare-play-note" aria-labelledby="play-note-title">
             <h3 id="play-note-title">A note on the play</h3>
             <p class="shakespeare-small shakespeare-secondary">The Merchant of Venice stages antisemitic prejudice and a coerced conversion. These editions keep that material in view rather than soften it. The attitudes of its characters belong to the characters, not to the studio.</p>
           </aside>
         </div>
+        <div class="shakespeare-credits">
+          <p class="shakespeare-small shakespeare-secondary">Modern adaptation prepared with Codex for Dan Fakkeldy. Character narration is synthetic, voiced with Echo and Kokoro. Cover art is generated.</p>
+          <p class="shakespeare-small shakespeare-secondary shakespeare-rights">Shakespeare's text is in the public domain. The modern adaptation, original notes and selected covers carry CC BY 4.0 terms for the rights Dan holds. Each audiobook has its own recording reuse notice. Music, models, voice packs and software retain their separate terms; see each edition's credits and reuse files.</p>
+        </div>
       </section>
 
       <section id="code" aria-labelledby="code-title" class="shakespeare-section">
-        <p class="eyebrow">Code</p>
+        <p class="eyebrow">V · Code</p>
         <h2 id="code-title" class="shakespeare-sr-only">Code</h2>
         <ul class="shakespeare-code-links">
           <li><a href="https://github.com/dfakkeldy/KinNoKiLabsSite" target="_blank" rel="noopener noreferrer" aria-describedby="shakespeare-new-tab">Website source <span aria-hidden="true">↗</span></a><span class="shakespeare-small shakespeare-muted">KinNoKiLabsSite on GitHub</span></li>
@@ -169,7 +171,7 @@ func shakespeareMidsummerMain() -> Node<HTML.BodyContext> {
     <main class="shakespeare-main" aria-labelledby="shakespeare-title">
       <a class="shakespeare-back-link" href="/shakespeare/"><span aria-hidden="true">←</span> Shakespeare collection</a>
       <header class="shakespeare-collection-header">
-        <p class="eyebrow">Shakespeare · A KinNoKi Labs collection</p>
+        <p class="eyebrow">Shakespeare&nbsp;· A&nbsp;KinNoKi&nbsp;Labs&nbsp;collection</p>
         <h1 id="shakespeare-title">A Midsummer Night's Dream</h1>
         <p class="shakespeare-byline">by William Shakespeare</p>
         <p class="shakespeare-intro">The edition is complete.</p>

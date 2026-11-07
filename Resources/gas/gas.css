@@ -1,4 +1,9 @@
 .page-gas [hidden] { display: none !important; }
+/* Misses carry two meanings, so two hues: gold = estimate too high, blue =
+   estimate too low. Neither is the grey of muted or disabled text. Both
+   clear 4.5:1 on --surface and --bg in their theme. */
+.page-gas { --gas-low: #85b5ff; }
+[data-theme="light"] .page-gas { --gas-low: #165fb9; }
 .gas-skip { position: fixed; inset: 8px auto auto 8px; z-index: 101; padding: 12px 18px; background: var(--surface); color: var(--text); transform: translateY(-150%); }
 .gas-skip:focus { transform: none; }
 .gas-page { padding-top: clamp(40px, 6vw, 72px); }
@@ -68,6 +73,10 @@
 .gas-components dt { color: var(--text-muted); }
 .gas-components dd { font-variant-numeric: tabular-nums; }
 .gas-section { min-width: 0; }
+/* The test results and the sources each open a new movement: a hairline
+   and the same breathing room above as below, so the long run from the
+   ledger to the watch card has resting points. */
+.gas-performance, .gas-sources { padding-top: clamp(40px, 6vw, 64px); border-top: 1px solid var(--separator); }
 .gas-section .section-title { font-size: clamp(25px, 3.4vw, 34px); }
 .gas-section .section-head { margin-bottom: 24px; }
 .gas-section-note { margin-top: 20px; max-width: 78ch; color: var(--text-muted); font-size: 15px; line-height: 1.6; }
@@ -79,12 +88,16 @@
 /* Scroll shadows: an edge fades in only on the side that has more table,
    so a clipped column always shows that it can be scrolled to. */
 .gas-table-wrap {
+  /* Every table sits on the card surface, so its rows, header and caption
+     read as one sheet (not page-coloured rows under a surface header). */
+  --wrap-bg: var(--surface);
   max-width: 100%; overflow-x: auto; border: 1px solid var(--separator); border-radius: 12px;
   background:
     linear-gradient(to right, var(--wrap-bg, var(--bg)) 40%, transparent) left center / 40px 100% no-repeat local,
     linear-gradient(to left, var(--wrap-bg, var(--bg)) 40%, transparent) right center / 40px 100% no-repeat local,
     radial-gradient(farthest-side at 0 50%, rgba(0, 0, 0, .45), transparent) left center / 14px 100% no-repeat scroll,
-    radial-gradient(farthest-side at 100% 50%, rgba(0, 0, 0, .45), transparent) right center / 14px 100% no-repeat scroll;
+    radial-gradient(farthest-side at 100% 50%, rgba(0, 0, 0, .45), transparent) right center / 14px 100% no-repeat scroll,
+    var(--surface);
 }
 .gas-table { width: 100%; border-collapse: collapse; font-size: 15px; text-align: left; font-variant-numeric: tabular-nums; }
 .gas-table caption { padding: 14px 16px; text-align: left; font-size: 13px; color: var(--text-muted); background: var(--surface); }
@@ -122,9 +135,9 @@
 .gas-comparison-key { display: flex; flex-wrap: wrap; gap: 6px 20px; margin: 14px 0 0; padding: 0; list-style: none; font-size: 13px; color: var(--text-muted); }
 .gas-comparison-key li { display: inline-flex; align-items: center; gap: 8px; }
 .gas-comparison-key li::before { content: ""; width: 12px; height: 12px; border-radius: 2px; background: var(--gold-text); }
-.gas-comparison-key .gas-comparison-key-low::before { background: var(--text-muted); }
+.gas-comparison-key .gas-comparison-key-low::before { background: var(--gas-low); }
 .gas-comparison-frame { display: grid; grid-template-columns: 46px minmax(0, 1fr); margin-top: 38px; }
-.gas-comparison-axis { position: relative; height: 200px; font-size: 12px; font-variant-numeric: tabular-nums; color: var(--text-muted); }
+.gas-comparison-axis { position: relative; height: 200px; font-size: 13px; font-variant-numeric: tabular-nums; color: var(--text-muted); }
 .gas-comparison-unit { position: absolute; right: 10px; top: -28px; }
 .gas-comparison-tick { position: absolute; right: 10px; transform: translateY(-50%); }
 .gas-comparison-tick-0 { top: 0; }
@@ -141,12 +154,12 @@
 .gas-comparison-grid { stroke: var(--separator); stroke-width: 1; }
 .gas-comparison-zero { stroke: var(--text-muted); stroke-width: 2; }
 .gas-comparison-bar, .gas-comparison-exact { fill: var(--gold-text); }
-/* Below zero = the estimate was too low: a second, neutral fill, so the
-   over/under pattern the explanation above describes reads at a glance. */
-.gas-comparison-bar[data-error^="-"] { fill: var(--text-muted); }
+/* Below zero = the estimate was too low: the second hue, so the over/under
+   pattern the explanation above describes reads at a glance. */
+.gas-comparison-bar[data-error^="-"] { fill: var(--gas-low); }
 
 .gas-comparison-labels { display: flex; padding-top: 12px; }
-.gas-comparison-point { display: grid; flex: 1 0 64px; gap: 4px; padding: 0 4px; text-align: center; font-size: 12px; line-height: 1.5; color: var(--text-muted); }
+.gas-comparison-point { display: grid; flex: 1 0 64px; gap: 4px; padding: 0 4px; text-align: center; font-size: 13px; line-height: 1.5; color: var(--text-muted); }
 .gas-comparison-value { color: var(--text); font-variant-numeric: tabular-nums; white-space: nowrap; }
 /* One line per saved issue: label, value, then the issue time under the
    value, so First and Latest read as a pair without doubling row height. */
@@ -154,10 +167,10 @@
 .gas-issue:last-child { margin-bottom: 0; }
 .gas-issue-label { font-size: 13px; color: var(--text-muted); }
 .gas-issue-time { grid-column: 2; font-size: 13px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
-/* Errors carry the chart's fills: gold too high, grey too low, and an
+/* Errors carry the chart's fills: gold too high, blue too low, and an
    exact match set bold, so the ledger reads as the graph in figures. */
 .gas-issue-value[data-sign="high"] { color: var(--gold-text); font-weight: 500; }
-.gas-issue-value[data-sign="low"] { color: var(--text-muted); font-weight: 500; }
+.gas-issue-value[data-sign="low"] { color: var(--gas-low); font-weight: 500; }
 .gas-issue-value[data-sign="exact"] { font-weight: 700; }
 .gas-source-list { display: grid; gap: 14px; padding-left: 20px; font-size: 15px; overflow-wrap: anywhere; }
 .gas-footer { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; }
@@ -168,7 +181,7 @@
   .gas-price-grid,
   .gas-price-grid.is-withheld { grid-template-columns: 1fr; }
   .gas-comparison-frame { grid-template-columns: 38px minmax(0, 1fr); }
-  .gas-comparison-point { padding: 0 2px; font-size: 11px; }
+  .gas-comparison-point { padding: 0 2px; font-size: 13px; }
   /* The ledger restacks as one card per effective date: the date heads
      the card, each saved estimate takes one full-width line (label, price,
      issue time), then the official outcome and the error sit side by side.
@@ -186,13 +199,19 @@
   .gas-withheld { padding-block: 18px 0; }
   .gas-ledger .gas-table tbody th { grid-column: 1 / -1; padding: 0; border: 0; font-size: 16px; }
   .gas-ledger .gas-table td { padding: 0; border: 0; white-space: normal; min-width: 0; }
-  .gas-ledger .gas-table td::before { content: attr(data-label); display: block; margin-bottom: 6px; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+  .gas-ledger .gas-table td::before { content: attr(data-label); display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
   .gas-stat-grid { grid-template-columns: 1fr; }
   .gas-stat { display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; align-items: center; }
   .gas-stat-value { margin-top: 0; font-size: 27px; }
   .gas-stat p:last-child { grid-column: 1 / -1; margin-top: 0; }
   .gas-table th, .gas-table td { padding: 12px; }
   .gas-footer .font-toggle { margin-left: 0; }
+}
+/* Phone: dates under the bars drop the year (the result line above names
+   it), so neighbouring labels keep clear space between them. */
+.gas-comparison-year { white-space: nowrap; }
+@media (max-width: 480px) {
+  .gas-comparison-year { display: none; }
 }
 @media (max-width: 380px) {
   .gas-stat { display: block; }

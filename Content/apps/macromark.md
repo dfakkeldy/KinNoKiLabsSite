@@ -33,14 +33,13 @@ Verbal macros turn natural speech into structure. Use the built-in Markdown trig
 </tbody>
 </table>
 
+<figure class="macro-example"><p class="macro-example-said"><span class="macro-example-label">You say</span><span class="macro-example-phrase">“Task call the bank”</span></p><span class="macro-example-arrow" aria-hidden="true">→</span><div class="macro-example-written"><span class="macro-example-label">It writes</span><pre><code>- [ ] call the bank</code></pre></div><figcaption>One phrase on the Watch, one open task in today's note.</figcaption></figure>
+
 ## A note before the thought cools
 
 MacroMark is built around the moment when opening a phone would be enough friction to lose the idea. The Watch collects, the phone processes, and your vault receives one clean Markdown entry.
 
-1. **Tap from your watch face.** Deep links open instant capture without a hunt through app screens.
-2. **Speak, pause, keep going.** The custom audio path is designed for long, messy thoughts instead of tiny dictated snippets.
-3. **Lower your wrist to save.** Recordings are queued durably on the Watch and delivered to iPhone when the connection is ready.
-4. **Land in today's file.** Processed notes append to a dated, plain-text daily note in your own files on iCloud Drive — where your Markdown vault already lives — instead of scattering across throwaway documents.
+<ol class="app-steps-grid"><li><strong>Tap from your watch face.</strong> Deep links open instant capture without a hunt through app screens.</li><li><strong>Speak, pause, keep going.</strong> The custom audio path is designed for long, messy thoughts instead of tiny dictated snippets.</li><li><strong>Lower your wrist to save.</strong> Recordings are queued durably on the Watch and delivered to iPhone when the connection is ready.</li><li><strong>Land in today's file.</strong> Processed notes append to a dated, plain-text daily note in your own iCloud Drive files, where your Markdown vault already lives.</li></ol>
 
 ## Built for trust
 

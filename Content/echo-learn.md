@@ -4,7 +4,9 @@ Echo isn't just an audiobook player with extra buttons. Every feature exists bec
 
 **The short version:** Passive listening feels like learning, but most of it evaporates within days. Echo is built around the handful of techniques that cognitive science has shown actually move information into long-term memory: retrieval practice, spacing, context cues, cognitive offloading, and multi-sensory encoding. Use even two or three of them and you'll likely remember a lot more of what you listen to.
 
-> **Not here to study?** That's completely fine. Echo is a full-featured audiobook player first — a designable Apple Watch remote, a sleep timer, focus soundscapes, pitch-corrected speed, and your own DRM-free files, all on-device. Everything below is optional, and each section stands on its own, so jump to whatever you're curious about. Features tagged 🚧 **Coming in 1.0** are in active development; 🔭 **Roadmap** means planned after 1.0; everything else ships in the current beta. Looking for ADHD/AuDHD-specific strategies? See [The Focus Field Guide](/echo-focus).
+> **Not here to study?** That's completely fine. Echo is a full-featured audiobook player first — a designable Apple Watch remote, a sleep timer, focus soundscapes, pitch-corrected speed, and your own DRM-free files, all on-device. Everything below is optional, and each section stands on its own, so jump to whatever you're curious about. Looking for ADHD/AuDHD-specific strategies? See [The Focus Field Guide](/echo-focus).
+
+> **Status tags:** 🚧 **Coming in 1.0** = in active development. 🔭 **Roadmap** = planned after 1.0. Everything unmarked ships in the current beta.
 
 ## 1. Photo & Place Bookmarks — borrow your brain's sense of place
 
@@ -55,7 +57,7 @@ In the 1880s, Hermann Ebbinghaus measured how quickly memorized material decays:
 - Keep fronts as questions ("What are the four causes of X?"), not labels. A question forces retrieval; a label invites recognition.
 - Do your Daily Review when Echo's notification arrives. Five minutes daily beats an hour monthly.
 - Trust the schedule. Re-reviewing cards that aren't due is the cramming instinct — the thing the system is saving you from.
-- Bringing decks from Anki? Import the .apkg and keep your scheduling — don't restart mature cards from zero. (🚧 **Coming in 1.0**)
+- Bringing decks from Anki? Once 1.0 lands, import the .apkg and keep your scheduling — don't restart mature cards from zero.
 
 ## 3. Honest Grading — the testing effect
 

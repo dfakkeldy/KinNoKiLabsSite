@@ -3,19 +3,23 @@
   <desc id="desc">An invented regional silhouette holds a regular point grid classified from lower to higher relative visibility. It is not an exact project map.</desc>
   <defs>
     <pattern id="grid" width="74" height="74" patternUnits="userSpaceOnUse">
-      <path d="M74 0H0V74" fill="none" stroke="#51605a" stroke-width="2" opacity=".38"/>
+      <path d="M74 0H0V74" fill="none" stroke="#9fb0a6" stroke-width="2" opacity=".42"/>
     </pattern>
     <clipPath id="region">
       <path d="M212 166c150-75 265-15 368 30 105 46 173-59 296-42 121 17 120 118 242 143 129 27 236-38 324 70 68 83-14 163-91 204-81 42-56 132-153 183-91 48-184-10-282 33-119 52-176-22-276-42-129-25-257 48-351-42-82-78-15-167 31-236 51-77-66-184-108-301Z"/>
     </clipPath>
   </defs>
-  <rect width="1600" height="1000" fill="#101714"/>
-  <path d="M212 166c150-75 265-15 368 30 105 46 173-59 296-42 121 17 120 118 242 143 129 27 236-38 324 70 68 83-14 163-91 204-81 42-56 132-153 183-91 48-184-10-282 33-119 52-176-22-276-42-129-25-257 48-351-42-82-78-15-167 31-236 51-77-66-184-108-301Z" fill="#24312b" stroke="#6c7c74" stroke-width="7"/>
+  <rect width="1600" height="1000" fill="#e9eee7"/>
+  <g fill="none" stroke="#c5cec2" stroke-width="3">
+    <path d="M-20 92c191-61 334-52 492 17s329 98 520 40 373-74 628 24"/>
+    <path d="M-28 930c203-90 359-62 503-1s314 88 493 28 383-69 663 28"/>
+  </g>
+  <path d="M212 166c150-75 265-15 368 30 105 46 173-59 296-42 121 17 120 118 242 143 129 27 236-38 324 70 68 83-14 163-91 204-81 42-56 132-153 183-91 48-184-10-282 33-119 52-176-22-276-42-129-25-257 48-351-42-82-78-15-167 31-236 51-77-66-184-108-301Z" fill="#33443c" stroke="#27332e" stroke-width="7"/>
   <rect x="150" y="105" width="1330" height="760" fill="url(#grid)" clip-path="url(#region)"/>
-  <g clip-path="url(#region)" stroke="#101714" stroke-width="5">
+  <g clip-path="url(#region)" stroke="#33443c" stroke-width="5">
     <g fill="#67b989">
       <circle cx="290" cy="253" r="18"/><circle cx="364" cy="253" r="18"/><circle cx="438" cy="253" r="18"/><circle cx="512" cy="253" r="18"/>
-      <circle cx="290" cy="327" r="18"/><circle cx="364" cy="327" r="18"/><circle cx="438" cy="327" r="18"/><circle cx="512" cy="327" r="18"/>
+      <circle cx="364" cy="327" r="18"/><circle cx="438" cy="327" r="18"/><circle cx="512" cy="327" r="18"/>
       <circle cx="364" cy="401" r="18"/><circle cx="438" cy="401" r="18"/><circle cx="512" cy="401" r="18"/><circle cx="586" cy="401" r="18"/>
       <circle cx="438" cy="475" r="18"/><circle cx="512" cy="475" r="18"/><circle cx="586" cy="475" r="18"/>
     </g>
@@ -37,9 +41,5 @@
       <circle cx="660" cy="697" r="18"/><circle cx="734" cy="697" r="18"/><circle cx="808" cy="697" r="18"/>
     </g>
   </g>
-  <!-- The legend is HTML text in the /gis figcaption, so it stays readable at every size. -->
-  <g transform="translate(72 68)" font-family="system-ui, sans-serif">
-    <text fill="#eef1e9" font-size="25" font-weight="700" letter-spacing="3">2023 · GENERALIZED RECONSTRUCTION</text>
-    <text y="48" fill="#a9b6af" font-size="22">Invented geography · no utilities, addresses, or exact results</text>
-  </g>
+  <!-- No text in the raster: the title, boundary note and legend are HTML in the /gis figcaption, so they stay readable at every size. -->
 </svg>

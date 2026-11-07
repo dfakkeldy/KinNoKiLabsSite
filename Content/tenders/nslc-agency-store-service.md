@@ -22,7 +22,7 @@ featuredPack: false
 
 ## What the official source says
 
-This is a Request for Proposal (Negotiations, Consecutive) for an NSLC Agency Store in Cornwallis. The official notice page is the authoritative source for the detailed requirements, submission instructions, and any addenda.
+This is a Request for Proposal (Negotiations, Consecutive) for an NSLC Agency Store in Cornwallis.
 
 ## Who might examine this opportunity
 

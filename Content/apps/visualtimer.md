@@ -33,4 +33,5 @@ The browser version runs on any device, with nothing to install, and can be adde
 <p class="app-actions app-actions-end"><a class="btn btn-gold btn-md" href="/tools/turn-timer/">Try it in your browser</a></p>
 
 ---
-[Get help](/visualtimer-help) | [Privacy policy](https://dfakkeldy.github.io/VisualTimer/privacy.html) | [Build log](https://dfakkeldy.github.io/VisualTimer/devlog.html) | [Project site](https://dfakkeldy.github.io/VisualTimer/) | [Source on GitHub](https://github.com/dfakkeldy/VisualTimer)
+
+<p class="app-more"><span class="app-more-label">More</span><a href="/visualtimer-help">Get help</a><a href="https://dfakkeldy.github.io/VisualTimer/privacy.html">Privacy policy</a><a href="https://dfakkeldy.github.io/VisualTimer/devlog.html">Build log</a><a href="https://dfakkeldy.github.io/VisualTimer/">Project site</a><a href="https://github.com/dfakkeldy/VisualTimer">Source on GitHub</a></p>

@@ -159,8 +159,12 @@ export function renderPassphraseTool(root, deps = {}) {
     const container = element('div', { class: 'passphrase-result', ownerDocument: doc }, placeholder);
     const refresh = () => {
       const { shape, text } = describe();
-      mask.textContent = shape;
-      mask.hidden = shape === '';
+      // A passphrase shape is a list of words: each one (with the separator
+      // after it) is its own unbreakable span, so lines break between words.
+      mask.replaceChildren(...(Array.isArray(shape)
+        ? shape.map((word) => element('span', { class: 'passphrase-mask-word', text: word, ownerDocument: doc }))
+        : [shape]));
+      mask.hidden = shape.length === 0;
       caption.textContent = text;
     };
     refresh();
@@ -178,7 +182,7 @@ export function renderPassphraseTool(root, deps = {}) {
     const words = GHOST_WORD_LENGTHS.slice(0, values.words).map((length) => DOT.repeat(length));
     if (values.includeNumber) words.push('#');
     return {
-      shape: words.join(values.separator),
+      shape: words.map((word, index) => (index < words.length - 1 ? `${word}${values.separator}` : word)),
       text: `${values.words} words joined with ${SEPARATOR_WORDS[values.separator] ?? 'a separator'}${extras ? `, ${extras}` : ''}. Press Generate to make one.`,
     };
   };

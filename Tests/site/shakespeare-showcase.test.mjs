@@ -63,8 +63,10 @@ test('edition buttons open the matching listening room and retain both release d
     return [[`/fiction/?book=${slug}`, 'Listen in browser'], [`${prefix}.epub`, 'EPUB'],
       [`${prefix}.m4b`, 'Download M4B']];
   }));
-  assert.match(read, /EPUB 1\.6 MB · M4B 35\.9 MB/);
-  assert.match(read, /EPUB 1\.5 MB · M4B 32\.8 MB/);
+  // Each meta fact is its own no-wrap span; the facts read the same as text.
+  const readText = read.replace(/<\/?span\b[^>]*>/g, '');
+  assert.match(readText, /EPUB 1\.6 MB · M4B 35\.9 MB/);
+  assert.match(readText, /EPUB 1\.5 MB · M4B 32\.8 MB/);
   assert.match(read, /2h 19m 14s/);
   assert.match(read, /2h 06m 18s/);
   assert.match(read, /Two modern-English editions, each as an EPUB and a chaptered M4B audiobook\.<\/p>/);

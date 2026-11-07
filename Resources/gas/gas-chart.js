@@ -75,7 +75,12 @@ export function renderComparison(root, points, { document = root.ownerDocument, 
     mark.append(svg('title', {}, `${formatDate(point.date)}: estimated ${formatPrice(point.predicted)}, official ${formatPrice(point.actual)}, error ${formatCents(String(point.error), { signed: true })}.`));
     plot.append(mark);
     const label = el('div', 'gas-comparison-point');
-    label.append(el('span', 'gas-comparison-value', formatCents(String(point.error), { signed: true })), el('span', '', formatDate(point.date)));
+    // The year sits in its own span, so a phone can drop it under the bars
+    // (the result line above names the full date).
+    const date = formatDate(point.date); const split = date.lastIndexOf(', ');
+    const dateLabel = el('span', 'gas-comparison-date', split > 0 ? date.slice(0, split) : date);
+    if (split > 0) dateLabel.append(el('span', 'gas-comparison-year', date.slice(split)));
+    label.append(el('span', 'gas-comparison-value', formatCents(String(point.error), { signed: true })), dateLabel);
     labels.append(label);
   }
   canvas.append(plot, labels); scroll.append(canvas); frame.append(axis, scroll); root.append(frame);

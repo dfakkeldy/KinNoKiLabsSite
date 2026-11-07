@@ -178,13 +178,16 @@ a { color: inherit; }
 }
 .btn-md { height: 38px; padding: 0 16px; font-size: 15px; border-radius: 10px; }
 
+/* Dark (pass E, marketing-a): a brushed, near-flat gold, light at the top
+   edge and slightly deeper below, instead of the diagonal specular band;
+   one soft contact shadow. Light keeps its own pale --grad-gold below. */
 .btn-gold {
-  background: var(--grad-gold);
+  background: linear-gradient(180deg, #e2c787 0%, #cdab66 100%);
   color: #1d1d1f;
-  border-color: rgba(0, 0, 0, 0.12);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  border-color: rgba(0, 0, 0, 0.18);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
-.btn-gold:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.3); }
+.btn-gold:hover { transform: translateY(-1px); background: linear-gradient(180deg, #e8cf92 0%, #d4b36f 100%); box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3); }
 .btn-gold:active { transform: scale(0.97); }
 
 .btn-gray { background: var(--fill); color: var(--text); }
@@ -209,6 +212,7 @@ a { color: inherit; }
 
 /* Light: a crisp edge and one soft contact shadow, the same plane as
    .btn-outline, instead of a heavy bronze glow. */
+[data-theme="light"] .btn-gold, [data-theme="light"] .btn-gold:hover { background: var(--grad-gold); }
 [data-theme="light"] .btn-gold {
   border-color: color-mix(in srgb, var(--gold-700) 40%, transparent);
   box-shadow: 0 1px 2px rgba(60, 45, 15, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.5);
@@ -479,14 +483,14 @@ body[class^="page-"] > main { flex: 1 0 auto; width: 100%; }
 }
 .proof-strip { font-size: 14px; }
 .proof-strip .link-quiet { font-size: inherit; text-decoration-thickness: 1px; text-underline-offset: 4px; }
-/* Narrow screens (marketing-a, pass D): the two proofs become a wrapped
-   row of quiet outlined pills, each a full 44px target, instead of loose
-   centred lines; no separator dot can start a wrapped line. */
-@media (max-width: 939px) {
-  .proof-strip { gap: 10px; }
+/* Phone (marketing-a, pass E): the two proofs keep their desktop material,
+   hairline-underlined quiet text, so they never compete with the buttons.
+   They are too long to share one line at 390px, so they sit as two centred
+   lines, each line a full 44px target; no separator dot can start a line. */
+@media (max-width: 639px) {
+  .proof-strip { flex-direction: column; gap: 0; margin-top: 28px; }
   .proof-strip li + li::before { display: none; }
-  .proof-strip .link-quiet { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border: 1px solid var(--separator); border-radius: var(--radius-pill); color: var(--text); text-decoration: none; }
-  .proof-strip .link-quiet:hover { border-color: var(--gold-hairline); }
+  .proof-strip .link-quiet { display: inline-flex; align-items: center; min-height: 44px; }
 }
 @media (max-width: 559px) {
   .hero-copy .eyebrow { font-size: 11px; letter-spacing: 0.08em; }
@@ -1039,6 +1043,13 @@ a.system-map-method span { font-family: var(--font-sans, inherit); }
 @media (pointer: coarse) {
   a.system-map-method { min-height: 44px; padding-inline: 16px; }
 }
+/* Pass E (marketing-a): on phone widths the method pill is a full 44px
+   link at 13px, whatever the pointer reports; node labels never break
+   mid-phrase. */
+.system-map .system-map-node { text-wrap: balance; }
+@media (max-width: 759px) {
+  a.system-map-method { min-height: 44px; padding-inline: 18px; font-size: 13px; }
+}
 @media (max-width: 339px) {
   .system-map-nodes { grid-template-columns: 1fr; }
 }
@@ -1318,6 +1329,30 @@ a.system-map-method span { font-family: var(--font-sans, inherit); }
   .learn-request-grid { align-items: end; }
 }
 .learn-request-address { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; }
+/* ── Learn round 6 (listening family, pass E) ──
+   Hero: the gold Listening Room card is the one primary; "Send a topic"
+   is the hero's own text link, and Echo is named by an inline link in the
+   sub (the Echo page carries the beta). Library tile: the same anatomy as
+   the book card beside it (label, title, text, then a ruled link row on
+   the card's foot), so both cards share their top line and link row.
+   Request: the heading spans the panel; the paragraph and the three
+   notes start on one line beneath it. */
+.learn-hero-sub a { color: var(--text); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent); text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+.learn-hero-sub a:hover { color: var(--gold-text); }
+.learn-library-tile { justify-content: flex-start; gap: 0; padding: 20px; }
+.learn-library-tile .learn-card-label { margin: 0 0 10px; }
+.learn-library-tile-title { color: var(--text); font-size: 1.18rem; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; margin: 0 0 8px; }
+.learn-library-tile-text { margin: 0 0 16px; }
+.learn-library-tile-cta { align-self: stretch; margin-top: auto; padding: 16px 0 4px; border-top: 1px solid var(--separator); font-size: 0.86rem; text-underline-offset: 4px; }
+.learn-library-tile-cta svg { margin-left: 4px; }
+.learn-request-grid { row-gap: 14px; align-items: start; }
+.learn-request-head { grid-column: 1 / -1; }
+.learn-request-head h2 { margin: 0; }
+.learn-request-body > p { color: var(--text-muted); font-size: 1rem; line-height: 1.7; margin: 0; }
+.learn-request-list { padding-top: 2px; }
+@media (max-width: 759px) {
+  .learn-request-list { margin-top: 14px; }
+}
 
 /* ── Echo detail: hero / gallery / ladder / features / principles / CTA */
 .echo-hero { text-align: center; }
@@ -1467,8 +1502,6 @@ a.system-map-method span { font-family: var(--font-sans, inherit); }
 .app-hero-tagline { font-size: 17px; font-weight: 500; color: var(--gold-text); margin: 0 0 14px; }
 .app-hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
 .app-monogram { display: inline-flex; align-items: center; justify-content: center; background: var(--fill); font-weight: 600; font-size: 40px; color: var(--gold-text); }
-.app-case-study-callout { margin-top: 40px; padding: 24px; border: 1px solid var(--gold-hairline); border-radius: var(--radius-card); background: color-mix(in srgb, var(--gold-500) 7%, var(--surface)); }
-.app-case-study-callout p:not(.eyebrow) { margin: 0 0 14px; color: var(--text-muted); font-size: .94rem; line-height: 1.6; }
 /* The closing "Project site | Source | Help" line of an app page is a quiet
    row of text links: the primary action already sits under the hero, so
    these read as a footnote, not as competing buttons. font-size:0 drops the
@@ -1680,6 +1713,45 @@ a.system-map-method span { font-family: var(--font-sans, inherit); }
   .app-hero + .prose .app-gallery .screen-frame img { border-radius: 21px; }
   .app-hero + .prose .app-gallery .screen-caption { padding: 0; font-size: 12.5px; }
 }
+/* ── App detail, pass E (marketing-a) ──
+   - MacroMark: on wider screens the screenshot pair starts on the column's
+     left edge, under the Download button, with a real gap between them;
+   - .macro-example: one worked phrase under the macro table, what you say
+     beside what it writes (stacked on phone);
+   - .app-steps-grid: the four capture steps as a two-by-two grid of step
+     cards on wider screens, so table, grid and spec list differ in shape;
+   - .app-spec-note: a spec list's caveats, once, in a muted line below it. */
+@media (min-width: 560px) {
+  .app-hero + .prose > .app-actions + .app-gallery { margin: 40px 0 8px; }
+}
+/* Labels share one row and the phrase, arrow and Markdown share the next,
+   so both labels and both halves line up (the wrappers are display:contents). */
+.app-hero + .prose > .macro-example { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 8px 20px; margin: 28px 0 8px; }
+.macro-example > .macro-example-said, .macro-example > .macro-example-written { display: contents; }
+.macro-example-label { grid-row: 1; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; line-height: 1.4; text-transform: uppercase; color: var(--text-muted); }
+.macro-example-said > .macro-example-label { grid-column: 1; }
+.macro-example-written > .macro-example-label { grid-column: 3; }
+.macro-example-phrase { grid-row: 2; grid-column: 1; font-size: 19px; font-weight: 500; line-height: 1.4; color: var(--text); }
+.macro-example-arrow { grid-row: 2; grid-column: 2; font-size: 22px; line-height: 1; color: var(--gold-text); }
+.app-hero + .prose .macro-example-written > pre { grid-row: 2; grid-column: 3; margin: 0; padding: 14px 18px; background: var(--surface); border: 1px solid var(--gold-hairline); border-radius: 12px; box-shadow: none; overflow-x: auto; }
+.app-hero + .prose .macro-example-written code { padding: 0; background: none; font-size: 16px; font-weight: 600; color: var(--gold-text); white-space: pre; }
+.app-hero + .prose > .macro-example > figcaption { grid-row: 3; grid-column: 1 / -1; margin: 8px 0 0; font-size: 14px; line-height: 1.5; color: var(--text-muted); text-wrap: balance; }
+@media (max-width: 559px) {
+  .app-hero + .prose > .macro-example { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .macro-example-said > .macro-example-label { grid-row: 1; grid-column: 1; }
+  .macro-example-phrase { grid-row: 2; font-size: 17px; }
+  .macro-example-arrow { grid-row: 3; grid-column: 1; justify-self: start; margin-left: 2px; transform: rotate(90deg); }
+  .macro-example-written > .macro-example-label { grid-row: 4; grid-column: 1; }
+  .app-hero + .prose .macro-example-written > pre { grid-row: 5; grid-column: 1; }
+  .app-hero + .prose > .macro-example > figcaption { grid-row: 6; }
+}
+@media (min-width: 640px) {
+  .app-hero + .prose > ol.app-steps-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .app-hero + .prose > ol.app-steps-grid > li { padding: 52px 22px 20px; }
+  .app-hero + .prose > ol.app-steps-grid > li::before { left: 22px; top: 18px; }
+  .app-hero + .prose > ol.app-steps-grid > li > strong:first-child { display: block; margin-bottom: 4px; }
+}
+.app-hero + .prose > ul + p.app-spec-note { margin: -8px 0 0; font-size: 14px; line-height: 1.6; color: var(--text-muted); }
 
 /* ── Posts list + tag lists ─────────────────────────── */
 .post-list { display: flex; flex-direction: column; gap: 14px; }
@@ -1704,9 +1776,15 @@ a.system-map-method span { font-family: var(--font-sans, inherit); }
 .page > .back-link + .page-head { margin-top: 0; }
 .tag-more .post-end-label { margin: 0 0 12px; }
 /* Closing line on a short index: a quiet "that's all" and the sibling index. */
-.index-end { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; margin: 28px 0 0; padding-top: 20px; border-top: 1px solid var(--separator); }
+.index-end { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; margin: 28px 0 0; padding-top: 20px; border-top: 1px solid var(--separator); }
 .index-end-note { margin: 0; font-size: 14px; color: var(--text-muted); }
-.index-end .back-link { margin: 0; color: var(--text); }
+/* Same size as the note beside it, sharing its baseline. */
+.index-end .back-link { margin: 0; color: var(--text); font-size: 14px; }
+/* The posts index lede ends in its route to the topics hub, set as the
+   site's prose link (full text colour, gold underline). */
+.page-short-index .page-lede a { color: var(--text); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent); text-decoration-thickness: 1.5px; text-underline-offset: 4px; transition: color 0.15s ease, text-decoration-color 0.15s ease; }
+.page-short-index .page-lede a:hover { color: var(--gold-text); text-decoration-color: var(--gold-500); }
+[data-theme="light"] .page-short-index .page-lede a { text-decoration-color: var(--gold-text); }
 .index-end .back-link:hover { color: var(--gold-text); }
 .tag-more { margin-top: 28px; }
 
@@ -1917,8 +1995,11 @@ a.system-map-method span { font-family: var(--font-sans, inherit); }
 .prose-guide h3[id^="plan-"] em { display: block; margin-top: 4px; font-family: var(--font-mono); font-size: 12.5px; font-weight: 500; letter-spacing: 0.06em; line-height: 1.5; text-transform: uppercase; }
 /* "Jump to a plan": the in-page plan links become a row of chips, a pick-one
    menu (font-size 0 drops the " · " separators the Markdown reads with). */
-.prose-guide > p:has(> a[href^="#plan-"]) { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 8px; font-size: 0; }
-.prose-guide > p:has(> a[href^="#plan-"]) > strong { flex-basis: 100%; margin-bottom: 2px; font-family: var(--font-mono); font-size: 12.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+/* No flex gap: the hidden " · " text nodes are flex items too, and each would
+   take a gap. Each chip carries its own right and bottom margin instead. */
+.prose-guide > p:has(> a[href^="#plan-"]) { display: flex; flex-wrap: wrap; align-items: center; gap: 0; margin: 0; font-size: 0; scroll-margin-top: 88px; }
+.prose-guide > p:has(> a[href^="#plan-"]) > a { margin: 0 8px 8px 0; }
+.prose-guide > p:has(> a[href^="#plan-"]) > strong { flex-basis: 100%; margin-bottom: 10px; font-family: var(--font-mono); font-size: 12.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
 .prose-guide > p:has(> a[href^="#plan-"]) > a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; font-size: 14.5px; font-weight: 500; line-height: 1.3; color: var(--text); text-decoration: none; background: var(--surface); border: 1px solid var(--separator); border-radius: var(--radius-pill); }
 .prose-guide > p:has(> a[href^="#plan-"]) > a:hover { border-color: color-mix(in srgb, var(--gold-500) 45%, var(--separator)); color: var(--text); }
 @media (pointer: coarse) { .prose-guide > p:has(> a[href^="#plan-"]) > a { min-height: 44px; } }
@@ -1980,6 +2061,15 @@ body:has(.prose-guide:not(.prose-chapters):not(.prose-long)) .site-footer { marg
    the underline is its one emphasis, so it drops the bold and stands as the
    item's heading line. */
 .prose-policy li > strong:first-child:has(> a) { display: block; font-weight: 500; }
+/* Site privacy (pass E): a meta line with two dates keeps each label with
+   its date. They share a line with a dot between them when they fit; on a
+   phone each date takes its own line and the dot drops. */
+.prose .prose-meta > span { white-space: nowrap; }
+.prose .prose-meta > span + span::before { content: "·"; content: "·" / ""; margin: 0 0.5em 0 0.25em; }
+@media (max-width: 600px) {
+  .prose .prose-meta > span { display: block; }
+  .prose .prose-meta > span + span::before { content: none; }
+}
 /* Phones: a link that leads a list item gets a taller tap zone. Inline
    padding grows the hit area to about 44px without moving the text or
    splitting the link from the words around it. */
@@ -1987,6 +2077,40 @@ body:has(.prose-guide:not(.prose-chapters):not(.prose-long)) .site-footer { marg
   .prose-guide li > strong:first-child > a,
   .prose-guide li > a:first-child { padding-block: 8px; }
 }
+
+/* ── Guides, pass E (guides-a; guideBody() markup) ── */
+/* A heading's em-dash subtitle (guideSplitTitle) is a quieter second line,
+   so a chapter opens on its short name (the rail label) and the long tail
+   never splits the name mid-compound. */
+.prose .prose-title-sub { display: block; margin-top: 6px; font-size: clamp(16px, 0.72em, 19px); font-weight: 400; line-height: 1.35; letter-spacing: -0.005em; color: var(--text-muted); text-wrap: pretty; }
+.prose h1 .prose-title-sub { margin-top: 10px; font-size: 0.5em; font-weight: 500; line-height: 1.2; letter-spacing: -0.015em; }
+/* Without the rail, a long guide's eyebrow carries the total ("Section 4 of 14"). */
+@media (max-width: 1199.98px) {
+  .prose .prose-h2-num[data-of]::after { content: " of " attr(data-of); }
+}
+/* A devlog week outside the commit count keeps an empty bar track. */
+.prose-bar-0 { --bar-step: 0; }
+/* Contents with subheads: a long reference (.prose-toc-local) opens only the
+   current chapter's subheads in the rail and lists chapters only on a phone;
+   an FAQ lists every question in both. */
+@media (min-width: 1200px) {
+  .prose-long > .prose-toc-local li:not(:has(a[aria-current])) > ul { display: none; }
+  .prose-long > .prose-toc li:has(ul a[aria-current]) > a { color: var(--text); }
+  /* Subheads use the rail's full width: one small step in from their
+     chapter (numbered chapters: level with the chapter's label). */
+  .prose-long > .prose-toc ul ul { padding-left: 0; }
+  .prose-long > .prose-toc ul ul a { padding-left: 22px; }
+}
+@media (max-width: 1199.98px) {
+  .prose .prose-toc-local ul ul { display: none; }
+}
+/* A help page's guide list as rows (guideHubRows): it reads as the page's
+   first set of routes, and the contact rows close the page the same way. */
+.prose .prose-hub { margin: 8px 0 8px; }
+.prose .prose-hub .support-row-sub { text-wrap: pretty; }
+/* Policies: plain wrap. "pretty" pulls words down and leaves short ragged
+   lines in long legal paragraphs. */
+.prose-policy p { text-wrap: wrap; }
 
 /* ── Arcade Hall + shared game system ───────────────── */
 .games-main {
@@ -2639,7 +2763,9 @@ fieldset.game-audio-controls legend { float: left; width: 100%; padding: 0; colo
   outline: 2px dashed var(--game-text-accent);
   outline-offset: -4px;
 }
-.yard-cell-selected {
+/* The cursor shows only once a run has started (pass E): before Start a
+   selected cell has no meaning yet. */
+.yard-game:not([data-play-state="preview"]) .yard-cell-selected {
   position: relative;
   z-index: 1;
   border: 3px double var(--game-text-accent);
@@ -3360,10 +3486,12 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 .word-search-list li.is-found-item { text-decoration-color: var(--gold-500); text-decoration-thickness: 2px; }
 
 @media (min-width: 960px) {
-  /* Sudoku and Word Search: the side column sits beside the board as one
-     unit, not at the far edge. */
-  .games-app:has(> .game-side > .sudoku-controls) { justify-content: start; column-gap: 48px; }
-  .word-search-layout { justify-content: start; column-gap: 48px; }
+  /* Sudoku and Word Search (pass E): the toolbar and the side column end on
+     the nav's right edge; the side column is wider, so the gap to the board
+     stays a gutter, not a void. (Pass D's "justify-content: start" left the
+     toolbar and column short of the edge.) */
+  .games-app:has(> .game-side > .sudoku-controls) { grid-template-columns: max-content minmax(18rem, 24rem); justify-content: space-between; column-gap: 48px; }
+  .word-search-layout { grid-template-columns: minmax(0, 36rem) minmax(16rem, 1fr); justify-content: start; column-gap: clamp(40px, 5vw, 64px); }
   /* Charts: rule and board in the first column, audio beside the board. */
   .games-app:has(> .charts-side) { display: grid; grid-template-columns: max-content minmax(16rem, 1fr); column-gap: 48px; align-items: start; }
   .games-app:has(> .charts-side) > * { grid-column: 1 / -1; }
@@ -3387,6 +3515,99 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   .word-search-board-column > .game-board-scroll .word-search-board { border-radius: 10px; }
   .word-search-words > .word-search-legend { order: -1; margin: -8px 0 0; }
   .crossword-board-column .crossword-board { min-width: calc(var(--crossword-columns, var(--crossword-size)) * 26px); }
+}
+
+/* ── Games round 6 (pass E, games family) ───────────────── */
+/* Hub: the Yard symbol frame matches its siblings' weight; a single-mode
+   card has no visible mode label (its group keeps an aria-label), so the
+   chips follow the description. Before any finish the records band shows
+   quiet figures; the first record lights it up in gold. */
+.game-card-kinnoki-yard { --card-accent: #a8894f; }
+.games-stats.is-empty .games-stats-summary dd { color: var(--game-text-secondary); font-weight: 500; }
+
+/* Crossword: dark playable squares are lifted off the hatched block field,
+   so the grid's shape reads at once; light keeps its white squares. The
+   active clue in the list is marked by a gold edge and weight, not a box,
+   so the board's clue bar stays the one boxed echo. */
+.crossword-cell { background: var(--surface-2); }
+[data-theme="light"] .crossword-cell { background: var(--surface); }
+.crossword-clues [data-clue].is-active { color: var(--game-text-primary); border-color: transparent; border-radius: 0 8px 8px 0; box-shadow: inset 3px 0 0 var(--gold-500); }
+
+/* Charts: Hint and Check start on the puzzle's left edge (under the row
+   clues), in line with the rule above the board. */
+.charts-layout > .charts-controls { grid-column: 1 / -1; grid-row: 3; }
+
+/* Stack: before Start, Describe Dock is a quiet left-aligned text button
+   (it is an assistive tool, not a field), and the hint is left-aligned
+   like Yard's. */
+.stack-layout > .game-controls-hint { text-align: left; }
+.stack-game[data-play-state="preview"] .stack-controls > .stack-tool { justify-self: start; width: auto; min-height: 44px; padding-inline: 0; border-color: transparent; text-decoration: underline; text-decoration-color: var(--separator); text-underline-offset: 4px; }
+.stack-game[data-play-state="preview"] .stack-controls > .stack-tool:hover { text-decoration-color: currentColor; }
+/* The crane label is a quiet annotation; the rule keeps the gold. */
+.stack-crane-line { color: var(--game-text-secondary); border-bottom-color: var(--gold-text); font-family: var(--font-sans); letter-spacing: 0.02em; }
+
+/* Yard: the check sits inside the selected tile's radius. */
+.yard-tray-piece.is-selected::after { top: 6px; right: 6px; font-size: 0.75rem; }
+
+@media (min-width: 760px) {
+  /* Hub: every chip row ends on the card's bottom edge, so the second row
+     of cards shares one chip baseline (Yard's two modes set its height). */
+  .game-card-grid .game-mode-actions { margin-top: auto; }
+}
+/* Yard's short mode names sit at the start of their chip rows wherever a
+   card is wide enough (phones and full desktop), so its card is only one
+   chip row taller than its neighbours. */
+@media (min-width: 360px) and (max-width: 759px), (min-width: 1120px) {
+  .game-card-grid .difficulty-links > span { flex: 0 0 4.1rem; width: auto; white-space: nowrap; }
+  .game-card-grid .difficulty-links + .difficulty-links { padding-top: 8px; }
+}
+
+@media (min-width: 960px) {
+  /* Crossword: the board column is the board's own width (the clue bar and
+     check row share its edges); the clue column takes the rest, so there is
+     no dead gutter and the audio card ends on the nav's right edge. */
+  .crossword-layout {
+    --crossword-board-w: calc(clamp(24rem, 100svh - 26rem, 36rem) * var(--crossword-columns, 1) / var(--crossword-rows, 1));
+    grid-template-columns: minmax(0, var(--crossword-board-w)) minmax(18rem, 1fr);
+    column-gap: clamp(40px, 5vw, 64px);
+  }
+  .crossword-board-column .crossword-board { width: 100%; max-width: none; }
+
+  /* Word Search: the theme title has air above its instruction; the words
+     sit in two quiet columns without a rule per row. */
+  .word-search-words > h2 { margin-bottom: 8px; }
+  .word-search-words > .word-search-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 24px; }
+  .word-search-words > .word-search-list li { padding: 5px 0; border-bottom: 0; }
+
+  /* Charts: the rule sits over the board; How to play and audio form the
+     side column from the board's top edge, as on Yard. */
+  .games-app:has(> .charts-side) {
+    grid-template-areas: "bar bar" "notice notice" "assist assist" "legend ." "board help" "board side" "live live";
+    grid-template-rows: repeat(5, auto) 1fr auto;
+  }
+  .games-app:has(> .charts-side) > .game-toolbar { grid-area: bar; }
+  .games-app:has(> .charts-side) > .game-storage-notice { grid-area: notice; }
+  .games-app:has(> .charts-side) > .game-assisted-status { grid-area: assist; }
+  .games-app:has(> .charts-side) > .charts-legend { grid-area: legend; }
+  .games-app:has(> .charts-side) > .game-board-scroll { grid-area: board; }
+  .games-app:has(> .charts-side) > details { grid-area: help; margin: 0 0 16px; }
+  .games-app:has(> .charts-side) > .charts-side { grid-area: side; }
+  .games-app:has(> .charts-side) > .games-live-region { grid-area: live; }
+
+  /* Yard: a short contract board sits level with the middle of the side
+     panel instead of leaving a void under it. */
+  .yard-layout > .yard-board-column { align-self: center; }
+}
+
+@media (max-width: 759px) {
+  /* Hub: one tighter card rhythm. */
+  .game-card-grid .game-card { padding: 20px; }
+  .game-card-grid .game-card-topline { margin-bottom: 12px; }
+  .game-card-grid .difficulty-links { padding-top: 14px; }
+  /* Stack: the status tiles sit under Start, beside the actions that change
+     them, so the score is never below the dock. */
+  .stack-layout > .game-mode-note, .stack-layout > .game-preplay { order: -2; }
+  .stack-layout > .game-status-grid { order: -1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -4174,7 +4395,7 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 /* Hub: the Live data card is built like the tool cards (glyph over title,
    chevron top right); the connection note's dot sits on its first line;
    the privacy promise closes the page as a signed line, not a footnote. */
-.tools-main .tool-online-chip { align-items: flex-start; }
+.tools-main .tool-online-chip { align-items: flex-start; text-wrap: balance; }
 .tools-main .tool-online-chip::before { flex: none; margin-top: 0.55em; }
 @media (min-width: 700px) {
   .tools-main .tool-live-data { grid-template-columns: minmax(0, 1fr) 20px; align-items: start; row-gap: 0; padding: 24px 26px; }
@@ -4212,6 +4433,10 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 .tools-main[data-tool-page="dilution"] .tool-result.tool-result-strong { font-size: 1.1rem; line-height: 1.4; }
 .tools-main[data-tool-page="dilution"] .tool-result.tool-result-strong > span:first-child { display: block; margin-bottom: 2px; color: var(--text-muted); font-size: 13px; font-weight: 500; }
 .tools-main[data-tool-page="dilution"] .tool-result.tool-result-strong strong { font-size: clamp(1.4rem, 2.4vw, 1.6rem); letter-spacing: -0.02em; line-height: 1.2; }
+/* Each half of the mix moves as one unit, so "+ 3 parts water" never splits;
+   a half wider than the card (very narrow phone, huge volume) still wraps. */
+.dilution-keep { display: inline-block; max-width: 100%; }
+.tools-main[data-tool-page="dilution"] .tool-parts-result { text-wrap: balance; }
 
 /* QR: on phones the code continues the form's left edge. */
 @media (max-width: 759px) {
@@ -4226,6 +4451,9 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 .passphrase-placeholder { display: grid; gap: 8px; }
 .passphrase-mask { color: color-mix(in srgb, var(--text) 34%, transparent); font-family: var(--font-mono); font-size: clamp(1.15rem, 3vw, 1.6rem); font-weight: 600; line-height: 1.35; letter-spacing: 0.02em; overflow-wrap: anywhere; }
 .passphrase-mask[hidden] { display: none; }
+/* One unbreakable unit per masked word (its separator kept after it), so
+   the preview wraps only between whole words. */
+.passphrase-mask-word { display: inline-block; white-space: pre; }
 .passphrase-caption { color: var(--text-muted); font-size: 14px; line-height: 1.45; }
 @media (min-width: 720px) {
   .passphrase-options { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; gap: 14px 24px; }
@@ -4358,6 +4586,11 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   margin-bottom: 16px;
   background: linear-gradient(90deg, var(--tax-blue) 0 34%, var(--tax-lavender) 34% 67%, var(--tax-lichen) 67%);
 }
+/* Tax-sale pass E: the tri-colour rule marks only the two openings (the
+   hero and the guide); elsewhere the band change already starts the
+   section, so the rule would only repeat. */
+.tax-section:not(.tax-guide-section) .tax-kicker::before,
+.tax-boundary .tax-kicker::before { display: none; }
 
 .tax-hero {
   position: relative;
@@ -4437,7 +4670,7 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 /* Tax-sale mono meta (pass D): every data line (checked date, snapshot
    rows, desk notes, guide meta) sets at one 13px size, so it reads as data
    rather than fine print. Uppercase labels keep their own tracking. */
-.tax-refreshed { margin: 28px 0 0; color: var(--tax-muted); font: 0.8125rem/1.55 var(--font-mono); }
+.tax-refreshed { margin: 28px 0 0; color: color-mix(in srgb, var(--tax-ink) 82%, var(--tax-paper)); font: 0.8125rem/1.55 var(--font-mono); }
 
 .tax-desk {
   position: relative;
@@ -4592,7 +4825,37 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
    taller box; the rows touch, so the old gap goes. */
 @media (pointer: coarse) {
   .tax-date-actions { gap: 0; }
-  .tax-date-actions a, .tax-format-card a { display: inline-flex; align-items: center; min-height: 44px; border-bottom: 0; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+  .tax-date-actions a, .tax-format-card a { display: inline-flex; align-items: center; gap: 0.35em; min-height: 44px; border-bottom: 0; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+}
+/* Tax-sale pass E: source links. On a desktop the link column sits close
+   to the entry it serves (capped at 220px, smaller gap), still on the
+   eyebrow's top line. On a phone every source link is a 44px row by width
+   as well as by pointer, set in the copy column's own size. */
+@media (min-width: 881px) {
+  .tax-date-card,
+  .tax-past-list .tax-date-card { grid-template-columns: 150px minmax(0, 1fr) minmax(170px, 220px); column-gap: clamp(26px, 3.4vw, 48px); }
+}
+@media (max-width: 580px) {
+  .tax-date-actions { gap: 0; }
+  .tax-date-actions a, .tax-format-card a { display: inline-flex; align-items: center; gap: 0.35em; min-height: 44px; font-size: 0.875rem; border-bottom: 0; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+}
+/* Earlier past sales fold under the two most recent, so the Explore band
+   follows the upcoming dates sooner; nothing is removed. */
+.tax-past-more > summary { display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 8px 0; color: var(--tax-accent-strong); font-size: 0.88rem; font-weight: 650; cursor: pointer; list-style: none; border-bottom: 1px solid var(--tax-line); }
+.tax-past-more > summary::-webkit-details-marker { display: none; }
+.tax-past-more > summary::before { content: ""; flex: none; width: 7px; height: 7px; margin: 0 4px 2px 2px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); transition: transform 0.15s ease; }
+.tax-past-more[open] > summary::before { transform: rotate(45deg); margin-bottom: 4px; }
+.tax-past-more > summary:hover { color: var(--tax-ink); }
+/* Phone guide: its eyebrow and title arrive before the cover, which is
+   capped and centred, then the dek and the downloads follow. */
+@media (max-width: 880px) {
+  .tax-guide-feature { gap: 0; }
+  .tax-guide-copy { display: contents; }
+  .tax-guide-copy > .tax-kicker,
+  .tax-guide-copy > h2 { order: -1; }
+  .tax-guide-copy > h2 { margin-bottom: 32px; }
+  .tax-guide-copy > :not(.tax-kicker, h2) { order: 1; }
+  .tax-guide-feature > .tax-book-cover { justify-self: center; width: min(62%, 300px); margin-bottom: 36px; }
 }
 
 .tax-notice {
@@ -4618,7 +4881,7 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 .tax-split-copy { max-width: 690px; }
 /* Explore band: the search sentence sits under its headline; the spec list
    opens the second column (the grid gap spaces them on a phone). */
-.tax-map-section .tax-large-copy { margin-top: 28px; }
+.tax-map-section .tax-large-copy { margin-top: 28px; font-size: clamp(1.08rem, 1.6vw, 1.3rem); line-height: 1.6; letter-spacing: -0.01em; }
 .tax-map-section .tax-facts { margin-top: 0; }
 .tax-facts { margin: 46px 0 30px; list-style: none; border-top: 1px solid var(--tax-line); }
 .tax-facts li {
@@ -4673,6 +4936,19 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 .tax-format-card:nth-child(1) { border-top: 6px solid var(--tax-lichen); }
 .tax-format-card:nth-child(2) { border-top: 6px solid var(--tax-blue); }
 .tax-format-card:nth-child(3) { border-top: 6px solid var(--tax-lavender); }
+/* Index and status share the card's first line (number left, status
+   right), so the title follows directly instead of after an empty band. */
+.tax-format-card { display: grid; grid-template-columns: auto 1fr; align-content: start; column-gap: 16px; }
+.tax-format-card > * { grid-column: 1 / -1; }
+.tax-format-card > .tax-format-number { grid-column: 1; margin: 0; }
+.tax-format-card > .tax-status { grid-column: 2; justify-self: end; text-align: right; }
+.tax-format-card > a { justify-self: start; }
+.tax-format-card > p + a { margin-top: 18px; }
+.tax-format-card > a + a { margin-top: 12px; }
+@media (pointer: coarse), (max-width: 580px) {
+  .tax-format-card > p + a { margin-top: 8px; }
+  .tax-format-card > a + a { margin-top: 0; }
+}
 .tax-format-number { margin-bottom: 54px; color: var(--tax-muted); font: 0.75rem var(--font-mono); }
 .tax-format-card h3 { margin: 22px 0 16px; font-family: var(--tax-display); font-size: clamp(1.85rem, 2.7vw, 2.6rem); font-weight: 400; }
 .tax-format-card > p:not(.tax-format-number, .tax-status) { min-height: 112px; color: var(--tax-muted); font-size: 0.92rem; line-height: 1.68; }
@@ -5036,22 +5312,87 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   align-items: center;
 }
 
-/* Archive */
+/* Archive: one column of row cards. Official titles run one to four
+   lines, so a two-column grid left dead bands beside short titles; as
+   rows, every card is as tall as its own title and no taller.
+   Card: kicker (category · closed date), title, issuer; the cue sits
+   at the right on desktop and under the issuer on a phone. */
 .tender-archive-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 16px;
+  gap: 12px;
 }
+.tender-card-archive { gap: 14px; }
+.tender-card-body { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.tender-kicker {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+.tender-kicker span { white-space: nowrap; }
+.tender-kicker span + span::before { content: "·"; content: "·" / ""; margin: 0 0.6em; }
+.tender-card-archive h3 { font-size: 19px; line-height: 1.32; max-width: 64ch; text-wrap: pretty; }
+.tender-card-issuer { margin: 0; font-size: 14px; line-height: 1.5; color: var(--text-muted); }
+.tender-card-archive .card-cue { margin-top: 0; padding-top: 0; }
 @media (min-width: 700px) {
-  .tender-archive-grid { grid-template-columns: 1fr 1fr; }
+  .tender-card-archive {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 40px;
+    padding: 24px 28px;
+  }
 }
+@media (max-width: 599px) {
+  .tender-card-archive { padding: 18px 20px; gap: 12px; }
+  .tender-card-archive h3 { font-size: 16.5px; line-height: 1.34; }
+  .tender-card-body { gap: 6px; }
+  /* Phone: category left, closed date right, no dot, so the longest
+     kicker ("Construction ... Closed August 10, 2026") stays on one line
+     at the site's 12px kicker size. */
+  .tender-kicker { justify-content: space-between; column-gap: 12px; letter-spacing: 0.08em; }
+  .tender-kicker span + span::before { content: none; }
+}
+/* The hero's jump to the free preview (the offer sits under the
+   examples, below the fold on a phone). */
+.tender-hero .tender-hero-jump { margin: 18px 0 0; color: var(--text); font-size: 14px; }
+.tender-hero .tender-hero-jump:hover { color: var(--gold-text); }
+.tender-hero .tender-hero-jump:hover svg { transform: translateY(2px); }
+@media (prefers-reduced-motion: reduce) { .tender-hero .tender-hero-jump:hover svg { transform: none; } }
+.tender-preview { scroll-margin-top: 88px; }
 /* A closed brief reads as secondary through a muted state chip, not
    opacity (which would also drop the title's contrast). Archive cards
    carry no chip: the section note says every example is closed. */
+/* On a brief the state is a label, not a pill: a pill read like the
+   tappable topic chips used elsewhere in this family. A muted dot and
+   text, then a hairline divider before "Facts checked". */
 .tender-detail .tender-state-label {
-  background: var(--fill-2);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border-radius: 0;
+  background: none;
   color: color-mix(in srgb, var(--text-muted) 70%, var(--text));
+  font-size: 13px;
+  white-space: normal;
 }
+.tender-detail .tender-state-label::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+.tender-detail .tender-state { gap: 6px 12px; }
+.tender-detail .tender-checked { padding-left: 12px; border-left: 1px solid var(--separator); }
 
 /* Empty states */
 .tender-empty {
@@ -5179,6 +5520,16 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 .tender-official-links li:first-child a:hover {
   background: color-mix(in srgb, var(--gold-500) 15%, transparent);
 }
+/* External cue: these links leave KinNoKi for the procurement portal. */
+.tender-official-links a { gap: 8px; }
+.tender-official-links .tender-ext { flex: none; opacity: 0.85; transition: transform 0.15s var(--ease); }
+.tender-official-links a:hover .tender-ext { transform: translate(1px, -1px); }
+@media (prefers-reduced-motion: reduce) { .tender-official-links a:hover .tender-ext { transform: none; } }
+/* A long official title (over 70 characters) sets smaller and fills the
+   column instead of balancing into a narrow block, so it takes three
+   lines on desktop and four on a phone and the facts card arrives in the
+   first view. Short titles keep the shared size above. */
+.tender-detail-long-title h1 { font-size: clamp(22px, 2.1vw, 26px); line-height: 1.22; letter-spacing: -0.015em; text-wrap: pretty; }
 
 /* Editorial analysis body */
 .tender-analysis.prose { margin-top: var(--block-gap); }
@@ -5246,16 +5597,18 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 }
 .tender-next .tender-actions { margin-bottom: 12px; }
 .tender-next .back-link { margin-bottom: 0; }
-/* Phone: the official links stay compact wrapping chips (not full-width
-   bars that read as primary buttons); every brief title steps down to
-   one phone size, long ones a little further so the facts card starts
-   in view. */
+/* Phone: two chips of different lengths stacked raggedly, so the
+   official links become equal-width link rows, label left and the
+   external arrow right (rows, not centred bars, so they don't read as
+   primary buttons); every brief title steps down to one phone size,
+   long ones a little further so the facts card starts in view. */
 @media (max-width: 599px) {
   .tender-next .tender-actions .btn { width: 100%; }
-  .tender-official-links { gap: 8px; }
-  .tender-official-links a { padding: 0 14px; }
+  .tender-official-links { flex-direction: column; gap: 8px; }
+  .tender-official-links a { display: flex; justify-content: space-between; padding: 0 14px; }
   .tender-detail h1 { font-size: 25px; line-height: 1.18; letter-spacing: -0.018em; }
-  .tender-detail-long-title h1 { font-size: 21px; line-height: 1.22; letter-spacing: -0.012em; }
+  .tender-detail-long-title h1 { font-size: 19px; line-height: 1.26; letter-spacing: -0.01em; }
+  .tender-detail .tender-checked { padding-left: 0; border-left: 0; }
   .tender-detail > .tender-state { margin-bottom: 24px; }
   .tender-analysis.prose h2 { margin-top: 40px; }
   .tender-analysis.prose > h2:last-of-type { margin-top: 44px; padding-top: 24px; }
@@ -5506,7 +5859,6 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   aspect-ratio: 8 / 5;
   object-fit: cover;
 }
-.gis-figure-dark { background: #101714; }
 /* The 2015 mosaic is a wide 1440x500 band; show it whole, not cropped to 8:5. */
 .gis-figure-wide img { aspect-ratio: 1440 / 500; }
 .gis-product-figure img { object-position: left top; }
@@ -5626,6 +5978,9 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 .gis-boundary p:nth-child(2) strong::before { content: "–"; content: "–" / ""; color: var(--gold-text); }
 .gis-boundary p:nth-child(2) { padding-top: 8px; border-top: 1px solid var(--separator); }
 .gis-rights-note { margin-top: 16px; font-size: .78rem; }
+/* Pass E: the capture's rights note is figure provenance, so it sits in the
+   2026 caption under the credit line, like the other stops' captions. */
+.gis-figure figcaption .gis-rights-note { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--separator); font-size: inherit; line-height: inherit; }
 .gis-rights-note a,
 .gis-stop-copy a {
   color: var(--text);
@@ -5768,16 +6123,36 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 }
 /* Pass C: the brief is the page's longest reading; set it a touch larger. */
 .gis-brief p { font-size: .95rem; }
-/* Phone: all five stops show at once as a two-column grid (the last spans
-   both), so no label is clipped and nothing needs a scroll cue. */
+/* Pass E, desktop: the brief reads as one column at a comfortable measure,
+   and both columns of a stop end on the same line. The brief spreads its
+   four parts down the copy column when the evidence column is taller; the
+   ledger drops to the foot of the evidence column when the copy is taller.
+   No empty bay is left beside either column. */
+@media (min-width: 941px) {
+  .gis-stop > .gis-stop-copy { display: flex; flex-direction: column; align-self: stretch; }
+  .gis-stop-copy > .gis-brief { flex: 1; grid-template-columns: minmax(0, 1fr); align-content: space-between; gap: 16px; }
+  .gis-stop > .gis-boundary { align-self: end; }
+  /* The 2015 mosaic is a short wide band: its brief keeps two columns so
+     the copy stays about as tall as the band and its ledger. */
+  .gis-stop:has(.gis-figure-wide) .gis-brief { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+}
+/* Phone: the five stops are a short vertical timeline. Each year disc sits
+   on one spruce line, as the stops below sit on the transect, so no label is
+   clipped or wrapped and nothing needs a scroll cue. */
 @media (max-width: 620px) {
-  .gis-timeline-nav { margin-right: 0; margin-left: 0; padding-left: 0; overflow: visible; -webkit-mask-image: none; mask-image: none; }
-  .gis-timeline-nav ol { grid-template-columns: repeat(2, minmax(0, 1fr)); min-width: 0; padding-right: 0; }
-  .gis-timeline-nav li:not(:last-child)::after { display: none; }
-  .gis-timeline-nav li { border-bottom: 1px solid var(--separator); }
-  .gis-timeline-nav li:nth-child(odd):not(:last-child) { border-right: 1px solid var(--separator); }
-  .gis-timeline-nav li:last-child { grid-column: 1 / -1; border-bottom: 0; }
-  .gis-timeline-nav a { min-height: 60px; gap: 8px; padding: 10px; }
+  .gis-timeline-nav { margin-right: 0; margin-left: 0; padding: 6px 0; overflow: visible; -webkit-mask-image: none; mask-image: none; }
+  .gis-timeline-nav ol { grid-template-columns: minmax(0, 1fr); min-width: 0; padding-right: 0; }
+  .gis-timeline-nav li:not(:last-child)::after {
+    top: calc(50% + 16px);
+    right: auto;
+    /* Disc centre at 21px: the same line as the transect spine below. */
+    left: 21px;
+    width: 1px;
+    height: calc(100% - 32px);
+    background: color-mix(in srgb, var(--gis-spruce) 70%, var(--separator));
+    transform: none;
+  }
+  .gis-timeline-nav a { min-height: 48px; gap: 12px; padding: 6px 0 6px 5px; }
   .gis-nav-year { width: 32px; height: 32px; font-size: .58rem; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -6311,6 +6686,32 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 .shakespeare-edition-copy > p.shakespeare-secondary:nth-of-type(2) { grid-row: 3; }
 .shakespeare-edition-copy > .shakespeare-edition-notice { grid-column: 2; grid-row: 4; align-self: start; margin-top: 4px; }
 .shakespeare-edition-copy > .shakespeare-downloads { grid-column: 1 / -1; grid-row: 5; }
+/* ── Shakespeare round 6 (listening family, pass E) ──
+   Collection: the format lists are real lists; each item stays whole and
+   the dot separator sits in a gutter that the list's left edge clips, so
+   a wrapped line never starts on a dot. The photo well gets the same
+   hairline as the Midsummer plate. Midsummer: Puck's lines start level
+   with the title block (the rule on the eyebrow line) instead of floating
+   mid-column. Merchant: meta facts never split; the source links sit
+   beside the note on the play, and the two credit paragraphs run under
+   them on the same two columns, so each column holds one source block
+   and one paragraph and both start on shared lines. */
+.shakespeare-work-card .shakespeare-formats dd { overflow: hidden; }
+.shakespeare-format-list { display: flex; flex-wrap: wrap; margin: 0 0 0 -1.1em; padding: 0; list-style: none; }
+.shakespeare-format-list li { position: relative; padding-left: 1.1em; white-space: nowrap; }
+.shakespeare-format-list li::before { content: "·" / ""; position: absolute; left: 0; width: 1.1em; text-align: center; color: var(--shakespeare-muted); }
+.shakespeare-card-art { border: 1px solid color-mix(in srgb, var(--shakespeare-accent) 38%, var(--separator)); }
+@media (min-width: 900px) {
+  .shakespeare-main:has(> .shakespeare-release-card) > .shakespeare-epigraph { align-self: start; margin-top: 10px; }
+}
+.shakespeare-fact { white-space: nowrap; }
+.shakespeare-credits { margin-top: 28px; }
+.shakespeare-credits p { margin: 0; }
+.shakespeare-credits p + p { margin-top: 16px; }
+@media (min-width: 900px) {
+  .shakespeare-credits { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+  .shakespeare-credits p + p { margin-top: 0; }
+}
 @media (prefers-reduced-motion: reduce) {
   html:has(.page-shakespeare) { scroll-behavior: auto; }
   .page-shakespeare *, .page-shakespeare *::before, .page-shakespeare *::after { animation: none !important; transition: none !important; }

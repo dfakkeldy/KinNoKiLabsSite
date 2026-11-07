@@ -17,9 +17,5 @@
   </g>
   <path d="M74 681c245-97 484-187 731-96 272 100 464-6 727-139" fill="none" stroke="#ffffff" stroke-width="15" opacity=".9"/>
   <path d="M74 681c245-97 484-187 731-96 272 100 464-6 727-139" fill="none" stroke="#5f6b66" stroke-width="4" stroke-dasharray="16 15"/>
-  <!-- The legend is HTML text in the /gis figcaption, so it stays readable at every size. -->
-  <g transform="translate(72 68)" font-family="system-ui, sans-serif">
-    <text fill="#27332e" font-size="25" font-weight="700" letter-spacing="3">2013 · GENERALIZED RECONSTRUCTION</text>
-    <text y="48" fill="#5f6b66" font-size="22">Invented geometry · no basemap · no names or location</text>
-  </g>
+  <!-- No text in the raster: the title, boundary note and legend are HTML in the /gis figcaption, so they stay readable at every size. -->
 </svg>

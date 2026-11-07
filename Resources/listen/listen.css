@@ -752,7 +752,7 @@ body.font-opendyslexic .room-bar .font-toggle {
 }
 /* Section names are labels; the card and book titles are the headings
    you read, so "Series" no longer competes with the series' own title. */
-.room-library > h2 {
+:is(.room-library, .fiction-shelf) > h2 {
   color: var(--room-text-accent);
   font-size: 12px;
   font-weight: 650;
@@ -799,4 +799,63 @@ body.font-opendyslexic .room-bar .font-toggle {
   #moreBooksShelf ul { gap: 0; }
   .room-library li .room-lib-links,
   .room-library li[aria-current="page"] .room-lib-links { margin-top: 0; }
+}
+
+/* ── Round 6 (listening family, pass E) ─────────────── */
+/* The chapter list now closes the player column (it seeks the transport
+   above it), so on a desktop both hero columns end together: cover and
+   title on the left, captions, controls, formats and chapters on the
+   right. On a phone it follows the controls, as before. */
+.room-stage > .room-chapters { order: 3; }
+@media (min-width: 760px) {
+  .room-stage > .room-chapters { margin-top: 4px; }
+}
+/* The stage book's series card is a slim strip at the head of the series
+   (as on the fiction shelf): cover, volume and title, then the "Now
+   playing" tag at the right. It no longer stretches beside a taller
+   neighbour, so there is no empty well inside it, and the other volumes
+   follow in order as one row. */
+.series-volume-list li[aria-current="page"] {
+  grid-column: 1 / -1;
+  order: -1;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  align-content: center;
+  align-self: start;
+  column-gap: 14px;
+  row-gap: 2px;
+  padding: 10px 14px;
+}
+.series-volume-list li[aria-current="page"] .room-lib-cover { grid-row: 1 / -1; width: 44px; }
+.series-volume-list li[aria-current="page"] .room-lib-volume { grid-column: 2; grid-row: 1; align-self: end; }
+.series-volume-list li[aria-current="page"] .room-lib-title { grid-column: 2; grid-row: 2; align-self: start; }
+.series-volume-list li[aria-current="page"] .room-lib-links {
+  grid-column: 3;
+  grid-row: 1 / -1;
+  align-self: center;
+  justify-self: end;
+  margin: 0;
+}
+.series-volume-list li[aria-current="page"] .room-lib-now { flex-basis: auto; }
+@media (min-width: 560px) {
+  /* With the stage volume lifted out as the strip, the remaining
+     volumes share one row instead of a 2 × 2 block with a hole in it. */
+  .series-shelf .series-volume-list:has(> li[aria-current="page"]) {
+    grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
+  }
+}
+/* Library cards on a mouse-and-keyboard screen: each card shows its
+   title and Listen; EPUB and Read come up when the card is pointed at or
+   a link in it has focus, so twenty cards stop repeating one link row.
+   Touch screens and phone widths keep all three links visible (44px on
+   touch), and the line under "More books" says where the formats are. */
+.room-library-sub-pointer { display: none; }
+@media (hover: hover) and (pointer: fine) and (min-width: 760px) {
+  .room-library-sub-touch { display: none; }
+  .room-library-sub-pointer { display: inline; }
+  .room-library li:not([aria-current="page"]) .room-lib-links a:not(.room-lib-listen) {
+    opacity: 0;
+  }
+  .room-library li:is(:hover, :focus-within) .room-lib-links a:not(.room-lib-listen) { opacity: 1; }
 }

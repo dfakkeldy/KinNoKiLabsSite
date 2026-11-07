@@ -16,7 +16,9 @@ Echo is made by Daniel Vincent Fakkeldy, operating as KinNoKi Labs. In short:
 
 ## Optional external AI
 
-**What is sent.** If you configure an external AI provider and generate study cards with it, Echo sends book passages and their source identifiers to that provider. Generation can include section excerpts, a generated book brief and batches of source text. It sends the model selection and your provider credential so the service can process the request under your provider account. This feature sends text; it does not upload your audio recordings, selected photos or the EPUB file container as part of these requests.
+**What is sent.** If you configure an external AI provider and generate study cards with it, Echo sends book passages and their source identifiers to that provider. Generation can include section excerpts, a generated book brief and batches of source text.
+
+It sends the model selection and your provider credential so the service can process the request under your provider account. This feature sends text; it does not upload your audio recordings, selected photos or the EPUB file container as part of these requests.
 
 **Providers and credentials.** The available presets are Anthropic, DeepSeek, Moonshot/Kimi and Z.ai/GLM. You can edit the endpoint or use a custom compatible service. The configuration screen describes the text transfer. Credentials are stored in the system Keychain. Remove Token disables generation with that stored provider configuration. Test Connection sends a small test prompt and your credential to the configured service.
 
@@ -35,7 +37,9 @@ Echo is made by Daniel Vincent Fakkeldy, operating as KinNoKi Labs. In short:
 
 **Uploading alignments.** The current release does not expose an action for uploading alignments to the public database. This is separate from the optional lookup and from files in your private iCloud storage. The lookup description does not promise that a matching record exists or that a request will succeed.
 
-**Copies shared from other builds.** If you shared an alignment using another build, removing local anchors, deleting a local book or signing out does not itself delete public copies. Echo's client sets no automatic expiry for shared alignment records and has no in-app deletion control for them. We do not state a fixed retention period for past public alignments or guarantee removal of copies obtained by other users. You can contact us with privacy questions or requests using the address below.
+**Copies shared from other builds.** If you shared an alignment using another build, removing local anchors, deleting a local book or signing out does not itself delete public copies.
+
+Echo's client sets no automatic expiry for shared alignment records and has no in-app deletion control for them. We do not state a fixed retention period for past public alignments or guarantee removal of copies obtained by other users. You can contact us with privacy questions or requests using the address below.
 
 ## Optional Audiobookshelf connection
 
@@ -51,9 +55,13 @@ Echo is made by Daniel Vincent Fakkeldy, operating as KinNoKi Labs. In short:
 
 ## Optional Watch Inbox webhook
 
-**What is sent.** If you configure Watch Inbox, Echo sends your dictated text to the HTTPS webhook you choose through your paired iPhone. Each message includes a unique capture identifier, capture time and the source name echo-watch. When a book is open, its metadata title and listening position are included as context; if that title is unavailable, context is omitted. Native dictation follows your Apple device settings and Apple's privacy policy.
+**What is sent.** If you configure Watch Inbox, Echo sends your dictated text to the HTTPS webhook you choose through your paired iPhone. Each message includes a unique capture identifier, capture time and the source name echo-watch.
 
-**Queued messages.** Pending messages are stored locally on the watch and iPhone until the endpoint accepts them. Echo then removes the pending text and keeps a hashed identifier receipt locally to avoid sending the same capture again. The webhook key is stored in the iPhone Keychain. Previous endpoint configurations are retained so already-queued messages keep their original destination unless you choose Use Current Inbox for Queued Messages, which moves those pending captures to the current endpoint while keeping their unique identifiers, text and capture metadata. The operator of your chosen webhook controls its processing, logs and retention. Endpoint acceptance does not confirm that a recipient has saved or acted on a message.
+When a book is open, its metadata title and listening position are included as context; if that title is unavailable, context is omitted. Native dictation follows your Apple device settings and Apple's privacy policy.
+
+**Queued messages.** Pending messages are stored locally on the watch and iPhone until the endpoint accepts them. Echo then removes the pending text and keeps a hashed identifier receipt locally to avoid sending the same capture again. The webhook key is stored in the iPhone Keychain.
+
+Previous endpoint configurations are retained so already-queued messages keep their original destination unless you choose Use Current Inbox for Queued Messages, which moves those pending captures to the current endpoint while keeping their unique identifiers, text and capture metadata. The operator of your chosen webhook controls its processing, logs and retention. Endpoint acceptance does not confirm that a recipient has saved or acted on a message.
 
 ## Location, photos, microphone and Apple devices
 

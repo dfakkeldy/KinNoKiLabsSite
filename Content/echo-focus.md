@@ -6,7 +6,7 @@ Echo, now in beta on TestFlight, was built for interrupted, neurodivergent atten
 
 > **This is a field guide, not medical advice.** ADHD and autism are real, diagnosable conditions — strategies like these *complement* professional care (therapy, coaching, medication where appropriate); they don't replace it.
 
-## 1. Getting Started — the activation-energy problem
+## 1. Getting Started — the activation‑energy problem
 
 The hardest part of any task is the first sixty seconds. ADHD brains famously struggle with *task initiation* — not because the task is hard, but because starting requires self-activation that neurotypical brains get "for free." Procrastination research (Steel, 2007) finds the gap is largest for tasks that are boring, ambiguous, or far from their deadline — which describes most studying.
 

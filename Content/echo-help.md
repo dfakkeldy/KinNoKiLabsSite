@@ -59,8 +59,8 @@ Your audio stays where you put it (Echo reads in place). Echo's own data lives i
 
 Stuck, found a bug, or want a feature? Email or open an issue.
 
-- **Email Support:** [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com)
-- **Issue Tracker:** [GitHub Issues](https://github.com/dfakkeldy/Echo/issues)
+- **Email support:** [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com)
+- **Issue tracker:** [GitHub Issues](https://github.com/dfakkeldy/Echo/issues)
 
 I try to answer within 24–48 hours.
 

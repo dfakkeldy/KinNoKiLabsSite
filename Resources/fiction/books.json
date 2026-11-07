@@ -355,7 +355,7 @@
         "sidecar": "books/the-human-exception/alignment.json",
         "hasWordTimings": true
       },
-      "editionNote": "Public first listen — narrated with Echo voices, automated package and audio checks passed. The human reading and listening reviews are still open."
+      "editionNote": "Public first listen — automated package and audio checks passed; the human reading and listening reviews are still open."
     },
     {
       "slug": "reversible-containment",
@@ -578,7 +578,7 @@
         "sidecar": "books/reversible-containment/alignment.json",
         "hasWordTimings": false
       },
-      "editionNote": "Public first listen — narrated with Echo voices, automated package and audio checks passed. The human reading and listening reviews are still open."
+      "editionNote": "Public first listen — automated package and audio checks passed; the human reading and listening reviews are still open."
     },
     {
       "slug": "the-appeal-window",
@@ -1001,7 +1001,7 @@
         "commit": "4bf38dd2b67ffb205344e4331b6dd78fc2668fb1",
         "publicationSHA256": "bb4fc2b6b012d5773365fd365885e87a75274483570d66c498bc75a3c323bf85"
       },
-      "editionNote": "Public first listen — modern-English adaptation prepared with OpenAI Codex for Dan Fakkeldy. Narration uses Echo/Kokoro synthetic voices. Human reading and listening reviews remain pending. The book folder contains the credits and separate text, cover and recording reuse notices."
+      "editionNote": "Public first listen — modern-English adaptation prepared with OpenAI Codex for Dan Fakkeldy, narrated in Echo/Kokoro synthetic voices. Human reading and listening reviews remain pending."
     },
     {
       "author": "William Shakespeare",
@@ -1168,7 +1168,7 @@
         "commit": "4bf38dd2b67ffb205344e4331b6dd78fc2668fb1",
         "publicationSHA256": "ae7920012c5a1b3c555c50c6f21b67d6631557849710f31233f1b551a4c2255e"
       },
-      "editionNote": "Public first listen — modern-English adaptation prepared with OpenAI Codex for Dan Fakkeldy. Narration uses Echo/Kokoro synthetic voices. Human reading and listening reviews remain pending. The book folder contains the credits and separate text, cover and recording reuse notices."
+      "editionNote": "Public first listen — modern-English adaptation prepared with OpenAI Codex for Dan Fakkeldy, narrated in Echo/Kokoro synthetic voices. Human reading and listening reviews remain pending."
     }
   ]
 }

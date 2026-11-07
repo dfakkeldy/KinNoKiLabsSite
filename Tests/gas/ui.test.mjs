@@ -225,6 +225,9 @@ test('total feed failure and missing performance remain readable without NaN or 
   const partial = await mount(snapshot);
   assert.ok(partial.root.querySelector('.gas-current-price'));
   assert.match(partial.root.querySelector('.gas-performance').textContent, /unavailable/i);
+  // The published watch limitations stay on the page even when the watch
+  // has no validation table to fold them under.
+  assert.ok(partial.root.querySelector('.gas-watch').textContent.includes(snapshot.watch.limitations));
 });
 
 test('manual and scheduled refresh use the same public feed and page exit stops its timer', async () => {

@@ -1,12 +1,21 @@
 # Building Echo: The Devlog
 
-Echo went from "I wonder if I could make an iOS app" to a four-platform audiobook study system in about eight weeks. This is the week-by-week story, reconstructed from the actual git history — **428 commits between April 19 and June 9, 2026**, by one developer new to Swift, directing an AI coding agent on evenings and weekends. Each week's bar shows its commits against the busiest week.
+Echo went from "I wonder if I could make an iOS app" to a four-platform audiobook study system in about eight weeks. This is the week-by-week story, reconstructed from the actual git history — **428 commits between April 19 and June 9, 2026**, by one developer new to Swift, directing an AI coding agent on evenings and weekends. Each week's bar shows its commits against the busiest week. The count stops at June 9, so Week 8 covers its first two days.
 
 It's all open source. You can audit every claim below: [github.com/dfakkeldy/Echo](https://github.com/dfakkeldy/Echo).
 
 ## The road to 1.0
 
-In June, Echo got a defined 1.0: a trustworthy study player on iPhone, Watch, and Mac, with honest study analytics and a complete flashcard workflow. The plan, in landing order: a **listening capture layer** (so your stats accumulate from the very next beta build), **CI and the Echo identity cleanup**, the **Insights screen** (real listening time, streaks, chapter coverage, retention curves), opt-in **Context Memory** (place-tagged bookmarks and sessions), the full **Anki workflow** (decks, tags, a card editor, the mark-later Card Inbox, real .apkg import), **Brain Dump notes** with watch dictation, **Markdown second-brain export**, and **iCloud study sync**.
+In June, Echo got a defined 1.0: a trustworthy study player on iPhone, Watch, and Mac, with honest study analytics and a complete flashcard workflow. The plan, in landing order:
+
+1. A listening capture layer, so your stats accumulate from the very next beta build
+2. CI and the Echo identity cleanup
+3. The Insights screen: real listening time, streaks, chapter coverage, retention curves
+4. Opt-in Context Memory: place-tagged bookmarks and sessions
+5. The full Anki workflow: decks, tags, a card editor, the mark-later Card Inbox, real .apkg import
+6. Brain Dump notes with watch dictation
+7. Markdown second-brain export
+8. iCloud study sync
 
 **Where it stands, October 2026:** Echo is still in its open TestFlight beta. The Card Inbox, the card editor and decks, FSRS review, Insights on iPhone, and Markdown study-note exports are in current builds; full iCloud study sync and direct `.apkg` import on iPhone are still open. [Join the beta](/echo-beta) to follow it build by build.
 
@@ -72,7 +81,7 @@ The reader grew up too: **PDF companion documents** shipped — page-level align
 
 ## Week 8 · Polish with a safety net
 
-*June 8 – 14*
+*June 8 – 9 · 27 commits*
 
 Straight from the log: a **watch connectivity overhaul** (durable application-context sync; stale transport commands can no longer replay and phantom-pause you), pause-on-headphone-disconnect, a **Pomodoro timer** on the watch with a persistent alarm, a fullscreen cover-art viewer, and a configurable date overlay.
 

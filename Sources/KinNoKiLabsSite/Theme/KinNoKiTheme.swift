@@ -161,7 +161,9 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
                         .class("page-head"),
                         .p(.class("eyebrow"), .text("Topics")),
                         .h1(.class("page-title"), .text("Notes by topic.")),
-                        .p(.class("page-lede"), .text("Studio notes are tagged by topic. Pick one to see every note in it."))
+                        // Count-aware, like a topic page's "One note so far.":
+                        // with one topic there is no choice to describe.
+                        .p(.class("page-lede"), .text(page.tags.count == 1 ? "One topic so far." : "Studio notes are tagged by topic. Pick one to see every note in it."))
                     ),
                     // Each topic is a card in the /posts card language: its
                     // note count, its name, and the newest note it leads to.
@@ -784,6 +786,8 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                       <a href="https://victoriacounty.com/residents/property-taxation-services/tax-sales/">Official Victoria County page <span aria-hidden="true">↗</span></a>
                     </div>
                   </article>
+                  <details class="tax-past-more">
+                  <summary>Earlier sale dates · 3 more</summary>
                   <article class="tax-date-card tax-date-past reveal">
                     <div class="tax-date-calendar" aria-hidden="true"><span>AUG</span><strong>31</strong><small>2026</small></div>
                     <div class="tax-date-copy">
@@ -820,6 +824,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                       <a href="https://invernesscounty.ca/services/finance-taxation/tax-sales/">Official Inverness page <span aria-hidden="true">↗</span></a>
                     </div>
                   </article>
+                  </details>
                 </div>
               </div>
             </section>
@@ -850,7 +855,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                   <div class="tax-guide-copy">
                     <p class="tax-kicker">Free guide · PDF, EPUB and audiobook</p>
                     <h2 id="tax-guide-heading"><em>Beyond the<br>Tax-Sale Packet</em></h2>
-                    <p class="tax-large-copy">How Nova Scotia tax sales work, from the first unpaid bill to the deed. Learn to read a notice, build a dated research file, and take each question to the person who can answer it. Now in a plain-language illustrated edition with 31 diagrams and charts.</p>
+                    <p class="tax-large-copy">How Nova Scotia tax sales work, from the first unpaid bill to the deed. Learn to read a notice, build a dated research file, and take each question to the person who can answer it. Now in a plain-language illustrated edition.</p>
                     <div class="tax-actions tax-guide-actions">
                       <a class="tax-button tax-button-solid" href="/taxsale/beyond-the-tax-sale-packet-illustrated.pdf" download>Download the illustrated PDF <span aria-hidden="true">↓</span></a>
                       <a class="tax-button tax-button-line" href="/listen/?book=beyond-the-tax-sale-packet">Listen in the Listening Room <span aria-hidden="true">→</span></a>
@@ -864,7 +869,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                     <p class="tax-format-number">01</p>
                     <p class="tax-status tax-status-active">New · October 2026</p>
                     <h3>Illustrated PDF</h3>
-            <p>The plain-language edition: 31 diagrams and charts, a footer on every page that explains its abbreviations, and the official sources for each chapter. Print it or read it on screen.</p>
+            <p>The plain-language edition: 39 figures, a footer on every page that explains its abbreviations, and the official sources for each chapter. Print it or read it on screen.</p>
                     <a href="/taxsale/beyond-the-tax-sale-packet-illustrated.pdf" download>Download the PDF <span aria-hidden="true">↓</span></a>
                   </article>
                   <article class="tax-format-card reveal">
@@ -930,21 +935,25 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
     )
 }
 
-/// The close offers the one useful next step: browsing by topic once there
-/// is more than one topic, otherwise following by RSS (said once, here).
+/// The lede says what the notes are and is itself the route to the topics
+/// hub (no filler sentence, no second link row); the close offers
+/// following by RSS (said once, here).
 private func postsListMain(_ section: Section<KinNoKiLabsSite>) -> Node<HTML.BodyContext> {
-    let topicCount = Set(section.items.flatMap { $0.tags }).count
-    return .main(
+    .main(
         .class("site-main page page-narrow page-short-index"),
         .header(
             .class("page-head"),
             .p(.class("eyebrow"), .text("Posts")),
-            .h1(.class("page-title"), .text("Studio notes."))
+            .h1(.class("page-title"), .text("Studio notes.")),
+            .p(
+                .class("page-lede"),
+                .text("Short notes on what the studio is building. "),
+                .a(.href("/tags"), .text("Browse them by topic")),
+                .text(".")
+            )
         ),
         .div(.class("post-list"), .forEach(section.items.sorted { $0.date > $1.date }) { postCard($0) }),
-        topicCount > 1
-            ? indexEnd(note: "That's every note so far.", linkText: "Browse by topic", href: "/tags")
-            : indexEnd(note: "That's every note so far.", linkText: "Follow new notes by RSS", href: "/feed.rss")
+        indexEnd(note: "That's every note so far.", linkText: "Follow new notes by RSS", href: "/feed.rss")
     )
 }
 
@@ -1030,16 +1039,9 @@ private func appItemMain(_ item: Item<KinNoKiLabsSite>) -> Node<HTML.BodyContext
                 )
             )
         ),
-        .article(.class("prose"), item.body.node),
-        .if(
-            item.path.string == "apps/nsmarksthespot",
-            .aside(
-                .class("app-case-study-callout"),
-                .p(.class("eyebrow"), .text("Built from field experience")),
-                .p(.text("NS Marks The Spot continues a mapping practice that began with forestry field maps, aerial mosaics, and spatial screening work.")),
-                .a(.class("row-link"), .href("/gis/"), .text("Read the GIS case study →"))
-            )
-        )
+        // NS Marks links its GIS case study from its own "Where it stands"
+        // copy, so every app page closes on its action and the More row.
+        .article(.class("prose"), item.body.node)
     )
 }
 
@@ -1134,11 +1136,18 @@ private func guideBody(_ source: String) -> GuideBody {
         // The manual's folder tree: its two rules stand out from the file names.
         ("↑ auto-imported", #"<span class="prose-tree-note">↑ auto-imported</span>"#),
         ("↑ optional if art is embedded", #"<span class="prose-tree-note">↑ optional if art is embedded</span>"#),
+        // The beta guide's plan picker: each plan returns to it (see below).
+        ("<p><strong>Jump to a plan:</strong>", #"<p id="plans"><strong>Jump to a plan:</strong>"#),
     ]
     for (marker, replacement) in replacements {
         html = html.replacingOccurrences(of: marker, with: replacement)
     }
     html = guideContactRows(html)
+    // A title with an em-dash subtitle ("The Focus Field Guide — ADHD &
+    // AuDHD Strategies") sets the subtitle as a quieter second line.
+    if let open = html.range(of: "<h1>"), let close = html.range(of: "</h1>", range: open.upperBound..<html.endIndex) {
+        html.replaceSubrange(open.upperBound..<close.lowerBound, with: guideSplitTitle(String(html[open.upperBound..<close.lowerBound])))
+    }
 
     var usedIDs = Set<String>()
     let pieces = html.components(separatedBy: "<h2>")
@@ -1151,6 +1160,8 @@ private func guideBody(_ source: String) -> GuideBody {
     // Commit counts by section index, for the devlog's dateline bars.
     var counts: [Int: Int] = [:]
     var peak = 0
+    // Devlog weeks whose dateline carries no count (they keep an empty bar).
+    var uncounted: [Int] = []
     for piece in pieces.dropFirst() {
         guard let close = piece.range(of: "</h2>") else {
             sections.append("<h2>" + piece)
@@ -1171,7 +1182,9 @@ private func guideBody(_ source: String) -> GuideBody {
         var heading = String(piece[..<close.lowerBound])
         if let number = number, heading.hasPrefix(number + ". ") {
             let headingTitle = String(heading.dropFirst(number.count + 2))
-            heading = #"<span class="prose-h2-num">\#(number)</span> \#(headingTitle)"#
+            heading = #"<span class="prose-h2-num">\#(number)</span> \#(guideSplitTitle(headingTitle))"#
+        } else {
+            heading = guideSplitTitle(heading)
         }
         var rest = String(piece[close.upperBound...])
         // A lone italic line straight after the heading is its dateline;
@@ -1187,6 +1200,8 @@ private func guideBody(_ source: String) -> GuideBody {
                     }
                     let date = String(line[..<dot.lowerBound])
                     line = #"\#(date) <span class="prose-dateline-count">\#(count)</span>"#
+                } else if label.hasPrefix("Week ") {
+                    uncounted.append(sections.count)
                 }
                 rest = #"<p class="prose-dateline">"# + line + "</p>" + String(rest[end.upperBound...])
             }
@@ -1194,21 +1209,28 @@ private func guideBody(_ source: String) -> GuideBody {
         sections.append(##"<h2 id="\##(id)">"## + heading + "</h2>" + rest)
     }
 
-    var intro = pieces[0]
+    var intro = guideHubRows(pieces[0])
     var toc = ""
     // A short page with three chapters and three or more subheads (the site
-    // privacy policy) also gets the list, with its subheads nested under
-    // their chapters. Their ids are set here, in the same document order the
-    // final guideH3IDs pass would use, so the ids do not change.
+    // privacy policy) also gets the list. Any listed guide with three or
+    // more subheads nests them under their chapters. Their ids are set here,
+    // in the same document order the final guideH3IDs pass would use, so
+    // the ids do not change.
     let subheadCount = sections.reduce(0) { $0 + $1.components(separatedBy: "<h3>").count - 1 }
-    let nestSubheads = contents.count == 3 && subheadCount >= 3
+    let questionCount = sections.reduce(0) { $0 + $1.components(separatedBy: "?</h3>").count - 1 }
+    let shortThree = contents.count == 3 && subheadCount >= 3
+    let nestSubheads = subheadCount >= 3 && (contents.count >= 4 || shortThree)
+    // The short policy and an FAQ (most subheads are questions) list every
+    // subhead, on the phone too. Elsewhere (the manual, the beta guide) the
+    // rail opens only the current chapter's subheads (CSS, .prose-toc-local).
+    let allSubheads = shortThree || (nestSubheads && questionCount * 2 >= subheadCount)
     if nestSubheads {
         intro = guideH3IDs(intro, used: &usedIDs)
         for index in sections.indices {
             sections[index] = guideH3IDs(sections[index], used: &usedIDs)
         }
     }
-    if contents.count >= 4 || nestSubheads {
+    if contents.count >= 4 || shortThree {
         // The list (and the wide-screen rail) shows the short heading, the
         // part before " — " or a trailing "(…)"; the full heading stays in
         // the link's title.
@@ -1245,7 +1267,8 @@ private func guideBody(_ source: String) -> GuideBody {
         // date): one row on a phone or tablet, which site.js folds below the
         // rail width; open in the markup, so it still works without script.
         // On wide screens CSS lifts the same list into the side rail.
-        toc = #"<nav class="prose-toc" aria-labelledby="prose-toc-title"><details class="prose-toc-fold" open><summary class="prose-toc-title" id="prose-toc-title">On this page<span class="prose-toc-count"> · \#(contents.count) sections</span></summary><ul>"#
+        let tocClass = nestSubheads && !allSubheads ? "prose-toc prose-toc-local" : "prose-toc"
+        toc = #"<nav class="\#(tocClass)" aria-labelledby="prose-toc-title"><details class="prose-toc-fold" open><summary class="prose-toc-title" id="prose-toc-title">On this page<span class="prose-toc-count"> · \#(contents.count) sections</span></summary><ul>"#
             + items + "</ul></details></nav>"
         if let h1 = intro.range(of: "</h1>") {
             var at = h1.upperBound
@@ -1257,12 +1280,13 @@ private func guideBody(_ source: String) -> GuideBody {
             intro = toc + intro
         }
         // A section ends with a way back to the list. The last section gets
-        // none (the page ends there). On a guide of eight or more chapters
-        // every section before it gets one, so the way back is always in
-        // the same place; on a shorter guide only a long section does, since
-        // the list is a flick away from a short one.
+        // none (the page ends there). On a guide of eight or more chapters,
+        // and on one whose list shows every subhead (an FAQ), every section
+        // before it gets one, so the way back is always in the same place;
+        // on a shorter guide only a long section does, since the list is a
+        // flick away from a short one.
         let back = ##"<p class="prose-toc-return"><a href="#prose-toc-title"><span aria-hidden="true">↑</span>Back to contents</a></p>"##
-        for index in sections.indices.dropLast() where contents.count >= 8 || sections[index].count >= 1200 {
+        for index in sections.indices.dropLast() where contents.count >= 8 || allSubheads || sections[index].count >= 1200 {
             sections[index] += back
         }
     }
@@ -1284,9 +1308,84 @@ private func guideBody(_ source: String) -> GuideBody {
         }
         sections[index] = section
     }
+    // A week the count does not cover keeps the bar column with an empty
+    // track, so the run of bars does not just stop.
+    for index in uncounted where peak > 0 {
+        var section = sections[index]
+        if let open = section.range(of: #"<p class="prose-dateline">"#),
+           let end = section.range(of: "</p>", range: open.upperBound..<section.endIndex) {
+            section.replaceSubrange(end, with: #"<span class="prose-dateline-bar prose-bar-0" aria-hidden="true"></span></p>"#)
+        }
+        sections[index] = section
+    }
+
+    // On a guide of five or more numbered chapters the eyebrow also knows
+    // the total ("Section 4 of 14"); CSS shows it where there is no rail.
+    let numbered = contents.filter { $0.number != nil }.count
+    if numbered >= 5 {
+        for index in sections.indices {
+            sections[index] = sections[index].replacingOccurrences(
+                of: #"<span class="prose-h2-num">"#,
+                with: #"<span class="prose-h2-num" data-of="\#(numbered)">"#
+            )
+        }
+    }
 
     let body = intro + sections.joined()
-    return GuideBody(html: guideH3IDs(body, used: &usedIDs), hasContents: !toc.isEmpty, hasChapters: contents.count >= 3)
+    var finished = guideH3IDs(body, used: &usedIDs)
+    // The beta guide's plans: every plan after the first opens with a way
+    // back to the plan picker, so a long run of plans has stops.
+    if finished.contains(#"<p id="plans">"#) {
+        let planReturn = ##"<p class="prose-toc-return prose-plan-return"><a href="#plans"><span aria-hidden="true">↑</span>All plans</a></p>"##
+        var parts = finished.components(separatedBy: #"<h3 id="plan-"#)
+        if parts.count > 2 {
+            for index in 1..<(parts.count - 1) {
+                parts[index] += planReturn
+            }
+            finished = parts.joined(separator: #"<h3 id="plan-"#)
+        }
+    }
+    return GuideBody(html: finished, hasContents: !toc.isEmpty, hasChapters: contents.count >= 3)
+}
+
+/// "Getting Started — the activation-energy problem" -> the name, then the
+/// subtitle in a block span (the dash stays for screen readers). A status
+/// pill at the end of the subtitle moves up beside the name.
+private func guideSplitTitle(_ html: String) -> String {
+    guard let dash = html.range(of: " — ") else { return html }
+    var head = String(html[..<dash.lowerBound])
+    var tail = String(html[dash.upperBound...])
+    guard !head.isEmpty, !tail.isEmpty, !head.contains("<span class=\"prose-title-sub\"") else { return html }
+    for tag in [guideStatusTag, guideRoadmapTag] where tail.hasSuffix(tag) {
+        tail = String(tail.dropLast(tag.count)).trimmingCharacters(in: .whitespaces)
+        head += " " + tag
+    }
+    return head + #"<span class="prose-title-sub"><span class="visually-hidden"> — </span>"# + tail + "</span>"
+}
+
+/// A guide's intro list of linked guides ("- **[User Manual](/echo-manual)**
+/// — the complete reference…") becomes tappable rows: the link text is the
+/// row title, the description its sub-line. Any item that does not fit the
+/// pattern leaves the list as it was.
+private func guideHubRows(_ html: String) -> String {
+    guard let start = html.range(of: #"<ul><li><strong><a href=""#),
+          let end = html.range(of: "</ul>", range: start.lowerBound..<html.endIndex) else { return html }
+    let list = String(html[html.index(start.lowerBound, offsetBy: 4)..<end.lowerBound])
+    var rows: [String] = []
+    for item in list.components(separatedBy: "<li>").dropFirst() {
+        guard item.hasPrefix(#"<strong><a href=""#),
+              let hrefEnd = item.range(of: "\">"),
+              let titleEnd = item.range(of: "</a></strong> — ", range: hrefEnd.upperBound..<item.endIndex),
+              let close = item.range(of: "</li>", range: titleEnd.upperBound..<item.endIndex),
+              item[close.upperBound...].isEmpty else { return html }
+        let href = String(item[item.index(item.startIndex, offsetBy: 17)..<hrefEnd.lowerBound])
+        let title = String(item[hrefEnd.upperBound..<titleEnd.lowerBound])
+        let note = String(item[titleEnd.upperBound..<close.lowerBound])
+        let sub = note.prefix(1).uppercased() + note.dropFirst()
+        rows.append(#"<a class="support-row" href="\#(href)"><span class="support-row-text"><span>\#(title)</span><span class="support-row-sub">\#(sub)</span></span>\#(svgRowChevron)</a>"#)
+    }
+    guard !rows.isEmpty else { return html }
+    return String(html[..<start.lowerBound]) + #"<div class="row-list prose-hub">"# + rows.joined() + "</div>" + String(html[end.upperBound...])
 }
 
 /// The contents-list label for a heading: the part before an em-dash
@@ -1315,11 +1414,18 @@ private func guideH3Entries(_ html: String) -> [(id: String, label: String)] {
               let open = part.range(of: ">"),
               let close = part.range(of: "</h3>"),
               open.upperBound <= close.lowerBound else { continue }
-        let label = guideStripTags(
-            String(part[open.upperBound..<close.lowerBound])
-                .replacingOccurrences(of: guideStatusTag, with: "")
-                .replacingOccurrences(of: guideRoadmapTag, with: "")
-        ).trimmingCharacters(in: .whitespaces)
+        // A plan's italic scope note and a trailing "(…)" stay out of the
+        // list ("Plan A — The Commute Run", "Importing real Anki decks").
+        var inner = String(part[open.upperBound..<close.lowerBound])
+            .replacingOccurrences(of: guideStatusTag, with: "")
+            .replacingOccurrences(of: guideRoadmapTag, with: "")
+        while let em = inner.range(of: "<em>"), let emEnd = inner.range(of: "</em>", range: em.upperBound..<inner.endIndex) {
+            inner.removeSubrange(em.lowerBound..<emEnd.upperBound)
+        }
+        var label = guideStripTags(inner).trimmingCharacters(in: .whitespaces)
+        if label.hasSuffix(")"), let paren = label.range(of: " (", options: .backwards), paren.lowerBound > label.startIndex {
+            label = String(label[..<paren.lowerBound])
+        }
         entries.append((id: String(part[..<quote]), label: label))
     }
     return entries
@@ -1371,7 +1477,10 @@ private func guideH3IDs(_ html: String, used: inout Set<String>) -> String {
 /// the label is the row title and the link text its sub-line. Any item that
 /// does not fit the pattern leaves the list as it was.
 private func guideContactRows(_ html: String) -> String {
-    guard let start = html.range(of: "<ul><li><strong>Email Support:</strong> "),
+    // Labels are sentence case ("Email support:"); the Title Case form is
+    // still accepted so a page not yet updated keeps its rows.
+    guard let start = html.range(of: "<ul><li><strong>Email support:</strong> ")
+              ?? html.range(of: "<ul><li><strong>Email Support:</strong> "),
           let end = html.range(of: "</ul>", range: start.lowerBound..<html.endIndex) else { return html }
     let list = String(html[html.index(start.lowerBound, offsetBy: 4)..<end.lowerBound])
     var rows: [String] = []
@@ -1694,8 +1803,8 @@ private func servicesMain() -> Node<HTML.BodyContext> {
         <div class="system-map" aria-label="Examples of disconnected business information brought into one working system">
           <p class="system-map-label">What’s tangled?</p>
           <div class="system-map-nodes">
-            <span class="system-map-node">Spreadsheets &amp; data</span>
-            <span class="system-map-node">Documents &amp; job files</span>
+            <span class="system-map-node">Spreadsheets</span>
+            <span class="system-map-node">Documents &amp; files</span>
             <span class="system-map-node">Email &amp; forms</span>
             <span class="system-map-node">Websites &amp; tools</span>
           </div>
@@ -1755,7 +1864,7 @@ private func servicesMain() -> Node<HTML.BodyContext> {
       <div class="proof-grid">
         <section class="reveal tender-proof-callout">
           <div>
-            <p class="eyebrow">GIS proof of work</p>
+            <p class="eyebrow">Proof of work · GIS</p>
             <h2>Thirteen years from field maps to mapping products.</h2>
             <p>See how imperfect records, imagery, field observations, and public data became useful maps — with uncertainty and proof boundaries kept visible.</p>
           </div>
@@ -1764,7 +1873,7 @@ private func servicesMain() -> Node<HTML.BodyContext> {
 
         <section class="reveal tender-proof-callout">
           <div>
-            <p class="eyebrow">Proof of work</p>
+            <p class="eyebrow">Proof of work · Tenders</p>
             <h2>See a public tender turned into a practical starting workflow.</h2>
             <p>The Tender Starter Showcase demonstrates source-linked review, visible questions, and reusable bid-preparation structure without pretending to replace the official notice.</p>
           </div>
@@ -1873,7 +1982,7 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
 
         <article class="gis-stop reveal" id="gis-2023-visibility">
           <div class="gis-marker" aria-hidden="true"><span>2023</span></div>
-          <figure class="gis-figure gis-figure-dark">
+          <figure class="gis-figure">
             <img src="/images/gis/visibility-analysis-2023.webp" width="1440" height="900" loading="lazy" decoding="async" alt="Generalized dark regional shape containing a regular point grid classified green, yellow, orange, and red for relative modelled visibility.">
             <figcaption><span>Public-safe reconstruction</span> Invented geography and classes; utilities, addresses, basemap, and exact results removed.
               <div class="gis-legend"><p>Relative screening classes</p><ul>
@@ -1932,7 +2041,9 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
           <div class="gis-marker" aria-hidden="true"><span>2026</span></div>
           <figure class="gis-figure gis-product-figure">
             <img src="/images/gis/ns-marks-product-2026.webp" width="1440" height="900" loading="lazy" decoding="async" alt="The NS Marks The Spot browser map over Cape Breton, with its PID and address search and map layers panel, and the licence footer showing OpenStreetMap and Nova Scotia open data credits.">
-            <figcaption><span>Public map, October 2026</span> Cape Breton in the browser map: PID and address search, map layers panel, and the source and licence credits.</figcaption>
+            <figcaption><span>Public map, October 2026</span> Cape Breton in the browser map: PID and address search, map layers panel, and the source and licence credits.
+              <p class="gis-rights-note">Capture from the exact public <a href="https://github.com/dfakkeldy/ns-marks-the-spot" target="_blank" rel="noopener">NS Marks The Spot source</a>. The visible background retains <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributor attribution</a>; the listed USGS GeoPDF is represented only by metadata and an extent outline.</p>
+            </figcaption>
           </figure>
           <div class="gis-stop-copy">
             <p class="gis-era">Native + browser mapping · Product engineering</p>
@@ -1943,7 +2054,6 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
               <div><h3>Method</h3><p>Offline-first native tiles; browser georeferencing with embedded GeoPDF frames or manual control points; local-file handling, source receipts, and licence gates.</p></div>
               <div><h3>Output</h3><p><a href="/apps/nsmarksthespot/">NS Marks The Spot</a> as an iPhone companion and an <a href="/apps/nsmarksthespot/map/">open browser map</a>.</p></div>
             </div>
-            <p class="gis-rights-note">Capture from the exact public <a href="https://github.com/dfakkeldy/ns-marks-the-spot" target="_blank" rel="noopener">NS Marks The Spot source</a>. The visible background retains <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributor attribution</a>; the listed USGS GeoPDF is represented only by metadata and an extent outline.</p>
           </div>
           <div class="gis-boundary">
             <p><strong>It supports:</strong> source-linked research, field orientation, and better questions about historical geography.</p>
@@ -2055,9 +2165,8 @@ private func learnMain() -> Node<HTML.BodyContext> {
         <div class="learn-hero-copy">
           <p class="eyebrow">Learning audiobooks</p>
           <h1>Learn something by listening.</h1>
-          <p class="learn-hero-sub">I make focused, AI-assisted learning audiobooks and test them in Echo, my audiobook study app.</p>
+          <p class="learn-hero-sub">I make focused, AI-assisted learning audiobooks and test them in <a href="/apps/echo">Echo</a>, my audiobook study app.</p>
           <div class="learn-ctas">
-            <a class="btn btn-gray" href="/echo-beta">Try Echo</a>
             <a class="learn-text-link" href="#request">Send a topic <span aria-hidden="true">↓</span></a>
           </div>
         </div>
@@ -2146,8 +2255,9 @@ private func learnMain() -> Node<HTML.BodyContext> {
           </article>
           <a class="learn-library-tile" href="https://github.com/dfakkeldy/explainer-audiobooks" target="_blank" rel="noopener">
             <span class="learn-card-label">Public library</span>
+            <span class="learn-library-tile-title">Explainer Audiobooks</span>
             <span class="learn-library-tile-text">The public repo holds the EPUB files, readable Markdown, covers, and notes about how each book was made.</span>
-            <span class="learn-library-tile-cta">Browse the Explainer Audiobooks library \(svgArrow)</span>
+            <span class="learn-library-tile-cta">Browse the library on GitHub \(svgArrow)</span>
           </a>
         </div>
       </section>
@@ -2164,9 +2274,11 @@ private func learnMain() -> Node<HTML.BodyContext> {
       </section>
 
       <section class="reveal learn-section learn-request-grid" id="request">
-        <div>
+        <div class="learn-request-head">
           <p class="eyebrow">Request a topic</p>
           <h2>Tell me what you want to learn.</h2>
+        </div>
+        <div class="learn-request-body">
           <p>Send me a topic, with as much detail as you want. If it's a good fit, I'll make a short custom audiobook and give you early access to Echo so you can test it.</p>
           <div class="learn-request-action">
             <a class="btn btn-gold" href="mailto:learn@kinnokilabs.com">Email a topic</a>

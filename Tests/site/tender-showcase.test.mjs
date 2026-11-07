@@ -436,8 +436,9 @@ test('generated tender pages use human titles and exact official links', () => {
       'utf8',
     );
     const htmlTitle = escapeHtml(expected.title);
-    // Visible titles keep a no-break space before " - " so a wrapped line never starts with a hyphen.
-    const visibleTitle = escapeRegex(htmlTitle).replaceAll(' - ', '[ \\u00a0]- ');
+    // Visible titles set the source's spaced hyphen as a spaced en dash, with a
+    // no-break space before it so a wrapped line never starts with a dash.
+    const visibleTitle = escapeRegex(htmlTitle).replaceAll(' - ', '\\u00a0\u2013 ');
     assert.match(hub, new RegExp(`<h3>${visibleTitle}</h3>`));
     assert.match(detail, new RegExp(`<h1>${visibleTitle}</h1>`));
     assert.match(detail, new RegExp(escapeRegex(`<dd>${escapeHtml(expected.category)}</dd>`)));

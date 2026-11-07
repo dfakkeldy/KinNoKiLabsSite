@@ -81,7 +81,6 @@
 
 /* ── The shelf ──────────────────────────────────────── */
 .fiction-shelf { margin-top: clamp(36px, 6vw, 56px); }
-.fiction-shelf > h2 { font-size: 17px; letter-spacing: -0.01em; margin: 0 0 4px; }
 .fiction-shelf-sub { color: var(--room-text-secondary); font-size: 13.5px; margin: 0 0 14px; }
 .fiction-shelf ul {
   list-style: none;
@@ -266,3 +265,10 @@
    wrapping as one row instead of two rows with a band between them. */
 .fiction-shelf li .fic-actions { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; }
 .fiction-shelf li .fic-state:has(.fic-badge) { flex-basis: 100%; }
+
+/* ── Round 6 (listening family, pass E) ─────────────── */
+/* A streaming card's actions are one cluster: "Listen now" and the three
+   format links flow as one wrapping line (the formats no longer wrap as a
+   block onto a second row), so on a desktop card they sit on one line. */
+.fiction-shelf li.is-playable:not([aria-current="page"]) .fic-formats { display: contents; }
+.fiction-shelf li.is-playable .fic-actions { column-gap: 14px; }

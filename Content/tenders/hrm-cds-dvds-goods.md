@@ -22,7 +22,7 @@ featuredPack: false
 
 ## What the official source says
 
-This is a Request for Standing Offer for the supply and delivery of CDs and DVDs. The official notice page is the authoritative source for quantities, specifications, delivery terms, and any addenda.
+This is a Request for Standing Offer for the supply and delivery of CDs and DVDs. A standing offer is not a guaranteed order; it sets the terms under which the municipality may call up goods as needed.
 
 ## Who might examine this opportunity
 

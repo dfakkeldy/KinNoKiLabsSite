@@ -238,14 +238,21 @@ const difficultyMarkup = (group) => group.difficulties.map(({ label, href }) => 
   `<a href="${escapeHTML(href)}">${escapeHTML(label)}</a>`
 )).join('');
 
-// A single-mode label ("New puzzle") reads as an action over its chips, so
-// the chips read as start buttons; Yard's two mode names stay as they are.
-const chipLabel = (label) => (/^New /.test(label) ? 'Start a ' + label.toLowerCase() : label);
+// Only Yard has two modes, so only Yard shows mode names over its chips. A
+// single-mode card's chips speak for themselves visually; their group keeps
+// a spoken name ("Start a new Sudoku puzzle: choose difficulty").
+const groupName = (card, group) => (card.modeGroups.length > 1
+  ? 'Choose ' + card.title + ' ' + group.label + ' difficulty'
+  : 'Start a new ' + card.title + ' ' + group.label.replace(/^New /, '') + ': choose difficulty');
+
+// The visible mode name is short so it fits on its chip row on a wide card
+// (the group's spoken name keeps the full mode name).
+const SHORT_MODE_NAMES = { contracts: 'Contracts', endless: 'Endless' };
 
 const modeGroupsMarkup = (card) => card.modeGroups.map((group) => (
-  '<div class="difficulty-links" role="group" aria-label="Choose '
-    + escapeHTML(card.title) + ' ' + escapeHTML(group.label) + ' difficulty">'
-    + '<span>' + escapeHTML(chipLabel(group.label)) + '</span>'
+  '<div class="difficulty-links" role="group" aria-label="' + escapeHTML(groupName(card, group)) + '">'
+    + (card.modeGroups.length > 1
+      ? '<span>' + escapeHTML(SHORT_MODE_NAMES[group.id] ?? group.label) + '</span>' : '')
     + difficultyMarkup(group)
     + '</div>'
 )).join('');
@@ -317,7 +324,7 @@ export function renderHubMarkup(store) {
     <section class="game-card-grid" aria-labelledby="games-heading">
       ${GAMES.map((game) => cardMarkup(store, game)).join('')}
     </section>
-    <section class="games-stats" aria-labelledby="local-stats-heading">
+    <section class="games-stats${stats.total === '0' ? ' is-empty' : ''}" aria-labelledby="local-stats-heading">
       <div>
         <p class="eyebrow">On this device</p>
         <h2 id="local-stats-heading">Your local records</h2>
