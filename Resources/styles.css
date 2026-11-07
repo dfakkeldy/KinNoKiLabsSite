@@ -3308,6 +3308,17 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 .games-app > .charts-legend { margin: 0 0 14px; }
 .charts-rows { min-width: 4.5rem; }
 .charts-layout > .charts-controls { justify-content: flex-start; }
+/* Phones: size the board from the space left after the real clue column,
+   not from a fixed 4.5rem guess, so multi-number clues ("1 1 1") never push
+   the last column past the gutter. Rows share the board's grid row, so the
+   clue rows stay level with the cells. */
+@media (max-width: 759px) {
+  .charts-layout { width: 100%; max-width: calc(var(--charts-size) * 60px + 6rem); grid-template-columns: max-content minmax(0, 1fr); }
+  .charts-columns, .charts-board { grid-template-columns: repeat(var(--charts-size), minmax(0, 1fr)); }
+  .charts-board { min-width: 0; grid-template-rows: repeat(var(--charts-size), minmax(0, 1fr)); }
+  .charts-rows { grid-template-rows: repeat(var(--charts-size), minmax(0, 1fr)); }
+  .charts-gridcell { min-width: 0; min-height: 0; }
+}
 
 /* Stack and Yard. The shell carries data-play-state (controller-common.js):
    before the first Start the move pad is left out and its caption says what
