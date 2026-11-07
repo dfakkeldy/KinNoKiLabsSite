@@ -1,7 +1,10 @@
-
 # NS Marks The Spot Privacy Policy
 
-NS Marks The Spot is made by Daniel Vincent Fakkeldy, operating as KinNoKi Labs. This policy describes the native iPhone and iPad app. You can use the app without creating an NS Marks account. Your imported maps, drawings, saved marks and tracks, attached photos and app settings are stored on the device. The app's map and property-research features also contact the services described below.
+NS Marks The Spot is made by Daniel Vincent Fakkeldy, operating as KinNoKi Labs. This policy describes the native iPhone and iPad app. In short:
+
+- You can use the app without creating an NS Marks account.
+- Your imported maps, drawings, saved marks and tracks, attached photos and app settings are stored on the device.
+- The app's map and property-research features also contact the services described below.
 
 ## Map and public-data requests
 

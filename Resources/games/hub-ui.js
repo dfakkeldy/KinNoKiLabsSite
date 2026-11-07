@@ -265,6 +265,11 @@ const recordMarkup = (game, stats) => {
   ].join('');
 };
 
+// A game with no finishes and no records shows one quiet line instead of a
+// grid of placeholder dashes; the full record grid appears after a finish.
+const unplayed = (stats) => stats.completed === '0 completed'
+  && Object.entries(stats).every(([key, value]) => key === 'completed' || value === '—');
+
 const cardMarkup = (store, game) => {
   const card = gameCardModel(store, game);
   const stats = statsModel(store).games[game.id];
@@ -278,7 +283,9 @@ const cardMarkup = (store, game) => {
       <p class="game-card-description">${escapeHTML(card.description)}</p>
       ${card.continueHref ? `<a class="btn btn-gold game-continue" href="${escapeHTML(card.continueHref)}">${escapeHTML(card.continueLabel)}</a>` : ''}
       <div class="game-mode-actions">${modeGroupsMarkup(card)}</div>
-      <dl class="game-card-stats">${recordMarkup(game, stats)}</dl>
+      ${unplayed(stats)
+        ? '<p class="game-card-stats-empty">Not played yet</p>'
+        : `<dl class="game-card-stats">${recordMarkup(game, stats)}</dl>`}
     </article>`;
 };
 

@@ -104,13 +104,22 @@ body.font-opendyslexic .room-bar .font-toggle {
 }
 .room-cover-frame img { display: block; width: 100%; height: auto; }
 .book-series {
-  margin: 0 0 3px;
+  margin: 0 0 6px;
   color: var(--room-text-accent);
-  font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 650;
-  letter-spacing: 0.02em;
+  line-height: 1.45;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
+/* The meta column reads eyebrow → title → subtitle → byline → series
+   progress → edition note. The markup keeps the series context ahead of
+   the title (a screen reader hears where the book sits first); the visual
+   order lets the title lead, so the three label styles never stack above it. */
+.room-meta { display: flex; flex-direction: column; }
+.room-meta > :is(h1, .room-subtitle, .room-byline) { order: 1; }
+.room-meta > :is(.series-progress, .series-navigation, .edition-status) { order: 2; }
+.room-meta > .series-progress { margin: 14px 0 6px; }
 .series-progress {
   margin: 0 0 10px;
   color: var(--room-text-secondary);
@@ -118,6 +127,7 @@ body.font-opendyslexic .room-bar .font-toggle {
 }
 .series-navigation {
   display: flex;
+  align-self: flex-start;
   gap: 8px;
   margin: 0 0 12px;
   padding-left: 10px;
@@ -137,35 +147,53 @@ body.font-opendyslexic .room-bar .font-toggle {
   outline-offset: 3px;
   border-radius: 2px;
 }
+/* A quiet ruled note, the same left-rule material as the series link,
+   rather than a boxed panel competing with the title. */
 .edition-status {
-  margin: 0 0 12px;
-  padding: 9px 10px;
-  border: 1px solid var(--separator);
-  border-radius: 8px;
+  margin: 4px 0 0;
+  padding: 0 0 0 10px;
+  border-left: 2px solid var(--room-control-border);
   color: var(--room-text-secondary);
-  background: var(--fill-2);
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: 12.5px;
+  line-height: 1.55;
 }
 .room-meta h1 { font-size: clamp(22px, 3vw, 27px); line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 6px; }
 .room-subtitle { color: var(--room-text-secondary); font-size: 14.5px; line-height: 1.5; margin: 0 0 8px; }
 .room-byline { color: var(--room-text-tertiary); font-size: 13px; margin: 0; }
 
-.room-chapters { border-top: 1px solid var(--separator); padding-top: 12px; }
+/* The chapter list is a real control: a full-width, 44px bordered row
+   with a drawn chevron, so it reads as "open me" rather than a label. */
 .room-chapters summary {
   cursor: pointer;
-  font-size: 13.5px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--room-control-border);
+  border-radius: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--room-text-secondary);
   list-style: none;
   display: flex;
   align-items: center;
   gap: 8px;
+  transition: color 0.15s var(--ease), background-color 0.15s var(--ease);
 }
 .room-chapters summary::-webkit-details-marker { display: none; }
-.room-chapters summary::after { content: "▾"; font-size: 11px; color: var(--room-text-tertiary); transition: transform 0.15s var(--ease); }
-.room-chapters[open] summary::after { transform: rotate(180deg); }
-.room-chapters summary:hover { color: var(--text); }
+.room-chapters summary::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  margin: -4px 2px 0 auto;
+  color: var(--room-text-tertiary);
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.15s var(--ease), margin 0.15s var(--ease);
+}
+.room-chapters[open] summary::after { transform: rotate(-135deg); margin-top: 4px; }
+.room-chapters summary:hover { color: var(--text); background: var(--fill-2); }
+.room-chapters summary:hover::after { color: var(--text); }
+.room-chapters summary:focus-visible { outline: 2px solid var(--room-text-accent); outline-offset: 2px; }
 .room-chapter-count { color: var(--room-text-tertiary); font-weight: 500; }
 .room-chapters ol { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; }
 .room-chapters li { border-bottom: 1px solid var(--separator); }
@@ -262,6 +290,36 @@ body.font-opendyslexic .room-bar .font-toggle {
 }
 .room-captions .quiet { color: var(--room-text-tertiary); font-size: 15px; font-weight: 400; }
 
+/* Before the first play every caption word sits at the un-heard tier, so
+   both rooms open on the same quiet title whatever the alignment says
+   about t=0, and the hint under it names the signature: words light up. */
+.room-captions { flex-direction: column; justify-content: center; align-items: stretch; gap: 14px; }
+.room-main:not(.started) .room-captions .w,
+.room-main:not(.started) .room-captions .w.heard,
+.room-main:not(.started) .room-captions .w.active { color: var(--room-text-secondary); text-shadow: none; }
+.room-captions p.room-cue-hint[aria-hidden] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--room-text-accent);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.room-captions p.room-cue-hint[aria-hidden]::before {
+  content: "";
+  width: 18px;
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: currentColor;
+  flex: none;
+}
+.room-captions p.room-cue-hint[hidden], .room-main.started .room-captions p.room-cue-hint { display: none; }
+/* While the idle title is on stage, the chapter label above it would only
+   repeat it; it returns with playback, when it tracks the chapter. */
+.room-stage:has(.room-cue-hint:not([hidden])) .room-now { display: none; }
+
 .visually-hidden {
   position: absolute;
   width: 1px; height: 1px;
@@ -276,11 +334,11 @@ body.font-opendyslexic .room-bar .font-toggle {
 .room-status a { color: var(--room-text-secondary); }
 .room-status.error { color: var(--room-text-error); }
 
-.room-formats { display: flex; flex-wrap: wrap; gap: 10px; margin: -4px 0 0; }
+.room-formats { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: -4px 0 0; }
 .room-formats[hidden], .room-empty[hidden] { display: none; }
 .room-formats a {
   color: var(--text);
-  font-size: 12.5px;
+  font-size: 13.5px;
   text-decoration: underline;
   text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent);
   text-underline-offset: 3px;
@@ -493,13 +551,32 @@ body.font-opendyslexic .room-bar .font-toggle {
 .room-library li .room-lib-subtitle { color: var(--room-text-secondary); font-size: 12.5px; line-height: 1.45; }
 .room-library li .room-lib-by { color: var(--room-text-tertiary); font-size: 12px; }
 .room-library li .room-lib-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px; align-self: end; justify-self: start; }
-.room-library li a { color: var(--room-text-secondary); font-size: 12.5px; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent); text-underline-offset: 3px; }
+.room-library li a { color: var(--room-text-secondary); font-size: 13px; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent); text-underline-offset: 3px; }
 .room-library li a.room-lib-listen {
   color: var(--room-text-accent);
   font-weight: 650;
   text-decoration-thickness: 1.5px;
 }
 .room-library li a:hover { color: var(--room-text-accent); }
+/* The stage book's own card: a quiet tag instead of a second Listen link. */
+.room-library li .room-lib-now {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--room-text-accent);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  flex-basis: 100%;
+}
+.room-library li .room-lib-now::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
 
 .room-honesty { margin: clamp(28px, 5vw, 40px) 0 0; color: var(--room-text-tertiary); font-size: 12.5px; line-height: 1.6; max-width: 52rem; }
 .room-honesty a { color: var(--room-text-secondary); }
@@ -521,9 +598,34 @@ body.font-opendyslexic .room-bar .font-toggle {
 .room-foot a { color: var(--room-text-secondary); text-decoration: none; }
 .room-foot a:hover { color: var(--text); }
 
+/* ── Desktop balance ────────────────────────────────── */
+/* The rail (cover, meta, chapters) is taller than the stage, so the
+   caption panel takes up the difference and both columns end together;
+   a cap keeps it sane when the chapter list is opened. */
+@media (min-width: 760px) {
+  .room { align-items: stretch; }
+  .room-stage { align-self: stretch; }
+  .room-captions { flex: 1 1 auto; max-height: 30em; }
+}
+
 /* ── Mobile ─────────────────────────────────────────── */
 @media (max-width: 759px) {
   .room { grid-template-columns: 1fr; }
+  /* On a phone the transport sits straight under the captions and stays
+     in the page: a sticky bar would sit over the captions and status on
+     first load, and the OS lock-screen controls (MediaSession) already
+     keep playback reachable once the visitor scrolls away. */
+  .room-transport { position: static; order: 1; padding-top: 4px; }
+  .room-status, .room-formats { order: 2; }
+  .room-stage > .room-now, .room-stage > .room-figure, .room-stage > .room-captions { order: 0; }
+  .room-formats { margin: -8px 0 0; }
+  .room-formats a, .room-library li a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 14px;
+  }
+  .room-library li .room-lib-links { gap: 0 16px; margin-top: 0; }
   .room-side { flex-direction: row; flex-wrap: wrap; align-items: flex-start; gap: 16px; }
   .room-cover-frame { width: 104px; flex: none; }
   .room-meta { flex: 1; min-width: 180px; }

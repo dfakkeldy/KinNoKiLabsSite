@@ -56,9 +56,10 @@ test('edition buttons open the matching listening room and retain both release d
   assert.deepEqual(downloads.map(match => [match[1], match[2]]), ['play', 'novel'].flatMap(edition => {
     const slug = `merchant-of-venice-${edition}`;
     const prefix = `https://github.com/dfakkeldy/explainer-audiobooks/releases/download/classic-${slug}-20261004T050000Z/${slug}`;
-    const label = edition === 'play' ? 'Play' : 'Novel';
-    return [[`${prefix}.epub`, `${label} EPUB`], [`/fiction/?book=${slug}`, `${label} audiobook`],
-      [`${prefix}.m4b`, `Download ${edition} M4B`]];
+    // The edition heading names play or novel, so each button names only its
+    // action; the in-browser listen leads the row.
+    return [[`/fiction/?book=${slug}`, 'Listen in browser'], [`${prefix}.epub`, 'EPUB'],
+      [`${prefix}.m4b`, 'Download M4B']];
   }));
   assert.match(read, /EPUB 1\.6 MB · M4B 35\.9 MB/);
   assert.match(read, /EPUB 1\.5 MB · M4B 32\.8 MB/);

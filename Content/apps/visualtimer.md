@@ -10,7 +10,9 @@ status: TestFlight
 
 Turn Timer is a colourful visual countdown you can read from across the room. Start a quick timer, or build a sequence of named rounds for game night, a recipe, a classroom, a meeting or a morning routine, and reuse it whenever you need it. The iPhone app is in beta on TestFlight; it is not on the App Store yet.
 
-[Join the Turn Timer beta on TestFlight](https://testflight.apple.com/join/s7w4YGWU), or [try it in your browser](/tools/turn-timer/) on any device. The browser version can be installed to your home screen.
+<p class="app-actions"><a class="btn btn-gold btn-md" href="/tools/turn-timer/">Try it in your browser</a><a class="btn btn-outline btn-md" href="https://testflight.apple.com/join/s7w4YGWU">Join the iPhone beta</a></p>
+
+The browser version runs on any device, with nothing to install, and can be added to your home screen.
 
 ## How it works
 
@@ -24,7 +26,7 @@ The quick timer, the six starters, playback, one custom template and five recent
 
 ## Support and privacy
 
-[Turn Timer support](https://dfakkeldy.github.io/VisualTimer/support.html) · [Privacy policy](https://dfakkeldy.github.io/VisualTimer/privacy.html) · [Build log](https://dfakkeldy.github.io/VisualTimer/devlog.html)
+[Privacy policy](https://dfakkeldy.github.io/VisualTimer/privacy.html) · [Build log](https://dfakkeldy.github.io/VisualTimer/devlog.html)
 
 ---
-[Project Site](https://dfakkeldy.github.io/VisualTimer/) | [View Source Code on GitHub](https://github.com/dfakkeldy/VisualTimer) | [Get Help & Support](/visualtimer-help)
+[Project site](https://dfakkeldy.github.io/VisualTimer/) | [Source on GitHub](https://github.com/dfakkeldy/VisualTimer) | [Get help](/visualtimer-help)

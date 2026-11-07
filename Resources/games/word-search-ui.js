@@ -174,7 +174,14 @@ export async function renderWordSearch(root, store) {
     panRange.value = maximum ? String(Math.round((boardScroll.scrollLeft / maximum) * 100)) : '0';
     panLeft.disabled = boardScroll.scrollLeft <= 0;
     panRight.disabled = boardScroll.scrollLeft >= maximum;
+    // The rail only shows when the board is wider than its column.
+    boardColumn.classList.toggle('is-fitting', maximum <= 0);
   };
+  if (typeof globalThis.ResizeObserver === 'function') {
+    const observer = new globalThis.ResizeObserver(() => syncPan());
+    observer.observe(boardScroll);
+    session.addCleanup(() => observer.disconnect());
+  }
   panLeft.addEventListener('click', () => boardScroll.scrollBy({ left: -Math.max(44, boardScroll.clientWidth * 0.75), behavior: 'smooth' }));
   panRight.addEventListener('click', () => boardScroll.scrollBy({ left: Math.max(44, boardScroll.clientWidth * 0.75), behavior: 'smooth' }));
   panRange.addEventListener('input', () => {

@@ -1,19 +1,21 @@
+<p class="eyebrow">Betas</p>
+
 # TestFlight betas
 
-Try current KinNoKi Labs betas through Apple's TestFlight app. Beta builds may change often and expire after 90 days.
+Try current KinNoKi Labs betas through Apple's free TestFlight app. Install TestFlight first, then open the join link on the device you'll test on. Beta builds may change often and expire after 90 days.
+
+<img class="beta-icon" src="/images/apps/turntimer.png" alt="" width="56" height="56" />
 
 ## Turn Timer
 
 Turn Timer is a visual sequence timer for routines, classrooms, kitchens, meetings, and game nights.
 
-[Join the Turn Timer beta on TestFlight](https://testflight.apple.com/join/s7w4YGWU)
+<p class="app-actions"><a class="btn btn-gold btn-md" href="https://testflight.apple.com/join/s7w4YGWU">Join the Turn Timer beta</a><a class="btn btn-outline btn-md" href="/apps/visualtimer">About Turn Timer</a></p>
 
-You can also [learn more about Turn Timer](/apps/visualtimer).
+<img class="beta-icon" src="/images/apps/echo.png" alt="" width="56" height="56" />
 
 ## Echo
 
 An audiobook player built for studying, not just listening.
 
-[Join the Echo beta on TestFlight](https://testflight.apple.com/join/Zu9rzg59)
-
-You can also [learn more about Echo](/apps/echo).
+<p class="app-actions"><a class="btn btn-gold btn-md" href="https://testflight.apple.com/join/Zu9rzg59">Join the Echo beta</a><a class="btn btn-outline btn-md" href="/apps/echo">About Echo</a></p>

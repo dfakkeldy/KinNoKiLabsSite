@@ -2,13 +2,11 @@
 
 Echo isn't just an audiobook player with extra buttons. Every feature exists because of something specific about how human memory works. This guide walks through each one: what it does, the science behind why it helps, and how to actually use it.
 
-You don't need to read this front to back. Jump to whatever feature you're curious about — each section stands on its own.
+**The short version:** Passive listening feels like learning, but most of it evaporates within days. Echo is built around the handful of techniques that cognitive science has shown actually move information into long-term memory: retrieval practice, spacing, context cues, cognitive offloading, and multi-sensory encoding. Use even two or three of them and you'll likely remember a lot more of what you listen to.
 
-> **Status tags:** 🚧 **Coming in 1.0** = in active development right now. 🔭 **Roadmap** = planned after 1.0. Everything unmarked ships in the current beta. Looking for ADHD/AuDHD-specific strategies? See [The Focus Field Guide](/echo-focus).
+> **Not here to study?** That's completely fine. Echo is a full-featured audiobook player first — a designable Apple Watch remote, a sleep timer, focus soundscapes, pitch-corrected speed, and your own DRM-free files, all on-device. Everything below is optional. Use as much or as little of it as you like. Looking for ADHD/AuDHD-specific strategies? See [The Focus Field Guide](/echo-focus).
 
-> **The short version:** Passive listening feels like learning, but most of it evaporates within days. Echo is built around the handful of techniques that cognitive science has shown actually move information into long-term memory: retrieval practice, spacing, context cues, cognitive offloading, and multi-sensory encoding. Use even two or three of them and you'll likely remember a lot more of what you listen to.
-
-> **Not here to study?** That's completely fine. Echo is a full-featured audiobook player first — a designable Apple Watch remote, a sleep timer, focus soundscapes, pitch-corrected speed, and your own DRM-free files, all on-device. Everything below is optional. Use as much or as little of it as you like.
+You don't need to read this front to back. Jump to whatever feature you're curious about — each section stands on its own. Features tagged 🚧 **Coming in 1.0** are in active development; 🔭 **Roadmap** means planned after 1.0; everything else ships in the current beta.
 
 ## 1. Photo & Place Bookmarks — borrow your brain's sense of place
 
@@ -20,7 +18,7 @@ This is one of the most replicated effects in memory research. In the classic 19
 
 **Context Memory: places, captured automatically.** 🚧 **Coming in 1.0** — Photo bookmarks ask you to do the capturing. Context Memory does it for you: opt in, and Echo quietly notes an approximate place — "Maple Ridge, Halifax" — on your bookmarks, listening sessions, and chapter starts. Bookmark cards grow a small place chip; your per-book insights can tell you *"you started Chapter 3 on Oak Street."* The same retrieval-cue machinery as photos, with no extra work on your part. Off by default, neighborhood-level accuracy only, never blocks the action you were taking, and one button erases all location history. Your session history never leaves the device.
 
-**How to use it:**
+#### How to use it
 
 - When something in a book genuinely lands, bookmark it and grab a photo of wherever you are — the trailhead, your kitchen, the view out the windshield (when parked!). Mundane is fine; *distinctive* is better.
 - Driving or working? Don't break focus. Attach a photo later from your library — or let Context Memory log the place automatically.
@@ -45,7 +43,7 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 2. **Matching cue and memory.** You learned the material *by ear*; reviewing it by ear matches the retrieval cue to how the memory was encoded — the encoding-specificity principle (Tulving & Thomson, 1973).
 3. **Review happens in dead time, not desk time.** Echo reviews ride along while you walk the dog or wait in the car, including hands-free on Apple Watch.
 
-**How to use it:**
+#### How to use it
 
 - Make cards from *meaningful* moments: definitions, frameworks, numbers you'll need. Skip trivia.
 - Keep fronts as questions ("What are the four causes of X?"), not labels. A question forces retrieval; a label invites recognition.
@@ -59,7 +57,7 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 **The science: retrieval practice.** Testing isn't just measurement — it's the intervention. Roediger and Karpicke's landmark 2006 studies showed that students who *practiced recalling* material remembered far more a week later than students who spent the same time re-reading it, even though re-reading *felt* more effective. The struggle to pull something out of memory is what strengthens it.
 
-**How to use it:**
+#### How to use it
 
 - Before flipping a card, actually answer it — out loud or in your head. *Then* look.
 - Grade ruthlessly. "Again" is not failure; it's telling the scheduler the truth so it can help.
@@ -71,7 +69,7 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 **The science: attention residue.** Switching tasks isn't free, even for "just a second." Sophie Leroy's research on *attention residue* (2009) shows that part of your attention stays stuck on an interrupted task after you switch — and interruption studies (Monk, Trafton & Boehm-Davis, 2008) show the cost grows with the interruption's depth. Stopping a book mid-argument to type a flashcard is exactly that kind of deep interruption. A one-tap mark is the shallowest possible one: capture intent now, do the work when switching costs nothing.
 
-**How to use it:**
+#### How to use it
 
 - Mark generously, convert selectively. The tap costs nothing; the inbox is where judgment happens.
 - Batch your inbox at a set time — end of the listening day, or Sunday with coffee.
@@ -79,13 +77,11 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 ## 5. Brain Dump — close the open loop 🚧
 
-> 🚧 **Coming in 1.0** — in active development.
-
 **What it does:** A thought hits you mid-chapter — about the book, or about absolutely anything else ("buy stamps," "that's what Sarah meant on Tuesday"). One tap opens a note; hold to record a voice memo; on the watch, dictate it. Playback never pauses. The thought lands in the book's **Notes inbox**, and later you can **promote** the keepers into bookmarks or flashcards — or just enjoy having had the thought without losing the chapter.
 
 **The science: the Zeigarnik effect and cognitive offloading.** Unfinished business doesn't wait quietly: interrupted, incomplete tasks intrude on attention (Zeigarnik, 1927). Masicampo & Baumeister (2011) found the fix — you don't have to *do* the nagging thing to silence it; merely capturing it somewhere you trust stops it hijacking attention. And working memory holds only three to five items (Cowan, 2010), so every "don't forget…" you carry is a slot stolen from the book. Offloading to an external store (Risko & Gilbert, 2016) frees the slot.
 
-**How to use it:**
+#### How to use it
 
 - Capture in the cheapest format available. Walking? Voice. Watch on? Dictate. Latency is the enemy.
 - Dump distractions, not just insights. "Email the landlord" has no business in your head during chapter 6.
@@ -97,7 +93,7 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 **The science: repetition, then distribution.** Hearing dense material once at highway speed is not learning — repetition genuinely helps build the representation. But research on *distributed practice* shows the bigger win is spreading exposures out: three passes over three days beat six passes in one afternoon. Loop a chapter today; let your flashcards and scheduled reviews carry it across the week.
 
-**How to use it:**
+#### How to use it
 
 - For a book you need to *know*: loop one or two chapters per day rather than racing to the end.
 - End of a looped day, ask the honest question: could you teach this chapter? If not, tomorrow is another loop day.
@@ -111,7 +107,7 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 **The science: interruption and resumption.** Research on task interruption (Monk, Trafton & Boehm-Davis, 2008) shows that resuming after a break carries a "resumption lag" while your brain rebuilds the context it dropped. Re-hearing the last stretch is the cheapest way to rebuild it.
 
-**How to use it:**
+#### How to use it
 
 - Tune the three tiers (seconds / minutes / hours) to your life. Stopping and starting every few minutes? ~10 seconds. Overnight gap? A minute or more.
 - Don't fight it. If the rewound material feels boringly familiar — perfect. That's confirmation you encoded it the first time.
@@ -122,7 +118,7 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 **The science: Dual Coding.** Allan Paivio's dual coding theory holds that information encoded both verbally and visually creates two interconnected memory traces instead of one. Reading along also keeps wandering attention tethered: when your eyes lose the thread, your ears still have it, and vice versa. Many people — especially many neurodivergent people — simply cannot absorb a book through one channel alone. Echo never asks you to.
 
-**How to use it:**
+#### How to use it
 
 - Run **Auto-Align Chapters** once when you add a book; lock a manual anchor anywhere it matters.
 - Listening-first day? Leave the reader closed. Studying? Open the Read tab — especially for diagram-heavy non-fiction.
@@ -135,7 +131,7 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 **The science: self-explanation and the production effect.** Explaining material in your own words is one of the most reliable comprehension boosters in the literature (Chi et al., 1989). Separately, material you say *out loud* is remembered better than material you merely think (MacLeod et al., 2010). A voice memo does both at once.
 
-**How to use it:**
+#### How to use it
 
 - Capture *your reaction*, not a summary: "this contradicts what chapter 2 said" beats "interesting point."
 - Say why it matters to *you*: "use this in Thursday's meeting." Future relevance is a powerful retrieval hook.
@@ -147,7 +143,7 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 **The science: comprehension has a speed budget.** Time-compressed-speech studies show comprehension holds at moderate accelerations, then degrades as speed climbs (Murphy et al., 2021; Foulke & Sticht, 1969). Match speed to difficulty: cruise through familiar territory, slow down where ideas are thick.
 
-**How to use it:**
+#### How to use it
 
 - Set a comfortable default (1.25× for most people), then adjust *per book*.
 - Hit a dense argument? Drop to 1× and loop it rather than plowing through at speed.
@@ -159,7 +155,7 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 **The science: self-monitoring and feedback.** Learners are famously bad at judging their own learning — re-reading *feels* effective precisely when it isn't. Self-regulated-learning research (Zimmerman, 2002) puts accurate self-monitoring at the center of effective studying; Hattie & Timperley (2007) rank concrete feedback among the most powerful influences on learning; and goal-setting research (Locke & Latham, 2002) shows specific, visible progress sustains effort far better than "do your best."
 
-**How to use it:**
+#### How to use it
 
 - Check coverage before a re-listen — re-listen to the gaps, not the whole book.
 - Use the due forecast to right-size your card-making: fifty new cards today is two hundred reviews next month.
@@ -172,7 +168,7 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 **The science: the generation effect and trusted storage.** Material you produce yourself is remembered better than material you receive (Slamecka & Graf, 1978) — and your exported notes are exactly the material you generated. Reorganizing them in your own system is another generation pass, not busywork. And offloading only works when the external store is *trusted* (Risko & Gilbert, 2016): plain files in your own vault are the most trustworthy storage there is.
 
-**How to use it:**
+#### How to use it
 
 - Export when you *finish* a book and spend twenty minutes reorganizing the notes in your own words — that pass is studying, disguised as filing.
 - Link book notes to your existing notes. Connections are retrieval routes.
@@ -184,7 +180,7 @@ Echo speaks the same language — it schedules reviews with FSRS, the modern alg
 
 **The science:** The Pomodoro Technique builds on a well-supported finding: sustained attention degrades over long unbroken stretches, and brief breaks keep it from sliding (Ariga & Lleras, 2011).
 
-**How to use it:**
+#### How to use it
 
 - Pair a pomodoro with a chapter: "one 25-minute interval on chapter 6, then I grade myself."
 - Use the break for retrieval, not scrolling: thirty seconds of "what did I just hear?" turns a rest into a review.

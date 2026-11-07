@@ -166,13 +166,20 @@ struct TenderRecord {
 
 // MARK: - Rendering helpers
 
-private let dateFormatter: DateFormatter = {
+// Human-readable dates in Halifax time. The exact ISO value stays in each
+// <time datetime>; the visible text drops the "00:00 -03:00" noise.
+private let halifaxTimeZone = TimeZone(identifier: "America/Halifax")!
+
+private func halifaxFormatter(_ pattern: String) -> DateFormatter {
     let f = DateFormatter()
-    f.dateFormat = "yyyy-MM-dd 'at' HH:mm xxx"
-    f.timeZone = TimeZone(identifier: "America/Halifax")
-    f.locale = Locale(identifier: "en_CA")
+    f.dateFormat = pattern
+    f.timeZone = halifaxTimeZone
+    f.locale = Locale(identifier: "en_US_POSIX")
     return f
-}()
+}
+
+private let dayFormatter = halifaxFormatter("MMMM d, yyyy")
+private let dayTimeFormatter = halifaxFormatter("MMMM d, yyyy, h:mm a")
 
 private func iso8601String(_ date: Date) -> String {
     let f = ISO8601DateFormatter()
@@ -181,8 +188,37 @@ private func iso8601String(_ date: Date) -> String {
     return f.string(from: date)
 }
 
+/// "July 24, 2026".
 private func formattedDate(_ date: Date) -> String {
-    dateFormatter.string(from: date)
+    dayFormatter.string(from: date)
+}
+
+/// "August 13, 2026, 2:00 PM Atlantic time", or just the day when the
+/// source gives midnight (a publication date rather than a deadline).
+private func formattedDateTime(_ date: Date) -> String {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = halifaxTimeZone
+    let parts = calendar.dateComponents([.hour, .minute], from: date)
+    if parts.hour == 0 && parts.minute == 0 { return formattedDate(date) }
+    return dayTimeFormatter.string(from: date) + " Atlantic time"
+}
+
+private func timeNode(_ date: Date, _ text: String) -> Node<HTML.BodyContext> {
+    .time(.datetime(iso8601String(date)), .text(text))
+}
+
+/// The page closes with the shared disclaimer, so a fact row does not need
+/// to repeat its own "check the source" reminder. The frontmatter keeps it.
+private let trailingSourceReminders = [
+    " Verify at the official source before acting.",
+    " Recheck the official source before acting.",
+]
+
+private func withoutSourceReminder(_ text: String) -> String {
+    for reminder in trailingSourceReminders where text.hasSuffix(reminder) {
+        return String(text.dropLast(reminder.count))
+    }
+    return text
 }
 
 private let tenderRequestHref =
@@ -204,19 +240,13 @@ private func factGrid(for record: TenderRecord) -> Node<HTML.BodyContext> {
         .div(.dt(.text("Issuer")), .dd(.text(record.issuer))),
         .div(.dt(.text("Procurement system")), .dd(.text(record.procurementSystem))),
         .div(.dt(.text("Category")), .dd(.text(record.category))),
-        .div(.dt(.text("Delivery region")), .dd(.text(record.deliveryRegion))),
-        .div(.dt(.text("Published")), .dd(.text(formattedDate(record.publishedAt)))),
-        .div(
-            .dt(.text("Closing")),
-            .dd(
-                .time(
-                    .datetime(iso8601String(record.closingAt)),
-                    .text(formattedDate(record.closingAt))
-                )
-            )
-        ),
-        .div(.dt(.text("Document access")), .dd(.text(record.documentAccess))),
-        .div(.dt(.text("Addenda status")), .dd(.text(record.addendaStatus)))
+        // Shown only when it adds something beyond the issuer.
+        .if(record.deliveryRegion != record.issuer,
+            .div(.dt(.text("Delivery region")), .dd(.text(record.deliveryRegion)))),
+        .div(.dt(.text("Published")), .dd(timeNode(record.publishedAt, formattedDateTime(record.publishedAt)))),
+        .div(.dt(.text("Closing")), .dd(timeNode(record.closingAt, formattedDateTime(record.closingAt)))),
+        .div(.class("tender-fact-long"), .dt(.text("Document access")), .dd(.text(withoutSourceReminder(record.documentAccess)))),
+        .div(.class("tender-fact-long"), .dt(.text("Addenda status")), .dd(.text(withoutSourceReminder(record.addendaStatus))))
     )
 }
 
@@ -266,7 +296,7 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
                                 .span(
                                     .class("tender-checked"),
                                     .text("Checked "),
-                                    .time(.datetime(iso8601String(card.checkedAt)), .text(formattedDate(card.checkedAt)))
+                                    timeNode(card.checkedAt, formattedDate(card.checkedAt))
                                 )
                             ),
                             .h3(.text(card.item.title)),
@@ -274,9 +304,10 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
                                 .class("tender-meta"),
                                 .div(.dt(.text("Issuer")), .dd(.text(card.issuer))),
                                 .div(.dt(.text("Category")), .dd(.text(card.category))),
-                                .div(.dt(.text("Closes")), .dd(.text(formattedDate(card.closingAt))))
+                                .div(.dt(.text("Closes")), .dd(timeNode(card.closingAt, formattedDate(card.closingAt))))
                             ),
-                            .if(card.featuredPack, .span(.class("tender-featured-tag"), .text("Featured pack example")))
+                            .if(card.featuredPack, .span(.class("tender-featured-tag"), .text("Featured pack example"))),
+                            .span(.class("card-cue"), .text("Read the brief"), iconArrowForward())
                         )
                     }
                 )
@@ -296,12 +327,19 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
                 else: .div(
                     .class("tender-archive-grid"),
                     .forEach(archived) { card in
+                        // No per-card state pill: the note above says every
+                        // worked example is closed.
                         .a(
                             .class("tender-card tender-card-archive"),
                             .href(card.item.path.absoluteString),
-                            .div(.class("tender-state"), .span(.class("tender-state-label"), .text(card.lifecycle.label))),
                             .h3(.text(card.item.title)),
-                            .dl(.class("tender-meta"), .div(.dt(.text("Issuer")), .dd(.text(card.issuer))))
+                            .dl(
+                                .class("tender-meta"),
+                                .div(.dt(.text("Issuer")), .dd(.text(card.issuer))),
+                                .div(.dt(.text("Category")), .dd(.text(card.category))),
+                                .div(.dt(.text("Closed")), .dd(timeNode(card.closingAt, formattedDate(card.closingAt))))
+                            ),
+                            .span(.class("card-cue"), .text("Read the brief"), iconArrowForward())
                         )
                     }
                 )
@@ -325,7 +363,7 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
                     .class("btn btn-outline tender-download"),
                     .href("/tenders/tender-starter-example.zip"),
                     .attribute(named: "download"),
-                    .text("Download the example pack (ZIP)")
+                    .text("Download the pack (ZIP)")
                 )
             ),
             // Free-preview invitation
@@ -348,9 +386,12 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
 
 // MARK: - Detail page
 
+/// Procurement titles can run past 100 characters; those get a smaller H1.
+private let longTenderTitleLength = 70
+
 func tenderDetailMain(record: TenderRecord) -> Node<HTML.BodyContext> {
     .main(
-        .class("tender-detail"),
+        .class(record.item.title.count > longTenderTitleLength ? "tender-detail tender-detail-long-title" : "tender-detail"),
         .a(.class("back-link"), .href("/tenders/"), iconArrowBack(), .text("Back to Tender Starter Showcase")),
         .p(.class("eyebrow"), .text("Tender Starter Showcase")),
         .h1(.text(record.item.title)),
@@ -360,7 +401,7 @@ func tenderDetailMain(record: TenderRecord) -> Node<HTML.BodyContext> {
             .span(
                 .class("tender-checked"),
                 .text("Checked "),
-                .time(.datetime(iso8601String(record.checkedAt)), .text(formattedDate(record.checkedAt)))
+                timeNode(record.checkedAt, formattedDate(record.checkedAt))
             )
         ),
         // Source facts (from frontmatter)
@@ -372,6 +413,19 @@ func tenderDetailMain(record: TenderRecord) -> Node<HTML.BodyContext> {
         ),
         // Editorial analysis (from Markdown body — the five H2 sections)
         .div(.class("tender-analysis prose"), record.item.body.node),
+        // Closing step: the brief's own first step, the free preview it
+        // demonstrates, and the way back to the other examples.
+        .section(
+            .class("tender-next"),
+            .h2(.text("Next step")),
+            .p(.text("Want a brief like this for an open tender? Send its public URL or ID for a free one-page preview.")),
+            .div(
+                .class("tender-actions"),
+                .a(.class("btn btn-gold tender-request"), .href(tenderRequestHref), .text("Request a free custom preview")),
+                .a(.class("btn btn-outline"), .href(record.noticeURL.absoluteString), .text("Open the official notice"))
+            ),
+            .a(.class("back-link"), .href("/tenders/"), iconArrowBack(), .text("All worked examples"))
+        ),
         disclaimerNode()
     )
 }

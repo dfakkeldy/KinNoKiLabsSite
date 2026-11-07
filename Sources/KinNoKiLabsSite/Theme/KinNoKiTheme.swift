@@ -89,7 +89,7 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
                 siteHeader(active: navSection(for: item.path.string)),
                 .if(item.sectionID == .apps,
                     isEcho ? echoDetailMain() : appItemMain(item),
-                    else: isTender ? tenderDetailMain(record: try TenderRecord(item: item)) : postDetailMain(item)),
+                    else: isTender ? tenderDetailMain(record: try TenderRecord(item: item)) : postDetailMain(item, site: context.site)),
                 siteFooter()
             )
         )
@@ -153,16 +153,23 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
             siteHead(for: page, context: context, titleOverride: "Tags"),
             .body(
                 .class("page-tags"),
-                siteHeader(active: ""),
+                siteHeader(active: navSection(for: page.path.string)),
                 .main(
-                    .class("site-main page page-narrow"),
+                    .class("site-main page page-narrow page-short-index"),
+                    .a(.class("back-link"), .href("/posts"), iconArrowBack(), .text("All posts")),
                     .header(
                         .class("page-head"),
                         .p(.class("eyebrow"), .text("Tags")),
-                        .h1(.class("page-title"), .text("Everything, tagged."))
+                        .h1(.class("page-title"), .text("Notes by topic.")),
+                        .p(.class("page-lede"), .text("Studio notes are tagged by topic. Pick one to see every note in it."))
                     ),
                     .div(.class("chip-row"), .forEach(page.tags.sorted()) { tag in
-                        .a(.class("chip"), .href(context.site.path(for: tag)), .text(tag.string))
+                        .a(
+                            .class("chip"),
+                            .href(context.site.path(for: tag)),
+                            .text(tag.string.capitalized),
+                            .span(.class("chip-count"), .text(noteCount(context.items(taggedWith: tag, sortedBy: \.date, order: .descending).count)))
+                        )
                     })
                 ),
                 siteFooter()
@@ -172,20 +179,30 @@ private struct KinNoKiHTMLFactory: HTMLFactory {
 
     func makeTagDetailsHTML(for page: TagDetailsPage, context: PublishingContext<Site>) throws -> HTML? {
         let items = context.items(taggedWith: page.tag, sortedBy: \.date, order: .descending)
+        let otherTags = context.allTags.filter { $0 != page.tag }.sorted()
         return HTML(
             .lang(context.site.language),
             siteHead(for: page, context: context, titleOverride: page.tag.string),
             .body(
                 .class("page-tag-detail"),
-                siteHeader(active: ""),
+                siteHeader(active: navSection(for: page.path.string)),
                 .main(
-                    .class("site-main page page-narrow"),
+                    .class("site-main page page-narrow page-short-index"),
+                    .a(.class("back-link"), .href("/tags"), iconArrowBack(), .text("All tags")),
                     .header(
                         .class("page-head"),
-                        .p(.class("eyebrow"), .text("Tagged")),
-                        .h1(.class("page-title"), .text(page.tag.string))
+                        .p(.class("eyebrow"), .text("Tagged · \(noteCount(items.count))")),
+                        .h1(.class("page-title"), .text(page.tag.string.capitalized))
                     ),
-                    .div(.class("post-list"), .forEach(items) { postCard($0) })
+                    .div(.class("post-list"), .forEach(items) { postCard($0) }),
+                    .if(!otherTags.isEmpty, .nav(
+                        .class("tag-more"),
+                        .attribute(named: "aria-label", value: "Other topics"),
+                        .p(.class("post-end-label"), .text("Other topics")),
+                        .div(.class("chip-row"), .forEach(otherTags) { tag in
+                            .a(.class("chip"), .href(context.site.path(for: tag)), .text(tag.string.capitalized))
+                        })
+                    ))
                 ),
                 siteFooter()
             )
@@ -318,6 +335,12 @@ private func navSection(for path: String) -> String {
         return "/apps"
     case "about", "learn", "games", "tools":
         return "/" + first
+    // Studio pages the footer groups under About.
+    case "posts", "tags", "privacy":
+        return "/about"
+    // The Shakespeare collection is a learning resource.
+    case "shakespeare":
+        return "/learn"
     default:
         return ""
     }
@@ -567,10 +590,11 @@ private func notFoundMain() -> Node<HTML.BodyContext> {
         <p class="page-lede">The link may be old, or the address may have a typo. These are the main places to go from here.</p>
       </header>
       <div class="row-list">
-        <a class="support-row" href="/">Home \(svgRowChevron)</a>
-        <a class="support-row" href="/services">Services \(svgRowChevron)</a>
-        <a class="support-row" href="/apps">Apps \(svgRowChevron)</a>
-        <a class="support-row" href="/learn">Learn \(svgRowChevron)</a>
+        <a class="support-row" href="/"><span class="support-row-text"><span>Home</span><span class="support-row-sub">The studio and what it does</span></span>\(svgRowChevron)</a>
+        <a class="support-row" href="/services"><span class="support-row-text"><span>Services</span><span class="support-row-sub">Work with me on a technical problem</span></span>\(svgRowChevron)</a>
+        <a class="support-row" href="/apps"><span class="support-row-text"><span>Apps</span><span class="support-row-sub">Echo, MacroMark, NS Marks The Spot, Turn Timer</span></span>\(svgRowChevron)</a>
+        <a class="support-row" href="/support"><span class="support-row-text"><span>Support</span><span class="support-row-sub">Help pages for each app</span></span>\(svgRowChevron)</a>
+        <a class="support-row" href="/learn"><span class="support-row-text"><span>Learn</span><span class="support-row-sub">Learning audiobooks to listen to</span></span>\(svgRowChevron)</a>
       </div>
       <p class="page-footnote">Looking for something specific? Email <a class="link-quiet" href="mailto:hello@kinnokilabs.com">hello@kinnokilabs.com</a>.</p>
     </main>
@@ -884,35 +908,54 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
 
 private func postsListMain(_ section: Section<KinNoKiLabsSite>) -> Node<HTML.BodyContext> {
     .main(
-        .class("site-main page page-narrow"),
+        .class("site-main page page-narrow page-short-index"),
         .header(
             .class("page-head"),
             .p(.class("eyebrow"), .text("Posts")),
-            .h1(.class("page-title"), .text("Studio notes."))
+            .h1(.class("page-title"), .text("Studio notes.")),
+            .p(
+                .class("page-lede"),
+                .text("Occasional notes from the studio. "),
+                .a(.class("link-quiet"), .href("/feed.rss"), .text("Follow by RSS"))
+            )
         ),
         .div(.class("post-list"), .forEach(section.items.sorted { $0.date > $1.date }) { postCard($0) })
     )
 }
 
+/// The card shows only the date: the tag sits on the post itself, and on a
+/// tag page it would repeat the page title.
 private func postCard(_ item: Item<KinNoKiLabsSite>) -> Node<HTML.BodyContext> {
     .a(
         .class("post-card"),
         .href(item.path.absoluteString),
-        .p(.class("post-kicker"), .text(kicker(for: item))),
+        .p(.class("post-kicker"), .text(formattedDate(item.date))),
         .h2(.text(item.title)),
         .unwrap(item.description.isEmpty ? nil : item.description) {
             .p(.class("post-card-desc"), .text($0))
-        }
+        },
+        .span(.class("card-cue"), .text("Read note"), iconArrowForward())
     )
 }
 
-private func postDetailMain(_ item: Item<KinNoKiLabsSite>) -> Node<HTML.BodyContext> {
+/// The post closes with its tags (real links) and the way back to the list.
+private func postDetailMain(_ item: Item<KinNoKiLabsSite>, site: KinNoKiLabsSite) -> Node<HTML.BodyContext> {
     .main(
         .class("site-main article-page"),
         .a(.class("back-link"), .href("/posts"), iconArrowBack(), .text("All posts")),
-        .p(.class("eyebrow"), .text(kicker(for: item))),
+        .p(.class("eyebrow"), .text(formattedDate(item.date))),
         .article(.class("prose prose-post"), item.body.node),
-        .a(.class("back-link post-end"), .href("/posts"), iconArrowBack(), .text("All posts"))
+        .footer(
+            .class("post-end"),
+            .if(!item.tags.isEmpty, .div(
+                .class("post-end-tags"),
+                .span(.class("post-end-label"), .text("Filed under")),
+                .forEach(item.tags) { tag in
+                    .a(.class("chip"), .href(site.path(for: tag)), .text(tag.string.capitalized))
+                }
+            )),
+            .a(.class("back-link"), .href("/posts"), iconArrowBack(), .text("All posts"))
+        )
     )
 }
 
@@ -931,7 +974,8 @@ private func appItemMain(_ item: Item<KinNoKiLabsSite>) -> Node<HTML.BodyContext
                 },
                 .div(
                     .class("app-hero-meta"),
-                    .unwrap(item.metadata.status) { .span(.class("status-chip"), .text($0)) },
+                    // A discontinued app gets the neutral chip, not live gold.
+                    .unwrap(item.metadata.status) { .span(.class($0 == "Discontinued" ? "status-chip status-chip-muted" : "status-chip"), .text($0)) },
                     .unwrap(item.metadata.platforms) { .span(.class("platforms"), .text($0)) }
                 )
             )
@@ -972,24 +1016,151 @@ private let pageParents: [String: (href: String, title: String)] = [
     "echo-focus": ("/apps/echo", "Echo"),
     "echo-beta": ("/apps/echo", "Echo"),
     "echo-devlog": ("/apps/echo", "Echo"),
+    "echo-privacy": ("/apps/echo", "Echo"),
+    "nsmarksthespot-privacy": ("/apps/nsmarksthespot", "NS Marks The Spot"),
     "testflight": ("/apps", "All apps"),
 ]
 
 private func proseMain(_ page: Page) -> Node<HTML.BodyContext> {
-    .main(
+    let guide = guideBody(page.body.html)
+    return .main(
         .class("site-main article-page"),
         .unwrap(pageParents[page.path.string]) { parent in
             .a(.class("back-link"), .href(parent.href), iconArrowBack(), .text(parent.title))
         },
-        .article(.class("prose"), page.body.node)
+        .article(.class(guide.hasContents ? "prose prose-guide prose-long" : "prose prose-guide"), .raw(guide.html))
     )
+}
+
+// MARK: - Guide body (privacy, help, manuals)
+
+/// A guide page's Ink HTML after `guideBody(_:)` has finished with it.
+private struct GuideBody {
+    var html: String
+    var hasContents: Bool
+}
+
+private let guideStatusTag = #"<span class="status-tag">Coming in 1.0</span>"#
+private let guideRoadmapTag = #"<span class="status-tag status-tag-later">Roadmap</span>"#
+
+/// Finishes a guide's rendered Markdown: swaps the emoji status markers for
+/// labelled pills, sets a policy's "Effective Date" line as meta, gives every
+/// h2 a stable slug id, turns a lone italic line under an h2 into its
+/// dateline, and, when a page has four or more h2 sections, inserts an
+/// "On this page" list just before the first one.
+private func guideBody(_ source: String) -> GuideBody {
+    var html = source
+    let replacements: [(String, String)] = [
+        ("(🚧 <strong>Coming in 1.0</strong>)", guideStatusTag),
+        ("🚧 <strong>Coming in 1.0</strong>", guideStatusTag),
+        ("(🔭 <strong>Roadmap</strong>)", guideRoadmapTag),
+        ("🔭 <strong>Roadmap</strong>", guideRoadmapTag),
+        ("🚧 Coming in 1.0", guideStatusTag),
+        ("(🚧)", guideStatusTag),
+        (" 🚧</h2>", " " + guideStatusTag + "</h2>"),
+        (" 🚧</h3>", " " + guideStatusTag + "</h3>"),
+        ("<p><strong>Effective Date:</strong>", #"<p class="prose-meta"><strong>Effective Date:</strong>"#),
+    ]
+    for (marker, replacement) in replacements {
+        html = html.replacingOccurrences(of: marker, with: replacement)
+    }
+
+    let pieces = html.components(separatedBy: "<h2>")
+    guard pieces.count > 1 else { return GuideBody(html: html, hasContents: false) }
+
+    var usedIDs = Set<String>()
+    var contents: [(id: String, label: String)] = []
+    var sections: [String] = []
+    for piece in pieces.dropFirst() {
+        guard let close = piece.range(of: "</h2>") else {
+            sections.append("<h2>" + piece)
+            continue
+        }
+        let label = guideStripTags(
+            String(piece[..<close.lowerBound])
+                .replacingOccurrences(of: guideStatusTag, with: "")
+                .replacingOccurrences(of: guideRoadmapTag, with: "")
+        ).trimmingCharacters(in: .whitespaces)
+        let base = guideSlug(label).isEmpty ? "section" : guideSlug(label)
+        var id = base
+        var suffix = 2
+        while usedIDs.contains(id) {
+            id = "\(base)-\(suffix)"
+            suffix += 1
+        }
+        usedIDs.insert(id)
+        contents.append((id: id, label: label))
+
+        var section = piece
+        // A lone italic line straight after the heading is its dateline.
+        let rest = String(piece[close.upperBound...])
+        if rest.hasPrefix("<p><em>"), let end = rest.range(of: "</em></p>") {
+            let line = String(rest[rest.index(rest.startIndex, offsetBy: 7)..<end.lowerBound])
+            if !line.contains("<") {
+                let heading = String(piece[..<close.upperBound])
+                let after = String(rest[end.upperBound...])
+                section = heading + #"<p class="prose-dateline">"# + line + "</p>" + after
+            }
+        }
+        sections.append(##"<h2 id="\##(id)">"## + section)
+    }
+
+    var toc = ""
+    if contents.count >= 4 {
+        let items = contents.map { ##"<li><a href="#\##($0.id)">\##($0.label)</a></li>"## }.joined()
+        toc = #"<nav class="prose-toc" aria-labelledby="prose-toc-title"><p class="prose-toc-title" id="prose-toc-title">On this page</p><ul>"#
+            + items + "</ul></nav>"
+    }
+    return GuideBody(html: pieces[0] + toc + sections.joined(), hasContents: !toc.isEmpty)
+}
+
+/// Text content of a fragment of HTML (entities stay encoded).
+private func guideStripTags(_ html: String) -> String {
+    var text = ""
+    var inTag = false
+    for character in html {
+        if character == "<" { inTag = true } else if character == ">" { inTag = false } else if !inTag { text.append(character) }
+    }
+    return text
+}
+
+/// "11. The Reader: EPUB" -> "11-the-reader-epub". ASCII letters and digits
+/// survive; everything else (punctuation, entities, emoji) becomes one
+/// hyphen, and apostrophes vanish so "brain's" stays "brains".
+private func guideSlug(_ label: String) -> String {
+    let characters = Array(label.lowercased())
+    let silentEntities: Set<String> = ["&#39;", "&#x27;", "&apos;", "&rsquo;"]
+    var slug = ""
+    var pendingHyphen = false
+    var index = 0
+    while index < characters.count {
+        let character = characters[index]
+        if character == "&", let semicolon = characters[index...].prefix(10).firstIndex(of: ";") {
+            let entity = String(characters[index...semicolon])
+            if !silentEntities.contains(entity) { pendingHyphen = true }
+            index = semicolon + 1
+            continue
+        }
+        if character == "'" || character == "’" {
+            index += 1
+            continue
+        }
+        if character.isASCII && (character.isLetter || character.isNumber) {
+            if pendingHyphen && !slug.isEmpty { slug.append("-") }
+            slug.append(character)
+            pendingHyphen = false
+        } else {
+            pendingHyphen = true
+        }
+        index += 1
+    }
+    return slug
 }
 
 // MARK: - Helpers
 
-private func kicker(for item: Item<KinNoKiLabsSite>) -> String {
-    let tag = item.tags.first.map { $0.string.capitalized } ?? "Studio"
-    return "\(formattedDate(item.date)) · \(tag)"
+private func noteCount(_ count: Int) -> String {
+    count == 1 ? "1 note" : "\(count) notes"
 }
 
 private func formattedDate(_ date: Date) -> String {
@@ -1026,12 +1197,17 @@ func iconArrowBack<Ctx>() -> Node<Ctx> {
     .raw(#"<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>"#)
 }
 
+/// The at-rest "this card is a link" cue on post and tender cards.
+func iconArrowForward<Ctx>() -> Node<Ctx> {
+    .raw(#"<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>"#)
+}
+
 // MARK: - Marketing bodies (copy-locked; layout comes from styles.css classes)
 
 // MARK: - Inline icons shared by the marketing bodies (Lucide, stroke = currentColor)
 
 private let svgCheck = #"<svg class="icon-tick" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>"#
-private let svgChevron = #"<svg class="icon-tick" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>"#
+private let svgChevron = #"<svg class="app-card-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>"#
 private let svgArrow = #"<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>"#
 private let svgMail = #"<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>"#
 private let svgRowChevron = #"<svg class="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>"#
@@ -1059,7 +1235,6 @@ private func homeMain() -> Node<HTML.BodyContext> {
             <li><span>4 apps</span></li>
             <li><a class="link-quiet" href="https://apps.apple.com/ca/app/macromark/id6785081218" target="_blank" rel="noopener">MacroMark 1.0 on the App Store</a></li>
             <li><a class="link-quiet" href="https://github.com/dfakkeldy" target="_blank" rel="noopener">Source is public on GitHub; licences vary</a></li>
-            <li><span>Built around real workflows</span></li>
           </ul>
         </div>
       </section>
@@ -1076,9 +1251,9 @@ private func homeMain() -> Node<HTML.BodyContext> {
             </div>
           </div>
           <ul class="chevron-list offer-lines">
-            <li>\(svgChevron)Technical workflow diagnostic — one problem, clearly mapped</li>
-            <li>\(svgChevron)Systems cleanup, integrations &amp; automation</li>
-            <li>\(svgChevron)Knowledge bases, dashboards &amp; right-sized software</li>
+            <li>\(svgCheck)Technical workflow diagnostic — one problem, clearly mapped</li>
+            <li>\(svgCheck)Systems cleanup, integrations &amp; automation</li>
+            <li>\(svgCheck)Knowledge bases, dashboards &amp; right-sized software</li>
           </ul>
         </div>
       </section>
@@ -1156,8 +1331,9 @@ private func homeMain() -> Node<HTML.BodyContext> {
       </section>
 
       <section class="closing reveal">
+        <p class="eyebrow">The studio</p>
         <p class="closing-quote">Built in Cape Breton, Nova Scotia — bid rooms and field maps before that. <span>The tools exist because the work demanded them.</span></p>
-        <a class="row-link row-link-gold" href="/about">About the studio \(svgArrow)</a>
+        <a class="btn btn-gray btn-md" href="/about">About the studio \(svgArrow)</a>
       </section>
     </main>
     """)
@@ -1169,23 +1345,20 @@ private func appsMain() -> Node<HTML.BodyContext> {
       <header class="page-head">
         <p class="eyebrow">Apps</p>
         <h1 class="page-title">Four apps, honestly labelled.</h1>
-        <p class="page-lede">MacroMark 1.0 is <a class="link-quiet" href="https://apps.apple.com/ca/app/macromark/id6785081218" target="_blank" rel="noopener">live on the App Store</a> and free. Echo and Turn Timer are public TestFlight betas; the NS Marks The Spot browser map is live, with the native iPhone app in internal TestFlight builds. Source is public on GitHub; licences vary.</p>
+        <p class="page-lede">Each card shows where its app stands today. MacroMark 1.0 is <a class="link-quiet" href="https://apps.apple.com/ca/app/macromark/id6785081218" target="_blank" rel="noopener">live on the App Store</a> and free. Source is public on GitHub; licences vary.</p>
       </header>
 
-      <a class="reveal echo-row" href="/apps/echo">
-        <img class="echo-row-icon" src="/images/apps/echo.png" alt="Echo app icon">
-        <div class="echo-row-body">
-          <div class="echo-row-title">
-            <h2>Echo: Audiobook Study Player</h2>
-            <span class="status-chip">TestFlight beta — open</span>
-          </div>
-          <p>An audiobook player built for studying, not just listening. Word-perfect read-along, one-tap flashcards, Smart Rewind, and a Watch remote you design.</p>
-          <span class="platforms">iPhone &amp; iPad · Apple Watch · Mac · GPL-3.0</span>
-        </div>
-        <svg class="echo-row-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
-      </a>
-
       <div class="reveal app-list">
+        <a class="app-card app-card-featured" href="/apps/echo">
+          <img class="app-icon" src="/images/apps/echo.png" alt="Echo app icon">
+          <h2>Echo: Audiobook Study Player</h2>
+          <p>An audiobook player built for studying, not just listening. Word-perfect read-along, one-tap flashcards, Smart Rewind, and a Watch remote you design.</p>
+          <div class="app-card-meta">
+            <span class="status-chip">TestFlight beta — open</span>
+            <span class="platforms">iPhone &amp; iPad · Apple Watch · Mac · GPL-3.0</span>
+          </div>
+          \(svgChevron)
+        </a>
         <a class="app-card" href="/apps/macromark/">
           <img class="app-icon" src="/images/apps/macromark.png" alt="MacroMark app icon">
           <h3>MacroMark</h3>
@@ -1195,15 +1368,17 @@ private func appsMain() -> Node<HTML.BodyContext> {
             <span class="status-chip">App Store — 1.0</span>
             <span class="platforms">Watch · iPhone</span>
           </div>
+          \(svgChevron)
         </a>
         <a class="app-card" href="/apps/nsmarksthespot/">
           <img class="app-icon" src="/images/apps/nsmarksthespot.svg" alt="NS Marks The Spot app icon">
           <h3>NS Marks The Spot</h3>
-          <p>The live product is the browser map — parcel search by PID, civic address, or postal community, dated municipal tax-sale notices on live parcel geometry, provincial reference layers, and Fletcher’s 1880s sheets as an optional overlay, with optional live location. The native iPhone app is a separate offline companion in internal TestFlight builds, not on the App Store.</p>
+          <p>A live browser map with parcel search by PID, civic address, or postal community, dated tax-sale notices, and Fletcher’s 1880s sheets, plus optional live location. The native iPhone companion is in internal TestFlight builds.</p>
           <div class="app-card-meta">
             <span class="status-chip">Live browser map</span>
             <span class="platforms">Browser · iPhone</span>
           </div>
+          \(svgChevron)
         </a>
         <a class="app-card" href="/apps/visualtimer/">
           <img class="app-icon" src="/images/apps/turntimer.png" alt="Turn Timer app icon: a clock inside a ring of coloured countdown segments">
@@ -1213,9 +1388,10 @@ private func appsMain() -> Node<HTML.BodyContext> {
             <span class="status-chip">TestFlight</span>
             <span class="platforms">iPhone · Browser</span>
           </div>
+          \(svgChevron)
         </a>
       </div>
-      <p class="page-footnote">Cards lead to each app's public home. Source for everything is on <a class="link-quiet" href="https://github.com/dfakkeldy" target="_blank" rel="noopener">GitHub</a>. For the field experience behind NS Marks The Spot, read the <a class="link-quiet" href="/gis/">GIS case study</a>.</p>
+      <p class="page-footnote">For the field experience behind NS Marks The Spot, read the <a class="link-quiet" href="/gis/">GIS case study</a>.</p>
     </main>
     """)
 }
@@ -1229,6 +1405,10 @@ private func servicesMain() -> Node<HTML.BodyContext> {
           <h1 class="page-title">When the tools stop lining up, I make the work make sense.</h1>
           <p class="page-lede">The problem may look like a spreadsheet nobody trusts, a website that no longer fits, repeated data entry, scattered job files, or several tools that do not talk to one another.</p>
           <p class="page-lede">I'm Dan Fakkeldy. I trace how the work actually moves, fix the smallest valuable bottleneck first, and leave behind something your team can understand and operate.</p>
+          <div class="services-hero-actions">
+            <a class="btn btn-gold" href="mailto:hello@kinnokilabs.com">Email me about a problem</a>
+            <a class="row-link" href="#how-engagements-start">How engagements start \(svgArrow)</a>
+          </div>
         </div>
         <div class="system-map" aria-label="Examples of disconnected business information brought into one working system">
           <p class="system-map-label">What’s tangled?</p>
@@ -1238,6 +1418,8 @@ private func servicesMain() -> Node<HTML.BodyContext> {
             <span class="system-map-node">Email &amp; forms</span>
             <span class="system-map-node">Websites &amp; tools</span>
           </div>
+          <div class="system-map-connector" aria-hidden="true"></div>
+          <p class="system-map-method">Map · fix · hand back</p>
           <div class="system-map-connector" aria-hidden="true"></div>
           <div class="system-map-result">
             <span>One useful outcome</span>
@@ -1290,9 +1472,6 @@ private func servicesMain() -> Node<HTML.BodyContext> {
           <div class="row">\(svgCheck)<p><strong>Faster answers</strong> <span>— the current file, number, or decision is easier to find and trust.</span></p></div>
           <div class="row">\(svgCheck)<p><strong>Fewer missed handoffs</strong> <span>— forms, files, due dates, and follow-up stay connected.</span></p></div>
           <div class="row">\(svgCheck)<p><strong>Less owner bottleneck</strong> <span>— repeated decisions stop living only in one person's memory.</span></p></div>
-          <div class="row">\(svgCheck)<p><strong>Less duplicate entry</strong> <span>— the same information stops being copied between disconnected tools.</span></p></div>
-          <div class="row">\(svgCheck)<p><strong>Clearer delegation</strong> <span>— people can see the expected process and the source behind it.</span></p></div>
-          <div class="row">\(svgCheck)<p><strong>Less rework</strong> <span>— the next task starts from reviewed knowledge instead of a blank page.</span></p></div>
         </div>
       </section>
 
@@ -1316,7 +1495,7 @@ private func servicesMain() -> Node<HTML.BodyContext> {
         </section>
       </div>
 
-      <section class="reveal bento-tint split-services band">
+      <section class="reveal bento-tint split-services band" id="how-engagements-start">
         <div>
           <h2 class="band-title">How engagements start</h2>
           <ol class="step-list">
@@ -1513,8 +1692,7 @@ private func aboutMain() -> Node<HTML.BodyContext> {
       <header class="page-head">
         <p class="eyebrow">About</p>
         <h1 class="page-title">A solo studio with dirt on its boots.</h1>
-        <p class="page-lede">I'm Dan Fakkeldy. <strong>KinNoKi Labs</strong> is my one-person studio, solving messy technical and operational problems from Cape Breton, Nova Scotia — across documents, data, websites, automation, and custom software.</p>
-        <p class="page-lede">The Apple apps are visible proof of that work, not the boundary of it. The same approach runs through everything: understand the real work, find the painful handoff, and make the smallest useful improvement.</p>
+        <p class="page-lede">I'm Dan Fakkeldy. <strong>KinNoKi Labs</strong> is my one-person studio, solving messy technical and operational problems from Cape Breton, Nova Scotia — across documents, data, websites, automation, and custom software. The Apple apps are visible proof of that work, not the boundary of it.</p>
       </header>
 
       <div class="reveal about-grid">
@@ -1545,7 +1723,7 @@ private func aboutMain() -> Node<HTML.BodyContext> {
       <section class="reveal contact-band">
         <p class="contact-band-text">Want to work together, or just say hello?</p>
         <div class="contact-band-actions">
-          <a class="row-link" href="/services">See services \(svgArrow)</a>
+          <a class="btn btn-outline" href="/services">See services</a>
           <a class="btn btn-gold" href="mailto:hello@kinnokilabs.com">hello@kinnokilabs.com</a>
         </div>
       </section>
@@ -1562,12 +1740,12 @@ private func supportMain() -> Node<HTML.BodyContext> {
         <p class="page-lede">Pick the app you need help with, or email for anything else.</p>
       </header>
       <div class="row-list">
-        <a class="support-row" href="/echo-help"><img class="app-icon support-row-icon" src="/images/apps/echo.png" alt="" width="36" height="36"><span>Echo</span>\(svgRowChevron)</a>
-        <a class="support-row" href="/macromark-help"><img class="app-icon support-row-icon" src="/images/apps/macromark.png" alt="" width="36" height="36"><span>MacroMark</span>\(svgRowChevron)</a>
-        <a class="support-row" href="/nsmarksthespot-help"><img class="app-icon support-row-icon" src="/images/apps/nsmarksthespot.svg" alt="" width="36" height="36"><span>NS Marks The Spot</span>\(svgRowChevron)</a>
-        <a class="support-row" href="/visualtimer-help"><img class="app-icon support-row-icon" src="/images/apps/turntimer.png" alt="" width="36" height="36"><span>Turn Timer</span>\(svgRowChevron)</a>
+        <a class="support-row" href="/echo-help"><img class="app-icon support-row-icon" src="/images/apps/echo.png" alt="" width="36" height="36"><span class="support-row-text"><span>Echo</span><span class="support-row-sub">TestFlight beta · FAQ and contact</span></span>\(svgRowChevron)</a>
+        <a class="support-row" href="/macromark-help"><img class="app-icon support-row-icon" src="/images/apps/macromark.png" alt="" width="36" height="36"><span class="support-row-text"><span>MacroMark</span><span class="support-row-sub">App Store · email or GitHub issues</span></span>\(svgRowChevron)</a>
+        <a class="support-row" href="/nsmarksthespot-help"><img class="app-icon support-row-icon" src="/images/apps/nsmarksthespot.svg" alt="" width="36" height="36"><span class="support-row-text"><span>NS Marks The Spot</span><span class="support-row-sub">Browser map · where the maps are, and contact</span></span>\(svgRowChevron)</a>
+        <a class="support-row" href="/visualtimer-help"><img class="app-icon support-row-icon" src="/images/apps/turntimer.png" alt="" width="36" height="36"><span class="support-row-text"><span>Turn Timer</span><span class="support-row-sub">TestFlight beta · email or GitHub issues</span></span>\(svgRowChevron)</a>
+        <a class="support-row" href="mailto:hello@kinnokilabs.com"><span class="support-row-glyph" aria-hidden="true">\(svgMail)</span><span class="support-row-text"><span>Email me</span><span class="support-row-sub">hello@kinnokilabs.com · business inquiries, ideas, or feedback</span></span>\(svgRowChevron)</a>
       </div>
-      <p class="page-footnote">For general inquiries, business opportunities, or feedback: <a class="link-quiet" href="mailto:hello@kinnokilabs.com">hello@kinnokilabs.com</a>.</p>
     </main>
     """)
 }
@@ -1582,15 +1760,9 @@ private func learnMain() -> Node<HTML.BodyContext> {
           <p class="learn-hero-sub">I make focused, AI-assisted learning audiobooks and test them in Echo, my audiobook study app.</p>
           <div class="learn-ctas">
             <a class="btn btn-gold" href="mailto:learn@kinnokilabs.com">Send a topic</a>
-            <a class="btn btn-gray" href="/listen/">Listen in your browser</a>
             <a class="btn btn-gray" href="/echo-beta">Try Echo</a>
           </div>
         </div>
-        <aside class="learn-intake-card" aria-label="Topic request summary">
-          <p class="learn-card-label">Request a topic</p>
-          <p>Send a topic you genuinely want to learn. If it is a good fit, I will make a short custom audiobook and invite you to test it in Echo.</p>
-          <a class="row-link" href="mailto:learn@kinnokilabs.com">learn@kinnokilabs.com</a>
-        </aside>
       </section>
 
       <section class="reveal learn-section">
@@ -1793,18 +1965,20 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
           <h2 class="section-title">A serious study system, out of the way until you want it.</h2>
           <p class="section-lede">Everything below is in the current TestFlight beta unless marked — Echo is in open development toward 1.0.</p>
         </div>
+        <p class="feature-group-label">For listening</p>
         <div class="feature-grid">
           <div class="feature-card"><h3>Smart Rewind</h3><p>Hit play and Echo has already rewound — a little after a short pause, more after hours. Interruptions stop costing you context.</p></div>
           <div class="feature-card"><h3>Chapter Looping</h3><p>Repeat one chapter until you own it — the feature Echo was born for. Or loop the exact passage between two bookmarks.</p></div>
-          <div class="feature-card"><h3>Built-in Spaced Repetition</h3><p>An Anki-style flashcard system with FSRS / FSRS-4.5 scheduling and the narrator's audio on the cards — daily review, hands-free on Apple Watch.</p></div>
-          <div class="feature-card"><h3>Synced EPUB Reader</h3><p>Text scrolls with the narration. Tap a paragraph to jump the audio; search the book and leap to the spoken moment.</p></div>
-          <div class="feature-card"><h3>Voice &amp; Photo Bookmarks</h3><p>Hold a button and speak your thought, or attach a photo of where you are — memos play back inline when the narration returns there.</p></div>
-          <div class="feature-card"><h3>A Watch Remote You Design</h3><p>Up to 25 buttons across 5 pages, Digital Crown scrubbing, plus a Pomodoro focus timer on your wrist.</p></div>
           <div class="feature-card"><h3>Pitch-Corrected Speed</h3><p>Narrators sound human at 1.25× — zero pitch distortion, and every book remembers its own speed.</p></div>
-          <div class="feature-card"><h3>Dyslexia-Friendly by Design</h3><p>Lexend and OpenDyslexic built in, Dynamic Type, VoiceOver labels. Designed for interrupted, neurodivergent attention first.</p></div>
-          <div class="feature-card"><h3>Mark Now, Card Later</h3><p>One tap marks a passage without stopping the narration; the Card Inbox turns marks into flashcards when you have the bandwidth.</p></div>
-          <div class="feature-card"><h3>Second-Brain Export</h3><p>One tap exports a book's bookmarks, notes, memos, photos, and flashcards as clean Markdown — straight into Obsidian, Logseq, or Notion.</p></div>
+          <div class="feature-card"><h3>A Watch Remote You Design</h3><p>Up to 25 buttons across 5 pages, Digital Crown scrubbing, plus a Pomodoro focus timer on your wrist.</p></div>
           <div class="feature-card"><h3>On-Device AI Narration</h3><p>Natural narration for text-only EPUBs, generated entirely on your device — no cloud, no API calls. Books never recorded can still be heard.</p></div>
+          <div class="feature-card"><h3>Dyslexia-Friendly by Design</h3><p>Lexend and OpenDyslexic built in, Dynamic Type, VoiceOver labels. Designed for interrupted, neurodivergent attention first.</p></div>
+        </div>
+        <p class="feature-group-label">For studying</p>
+        <div class="feature-grid feature-grid-pair">
+          <div class="feature-card"><h3>Mark Now, Card Later</h3><p>One tap marks a passage without stopping the narration; the Card Inbox turns marks into flashcards when you have the bandwidth.</p></div>
+          <div class="feature-card"><h3>Voice &amp; Photo Bookmarks</h3><p>Hold a button and speak your thought, or attach a photo of where you are — memos play back inline when the narration returns there.</p></div>
+          <div class="feature-card"><h3>Second-Brain Export</h3><p>One tap exports a book's bookmarks, notes, memos, photos, and flashcards as clean Markdown — straight into Obsidian, Logseq, or Notion.</p></div>
           <div class="feature-card"><h3>Insights That Are Real</h3><p>Listening time, streaks, chapter coverage, retention curves — honest numbers from your actual listening, never from a server.</p></div>
         </div>
       </section>
@@ -1814,7 +1988,6 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
           <div class="principle-card"><h3>Radically private</h3><p>Core playback and reading need no Echo account. Optional connected services have separate data handling. <a href="/echo-privacy/">Read the Echo privacy policy.</a></p></div>
           <div class="principle-card"><h3>Open source</h3><p>GPL-3.0, public on GitHub — the whole app.</p></div>
           <div class="principle-card"><h3>No locked files</h3><p>Built around DRM-free files you own and can see.</p></div>
-          <div class="principle-card"><h3>For Every Mind</h3><p>Designed for interrupted, neurodivergent attention first.</p></div>
           <div class="principle-card"><h3>Echo Pro, once</h3><p>Optional power features as a one-time unlock. No subscription.</p></div>
         </div>
       </section>
@@ -1827,8 +2000,9 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
             <p class="echo-cta-lede">TestFlight builds for iPhone, iPad, Apple Watch, and Mac — guides, test plans, and a devlog included.</p>
             <div class="echo-cta-actions">
               <a class="btn btn-gold" href="https://testflight.apple.com/join/Zu9rzg59">Join the TestFlight beta</a>
-              <a class="echo-source-link" href="/listen/">Listen in your browser</a>
+              <a class="btn btn-gray" href="/listen/">Listen in your browser</a>
             </div>
+            <p class="echo-cta-links-label">Guides and help</p>
             <div class="echo-cta-links">
               <a class="echo-cta-link" href="/echo-manual">User manual</a>
               <a class="echo-cta-link" href="/echo-learn">Learning guide</a>

@@ -17,7 +17,7 @@
   var els = {
     cover: $('cover'), bookTitle: $('bookTitle'), bookSubtitle: $('bookSubtitle'),
     bookByline: $('bookByline'), chapterCount: $('chapterCount'), chapterList: $('chapterList'),
-    chapterNow: $('chapterNow'), captionPanel: $('captionPanel'), captionWords: $('captionWords'),
+    chapterNow: $('chapterNow'), captionPanel: $('captionPanel'), captionWords: $('captionWords'), cueHint: $('cueHint'),
     captionText: $('captionText'), figurePanel: $('figurePanel'), figureImg: $('figureImg'),
     figureCaption: $('figureCaption'), status: $('status'), playPause: $('playPause'),
     iconPlay: $('iconPlay'), iconPause: $('iconPause'), back30: $('back30'), fwd30: $('fwd30'),
@@ -230,6 +230,12 @@
     li.appendChild(by);
     var links = document.createElement('span');
     links.className = 'room-lib-links';
+    if (selected) {
+      var now = document.createElement('span');
+      now.className = 'room-lib-now';
+      now.textContent = 'Now playing';
+      links.appendChild(now);
+    }
     core.libraryActions(b).filter(function (action) {
       return !selected || action.label !== 'Listen';
     }).forEach(function (action) {
@@ -462,6 +468,11 @@
     els.iconPause.style.display = playing ? 'block' : 'none';
     els.playPause.setAttribute('aria-label', playing ? 'Pause' : 'Play');
     main.classList.toggle('playing', playing);
+    // The first play retires the idle caption state (and its hint) for good.
+    if (playing) {
+      main.classList.add('started');
+      if (els.cueHint) els.cueHint.hidden = true;
+    }
     if ('mediaSession' in navigator) {
       navigator.mediaSession.playbackState = playing ? 'playing' : 'paused';
     }
@@ -679,6 +690,8 @@
         }
       });
       tick(audio.currentTime);
+      // Captions are ready: until the first play, say what they will do.
+      if (els.cueHint && !main.classList.contains('started')) els.cueHint.hidden = false;
     }).catch(function (err) {
       console.debug('[listen] read-along unavailable:', err);
       showQuiet('Read-along captions couldn’t load — audio still works.');

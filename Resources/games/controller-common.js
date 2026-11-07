@@ -785,7 +785,8 @@ export function sharedShell({ title, difficulty }) {
     ...difficulties.map((value) => element('option', { value, text: titleCase(value) })));
   select.value = difficulty;
   const timer = element('time', { 'data-timer': '', text: '0:00', 'aria-label': 'Elapsed time' });
-  const toolbar = element('div', { class: 'game-toolbar' }, breadcrumb, heading,
+  const toolbar = element('div', { class: 'game-toolbar' },
+    element('div', { class: 'game-title' }, breadcrumb, heading),
     element('label', { text: 'Difficulty ' }, select), timer,
     element('button', { type: 'button', 'data-restart': '', text: 'Restart' }),
     element('button', { type: 'button', 'data-new-game': '', text: 'New Game' }));

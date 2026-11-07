@@ -106,7 +106,7 @@ test('NS Marks public copy names the focused Rhodena page, sight lines, and Map 
   assert.match(nsMarks, /\*\*Sight lines:\*\*/);
   assert.match(nsMarks, /\*\*Map \| Aerial:\*\*/);
   assert.match(nsMarks, /\[Rhodena Wind\]\(\/rhodena\)/);
-  assert.match(nsMarksHelp, /The focused Rhodena Wind map is at \[\/rhodena\]\(\/rhodena\)\./);
+  assert.match(nsMarksHelp, /\[Rhodena Wind map\]\(\/rhodena\), the focused map at `\/rhodena`/);
   assert.doesNotMatch(nsMarksHelp, /I haven't written the FAQ yet/);
   assert.match(generatedNsMarks, /<h2>Rhodena Wind<\/h2>/);
   assert.match(generatedNsMarks, /href="\/rhodena">\/rhodena</);
@@ -140,7 +140,7 @@ test('NS Marks public copy names the fishing focus page at /fishmap, separate fr
   assert.match(nsMarks, /\[\/fishmap\]\(\/fishmap\)/);
   assert.match(nsMarks, /\[Fishing\]\(\/fishmap\)/);
   assert.match(nsMarks, /\(\/fishing\/\)/);
-  assert.match(nsMarksHelp, /The fishing map is at \[\/fishmap\]\(\/fishmap\)/);
+  assert.match(nsMarksHelp, /\[Fishing map\]\(\/fishmap\), at `\/fishmap`/);
   assert.match(generatedNsMarks, /<h2>Fishing<\/h2>/);
   for (const source of [nsMarks, generatedNsMarks]) {
     assert.match(source, /research map with a fishing focus/);

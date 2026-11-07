@@ -10,12 +10,13 @@ test('publishes the TestFlight page with the public Turn Timer and Echo betas', 
 
   const html = readFileSync(pageURL, 'utf8');
   assert.match(html, /<h1>TestFlight betas<\/h1>/);
-  assert.match(html, /<h2>Turn Timer<\/h2>/);
+  // Guide headings carry slug ids so they can be linked.
+  assert.match(html, /<h2 id="turn-timer">Turn Timer<\/h2>/);
   assert.match(
     html,
     /href="https:\/\/testflight\.apple\.com\/join\/s7w4YGWU"/,
   );
-  assert.match(html, /<h2>Echo<\/h2>/);
+  assert.match(html, /<h2 id="echo">Echo<\/h2>/);
   assert.match(html, /An audiobook player built for studying, not just listening\./);
   assert.match(
     html,

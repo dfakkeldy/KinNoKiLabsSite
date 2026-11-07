@@ -78,7 +78,7 @@ Pick whichever matches your life. Each plan is 10–20 minutes of intentional te
 3. Drag-reorder a few tracks; dim one (e.g., a disclaimer track) and confirm playback skips it.
 4. iCloud users: try a book *without* "Keep Downloaded" on cellular — how does Echo cope? Then set Keep Downloaded and compare.
 
-### Plan E — The Wrist-Only Day *(watch remote)*
+### Plan E — The Wrist‑Only Day *(watch remote)*
 
 1. From the phone, design your button layout (try filling multiple pages; leave one page empty — it should hide).
 2. Drive a full listening session from the watch only: play, skip, sections, loop, speed, sleep timer, a bookmark with a voice memo.

@@ -11,9 +11,9 @@ iconAlt: MacroMark app icon — the letters M and M flanking a downward arrow, i
 
 MacroMark is voice capture for people whose notes live in Markdown. Tap your Watch complication, speak, lower your wrist, and let MacroMark append the thought to today's note.
 
-<p class="app-actions"><a class="btn btn-gold btn-md" href="https://apps.apple.com/ca/app/macromark/id6785081218">Download on the App Store</a></p>
+MacroMark 1.0 is [live on the App Store](https://apps.apple.com/ca/app/macromark/id6785081218) and free. Version 1.1 is in testing.
 
-> MacroMark 1.0 is [live on the App Store](https://apps.apple.com/ca/app/macromark/id6785081218) and free. Version 1.1 is in testing.
+<p class="app-actions"><a class="btn btn-gold btn-md" href="https://apps.apple.com/ca/app/macromark/id6785081218">Download on the App Store</a></p>
 
 ## A note before the thought cools
 
@@ -32,12 +32,17 @@ MacroMark writes to plain-text daily notes so capture lands where PKM users alre
 
 Verbal macros turn natural speech into structure. Use the built-in Markdown triggers or create your own phrases for the way you actually capture.
 
-- **Heading Two:** `##`
-- **Task:** `- [ ]`
-- **New Journal Entry:** `## {date} at {time}`
-- **Dropoff:** `{location} -`
-- **Block ID:** `^id-{uuid}`
-- **Not:** `{backspace}`
+<table class="macro-table">
+<thead><tr><th scope="col">You say</th><th scope="col">It writes</th></tr></thead>
+<tbody>
+<tr><td>“Heading Two”</td><td><code>##</code></td></tr>
+<tr><td>“Task”</td><td><code>- [ ]</code></td></tr>
+<tr><td>“New Journal Entry”</td><td><code>## {date} at {time}</code></td></tr>
+<tr><td>“Dropoff”</td><td><code>{location} -</code></td></tr>
+<tr><td>“Block ID”</td><td><code>^id-{uuid}</code></td></tr>
+<tr><td>“Not”</td><td><code>{backspace}</code></td></tr>
+</tbody>
+</table>
 
 ## Native where reliability matters
 
@@ -60,4 +65,4 @@ Verbal macros turn natural speech into structure. Use the built-in Markdown trig
 MacroMark is built around local capture, Apple speech services where applicable, and user-owned note files. It is not a social inbox or analytics product.
 
 ---
-[Get on the App Store](https://apps.apple.com/ca/app/macromark/id6785081218) | [Project Site](https://dfakkeldy.github.io/MacroMark/) | [View Source Code on GitHub](https://github.com/dfakkeldy/MacroMark) | [Get Help & Support](/macromark-help)
+[Project site](https://dfakkeldy.github.io/MacroMark/) | [Source on GitHub](https://github.com/dfakkeldy/MacroMark) | [Get help](/macromark-help)

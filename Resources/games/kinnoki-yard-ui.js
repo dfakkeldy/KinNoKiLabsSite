@@ -155,6 +155,7 @@ function buildYardShell(root, model, audioControls) {
     'data-yard-rotation-state': '', text: 'Rotation 0°',
   });
   const difficultyExplanation = element('p', {
+    class: 'game-mode-note',
     'data-difficulty-explanation': '',
     text: DIFFICULTY_COPY[mode][difficulty],
   });
@@ -217,24 +218,29 @@ function buildYardShell(root, model, audioControls) {
 
   const shell = element('section', { class: 'yard-game' },
     element('div', { class: 'game-toolbar' },
-      element('a', { href: '/games', class: 'back-link', text: '← Games' }),
-      element('h1', { text: 'KinNoKi Yard' }),
+      element('div', { class: 'game-title' },
+        element('a', { href: '/games', class: 'back-link', text: '← Games' }),
+        element('h1', { text: 'KinNoKi Yard' })),
       element('label', {}, element('span', { text: 'Mode' }), selectors.modeSelect),
       element('label', {}, element('span', { text: 'Difficulty' }),
         selectors.difficultySelect)),
     notice,
     eventRegion,
-    difficultyExplanation,
-    stats,
-    element('div', { class: 'game-preplay' },
-      start, continueGame, resume, restart, newGame),
-    element('section', { class: 'yard-tray-panel', 'aria-label': 'Cargo tray' },
-      element('h2', { text: 'Cargo tray' }), tray),
-    help,
-    element('div', { class: 'yard-board-column' },
-      board.scroll, board.pan),
-    element('div', { class: 'yard-controls' },
-      Object.values(controls).filter(Boolean)),
+    // Phone reading order: what to do, the tray, the yard and its controls,
+    // then the status tiles. Wide screens move the run panel beside the yard
+    // (see .yard-layout in styles.css).
+    element('div', { class: 'yard-layout' },
+      difficultyExplanation,
+      element('div', { class: 'game-preplay' },
+        start, continueGame, resume, restart, newGame),
+      element('section', { class: 'yard-tray-panel', 'aria-label': 'Cargo tray' },
+        element('h2', { text: 'Cargo tray' }), tray),
+      element('div', { class: 'yard-board-column' },
+        board.scroll, board.pan,
+        element('div', { class: 'yard-controls' },
+          Object.values(controls).filter(Boolean))),
+      stats,
+      help),
     audioControls.element);
   root.replaceChildren(shell);
   return {
@@ -876,6 +882,19 @@ YardController.prototype.installPassiveHandlers = function installPassiveHandler
   this.listenPassive(this.view.panRight, 'click', () => {
     this.view.scroll.scrollLeft += 176;
   });
+  // Pan buttons only show when the yard is wider than its column.
+  const syncPanVisibility = () => {
+    const { scroll } = this.view;
+    scroll.parentNode?.classList?.toggle(
+      'is-fitting', scroll.scrollWidth <= scroll.clientWidth,
+    );
+  };
+  if (typeof globalThis.ResizeObserver === 'function') {
+    const observer = new globalThis.ResizeObserver(syncPanVisibility);
+    observer.observe(this.view.scroll);
+    this.passiveCleanups.add(() => observer.disconnect());
+  }
+  syncPanVisibility();
   // Delegated one-shot cleanup (mirrors kinnoki-stack-ui.js): the invalid-flash
   // cell class and the endless dispatch flash both self-clear on the very next
   // full repaint anyway, but this gives them a timely fade instead of waiting

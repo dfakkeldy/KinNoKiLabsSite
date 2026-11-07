@@ -1,6 +1,10 @@
 # Echo Privacy Policy
 
-Echo is made by Daniel Vincent Fakkeldy, operating as KinNoKi Labs. You can play and study local audiobooks without creating an Echo account. Echo stores its library records, reading and listening progress, notes, study cards and settings on your device. Features vary by platform. The optional network features below have different data handling; using local files does not mean every feature is offline or uses only private iCloud storage.
+Echo is made by Daniel Vincent Fakkeldy, operating as KinNoKi Labs. In short:
+
+- You can play and study local audiobooks without creating an Echo account.
+- Echo stores its library records, reading and listening progress, notes, study cards and settings on your device. Features vary by platform.
+- The optional network features below have different data handling; using local files does not mean every feature is offline or uses only private iCloud storage.
 
 ## Local books, narration and study
 

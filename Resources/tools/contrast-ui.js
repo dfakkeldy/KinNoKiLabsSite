@@ -36,7 +36,7 @@ const colourField = (doc, { id, name, label, value, onTextInput, onColourInput }
     id: `${id}-text`, name, type: 'text', inputmode: 'text', ownerDocument: doc,
   });
   const colour = element('input', {
-    id: `${id}-colour`, name: `${name}Color`, type: 'color', 'aria-label': `${label} picker`, ownerDocument: doc,
+    id: `${id}-colour`, name: `${name}Color`, type: 'color', class: 'contrast-picker', 'aria-label': `${label} picker`, ownerDocument: doc,
   });
   text.value = value;
   colour.value = value;
@@ -46,7 +46,8 @@ const colourField = (doc, { id, name, label, value, onTextInput, onColourInput }
     text,
     colour,
     field: element('div', { class: 'tool-field', ownerDocument: doc },
-      element('label', { for: `${id}-text`, text: label, ownerDocument: doc }), text, colour),
+      element('label', { for: `${id}-text`, text: label, ownerDocument: doc }),
+      element('div', { class: 'contrast-input-row', ownerDocument: doc }, colour, text)),
   };
 };
 
@@ -135,7 +136,11 @@ export function renderContrastTool(root, deps = {}) {
     const ratioText = formatNumber(ratio, 2);
     const headline = `Contrast ${ratioText} : 1`;
     const verdictList = element('ul', { class: 'tool-verdicts', ownerDocument: doc }, ...VERDICT_ROWS.map(([key, label]) => (
-      element('li', { class: 'tool-verdict', text: `${label} — ${checks[key] ? 'pass' : 'fail'}`, ownerDocument: doc })
+      element('li', {
+        class: `tool-verdict ${checks[key] ? 'is-pass' : 'is-fail'}`,
+        text: `${label} — ${checks[key] ? 'pass' : 'fail'}`,
+        ownerDocument: doc,
+      })
     )));
     const preview = element('div', { class: 'contrast-preview', ownerDocument: doc });
     const forward = element('p', {
@@ -148,7 +153,12 @@ export function renderContrastTool(root, deps = {}) {
     });
     reverse.style.setProperty('background-color', foregroundHex);
     reverse.style.setProperty('color', backgroundHex);
-    preview.append(forward, reverse);
+    preview.append(
+      element('div', { class: 'contrast-sample', ownerDocument: doc },
+        element('p', { class: 'contrast-sample-label', text: 'Foreground on background', ownerDocument: doc }), forward),
+      element('div', { class: 'contrast-sample', ownerDocument: doc },
+        element('p', { class: 'contrast-sample-label', text: 'Swapped', ownerDocument: doc }), reverse),
+    );
 
     const suggestion = element('div', { class: 'contrast-suggestion', ownerDocument: doc });
     const targetSelect = element('select', {
@@ -164,7 +174,7 @@ export function renderContrastTool(root, deps = {}) {
       targetSelect,
     );
     if (ratio < target) {
-      const button = element('button', { type: 'button', text: 'Suggest a fix', ownerDocument: doc });
+      const button = element('button', { type: 'button', class: 'tool-primary', text: 'Suggest a fix', ownerDocument: doc });
       button.addEventListener('click', () => {
         const next = suggestPassing(foregroundHex, backgroundHex, target);
         if (!next) {
@@ -185,7 +195,7 @@ export function renderContrastTool(root, deps = {}) {
     }
 
     results.replaceChildren(
-      element('p', { class: 'tool-result-strong', text: headline, ownerDocument: doc }),
+      element('p', { class: 'tool-result-strong contrast-ratio', text: headline, ownerDocument: doc }),
       verdictList,
       preview,
       suggestion,
