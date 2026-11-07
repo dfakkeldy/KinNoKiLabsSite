@@ -5,7 +5,7 @@ image: /images/apps/echo.png
 accent: #d4af37
 tagline: For Every Mind — Turn listening into learning.
 platforms: iPhone, iPad, Apple Watch, Mac
-status: TestFlight beta — open
+status: TestFlight beta
 featured: true
 iconAlt: Echo app icon — an infinity symbol in silver and gold
 ---

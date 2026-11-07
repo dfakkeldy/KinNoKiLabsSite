@@ -677,3 +677,22 @@ body.font-opendyslexic .room-bar .font-toggle {
   .series-shelf { padding: 14px; }
   .room-library ul, .room-library ol { grid-template-columns: 1fr; }
 }
+
+/* Touch: every room control is a 44px target (both rooms share this). The
+   round toggles and the speed pill keep their drawn size and grow an
+   invisible hit area instead, so the bar and transport keep their look. */
+@media (pointer: coarse) {
+  .room-brand, .room-back, .series-link { display: inline-flex; align-items: center; min-height: 44px; }
+  .room-bar-nav { gap: 12px; }
+  .room-chapter-btn { min-height: 44px; align-items: center; }
+  .room-bar .font-toggle, .room-bar .theme-toggle, .room-speed { position: relative; }
+  .room-bar .font-toggle::after, .room-bar .theme-toggle::after, .room-speed::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: max(100%, 44px);
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
+}

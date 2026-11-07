@@ -530,6 +530,7 @@ private func siteFooter() -> Node<HTML.BodyContext> {
                     ("/learn", "Learning audiobooks"),
                     ("/listen/", "Echo Listening Room"),
                     ("/fiction/", "Fiction Listening Room"),
+                    ("/shakespeare/", "Shakespeare"),
                     ("/taxsale/", "Tax Sale Hub"),
                     ("/fishing/", "Fishing map"),
                     ("/gas/", "Gas Price Watch"),
@@ -1150,28 +1151,31 @@ private func guideBody(_ source: String) -> GuideBody {
     var intro = pieces[0]
     var toc = ""
     if contents.count >= 4 {
+        // The list (and the wide-screen rail) shows the short heading, the
+        // part before " — "; the full heading stays in the link's title.
         let items = contents.map { item -> String in
-            var text = item.label
+            let short = guideShortLabel(item.title)
+            var text = short
             if let number = item.number {
-                text = #"<span class="prose-toc-num">\#(number)</span><span>\#(item.title)</span>"#
+                text = #"<span class="prose-toc-num">\#(number)</span><span>\#(short)</span>"#
             }
-            return ##"<li><a href="#\##(item.id)">"## + text + "</a></li>"
+            let fullTitle = item.title.replacingOccurrences(of: "\"", with: "&quot;")
+            let titleAttribute = short == item.title ? "" : #" title="\#(fullTitle)""#
+            return ##"<li><a href="#\##(item.id)""## + titleAttribute + ">" + text + "</a></li>"
         }.joined()
         toc = #"<nav class="prose-toc" aria-labelledby="prose-toc-title"><p class="prose-toc-title" id="prose-toc-title">On this page</p><ul>"#
             + items + "</ul></nav>"
         // On a phone the list can sit a long scroll below the title.
         if let h1 = intro.range(of: "</h1>") {
-            intro.insert(contentsOf: ##"<p class="prose-toc-jump"><a href="#prose-toc-title">Jump to contents<span aria-hidden="true"> ↓</span></a></p>"##, at: h1.upperBound)
+            // The arrow's spacing comes from the link's CSS gap, not a space.
+            intro.insert(contentsOf: ##"<p class="prose-toc-jump"><a href="#prose-toc-title">Jump to contents<span aria-hidden="true">↓</span></a></p>"##, at: h1.upperBound)
         }
-        // Every section ends with a way back to the list; in the last one
-        // it goes before the closing "---" pill row, which must stay last.
-        let back = ##"<p class="prose-toc-return"><a href="#prose-toc-title"><span aria-hidden="true">↑ </span>Back to contents</a></p>"##
-        for index in sections.indices {
-            if index == sections.count - 1, let rule = sections[index].range(of: "<hr>", options: .backwards) {
-                sections[index].insert(contentsOf: back, at: rule.lowerBound)
-            } else {
-                sections[index] += back
-            }
+        // A long section ends with a way back to the list. The last section
+        // gets none (the page ends there), and neither does a short one,
+        // where the list is only a flick away.
+        let back = ##"<p class="prose-toc-return"><a href="#prose-toc-title"><span aria-hidden="true">↑</span>Back to contents</a></p>"##
+        for index in sections.indices.dropLast() where sections[index].count >= 1200 {
+            sections[index] += back
         }
     }
 
@@ -1184,6 +1188,18 @@ private func guideBody(_ source: String) -> GuideBody {
         )
     }
     return GuideBody(html: guideH3IDs(body, used: &usedIDs), hasContents: !toc.isEmpty, hasChapters: contents.count >= 3)
+}
+
+/// The contents-list label for a heading: the part before an em-dash
+/// subtitle ("Time Blindness — when …" -> "Time Blindness").
+private func guideShortLabel(_ title: String) -> String {
+    for separator in [" — ", " &mdash; ", " &#8212; "] {
+        if let range = title.range(of: separator) {
+            let short = title[..<range.lowerBound].trimmingCharacters(in: .whitespaces)
+            if !short.isEmpty { return short }
+        }
+    }
+    return title
 }
 
 /// A slug id for a heading label that no earlier heading on the page used.
@@ -1449,7 +1465,7 @@ private func homeMain() -> Node<HTML.BodyContext> {
             <h3>NS Marks The Spot</h3>
             <p>Nova Scotia parcels, dated tax-sale notices, and Fletcher’s 1880s sheets on one source-linked browser map.</p>
             <div class="app-card-meta">
-              <span class="status-chip">Live map</span>
+              <span class="status-chip">Live browser map</span>
               <span class="platforms">Browser · iPhone</span>
             </div>
           </a>
@@ -1458,7 +1474,7 @@ private func homeMain() -> Node<HTML.BodyContext> {
             <h3>Turn Timer</h3>
             <p>Visual rounds for countdowns, turns, routines, and reusable sequences.</p>
             <div class="app-card-meta">
-              <span class="status-chip">TestFlight</span>
+              <span class="status-chip">TestFlight beta</span>
               <span class="platforms">iPhone · Browser</span>
             </div>
           </a>
@@ -1492,7 +1508,7 @@ private func appsMain() -> Node<HTML.BodyContext> {
           <h2>Echo: Audiobook Study Player</h2>
           <p>An audiobook player built for studying, not just listening. Word-perfect read-along, one-tap flashcards, Smart Rewind, and a Watch remote you design.</p>
           <div class="app-card-meta">
-            <span class="status-chip">TestFlight beta — open</span>
+            <span class="status-chip">TestFlight beta</span>
             <span class="platforms">iPhone&nbsp;&amp;&nbsp;iPad · Apple&nbsp;Watch · Mac · GPL-3.0</span>
           </div>
           \(svgChevron)
@@ -1523,7 +1539,7 @@ private func appsMain() -> Node<HTML.BodyContext> {
           <h3>Turn Timer</h3>
           <p>An Apple-native visual sequence timer — one-tap visual countdowns plus reusable sequences. It also runs in your browser, with nothing to install.</p>
           <div class="app-card-meta">
-            <span class="status-chip">TestFlight</span>
+            <span class="status-chip">TestFlight beta</span>
             <span class="platforms">iPhone · Browser</span>
           </div>
           \(svgChevron)
@@ -1878,8 +1894,8 @@ private func supportMain() -> Node<HTML.BodyContext> {
       </header>
       <div class="row-list">
         <a class="support-row" href="/echo-help"><img class="app-icon support-row-icon" src="/images/apps/echo.png" alt="" width="36" height="36"><span class="support-row-text"><span>Echo</span><span class="support-row-sub"><span class="status-chip">TestFlight beta</span> FAQ and contact</span></span>\(svgRowChevron)</a>
-        <a class="support-row" href="/macromark-help"><img class="app-icon support-row-icon" src="/images/apps/macromark.png" alt="" width="36" height="36"><span class="support-row-text"><span>MacroMark</span><span class="support-row-sub"><span class="status-chip">App Store</span> Email or GitHub issues</span></span>\(svgRowChevron)</a>
-        <a class="support-row" href="/nsmarksthespot-help"><img class="app-icon support-row-icon" src="/images/apps/nsmarksthespot.svg" alt="" width="36" height="36"><span class="support-row-text"><span>NS Marks The Spot</span><span class="support-row-sub"><span class="status-chip">Browser map</span> Where the maps are, and contact</span></span>\(svgRowChevron)</a>
+        <a class="support-row" href="/macromark-help"><img class="app-icon support-row-icon" src="/images/apps/macromark.png" alt="" width="36" height="36"><span class="support-row-text"><span>MacroMark</span><span class="support-row-sub"><span class="status-chip">App Store — 1.0</span> Email or GitHub issues</span></span>\(svgRowChevron)</a>
+        <a class="support-row" href="/nsmarksthespot-help"><img class="app-icon support-row-icon" src="/images/apps/nsmarksthespot.svg" alt="" width="36" height="36"><span class="support-row-text"><span>NS Marks The Spot</span><span class="support-row-sub"><span class="status-chip">Live browser map</span> Where the maps are, and contact</span></span>\(svgRowChevron)</a>
         <a class="support-row" href="/visualtimer-help"><img class="app-icon support-row-icon" src="/images/apps/turntimer.png" alt="" width="36" height="36"><span class="support-row-text"><span>Turn Timer</span><span class="support-row-sub"><span class="status-chip">TestFlight beta</span> Email or GitHub issues</span></span>\(svgRowChevron)</a>
         <a class="support-row" href="mailto:hello@kinnokilabs.com"><span class="support-row-glyph" aria-hidden="true">\(svgMail)</span><span class="support-row-text"><span>Email me</span><span class="support-row-sub">hello@kinnokilabs.com · business inquiries, ideas, or feedback</span></span>\(svgRowChevron)</a>
       </div>

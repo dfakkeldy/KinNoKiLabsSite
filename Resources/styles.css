@@ -92,6 +92,10 @@
   --separator: rgba(0, 0, 0, 0.10);
   /* Gold needs more weight on a pale page to stay readable. */
   --gold-text: color-mix(in srgb, var(--gold-500) 55%, var(--text));
+  /* Gold fills (primary buttons, play, start) drop the bronze end stops on
+     a pale page, so they read as gold leaf, not brass. Dark text on the
+     darkest stop (#c39d4f) is still about 6.8:1. */
+  --grad-gold: linear-gradient(135deg, #d2ae5f 0%, #f3dca6 50%, #c39d4f 100%);
   --gold-hairline: color-mix(in srgb, var(--gold-500) 36%, transparent);
   --fill: rgba(120, 120, 128, 0.12);
   --fill-2: rgba(120, 120, 128, 0.08);
@@ -203,11 +207,16 @@ a { color: inherit; }
   .btn-md { min-height: 44px; padding-block: 10px; }
 }
 
+/* Light: a crisp edge and one soft contact shadow, the same plane as
+   .btn-outline, instead of a heavy bronze glow. */
 [data-theme="light"] .btn-gold {
-  border-color: color-mix(in srgb, var(--gold-700) 45%, transparent);
-  box-shadow: 0 1px 2px rgba(60, 45, 15, 0.18), 0 4px 12px color-mix(in srgb, var(--gold-700) 22%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  border-color: color-mix(in srgb, var(--gold-700) 40%, transparent);
+  box-shadow: 0 1px 2px rgba(60, 45, 15, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
-[data-theme="light"] .btn-gold:hover { box-shadow: 0 2px 4px rgba(60, 45, 15, 0.18), 0 8px 20px color-mix(in srgb, var(--gold-700) 28%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.45); }
+[data-theme="light"] .btn-gold:hover { box-shadow: 0 2px 8px rgba(60, 45, 15, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.5); }
+/* The active-page tick under the nav uses the AA gold text tone on a pale
+   page; the pale gradient would vanish there. */
+[data-theme="light"] .nav-links a[aria-current="page"]::after { background: var(--gold-text); }
 [data-theme="light"] .btn-gray { background: var(--surface); border-color: var(--separator); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); }
 [data-theme="light"] .btn-gray:hover { border-color: color-mix(in srgb, var(--gold-500) 45%, var(--separator)); }
 
@@ -838,6 +847,23 @@ a.chip:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px;
   .btn-md { min-height: 44px; }
   .flagship-actions .link-quiet, .proof-strip .link-quiet, .footer-email, .footer-legal-links a, .echo-source-link, .echo-back { display: inline-flex; align-items: center; min-height: 44px; }
 }
+/* ── Touch targets, site-wide (design-system pass) ─────
+   One coarse-pointer set for the shared chrome and the small link rows
+   several pages reuse. Desktop (fine pointer) keeps its tighter rhythm.
+   Row links grow their box; links that can sit inside a line of text only
+   grow their hit area (inline padding never moves the line box). */
+@media (pointer: coarse) {
+  .nav-brand, .footer-brand-link { min-height: 44px; }
+  .footer-list a { display: inline-flex; align-items: center; min-height: 44px; padding-block: 0; }
+  .footer-legal .font-toggle { height: 44px; }
+  .echo-cta-link { display: inline-flex; align-items: center; min-height: 44px; }
+  /* Tax-sale source rows: see the coarse block after the .tax-date-actions
+     rules (it must follow them in source order to win). */
+  /* Ruled arrow links and source links that can sit in running text keep
+     their layout and grow only an invisible hit area. */
+  .tax-text-link, .gas-zone-controls .link-quiet, .gas-card .link-quiet, .gas-watch .link-quiet, .gas-source-list .link-quiet { position: relative; }
+  .tax-text-link::after, .gas-zone-controls .link-quiet::after, .gas-card .link-quiet::after, .gas-watch .link-quiet::after, .gas-source-list .link-quiet::after { content: ""; position: absolute; inset: -13px 0; }
+}
 
 /* ── Services offering cards ────────────────────────── */
 .services-hero-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr); gap: clamp(32px, 5vw, 72px); align-items: center; }
@@ -1412,8 +1438,11 @@ a.chip:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px;
 
 /* ── Guides (help, manuals, policies: proseMain adds .prose-guide;
       .prose-long when the page has 4+ h2s and an "On this page" list) ── */
-/* Long-form headings fill the measure and wrap only their tail. */
-.prose h1, .prose h2, .prose h3 { text-wrap: pretty; }
+/* Long-form section headings fill the measure and wrap only their tail;
+   the page title keeps the site's balanced wrap, so a long policy title
+   never ends on one orphaned word. */
+.prose h2, .prose h3 { text-wrap: pretty; }
+.prose h1 { text-wrap: balance; }
 .prose h2, .prose h3, .prose .prose-toc-title { scroll-margin-top: 88px; }
 /* A policy's effective date reads as the page's meta line. */
 .prose .prose-meta { margin-bottom: 24px; font-size: 14.5px; color: var(--text-muted); }
@@ -1478,17 +1507,22 @@ a.chip:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 2px;
    to it under the title (the list can sit a long scroll down). */
 .prose .prose-toc-return { margin: 28px 0 0; font-size: 14px; line-height: 1.4; }
 .prose .prose-toc-jump { display: none; margin: -6px 0 22px; font-size: 14px; line-height: 1.4; }
-.prose .prose-toc-return a, .prose .prose-toc-jump a { display: inline-flex; align-items: center; min-height: 32px; color: var(--text-muted); text-decoration-color: var(--separator); }
+.prose .prose-toc-return a, .prose .prose-toc-jump a { display: inline-flex; align-items: center; gap: 0.35em; min-height: 32px; color: var(--text-muted); text-decoration-color: var(--separator); }
 .prose .prose-toc-return a:hover, .prose .prose-toc-jump a:hover { color: var(--text); text-decoration-color: var(--gold-500); }
 @media (max-width: 900px) { .prose .prose-toc-jump { display: block; } }
 @media (pointer: coarse) { .prose .prose-toc-return a, .prose .prose-toc-jump a { min-height: 44px; } }
 /* Wide screens: "On this page" leaves the flow and becomes a sticky rail in
    the empty left margin, so every chapter stays one click away. */
 @media (min-width: 1320px) {
-  .prose-long > .prose-toc { position: sticky; top: 96px; float: left; width: 208px; margin: 4px 0 0 -264px; padding: 0 12px 0 0; border: 0; max-height: calc(100vh - 128px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
-  .prose-long > .prose-toc ul { columns: 1; }
+  /* The rail is a full-height column beside the article, so it starts
+     level with the h1 (not after the intro), while the text keeps normal
+     block flow and margin collapsing. Its title and list stick inside it. */
+  .prose-long { position: relative; }
+  .prose-long > .prose-toc { position: absolute; top: 0; bottom: 0; left: -264px; width: 208px; margin: 0; padding: 6px 12px 0 0; border: 0; }
+  .prose-long > .prose-toc .prose-toc-title { position: sticky; top: 96px; margin: 0; padding-bottom: 8px; background: var(--bg); }
+  .prose-long > .prose-toc ul { position: sticky; top: 124px; columns: 1; max-height: calc(100vh - 156px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
   .prose-long > .prose-toc li { line-height: 1.3; }
-  .prose-long > .prose-toc a { padding: 3px 0; font-size: 13.5px; }
+  .prose-long > .prose-toc a { padding: 3px 0; font-size: 13.5px; text-wrap: balance; }
   .prose-long > .prose-toc + h2 { margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--separator); }
   .prose-long .prose-toc-return, .prose-long .prose-toc-jump { display: none; }
 }
@@ -2525,6 +2559,22 @@ body.font-opendyslexic .yard-tray-piece:focus-visible { outline-width: 4px; }
 .game-toolbar > time { display: inline-flex; min-height: 44px; align-items: center; }
 /* Audio is a compact utility strip, not a full-width section. */
 fieldset.game-audio-controls { width: fit-content; max-width: 100%; }
+/* Audio strip, every game (design-system pass): one three-column grid, so
+   the channel names, sliders and mute buttons line up in columns and both
+   mute buttons share one width whatever their label ("Unmute effects").
+   The channel row and its label drop their own boxes (display: contents);
+   the label still wraps its slider, and colour/size still inherit. */
+fieldset.game-audio-controls { display: grid; grid-template-columns: max-content minmax(7rem, 11rem) max-content; align-items: center; gap: 8px 16px; }
+/* The legend stays floated (see above), so it is a grid item inside the
+   panel, not drawn on the border. */
+fieldset.game-audio-controls legend { grid-column: 1 / -1; margin-bottom: 2px; }
+fieldset.game-audio-controls .game-audio-channel,
+fieldset.game-audio-controls .game-audio-channel label { display: contents; }
+fieldset.game-audio-controls input[type="range"] { width: 100%; min-width: 0; }
+fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch; }
+@media (max-width: 759px) {
+  fieldset.game-audio-controls { width: 100%; grid-template-columns: max-content minmax(0, 1fr) max-content; column-gap: 12px; padding: 12px 14px; }
+}
 /* The one go-button (Start, Continue or Resume; only one shows) is primary. */
 .game-preplay button:is([data-start-game], [data-continue-game], [data-resume-game]) {
   color: #1d1d1f;
@@ -2705,10 +2755,12 @@ fieldset.game-audio-controls { width: fit-content; max-width: 100%; }
 }
 
 /* ===== Tools (project addition) ===== */
-/* The hub lines up with every other page; single tools stay narrower. */
-.tools-main[data-tool-page="hub"] { max-width: var(--max-width); }
+/* Every tools page starts on the nav/footer content edge; a single tool
+   keeps its narrower working measure inside that frame (896px is the old
+   960px page less its gutters). */
+.tools-main:not([data-tool-page="hub"]) > .tools-app { max-width: 896px; }
 .tools-main {
-  max-width: 960px;
+  max-width: var(--max-width);
   min-height: 60vh;
   margin: 0 auto;
   padding: var(--page-pad-top) var(--gutter) 24px;
@@ -2963,7 +3015,10 @@ fieldset.game-audio-controls { width: fit-content; max-width: 100%; }
 [data-theme="light"] .tool-form .tool-primary { border-color: color-mix(in srgb, var(--gold-700) 45%, transparent); box-shadow: 0 1px 2px rgba(60, 45, 15, 0.18); }
 .tool-form .tool-quiet { color: var(--game-text-secondary); background: transparent; }
 .tool-form .tool-quiet:not(:disabled):hover { color: var(--game-text-primary); background: var(--fill-2); }
-.tool-form button:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; filter: none; }
+/* Disabled: the site's one "not yet" skin, shared with the games. Full
+   opacity with AA secondary text, no fill, and a dashed edge as the
+   non-colour cue, so a waiting button never looks faded or broken. */
+.tool-form button:disabled { color: var(--game-text-secondary); background: transparent; background-image: none; border-style: dashed; border-color: var(--separator); opacity: 1; cursor: not-allowed; box-shadow: none; filter: none; transform: none; }
 .tool-hint { margin: 2px 0 0; color: var(--text-muted); font-size: 13px; line-height: 1.45; }
 .tool-inline { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 8.5rem); gap: 8px; }
 
@@ -3183,8 +3238,8 @@ fieldset.game-audio-controls { width: fit-content; max-width: 100%; }
    their edges in dark; disabled primaries go flat grey instead of dim gold. */
 .tool-lede { hyphens: manual; }
 .tool-form .tool-quiet { border-color: color-mix(in srgb, var(--text) 22%, transparent); }
-.tool-form .tool-quiet:disabled { opacity: 0.6; }
-.tool-form .tool-primary:disabled { color: var(--text-muted); background: var(--fill-2); background-image: none; border-color: var(--separator); box-shadow: none; opacity: 1; }
+.tool-form .tool-quiet:disabled,
+.tool-form .tool-primary:disabled { color: var(--game-text-secondary); background: transparent; background-image: none; border-style: dashed; border-color: var(--separator); box-shadow: none; opacity: 1; }
 
 /* Mode tabs: one segmented control. Inactive segments sit on the track in
    full text colour; the chosen one is a raised tile with a gold edge. */
@@ -3579,6 +3634,13 @@ fieldset.game-audio-controls { width: fit-content; max-width: 100%; }
 .tax-format-card a { color: var(--tax-accent-strong); font-size: 0.82rem; font-weight: 650; text-decoration: none; border-bottom: 1px solid currentColor; }
 .tax-date-actions a:hover,
 .tax-format-card a:hover { color: var(--tax-muted); }
+/* Touch (design-system pass): each source link is a 44px row carrying a
+   text underline, since a border-bottom would drop to the foot of the
+   taller box; the rows touch, so the old gap goes. */
+@media (pointer: coarse) {
+  .tax-date-actions { gap: 0; }
+  .tax-date-actions a, .tax-format-card a { display: inline-flex; align-items: center; min-height: 44px; border-bottom: 0; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+}
 
 .tax-notice {
   display: grid;
@@ -3907,9 +3969,9 @@ fieldset.game-audio-controls { width: fit-content; max-width: 100%; }
   font-weight: 500;
   margin-top: 4px;
 }
-/* The shared .card-cue sits on the card's bottom edge, so cues line up
-   across a row whatever the title length. */
-.tender-card .card-cue { margin-top: auto; padding-top: 4px; }
+/* The shared .card-cue follows the card's facts at the card gap, so a
+   short card ends on its cue instead of opening a hollow above it. */
+.tender-card .card-cue { margin-top: 0; padding-top: 4px; }
 @media (max-width: 599px) {
   .tender-card { padding: 18px; gap: 10px; }
   .tender-card h3 { font-size: 16.5px; }

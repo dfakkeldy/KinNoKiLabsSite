@@ -5,7 +5,7 @@ image: /images/apps/turntimer.png
 accent: #74c0fc
 tagline: Make time visible for turns, routines, and reusable sequences.
 platforms: iPhone, Browser
-status: TestFlight
+status: TestFlight beta
 ---
 
 Turn Timer is a colourful visual countdown you can read from across the room. Start a quick timer, or build a sequence of named rounds for game night, a recipe, a classroom, a meeting or a morning routine, and reuse it whenever you need it. The iPhone app is in beta on TestFlight; it is not on the App Store yet.
