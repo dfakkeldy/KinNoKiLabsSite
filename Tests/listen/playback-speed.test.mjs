@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
+import core from '../../Resources/listen/listen-core.js';
 
 const playerSource = readFileSync(
   new URL('../../Resources/listen/listen.js', import.meta.url),
@@ -173,7 +174,7 @@ async function bootPlayer(savedRate) {
   };
 
   const window = {
-    EchoListenCore: { libraryActions: () => [] },
+    EchoListenCore: { libraryActions: () => [], idleCaptionState: core.idleCaptionState },
     addEventListener() {},
   };
   const document = {

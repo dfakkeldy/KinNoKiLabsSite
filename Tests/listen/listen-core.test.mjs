@@ -339,3 +339,55 @@ test('series helpers tolerate malformed input and duplicate references', () => {
   assert.equal(core.seriesContext(catalog, 'one').series.id, 'first');
   assert.equal(core.seriesContext(catalog, 'two').series.id, 'second');
 });
+
+/* ── Pre-play preview (shared by /listen and /fiction) ── */
+
+const previewBlocks = [
+  { id: 'h1', kind: 'heading', text: 'Chapter One', chapterIndex: 0 },
+  { id: 'fig', kind: 'image', chapterIndex: 0 },
+  { id: 'p1', kind: 'paragraph', text: '  The tide came in. It kept coming.', chapterIndex: 0 },
+  { id: 'h2', kind: 'heading', text: 'Chapter Two', chapterIndex: 1 },
+  { id: 'h3', kind: 'heading', text: 'Chapter Three', chapterIndex: 2 },
+  { id: 'p3', kind: 'paragraph', text: Array.from({ length: 40 }, (_, i) => `w${i}`).join(' '), chapterIndex: 2 },
+];
+
+test('previewWords takes the opening sentence of the paragraph under a heading', () => {
+  assert.deepEqual(core.previewWords(previewBlocks, 'h1'), ['The', 'tide', 'came', 'in.']);
+  assert.equal(core.previewWords(previewBlocks, 'p1'), null, 'only a heading gets a preview');
+  assert.equal(core.previewWords(previewBlocks, 'h2'), null, 'stops at the next heading');
+  assert.equal(core.previewWords(previewBlocks, null), null);
+  assert.equal(core.previewWords(previewBlocks, 'missing'), null);
+  const long = core.previewWords(previewBlocks, 'h3');
+  assert.equal(long.length, 29);
+  assert.equal(long.at(-1), '…');
+});
+
+test('renderPreview builds the line with the given document and the idle state helpers toggle the hint', () => {
+  const node = (tag) => ({ tag, children: [], className: '', textContent: '',
+    appendChild(child) { this.children.push(child); } });
+  const doc = { createElement: node, createTextNode: (text) => ({ tag: '#text', textContent: text }) };
+  const container = node('span');
+  const line = core.renderPreview(doc, container, previewBlocks, 'h1');
+  assert.equal(container.children[0], line);
+  assert.equal(line.className, 'room-preview');
+  assert.deepEqual(line.children.filter((c) => c.className === 'pw').map((c) => c.textContent),
+    ['The', 'tide', 'came', 'in.']);
+  assert.equal(line.children.length, 7, 'words joined by single text-node spaces');
+  assert.equal(core.renderPreview(doc, container, previewBlocks, 'p1'), null);
+  assert.equal(container.children.length, 1);
+
+  const classes = new Set();
+  const main = { classList: { add: (c) => classes.add(c), contains: (c) => classes.has(c) } };
+  const hint = { hidden: true };
+  const idle = core.idleCaptionState(main, hint);
+  assert.equal(idle.hasStarted(), false);
+  idle.offerCueHint();
+  assert.equal(hint.hidden, false);
+  idle.markStarted();
+  assert.equal(idle.hasStarted(), true);
+  assert.equal(classes.has('started'), true);
+  assert.equal(hint.hidden, true);
+  idle.offerCueHint();
+  assert.equal(hint.hidden, true, 'the hint never returns after the first play');
+  core.idleCaptionState(main, null).offerCueHint();
+});

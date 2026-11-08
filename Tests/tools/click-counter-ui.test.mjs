@@ -85,7 +85,11 @@ test('shows an accessible error for invalid input and reset restores defaults', 
   assert.match(announcements.at(-1), /zero or greater/i);
 
   buttonWithText(fixture.root, '15').click();
-  buttonWithText(fixture.root, 'Reset').click();
+  const reset = buttonWithText(fixture.root, 'Reset');
+  reset.focus();
+  reset.click();
+  assert.equal(reset.hidden, true);
+  assert.equal(fixture.document.activeElement, target, 'focus moves to the target number after Reset');
   assert.equal(target.value, '2.5');
   assert.equal(buttonWithText(fixture.root, '5').getAttribute('aria-pressed'), 'true');
   assert.equal(fixture.root.querySelector('.click-counter-value')?.textContent, '30 clicks');

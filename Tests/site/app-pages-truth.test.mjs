@@ -116,6 +116,12 @@ test('NS Marks public copy names the focused Rhodena page and keeps the sight-li
     assert.match(source, /bare earth first obstructs/);
     assert.match(source, /trees, buildings, and the final design are not in the model/i);
     assert.match(source, /provisional proposed layout/);
+    assert.match(source, /eye-level \(~1\.7 m\)/);
+    assert.match(source, /tip height, not the hub/);
+    assert.match(source, /Near-threshold results stay amber/);
+    assert.match(source, /Unassessed or out-of-range turbines get no line/);
+    assert.match(source, /Aerial imagery opens the Province licence gate/);
+    assert.match(source, /its own source, licence gate, and attribution/);
     assert.doesNotMatch(source, /native parity/i);
     assert.doesNotMatch(source, /GPS/i);
   }
@@ -149,7 +155,11 @@ test('NS Marks search copy includes postal communities and labelled mailing addr
   for (const source of [nsMarks, generatedNsMarks]) {
     assert.match(source, /PID, civic address, or postal community/);
     assert.match(source, /a civic address or a postal community/);
-    assert.match(source, /Mailing addresses come from Statistics Canada's free National Address Register/);
+    assert.match(source, /Mailing addresses come from Statistics Canada's free National Address Register \(June 2026\)/);
+    assert.match(
+      source,
+      /postal candidate becomes selectable only when it resolves to one live provincial civic point/,
+    );
     assert.match(source, /labelled as distinct from the provincial civic address/);
     assert.match(source, /distinct from the provincial civic address/);
     assert.match(source, /Boundaries are approximate context, never a legal survey/);
