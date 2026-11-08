@@ -34,10 +34,8 @@ const generatedStyles = readFileSync(new URL('../../Output/styles.css', import.m
 
 const assetNames = [
   'aerial-mosaic-2015.webp',
-  'field-classification-2013.webp',
+  'field-map-2013.webp',
   'ns-marks-product-2026.webp',
-  'planting-review-2023.webp',
-  'visibility-analysis-2023.webp',
 ];
 
 test('routes the GIS source page through the custom case-study renderer', () => {
@@ -71,8 +69,12 @@ test('publishes five chronological examples with explicit evidence boundaries', 
 });
 
 test('keeps the portfolio limitation and public-safe transformations visible', () => {
-  assert.match(generated, /Original client work stays private/);
-  assert.match(generated, /Public-safe reconstruction/);
+  assert.match(generated, /Client names, parcel IDs, addresses and exact results stay private/);
+  // No invented map is presented as an example (grok-bots#981).
+  assert.doesNotMatch(generated, /reconstruction/i);
+  assert.doesNotMatch(generated, /invented/i);
+  assert.equal(generated.match(/<div class="gis-withheld"><span>Client map not shown<\/span>/g)?.length, 2);
+  assert.match(generated, /Original map, November 2013/);
   assert.match(generated, /Portfolio, not authority\./);
   assert.match(
     generated,
@@ -83,16 +85,18 @@ test('keeps the portfolio limitation and public-safe transformations visible', (
   assert.doesNotMatch(generated, /message id/i);
 });
 
-test('publishes only the five reviewed WebP assets and preserves dimensions and alt text', () => {
+test('publishes only the three reviewed WebP assets and preserves dimensions and alt text', () => {
   const sourceDir = new URL('../../Resources/images/gis/', import.meta.url);
   const outputDir = new URL('../../Output/images/gis/', import.meta.url);
   assert.deepEqual(readdirSync(sourceDir).sort(), assetNames);
   assert.deepEqual(readdirSync(outputDir).sort(), assetNames);
-  assert.equal(generated.match(/<img src="\/images\/gis\//g)?.length, 5);
-  assert.equal(generated.match(/width="1440" height="900"/g)?.length, 4);
+  assert.equal(generated.match(/<img src="\/images\/gis\//g)?.length, 3);
+  assert.equal(generated.match(/width="1440" height="900"/g)?.length, 1);
+  // The 2013 map is shown whole, title bar included.
+  assert.equal(generated.match(/width="1440" height="1098"/g)?.length, 1);
   // The 2015 mosaic is cropped to its imaged band.
   assert.equal(generated.match(/width="1440" height="500"/g)?.length, 1);
-  assert.equal(generated.match(/<img src="\/images\/gis\/[^"]+"[^>]+alt="[^"]+"/g)?.length, 5);
+  assert.equal(generated.match(/<img src="\/images\/gis\/[^"]+"[^>]+alt="[^"]+"/g)?.length, 3);
 
   for (const name of assetNames) {
     assert.deepEqual(
@@ -105,8 +109,11 @@ test('publishes only the five reviewed WebP assets and preserves dimensions and 
 
 test('records authorship, transformation, and visible-layer rights for every example', () => {
   assert.equal(provenance.schemaVersion, 1);
-  assert.equal(provenance.items.length, 5);
-  assert.equal(new Set(provenance.items.map((item) => item.id)).size, 5);
+  assert.deepEqual(
+    provenance.items.map((item) => item.publishedAsset.replace('/images/gis/', '')).sort(),
+    assetNames,
+  );
+  assert.equal(new Set(provenance.items.map((item) => item.id)).size, 3);
 
   for (const item of provenance.items) {
     assert.match(item.sourceSha256, /^[a-f0-9]{64}$/);

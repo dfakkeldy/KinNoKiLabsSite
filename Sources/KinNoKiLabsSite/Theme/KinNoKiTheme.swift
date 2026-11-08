@@ -1913,14 +1913,14 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
         </div>
         <aside class="gis-scope-note">
           <span>What you are seeing</span>
-          <strong>Five public-safe views</strong>
-          <p>Original client work stays private. Reconstructed examples use invented geometry; the two documentary crops were checked for identifying detail and visible-layer rights.</p>
+          <strong>Five projects, three pictures</strong>
+          <p>Client names, parcel IDs, addresses and exact results stay private. The 2013 map is the original with those details removed; the two 2023 client maps are described, not shown.</p>
         </aside>
       </header>
 
       <nav class="gis-timeline-nav" aria-label="Case study timeline">
         <ol>
-          <li><a href="#gis-2013"><span class="gis-nav-year">2013</span><span class="gis-nav-label">Field status</span></a></li>
+          <li><a href="#gis-2013"><span class="gis-nav-year">2013</span><span class="gis-nav-label">Thinning claim</span></a></li>
           <li><a href="#gis-2015"><span class="gis-nav-year">2015</span><span class="gis-nav-label">Aerial mosaic</span></a></li>
           <li><a href="#gis-2023-visibility"><span class="gis-nav-year">2023</span><span class="gis-nav-label">Visibility screen</span></a></li>
           <li><a href="#gis-2023-field"><span class="gis-nav-year">2023</span><span class="gis-nav-label">Field review</span></a></li>
@@ -1931,29 +1931,22 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
       <section class="gis-transect" aria-label="Thirteen years of practical GIS work">
         <article class="gis-stop reveal" id="gis-2013">
           <div class="gis-marker" aria-hidden="true"><span>2013</span></div>
-          <figure class="gis-figure">
-            <img src="/images/gis/field-classification-2013.webp" width="1440" height="900" fetchpriority="high" decoding="async" alt="Generalized map reconstruction with invented land shapes coloured yellow, blue, pink, green, and grey for different field and paperwork states.">
-            <figcaption><span>Public-safe reconstruction</span> Invented geometry; no basemap, names, areas, or client location.
-              <div class="gis-legend"><p>Field status</p><ul>
-                <li><i class="gis-key gis-key-confirmed" aria-hidden="true"></i>record confirmed</li>
-                <li><i class="gis-key gis-key-unconfirmed" aria-hidden="true"></i>not yet confirmed</li>
-                <li><i class="gis-key gis-key-new" aria-hidden="true"></i>new field note</li>
-                <li><i class="gis-key gis-key-review" aria-hidden="true"></i>needs review</li>
-              </ul></div>
-            </figcaption>
+          <figure class="gis-figure gis-figure-map">
+            <img src="/images/gis/field-map-2013.webp" width="1440" height="1098" fetchpriority="high" decoding="async" alt="A forestry map Dan made in ArcMap in November 2013: five pre-commercial thinning areas from 0.39 to 2.05 hectares, outlined in blue and pink over forest cover, streams, trails and property lines, at 1:5,000. Names, parcel numbers and road names are removed.">
+            <figcaption><span>Original map, November 2013</span> The owner's name, stand code, parcel IDs, road names and civic address are removed. Geometry and colours are unchanged.</figcaption>
           </figure>
           <div class="gis-stop-copy">
             <p class="gis-era">ArcMap 10.1 · Forestry operations</p>
-            <h2>Field status, made legible</h2>
+            <h2>Thinning areas, measured for a claim</h2>
             <div class="gis-brief">
-              <div><h3>Problem</h3><p>A forestry job held areas in several paperwork states. The map needed to distinguish confirmed, new, and unresolved information without pretending uncertain records were settled.</p></div>
-              <div><h3>Inputs</h3><p>Working GIS layers, property-reference information, previous mail-outs, and field notes that still needed checking.</p></div>
-              <div><h3>Method</h3><p>Revised colour categories in ArcMap and carried uncertainty into the legend instead of smoothing it away.</p></div>
-              <div><h3>Output</h3><p>A field and office reference map with a deliberately visible “needs review” state.</p></div>
+              <div><h3>Problem</h3><p>A landowner needed a map of pre-commercial thinning areas, with the area of each, to support a claim.</p></div>
+              <div><h3>Inputs</h3><p>Forest cover, streams, trails, property lines, and the outlines of the thinning areas.</p></div>
+              <div><h3>Method</h3><p>Drew each thinning area in ArcMap, calculated its area in hectares, and laid the sheet out at 1:5,000 with a scale bar.</p></div>
+              <div><h3>Output</h3><p>A one-page map of five thinning areas, from 0.39 to 2.05 hectares, each labelled with its area.</p></div>
             </div>
           </div>
           <div class="gis-boundary">
-            <p><strong>It supported:</strong> reconciling the map and paperwork before follow-up.</p>
+            <p><strong>It supported:</strong> reporting the thinning area for a claim.</p>
             <p><strong>It did not establish:</strong> survey boundaries, title, Crown status, or present-day conditions.</p>
           </div>
         </article>
@@ -1980,19 +1973,9 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
           </div>
         </article>
 
-        <article class="gis-stop reveal" id="gis-2023-visibility">
+        <article class="gis-stop gis-stop-text reveal" id="gis-2023-visibility">
           <div class="gis-marker" aria-hidden="true"><span>2023</span></div>
-          <figure class="gis-figure">
-            <img src="/images/gis/visibility-analysis-2023.webp" width="1440" height="900" loading="lazy" decoding="async" alt="Generalized dark regional shape containing a regular point grid classified green, yellow, orange, and red for relative modelled visibility.">
-            <figcaption><span>Public-safe reconstruction</span> Invented geography and classes; utilities, addresses, basemap, and exact results removed.
-              <div class="gis-legend"><p>Relative screening classes</p><ul>
-                <li><i class="gis-key gis-key-dot gis-key-lower" aria-hidden="true"></i>lower modelled exposure</li>
-                <li><i class="gis-key gis-key-dot gis-key-middle" aria-hidden="true"></i>middle range</li>
-                <li><i class="gis-key gis-key-dot gis-key-higher" aria-hidden="true"></i>higher range</li>
-                <li><i class="gis-key gis-key-dot gis-key-priority" aria-hidden="true"></i>review priority</li>
-              </ul></div>
-            </figcaption>
-          </figure>
+          <div class="gis-withheld"><span>Client map not shown</span> The location, utilities and results stay private, so this project is described in words only.</div>
           <div class="gis-stop-copy">
             <p class="gis-era">QGIS 3.30 · Scripted spatial analysis</p>
             <h2>A regional question, screened spatially</h2>
@@ -2009,18 +1992,9 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
           </div>
         </article>
 
-        <article class="gis-stop gis-stop-reverse reveal" id="gis-2023-field">
+        <article class="gis-stop gis-stop-reverse gis-stop-text reveal" id="gis-2023-field">
           <div class="gis-marker" aria-hidden="true"><span>2023</span></div>
-          <figure class="gis-figure">
-            <img src="/images/gis/planting-review-2023.webp" width="1440" height="900" loading="lazy" decoding="async" alt="Generalized planting review reconstruction with invented green treatment blocks, white field access line, and green or red observation points.">
-            <figcaption><span>Public-safe reconstruction</span> Invented treatment blocks and sample points; landowner, counts, outcome, imagery, and location removed.
-              <div class="gis-legend"><p>Field review</p><ul>
-                <li><i class="gis-key gis-key-dot gis-key-observed" aria-hidden="true"></i>observation recorded</li>
-                <li><i class="gis-key gis-key-dot gis-key-follow-up" aria-hidden="true"></i>follow-up indicated</li>
-                <li><i class="gis-key gis-key-line" aria-hidden="true"></i>field access line</li>
-              </ul></div>
-            </figcaption>
-          </figure>
+          <div class="gis-withheld"><span>Client map not shown</span> The landowner, location, counts and outcome stay private, so this project is described in words only.</div>
           <div class="gis-stop-copy">
             <p class="gis-era">QGIS 3.32 · Field verification</p>
             <h2>Field observations, returned as a decision map</h2>
