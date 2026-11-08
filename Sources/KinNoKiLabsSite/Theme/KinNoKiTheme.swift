@@ -1707,7 +1707,7 @@ private func homeMain() -> Node<HTML.BodyContext> {
             <h3><a class="app-card-link" href="/apps/visualtimer/">Turn Timer</a></h3>
             <p>Visual rounds for countdowns, turns, routines, and reusable sequences.</p>
             <div class="app-card-meta">
-              <a class="status-chip status-chip-link" href="https://testflight.apple.com/join/s7w4YGWU" target="_blank" rel="noopener" aria-label="TestFlight beta: join the Turn Timer beta">TestFlight beta<span class="status-chip-arrow" aria-hidden="true">↗</span></a>
+              <a class="status-chip status-chip-link" href="https://apps.apple.com/ca/app/turn-timer/id6771073144" target="_blank" rel="noopener" aria-label="App Store — 1.0: open Turn Timer on the App Store">App Store — 1.0<span class="status-chip-arrow" aria-hidden="true">↗</span></a>
               <span class="platforms">iPhone · Browser</span>
             </div>
           </div>
@@ -1776,7 +1776,7 @@ private func appsMain() -> Node<HTML.BodyContext> {
           <h2>Turn Timer</h2>
           <p>An Apple-native visual sequence timer — one-tap visual countdowns plus reusable sequences. It also runs in your browser, with nothing to install.</p>
           <div class="app-card-meta">
-            <span class="status-chip">TestFlight beta</span>
+            <span class="status-chip">App Store — 1.0</span>
             <span class="platforms">iPhone · Browser</span>
           </div>
           \(svgChevron)
@@ -2151,7 +2151,7 @@ private func supportMain() -> Node<HTML.BodyContext> {
         <a class="support-row" href="/echo-help"><img class="app-icon support-row-icon" src="/images/apps/echo.png" alt="" width="36" height="36"><span class="support-row-text"><span>Echo</span><span class="support-row-sub"><span class="status-chip">TestFlight beta</span> FAQ and contact</span></span>\(svgRowChevron)</a>
         <a class="support-row" href="/macromark-help"><img class="app-icon support-row-icon" src="/images/apps/macromark.png" alt="" width="36" height="36"><span class="support-row-text"><span>MacroMark</span><span class="support-row-sub"><span class="status-chip">App Store — 1.0</span> Email or GitHub issues</span></span>\(svgRowChevron)</a>
         <a class="support-row" href="/nsmarksthespot-help"><img class="app-icon support-row-icon" src="/images/apps/nsmarksthespot.svg" alt="" width="36" height="36"><span class="support-row-text"><span>NS Marks The Spot</span><span class="support-row-sub"><span class="status-chip">Live browser map</span> Where the maps are, and contact</span></span>\(svgRowChevron)</a>
-        <a class="support-row" href="/visualtimer-help"><img class="app-icon support-row-icon" src="/images/apps/turntimer.png" alt="" width="36" height="36"><span class="support-row-text"><span>Turn Timer</span><span class="support-row-sub"><span class="status-chip">TestFlight beta</span> Email or GitHub issues</span></span>\(svgRowChevron)</a>
+        <a class="support-row" href="/visualtimer-help"><img class="app-icon support-row-icon" src="/images/apps/turntimer.png" alt="" width="36" height="36"><span class="support-row-text"><span>Turn Timer</span><span class="support-row-sub"><span class="status-chip">App Store — 1.0</span> Email or GitHub issues</span></span>\(svgRowChevron)</a>
         <a class="support-row" href="mailto:hello@kinnokilabs.com"><span class="support-row-glyph" aria-hidden="true">\(svgMail)</span><span class="support-row-text"><span>Email me</span><span class="support-row-sub">hello@kinnokilabs.com · business inquiries, ideas, or feedback</span></span>\(svgRowChevron)</a>
       </div>
     </main>

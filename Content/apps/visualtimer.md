@@ -5,14 +5,14 @@ image: /images/apps/turntimer.png
 accent: #74c0fc
 tagline: Make time visible for turns, routines, and reusable sequences.
 platforms: iPhone, Browser
-status: TestFlight beta
+status: App Store — 1.0
 ---
 
 Turn Timer is a colourful visual countdown you can read from across the room. Start a quick timer, or build a sequence of named rounds for game night, a recipe, a classroom, a meeting or a morning routine, and reuse it whenever you need it.
 
-The browser version runs on any device, with nothing to install, and can be added to your home screen. The iPhone app is a TestFlight beta, not on the App Store yet.
+Turn Timer 1.0 is live on the App Store and free to download. The browser version runs on any device, with nothing to install, and can be added to your home screen.
 
-<p class="app-actions"><a class="btn btn-gold btn-md" href="/tools/turn-timer/">Try it in your browser</a><a class="btn btn-outline btn-md" href="https://testflight.apple.com/join/s7w4YGWU">Join the iPhone beta</a></p>
+<p class="app-actions"><a class="btn btn-gold btn-md" href="https://apps.apple.com/ca/app/turn-timer/id6771073144">Download on the App Store</a><a class="btn btn-outline btn-md" href="/tools/turn-timer/">Try it in your browser</a></p>
 
 ## How it works
 
@@ -30,7 +30,7 @@ The browser version runs on any device, with nothing to install, and can be adde
 <p class="tt-plans-foot">No subscription, ads or third&#8209;party tracking.</p>
 </div>
 
-<p class="app-actions app-actions-end"><a class="btn btn-gold btn-md" href="/tools/turn-timer/">Try it in your browser</a></p>
+<p class="app-actions app-actions-end"><a class="btn btn-gold btn-md" href="https://apps.apple.com/ca/app/turn-timer/id6771073144">Download on the App Store</a><a class="btn btn-outline btn-md" href="/tools/turn-timer/">Try it in your browser</a></p>
 
 ---
 
