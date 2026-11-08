@@ -5,7 +5,7 @@ image: /images/apps/echo.png
 accent: #d4af37
 tagline: For Every Mind — Turn listening into learning.
 platforms: iPhone, iPad, Apple Watch, Mac
-status: TestFlight beta
+status: App Store — 1.0
 featured: true
 iconAlt: Echo app icon — an infinity symbol in silver and gold
 ---
@@ -40,7 +40,7 @@ A growing crowd of apps will sync your audiobook to your ebook, on your device. 
 
 ## What Echo does
 
-> Echo is in open development toward 1.0. Anything marked 🚧 **Coming in 1.0** is being built right now; 🔭 **Roadmap** means planned after 1.0. Everything else is in the current TestFlight beta.
+> Everything unmarked is in Echo 1.0 on the App Store. 🔭 **Roadmap** means planned, not in 1.0 yet.
 
 - **Smart Rewind:** Hit play and Echo has already rewound — a little after a short pause, more after hours. Interruptions stop costing you context.
 - **Chapter Looping:** Repeat one chapter until you own it — the feature Echo was born for. Or loop the exact passage between two bookmarks.
@@ -48,9 +48,9 @@ A growing crowd of apps will sync your audiobook to your ebook, on your device. 
 - **Voice Memo Bookmarks:** Hold a button, speak your thought. Memos play back inline when the narration reaches them.
 - **Built-in Spaced Repetition:** An Anki-style flashcard system with FSRS / FSRS-4.5 scheduling (the modern Anki scheduler), the narrator's audio on the cards, daily review, and hands-free review on Apple Watch.
 - **Mark Now, Card Later:** One tap (phone or watch) marks a passage without stopping the narration; the Card Inbox turns marks into flashcards when you have the bandwidth — not mid-sentence.
-- **Decks, Tags & Anki Import** 🚧 **Coming in 1.0:** Organize cards into decks, edit any card, review per deck — and import real .apkg Anki decks, scheduling history included.
-- **Brain Dump** 🚧 **Coming in 1.0:** A thought hits mid-chapter? Park it — text or voice, even dictated from the watch — without pausing the book. Promote keepers to bookmarks or flashcards later.
-- **Context Memory** 🚧 **Coming in 1.0:** Opt in to capture place context with bookmarks, sessions and chapter starts. With permission, the device may supply a precise fix; Echo rounds coordinates before asking Apple's geocoder for a place name and stores the rounded context locally. Local deletion does not erase providers' records or device backups. See the [Echo Privacy Policy](/echo-privacy/).
+- **Decks & Tags:** Organize cards into decks and tags, and edit any card. Review per deck and real .apkg Anki import, scheduling history included, are on the roadmap (🔭 **Roadmap**).
+- **Brain Dump** 🔭 **Roadmap:** A thought hits mid-chapter? Park it — text or voice, even dictated from the watch — without pausing the book. Promote keepers to bookmarks or flashcards later.
+- **Context Memory:** Opt in to capture place context with bookmarks; sessions, chapter starts and place chips are on the roadmap (🔭 **Roadmap**). With permission, the device may supply a precise fix; Echo rounds coordinates before asking Apple's geocoder for a place name and stores the rounded context locally. Local deletion does not erase providers' records or device backups. See the [Echo Privacy Policy](/echo-privacy/).
 - **Insights That Are Real:** Listening time, streaks, chapter coverage ("Ch 7 — 86%, heard 3×"), retention curves, review forecasts — honest numbers from your actual listening, never from a server.
 - **Synced EPUB Reader:** The text scrolls with the narration, tap a paragraph to jump the audio, search the book and leap to the spoken moment.
 - **PDF Companions:** Diagrams and page-level material can sit beside the audio, so visual context appears when the narration needs it.
@@ -74,11 +74,11 @@ A growing crowd of apps will sync your audiobook to your ebook, on your device. 
 
 ## Learn more
 
-- **[Join the TestFlight beta](https://testflight.apple.com/join/Zu9rzg59)** — public beta, also listed on [/testflight/](/testflight/)
+- **[Download Echo on the App Store](https://apps.apple.com/ca/app/audiobook-study-player-echo/id6779836394)** — free, with an optional one-time Echo Pro
 - **[Getting the Most Out of Echo](/echo-learn)** — every feature plus the memory science behind it
 - **[The Focus Field Guide](/echo-focus)** — ADHD & AuDHD strategies: getting started, time blindness, organization, motivation, hyperfocus
 - **[User Manual](/echo-manual)** — the complete reference for every platform, including library organization
-- **[Join the Beta](/echo-beta)** — TestFlight guide and test plans
+- **[Join the Beta](/echo-beta)** — try new builds early on TestFlight, with test plans
 - **[Building Echo: The Devlog](/echo-devlog)** — how it was built, week by week
 - **[Help & Support](/echo-help)** — FAQs and contact
 

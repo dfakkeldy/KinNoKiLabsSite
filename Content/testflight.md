@@ -21,7 +21,7 @@ Two apps are in open beta. Joining takes two steps.
 <section class="beta-card">
 <img class="beta-icon" src="/images/apps/echo.png" alt="" width="56" height="56" />
 <h2>Echo</h2>
-<p>An audiobook player built for studying, not just listening.</p>
+<p>An audiobook player built for studying, not just listening. Version 1.0 is <a href="https://apps.apple.com/ca/app/audiobook-study-player-echo/id6779836394">on the App Store</a>; join the beta for early builds.</p>
 <p class="beta-actions"><a class="btn btn-gold btn-md" href="https://testflight.apple.com/join/Zu9rzg59" aria-label="Join the beta: Echo">Join the beta</a><a class="btn btn-outline btn-md" href="/apps/echo">About Echo</a></p>
 </section>
 </div>

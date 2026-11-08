@@ -6,7 +6,7 @@ Echo isn't just an audiobook player with extra buttons. Every feature exists bec
 
 > **Not here to study?** That's completely fine. Echo is a full-featured audiobook player first — a designable Apple Watch remote, a sleep timer, focus soundscapes, pitch-corrected speed, and your own DRM-free files, all on-device. Everything below is optional, and each section stands on its own, so jump to whatever you're curious about. Looking for ADHD/AuDHD-specific strategies? See [The Focus Field Guide](/echo-focus).
 
-> **Status tags:** 🚧 **Coming in 1.0** = in active development. 🔭 **Roadmap** = planned after 1.0. Everything unmarked ships in the current beta.
+> **Status tags:** 🔭 **Roadmap** = planned, not in Echo 1.0 yet. Everything unmarked is in Echo 1.0 on the App Store.
 
 ## 1. Photo & Place Bookmarks — borrow your brain's sense of place
 
@@ -20,7 +20,7 @@ Your brain doesn't file information away in isolation — it *involuntarily* enc
 
 This is one of the most replicated effects in memory research. In the classic 1975 study by Godden and Baddeley, scuba divers memorized word lists either on land or underwater. Divers who learned underwater recalled significantly more *underwater*; divers who learned on dry land recalled more on dry land. A large meta-analysis (Smith & Vela, 2001) confirmed the effect across dozens of studies — and crucially, found that *mentally reinstating* a context (like looking at a photo of it) recovers much of the benefit of physically being there.
 
-**Context Memory: places, captured automatically.** 🚧 **Coming in 1.0** — Photo bookmarks ask you to do the capturing. Context Memory does it for you: opt in, and Echo quietly notes an approximate place — "Maple Ridge, Halifax" — on your bookmarks, listening sessions, and chapter starts. Bookmark cards grow a small place chip; your per-book insights can tell you *"you started Chapter 3 on Oak Street."* The same retrieval-cue machinery as photos, with no extra work on your part. Off by default, neighborhood-level accuracy only, never blocks the action you were taking, and one button erases all location history. Your session history never leaves the device.
+**Context Memory: places, captured automatically.** Photo bookmarks ask you to do the capturing. Context Memory does it for you: opt in, and Echo 1.0 quietly notes an approximate place — "Maple Ridge, Halifax" — with each bookmark. Showing it back to you is the next step (🔭 **Roadmap**): a small place chip on bookmark cards, capture at listening sessions and chapter starts, and per-book insights that can tell you *"you started Chapter 3 on Oak Street."* The same retrieval-cue machinery as photos, with no extra work on your part. Off by default, neighborhood-level accuracy only, never blocks the action you were taking, and one button erases all location history. Your session history never leaves the device.
 
 #### How to use it
 
@@ -39,7 +39,7 @@ Echo has a built-in flashcard system. Any bookmark, passage, or note can become 
 
 > **Never heard of Anki? Start here.** Anki is beloved flashcard software used by medical students, language learners, and memory nerds worldwide. Its superpower is the *schedule*: instead of cramming, it shows you each card at the moment you're about to forget it — first after a day, then a few days, then weeks, then months. Each successful recall flattens your forgetting curve a little more, until the fact is effectively permanent.
 
-Echo speaks the same language — it schedules reviews with FSRS, the modern algorithm Anki also offers, imports Anki-style JSON decks today, and with 1.0 imports real **.apkg deck files** directly (🚧 **Coming in 1.0**) — your years of Anki history, scheduling included, carried over. You can also organize everything into **decks with tags**, edit any card, and review one deck at a time. And if you ever leave, your cards export right back out — no lock-in (see Second-Brain Export below).
+Echo speaks the same language — it schedules reviews with FSRS, the modern algorithm Anki also offers, imports Anki-style JSON decks today, and will import real **.apkg deck files** directly (🔭 **Roadmap**) — your years of Anki history, scheduling included, carried over. You can also organize everything into **decks with tags** and edit any card; reviewing one deck at a time is on the roadmap too. And if you ever leave, your cards export right back out — no lock-in (see Second-Brain Export below).
 
 #### The science: The Forgetting Curve and the Spacing Effect
 
@@ -57,7 +57,7 @@ In the 1880s, Hermann Ebbinghaus measured how quickly memorized material decays:
 - Keep fronts as questions ("What are the four causes of X?"), not labels. A question forces retrieval; a label invites recognition.
 - Do your Daily Review when Echo's notification arrives. Five minutes daily beats an hour monthly.
 - Trust the schedule. Re-reviewing cards that aren't due is the cramming instinct — the thing the system is saving you from.
-- Bringing decks from Anki? Once 1.0 lands, import the .apkg and keep your scheduling — don't restart mature cards from zero.
+- Bringing decks from Anki? When .apkg import arrives (🔭 **Roadmap**), import the deck and keep your scheduling — don't restart mature cards from zero.
 
 ## 3. Honest Grading — the testing effect
 
@@ -91,9 +91,11 @@ Switching tasks isn't free, even for "just a second." Sophie Leroy's research on
 - Batch your inbox at a set time — end of the listening day, or Sunday with coffee.
 - While converting, write the front as a question *before* replaying the snippet — that's a free retrieval rep.
 
-## 5. Brain Dump — close the open loop 🚧
+## 5. Brain Dump — close the open loop 🔭
 
 #### What it does
+
+*Brain Dump is on the roadmap; it is not in Echo 1.0. Until it lands, a voice-memo bookmark parks a thought without stopping the book.*
 
 A thought hits you mid-chapter — about the book, or about absolutely anything else ("buy stamps," "that's what Sarah meant on Tuesday"). One tap opens a note; hold to record a voice memo; on the watch, dictate it. Playback never pauses. The thought lands in the book's **Notes inbox**, and later you can **promote** the keepers into bookmarks or flashcards — or just enjoy having had the thought without losing the chapter.
 
@@ -193,7 +195,7 @@ Time-compressed-speech studies show comprehension holds at moderate acceleration
 
 #### What it does
 
-A dedicated Insights screen built from your actual listening and review history — computed on your device, never sent anywhere. Listening time by day, week, month, or year. Streaks, with a review-day heatmap still to come (🚧). Per-book **chapter coverage** ("Chapter 7 — 86% covered, listened 3×"). Your speed trend and best time of day, with session lengths still to come (🚧). For flashcards: reviews per day, a retention curve, grade distribution, and a 30-day due forecast. If you use Context Memory, a simple list of the places you listen most.
+A dedicated Insights screen built from your actual listening and review history — computed on your device, never sent anywhere. Listening time by day, week, month, or year. Streaks, with a review-day heatmap still to come (🔭 **Roadmap**). Per-book **chapter coverage** ("Chapter 7 — 86% covered, listened 3×"). Your speed trend and best time of day, with session lengths still to come (🔭 **Roadmap**). For flashcards: reviews per day, a retention curve, grade distribution, and a 30-day due forecast. A list of the places you listen most is on the roadmap (🔭 **Roadmap**).
 
 #### The science: Self-monitoring and feedback
 
@@ -249,7 +251,7 @@ Sleep is when the hippocampus consolidates the day's learning — but material y
 
 ## The Echo Method — putting it together
 
-1. **First pass (listen):** normal or slightly raised speed. When something lands, bookmark it — voice memo if your hands are busy, photo if the moment is distinctive. A passing thought about anything else? Brain-dump it and keep listening. (🚧)
+1. **First pass (listen):** normal or slightly raised speed. When something lands, bookmark it — voice memo if your hands are busy, photo if the moment is distinctive. A passing thought about anything else? Park it in a voice-memo bookmark and keep listening (Brain Dump will do this on its own — 🔭 **Roadmap**).
 2. **Mark the card-worthy moments:** one tap, no pause. They'll wait in the Card Inbox.
 3. **Loop what matters:** for dense chapters, loop until you could explain them.
 4. **Harvest on your schedule:** at home, process the inboxes — promote marks to flashcards, promote brain-dump keepers, delete the rest.

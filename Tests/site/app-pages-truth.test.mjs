@@ -51,11 +51,43 @@ test('Echo public copy uses FSRS and drops the stale commit boast', () => {
     assert.doesNotMatch(source, /SM-2/);
     assert.doesNotMatch(source, /956 commits/);
     assert.match(source, /one-time unlock/i);
-    assert.match(source, /https:\/\/testflight\.apple\.com\/join\/Zu9rzg59/);
   }
 });
 
-test('Echo keeps Coming in 1.0 only for still-tagged nightly work', () => {
+test('Echo says 1.0 is on the App Store and keeps the beta for early builds', () => {
+  const storeURL = /https:\/\/apps\.apple\.com\/ca\/app\/audiobook-study-player-echo\/id6779836394/;
+  assert.match(echo, /^status: App Store — 1\.0$/m);
+  for (const source of [echo, theme, generatedEcho, generatedApps, generatedHome]) {
+    assert.match(source, storeURL);
+  }
+  assert.match(generatedApps, /<h2>Echo<\/h2>[\s\S]*?<span class="status-chip">App Store — 1\.0<\/span>/);
+  for (const source of [echo, generatedEcho]) {
+    assert.doesNotMatch(source, /open beta right now|current TestFlight beta|open development toward 1\.0/i);
+    assert.doesNotMatch(source, /Coming in 1\.0/);
+  }
+  // No app is in TestFlight-only status any more, so the legend drops that row.
+  assert.doesNotMatch(theme, /<span class="status-chip">TestFlight beta<\/span>/);
+});
+
+test('Echo guides tag unshipped work as roadmap, not as part of 1.0', () => {
+  const guides = ['echo', 'echo-manual', 'echo-learn', 'echo-focus', 'echo-help', 'echo-beta', 'echo-devlog'].map(
+    (name) =>
+      readFileSync(
+        new URL(name === 'echo' ? '../../Content/apps/echo.md' : `../../Content/${name}.md`, import.meta.url),
+        'utf8',
+      ),
+  );
+  for (const source of guides) {
+    assert.doesNotMatch(source, /🚧|Coming in 1\.0/);
+    assert.doesNotMatch(source, /ships? (with|in) 1\.0|arrives? with (Echo )?1\.0|Once 1\.0 lands|with 1\.0 imports|coming with 1\.0/i);
+    assert.doesNotMatch(source, /current TestFlight beta|open development toward 1\.0/i);
+  }
+  // Not in the 1.0 build: .apkg import, Brain Dump, and full iCloud study sync.
+  assert.match(echo, /\*\*Brain Dump\*\* 🔭 \*\*Roadmap:\*\*/);
+  assert.match(echo, /real \.apkg Anki import[^\n]*Roadmap/);
+});
+
+test('Echo marks shipped 1.0 features without a status tag', () => {
   assert.match(echo, /\*\*Mark Now, Card Later:\*\*/);
   assert.doesNotMatch(echo, /\*\*Mark Now, Card Later\*\* 🚧/);
   assert.match(echo, /\*\*Second-Brain Export:\*\*/);
