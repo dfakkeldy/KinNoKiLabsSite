@@ -220,7 +220,8 @@ test('opens on the featured book and names it honestly', async () => {
   assert.equal(harness.document.title,
     'Six Months Behind — Fiction Listening Room — KinNoKi Labs');
   assert.equal(el(harness, 'bookForm').textContent,
-    'Original fiction · Novel · Techno-thriller');
+    // A no-break space before each dot keeps a wrapped line from starting on one.
+    'Original fiction\u00a0· Novel\u00a0· Techno-thriller');
   assert.match(el(harness, 'bookByline').textContent,
     /^Created by Dan Fakkeldy with AI · 34 chapters · ~80\.1k words · ≈9 h once narrated$/);
 });
@@ -388,7 +389,7 @@ test('the published book offers its manuscript in every format it has', async ()
   const links = el(harness, 'selectedFormats');
   assert.equal(links.hidden, false);
   assert.deepEqual(links.children.map((link) => link.textContent),
-    ['Read as Markdown', 'EPUB', 'Book folder']);
+    ['Read', 'EPUB', 'Book folder']);
   for (const link of links.children) {
     assert.equal(link.target, '_blank');
     assert.equal(link.rel, 'noopener');
@@ -400,19 +401,21 @@ test('the published shelf marks the streaming editions and counts them', async (
   const harness = await bootPlayer();
   const cards = el(harness, 'shelf').children;
   assert.equal(cards.length, 7);
-  const humanException = cards[1];
-  const reversible = cards[2];
+  // The shelf opens on what can be played: the stage title, then the other
+  // streaming editions in catalog order, then the titles still in production.
+  const humanException = cards[0];
+  const reversible = cards[1];
   assert.equal(humanException.classList.contains('is-playable'), true);
   assert.equal(reversible.classList.contains('is-playable'), true);
   assert.equal(humanException.getAttribute('aria-current'), 'page',
-    'the first streaming book in shelf order holds the stage');
+    'the first streaming book in catalog order holds the stage and leads the shelf');
   assert.equal(descendants(humanException, (node) => node.className === 'fic-badge').length, 0);
   assert.equal(descendants(reversible, (node) => node.className === 'fic-badge').length, 0);
   assert.match(el(harness, 'shelfSub').textContent, /^4 books are streaming now/);
-  assert.equal(cards[5].classList.contains('is-playable'), true);
-  assert.equal(cards[6].classList.contains('is-playable'), true);
+  assert.equal(cards[2].classList.contains('is-playable'), true);
+  assert.equal(cards[3].classList.contains('is-playable'), true);
 
-  for (const card of [cards[0], cards[3], cards[4]]) {
+  for (const card of [cards[4], cards[5], cards[6]]) {
     assert.equal(card.classList.contains('is-playable'), false);
     assert.equal(descendants(card, (node) => node.className === 'fic-badge')[0].textContent, 'Coming soon');
   }
@@ -449,7 +452,7 @@ for (const slug of ['merchant-of-venice-play', 'merchant-of-venice-novel']) {
     const anchors = JSON.parse(readFileSync(new URL(selected.alignment.sidecar, fictionRoot)));
     const harness = await bootPlayer({ search: `?book=${slug}`, blocks, anchors });
     assert.equal(el(harness, 'bookTitle').textContent, selected.title);
-    assert.equal(el(harness, 'bookForm').textContent, `Shakespeare adaptation · ${selected.form} · ${selected.genre}`);
+    assert.equal(el(harness, 'bookForm').textContent, `Shakespeare adaptation\u00a0· ${selected.form}\u00a0· ${selected.genre}`);
     assert.match(el(harness, 'bookByline').textContent, /^by William Shakespeare · 20 chapters/);
     assert.equal(el(harness, 'cover').src, selected.cover);
     assert.equal(harness.audio.children[0].src, selected.audio.url);

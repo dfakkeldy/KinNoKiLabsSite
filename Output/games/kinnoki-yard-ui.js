@@ -14,7 +14,7 @@ import { createGameAudio } from './game-audio.js';
 import {
   cargoThumb, createAudioControls, createEventAnnouncer, createGameLifecycle,
   defaultSeedFactory, element, formatElapsed, makeGameTerminal,
-  prefersReducedMotion, renderGameError,
+  prefersReducedMotion, renderGameError, statusLabel, syncControlsHint,
 } from './controller-common.js';
 import { celebrate } from './celebration.js';
 import { safeLocalStorage } from './hub-ui.js';
@@ -28,14 +28,14 @@ const MODE_LABELS = Object.freeze({
 });
 const DIFFICULTY_COPY = Object.freeze({
   contracts: Object.freeze({
-    easy: 'Easy Contract: a compact, open target with full rotation choices.',
-    medium: 'Medium Contract: a larger concave target with selected rotations.',
-    hard: 'Hard Contract: a large target with narrow bays and tight rotations.',
+    easy: 'Easy Contract: a compact, open target with full rotation choices. Fill every dashed cell with tray cargo.',
+    medium: 'Medium Contract: a larger concave target with selected rotations. Fill every dashed cell with tray cargo.',
+    hard: 'Hard Contract: a large target with narrow bays and tight rotations. Fill every dashed cell with tray cargo.',
   }),
   endless: Object.freeze({
-    easy: 'Easy Yard: a larger yard with every cargo rotation available.',
-    medium: 'Medium Yard: less open space and selected cargo rotations.',
-    hard: 'Hard Yard: the tightest yard and the narrowest rotation choices.',
+    easy: 'Easy Yard: a larger yard with every cargo rotation available. Fill a dashed manifest to dispatch it.',
+    medium: 'Medium Yard: less open space and selected cargo rotations. Fill a dashed manifest to dispatch it.',
+    hard: 'Hard Yard: the tightest yard and the narrowest rotation choices. Fill a dashed manifest to dispatch it.',
   }),
 });
 const CARGO_BY_ID = new Map(CARGO_CATALOG.map((cargo) => [cargo.id, cargo]));
@@ -147,14 +147,15 @@ function buildYardShell(root, model, audioControls) {
   const score = element('span', { 'data-yard-score': '', text: '0' });
   const record = element('span', { 'data-yard-record': '', text: '—' });
   const assisted = element('span', {
-    'data-assisted-status': '', text: 'Unassisted · eligible for records',
+    'data-assisted-status': '', text: 'Eligible for records',
   });
   const status = element('span', { 'data-yard-status': '', text: 'Ready' });
   const summary = element('span', { 'data-yard-summary': '', text: 'Preparing yard' });
   const rotation = element('span', {
-    'data-yard-rotation-state': '', text: 'Rotation 0°',
+    'data-yard-rotation-state': '', text: 'None selected',
   });
   const difficultyExplanation = element('p', {
+    class: 'game-mode-note',
     'data-difficulty-explanation': '',
     text: DIFFICULTY_COPY[mode][difficulty],
   });
@@ -178,6 +179,9 @@ function buildYardShell(root, model, audioControls) {
     hint: mode === 'contracts' ? control('Hint', 'data-yard-hint') : null,
     pause: control('Pause', 'data-pause-game'),
   };
+  const controlsHint = element('p', {
+    class: 'game-controls-hint', 'data-controls-hint': '', text: '',
+  });
   const start = element('button', {
     type: 'button', 'data-start-game': '', text: 'Start',
   });
@@ -207,9 +211,20 @@ function buildYardShell(root, model, audioControls) {
     stat('Local record', record),
     stat('Record status', assisted),
     stat(mode === 'contracts' ? 'Contract' : 'Cargo Manifests', summary),
-    stat('Rotation', rotation));
-  const help = element('details', { 'data-yard-keyboard-help': '' },
-    element('summary', { text: 'Keyboard controls' }),
+    stat('Selected piece', rotation));
+  // How to play, as on every other game page: the goal for this mode, the
+  // keys, then the record rule.
+  const help = element('details', { 'data-yard-keyboard-help': '', class: 'game-how-to-play' },
+    element('summary', { text: 'How to play' }),
+    element('p', {
+      text: mode === 'contracts'
+        ? 'Choose cargo in the tray, rotate it if you need to, then choose where it goes '
+          + 'on the board. The contract is done when tray cargo fills every dashed cell. '
+          + 'Undo is free; a hint makes the run ineligible for records.'
+        : 'Choose cargo in the tray, rotate it if you need to, then choose where it goes '
+          + 'on the board. A filled dashed manifest dispatches for points. The run ends '
+          + 'when no tray cargo fits; Undo makes the run ineligible for records.',
+    }),
     element('p', {
       text: 'Arrow keys move board focus. Enter or Space places cargo. '
         + 'R rotates, U undoes, H requests a Contract hint, and Escape pauses.',
@@ -217,32 +232,39 @@ function buildYardShell(root, model, audioControls) {
 
   const shell = element('section', { class: 'yard-game' },
     element('div', { class: 'game-toolbar' },
-      element('a', { href: '/games', class: 'back-link', text: '← Games' }),
-      element('h1', { text: 'KinNoKi Yard' }),
+      element('div', { class: 'game-title' },
+        element('a', { href: '/games', class: 'back-link', text: '← Games' }),
+        element('h1', { text: 'KinNoKi Yard' })),
       element('label', {}, element('span', { text: 'Mode' }), selectors.modeSelect),
       element('label', {}, element('span', { text: 'Difficulty' }),
         selectors.difficultySelect)),
     notice,
     eventRegion,
-    difficultyExplanation,
-    stats,
-    element('div', { class: 'game-preplay' },
-      start, continueGame, resume, restart, newGame),
-    element('section', { class: 'yard-tray-panel', 'aria-label': 'Cargo tray' },
-      element('h2', { text: 'Cargo tray' }), tray),
-    help,
-    element('div', { class: 'yard-board-column' },
-      board.scroll, board.pan),
-    element('div', { class: 'yard-controls' },
-      Object.values(controls).filter(Boolean)),
-    audioControls.element);
+    // Phone reading order: what to do, the tray, the yard and its controls,
+    // then the status tiles. Wide screens move the run panel beside the yard
+    // (see .yard-layout in styles.css).
+    element('div', { class: 'yard-layout' },
+      difficultyExplanation,
+      element('div', { class: 'game-preplay' },
+        start, continueGame, resume, restart, newGame),
+      element('section', { class: 'yard-tray-panel', 'aria-label': 'Cargo tray' },
+        element('h2', { text: 'Cargo tray' }), tray),
+      element('div', { class: 'yard-board-column' },
+        board.scroll, board.pan,
+        element('div', { class: 'yard-controls' },
+          Object.values(controls).filter(Boolean)),
+        controlsHint),
+      stats,
+      help,
+      // Audio closes the run panel beside the yard on wide screens.
+      audioControls.element));
   root.replaceChildren(shell);
   return {
     shell,
     ...selectors,
     ...board,
     timer, moves, score, record, assisted, status, summary, rotation,
-    difficultyExplanation, notice, eventRegion, tray, controls,
+    difficultyExplanation, notice, eventRegion, tray, controls, controlsHint,
     start, continueGame, resume, restart, newGame,
   };
 }
@@ -404,11 +426,13 @@ function yardRecordText(store, state) {
   if (state.kind === 'contracts') {
     const time = bucket?.records?.time?.[difficulty];
     const moves = bucket?.records?.moves?.[difficulty];
+    if (!Number.isSafeInteger(time) && !Number.isSafeInteger(moves)) return 'None yet';
     return (Number.isSafeInteger(time) ? formatElapsed(time) : '—')
       + ' · ' + (Number.isSafeInteger(moves) ? moves + ' moves' : '—');
   }
   const score = bucket?.records?.score?.[difficulty];
   const combo = bucket?.records?.combo?.[difficulty];
+  if (!Number.isSafeInteger(score) && !Number.isSafeInteger(combo)) return 'None yet';
   return (Number.isSafeInteger(score) ? score.toLocaleString('en-CA') : '—')
     + ' · ' + (Number.isSafeInteger(combo) ? combo + '×' : '—');
 }
@@ -438,8 +462,8 @@ function paintYard(view, state, {
   view.record.textContent = yardRecordText(store, state);
   view.assisted.textContent = state.assisted
     ? 'Assisted run · records excluded'
-    : 'Unassisted · eligible for records';
-  view.status.textContent = titleCase(state.status);
+    : 'Eligible for records';
+  view.status.textContent = statusLabel(state.status);
   view.summary.textContent = mode === 'contracts'
     ? Object.keys(state.placements).length + '/' + state.definition.pieces.length
       + ' cargo pieces placed'
@@ -449,8 +473,13 @@ function paintYard(view, state, {
   const selected = selectedPiece(state);
   const selectedRotation = mode === 'contracts'
     ? state.selectedRotation : selected?.rotation ?? 0;
-  view.rotation.textContent = 'Rotation ' + ((selectedRotation % 4) * 90)
-    + '° · ' + (selected?.allowedRotations?.length ?? 0) + ' allowed';
+  // About the selected tray piece, not the Contract: a square has one
+  // orientation even on difficulties that allow every rotation.
+  const orientations = selected?.allowedRotations?.length ?? 0;
+  view.rotation.textContent = selected
+    ? 'Rotation ' + ((selectedRotation % 4) * 90) + '° · ' + orientations
+      + (orientations === 1 ? ' orientation' : ' orientations')
+    : 'None selected';
 
   const hintPlacement = state.hint?.status === 'solved' ? state.hint.placement : null;
   const hintKeys = contractHintKeys(state);
@@ -513,6 +542,7 @@ function paintYard(view, state, {
   view.continueGame.textContent = 'Continue ' + modeLabel(mode)
     + ' · ' + titleCase(difficulty);
   view.newGame.textContent = mode === 'contracts' ? 'New Puzzle' : 'New Yard';
+  syncControlsHint(view, { status: state.status, entryKind });
 }
 class YardPersistence {
   constructor({ storage, store, wallNow }) {
@@ -876,6 +906,19 @@ YardController.prototype.installPassiveHandlers = function installPassiveHandler
   this.listenPassive(this.view.panRight, 'click', () => {
     this.view.scroll.scrollLeft += 176;
   });
+  // Pan buttons only show when the yard is wider than its column.
+  const syncPanVisibility = () => {
+    const { scroll } = this.view;
+    scroll.parentNode?.classList?.toggle(
+      'is-fitting', scroll.scrollWidth <= scroll.clientWidth,
+    );
+  };
+  if (typeof globalThis.ResizeObserver === 'function') {
+    const observer = new globalThis.ResizeObserver(syncPanVisibility);
+    observer.observe(this.view.scroll);
+    this.passiveCleanups.add(() => observer.disconnect());
+  }
+  syncPanVisibility();
   // Delegated one-shot cleanup (mirrors kinnoki-stack-ui.js): the invalid-flash
   // cell class and the endless dispatch flash both self-clear on the very next
   // full repaint anyway, but this gives them a timely fade instead of waiting

@@ -14,6 +14,7 @@ const messages = {
   invalid_estimate: 'The estimate could not be validated. Estimates and watch are hidden; the last verified official order is shown below.',
 };
 const modeLabels = { complete: 'All quotes observed', provisional: 'Some quotes assumed', extrapolation: 'Outside training range' };
+const REFRESH_LABEL = 'Refresh data';
 const count = (value) => Number.isInteger(value) && value >= 0 ? String(value) : 'Unavailable';
 
 export function mountGasWatch(root, { document = root.ownerDocument, window = globalThis.window, fetcher = globalThis.fetch, now = () => new Date() } = {}) {
@@ -60,14 +61,19 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
   select.value = '6';
   controls.append(select, link('Find your pricing zone', BOARD_URL));
   zoneField.append(el('label', '', 'Pricing zone', { for: 'gas-zone' }), controls);
-  const refreshButton = el('button', 'btn btn-gray gas-refresh', 'Check for updates', { type: 'button' });
-  toolbar.append(zoneField, refreshButton);
+  toolbar.append(zoneField);
+  // Re-reading the feed is a secondary control, so it sits with the
+  // freshness line it updates rather than reading as the page's main action.
+  // It stays outside the live region so a refresh is not announced twice.
+  const refreshButton = el('button', 'btn btn-outline btn-md gas-refresh', REFRESH_LABEL, { type: 'button' });
   const feedStatus = el('p', 'gas-feed-status', 'Checking the latest public data…', { role: 'status', 'aria-live': 'polite', 'aria-atomic': 'true' });
+  const statusBar = el('div', 'gas-status-bar');
+  statusBar.append(feedStatus, refreshButton);
   const content = el('div', 'gas-content');
-  root.replaceChildren(toolbar, feedStatus, content);
+  root.replaceChildren(toolbar, statusBar, content);
 
   let data = null; let source = 'none'; let zone = 6; let busy = false; let lastFetch = now().getTime(); let lastReason;
-  let comparisonIssue = 'first';
+  let comparisonIssue = 'first'; let componentsOpen = null;
   function selected(zones) { return zones?.find((price) => price.zone === zone); }
   function currentCard(view) {
     const card = el('article', 'gas-card');
@@ -85,35 +91,56 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
     for (const [key, label] of [['benchmark', 'Benchmark'], ['forward', 'Forward correction'], ['clean_fuel', 'Clean fuel adjustment'], ['credit_card', 'Credit card adjustment']]) {
       const row = el('div'); row.append(el('dt', '', label), el('dd', '', formatCents(view.current[key], { digits: 2 }))); components.append(row);
     }
-    card.append(detail('Published pricing components', [components])); return card;
+    // Beside the taller estimate card the components fill the official
+    // card's foot with real figures instead of an empty band, so they start
+    // open on wide screens; a phone keeps them folded. A reader's own
+    // choice survives the five-minute refresh.
+    const breakdown = detail('Published pricing components', [components]);
+    breakdown.open = componentsOpen ?? Boolean(window?.matchMedia?.('(min-width: 701px)').matches);
+    breakdown.addEventListener('toggle', () => { componentsOpen = breakdown.open; });
+    card.append(breakdown); return card;
   }
   function estimateCard(view) {
     const card = el('article', 'gas-card gas-card-estimate');
     const top = el('div', 'gas-card-top');
-    top.append(el('h2', '', 'Conditional Friday estimate'), el('span', 'gas-badge', 'Experimental')); card.append(top);
     const estimate = view.estimate; const price = selected(estimate?.zones);
+    // The Experimental badge describes a live estimate; a withheld card
+    // carries only the explanation.
+    top.append(el('h2', '', 'Conditional Friday estimate'), el('span', 'gas-badge', price ? 'Experimental' : 'Withheld')); card.append(top);
     if (!price) {
-      card.append(el('p', 'gas-empty', 'Estimate withheld'), el('p', 'gas-card-note', view.reason ? messages[view.reason] : 'Waiting for enough verified data to issue an estimate.'),
-        el('p', 'gas-card-note', 'A fresh official order and recent source check are required.'));
+      // The reason is printed once, in the notice at the top of the page.
+      // The card keeps its place in the layout, states its status in the
+      // badge, and points to the saved record, which stays visible.
+      const body = el('div', 'gas-withheld');
+      if (view.reason) body.append(el('p', 'gas-withheld-note', 'No estimate is shown right now. The notice above gives the reason.'));
+      else body.append(el('p', 'gas-withheld-note', 'Waiting for enough verified data to issue an estimate. A fresh official order and recent source check are required.'));
+      body.append(el('a', 'link-quiet gas-withheld-link', 'Past estimates and their outcomes', { href: '#gas-results' }));
+      card.append(body);
       return card;
     }
     const current = selected(view.current.zones);
     const change = Number((decimal(price.minimum) - decimal(current.minimum)).toFixed(1));
     const movement = change < 0 ? `Down ${formatCents(String(-change))}` : change > 0 ? `Up ${formatCents(String(change))}` : 'No change';
+    // The movement against today's official minimum is the card's second
+    // read, set straight under the estimate it qualifies.
     card.append(el('p', 'gas-price gas-estimate-price', formatPrice(price.minimum)), el('p', 'gas-price-unit', 'Estimated minimum · CAD per litre'),
+      el('p', 'gas-change', `${movement} from the official minimum`, { 'data-direction': change < 0 ? 'down' : change > 0 ? 'up' : 'flat' }),
       el('p', 'gas-price-maximum', `Estimated maximum ${formatPrice(price.maximum)} / L`),
       el('p', 'gas-card-note', `For ${formatDate(estimate.date)} · ${modeLabels[estimate.mode]}`),
-      el('p', 'gas-change', `${movement} from the official minimum`),
       el('p', 'gas-coverage', `${estimate.observed_quotes} of ${estimate.total_quotes} weekday quotes observed · ${estimate.projected_quotes} assumed unchanged`),
       el('p', 'gas-card-note', `Latest real quote ${formatDate(estimate.latest_quote_date)}. Issued ${formatTimestamp(estimate.issued_at)}.`));
-    if (estimate.projected_quotes > 0) card.append(el('p', 'gas-card-note', 'Remaining weekdays hold the last real quote. New quotes replace these assumptions.'));
     if (estimate.error_reference !== null) card.append(el('p', 'gas-card-note', `Historical absolute-error reference ±${formatCents(estimate.error_reference)}. This retrospective reference offers no confidence guarantee.`));
     if (estimate.outside_training_features.length) {
       card.append(el('p', 'gas-notice', `Outside the training range: ${estimate.outside_training_features.join('; ')}`));
     }
     const assumptions = el('ul');
     for (const assumption of estimate.assumptions) assumptions.append(el('li', '', assumption));
-    card.append(detail('What this estimate assumes', [assumptions, el('p', 'gas-card-note', `Model ${estimate.model_version}. Expires at 12:01 a.m. Atlantic on the setting date.`)])); return card;
+    // How assumed weekdays are filled is an assumption, so it sits with the
+    // others; the coverage line above already says how many are assumed.
+    const notes = [assumptions];
+    if (estimate.projected_quotes > 0) notes.push(el('p', 'gas-card-note', 'Remaining weekdays hold the last real quote. New quotes replace these assumptions.'));
+    notes.push(el('p', 'gas-card-note', `Model ${estimate.model_version}. Expires at 12:01 a.m. Atlantic on the setting date.`));
+    card.append(detail('What this estimate assumes', notes)); return card;
   }
   function allZones(view) {
     const rows = [];
@@ -132,9 +159,14 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
     const rolling = Array.isArray(performance?.rolling) ? performance.rolling.filter((row) => Number.isInteger(row?.lead_days) && row.lead_days >= 1 && row.lead_days <= 7 && decimal(row.mae) !== null && decimal(row.max_error) !== null) : [];
     const early = rolling.find((row) => row.lead_days === 7); const late = rolling.find((row) => row.lead_days === 1);
     const grid = el('div', 'gas-stat-grid');
-    grid.append(statistic('Complete-window v2', formatCents(complete?.mae, { digits: 2 }), `${count(complete?.count)} later conditional price settings · mean absolute error`),
+    // The plain name the estimate card already uses for a complete quote
+    // window; the model version is named in the test method below.
+    grid.append(statistic('All quotes observed', formatCents(complete?.mae, { digits: 2 }), `${count(complete?.count)} later conditional price settings · mean absolute error`),
       statistic('7 days before Friday', formatCents(early?.mae, { digits: 2 }), `${count(early?.count)} Friday outcomes · mean absolute error`),
       statistic('1 day before Friday', formatCents(late?.mae, { digits: 2 }), `${count(late?.count)} Friday outcomes · mean absolute error`)); node.append(grid);
+    // The method caveats are true and stay on the page, folded under the
+    // table they qualify instead of a second grey paragraph after it.
+    const method = el('p', 'gas-card-note', `The original v2 test uses complete quote windows; its largest error was ${formatCents(complete?.max_error)}. Historical quote publication times have not been reconstructed, and these tests were not blinded. The complete-window test and the rolling test use different samples. The comparison above tracks saved predictions against official outcomes.`);
     if (rolling.length) {
       const maximum = Math.max(...rolling.map((row) => decimal(row.max_error)));
       node.append(el('p', 'gas-section-note', `The largest held-out rolling miss was ${formatCents(String(maximum))}. Each horizon is a separate test of the same Friday outcomes.`));
@@ -142,40 +174,57 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
         const tr = el('tr'); tr.append(el('th', '', `${row.lead_days} ${row.lead_days === 1 ? 'day' : 'days'}`, { scope: 'row' }), el('td', '', `${count(row.count)} of ${count(row.total)}`),
           el('td', '', formatCents(row.mae, { digits: 2 })), el('td', '', formatCents(row.max_error))); return tr;
       });
-      node.append(detail('Errors at every lead time', [table('Rolling estimates, grouped by days before Friday', ['Lead time', 'Friday outcomes', 'Mean absolute error', 'Largest error'], rows)]));
-    }
-    node.append(el('p', 'gas-section-note', `The original v2 test uses complete quote windows; its largest error was ${formatCents(complete?.max_error)}. Historical quote publication times have not been reconstructed, and these tests were not blinded. The complete-window test and the rolling test use different samples. The comparison above tracks saved predictions against official outcomes.`));
+      node.append(detail('Errors at every lead time · test method', [table('Rolling estimates, grouped by days before Friday', ['Lead time', 'Friday outcomes', 'Mean absolute error', 'Largest error'], rows), method]));
+    } else node.append(detail('Test method', [method]));
     return node;
   }
   function watchSection(view) {
     const node = el('section', 'gas-watch');
     const heading = el('div', 'gas-watch-heading');
-    heading.append(el('h2', 'section-title', 'Interrupter watch'), el('span', 'gas-badge', 'Experimental')); node.append(heading);
     const watch = view.watch;
-    if (!watch) node.append(el('p', 'gas-watch-status', 'Watch withheld'), el('p', 'gas-watch-description', view.reason ? messages[view.reason] : 'No verified quote signal is available.'));
+    heading.append(el('h2', 'section-title', 'Interrupter watch')); if (watch) heading.append(el('span', 'gas-badge', 'Experimental')); node.append(heading);
+    // The withheld reason is in the notice at the top; the status line is
+    // enough here.
+    if (!watch) { node.append(el('p', 'gas-watch-status', 'Watch withheld')); if (!view.reason) node.append(el('p', 'gas-watch-description', 'No verified quote signal is available.')); }
     else {
       const labels = { below_reference: `Below the ${formatCents(watch.reference_cents)} reference`, single_quote_move: 'One quote crosses the reference', sustained_proxy_move: 'Sustained quote move across the reference', waiting_for_quotes: 'Waiting for real quotes', unavailable: 'Quote signal unavailable' };
       node.append(el('p', 'gas-watch-status', labels[watch.status]));
-      if (watch.latest_gap !== null && !['waiting_for_quotes', 'unavailable'].includes(watch.status)) node.append(el('p', 'gas-watch-gap', formatCents(watch.latest_gap, { signed: true, digits: 2 })), el('p', 'gas-price-unit', 'Latest estimated combined supply-cost gap'));
-      const observations = el('ul', 'gas-observations');
-      for (const item of watch.observations.slice(-5)) observations.append(el('li', '', `${formatDate(item.date)} · ${formatCents(item.supply_gap, { signed: true, digits: 2 })}`));
-      node.append(observations);
+      const latest = watch.observations.at(-1);
+      if (watch.latest_gap !== null && !['waiting_for_quotes', 'unavailable'].includes(watch.status)) node.append(el('p', 'gas-watch-gap', formatCents(watch.latest_gap, { signed: true, digits: 2 })), el('p', 'gas-price-unit', `Latest estimated combined supply-cost gap${latest ? ` · ${formatDate(latest.date)}` : ''}`));
+      // A one-day history would only repeat the headline number; the list
+      // earns its place once there is a trend to read.
+      if (watch.observations.length > 1) {
+        const observations = el('ul', 'gas-observations');
+        for (const item of watch.observations.slice(-5)) observations.append(el('li', '', `${formatDate(item.date)} · ${formatCents(item.supply_gap, { signed: true, digits: 2 })}`));
+        node.append(observations);
+      }
       if (watch.regular_setting_next) node.append(el('p', 'gas-card-note', 'The next scheduled setting is the regular Friday order.'));
-      node.append(el('p', 'gas-watch-description', watch.limitations), link('Board guidance on interruptions', watch.source_url));
     }
-    node.append(el('p', 'gas-watch-description', "Real rack quotes estimate a combined supply-cost gap. The Board uses its own daily NYH benchmark and discretion. This watch cannot confirm an actual trigger or give an interruption probability."));
+    // One plain line says what the watch is; the published limitations (the
+    // test counts and caveats) fold under the results table below.
+    node.append(el('p', 'gas-watch-description', "An early-warning signal built from real wholesale quotes. It is not the Board's own daily New York Harbor (NYH) benchmark, and it cannot confirm an interruption or give its probability."));
+    if (watch) node.append(link('Board guidance on interruptions', watch.source_url));
     const performance = data?.performance?.watch;
     if (performance) {
       const rows = [['Early signal', performance.early], ['Sustained signal', performance.sustained]].map(([label, value]) => {
         const tr = el('tr'); tr.append(el('th', '', label, { scope: 'row' }), el('td', '', `${count(value?.detected_events)} of ${count(value?.actual_events)}`),
           el('td', '', count(value?.false_alert_days)), el('td', '', count(value?.missed_events))); return tr;
       });
-      node.append(table('Exploratory interruption test · false-alert days are quote-day decisions', ['Signal', 'Events detected', 'False-alert days', 'Events missed'], rows),
-        el('p', 'gas-section-note', `${count(performance.decision_days)} quote-day decisions. Multiple alert days may relate to one event; they do not count as independent interruptions.`));
+      // The table (false alarms included) stays in view; how the days were
+      // counted folds beneath it, as in the tests section above.
+      const method = [el('p', 'gas-card-note', `${count(performance.decision_days)} quote-day decisions. Multiple alert days may relate to one event; they do not count as independent interruptions.`)];
+      if (typeof watch?.limitations === 'string') method.unshift(el('p', 'gas-card-note', watch.limitations));
       const unresolvedTargets = [performance.early?.unresolved_target_dates, performance.sustained?.unresolved_target_dates];
       const unresolvedDays = [performance.early?.unresolved_alert_days, performance.sustained?.unresolved_alert_days];
-      node.append(el('p', 'gas-section-note', `Unresolved target dates, early / sustained: ${unresolvedTargets.map(count).join(' / ')}. Unresolved alert days: ${unresolvedDays.map(count).join(' / ')}.`));
-    } else node.append(el('p', 'gas-section-note', 'Watch validation is unavailable.'));
+      // Zero unresolved items is the normal case and says nothing; the line
+      // appears only when something is actually unresolved or unknown.
+      if ([...unresolvedTargets, ...unresolvedDays].some((value) => value !== 0)) method.push(el('p', 'gas-card-note', `Unresolved target dates, early / sustained: ${unresolvedTargets.map(count).join(' / ')}. Unresolved alert days: ${unresolvedDays.map(count).join(' / ')}.`));
+      node.append(table('Exploratory interruption test · false-alert days are quote-day decisions', ['Signal', 'Events detected', 'False-alert days', 'Events missed'], rows),
+        detail('How the watch was tested', method));
+    } else {
+      node.append(el('p', 'gas-section-note', 'Watch validation is unavailable.'));
+      if (typeof watch?.limitations === 'string') node.append(el('p', 'gas-card-note', watch.limitations));
+    }
     return node;
   }
   function ledgerSection(at) {
@@ -183,7 +232,6 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
     node.id = 'gas-results';
     const groups = groupForecasts(data?.issued_forecasts, at);
     const observed = groups.filter((group) => group.status === 'scored').length; const pending = groups.length - observed;
-    node.append(el('p', 'gas-ledger-summary', `Recent history · ${observed} effective ${observed === 1 ? 'date' : 'dates'} scored · ${pending} awaiting an official outcome`));
     const comparison = el('figure', 'gas-comparison');
     const controls = el('div', 'gas-comparison-controls');
     const choice = el('select', 'gas-comparison-select', null, { id: 'gas-comparison-issue' });
@@ -191,7 +239,7 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
     choice.value = comparisonIssue; choice.disabled = observed === 0;
     controls.append(el('label', '', 'Prediction to compare', { for: 'gas-comparison-issue' }), choice);
     const plot = el('div', 'gas-comparison-body');
-    const draw = () => renderComparison(plot, forecastComparison(data?.issued_forecasts, zone, comparisonIssue, at), { document, zone, issue: comparisonIssue });
+    const draw = () => renderComparison(plot, forecastComparison(data?.issued_forecasts, zone, comparisonIssue, at), { document, zone, issue: comparisonIssue, pending });
     choice.addEventListener('change', () => {
       if (!['first', 'latest'].includes(choice.value)) return;
       comparisonIssue = choice.value; draw();
@@ -204,22 +252,39 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
     }
     function issues(group, error = false) {
       const cell = el('td');
+      // Before the official outcome there is no error to show per issue:
+      // one "Pending" says it, instead of one per saved estimate.
+      if (error && !selected(group.score?.zones)?.actual_minimum) { cell.append(el('span', 'gas-issue-pending', 'Pending')); return cell; }
       group.records.forEach((record, index) => {
         const issue = el('div', 'gas-issue');
         const predicted = selected(record.predicted_zones)?.minimum; const actual = selected(group.score?.zones)?.actual_minimum;
         const label = group.records.length === 1 ? 'Saved' : index === 0 ? 'First' : 'Latest';
-        const value = error ? actual ? formatCents(String(decimal(predicted) - decimal(actual)), { signed: true }) : 'Pending' : formatPrice(predicted);
-        issue.append(el('span', 'gas-issue-label', label), el('span', '', value));
-        if (!error) issue.append(el('span', 'gas-issue-time', formatTimestamp(record.issued_at)));
+        const difference = error && actual ? Number((decimal(predicted) - decimal(actual)).toFixed(1)) : null;
+        const value = error ? actual ? formatCents(String(difference), { signed: true }) : 'Pending' : formatPrice(predicted);
+        // Errors take the chart's two fills (too high / too low) and an exact
+        // match is set bold, so the table reads as the graph in figures.
+        const sign = difference === null ? null : difference > 0 ? 'high' : difference < 0 ? 'low' : 'exact';
+        issue.append(el('span', 'gas-issue-label', label), el('span', 'gas-issue-value', value, sign ? { 'data-sign': sign } : {}));
+        // The row already names the effective date's year; an issue time
+        // repeats it only when it falls in a different year.
+        const sameYear = formatTimestamp(record.issued_at).includes(`, ${String(group.date).slice(0, 4)},`);
+        if (!error) issue.append(el('span', 'gas-issue-time', formatTimestamp(record.issued_at, { year: !sameYear })));
         cell.append(issue);
       }); return cell;
     }
     const rows = groups.map((group) => {
       const tr = el('tr', 'gas-ledger-event');
       const actual = selected(group.score?.zones)?.actual_minimum;
-      tr.append(el('th', '', formatDate(group.date), { scope: 'row' }), issues(group), el('td', '', actual ? formatPrice(actual) : 'Pending'), issues(group, true)); return tr;
+      const saved = issues(group); saved.setAttribute('data-label', 'Saved estimate');
+      const errors = issues(group, true); errors.setAttribute('data-label', 'Error');
+      tr.append(el('th', '', formatDate(group.date), { scope: 'row' }), saved, el('td', '', actual ? formatPrice(actual) : 'Pending', { 'data-label': 'Official outcome' }), errors); return tr;
     });
-    node.append(table(`Zone ${zone} · minimum price in CAD per litre · error = estimate minus official`, ['Effective date', 'Saved estimate', 'Official outcome', 'Error'], rows));
+    // PUBLIC_CONTRACT: prior predictions/actuals stay visible, so the ledger
+    // starts open; the summary still lets a reader fold it away.
+    const ledger = detail(`All saved estimates · ${groups.length} effective ${groups.length === 1 ? 'date' : 'dates'}`,
+      [table(`Zone ${zone} · minimum price in CAD per litre · error = estimate minus official`, ['Effective date', 'Saved estimate', 'Official outcome', 'Error'], rows)], 'gas-ledger-details');
+    ledger.open = true;
+    node.append(ledger);
     return node;
   }
   function sourcesSection() {
@@ -237,10 +302,11 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
   function render() {
     const at = now(); const view = assessSnapshot(data, at); lastReason = view.reason;
     const feedLabel = source === 'bootstrap' ? 'Live feed unavailable. Using a saved snapshot. ' : source === 'last_received' ? 'Live feed unavailable. Using the last received snapshot. ' : '';
-    feedStatus.textContent = `${feedLabel}${view.reason ? messages[view.reason] : 'Source check is current. Friday estimates remain conditional.'}${view.checkedAt ? ` Last checked ${formatTimestamp(view.checkedAt)}.` : ''}`;
+    feedStatus.textContent = `${feedLabel}${view.reason ? messages[view.reason] : 'Source check is current.'}${view.checkedAt ? ` Last checked ${formatTimestamp(view.checkedAt)}.` : ''}`;
     feedStatus.setAttribute('data-state', view.reason || source !== 'live' ? 'withheld' : 'fresh');
     const summary = el('section', 'gas-summary', null, { 'aria-label': `Zone ${zone} regular self-service gasoline prices` });
     const prices = el('div', 'gas-price-grid'); prices.append(currentCard(view), estimateCard(view));
+    if (!selected(view.estimate?.zones)) prices.classList.add('is-withheld');
     summary.append(prices, allZones(view));
     const keepComparisonFocus = document.activeElement?.id === 'gas-comparison-issue';
     content.replaceChildren(summary, ledgerSection(at), performanceSection(), watchSection(view), sourcesSection());
@@ -254,7 +320,7 @@ export function mountGasWatch(root, { document = root.ownerDocument, window = gl
       if (data && result.source !== 'live' && (!result.snapshot || Date.parse(result.snapshot.checked_at) < Date.parse(data.checked_at))) source = 'last_received';
       else { data = result.snapshot; source = result.source; }
       render();
-    } finally { busy = false; refreshButton.disabled = false; refreshButton.textContent = 'Check for updates'; }
+    } finally { busy = false; refreshButton.disabled = false; refreshButton.textContent = REFRESH_LABEL; }
   }
   function checkTime() {
     if (assessSnapshot(data, now()).reason !== lastReason) render();

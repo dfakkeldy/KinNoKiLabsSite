@@ -1,42 +1,57 @@
-# Building Echo — The Devlog
+# Building Echo: The Devlog
 
-Echo went from "I wonder if I could make an iOS app" to a four-platform audiobook study system in about eight weeks. This is the week-by-week story, reconstructed from the actual git history — **428 commits between April 19 and June 9, 2026**, by one developer new to Swift, directing an AI coding agent on evenings and weekends.
+Echo went from "I wonder if I could make an iOS app" to a four-platform audiobook study system in about eight weeks. This is the week-by-week story, reconstructed from the actual git history — **428 commits between April 19 and June 9, 2026**, by one developer new to Swift, directing an AI coding agent on evenings and weekends. Each week's bar shows its commits against the busiest week. The count stops at June 9, so Week 8 covers its first two days.
 
 It's all open source. You can audit every claim below: [github.com/dfakkeldy/Echo](https://github.com/dfakkeldy/Echo).
 
 ## The road to 1.0
 
-In June, Echo got a defined 1.0: a trustworthy study player on iPhone, Watch, and Mac, with honest study analytics and a complete flashcard workflow. The plan, in landing order: a **listening capture layer** (so your stats accumulate from the very next beta build), **CI and the Echo identity cleanup**, the **Insights screen** (real listening time, streaks, chapter coverage, retention curves), opt-in **Context Memory** (place-tagged bookmarks and sessions), the full **Anki workflow** (decks, tags, a card editor, the mark-later Card Inbox, real .apkg import), **Brain Dump notes** with watch dictation, **Markdown second-brain export**, and **iCloud study sync**.
+In June, Echo got a defined 1.0: a trustworthy study player on iPhone, Watch, and Mac, with honest study analytics and a complete flashcard workflow. The plan, in landing order:
+
+1. A listening capture layer, so your stats accumulate from the very next beta build
+2. CI and the Echo identity cleanup
+3. The Insights screen: real listening time, streaks, chapter coverage, retention curves
+4. Opt-in Context Memory: place-tagged bookmarks and sessions
+5. The full Anki workflow: decks, tags, a card editor, the mark-later Card Inbox, real .apkg import
+6. Brain Dump notes with watch dictation
+7. Markdown second-brain export
+8. iCloud study sync
 
 **Where it stands, October 2026:** Echo is still in its open TestFlight beta. The Card Inbox, the card editor and decks, FSRS review, Insights on iPhone, and Markdown study-note exports are in current builds; full iCloud study sync and direct `.apkg` import on iPhone are still open. [Join the beta](/echo-beta) to follow it build by build.
 
-## June 14 · *A realization: it's a player first*
+## Week 1 · The two-hour app
 
-Writing the 1.0 marketing made something obvious that the feature list had been hiding: most of Echo is useful even if you never make a single flashcard. The sleep timer, the Apple Watch remote, soundscapes, pitch-corrected speed, chapter and bookmark looping, your own DRM-free library — that's a complete, private audiobook player on its own. The study system is the *reason* Echo exists, but it shouldn't be the toll booth you have to pass to enjoy the thing. So the sites now say it plainly: *just here to listen? Echo's got you.* Same app, wider door.
-
-## Week 1 — April 19 · *The two-hour app* (10 commits)
+*April 19 · 10 commits*
 
 It started with a problem, not a plan. No audiobook app I could find would loop a single chapter, survive thirty interruptions a day, and play at 1.25× without chipmunk-voicing the narrator. One Sunday of directing an AI coding agent produced a working player that loaded a folder from iCloud, looped chapters, and played speed-corrected audio. By the end of the day it had background-persistence so it would still be ready to play after a long pause — the first brick of what became Smart Rewind.
 
 Then the repo went quiet for ten days while I used the app every day and found out what was missing.
 
-## Week 2 — April 27 – May 3 · *The watch appears* (20 commits)
+## Week 2 · The watch appears
+
+*April 27 – May 3 · 20 commits*
 
 The project got a name (BookLoop — it wouldn't survive), and got serious: a playlist editor with a virtual chapter queue, disabled-chapter skipping, persistent progress and per-book speed memory. Then the line that changed the app's shape: *"feat: Add Apple Watch app with Connectivity, Haptics, and Glassmorphism UI."* One day later the watch had widgets and App Intents; by week's end the complication showed the current book's thumbnail with live progress. The phone could finally stay in a pocket or plugged into the car, all day.
 
-## Week 3 — May 4 – 10 · *Bookmarks learn to talk* (48 commits)
+## Week 3 · Bookmarks learn to talk
+
+*May 4 – 10 · 48 commits*
 
 The week of the signature features. **Smart Rewind** grew its three tiers — seconds, minutes, hours — so every interruption length got a proportional rewind. **Voice memo bookmarks** landed, including the detail that still surprises people: memos *play back inline* when the narration reaches them. Then bookmarks reached the watch, learned to **loop between bookmarks**, and got volume normalization.
 
 Also this week: an Appearance menu with **OpenDyslexic and Lexend** fonts (the accessibility thread starts here, not as an afterthought), a sleep timer, the relicense to MIT (Echo has since moved to GPL-3.0) — and the first macOS app. Honesty corner: this was also a rough week in the commit log, as three Xcode targets were forcibly consolidated into one project. It got fixed. The git history keeps the scars.
 
-## Week 4 — May 11 – 17 · *The study player thesis* (92 commits)
+## Week 4 · The study player thesis
+
+*May 11 – 17 · 92 commits*
 
 The week Echo decided what it was. **Whisper transcription** arrived via a Mac generator and Python/Swift CLIs — audiobooks became *text* you could search and sync-scroll on the phone. **Picture bookmarks** landed, with the player artwork dynamically switching to your photo as playback passes it (the context-dependent-memory feature, before it had that name). Siri-dictated bookmarks, Markdown export, and deep links rounded out capture.
 
 Under the hood, the foundation work began in earnest: the AVPlayer backend was replaced with **AVAudioEngine** (volume boost, pitch-true speed), the 2,900-line PlayerModel "god class" started its decomposition into focused services, settings were centralized, fastlane + App Store metadata appeared, and the app got **Dutch localization**, in-app **help files**, and a full accessibility pass (labels, Dynamic Type). Five planning docs for an Anki-style SRS were committed — next week they'd become real.
 
-## Week 5 — May 18 – 24 · *The big bang* (132 commits)
+## Week 5 · The big bang
+
+*May 18 – 24 · 132 commits*
 
 The busiest week in the project's history, and it reads like a different app shipped every day:
 
@@ -46,7 +61,9 @@ The busiest week in the project's history, and it reads like a different app shi
 - **V1 EPUB timeline core** — `epub_block` and `alignment_anchor` tables, an import service, manual anchors with interpolation: the seed of the Read tab.
 - Plus: tab navigation, multi-file **M4B support**, early **CarPlay** scaffolding, a portable playlist manifest, a Twitter-style unified timeline feed — and the project's first marketing site with the privacy policy.
 
-## Week 6 — May 25 – 31 · *Stabilize, audit, rebrand* (81 commits)
+## Week 6 · Stabilize, audit, rebrand
+
+*May 25 – 31 · 81 commits*
 
 A maturity week. A systematic roadmap appeared and got executed: concurrency safety (`@MainActor`, Sendable), crash elimination, silent-failure remediation, database integrity, accessibility polish — then a comprehensive code audit that surfaced **55 findings**, all resolved within days. The SRS gained review stats and daily notifications.
 
@@ -54,17 +71,27 @@ Two headliners: the **EPUB Reader Feed** shipped — the dedicated Read tab with
 
 And at week's end: *"chore: Rebrand Orbit Audiobooks to **Echo**"* — new name, alternate app icons, and the "For Every Mind" positioning, with the infinity-symbol icon in silver and gold as a nod to the AuDHD community the app was built for.
 
-## Week 7 — June 1 – 7 · *Word-level precision + PDF* (18 commits)
+## Week 7 · Word-level precision + PDF
+
+*June 1 – 7 · 18 commits*
 
 Fewer commits, bigger ones. **TokenDTW** replaced the earlier silence-mapping approach: word-level dynamic-time-warping alignment for drift repair, later optimized from ~125 MB peak memory to ~25 MB with a sliding two-row algorithm. The EPUB parser was unified across platforms and learned to preserve inline formatting (bold, italics, links, images) in the database. Tier 0 title matching made coarse alignment instant.
 
 The reader grew up too: **PDF companion documents** shipped — page-level alignment, a manual-alignment sheet with a spring-loaded **scrubber joystick**, and page-screenshot bookmarks. The Now Playing screen was redesigned around full-bleed artwork, and accent colors started deriving from the cover art itself.
 
-## Week 8 — June 8 – 14 · *Polish with a safety net*
+## Week 8 · Polish with a safety net
+
+*June 8 – 9 · 27 commits*
 
 Straight from the log: a **watch connectivity overhaul** (durable application-context sync; stale transport commands can no longer replay and phantom-pause you), pause-on-headphone-disconnect, a **Pomodoro timer** on the watch with a persistent alarm, a fullscreen cover-art viewer, and a configurable date overlay.
 
 The engineering flourish of the week: the **accent contrast safety pipeline**. Artwork-derived theme colors now pass WCAG/CIELAB legibility gates, with a three-stage rescue ladder (nudge the hue → re-pick a safe hue → fall back to brand tint) so no album cover can ever make the UI unreadable. Plus the unglamorous good stuff: a zip-slip path-traversal fix in EPUB extraction, and documentation refreshed across the board.
+
+## A realization: it's a player first
+
+*June 14*
+
+Writing the 1.0 marketing made something obvious that the feature list had been hiding: most of Echo is useful even if you never make a single flashcard. The sleep timer, the Apple Watch remote, soundscapes, pitch-corrected speed, chapter and bookmark looping, your own DRM-free library — that's a complete, private audiobook player on its own. The study system is the *reason* Echo exists, but it shouldn't be the toll booth you have to pass to enjoy the thing. So the sites now say it plainly: *just here to listen? Echo's got you.* Same app, wider door.
 
 ## The shape of the thing
 

@@ -100,8 +100,12 @@ test('every game persistently discloses assistance and announces the first assis
     try {
       const module = await import(path);
       await module[renderName](fixture.root, storeWith(game, definition, module[stateName](definition)));
-      assert.match(fixture.root.querySelector('[data-assisted-status]').textContent, /hints and checks.*ineligible.*best-time/i);
+      // The rule is always in How to play; the status line appears only once
+      // the run is actually assisted.
+      assert.match(fixture.root.querySelector('[data-instructions]').textContent, /hints and checks.*ineligible.*best-time/i);
+      assert.equal(fixture.root.querySelector('[data-assisted-status]').hidden, true);
       fixture.root.querySelector('[data-hint]').click();
+      assert.equal(fixture.root.querySelector('[data-assisted-status]').hidden, false);
       assert.match(fixture.root.querySelector('[data-assisted-status]').textContent, /assisted run/i);
       assert.match(fixture.root.querySelector('.games-live-region').textContent, /assisted/i);
     } finally { restore(); }

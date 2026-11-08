@@ -121,7 +121,7 @@ test('several issues for one date produce one observed event with first, latest 
   const fixture = await mount(snapshot);
   assert.equal(fixture.root.querySelectorAll('.gas-ledger-event').length, 1);
   const ledger = fixture.root.querySelector('.gas-ledger');
-  assert.match(ledger.textContent, /1 effective date scored/);
+  assert.match(ledger.textContent, /1 completed date/);
   assert.match(ledger.textContent, /First.*\$1\.931/);
   assert.match(ledger.textContent, /Latest.*\$1\.912/);
   assert.match(ledger.textContent, /\$1\.948/);
@@ -225,6 +225,9 @@ test('total feed failure and missing performance remain readable without NaN or 
   const partial = await mount(snapshot);
   assert.ok(partial.root.querySelector('.gas-current-price'));
   assert.match(partial.root.querySelector('.gas-performance').textContent, /unavailable/i);
+  // The published watch limitations stay on the page even when the watch
+  // has no validation table to fold them under.
+  assert.ok(partial.root.querySelector('.gas-watch').textContent.includes(snapshot.watch.limitations));
 });
 
 test('manual and scheduled refresh use the same public feed and page exit stops its timer', async () => {

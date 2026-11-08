@@ -334,7 +334,7 @@ test('privacy names the Poker address and driveway map as browser-local storage'
   const privacy = readFileSync(new URL('../../Content/privacy.md', import.meta.url), 'utf8');
   const generated = readFileSync(new URL('../../Output/privacy/index.html', import.meta.url), 'utf8');
   for (const [label, source] of [['Content/privacy.md', privacy], ['Output/privacy/index.html', generated]]) {
-    assert.match(source, /address and driveway map at \/poker/, `${label} must name the Poker route`);
+    assert.match(source, /\[Address and driveway map\]\(\/poker\)|href="\/poker">Address and driveway map/, `${label} must name the Poker route`);
     assert.match(source, /address search/, `${label} must mention address search`);
     assert.match(source, /driveway traces/, `${label} must mention driveway traces`);
     assert.match(source, /offline pack/, `${label} must mention the offline pack`);
@@ -359,10 +359,15 @@ test('KinNoKi app surfaces lead to the internal product page and online map', ()
     'utf8',
   );
 
-  assert.match(content, /\[Open Online Map\]\(\/apps\/nsmarksthespot\/map\/\)/);
+  assert.match(content, /href="\/apps\/nsmarksthespot\/map\/">Open Online Map<\/a>/);
+  // The apps list row and the homepage lab card (a stretched title link).
   assert.equal(
     [...theme.matchAll(/class="app-card" href="\/apps\/nsmarksthespot\/"/g)].length,
-    2,
+    1,
+  );
+  assert.equal(
+    [...theme.matchAll(/class="app-card-link" href="\/apps\/nsmarksthespot\/"/g)].length,
+    1,
   );
   assert.match(generated, /href="\/apps\/nsmarksthespot\/map\/"[^>]*>Open Online Map<\/a>/);
 });

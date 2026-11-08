@@ -1,4 +1,4 @@
-import { loadGameStore, resetGameStore } from './core.js';
+import { createEmptyGameStore, loadGameStore, resetGameStore } from './core.js';
 
 export const GAMES = Object.freeze([
   {
@@ -238,10 +238,21 @@ const difficultyMarkup = (group) => group.difficulties.map(({ label, href }) => 
   `<a href="${escapeHTML(href)}">${escapeHTML(label)}</a>`
 )).join('');
 
+// Only Yard has two modes, so only Yard shows mode names over its chips. A
+// single-mode card's chips speak for themselves visually; their group keeps
+// a spoken name ("Start a new Sudoku puzzle: choose difficulty").
+const groupName = (card, group) => (card.modeGroups.length > 1
+  ? 'Choose ' + card.title + ' ' + group.label + ' difficulty'
+  : 'Start a new ' + card.title + ' ' + group.label.replace(/^New /, '') + ': choose difficulty');
+
+// The visible mode name is short so it fits on its chip row on a wide card
+// (the group's spoken name keeps the full mode name).
+const SHORT_MODE_NAMES = { contracts: 'Contracts', endless: 'Endless' };
+
 const modeGroupsMarkup = (card) => card.modeGroups.map((group) => (
-  '<div class="difficulty-links" role="group" aria-label="Choose '
-    + escapeHTML(card.title) + ' ' + escapeHTML(group.label) + ' difficulty">'
-    + '<span>' + escapeHTML(group.label) + '</span>'
+  '<div class="difficulty-links" role="group" aria-label="' + escapeHTML(groupName(card, group)) + '">'
+    + (card.modeGroups.length > 1
+      ? '<span>' + escapeHTML(SHORT_MODE_NAMES[group.id] ?? group.label) + '</span>' : '')
     + difficultyMarkup(group)
     + '</div>'
 )).join('');
@@ -265,6 +276,13 @@ const recordMarkup = (game, stats) => {
   ].join('');
 };
 
+// A game with no finishes and no records shows no record row at all (the
+// records band below states the empty book once); after a finish the record
+// row sits under the description, above the difficulty chips, so the chips
+// always end the card.
+const unplayed = (stats) => stats.completed === '0 completed'
+  && Object.entries(stats).every(([key, value]) => key === 'completed' || value === '—');
+
 const cardMarkup = (store, game) => {
   const card = gameCardModel(store, game);
   const stats = statsModel(store).games[game.id];
@@ -274,16 +292,26 @@ const cardMarkup = (store, game) => {
         <p class="game-card-eyebrow">${escapeHTML(card.eyebrow)}</p>
         <span class="game-card-symbol" aria-hidden="true">${escapeHTML(card.symbol)}</span>
       </div>
-      <h2>${escapeHTML(card.title)}</h2>
+      <h2><a class="game-card-title" href="${escapeHTML(card.continueHref ?? card.difficulties[0].href)}">${escapeHTML(card.title)}</a></h2>
       <p class="game-card-description">${escapeHTML(card.description)}</p>
       ${card.continueHref ? `<a class="btn btn-gold game-continue" href="${escapeHTML(card.continueHref)}">${escapeHTML(card.continueLabel)}</a>` : ''}
+      ${unplayed(stats) ? '' : `<dl class="game-card-stats">${recordMarkup(game, stats)}</dl>`}
       <div class="game-mode-actions">${modeGroupsMarkup(card)}</div>
-      <dl class="game-card-stats">${recordMarkup(game, stats)}</dl>
     </article>`;
 };
 
+// True once anything at all is stored: a finish, an unfinished run, a seed
+// history entry or a changed audio preference. Reset is only offered then.
+export function hasStoredGameData(store) {
+  return JSON.stringify(store) !== JSON.stringify(createEmptyGameStore());
+}
+
 export function renderHubMarkup(store) {
   const stats = statsModel(store);
+  const stored = hasStoredGameData(store);
+  // An empty record book names one easy first step.
+  const firstStep = stored ? '' : ' <a href="/games/' + GAMES[0].id
+    + '?difficulty=easy">Start with an Easy ' + escapeHTML(GAMES[0].title) + '</a>.';
   return `
     <header class="games-hero">
       <p class="eyebrow">KinNoKi Arcade Hall</p>
@@ -296,17 +324,17 @@ export function renderHubMarkup(store) {
     <section class="game-card-grid" aria-labelledby="games-heading">
       ${GAMES.map((game) => cardMarkup(store, game)).join('')}
     </section>
-    <section class="games-stats" aria-labelledby="local-stats-heading">
+    <section class="games-stats${stats.total === '0' ? ' is-empty' : ''}" aria-labelledby="local-stats-heading">
       <div>
         <p class="eyebrow">On this device</p>
         <h2 id="local-stats-heading">Your local records</h2>
-        <p>${escapeHTML(stats.zeroState)}</p>
+        <p>${escapeHTML(stats.zeroState)}${firstStep}</p>
       </div>
       <dl class="games-stats-summary">
         <div><dt>${escapeHTML(stats.totalLabel)}</dt><dd>${escapeHTML(stats.total)}</dd></div>
         <div><dt>${escapeHTML(stats.streakLabel)}</dt><dd>${escapeHTML(stats.streak)}</dd></div>
       </dl>
-      <button class="btn btn-gray games-reset" type="button" data-reset-games>Reset Game Data</button>
+      <button class="btn btn-gray games-reset" type="button" data-reset-games${stored ? '' : ' hidden disabled'}>Reset Game Data</button>
     </section>
     <dialog class="game-dialog" data-reset-dialog aria-labelledby="reset-dialog-title">
       <form method="dialog">

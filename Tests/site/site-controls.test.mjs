@@ -196,8 +196,8 @@ test('static and generated font controls start with deterministic pressed state'
   const generatedHome = readFileSync(new URL('../../Output/index.html', import.meta.url), 'utf8');
   const generatedListen = readFileSync(new URL('../../Output/listen/index.html', import.meta.url), 'utf8');
 
-  assert.match(swiftTheme, /value: "\/site\.js\?v=20260719"/);
-  assert.match(generatedHome, /src="\/site\.js\?v=20260719"/);
+  assert.match(swiftTheme, /value: "\/site\.js\?v=20261107-guide-toc"/);
+  assert.match(generatedHome, /src="\/site\.js\?v=20261107-guide-toc"/);
 
   const staticTags = fontToggleTags(staticListen);
   assert.equal(staticTags.length, 1);

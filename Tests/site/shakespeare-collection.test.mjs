@@ -33,7 +33,8 @@ test('the collection links two real work cards with explicit availability and fo
   const cards = [...collection.main.matchAll(/<article\b[^>]*class="shakespeare-work-card"[^>]*>([\s\S]*?)<\/article>/g)].map(m => m[1]);
   assert.equal(cards.length, 2);
   assert.match(cards[0], /The Merchant of Venice/);
-  assert.match(cards[0], /Film, album and editions available/);
+  // The status line is the state only; the Available list names the items.
+  assert.match(cards[0], /<p class="shakespeare-status">Released<\/p>/);
   assert.match(cards[0], /Album on Suno/);
   assert.match(cards[0], /Word Is Bond film/);
   assert.doesNotMatch(cards[0], /Coming soon|video player/);
@@ -41,7 +42,15 @@ test('the collection links two real work cards with explicit availability and fo
   assert.match(cards[0], /M4B audiobooks/);
   assert.match(cards[1], /A Midsummer Night's Dream/);
   assert.match(cards[1], /Edition complete · Release pending/);
-  assert.match(cards[1], /No public releases yet/);
+  // The status line states availability once; the formats block names
+  // what is coming instead of an empty "Available" row.
+  const coming = cards[1].match(/<dt>Coming<\/dt><dd>([\s\S]*?)<\/dd>/)?.[1] ?? '';
+  assert.deepEqual([...coming.matchAll(/<li>([^<]+)<\/li>/g)].map(m => m[1]),
+    ['Book editions', 'Audiobook', 'Video', 'Project code']);
+  const available = cards[0].match(/<dt>Available<\/dt><dd>([\s\S]*?)<\/dd>/)?.[1] ?? '';
+  assert.deepEqual([...available.matchAll(/<li>([^<]+)<\/li>/g)].map(m => m[1]),
+    ['Word Is Bond film', 'Album on Suno', 'Play and novel EPUBs', 'Online listening and M4B audiobooks']);
+  assert.doesNotMatch(cards[1], /No public releases yet|<dt>Available<\/dt>/);
   const links = [...collection.main.matchAll(/<a\b[^>]*href="([^"]+)"[^>]*>/g)].map(m => m[1]);
   assert.deepEqual(links, ['/shakespeare/merchant-of-venice/', '/shakespeare/a-midsummer-nights-dream/']);
   assert.doesNotMatch(collection.main, /<(?:iframe|audio|video|button)\b|target="_blank"|\bdownload\b/);
@@ -57,14 +66,22 @@ test('work pages return to the collection and connect to the other work', () => 
 
 test('Midsummer separates the completed edition from pending public releases', () => {
   assert.match(midsummer.main, /The edition is complete/);
-  assert.match(midsummer.main, /Public release pending/);
+  assert.match(midsummer.main, /<h2 id="project-status-title">Release status<\/h2>/);
   assert.doesNotMatch(midsummer.html, /in progress|being made in the studio/i);
-  assert.match(midsummer.main, /Book editions/);
-  assert.match(midsummer.main, /Audiobook/);
-  assert.match(midsummer.main, /Video/);
-  assert.match(midsummer.main, /Project code/);
-  assert.equal((midsummer.main.match(/Release pending/g) ?? []).length, 3);
-  assert.match(midsummer.main, /Publication pending/);
+  // Four per-format statuses, each status said once: book editions,
+  // audiobook and video share "Release pending"; project code is
+  // "Publication pending".
+  const status = midsummer.main.match(/<dl class="shakespeare-release-status">([\s\S]*?)<\/dl>/)?.[1] ?? '';
+  const groups = [...status.matchAll(/<div>([\s\S]*?)<\/div>/g)].map(match => ({
+    formats: [...match[1].matchAll(/<dt>([^<]+)<\/dt>/g)].map(dt => dt[1]),
+    state: match[1].match(/<dd>([^<]+)<\/dd>/)?.[1],
+  }));
+  assert.deepEqual(groups, [
+    { formats: ['Book editions', 'Audiobook', 'Video'], state: 'Release pending' },
+    { formats: ['Project code'], state: 'Publication pending' },
+  ]);
+  assert.equal((midsummer.main.match(/Release pending/g) ?? []).length, 1);
+  assert.equal((midsummer.main.match(/Publication pending/g) ?? []).length, 1);
   assert.doesNotMatch(midsummer.main, /<(?:iframe|audio|video|button|img)\b|\bdownload\b|href="(?:https?:|#")|target="_blank"/i);
   assert.doesNotMatch(midsummer.main, /\.epub|\.m4b|youtube\.com|suno\.com|github\.com|\/Users\/|sediment:|file:/i);
 });

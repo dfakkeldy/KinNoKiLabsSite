@@ -396,7 +396,7 @@ test('the template exposes semantic series metadata, adjacent links, and complet
   assert.ok(seriesShelves > title && seriesLibrary > seriesShelves);
   assert.ok(moreBooks > seriesLibrary && library > moreBooks);
   assert.match(playerTemplate, /<section id="seriesShelves" class="room-library" aria-labelledby="seriesLibraryTitle" hidden>/);
-  assert.match(playerTemplate, /<h2 id="seriesLibraryTitle">Series<\/h2>/);
+  assert.match(playerTemplate, /<h2 id="seriesLibraryTitle" class="visually-hidden">Series<\/h2>/);
   assert.match(playerTemplate, /<section id="moreBooksShelf" class="room-library" aria-labelledby="moreBooksTitle">/);
   assert.match(playerTemplate, /<h2 id="moreBooksTitle">More books<\/h2>/);
 });

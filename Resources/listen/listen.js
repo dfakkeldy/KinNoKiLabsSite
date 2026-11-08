@@ -17,7 +17,7 @@
   var els = {
     cover: $('cover'), bookTitle: $('bookTitle'), bookSubtitle: $('bookSubtitle'),
     bookByline: $('bookByline'), chapterCount: $('chapterCount'), chapterList: $('chapterList'),
-    chapterNow: $('chapterNow'), captionPanel: $('captionPanel'), captionWords: $('captionWords'),
+    chapterNow: $('chapterNow'), captionPanel: $('captionPanel'), captionWords: $('captionWords'), cueHint: $('cueHint'),
     captionText: $('captionText'), figurePanel: $('figurePanel'), figureImg: $('figureImg'),
     figureCaption: $('figureCaption'), status: $('status'), playPause: $('playPause'),
     iconPlay: $('iconPlay'), iconPause: $('iconPause'), back30: $('back30'), fwd30: $('fwd30'),
@@ -30,6 +30,7 @@
     library: $('library'), honesty: $('honesty'),
   };
   var main = document.querySelector('.room-main');
+  var idle = core.idleCaptionState(main, els.cueHint); // pre-play preview and cue hint
   var room = document.querySelector('.room');
 
   var audio = new Audio();
@@ -110,7 +111,7 @@
     els.cover.src = book.cover;
     els.cover.alt = book.coverAlt || ('Cover of ' + book.title);
 
-    els.honesty.textContent = 'Written by ' + book.writtenBy +
+    els.honesty.textContent = book.title + ' was written by ' + book.writtenBy +
       ', grounded in real sources — spot-checked, not expert-reviewed. ';
     var link = document.createElement('a');
     link.href = 'https://github.com/dfakkeldy/explainer-audiobooks#honest-disclosure';
@@ -230,6 +231,12 @@
     li.appendChild(by);
     var links = document.createElement('span');
     links.className = 'room-lib-links';
+    if (selected) {
+      var now = document.createElement('span');
+      now.className = 'room-lib-now';
+      now.textContent = 'Now playing';
+      links.appendChild(now);
+    }
     core.libraryActions(b).filter(function (action) {
       return !selected || action.label !== 'Listen';
     }).forEach(function (action) {
@@ -378,6 +385,13 @@
     requestAnimationFrame(function () { els.captionWords.classList.remove('swap'); });
   }
 
+  /* The pre-play preview line under the chapter heading; shared with the
+     other room through listen-core.js (renderPreview). */
+  function showPreview() {
+    if (idle.hasStarted()) return;
+    core.renderPreview(document, els.captionWords, blocks, currentBlockId);
+  }
+
   /* ── Figure stage (slideshow) ───────────────────────── */
   /* The stage elements are feature-checked so a cached pre-slideshow
      index.html served alongside this script degrades to captions-only
@@ -447,7 +461,10 @@
       if (currentBlockId !== null || !els.captionWords.firstChild) showQuiet('· · ·');
       return;
     }
-    if (cue.blockId !== currentBlockId) rebuildCaption(cue);
+    if (cue.blockId !== currentBlockId) {
+      rebuildCaption(cue);
+      showPreview();
+    }
     for (var i = 0; i < captionSpans.length; i++) {
       var cls = 'w';
       if (i < cue.alreadyHeardWordCount) cls += ' heard';
@@ -462,6 +479,8 @@
     els.iconPause.style.display = playing ? 'block' : 'none';
     els.playPause.setAttribute('aria-label', playing ? 'Pause' : 'Play');
     main.classList.toggle('playing', playing);
+    // The first play retires the idle caption state (and its hint) for good.
+    if (playing) idle.markStarted();
     if ('mediaSession' in navigator) {
       navigator.mediaSession.playbackState = playing ? 'playing' : 'paused';
     }
@@ -679,6 +698,8 @@
         }
       });
       tick(audio.currentTime);
+      // Captions are ready: until the first play, say what they will do.
+      idle.offerCueHint();
     }).catch(function (err) {
       console.debug('[listen] read-along unavailable:', err);
       showQuiet('Read-along captions couldn’t load — audio still works.');

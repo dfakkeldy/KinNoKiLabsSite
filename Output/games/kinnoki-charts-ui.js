@@ -8,6 +8,7 @@ import { createGameAudio } from './game-audio.js';
 import {
   completionPanel, createAudioControls, createConfirmDialog, createSession, element,
   formatElapsed, makeGameTerminal, prefersReducedMotion, renderReplacementKept, sharedShell,
+  ASSIST_RULE,
 } from './controller-common.js';
 
 export function createChartsState(definition) {
@@ -81,9 +82,9 @@ export async function renderCharts(root, store) {
   const instructions = element('details', { 'data-instructions': '' },
     element('summary', { text: 'How to play' }),
     element('p', {
-      text: 'Row clues sit to the left of the grid, column clues sit above it. Choose a '
-        + 'cell and cycle it blank, filled, or marked to match the clues. Arrow keys move, '
-        + 'Enter or Space cycles the selected cell, and X or M toggles a mark.',
+      text: 'Row clues sit to the left of the grid, column clues above it; each number is '
+        + 'one run of filled cells, in order. Arrow keys move, Enter or Space cycles the '
+        + 'selected cell, and X or M toggles a mark. ' + ASSIST_RULE,
     }));
   const corner = element('div', { class: 'charts-corner', 'aria-hidden': 'true' });
   const columnClueNodes = [];
@@ -91,7 +92,7 @@ export async function renderCharts(root, store) {
   for (let column = 0; column < size; column += 1) {
     const runs = state.definition.clues.columns[column];
     const clue = element('div', {
-      class: 'charts-clue charts-clue-column',
+      class: 'charts-clue charts-clue-column' + (runs.length ? '' : ' is-zero'),
       text: runs.length ? runs.join('\n') : '0',
     });
     columnClueNodes[column] = clue;
@@ -102,7 +103,7 @@ export async function renderCharts(root, store) {
   for (let row = 0; row < size; row += 1) {
     const runs = state.definition.clues.rows[row];
     const clue = element('div', {
-      class: 'charts-clue charts-clue-row',
+      class: 'charts-clue charts-clue-row' + (runs.length ? '' : ' is-zero'),
       text: runs.length ? runs.join(' ') : '0',
     });
     rowClueNodes[row] = clue;
@@ -110,7 +111,7 @@ export async function renderCharts(root, store) {
   }
   const board = element('div', {
     class: 'charts-board', role: 'grid', 'aria-label': `${state.definition.title} nonogram puzzle`,
-    'aria-rowcount': String(size), 'aria-colcount': String(size),
+    'aria-rowcount': String(size), 'aria-colcount': String(size), 'data-size': String(size),
   });
   const layout = element('div', { class: 'charts-layout' }, corner, columnsContainer, rowsContainer, board);
   layout.style.setProperty('--charts-size', String(size));
@@ -119,6 +120,9 @@ export async function renderCharts(root, store) {
   const hint = element('button', { type: 'button', 'data-hint': '', text: 'Hint' });
   const check = element('button', { type: 'button', 'data-check': '', text: 'Check' });
   controls.append(hint, check);
+  // Hint and Check sit in the layout's own grid, centred under the board
+  // rather than under the board plus its row-clue column.
+  layout.append(controls);
 
   // Effects-only audio: lazily started on the player's first gesture (a
   // click/keydown inside dispatch()), mirroring the sudoku controller so we
@@ -143,7 +147,12 @@ export async function renderCharts(root, store) {
     if (!completed) void puzzleAudio.dispose();
   });
 
-  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, boardScroll, controls, audioControls.element, shell.live);
+  // One plain line names the input directly above the board, so play does
+  // not depend on opening How to play; audio sits in the side column.
+  const legend = element('p', { class: 'game-board-legend charts-legend', 'data-charts-legend': '',
+    text: 'Tap a cell to cycle it: blank, filled, marked ×. Filled runs must match the numbers.' });
+  const side = element('div', { class: 'game-side charts-side' }, audioControls.element);
+  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, legend, boardScroll, side, shell.live);
 
   // Build the size*size cell buttons (and their gridcell wrappers) once.
   // draw() below only ever patches attributes/classes/content on these same

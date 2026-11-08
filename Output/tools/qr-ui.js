@@ -144,8 +144,12 @@ const drawPng = async (qr, canvasFactory, decodeBase64) => {
   return canvasBlob(canvas, decodeBase64);
 };
 
+const LEVEL_LABELS = Object.freeze({
+  L: 'Low (7%)', M: 'Medium (15%)', Q: 'Quartile (25%)', H: 'High (30%)',
+});
+
 const option = (doc, level) => {
-  const node = element('option', { value: level, text: level, ownerDocument: doc });
+  const node = element('option', { value: level, text: LEVEL_LABELS[level] ?? level, ownerDocument: doc });
   node.value = level;
   return node;
 };
@@ -180,20 +184,22 @@ export function renderQrTool(root, deps = {}) {
     title: 'QR Code Generator',
     lede: 'Create a QR code for text or a URL, ready to copy or download.',
   });
-  const form = element('form', { class: 'tool-form', ownerDocument: doc });
+  const form = element('form', { class: 'tool-form qr-form', ownerDocument: doc });
   const input = element('input', {
-    id: 'qr-text', name: 'text', type: 'text', autocomplete: 'off', ownerDocument: doc,
+    id: 'qr-text', name: 'text', type: 'text', autocomplete: 'off', placeholder: 'e.g. https://kinnokilabs.com', ownerDocument: doc,
   });
   input.value = text;
   const levelSelect = element('select', {
-    id: 'qr-level', name: 'level', ownerDocument: doc,
+    id: 'qr-level', name: 'level', 'aria-describedby': 'qr-level-hint', ownerDocument: doc,
   }, ...LEVELS.map((value) => option(doc, value)));
   levelSelect.value = level;
-  const stage = element('div', { class: 'qr-stage', ownerDocument: doc });
+  // The empty stage shows the hint itself on phones (styles.css reads the
+  // attribute), so it stays a childless placeholder until there is a code.
+  const stage = element('div', { class: 'qr-stage', 'data-empty-hint': EMPTY_HINT, ownerDocument: doc });
   const status = element('div', { class: 'qr-status', ownerDocument: doc });
   const actionStatus = element('div', { class: 'qr-action-status', ownerDocument: doc });
   const downloadSvg = element('button', {
-    type: 'button', text: 'Download SVG', ownerDocument: doc,
+    type: 'button', class: 'tool-primary', text: 'Download SVG', ownerDocument: doc,
   });
   const downloadPng = element('button', {
     type: 'button', text: 'Download PNG', ownerDocument: doc,
@@ -208,8 +214,11 @@ export function renderQrTool(root, deps = {}) {
     prefs = setToolPrefs(storage, prefs, 'qr-code', { text, level });
   };
 
+  // Nothing to export until there is a code, so the row waits out of sight
+  // (the buttons stay disabled too, for anything that still reaches them).
   const setActionsEnabled = (enabled) => {
     for (const action of [downloadSvg, downloadPng, copyPng]) action.disabled = !enabled;
+    actions.hidden = !enabled;
   };
 
   const showStatus = (className, message) => {
@@ -339,7 +348,11 @@ export function renderQrTool(root, deps = {}) {
     element('div', { class: 'tool-field', ownerDocument: doc },
       element('label', { for: 'qr-text', text: 'Text or URL', ownerDocument: doc }), input),
     element('div', { class: 'tool-field', ownerDocument: doc },
-      element('label', { for: 'qr-level', text: 'Error correction', ownerDocument: doc }), levelSelect),
+      element('label', { for: 'qr-level', text: 'Error correction', ownerDocument: doc }), levelSelect,
+      element('p', {
+        id: 'qr-level-hint', class: 'tool-hint',
+        text: 'Higher levels survive more damage but make a denser code.', ownerDocument: doc,
+      })),
     stage,
     status,
     actions,

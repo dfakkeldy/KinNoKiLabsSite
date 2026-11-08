@@ -2,6 +2,7 @@
 <title>Strait and Bras d'Or Fishing Map</title>
 <meta name="description" content="Pick a month, see the shore and lake fishing locations to research and get directions. 28 spots around St. Peter's, the Strait of Canso, Isle Madame and the Bras d'Or Lake, with 2026 rules and sources.">
 <link rel="canonical" href="https://kinnokilabs.com/fishing/">
+<script>try{var kt=localStorage.getItem('kinnoki-theme');if(kt==='light'||kt==='dark')document.documentElement.setAttribute('data-theme',kt);}catch(e){}</script>
 <link rel="icon" href="/favicon.ico" sizes="any">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="KinNoKi Labs">
@@ -35,6 +36,12 @@
   --tidal-tint:#bfdbd9;
   --fresh:#2c5a44;
   --fresh-tint:#c6d9c9;
+  /* Calendar "good" bars in light: the peak colour mixed over --surface
+     until each bar reaches 3:1 on the off-white grid; peaks stay darker
+     and taller. */
+  --salt-bar:#6d94ae;
+  --tidal-bar:#61989c;
+  --fresh-bar:#779485;
   --pin-text:#ffffff;
   --pin-ring:#ffffff;
   --dim-fill:#c5cccb;
@@ -57,7 +64,7 @@
   --overlay:rgba(246,247,243,.94);
   --shadow:0 1px 2px rgba(22,35,38,.10),0 6px 18px rgba(22,35,38,.10);
   --font-display:"Barlow Condensed","Arial Narrow","Roboto Condensed","Helvetica Neue",Arial,sans-serif;
-  --font-body:"Source Sans 3","Source Sans Pro",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --font-body:"Lexend",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){
@@ -77,6 +84,11 @@
     --tidal-tint:#22484a;
     --fresh:#76b391;
     --fresh-tint:#284836;
+    /* Calendar "good" bars in dark: 55% of the peak colour over --surface,
+       so they reach 3:1 against the cell and still sit clearly below peaks. */
+    --salt-bar:#436a84;
+    --tidal-bar:#3a7270;
+    --fresh-bar:#4b7160;
     --pin-text:#0b1315;
     --pin-ring:#0b1315;
     --dim-fill:#3b484c;
@@ -117,6 +129,9 @@
   --tidal-tint:#22484a;
   --fresh:#76b391;
   --fresh-tint:#284836;
+  --salt-bar:#436a84;
+  --tidal-bar:#3a7270;
+  --fresh-bar:#4b7160;
   --pin-text:#0b1315;
   --pin-ring:#0b1315;
   --dim-fill:#3b484c;
@@ -143,7 +158,7 @@
 
 /* ---------- Base ---------- */
 *,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-padding-top:76px}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.5}
 #app{max-width:1400px;margin:0 auto;padding:20px 24px 40px;overflow-wrap:anywhere}
 a{color:var(--salt)}
@@ -155,27 +170,55 @@ h1,h2,h3{font-family:var(--font-display);font-weight:700;line-height:1.05;margin
 button{font:inherit;color:inherit}
 .selectable{-webkit-user-select:text;user-select:text}
 
+/* ---------- Site bar: the KinNoKi Labs header ----------
+   The same parts as the site's own header (logo mark, wordmark, the six
+   section links with Tools marked, a round theme toggle, a hairline), drawn
+   with this page's tokens because the atlas is a standalone page. */
+.site-bar{position:sticky;top:0;z-index:1100;padding:0 24px;background:color-mix(in srgb,var(--bg) 88%,transparent);-webkit-backdrop-filter:saturate(180%) blur(18px);backdrop-filter:saturate(180%) blur(18px);border-bottom:1px solid var(--rule)}
+.site-bar-in{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:1352px;height:64px;margin:0 auto}
+.skip{position:fixed;left:8px;top:8px;z-index:1200;padding:12px 16px;background:var(--surface);color:var(--ink);transform:translateY(-160%)}
+.skip:focus{transform:none}
+.site-brand{display:inline-flex;align-items:center;gap:11px;min-height:44px;color:var(--ink);text-decoration:none;font-weight:600;font-size:16.5px;letter-spacing:-.01em;white-space:nowrap}
+.site-brand:hover{color:var(--ink)}
+.site-brand img{width:34px;height:34px;object-fit:contain}
+.site-brand .logo-on-light{display:block}.site-brand .logo-on-dark{display:none}
+:root[data-theme="dark"] .site-brand .logo-on-light{display:none}:root[data-theme="dark"] .site-brand .logo-on-dark{display:block}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .site-brand .logo-on-light{display:none}:root:not([data-theme="light"]) .site-brand .logo-on-dark{display:block}}
+.site-bar-end{display:flex;align-items:center;gap:14px}
+.site-links{display:flex;align-items:center;gap:2px;margin:0;padding:0;list-style:none}
+.site-links a{position:relative;display:inline-flex;align-items:center;min-height:36px;padding:0 11px;border-radius:999px;color:var(--ink-2);text-decoration:none;font-size:14.5px;font-weight:500}
+.site-links a:hover{color:var(--ink);background:var(--surface-2)}
+.site-links a[aria-current="page"]{color:var(--ink)}
+.site-links a[aria-current="page"]::after{content:"";position:absolute;left:50%;bottom:0;width:16px;height:2px;margin-left:-8px;border-radius:2px;background:var(--buoy)}
+.site-links li.free{margin-left:9px;padding-left:9px;border-left:1px solid var(--rule)}
+.site-links li.free ~ li.free{margin-left:0;padding-left:0;border-left:0}
+.topbar-theme{display:inline-grid;place-items:center;width:36px;height:36px;padding:0;border:1px solid var(--rule-strong);border-radius:999px;background:transparent;color:var(--ink-2);cursor:pointer}
+.topbar-theme:hover{background:var(--surface-2);color:var(--ink)}
+.topbar-theme .i-moon{display:none}
+.topbar-theme.to-dark .i-sun{display:none}
+.topbar-theme.to-dark .i-moon{display:inline}
+@media (pointer:coarse){.topbar-theme{width:44px;height:44px}.site-links a{min-height:44px}}
 /* ---------- Masthead ---------- */
 .mast{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 32px;align-items:end;padding-bottom:14px;border-bottom:3px double var(--rule-strong)}
-.eyebrow{margin:0 0 6px;font-family:var(--font-display);font-weight:600;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.eyebrow{margin:0 0 8px;font-family:var(--font-body);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
 .eyebrow .num{letter-spacing:.06em}
 .mast h1{font-size:clamp(34px,4.6vw,56px);letter-spacing:-.005em;font-weight:700;text-transform:none}
 .lede{margin:6px 0 0;font-size:18px;color:var(--ink-2);max-width:72ch}
-.dedication{margin:10px 0 0;font-style:italic;font-weight:600;font-size:16px;color:var(--buoy-ink);max-width:72ch}
+.dedication{margin:10px 0 0;font-weight:400;font-size:16px;color:var(--ink-2);max-width:72ch}
 .stamp{margin:0;justify-self:end;max-width:330px;text-wrap:balance;padding:8px 12px 7px;border:2px solid var(--buoy);color:var(--buoy-ink);font-family:var(--font-display);font-weight:700;font-size:15px;line-height:1.15;letter-spacing:.08em;text-transform:uppercase;text-align:left;box-shadow:inset 0 0 0 3px var(--bg),inset 0 0 0 4px var(--buoy)}
 .stamp span{display:block}
 .stamp .stamp-yr{font-size:22px;letter-spacing:.04em;color:var(--buoy-ink)}
 
 /* ---------- Controls ---------- */
 .controls{margin:16px 0 14px;display:grid;gap:12px}
-.ctl-label,.controls legend{font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);padding:0;margin:0 0 5px}
+.ctl-label,.controls legend{font-family:var(--font-body);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);padding:0;margin:0 0 5px}
 fieldset{border:0;margin:0;padding:0;min-width:0}
 .months{display:grid;grid-template-columns:minmax(88px,1.4fr) repeat(12,minmax(0,1fr));border:1px solid var(--rule-strong);background:var(--surface);border-radius:3px;overflow:hidden}
 .chip-in{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
 .mchip{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:48px;padding:5px 2px;cursor:pointer;border-left:1px solid var(--rule);text-align:center;user-select:none;-webkit-user-select:none;position:relative}
 .months .mchip:first-of-type{border-left:0}
-.mchip .m-name{font-family:var(--font-display);font-weight:600;font-size:16px;letter-spacing:.04em;line-height:1}
-.mchip .m-count{font-size:12px;color:var(--ink-3);line-height:1}
+.mchip .m-name{font-weight:600;font-size:15px;letter-spacing:0;line-height:1.1}
+.mchip .m-count{font-size:13px;font-weight:600;color:var(--ink-2);line-height:1}
 .mchip:hover{background:var(--surface-2)}
 .chip-in:checked + .mchip{background:var(--ink);color:var(--surface)}
 .chip-in:checked + .mchip .m-count{color:var(--surface);opacity:.8}
@@ -183,11 +226,11 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .mchip.is-empty .m-name{color:var(--ink-3)}
 .ctl-row{display:grid;grid-template-columns:minmax(200px,1.1fr) auto auto minmax(0,1fr);gap:12px 18px;align-items:end}
 .select-wrap{position:relative}
-.select-wrap select{appearance:none;-webkit-appearance:none;width:100%;min-height:42px;padding:8px 36px 8px 12px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--surface);color:var(--ink);font:inherit;font-size:16px;cursor:pointer}
-.select-wrap::after{content:"";position:absolute;right:14px;bottom:17px;width:8px;height:8px;border-right:2px solid var(--ink-2);border-bottom:2px solid var(--ink-2);transform:rotate(45deg);pointer-events:none}
+.select-wrap select{appearance:none;-webkit-appearance:none;width:100%;min-height:46px;padding:8px 36px 8px 12px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--surface);color:var(--ink);font:inherit;font-size:16px;cursor:pointer}
+.select-wrap::after{content:"";position:absolute;right:14px;bottom:19px;width:8px;height:8px;border-right:2px solid var(--ink-2);border-bottom:2px solid var(--ink-2);transform:rotate(45deg);pointer-events:none}
 .select-wrap select:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
 .seg{display:flex;border:1px solid var(--rule-strong);border-radius:3px;background:var(--surface);overflow:hidden}
-.seg label{display:flex;align-items:center;justify-content:center;min-height:40px;padding:6px 14px;cursor:pointer;border-left:1px solid var(--rule);white-space:nowrap;font-weight:600;font-size:15px;position:relative}
+.seg label{display:flex;align-items:center;justify-content:center;min-height:44px;padding:6px 14px;cursor:pointer;border-left:1px solid var(--rule);white-space:nowrap;font-weight:600;font-size:15px;position:relative}
 .seg .chip-in:first-child + label{border-left:0}
 .seg label:hover{background:var(--surface-2)}
 .seg .chip-in:checked + label{background:var(--ink);color:var(--surface)}
@@ -198,9 +241,13 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .status-box{align-self:center;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;justify-content:flex-end}
 .status{margin:0;color:var(--ink-2);font-size:15px}
 .status b{color:var(--ink)}
+/* Phone filters: one summary row that opens the species, water and
+   drive-from controls, so the map arrives in the first screen. Desktop
+   never shows it and never hides the controls. */
+.filters-toggle{display:none}
 .linkbtn{background:none;border:0;padding:2px 0;color:var(--salt);text-decoration:underline;text-underline-offset:2px;cursor:pointer;font-size:15px}
 .linkbtn[hidden]{display:none}
-.note-drive{margin:0;font-size:13px;color:var(--ink-3)}
+.note-drive{margin:0;font-size:13px;color:var(--ink-2)}
 
 /* ---------- Atlas (map + side) ---------- */
 .atlas{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(340px,1fr);gap:18px;height:clamp(540px,78vh,860px)}
@@ -208,12 +255,12 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 #map{position:absolute;inset:3px;border:1px solid var(--ink);background:var(--map-bg);font-family:var(--font-body)}
 .map-msg{position:absolute;z-index:1001;left:50%;top:14px;transform:translateX(-50%);max-width:calc(100% - 28px);padding:8px 12px;background:var(--overlay);border:1px solid var(--buoy);border-radius:3px;color:var(--ink);font-size:14px;box-shadow:var(--shadow)}
 .map-msg[hidden]{display:none}
-.side{min-height:0;overflow:auto;background:var(--surface);border:1px solid var(--rule-strong);overscroll-behavior:contain;scroll-padding-top:56px}
+.side{min-height:0;overflow:auto;background:linear-gradient(transparent,var(--surface) 70%) 0 100%/100% 44px no-repeat local,radial-gradient(farthest-side at 50% 100%,rgba(0,0,0,.28),transparent) 0 100%/100% 16px no-repeat scroll,var(--surface);border:1px solid var(--rule-strong);overscroll-behavior:contain;scroll-padding-top:56px}
 .side-head{position:sticky;top:0;z-index:2;display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:12px 16px 10px;background:var(--surface);border-bottom:1px solid var(--rule)}
 .side-head h2{font-size:24px;letter-spacing:.01em}
-.side-head .sort-note{font-size:13px;color:var(--ink-3)}
+.side-head .sort-note{font-size:13px;color:var(--ink-2)}
 .spot-list{list-style:none;margin:0;padding:0}
-.group-h{padding:10px 16px 6px;font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);background:var(--surface-2);border-bottom:1px solid var(--rule)}
+.group-h{padding:10px 16px 6px;font-family:var(--font-body);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);background:var(--surface-2);border-bottom:1px solid var(--rule)}
 .spot{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:2px 12px;align-items:start;width:100%;padding:11px 16px 11px 13px;border:0;border-left:3px solid transparent;border-bottom:1px solid var(--rule);background:none;text-align:left;cursor:pointer}
 .spot:hover{background:var(--surface-2)}
 .spot:focus-visible{outline-offset:-3px}
@@ -227,6 +274,7 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .spot.is-out .s-name,.spot.is-out .s-meta,.spot.is-out .s-drive b{color:var(--ink-3)}
 .spot.is-out .pin{background:var(--dim-fill);color:var(--dim-text)}
 .list-empty,.list-msg{margin:0;padding:18px 16px;color:var(--ink-2)}
+.list-more{display:none}
 
 /* ---------- Pins ---------- */
 .spot-pin{background:none;border:0}
@@ -238,6 +286,7 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .spot-pin.is-moved .lead{display:block}
 .spot-pin.is-moved::before{content:"";position:absolute;left:12.5px;top:12.5px;width:5px;height:5px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 1.5px var(--pin-ring)}
 .spot-pin.is-dim .pin{background:var(--dim-fill);color:var(--dim-text);opacity:.82;box-shadow:0 0 0 1.5px var(--pin-ring),0 1px 2px rgba(0,0,0,.2)}
+.spot-pin .pin::before{content:"";position:absolute;inset:-9px;border-radius:50%}
 .spot-pin.is-peak .pin::after,.pin.demo-peak::after{content:"";position:absolute;top:-4px;right:-4px;width:10px;height:10px;border-radius:50%;background:var(--buoy);box-shadow:0 0 0 2px var(--pin-ring)}
 .spot-pin.is-sel .pin{opacity:1;transform:translate(var(--dx,0px),var(--dy,0px)) scale(1.15);box-shadow:0 0 0 2px var(--pin-ring),0 0 0 5px var(--buoy),0 2px 8px rgba(0,0,0,.45)}
 .spot-pin:hover .pin{transform:translate(var(--dx,0px),var(--dy,0px)) scale(1.1)}
@@ -274,16 +323,21 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .leaflet-container a{color:var(--salt)}
 .leaflet-bar{border:1px solid var(--rule-strong)!important;box-shadow:var(--shadow)!important;border-radius:3px!important}
 .leaflet-bar a,.leaflet-bar a:hover{background:var(--surface);color:var(--ink);border-bottom-color:var(--rule);width:34px;height:34px;line-height:32px;font-size:20px}
+.leaflet-container .leaflet-control-zoom-in,.leaflet-container .leaflet-control-zoom-out{font-family:var(--font-body);font-weight:400;text-indent:0}
 .leaflet-bar a:hover{background:var(--surface-2)}
 .leaflet-bar a.leaflet-disabled{background:var(--surface-2);color:var(--ink-3)}
-.leaflet-control-scale-line{background:var(--overlay);border-color:var(--ink);color:var(--ink);font-size:11px;font-variant-numeric:tabular-nums}
+.leaflet-control-scale-line{background:var(--overlay);border-color:var(--ink);color:var(--ink);font-size:12px;font-variant-numeric:tabular-nums}
 .leaflet-bottom.leaflet-right{left:126px}
-.leaflet-container .leaflet-control-attribution{background:var(--overlay);color:var(--ink-2);font-size:11px;line-height:1.35;padding:3px 7px;max-width:min(780px,100%);border-top-left-radius:3px}
+.leaflet-container .leaflet-control-attribution{background:var(--overlay);color:var(--ink-2);font-size:12px;line-height:1.35;padding:3px 7px;max-width:min(780px,100%);border-top-left-radius:3px}
 .leaflet-control-attribution a{color:var(--salt)}
-.attr-short{display:none}
-.attr-toggle{display:none}
+/* Compact credits at every width: one line with an (i) toggle for the
+   rest, so the bar never covers the bottom of the map and its pins. */
+.attr-full{display:none}
+.leaflet-container .leaflet-control-attribution{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.leaflet-container .leaflet-control-attribution.is-open{white-space:normal}
+.attr-toggle{display:inline-grid;place-items:center;width:17px;height:17px;margin:0 5px 0 -2px;padding:0;border:1px solid var(--ink-2);border-radius:50%;background:var(--surface);color:var(--ink);font:italic 700 11px/1 Georgia,serif;cursor:pointer;vertical-align:-3px}
 .key{background:var(--overlay);border:1px solid var(--rule-strong);border-radius:3px;box-shadow:var(--shadow);color:var(--ink);font-size:13px;min-width:0}
-.key summary{cursor:pointer;padding:6px 10px;font-family:var(--font-display);font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase;list-style:none;display:flex;align-items:center;gap:8px}
+.key summary{cursor:pointer;padding:6px 10px;font-family:var(--font-body);font-weight:600;font-size:13px;letter-spacing:.1em;text-transform:uppercase;list-style:none;display:flex;align-items:center;gap:8px}
 .key summary::-webkit-details-marker{display:none}
 .key summary::after{content:"";width:6px;height:6px;border-right:2px solid var(--ink-2);border-bottom:2px solid var(--ink-2);transform:rotate(45deg);margin-top:-3px;margin-left:auto}
 .key[open] summary::after{transform:rotate(-135deg);margin-top:3px}
@@ -303,11 +357,11 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .card-head .pin{width:34px;height:34px;font-size:16px;margin-top:2px}
 .card-head h2{font-size:28px;line-height:1.05;letter-spacing:.005em}
 .card-sub{grid-column:2;margin:2px 0 0;color:var(--ink-2);font-size:15px}
-.tier{display:inline-block;padding:0 6px;border:1px solid var(--ink-2);border-radius:2px;font-family:var(--font-display);font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);vertical-align:1px}
+.tier{display:inline-block;padding:0 6px;border:1px solid var(--ink-2);border-radius:2px;font-family:var(--font-body);font-weight:600;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);vertical-align:1px}
 .facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:6px 16px 0;border:1px solid var(--rule);border-radius:3px}
 .facts div{padding:7px 10px;border-left:1px solid var(--rule)}
 .facts div:first-child{border-left:0}
-.facts dt{font-family:var(--font-display);font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.facts dt{font-family:var(--font-body);font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
 .facts dd{margin:1px 0 0;font-weight:700;font-size:15px;line-height:1.25}
 .facts dd .big{font-family:var(--font-display);font-size:24px;letter-spacing:.02em}
 .facts .is-origin dd .big{color:var(--buoy-ink)}
@@ -325,8 +379,8 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .chips li em{font-style:normal;color:var(--buoy-ink);font-weight:700}
 .strip-wrap{margin:14px 16px 0}
 .strip-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:4px}
-.strip-h span{font-family:var(--font-display);font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
-.strip-key{font-size:12px;color:var(--ink-3)}
+.strip-h span{font-family:var(--font-body);font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.strip-key{font-size:13px;color:var(--ink-2)}
 .strip-key i{display:inline-block;width:10px;height:10px;margin:0 3px 0 8px;vertical-align:-1px;border-radius:1px}
 .strip{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));border:1px solid var(--rule-strong);border-radius:2px;overflow:hidden}
 .strip span{display:flex;align-items:center;justify-content:center;height:30px;border-left:1px solid var(--rule);font-family:var(--font-display);font-weight:600;font-size:14px;color:var(--ink-3);position:relative}
@@ -335,16 +389,16 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .strip .p{background:var(--wt);color:var(--pin-text)}
 .strip .cur::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 2px var(--buoy)}
 .strip-range{margin:4px 0 0;font-size:13px;color:var(--ink-2)}
-.wt-salt{--wt:var(--salt);--wt-tint:var(--salt-tint)}
-.wt-tidal{--wt:var(--tidal);--wt-tint:var(--tidal-tint)}
-.wt-fresh{--wt:var(--fresh);--wt-tint:var(--fresh-tint)}
+.wt-salt{--wt:var(--salt);--wt-tint:var(--salt-tint);--wt-bar:var(--salt-bar,var(--salt-tint))}
+.wt-tidal{--wt:var(--tidal);--wt-tint:var(--tidal-tint);--wt-bar:var(--tidal-bar,var(--tidal-tint))}
+.wt-fresh{--wt:var(--fresh);--wt-tint:var(--fresh-tint);--wt-bar:var(--fresh-bar,var(--fresh-tint))}
 .sec{margin:16px 16px 0;padding-top:12px;border-top:1px solid var(--rule)}
 .sec h3{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:5px}
 .sec p{margin:0 0 6px}
 .sec ul{margin:0;padding-left:18px}
 .sec li{margin:0 0 4px}
-.sec .fine{font-size:13px;color:var(--ink-3)}
-.ev{display:inline-flex;align-items:center;gap:6px;padding:1px 8px 1px 6px;border:1px solid var(--rule-strong);border-radius:2px;font-family:var(--font-body);font-weight:600;font-size:12px;letter-spacing:.02em;text-transform:none;color:var(--ink)}
+.sec .fine{font-size:13px;color:var(--ink-2)}
+.ev{display:inline-flex;align-items:center;gap:6px;padding:1px 8px 1px 6px;border:1px solid var(--rule-strong);border-radius:2px;font-family:var(--font-body);font-weight:600;font-size:13px;letter-spacing:.02em;text-transform:none;color:var(--ink)}
 .ev .meter{display:inline-grid;grid-template-columns:repeat(3,5px);gap:2px}
 .ev .meter i{height:9px;background:var(--rule)}
 .ev .meter i.on{background:var(--ink-2)}
@@ -367,23 +421,30 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .cal{width:100%;min-width:330px;border-collapse:collapse;table-layout:fixed}
 .cal col.c-lab{width:34%}
 .cal th,.cal td{padding:0}
-.cal thead th{font-family:var(--font-display);font-weight:600;font-size:14px;color:var(--ink-3);text-align:center;padding:2px 0 6px;letter-spacing:.04em}
+.cal thead th{font-family:var(--font-body);font-weight:600;font-size:13px;color:var(--ink-2);text-align:center;padding:2px 0 6px;letter-spacing:.04em}
 .cal thead th.cal-lab-h{text-align:left;letter-spacing:.12em;text-transform:uppercase;font-size:12px}
 .cal thead th.cur{color:var(--buoy-ink)}
+.cal thead .m-init{display:none}
 .cal tbody th{text-align:left;font-weight:400;padding:5px 10px 5px 0;vertical-align:middle;line-height:1.2}
 .cal tbody th b{display:block;font-weight:700;font-size:15px}
-.cal tbody th small{display:block;font-size:12.5px;color:var(--ink-3);margin-top:1px}
-.cal tbody th small .evc{font-style:italic}
+.cal tbody th small{display:block;font-size:13px;color:var(--ink-2);margin-top:1px}
+.cal tbody th small .evc{font-weight:600}
 .cal td{height:34px;border-left:1px solid var(--rule);position:relative;vertical-align:middle}
 .cal td i{position:absolute;left:0;right:0;top:50%;height:16px;margin-top:-8px}
-.cal td.g i{background:var(--wt-tint)}
+.cal td.g i{background:var(--wt-bar,var(--wt-tint))}
 .cal td.p i{background:var(--wt);height:20px;margin-top:-10px}
 .cal td.cur{box-shadow:inset 2px 0 0 var(--buoy),inset -2px 0 0 var(--buoy)}
-.cal tr.grp th{padding:12px 0 4px;font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--rule)}
+.cal tr.grp th{padding:12px 0 4px;font-family:var(--font-body);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--rule)}
 .cal tbody tr.row{border-bottom:1px solid var(--rule)}
-.cal-key{display:flex;flex-wrap:wrap;gap:6px 18px;margin:10px 0 0;font-size:13px;color:var(--ink-2)}
+.cal-legend{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 28px;margin:0 0 10px;padding-bottom:10px;border-bottom:1px solid var(--rule)}
+.cal-key{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0;font-size:13px;color:var(--ink-2)}
 .cal-key span{display:inline-flex;align-items:center;gap:6px}
 .cal-key i{display:inline-block;width:22px;height:10px}
+.cal-key [hidden]{display:none}
+.cal-evidence{display:flex;flex-wrap:wrap;gap:4px 14px;margin:0;font-size:13px;color:var(--ink-2)}
+.cal-evidence dt{font-weight:700;color:var(--ink)}
+.cal-evidence dd{margin:0}
+.cal-evidence dd i{font-style:normal;font-weight:600;color:var(--ink)}
 .cal-more{margin-top:12px}
 .cal-more summary{cursor:pointer;font-weight:600}
 .cal-more dl{margin:8px 0 0;display:grid;gap:10px}
@@ -391,18 +452,20 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .cal-more dd{margin:2px 0 0;font-size:14px;color:var(--ink-2)}
 .cal-more dd p{margin:0 0 4px}
 
-.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border:2px solid var(--ink);background:var(--surface)}
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border:1px solid var(--rule-strong);background:var(--surface)}
 .rule{padding:14px 16px 12px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
 .rule h3{font-size:19px;letter-spacing:.02em;margin-bottom:5px}
 .rule p,.rule ul{margin:0 0 6px;font-size:15px}
 .rule ul{padding-left:18px}
 .rule li{margin-bottom:3px}
-.rule .cite{font-size:12.5px;color:var(--ink-3)}
-.rule.wide{grid-column:span 2}
+.rule .cite{font-size:13px;color:var(--ink-2)}
+.rule.wide{grid-column:1/-1}
+.rule > h3:not(:first-child){margin-top:12px}
 .rule.report{background:var(--buoy-tint)}
-.tel{font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:.03em;white-space:nowrap;-webkit-user-select:text;user-select:text;color:var(--ink)}
+.tel{display:inline-flex;align-items:center;min-height:44px;font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:.03em;white-space:nowrap;-webkit-user-select:text;user-select:text;color:var(--ink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.tel:hover{color:var(--salt)}
 .tel-list{list-style:none;padding:0!important;margin:4px 0 6px}
-.tel-list li{margin:0 0 6px}
+.tel-list li{margin:0 0 2px}
 .tel-list .who{display:block;font-size:13px;color:var(--ink-2)}
 
 footer{margin-top:30px;padding-top:14px;border-top:3px double var(--rule-strong);color:var(--ink-2);font-size:14px}
@@ -410,10 +473,18 @@ footer{margin-top:30px;padding-top:14px;border-top:3px double var(--rule-strong)
 footer h2{font-size:22px;margin-bottom:8px;color:var(--ink)}
 footer ol{margin:0;padding-left:22px}
 footer li{margin:0 0 4px}
-.legal{margin-top:18px;padding:12px 14px;border:1px solid var(--ink);background:var(--surface);color:var(--ink)}
-.legal strong{font-family:var(--font-display);font-size:18px;letter-spacing:.08em;text-transform:uppercase}
+.legal{margin-top:18px;padding:12px 14px;border:1px solid var(--rule-strong);background:var(--surface);color:var(--ink)}
+.legal strong{font-family:var(--font-display);font-size:19px;letter-spacing:.06em;text-transform:uppercase}
 .credits p{margin:0 0 8px}
-.colophon{margin-top:14px;font-size:13px;color:var(--ink-3)}
+/* Closing row: the site's footer parts (brand, tagline, way back), under
+   the same double rule as the section heads, so the legal note is not the
+   page's last beat. */
+.site-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 32px;margin-top:28px;padding-top:16px;border-top:3px double var(--rule-strong)}
+.site-foot-brand{display:grid;gap:2px}
+.site-foot-brand p{margin:0;font-size:14px;color:var(--ink-2)}
+.site-foot-links{display:flex;flex-wrap:wrap;gap:4px 22px}
+.site-foot-links a{display:inline-flex;align-items:center;gap:6px;min-height:44px;color:var(--ink);font-size:15px;font-weight:500;text-decoration:underline;text-decoration-color:var(--rule-strong);text-underline-offset:4px}
+.site-foot-links a:hover{color:var(--salt)}
 
 /* ---------- Responsive ---------- */
 @media (max-width:1100px){
@@ -422,9 +493,11 @@ footer li{margin:0 0 4px}
 }
 @media (max-width:959px){
   #app{padding:16px 16px 32px}
+  .site-links li:not(.free){display:none}
+  .site-links li.free{margin-left:0;padding-left:0;border-left:0}
   .atlas{display:block;height:auto}
   .map-frame{height:60vh;min-height:340px;max-height:640px}
-  .side{margin-top:14px;overflow:visible;border-width:1px}
+  .side{margin-top:14px;overflow:visible;border-width:1px;background:var(--surface)}
   .side-head{position:static}
   .card-bar{position:static}
   .rules{grid-template-columns:1fr 1fr}
@@ -439,7 +512,13 @@ footer li{margin:0 0 4px}
   .foot-grid{grid-template-columns:1fr}
 }
 @media (max-width:700px){
+  .cal-evidence{display:grid;gap:2px}
+  .cal-evidence dt{margin-bottom:2px}
   .hide-sm{display:none}
+  .site-links li.free{margin-left:0;padding-left:0;border-left:0}
+  .site-bar{padding:0 16px}
+  .site-bar-in{height:56px}
+  .site-bar-end{gap:6px}
   .mast{grid-template-columns:1fr;gap:10px;padding-bottom:12px}
   .eyebrow{font-size:13px;margin-bottom:4px}
   .stamp{justify-self:start;max-width:none;padding:6px 10px 5px;font-size:13px}
@@ -448,32 +527,63 @@ footer li{margin:0 0 4px}
   .stamp .stamp-yr::after{content:" · "}
   .lede{font-size:17px;line-height:1.4}
   .controls{margin-top:12px;gap:10px}
-  .months{grid-template-columns:repeat(6,minmax(0,1fr))}
-  .months .mchip{border-top:1px solid var(--rule)}
-  .months .mchip:first-of-type{grid-column:1/-1;flex-direction:row;gap:8px;min-height:36px;border-top:0}
-  .months .mchip:nth-of-type(2),.months .mchip:nth-of-type(8){border-left:0}
-  .mchip{min-height:44px}
+  /* Phone months: one chip row that scrolls sideways (Any month first),
+     so the map arrives in the first screen. A shadow at the right edge
+     shows there is more row to scroll to. */
+  .months{display:flex;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;
+    background:linear-gradient(to left,var(--surface) 40%,transparent) right center/36px 100% no-repeat local,radial-gradient(farthest-side at 100% 50%,rgba(0,0,0,.22),transparent) right center/12px 100% no-repeat scroll,var(--surface)}
+  .months::-webkit-scrollbar{display:none}
+  .months .mchip{flex:0 0 auto;min-width:54px;min-height:48px;padding:5px 8px}
+  .months .mchip:first-of-type{min-width:96px}
   .ctl-row{grid-template-columns:1fr;gap:10px}
-  .seg label{min-height:40px}
+  .filters-toggle{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;padding:8px 12px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+  .filters-toggle .ft-label{flex:none;font-family:var(--font-body);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+  .filters-toggle .ft-sum{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:15px;font-weight:600}
+  .filters-toggle::after{content:"";flex:none;width:8px;height:8px;margin:0 4px -2px 0;border-right:2px solid var(--ink-2);border-bottom:2px solid var(--ink-2);transform:rotate(45deg);transform-origin:60% 60%}
+  .filters-toggle[aria-expanded="true"]::after{transform:rotate(-135deg)}
+  .controls.is-collapsed .ctl-row > :not(.status-box){display:none}
+  .seg label{min-height:44px}
   .seg{width:100%}
   .seg label{flex:1;padding:6px 6px;font-size:15px}
-  .attr-full{display:none}
-  .attr-short{display:inline}
-  .leaflet-container .leaflet-control-attribution{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .leaflet-container .leaflet-control-attribution.is-open{white-space:normal}
-  .attr-toggle{display:inline-grid;place-items:center;width:17px;height:17px;margin:0 5px 0 -2px;padding:0;border:1px solid var(--ink-2);border-radius:50%;background:var(--surface);color:var(--ink);font:italic 700 11px/1 Georgia,serif;cursor:pointer;vertical-align:-3px}
   .leaflet-bottom.leaflet-right{left:96px}
-  .leaflet-container .leaflet-control-attribution{font-size:10px;line-height:1.3;padding:2px 6px}
+  .leaflet-container .leaflet-control-attribution{font-size:12px;line-height:1.3;padding:2px 6px}
   .facts{grid-template-columns:1fr 1fr}
   .facts div:first-child{grid-column:1/-1;border-bottom:1px solid var(--rule)}
   .facts div:nth-child(2){border-left:0}
   .rules{grid-template-columns:1fr}
   .rule{border-right:0}
+  /* Phone: show the closest spots, then one tap for the rest, so the
+     calendar arrives within a couple of screens of the map. */
+  .list-sec.is-capped .spot-list > li.is-over-cap{display:none}
+  .list-more{display:flex;align-items:center;justify-content:center;width:100%;min-height:48px;margin:0;padding:10px 16px;border:0;border-top:1px solid var(--rule);background:var(--surface-2);color:var(--salt);font:inherit;font-weight:700;font-size:15px;cursor:pointer}
+  .list-more[hidden]{display:none}
+  /* Phone calendar: the species name takes its own row, so the twelve
+     month columns get the full width instead of sharing it. */
+  .cal,.cal thead,.cal tbody{display:block;min-width:0}
+  /* The month letters stay pinned above the long run of species rows, so
+     every bar can be read against its month without scrolling back up. */
+  .cal-wrap{overflow:visible}
+  .cal thead{position:sticky;top:56px;z-index:2;margin:0 -12px;padding:6px 12px 0;background:var(--surface);border-bottom:1px solid var(--rule)}
+  .cal colgroup{display:none}
+  .cal tr{display:grid;grid-template-columns:repeat(12,minmax(0,1fr))}
+  .cal thead th.cal-lab-h{display:none}
+  .cal tbody tr.row{padding-top:6px}
+  .cal tbody tr.row th{grid-column:1/-1;padding:0 0 4px}
+  .cal tr.grp th{grid-column:1/-1}
+  .cal td{height:24px}
+  .cal td:nth-child(2){border-left:0}
   .cal col.c-lab{width:36%}
   .cal tbody th b{font-size:14px}
-  .cal tbody th small{font-size:12px}
-  .cal thead th{font-size:12px}
+  .cal tbody th small{font-size:13px}
+  .cal thead th{font-size:13px}
+  .cal thead .m-short{display:none}
+  .cal thead .m-init{display:inline}
   .card-head h2{font-size:25px}
+}
+/* Touch: inline links in the rules (licence shops, DFO, the invasive-fish
+   line) get a taller hit area without moving the text around them. */
+@media (pointer:coarse){
+  .rule p a:not(.tel){display:inline-block;padding:12px 2px;margin:-12px -2px}
 }
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}
@@ -481,8 +591,20 @@ footer li{margin:0 0 4px}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Lexend:wght@300..700&display=swap">
 
+<a class="skip" href="#atlas">Skip to the map</a>
+  <header class="site-bar">
+    <div class="site-bar-in">
+      <a class="site-brand" href="/" aria-label="KinNoKi Labs home"><img class="logo-on-dark" src="/images/brand/logo-mark-128.webp" width="128" height="128" alt=""><img class="logo-on-light" src="/images/brand/logo-mark-light-128.webp" width="128" height="128" alt=""><span>KinNoKi Labs</span></a>
+      <div class="site-bar-end">
+        <nav aria-label="Primary"><ul class="site-links">
+          <li class="hide-sm"><a href="/services">Services</a></li><li class="hide-sm"><a href="/apps">Apps</a></li><li class="hide-sm"><a href="/about">About</a></li><li class="free hide-sm"><a href="/learn">Learn</a></li><li class="free hide-sm"><a href="/games">Games</a></li><li class="free"><a href="/tools" aria-current="page">Tools</a></li>
+        </ul></nav>
+        <button class="topbar-theme" id="theme-btn" type="button"><svg class="i-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="i-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg><span class="sr-only" id="theme-btn-label">Light theme</span></button>
+      </div>
+    </div>
+  </header>
 <div id="app" lang="en" data-ready="0">
   <header class="mast">
     <div>
@@ -513,7 +635,8 @@ footer li{margin:0 0 4px}
         <input class="chip-in" type="radio" name="month" id="m12" value="12"><label class="mchip" for="m12"><span class="m-name">Dec</span><span class="m-count num" data-m="12"></span></label>
       </div>
     </fieldset>
-    <div class="ctl-row">
+    <button type="button" class="filters-toggle" id="filters-toggle" aria-expanded="true" aria-controls="ctl-row"><span class="ft-label">Filters</span><span class="ft-sum" id="filters-sum">All species · All water · from St. Peter's</span></button>
+    <div class="ctl-row" id="ctl-row">
       <div>
         <label class="ctl-label" for="species" style="display:block">Species</label>
         <div class="select-wrap"><select id="species"><option value="">All species</option></select></div>
@@ -557,6 +680,7 @@ footer li{margin:0 0 4px}
       <section class="list-sec" id="list-sec" aria-labelledby="list-h">
         <div class="side-head"><h2 id="list-h">Spots</h2><span class="sort-note" id="sort-note">nearest first</span></div>
         <ol class="spot-list" id="spot-list"></ol>
+        <button class="list-more" id="list-more" type="button" hidden></button>
         <p class="list-msg" id="list-msg" hidden></p>
       </section>
     </aside>
@@ -565,7 +689,7 @@ footer li{margin:0 0 4px}
   <section class="band" id="calendar" aria-labelledby="cal-h">
     <div class="band-head">
       <h2 id="cal-h">What's biting when</h2>
-      <p>Species by month across the area, under 2026 rules. Light bars are good months, dark bars are peaks. Peaks are often guide reports or regional biology rather than local counts: the evidence class is under each name.</p>
+      <p>Species by month across the area. Peaks are often guide reports or regional biology rather than local counts, so each name carries its evidence class.</p>
     </div>
     <div class="cal-wrap" id="cal-wrap"><p class="list-msg" id="cal-msg">Loading the calendar…</p></div>
   </section>
@@ -573,7 +697,7 @@ footer li{margin:0 0 4px}
   <section class="band" id="rules" aria-labelledby="rules-h">
     <div class="band-head">
       <h2 id="rules-h">Rules everywhere</h2>
-      <p>These apply at every spot on the map, on top of the spot's own season and limits. 2026 rules; the 2027 handbook and DFO orders are expected from about April 2027.</p>
+      <p>These apply at every spot on the map, on top of the spot's own season and limits.</p>
     </div>
     <div class="rules">
       <div class="rule">
@@ -597,7 +721,7 @@ footer li{margin:0 0 4px}
         <h3>No night fishing for sport fish</h3>
         <p>No angling for trout, salmon or smallmouth bass from 2 hours after sunset to 2 hours before sunrise. In inland water, no angling of any kind from 22:00 to 06:00.</p>
         <h3 style="margin-top:12px">Invasive fish</h3>
-        <p>Keep every smallmouth bass and chain pickerel you catch. Never move live fish, dump bait, or use perch, bass, pickerel, bullhead, goldfish or crayfish as bait. Report new invasive fish: <span class="tnum selectable">902-485-5056</span>.</p>
+        <p>Keep every smallmouth bass and chain pickerel you catch. Never move live fish, dump bait, or use perch, bass, pickerel, bullhead, goldfish or crayfish as bait. Report new invasive fish: <a class="tnum" href="tel:+19024855056">902-485-5056</a>.</p>
       </div>
       <div class="rule">
         <h3>Atlantic salmon</h3>
@@ -606,13 +730,15 @@ footer li{margin:0 0 4px}
       <div class="rule">
         <h3>Elvers are banned</h3>
         <p>Anglers may not fish for elvers (glass eels): unauthorised harvest or possession is illegal. Adult American eels are Threatened (COSEWIC), so please release them.</p>
+        <h3>Inland closed season</h3>
+        <p>In fresh water you may not angle for anything, perch included, unless a sport fish season is open there. Most lakes close Oct 1–Mar 31; only listed all-year waters stay open.</p>
       </div>
       <div class="rule report">
         <h3>Report poaching</h3>
         <ul class="tel-list">
-          <li><span class="who">Fisheries and Oceans Canada (DFO)</span><span class="tel">1-800-565-1633, ext. 6</span></li>
-          <li><span class="who">NS Natural Resources</span><span class="tel">1-800-565-2224</span></li>
-          <li><span class="who">Crime Stoppers</span><span class="tel">1-800-222-8477</span></li>
+          <li><span class="who">Fisheries and Oceans Canada (DFO)</span><a class="tel" href="tel:+18005651633,6">1-800-565-1633, ext. 6</a></li>
+          <li><span class="who">NS Natural Resources</span><a class="tel" href="tel:+18005652224">1-800-565-2224</a></li>
+          <li><span class="who">Crime Stoppers</span><a class="tel" href="tel:+18002228477">1-800-222-8477</a></li>
         </ul>
         <p class="cite"><a href="https://www.dfo-mpo.gc.ca/contact/report-signaler-eng.htm" target="_blank" rel="noopener">DFO: report a fisheries violation</a></p>
       </div>
@@ -623,10 +749,6 @@ footer li{margin:0 0 4px}
           <li><b>Ice.</b> Stay off clear ice thinner than 10 cm. Treat white ice, and any ice over current or tidal water, including the Bras d'Or, as unsafe. Stop once the spring thaw starts.</li>
           <li><b>Hunting season.</b> Wear hunter orange in the woods from mid-September to December. The general deer season should run about Oct 29–Dec 11, 2027, with Sunday hunting allowed.</li>
         </ul>
-      </div>
-      <div class="rule">
-        <h3>Inland closed season</h3>
-        <p>In fresh water you may not angle for anything, perch included, unless a sport fish season is open there. Most lakes close Oct 1–Mar 31; only listed all-year waters stay open.</p>
       </div>
     </div>
   </section>
@@ -660,9 +782,20 @@ footer li{margin:0 0 4px}
     <div class="legal" role="note">
       <p><strong>Not legal advice.</strong> This is a planning map compiled on 2026-10-12 from 2026 rules. The handbook itself has no legal force; the regulations and DFO variation orders are the law, and they change. Check the current NS Anglers' Handbook and DFO notices before you fish.</p>
       <p><strong>General foot-access context.</strong> For Nova Scotia residents, section 3(1) of the <a href="https://nslegislature.ca/sites/default/files/legc/statutes/angling.pdf" target="_blank" rel="noopener">Angling Act</a> describes travel on foot along the banks of a river, stream or lake, and across uncultivated or Crown land, for lawful rod-and-line fishing in those waters. Section 2 defines lawful fishing by reference to applicable provincial and federal laws and regulations; uncultivated land is in its natural wild state, including cleared land otherwise left natural. Section 3(3) preserves compensation for actual damage to owners or occupants and does not grant a right to light fires.</p>
-      <p>This general context does not verify access at any pin, route or harbour structure. A nearby road, a public-looking wharf or the absence of a closure sign does not establish fishing permission. Confirm the applicable access right, any required landholder or operator permission, and current local closures and fishing rules before using the shore or structures.</p>
+      <p>Spot pins, seasons and access notes were compiled from public records and have not been checked on the ground. This general context does not verify access at any pin, route or harbour structure. A nearby road, a public-looking wharf or the absence of a closure sign does not establish fishing permission. Confirm the applicable access right, any required landholder or operator permission, and current local closures and fishing rules before using the shore or structures.</p>
     </div>
-    <p class="colophon">Built for phones and desktops by <a href="/">KinNoKi Labs</a>. Spot pins, seasons and access notes were compiled from public records and have not been checked on the ground. These records do not verify land ownership, shore access or permission to fish; confirm before visiting.</p>
+    <div class="site-foot">
+      <div class="site-foot-brand">
+        <a class="site-brand" href="/"><img class="logo-on-dark" src="/images/brand/logo-mark-128.webp" width="128" height="128" alt=""><img class="logo-on-light" src="/images/brand/logo-mark-light-128.webp" width="128" height="128" alt=""><span>KinNoKi Labs</span></a>
+        <p>Building Tools That Make Sense.</p>
+      </div>
+      <nav class="site-foot-links" aria-label="Footer">
+        <a href="#app">Back to the top <span aria-hidden="true">↑</span></a>
+        <a href="/tools/">More tools</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="https://fakkeldy.ca/">Made by Dan Fakkeldy</a>
+      </nav>
+    </div>
   </footer>
 </div>
 
@@ -1007,6 +1140,21 @@ footer li{margin:0 0 4px}
       layers[k].resetStyle();
     });
   }
+  var elThemeBtn = $('#theme-btn'), elThemeLabel = $('#theme-btn-label');
+  function syncThemeBtn() {
+    var dark = isDark();
+    elThemeBtn.classList.toggle('to-dark', !dark);
+    elThemeLabel.textContent = dark ? 'Light theme' : 'Dark theme';
+    elThemeBtn.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+  }
+  elThemeBtn.addEventListener('click', function () {
+    var next = isDark() ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('kinnoki-theme', next); } catch (e) { /* ignore */ }
+    syncThemeBtn();
+  });
+  syncThemeBtn();
+  try { darkMQ.addEventListener('change', syncThemeBtn); } catch (e) { /* ignore */ }
   try { darkMQ.addEventListener('change', applyTheme); } catch (e) { try { darkMQ.addListener(applyTheme); } catch (e2) { /* ignore */ } }
   try { new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] }); } catch (e) { /* ignore */ }
 
@@ -1062,10 +1210,22 @@ footer li{margin:0 0 4px}
       boxes.push([pt.x + o[0] - 16, pt.y + o[1] - 16, pt.x + o[0] + 16, pt.y + o[1] + 16]);
       if (o[0] || o[1]) boxes.push([pt.x - 5, pt.y - 5, pt.x + 5, pt.y + 5]);
     });
+    // Spot pins only: a place name may never sit on one of them, and may
+    // never be cut by the map edge. (An origin diamond may carry its own
+    // town name beside it, as before.)
+    // The zoom buttons and the KEY panel float over the map: a place name
+    // may not sit under them either (it would read as cut off).
+    var mapRect = map.getContainer().getBoundingClientRect();
+    Array.prototype.forEach.call(map.getContainer().querySelectorAll('.leaflet-top .leaflet-control'), function (el) {
+      var r = el.getBoundingClientRect();
+      if (r.width && r.height) boxes.push([r.left - mapRect.left - 4, r.top - mapRect.top - 4, r.right - mapRect.left + 4, r.bottom - mapRect.top + 4]);
+    });
+    var pinBoxes = boxes.slice();
     Object.keys(ORIGINS).forEach(function (k) {
       var pt = map.latLngToContainerPoint(ORIGINS[k].ll);
       boxes.push([pt.x - 11, pt.y - 11, pt.x + 11, pt.y + 11]);
     });
+    function inside(b) { return b[0] >= 2 && b[1] >= 2 && b[2] <= size.x - 2 && b[3] <= size.y - 2; }
     var want = {};
     for (var i = 0; i < places.length; i++) {
       var p = places[i];
@@ -1089,10 +1249,13 @@ footer li{margin:0 0 4px}
         ];
       }
       var chosen = null;
-      for (var c = 0; c < cand.length; c++) { if (!hit(cand[c][1], boxes)) { chosen = cand[c]; break; } }
-      if (!chosen && p.priority === 1) { // priority 1 always shows: take the least-covered position
+      for (var c = 0; c < cand.length; c++) { if (inside(cand[c][1]) && !hit(cand[c][1], boxes)) { chosen = cand[c]; break; } }
+      if (!chosen && p.priority === 1) { // priority 1 shows when it can: least-covered position clear of every pin
         var best = Infinity;
-        cand.forEach(function (cd) { var a = overlapArea(cd[1], boxes); if (a < best) { best = a; chosen = cd; } });
+        cand.forEach(function (cd) {
+          if (!inside(cd[1]) || hit(cd[1], pinBoxes)) return;
+          var a = overlapArea(cd[1], boxes); if (a < best) { best = a; chosen = cd; }
+        });
       }
       if (!chosen) continue;
       var bx = chosen[1];
@@ -1285,7 +1448,29 @@ footer li{margin:0 0 4px}
     elStatus.innerHTML = txt; // built only from numbers and our own month/origin labels
     var isDefault = !state.month && !state.species && state.water === 'all';
     elReset.hidden = isDefault;
+    renderFilterSummary();
   }
+
+  /* Phone filters: the summary row names the current choices; the controls
+     start folded on a phone and always show on wider screens. */
+  var elFilters = $('#filters-toggle'), elFiltersSum = $('#filters-sum'), elControls = $('.controls');
+  function renderFilterSummary() {
+    if (!elFiltersSum) return;
+    var sp = state.species ? state.species : 'All species';
+    var wt = state.water === 'salt' ? 'Salt and tidal' : state.water === 'fresh' ? 'Fresh' : 'All water';
+    elFiltersSum.textContent = sp + ' · ' + wt + ' · from ' + ORIGINS[state.origin].label;
+  }
+  function setFiltersOpen(open) {
+    if (!elFilters || !elControls) return;
+    elFilters.setAttribute('aria-expanded', open ? 'true' : 'false');
+    elControls.classList.toggle('is-collapsed', !open);
+  }
+  var filtersMQ = window.matchMedia ? window.matchMedia('(max-width: 700px)') : { matches: false };
+  setFiltersOpen(!filtersMQ.matches);
+  if (elFilters) elFilters.addEventListener('click', function () { setFiltersOpen(elFilters.getAttribute('aria-expanded') !== 'true'); });
+  function onFiltersLayout() { setFiltersOpen(!filtersMQ.matches); }
+  try { filtersMQ.addEventListener('change', onFiltersLayout); } catch (e) { try { filtersMQ.addListener(onFiltersLayout); } catch (e2) { /* ignore */ } }
+  renderFilterSummary();
 
   function listItem(s) {
     var st = seasonOf(s);
@@ -1300,9 +1485,44 @@ footer li{margin:0 0 4px}
       h('span', { class: 's-drive tnum', title: fmtMin(drive(s, other)) + ' from ' + ORIGINS[other].label },
         h('b', null, String(drive(s))), 'min'));
     btn.setAttribute('aria-label', s.num + '. ' + s.name + ', ' + s.area + '. ' + (st === 'out' ? 'Out of season. ' : st === 'peak' ? 'Peak month. ' : '') + drive(s) + ' minutes from ' + ORIGINS[state.origin].label + '.');
-    return h('li', null, btn);
+    return h('li', { class: 'spot-row' }, btn);
   }
+  /* Phone list cap: the first six spots (closest, in season first) show,
+     and one button reveals the rest. Once opened it stays open. Only spot
+     rows count toward the six; a group header whose spots are all past the
+     cap folds away with them. */
+  var LIST_CAP = 6;
+  var elListMore = $('#list-more'), listOpened = false;
+  function markListCap() {
+    var spots = 0, header = null, headerKept = false;
+    Array.prototype.forEach.call(elList.children, function (li) {
+      if (li.classList.contains('group-h')) {
+        if (header && !headerKept) header.classList.add('is-over-cap');
+        header = li; headerKept = false;
+        return;
+      }
+      if (!li.classList.contains('spot-row')) { headerKept = true; return; }
+      spots += 1;
+      if (spots > LIST_CAP) li.classList.add('is-over-cap');
+      else headerKept = true;
+    });
+    if (header && !headerKept) header.classList.add('is-over-cap');
+  }
+  function updateListCap(count) {
+    var capped = !listOpened && count > LIST_CAP;
+    elListSec.classList.toggle('is-capped', capped);
+    elListMore.hidden = !capped;
+    elListMore.textContent = 'Show all ' + count + ' spots';
+  }
+  elListMore.addEventListener('click', function () {
+    listOpened = true;
+    elListSec.classList.remove('is-capped');
+    elListMore.hidden = true;
+    var first = elList.querySelector('.spot-row.is-over-cap .spot');
+    if (first) first.focus();
+  });
   function renderList(shown) {
+    updateListCap(shown.length);
     elList.textContent = '';
     elListMsg.hidden = true;
     var byDrive = function (a, b) { return (drive(a) - drive(b)) || (a.num - b.num); };
@@ -1322,6 +1542,7 @@ footer li{margin:0 0 4px}
     } else {
       shown.slice().sort(byDrive).forEach(function (s) { elList.appendChild(listItem(s)); });
     }
+    markListCap();
   }
 
   var fitTimer = null;
@@ -1578,7 +1799,7 @@ footer li{margin:0 0 4px}
       h('colgroup', null, h('col', { class: 'c-lab' }), MONTHS.map(function () { return h('col'); })),
       h('thead', null, h('tr', null,
         h('th', { scope: 'col', class: 'cal-lab-h' }, 'Species'),
-        MONTHS.map(function (m, i) { return h('th', { scope: 'col', 'data-m': i + 1, title: MONTHS_LONG[i] }, h('span', { 'aria-hidden': 'true' }, MONTH_INITIAL[i]), h('span', { class: 'sr-only' }, MONTHS_LONG[i])); }))));
+        MONTHS.map(function (m, i) { return h('th', { scope: 'col', 'data-m': i + 1, title: MONTHS_LONG[i] }, h('span', { class: 'm-short', 'aria-hidden': 'true' }, m), h('span', { class: 'm-init', 'aria-hidden': 'true' }, MONTH_INITIAL[i]), h('span', { class: 'sr-only' }, MONTHS_LONG[i])); }))));
     var tbody = h('tbody');
     var more = h('dl');
     groups.forEach(function (g) {
@@ -1609,23 +1830,44 @@ footer li{margin:0 0 4px}
       });
     });
     table.appendChild(tbody);
+    // One legend above the rows: the bar key and the evidence classes read
+    // as one line before the table, not as separate blocks after it.
+    var legend = h('div', { class: 'cal-legend' });
+    wrap.appendChild(legend);
     wrap.appendChild(table);
-    wrap.appendChild(h('div', { class: 'cal-key' },
-      h('span', null, h('i', { style: 'background:var(--salt-tint)' }), h('i', { style: 'background:var(--salt);margin-left:-6px' }), 'Salt and tidal: good, peak'),
-      h('span', null, h('i', { style: 'background:var(--fresh-tint)' }), h('i', { style: 'background:var(--fresh);margin-left:-6px' }), 'Fresh: good, peak'),
-      h('span', null, h('i', { style: 'box-shadow:inset 2px 0 0 var(--buoy),inset -2px 0 0 var(--buoy)' }), 'Month chosen above'),
-      h('span', null, 'Evidence: confirmed = read in the primary text; reported = angler, guide or news report; inferred = reasoning from rules and biology')));
-    wrap.appendChild(h('details', { class: 'cal-more' }, h('summary', null, 'Seasons, limits and notes for each species (2026)'), more));
+    legend.appendChild(h('div', { class: 'cal-key' },
+      h('span', null, h('i', { style: 'background:var(--salt-bar)' }), h('i', { style: 'background:var(--salt);margin-left:-6px' }), 'Salt and tidal: good, peak'),
+      h('span', null, h('i', { style: 'background:var(--fresh-bar)' }), h('i', { style: 'background:var(--fresh);margin-left:-6px' }), 'Fresh: good, peak'),
+      // Only meaningful once a month is picked; renderCalendarCursor toggles it.
+      h('span', { class: 'cal-key-month', hidden: '' }, h('i', { style: 'box-shadow:inset 2px 0 0 var(--buoy),inset -2px 0 0 var(--buoy)' }), 'Month chosen above')));
+    // The evidence classes are definitions, not swatches: a short list of
+    // their own under the key instead of one run-on line.
+    legend.appendChild(h('dl', { class: 'cal-evidence' },
+      h('dt', null, 'Evidence'),
+      h('dd', null, h('i', null, 'confirmed'), ' read in the primary text'),
+      h('dd', null, h('i', null, 'reported'), ' angler, guide or news report'),
+      h('dd', null, h('i', null, 'inferred'), ' reasoning from rules and biology')));
+    wrap.appendChild(h('details', { class: 'cal-more' }, h('summary', null, 'Seasons, limits and notes for each species'), more));
     calCells = $$('[data-m]', table);
     renderCalendarCursor();
   }
   function renderCalendarCursor() {
     calCells.forEach(function (c) { c.classList.toggle('cur', +c.getAttribute('data-m') === state.month && state.month > 0); });
+    var monthKey = $('.cal-key-month'); if (monthKey) monthKey.hidden = !(state.month > 0);
   }
 
   /* ---------- controls ---------- */
   function setRadio(name, val) { var el = $('input[name="' + name + '"][value="' + val + '"]'); if (el) el.checked = true; }
   setRadio('month', state.month); setRadio('water', state.water); setRadio('origin', state.origin);
+  // On a phone the months scroll sideways: bring a remembered month into
+  // view without moving the page.
+  function showMonthChip() {
+    var row = $('#months'), chip = $('label[for="m' + state.month + '"]');
+    if (!row || !chip || row.scrollWidth <= row.clientWidth) return;
+    var r = row.getBoundingClientRect(), c = chip.getBoundingClientRect();
+    row.scrollLeft = Math.max(0, row.scrollLeft + c.left - r.left - (r.width - c.width) / 2);
+  }
+  showMonthChip();
   $$('input[name="month"]').forEach(function (el) { el.addEventListener('change', function () { state.month = +el.value; saveState(); render({ fit: true }); }); });
   $$('input[name="water"]').forEach(function (el) { el.addEventListener('change', function () { state.water = el.value; saveState(); render({ fit: true }); }); });
   $$('input[name="origin"]').forEach(function (el) { el.addEventListener('change', function () { state.origin = el.value; saveState(); render(); }); });
@@ -1656,6 +1898,13 @@ footer li{margin:0 0 4px}
       var shown = spots.filter(passes);
       var target = state.month ? shown.filter(function (s) { return seasonOf(s) !== 'out'; }) : shown;
       if (!target.length) target = shown.length ? shown : spots;
+      // Phone: open on the spots within half an hour of the chosen origin,
+      // the same ones that head the list, so their pins sit far enough apart
+      // to tap. Zoom out (or the scale bar) shows every spot.
+      if (isNarrow()) {
+        var near = target.filter(function (s) { return drive(s) <= 30; });
+        if (near.length >= 5) target = near;
+      }
       map.fitBounds(L.latLngBounds(target.map(function (s) { return [s.lat, s.lon]; })), { padding: isNarrow() ? [24, 24] : [44, 44], maxZoom: 12, animate: false });
     }
   }).catch(function () {

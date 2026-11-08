@@ -185,7 +185,8 @@ test('hub markup has one heading, a labelled games region, reset, and six cards'
   assert.match(markup, /<section[^>]+aria-labelledby="games-heading"/);
   assert.match(markup, /<button[^>]+data-reset-games[^>]*>Reset Game Data<\/button>/);
   for (const title of ['Sudoku', 'Crossword', 'Word Search', 'KinNoKi Stack', 'KinNoKi Yard', 'KinNoKi Charts']) {
-    assert.match(markup, new RegExp(`<h2[^>]*>${title}</h2>`));
+    // The card title is a link into the game (Easy by default).
+    assert.match(markup, new RegExp(`<h2[^>]*><a class="game-card-title" href="/games/[a-z-]+\\?[^"]+">${title}</a></h2>`));
   }
   assert.equal([...markup.matchAll(/<article class="game-card/g)].length, 6);
 });

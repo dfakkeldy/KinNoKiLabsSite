@@ -77,6 +77,7 @@ export function toolShell(root, { title, lede }) {
   const body = element('section', { class: 'tool-body', ownerDocument: doc });
   root.append(
     element('header', { class: 'tool-shell', ownerDocument: doc },
+      element('a', { class: 'tool-back-link', href: '/tools/', text: '← All tools', ownerDocument: doc }),
       element('h1', { text: title, ownerDocument: doc }),
       element('p', { class: 'tool-lede', text: lede, ownerDocument: doc }),
       element('p', { class: 'tool-privacy', text: 'Runs entirely in your browser. Nothing you enter leaves this device.', ownerDocument: doc }),

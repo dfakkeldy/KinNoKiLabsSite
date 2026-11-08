@@ -37,6 +37,10 @@ const SEPARATORS = Object.freeze([
   Object.freeze({ value: '.', label: 'Period (.)' }),
 ]);
 
+const SEPARATOR_WORDS = Object.freeze({
+  '-': 'hyphens', ' ': 'spaces', _: 'underscores', '.': 'periods',
+});
+
 const isWordCount = (value) => Number.isInteger(value) && value >= 3 && value <= 8;
 const isLength = (value) => Number.isInteger(value) && value >= 1 && value <= 1024;
 const isSeparator = (value) => SEPARATORS.some(({ value: option }) => option === value);
@@ -111,7 +115,7 @@ export function renderPassphraseTool(root, deps = {}) {
     const value = result.phrase ?? result.value;
     const tier = strengthFor(result.entropyBits);
     const entropy = `~${formatNumber(result.entropyBits, 0)} bits — ${tier}`;
-    const copy = element('button', { type: 'button', text: 'Copy', ownerDocument: doc });
+    const copy = element('button', { type: 'button', class: 'passphrase-copy', text: 'Copy', ownerDocument: doc });
     copy.addEventListener('click', async () => {
       const copied = await copyText(value, deps.clipboard);
       if (resultToken !== currentResultToken) return;
@@ -143,27 +147,94 @@ export function renderPassphraseTool(root, deps = {}) {
     announce(text);
   };
 
-  const resultArea = () => element('div', { class: 'passphrase-result', ownerDocument: doc });
+  // Before the first Generate the slot shows the answer's shape: a masked
+  // preview (dots, joined by the real separator) over a one-line caption,
+  // so every option shows its effect while no secret is on screen. Nothing
+  // is generated until asked; after that, changing an option rolls a fresh
+  // value. The mask is decoration; the caption carries the meaning.
+  const resultArea = (describe) => {
+    const mask = element('span', { class: 'passphrase-mask', 'aria-hidden': 'true', ownerDocument: doc });
+    const caption = element('span', { class: 'passphrase-caption', ownerDocument: doc });
+    const placeholder = element('p', { class: 'passphrase-placeholder', ownerDocument: doc }, mask, caption);
+    const container = element('div', { class: 'passphrase-result', ownerDocument: doc }, placeholder);
+    const refresh = () => {
+      const { shape, text } = describe();
+      // A passphrase shape is a list of words: each one (with the separator
+      // after it) is its own unbreakable span, so lines break between words.
+      mask.replaceChildren(...(Array.isArray(shape)
+        ? shape.map((word) => element('span', { class: 'passphrase-mask-word', text: word, ownerDocument: doc }))
+        : [shape]));
+      mask.hidden = shape.length === 0;
+      caption.textContent = text;
+    };
+    refresh();
+    return { container, refresh };
+  };
+
+  // Fixed, typical EFF word lengths: the preview's rhythm never changes
+  // from one visit to the next, and it never hints at a real word.
+  const GHOST_WORD_LENGTHS = [6, 5, 7, 4, 6, 5, 7, 6];
+  const DOT = '•';
+
+  const describePassphrase = () => {
+    const extras = [values.capitalize ? 'capitalized' : null, values.includeNumber ? 'with a number' : null]
+      .filter(Boolean).join(', ');
+    const words = GHOST_WORD_LENGTHS.slice(0, values.words).map((length) => DOT.repeat(length));
+    if (values.includeNumber) words.push('#');
+    return {
+      shape: words.map((word, index) => (index < words.length - 1 ? `${word}${values.separator}` : word)),
+      text: `${values.words} words joined with ${SEPARATOR_WORDS[values.separator] ?? 'a separator'}${extras ? `, ${extras}` : ''}. Press Generate to make one.`,
+    };
+  };
+
+  const describeString = () => {
+    const sets = [
+      values.lower ? 'lowercase' : null, values.upper ? 'uppercase' : null,
+      values.digits ? 'digits' : null, values.symbols ? 'symbols' : null,
+    ].filter(Boolean);
+    if (sets.length === 0) return { shape: '', text: 'Choose at least one character set below.' };
+    const list = sets.length === 1 ? sets[0] : `${sets.slice(0, -1).join(', ')} and ${sets.at(-1)}`;
+    const shown = isLength(values.length) ? Math.min(values.length, 24) : 0;
+    return {
+      shape: `${DOT.repeat(shown)}${isLength(values.length) && values.length > 24 ? '…' : ''}`,
+      text: `${values.length} characters of ${list}. Press Generate to make one.`,
+    };
+  };
+
+  const optionFlow = (run, area) => {
+    let generated = false;
+    return {
+      generate: () => { generated = true; run(); },
+      changed: () => {
+        save();
+        if (generated) run(); else area.refresh();
+      },
+    };
+  };
+
+  const labelledField = (id, label, control) => element('div', { class: 'tool-field', ownerDocument: doc },
+    element('label', { for: id, text: label, ownerDocument: doc }), control);
 
   const renderPassphraseForm = () => {
-    const form = element('form', { class: 'tool-form', ownerDocument: doc });
+    const form = element('form', { class: 'tool-form passphrase-form', ownerDocument: doc });
+    form.addEventListener('submit', (event) => event.preventDefault());
     const words = element('select', { id: 'passphrase-words', name: 'words', ownerDocument: doc },
       ...[3, 4, 5, 6, 7, 8].map((value) => option(doc, String(value), String(value))));
     words.value = String(values.words);
     words.addEventListener('change', (event) => {
       values.words = Number(event.currentTarget.value);
-      save();
+      flow.changed();
     });
     const separator = element('select', { id: 'passphrase-separator', name: 'separator', ownerDocument: doc },
       ...SEPARATORS.map(({ value, label }) => option(doc, value, label)));
     separator.value = values.separator;
     separator.addEventListener('change', (event) => {
       values.separator = event.currentTarget.value;
-      save();
+      flow.changed();
     });
-    const results = resultArea();
-    const generate = element('button', { type: 'button', text: 'Generate', ownerDocument: doc });
-    generate.addEventListener('click', () => {
+    const area = resultArea(describePassphrase);
+    const results = area.container;
+    const flow = optionFlow(() => {
       try {
         renderResult(results, generatePassphraseFn({
           words: values.words,
@@ -174,40 +245,42 @@ export function renderPassphraseTool(root, deps = {}) {
       } catch {
         renderError(results);
       }
-    });
+    }, area);
+    const generate = element('button', { type: 'button', class: 'tool-primary', text: 'Generate', ownerDocument: doc });
+    generate.addEventListener('click', flow.generate);
     form.append(
-      element('label', { for: 'passphrase-words', text: 'Words', ownerDocument: doc }),
-      words,
-      element('label', { for: 'passphrase-separator', text: 'Separator', ownerDocument: doc }),
-      separator,
-      checkbox(doc, {
-        name: 'capitalize', label: 'Capitalize words', checked: values.capitalize,
-        onChange: (event) => { values.capitalize = event.currentTarget.checked; save(); },
-      }),
-      checkbox(doc, {
-        name: 'includeNumber', label: 'Include a number', checked: values.includeNumber,
-        onChange: (event) => { values.includeNumber = event.currentTarget.checked; save(); },
-      }),
-      generate,
       results,
+      element('div', { class: 'tool-actions', ownerDocument: doc }, generate),
+      element('div', { class: 'passphrase-options', ownerDocument: doc },
+        labelledField('passphrase-words', 'Words', words),
+        labelledField('passphrase-separator', 'Separator', separator),
+        checkbox(doc, {
+          name: 'capitalize', label: 'Capitalize words', checked: values.capitalize,
+          onChange: (event) => { values.capitalize = event.currentTarget.checked; flow.changed(); },
+        }),
+        checkbox(doc, {
+          name: 'includeNumber', label: 'Include a number', checked: values.includeNumber,
+          onChange: (event) => { values.includeNumber = event.currentTarget.checked; flow.changed(); },
+        })),
       element('p', { class: 'tool-muted', text: 'Wordlist: EFF large wordlist (CC BY 3.0)', ownerDocument: doc }),
     );
     return form;
   };
 
   const renderStringForm = () => {
-    const form = element('form', { class: 'tool-form', ownerDocument: doc });
+    const form = element('form', { class: 'tool-form passphrase-form', ownerDocument: doc });
+    form.addEventListener('submit', (event) => event.preventDefault());
     const length = element('input', {
       id: 'passphrase-length', name: 'length', type: 'number', min: '1', max: '1024', inputmode: 'numeric', ownerDocument: doc,
     });
     length.value = String(values.length);
     length.addEventListener('change', (event) => {
       values.length = Number(event.currentTarget.value);
-      save();
+      flow.changed();
     });
-    const results = resultArea();
-    const generate = element('button', { type: 'button', text: 'Generate', ownerDocument: doc });
-    generate.addEventListener('click', () => {
+    const area = resultArea(describeString);
+    const results = area.container;
+    const flow = optionFlow(() => {
       try {
         renderResult(results, generateStringFn({
           length: values.length,
@@ -219,34 +292,36 @@ export function renderPassphraseTool(root, deps = {}) {
       } catch {
         renderError(results);
       }
-    });
+    }, area);
+    const generate = element('button', { type: 'button', class: 'tool-primary', text: 'Generate', ownerDocument: doc });
+    generate.addEventListener('click', flow.generate);
     form.append(
-      element('label', { for: 'passphrase-length', text: 'Length', ownerDocument: doc }),
-      length,
-      checkbox(doc, {
-        name: 'lower', label: 'Lowercase letters', checked: values.lower,
-        onChange: (event) => { values.lower = event.currentTarget.checked; save(); },
-      }),
-      checkbox(doc, {
-        name: 'upper', label: 'Uppercase letters', checked: values.upper,
-        onChange: (event) => { values.upper = event.currentTarget.checked; save(); },
-      }),
-      checkbox(doc, {
-        name: 'digits', label: 'Digits', checked: values.digits,
-        onChange: (event) => { values.digits = event.currentTarget.checked; save(); },
-      }),
-      checkbox(doc, {
-        name: 'symbols', label: 'Symbols', checked: values.symbols,
-        onChange: (event) => { values.symbols = event.currentTarget.checked; save(); },
-      }),
-      generate,
       results,
+      element('div', { class: 'tool-actions', ownerDocument: doc }, generate),
+      element('div', { class: 'passphrase-options', ownerDocument: doc },
+        labelledField('passphrase-length', 'Length', length),
+        checkbox(doc, {
+          name: 'lower', label: 'Lowercase letters', checked: values.lower,
+          onChange: (event) => { values.lower = event.currentTarget.checked; flow.changed(); },
+        }),
+        checkbox(doc, {
+          name: 'upper', label: 'Uppercase letters', checked: values.upper,
+          onChange: (event) => { values.upper = event.currentTarget.checked; flow.changed(); },
+        }),
+        checkbox(doc, {
+          name: 'digits', label: 'Digits', checked: values.digits,
+          onChange: (event) => { values.digits = event.currentTarget.checked; flow.changed(); },
+        }),
+        checkbox(doc, {
+          name: 'symbols', label: 'Symbols', checked: values.symbols,
+          onChange: (event) => { values.symbols = event.currentTarget.checked; flow.changed(); },
+        })),
     );
     return form;
   };
 
   const render = () => {
-    const tabs = element('div', { class: 'tool-tabs', ownerDocument: doc }, ...MODES.map(({ id, label }) => {
+    const tabs = element('div', { class: 'tool-tabs', role: 'group', 'aria-label': 'What to generate', ownerDocument: doc }, ...MODES.map(({ id, label }) => {
       const tab = element('button', {
         type: 'button', class: `tool-tab${values.mode === id ? ' is-active' : ''}`, text: label,
         'aria-pressed': String(values.mode === id), ownerDocument: doc,

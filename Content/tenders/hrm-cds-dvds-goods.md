@@ -22,7 +22,7 @@ featuredPack: false
 
 ## What the official source says
 
-Halifax Regional Municipality posted this Request for Standing Offer on 2026-07-23. The title describes a standing offer for the supply and delivery of CDs and DVDs. The closing date shown by the procurement portal is 2026-08-12 at 2:00 PM Atlantic time. The official notice page is the authoritative source for quantities, specifications, delivery terms, and any addenda.
+This is a Request for Standing Offer for the supply and delivery of CDs and DVDs. A standing offer is not a guaranteed order; it sets the terms under which the municipality may call up goods as needed.
 
 ## Who might examine this opportunity
 

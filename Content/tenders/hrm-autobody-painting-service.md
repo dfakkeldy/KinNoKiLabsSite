@@ -22,7 +22,7 @@ featuredPack: false
 
 ## What the official source says
 
-Halifax Regional Municipality posted this Request for Standing Offer on 2026-07-24. The title describes autobody and painting services for HRM light-duty vehicles at the Halifax location. The closing date shown by the procurement portal is 2026-08-13 at 2:00 PM Atlantic time. A standing offer is not a guaranteed contract; it establishes terms under which the municipality may call up services as needed.
+This is a Request for Standing Offer for autobody and painting services for HRM light-duty vehicles at the Halifax location. A standing offer is not a guaranteed contract; it establishes terms under which the municipality may call up services as needed.
 
 ## Who might examine this opportunity
 

@@ -4,6 +4,7 @@ import { createGameAudio } from './game-audio.js';
 import {
   completionPanel, createAudioControls, createConfirmDialog, createSession, element,
   formatElapsed, makeGameTerminal, prefersReducedMotion, renderReplacementKept, sharedShell,
+  ASSIST_RULE,
 } from './controller-common.js';
 
 const same = (left, right) => left?.row === right?.row && left?.column === right?.column;
@@ -119,7 +120,7 @@ export async function renderWordSearch(root, store) {
   const shell = sharedShell({ title: 'Word Search', difficulty: session.difficulty });
   shell.setAssisted(state.assisted);
   const instructions = element('details', { 'data-instructions': '' }, element('summary', { text: 'How to play' }),
-    element('p', { text: 'Drag or activate the first and last letters. Use the horizontal board navigation rail to reach offscreen columns without changing your selection.' }));
+    element('p', { text: 'Drag or activate the first and last letters. Use the horizontal board navigation rail to reach offscreen columns without changing your selection. ' + ASSIST_RULE }));
   const layout = element('div', { class: 'word-search-layout' });
   const board = element('div', { id: 'word-search-grid', class: 'game-board word-search-board', role: 'grid', 'aria-label': `${state.definition.theme} word search` });
   board.setAttribute('style', `--word-search-size:${state.definition.size}`);
@@ -135,8 +136,11 @@ export async function renderWordSearch(root, store) {
     'aria-controls': 'word-search-grid',
   });
   const panRail = element('div', { class: 'word-search-pan', role: 'group', 'aria-label': 'Horizontal board navigation' }, panLeft, panRange, panRight);
-  const boardColumn = element('div', { class: 'word-search-board-column' }, boardScroll, panRail);
-  layout.append(boardColumn, element('section', {}, element('h2', { text: state.definition.theme }), words));
+  const boardColumn = element('div', { class: 'word-search-board-column' }, boardScroll, panRail, controls);
+  // One line on how to select, so the board works without opening How to play.
+  const selectHint = element('p', { class: 'game-board-legend word-search-legend', text: 'Drag across a word, or tap its first and last letters.' });
+  const wordColumn = element('section', { class: 'word-search-words' }, element('h2', { text: state.definition.theme }), selectHint, words);
+  layout.append(boardColumn, wordColumn);
 
   // `completed` must be declared before any closure that captures it (the
   // audio-cleanup closure below reads it at dispose time).
@@ -166,7 +170,9 @@ export async function renderWordSearch(root, store) {
     if (!completed) void puzzleAudio.dispose();
   });
 
-  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, layout, controls, audioControls.element, shell.live);
+  // Audio closes the word column on wide screens; phones show it last.
+  wordColumn.append(audioControls.element);
+  root.replaceChildren(shell.toolbar, shell.notice, shell.assistedStatus, instructions, layout, shell.live);
 
   const maximumScroll = () => Math.max(0, boardScroll.scrollWidth - boardScroll.clientWidth);
   const syncPan = () => {
@@ -174,7 +180,14 @@ export async function renderWordSearch(root, store) {
     panRange.value = maximum ? String(Math.round((boardScroll.scrollLeft / maximum) * 100)) : '0';
     panLeft.disabled = boardScroll.scrollLeft <= 0;
     panRight.disabled = boardScroll.scrollLeft >= maximum;
+    // The rail only shows when the board is wider than its column.
+    boardColumn.classList.toggle('is-fitting', maximum <= 0);
   };
+  if (typeof globalThis.ResizeObserver === 'function') {
+    const observer = new globalThis.ResizeObserver(() => syncPan());
+    observer.observe(boardScroll);
+    session.addCleanup(() => observer.disconnect());
+  }
   panLeft.addEventListener('click', () => boardScroll.scrollBy({ left: -Math.max(44, boardScroll.clientWidth * 0.75), behavior: 'smooth' }));
   panRight.addEventListener('click', () => boardScroll.scrollBy({ left: Math.max(44, boardScroll.clientWidth * 0.75), behavior: 'smooth' }));
   panRange.addEventListener('input', () => {

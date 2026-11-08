@@ -45,7 +45,7 @@ test('hub renders six cards without stale three-game language', () => {
   const markup = renderHubMarkup(createEmptyGameStore());
   for (const title of [
     'Sudoku', 'Crossword', 'Word Search', 'KinNoKi Stack', 'KinNoKi Yard', 'KinNoKi Charts',
-  ]) assert.match(markup, new RegExp('<h2[^>]*>' + title + '</h2>'));
+  ]) assert.match(markup, new RegExp('<h2[^>]*><a class="game-card-title" href="[^"]+difficulty=easy">' + title + '</a></h2>'));
   assert.equal([...markup.matchAll(/<article class="game-card/g)].length, 6);
   assert.doesNotMatch(markup, /three familiar|three classics|three games/i);
 });
@@ -164,12 +164,23 @@ test('hostile typed stats normalize to finite safe output', () => {
   assert.doesNotMatch(renderHubMarkup(store), /Infinity|NaN|<img>/);
 });
 
-test('typed records render exact semantic dl labels', () => {
-  const markup = renderHubMarkup(createEmptyGameStore());
+test('typed records render exact semantic dl labels once a game has a finish', () => {
+  const store = createEmptyGameStore();
+  for (const game of Object.values(store.stats.games)) {
+    for (const mode of Object.values(game.modes)) mode.completed = 1;
+  }
+  const markup = renderHubMarkup(store);
   for (const label of [
     'Best score', 'Best combo', 'Contract time', 'Contract moves',
     'Endless score', 'Endless combo', 'Finished',
   ]) assert.match(markup, new RegExp('<dt>' + label + '</dt><dd>'));
+});
+
+test('unplayed games show no record row; the records band states the empty book once', () => {
+  const markup = renderHubMarkup(createEmptyGameStore());
+  assert.doesNotMatch(markup, /<dl class="game-card-stats">/);
+  assert.doesNotMatch(markup, /Not played yet/);
+  assert.match(markup, /start the record book/);
 });
 
 test('reset explanation names every locally removed game-data category', () => {
@@ -178,4 +189,17 @@ test('reset explanation names every locally removed game-data category', () => {
     'unfinished games', 'totals', 'streaks', 'time', 'moves', 'scores',
     'combos', 'music', 'effects',
   ]) assert.match(markup, new RegExp(phrase, 'i'));
+});
+
+test('an empty record book disables reset and names one easy first game', () => {
+  const markup = renderHubMarkup(createEmptyGameStore());
+  // Nothing to reset: the button is hidden (and disabled) until data exists.
+  assert.match(markup, /<button[^>]+data-reset-games[^>]*\shidden disabled>Reset Game Data<\/button>/);
+  assert.match(markup, /<a href="\/games\/sudoku\?difficulty=easy">Start with an Easy Sudoku<\/a>/);
+
+  const unfinished = createEmptyGameStore();
+  unfinished.runs.sudoku = { game: 'sudoku', mode: 'default', difficulty: 'easy' };
+  const stored = renderHubMarkup(unfinished);
+  assert.doesNotMatch(stored, /data-reset-games[^>]*disabled/);
+  assert.doesNotMatch(stored, /Start with an Easy Sudoku/);
 });

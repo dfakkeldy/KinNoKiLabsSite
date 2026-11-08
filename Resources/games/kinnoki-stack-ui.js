@@ -14,7 +14,7 @@ import { createGameAudio } from './game-audio.js';
 import {
   cargoThumb, createAudioControls, createEventAnnouncer, createGameLifecycle,
   defaultSeedFactory, element, formatElapsed, makeGameTerminal,
-  prefersReducedMotion, renderGameError,
+  prefersReducedMotion, renderGameError, statusLabel, syncControlsHint,
 } from './controller-common.js';
 import { celebrate } from './celebration.js';
 import { safeLocalStorage } from './hub-ui.js';
@@ -22,10 +22,12 @@ import { safeLocalStorage } from './hub-ui.js';
 const GAME = 'kinnoki-stack';
 const MODE = 'default';
 const DIFFICULTIES = Object.freeze(['easy', 'medium', 'hard']);
+// Each line ends by naming the dashed outline on the dock, so the target is
+// explained before Start.
 const DIFFICULTY_COPY = Object.freeze({
-  easy: 'Easy: slower, three previews, large manifests, no tides.',
-  medium: 'Medium: moderate, two previews, mixed manifests and forecast tides.',
-  hard: 'Hard: faster, one preview, irregular manifests and frequent tides.',
+  easy: 'Easy: slower, three previews, large manifests, no tides. Fill the dashed manifest to dispatch it.',
+  medium: 'Medium: moderate, two previews, mixed manifests and forecast tides. Fill the dashed manifests to dispatch them.',
+  hard: 'Hard: faster, one preview, irregular manifests and frequent tides. Fill the dashed manifests to dispatch them.',
 });
 const CARGO_BY_ID = new Map(CARGO_CATALOG.map((cargo) => [cargo.id, cargo]));
 const CLOCK_CHECKPOINT_MS = 1000;
@@ -68,7 +70,7 @@ function buildStackShell(root, difficulty, audioControls) {
   const score = element('span', { 'data-stack-score': '', text: '0' });
   const highScore = element('span', { 'data-stack-high-score': '', text: '—' });
   const assisted = element('span', {
-    'data-assisted-status': '', text: 'Unassisted · eligible for records',
+    'data-assisted-status': '', text: 'Eligible for records',
   });
   const manifest = element('span', { 'data-stack-manifest': '', text: 'Preparing manifest' });
   const tide = element('span', { 'data-stack-tide': '', text: 'No tides' });
@@ -84,6 +86,9 @@ function buildStackShell(root, difficulty, audioControls) {
   const stat = (label, value) => element(
     'div', {}, element('dt', { text: label }), element('dd', {}, value),
   );
+  // Easy has no tides at all; the mode note already says so, so the row only
+  // appears on difficulties that forecast one.
+  const tideRow = stat('Tide forecast', tide);
   const stats = element(
     'dl',
     { class: 'game-status-grid' },
@@ -93,25 +98,36 @@ function buildStackShell(root, difficulty, audioControls) {
     stat('High score', highScore),
     stat('Record status', assisted),
     stat('Cargo Manifest', manifest),
-    stat('Tide forecast', tide),
+    tideRow,
   );
 
   const preview = element('ol', {
     class: 'stack-preview', 'data-stack-preview': '', 'aria-label': 'Next cargo',
   });
   const dockDescription = element('p', {
-    'data-dock-description': '', role: 'status', text: '',
+    class: 'stack-dock-description', 'data-dock-description': '', role: 'status', text: '',
   });
   const difficultyExplanation = element('p', {
-    'data-difficulty-explanation': '', text: DIFFICULTY_COPY[difficulty],
+    class: 'game-mode-note', 'data-difficulty-explanation': '', text: DIFFICULTY_COPY[difficulty],
   });
+  // How to play, as on every other game page: the goal, then the keys, then
+  // the two assistive tools and the record rule.
   const keyboardHelp = element(
     'details',
-    { 'data-stack-keyboard-help': '' },
-    element('summary', { text: 'Keyboard controls' }),
+    { 'data-stack-keyboard-help': '', class: 'game-how-to-play' },
+    element('summary', { text: 'How to play' }),
+    element('p', {
+      text: 'Cargo drops from the top of the dock. Move and rotate it so it lands in the '
+        + 'dashed manifest. A filled manifest dispatches for points, and dispatching on '
+        + 'drop after drop builds a combo. The run ends when cargo settles above the crane line.',
+    }),
     element('p', {
       text: 'Left/Right arrows move. Down soft-drops. Space hard-drops. '
         + 'Z or Up rotates. P or Escape pauses. Enter advances in Step Mode.',
+    }),
+    element('p', {
+      text: 'Describe the dock writes out what is on the board. Step Mode stops the drop '
+        + 'until you advance, and makes the run ineligible for records.',
     }),
   );
 
@@ -163,12 +179,18 @@ function buildStackShell(root, difficulty, audioControls) {
     softDrop: control('Soft Drop', 'data-stack-soft-drop'),
     hardDrop: control('Hard Drop', 'data-stack-hard-drop'),
     pause: control('Pause', 'data-pause-game'),
-    describe: control('Describe Dock', 'data-describe-dock'),
+    describe: control('Describe the dock', 'data-describe-dock'),
     stepMode: control('Step Mode', 'data-step-mode'),
     advance: control('Advance', 'data-advance-step'),
   };
   controls.advance.hidden = true;
   controls.describe.disabled = false;
+  // Describe Dock and Step Mode are assistive tools, not moves: they sit in a
+  // quieter row under the movement pad (see .stack-tool in styles.css).
+  for (const tool of [controls.describe, controls.stepMode, controls.advance]) tool.classList.add('stack-tool');
+  const controlsHint = element('p', {
+    class: 'game-controls-hint', 'data-controls-hint': '', text: '',
+  });
 
   const start = element('button', {
     type: 'button', 'data-start-game': '', text: 'Start',
@@ -192,32 +214,45 @@ function buildStackShell(root, difficulty, audioControls) {
     element(
       'div',
       { class: 'game-toolbar' },
-      element('a', { href: '/games', class: 'back-link', text: '← Games' }),
-      element('h1', { text: 'KinNoKi Stack' }),
+      element(
+        'div',
+        { class: 'game-title' },
+        element('a', { href: '/games', class: 'back-link', text: '← Games' }),
+        element('h1', { text: 'KinNoKi Stack' }),
+      ),
       element('label', {}, element('span', { text: 'Difficulty' }), difficultySelect),
     ),
     notice,
     eventRegion,
-    difficultyExplanation,
-    stats,
+    // Phone reading order: what to do, the next cargo, the dock and its
+    // controls, then the status tiles. Wide screens move the run panel
+    // beside the dock (see .stack-layout in styles.css).
     element(
       'div',
-      { class: 'game-preplay' },
-      start, continueGame, resume, restart, newRun,
+      { class: 'stack-layout' },
+      difficultyExplanation,
+      element(
+        'div',
+        { class: 'game-preplay' },
+        start, continueGame, resume, restart, newRun,
+      ),
+      element('section', { class: 'stack-next', 'aria-label': 'Next cargo' },
+        element('h2', { text: 'Next cargo' }), preview),
+      dock,
+      element('div', { class: 'stack-controls' }, Object.values(controls)),
+      controlsHint,
+      dockDescription,
+      stats,
+      keyboardHelp,
+      // Audio closes the run panel beside the dock on wide screens.
+      audioControls.element,
     ),
-    element('section', { 'aria-label': 'Next cargo' },
-      element('h2', { text: 'Next cargo' }), preview),
-    keyboardHelp,
-    dock,
-    element('div', { class: 'stack-controls' }, Object.values(controls)),
-    dockDescription,
-    audioControls.element,
   );
   root.replaceChildren(shell);
 
   return {
     shell, difficultySelect, timer, score, highScore, assisted, manifest,
-    tide, status, notice, eventRegion, difficultyExplanation, preview,
+    tide, tideRow, controlsHint, status, notice, eventRegion, difficultyExplanation, preview,
     dockDescription, cells, controls, start, continueGame, resume, restart, newRun,
     dock, overlay, scorePopLayer,
   };
@@ -343,8 +378,8 @@ function paintStack(view, state, {
     ? best.toLocaleString('en-CA') : '—';
   view.assisted.textContent = state.assisted
     ? 'Assisted run · records excluded'
-    : 'Unassisted · eligible for records';
-  view.status.textContent = titleCase(state.status);
+    : 'Eligible for records';
+  view.status.textContent = statusLabel(state.status);
 
   const completedCells = state.manifests.reduce((total, item) => (
     total + item.cells.filter(({ row, column }) => state.board[row][column] !== null).length
@@ -354,6 +389,7 @@ function paintStack(view, state, {
   );
   view.manifest.textContent = state.manifests.length
     + ' active · ' + completedCells + '/' + requiredCells + ' cells filled';
+  view.tideRow.hidden = state.tide.direction === null;
   view.tide.textContent = state.tide.direction === null
     ? 'No tides'
     : titleCase(state.tide.direction) + ' in '
@@ -443,6 +479,7 @@ function paintStack(view, state, {
   view.start.hidden = entryKind !== 'start';
   view.continueGame.hidden = entryKind !== 'continue';
   view.resume.hidden = entryKind !== 'resume';
+  syncControlsHint(view, { status: state.status, entryKind });
 }
 
 class StackPersistence {

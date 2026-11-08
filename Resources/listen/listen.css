@@ -104,31 +104,45 @@ body.font-opendyslexic .room-bar .font-toggle {
 }
 .room-cover-frame img { display: block; width: 100%; height: auto; }
 .book-series {
-  margin: 0 0 3px;
+  margin: 0 0 6px;
   color: var(--room-text-accent);
-  font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 650;
-  letter-spacing: 0.02em;
+  line-height: 1.45;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-wrap: balance;
 }
+/* The meta column reads eyebrow → title → subtitle → byline → series
+   progress → edition note. The markup keeps the series context ahead of
+   the title (a screen reader hears where the book sits first); the visual
+   order lets the title lead, so the three label styles never stack above it. */
+.room-meta { display: flex; flex-direction: column; }
+.room-meta > :is(h1, .room-subtitle, .room-byline) { order: 1; }
+.room-meta > :is(.series-progress, .series-navigation, .edition-status) { order: 2; }
+.room-meta > .series-progress { margin: 14px 0 6px; }
 .series-progress {
   margin: 0 0 10px;
   color: var(--room-text-secondary);
   font-size: 12.5px;
 }
+/* Previous/next volume are plain underlined links, like the format links;
+   the left rule belongs to the edition note alone, so the two never read
+   as a pair of quotations. */
 .series-navigation {
   display: flex;
-  gap: 8px;
+  align-self: flex-start;
+  gap: 16px;
   margin: 0 0 12px;
-  padding-left: 10px;
-  border-left: 2px solid var(--room-text-accent);
 }
 .book-series[hidden], .series-progress[hidden], .series-navigation[hidden],
 .series-link[hidden], .edition-status[hidden], .room-library[hidden] { display: none; }
 .series-link {
   color: var(--room-text-secondary);
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent);
   text-underline-offset: 3px;
 }
 .series-link:hover { color: var(--room-text-accent); }
@@ -137,35 +151,53 @@ body.font-opendyslexic .room-bar .font-toggle {
   outline-offset: 3px;
   border-radius: 2px;
 }
+/* A quiet ruled note, the same left-rule material as the series link,
+   rather than a boxed panel competing with the title. */
 .edition-status {
-  margin: 0 0 12px;
-  padding: 9px 10px;
-  border: 1px solid var(--separator);
-  border-radius: 8px;
+  margin: 4px 0 0;
+  padding: 0 0 0 10px;
+  border-left: 2px solid var(--room-control-border);
   color: var(--room-text-secondary);
-  background: var(--fill-2);
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: 12.5px;
+  line-height: 1.55;
 }
 .room-meta h1 { font-size: clamp(22px, 3vw, 27px); line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 6px; }
 .room-subtitle { color: var(--room-text-secondary); font-size: 14.5px; line-height: 1.5; margin: 0 0 8px; }
 .room-byline { color: var(--room-text-tertiary); font-size: 13px; margin: 0; }
 
-.room-chapters { border-top: 1px solid var(--separator); padding-top: 12px; }
+/* The chapter list is a real control: a full-width, 44px bordered row
+   with a drawn chevron, so it reads as "open me" rather than a label. */
 .room-chapters summary {
   cursor: pointer;
-  font-size: 13.5px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--room-control-border);
+  border-radius: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--room-text-secondary);
   list-style: none;
   display: flex;
   align-items: center;
   gap: 8px;
+  transition: color 0.15s var(--ease), background-color 0.15s var(--ease);
 }
 .room-chapters summary::-webkit-details-marker { display: none; }
-.room-chapters summary::after { content: "▾"; font-size: 11px; color: var(--room-text-tertiary); transition: transform 0.15s var(--ease); }
-.room-chapters[open] summary::after { transform: rotate(180deg); }
-.room-chapters summary:hover { color: var(--text); }
+.room-chapters summary::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  margin: -4px 2px 0 auto;
+  color: var(--room-text-tertiary);
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.15s var(--ease), margin 0.15s var(--ease);
+}
+.room-chapters[open] summary::after { transform: rotate(-135deg); margin-top: 4px; }
+.room-chapters summary:hover { color: var(--text); background: var(--fill-2); }
+.room-chapters summary:hover::after { color: var(--text); }
+.room-chapters summary:focus-visible { outline: 2px solid var(--room-text-accent); outline-offset: 2px; }
 .room-chapter-count { color: var(--room-text-tertiary); font-weight: 500; }
 .room-chapters ol { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; }
 .room-chapters li { border-bottom: 1px solid var(--separator); }
@@ -262,6 +294,55 @@ body.font-opendyslexic .room-bar .font-toggle {
 }
 .room-captions .quiet { color: var(--room-text-tertiary); font-size: 15px; font-weight: 400; }
 
+/* Before the first play every caption word sits at the un-heard tier, so
+   both rooms open on the same quiet title whatever the alignment says
+   about t=0, and the hint under it names the signature: words light up. */
+.room-captions { flex-direction: column; justify-content: center; align-items: stretch; gap: 14px; }
+.room-main:not(.started) .room-captions .w,
+.room-main:not(.started) .room-captions .w.heard,
+.room-main:not(.started) .room-captions .w.active { color: var(--room-text-secondary); text-shadow: none; }
+.room-captions p.room-cue-hint[aria-hidden] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--room-text-accent);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.room-captions p.room-cue-hint[aria-hidden]::before {
+  content: "";
+  width: 18px;
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: currentColor;
+  flex: none;
+}
+.room-captions p.room-cue-hint[hidden], .room-main.started .room-captions p.room-cue-hint { display: none; }
+/* The pre-play preview: the chapter's opening sentence under its heading,
+   one tier quieter. Pointing at Play lights the first word, the way the
+   read-along will once it starts. Gone for good after the first play. */
+.room-captions .room-preview {
+  display: block;
+  margin-top: 12px;
+  color: var(--room-text-tertiary);
+  font-size: 0.8em;
+  font-weight: 400;
+  line-height: 1.6;
+}
+.room-main.started .room-captions .room-preview { display: none; }
+.room-main:not(.started):has(.room-play:hover, .room-play:focus-visible) .room-captions .room-preview .pw:first-child {
+  color: var(--text);
+  text-shadow: 0 0 18px color-mix(in srgb, var(--gold-300) 35%, transparent);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .room-captions .room-preview .pw { transition: color 0.25s var(--ease); }
+}
+/* While the idle title is on stage, the chapter label above it would only
+   repeat it; it returns with playback, when it tracks the chapter. */
+.room-stage:has(.room-cue-hint:not([hidden])) .room-now { display: none; }
+
 .visually-hidden {
   position: absolute;
   width: 1px; height: 1px;
@@ -276,11 +357,11 @@ body.font-opendyslexic .room-bar .font-toggle {
 .room-status a { color: var(--room-text-secondary); }
 .room-status.error { color: var(--room-text-error); }
 
-.room-formats { display: flex; flex-wrap: wrap; gap: 10px; margin: -4px 0 0; }
+.room-formats { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: -4px 0 0; }
 .room-formats[hidden], .room-empty[hidden] { display: none; }
 .room-formats a {
   color: var(--text);
-  font-size: 12.5px;
+  font-size: 13.5px;
   text-decoration: underline;
   text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent);
   text-underline-offset: 3px;
@@ -441,6 +522,9 @@ body.font-opendyslexic .room-bar .font-toggle {
 }
 .series-shelf h3 { margin: 0 0 4px; color: var(--text); font-size: 18px; letter-spacing: -0.01em; }
 .series-shelf-description { margin: 0; color: var(--room-text-secondary); font-size: 13.5px; line-height: 1.55; }
+/* The series count lives here, once: with a series shelf on the page the
+   rail's copy of it would only repeat this line. */
+.room-main:has(.series-shelf) .room-meta .series-progress { display: none; }
 .series-shelf-availability {
   margin: 5px 0 14px;
   color: var(--room-text-accent);
@@ -454,7 +538,10 @@ body.font-opendyslexic .room-bar .font-toggle {
 .room-library li {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-auto-rows: min-content;
+  /* Up to five text rows, then a flexible last row that holds the links,
+     so in a row of cards of different lengths every link row sits on the
+     same bottom edge. */
+  grid-template-rows: repeat(5, min-content) 1fr;
   align-content: start;
   row-gap: 3px;
   border: 1px solid var(--separator);
@@ -464,7 +551,8 @@ body.font-opendyslexic .room-bar .font-toggle {
 }
 .room-library li[aria-current="page"] {
   border-color: var(--room-text-accent);
-  background: var(--fill-2);
+  box-shadow: inset 0 0 0 1px var(--room-text-accent);
+  background: color-mix(in srgb, var(--gold-500) 6%, var(--surface));
 }
 .room-library li:has(> .room-lib-cover) {
   grid-template-columns: auto minmax(0, 1fr);
@@ -492,14 +580,40 @@ body.font-opendyslexic .room-bar .font-toggle {
 .room-library li .room-lib-title { color: var(--text); font-weight: 500; min-width: 0; }
 .room-library li .room-lib-subtitle { color: var(--room-text-secondary); font-size: 12.5px; line-height: 1.45; }
 .room-library li .room-lib-by { color: var(--room-text-tertiary); font-size: 12px; }
-.room-library li .room-lib-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px; align-self: end; justify-self: start; }
-.room-library li a { color: var(--room-text-secondary); font-size: 12.5px; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent); text-underline-offset: 3px; }
+.room-library li .room-lib-links { grid-row: -2 / -1; grid-column: -2 / -1; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px; align-self: end; justify-self: start; }
+/* The current volume's series card is a marker, not a second hero: the
+   stage already shows its subtitle and byline. */
+.series-volume-list li[aria-current="page"] :is(.room-lib-subtitle, .room-lib-by) { display: none; }
+@media (min-width: 760px) {
+  /* Bigger hit areas for the small desktop library links, same layout. */
+  .room-library li .room-lib-links a { padding-block: 6px; margin-block: -6px; }
+}
+.room-library li a { color: var(--room-text-secondary); font-size: 13px; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--gold-500) 55%, transparent); text-underline-offset: 3px; }
 .room-library li a.room-lib-listen {
   color: var(--room-text-accent);
   font-weight: 650;
   text-decoration-thickness: 1.5px;
 }
 .room-library li a:hover { color: var(--room-text-accent); }
+/* The stage book's own card: a quiet tag instead of a second Listen link. */
+.room-library li .room-lib-now {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--room-text-accent);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  flex-basis: 100%;
+}
+.room-library li .room-lib-now::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
 
 .room-honesty { margin: clamp(28px, 5vw, 40px) 0 0; color: var(--room-text-tertiary); font-size: 12.5px; line-height: 1.6; max-width: 52rem; }
 .room-honesty a { color: var(--room-text-secondary); }
@@ -521,9 +635,34 @@ body.font-opendyslexic .room-bar .font-toggle {
 .room-foot a { color: var(--room-text-secondary); text-decoration: none; }
 .room-foot a:hover { color: var(--text); }
 
+/* ── Desktop balance ────────────────────────────────── */
+/* The rail (cover, meta, chapters) is taller than the stage, so the
+   caption panel takes up the difference and both columns end together;
+   a cap keeps it sane when the chapter list is opened. */
+@media (min-width: 760px) {
+  .room { align-items: stretch; }
+  .room-stage { align-self: stretch; }
+  .room-captions { flex: 1 1 auto; max-height: 30em; }
+}
+
 /* ── Mobile ─────────────────────────────────────────── */
 @media (max-width: 759px) {
   .room { grid-template-columns: 1fr; }
+  /* On a phone the transport sits straight under the captions and stays
+     in the page: a sticky bar would sit over the captions and status on
+     first load, and the OS lock-screen controls (MediaSession) already
+     keep playback reachable once the visitor scrolls away. */
+  .room-transport { position: static; order: 1; padding-top: 4px; }
+  .room-status, .room-formats { order: 2; }
+  .room-stage > .room-now, .room-stage > .room-figure, .room-stage > .room-captions { order: 0; }
+  .room-formats { margin: -8px 0 0; }
+  .room-formats a, .room-library li a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 14px;
+  }
+  .room-library li .room-lib-links { gap: 0 16px; margin-top: 0; }
   .room-side { flex-direction: row; flex-wrap: wrap; align-items: flex-start; gap: 16px; }
   .room-cover-frame { width: 104px; flex: none; }
   .room-meta { flex: 1; min-width: 180px; }
@@ -537,4 +676,186 @@ body.font-opendyslexic .room-bar .font-toggle {
   .series-navigation { flex-direction: column; align-items: flex-start; }
   .series-shelf { padding: 14px; }
   .room-library ul, .room-library ol { grid-template-columns: 1fr; }
+}
+
+/* Touch: every room control is a 44px target (both rooms share this). The
+   round toggles and the speed pill keep their drawn size and grow an
+   invisible hit area instead, so the bar and transport keep their look. */
+@media (pointer: coarse) {
+  .room-brand, .room-back, .series-link { display: inline-flex; align-items: center; min-height: 44px; }
+  .room-bar-nav { gap: 12px; }
+  .room-chapter-btn { min-height: 44px; align-items: center; }
+  .room-bar .font-toggle, .room-bar .theme-toggle, .room-speed { position: relative; }
+  .room-bar .font-toggle::after, .room-bar .theme-toggle::after, .room-speed::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: max(100%, 44px);
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* ── Round 4 (listening family, pass C) ─────────────── */
+/* One reading order at every width: captions, then the transport that
+   plays them, then the quiet status line and the format links. */
+.room-stage > .room-transport { order: 1; }
+.room-stage > :is(.room-status, .room-formats) { order: 2; }
+/* Library cards pack from the top: the link row follows the text instead
+   of being pushed to the card's foot, so short cards end in margin, not
+   in a gap between byline and links. */
+.room-library li .room-lib-links { align-self: start; margin-top: 8px; }
+/* The stage book's card is a marker only: its format links already sit
+   under the player, so the card keeps just the "Now playing" tag. */
+.room-library li[aria-current="page"] .room-lib-links > a { display: none; }
+.room-library li[aria-current="page"] .room-lib-links { margin-top: 4px; }
+/* Footer: on a narrow screen the links wrap, so the middle dots go and
+   the gap does the separating; no line ever ends or starts on a dot. */
+@media (max-width: 759px) {
+  .room-foot { gap: 0 20px; }
+  .room-foot > span[aria-hidden="true"] { display: none; }
+  .room-foot a { display: inline-flex; align-items: center; min-height: 44px; }
+}
+/* …and it is only as tall as that tag needs, not stretched to its row. */
+.room-library li[aria-current="page"] { align-self: start; }
+/* Phone shelves scan as an index: a smaller cover keeps each card close
+   to its text height, so the long list reads as rows, not tall tiles. */
+@media (max-width: 759px) {
+  .room-library li .room-lib-cover { width: 60px; }
+}
+/* Desktop idle panel: before play, the chapter title and opening line
+   sit at the top of the caption panel (the stretch below is where the
+   captions will run), not floating mid-box. */
+@media (min-width: 760px) {
+  .room-main:not(.started) .room-captions { justify-content: flex-start; padding-top: clamp(28px, 3.5vw, 40px); }
+}
+/* Tablets and other touch screens at desktop widths: 44px targets too. */
+@media (pointer: coarse) {
+  .room-formats a, .room-library li .room-lib-links a { display: inline-flex; align-items: center; min-height: 44px; padding-block: 0; margin-block: 0; }
+}
+
+/* ── Round 5 (listening family, pass D) ─────────────── */
+/* Desktop stage: the caption panel keeps its own height (title, opening
+   line, hint) and the transport follows it, instead of the panel
+   stretching to the rail and leaving an empty lower half. */
+@media (min-width: 760px) {
+  .room { align-items: start; }
+  .room-stage { align-self: start; }
+  .room-captions { flex: none; max-height: none; }
+}
+/* At rest the first word of the opening line is already lit, so the
+   stage shows the read-along it promises before anyone presses play. */
+.room-main:not(.started) .room-captions .room-preview .pw:first-child {
+  color: var(--text);
+  text-shadow: 0 0 18px color-mix(in srgb, var(--gold-300) 35%, transparent);
+}
+/* Section names are labels; the card and book titles are the headings
+   you read, so "Series" no longer competes with the series' own title. */
+:is(.room-library, .fiction-shelf) > h2 {
+  color: var(--room-text-accent);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+/* Four volumes form a 2 × 2 block rather than three and an orphan. */
+@media (min-width: 560px) {
+  .series-volume-list:has(> li:nth-child(4):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+/* Library cards: in each row the link lines share one bottom edge. Listen
+   leads; EPUB and Read are quieter until pointed at or focused. */
+/* The stage book's card stretches with its row too, so "Now playing"
+   sits on the same line as its neighbours' links. */
+.room-library li[aria-current="page"] { align-self: stretch; }
+.room-library li .room-lib-links,
+.room-library li[aria-current="page"] .room-lib-links { align-self: end; margin-top: 10px; }
+.room-library li .room-lib-links a:not(.room-lib-listen) {
+  color: var(--room-text-tertiary);
+  text-decoration-color: color-mix(in srgb, currentColor 30%, transparent);
+}
+.room-library li .room-lib-links a:not(.room-lib-listen):is(:hover, :focus-visible) {
+  color: var(--room-text-accent);
+  text-decoration-color: currentColor;
+}
+@media (max-width: 759px) {
+  /* Phone: cover and title side by side, then the stage and its play
+     button, then the chapter list, so Play lands in the first screen. */
+  .room { grid-template-columns: 104px minmax(0, 1fr); column-gap: 16px; row-gap: 20px; }
+  .room-side { display: contents; }
+  .room-cover-frame { grid-column: 1; grid-row: 1; align-self: start; }
+  .room-meta { grid-column: 2; grid-row: 1; min-width: 0; }
+  .room-stage { grid-column: 1 / -1; grid-row: 2; }
+  .room-chapters { grid-column: 1 / -1; grid-row: 3; }
+  /* After the boxed series block, More books reads as a quiet ruled
+     list: a second rhythm for the long scroll. */
+  #moreBooksShelf li {
+    border: 0;
+    border-top: 1px solid var(--separator);
+    border-radius: 0;
+    padding: 14px 0 6px;
+  }
+  #moreBooksShelf ul { gap: 0; }
+  .room-library li .room-lib-links,
+  .room-library li[aria-current="page"] .room-lib-links { margin-top: 0; }
+}
+
+/* ── Round 6 (listening family, pass E) ─────────────── */
+/* The chapter list now closes the player column (it seeks the transport
+   above it), so on a desktop both hero columns end together: cover and
+   title on the left, captions, controls, formats and chapters on the
+   right. On a phone it follows the controls, as before. */
+.room-stage > .room-chapters { order: 3; }
+@media (min-width: 760px) {
+  .room-stage > .room-chapters { margin-top: 4px; }
+}
+/* The stage book's series card is a slim strip at the head of the series
+   (as on the fiction shelf): cover, volume and title, then the "Now
+   playing" tag at the right. It no longer stretches beside a taller
+   neighbour, so there is no empty well inside it, and the other volumes
+   follow in order as one row. */
+.series-volume-list li[aria-current="page"] {
+  grid-column: 1 / -1;
+  order: -1;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  align-content: center;
+  align-self: start;
+  column-gap: 14px;
+  row-gap: 2px;
+  padding: 10px 14px;
+}
+.series-volume-list li[aria-current="page"] .room-lib-cover { grid-row: 1 / -1; width: 44px; }
+.series-volume-list li[aria-current="page"] .room-lib-volume { grid-column: 2; grid-row: 1; align-self: end; }
+.series-volume-list li[aria-current="page"] .room-lib-title { grid-column: 2; grid-row: 2; align-self: start; }
+.series-volume-list li[aria-current="page"] .room-lib-links {
+  grid-column: 3;
+  grid-row: 1 / -1;
+  align-self: center;
+  justify-self: end;
+  margin: 0;
+}
+.series-volume-list li[aria-current="page"] .room-lib-now { flex-basis: auto; }
+@media (min-width: 560px) {
+  /* With the stage volume lifted out as the strip, the remaining
+     volumes share one row instead of a 2 × 2 block with a hole in it. */
+  .series-shelf .series-volume-list:has(> li[aria-current="page"]) {
+    grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
+  }
+}
+/* Library cards on a mouse-and-keyboard screen: each card shows its
+   title and Listen; EPUB and Read come up when the card is pointed at or
+   a link in it has focus, so twenty cards stop repeating one link row.
+   Touch screens and phone widths keep all three links visible (44px on
+   touch), and the line under "More books" says where the formats are. */
+.room-library-sub-pointer { display: none; }
+@media (hover: hover) and (pointer: fine) and (min-width: 760px) {
+  .room-library-sub-touch { display: none; }
+  .room-library-sub-pointer { display: inline; }
+  .room-library li:not([aria-current="page"]) .room-lib-links a:not(.room-lib-listen) {
+    opacity: 0;
+  }
+  .room-library li:is(:hover, :focus-within) .room-lib-links a:not(.room-lib-listen) { opacity: 1; }
 }

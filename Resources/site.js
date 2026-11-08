@@ -1,5 +1,5 @@
 /* KinNoKi Labs — site behavior (theme, a11y font, mobile menu, reveal)
-   Load with <script src="/site.js?v=20260719" defer></script>.
+   Load with <script src="/site.js?v=20261107-guide-toc" defer></script>.
    IMPORTANT: also inline the no-flash snippet in <head> BEFORE styles.css:
 
    <script>
@@ -102,6 +102,53 @@
         else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); focusFirst(first); }
       }
     });
+  }
+
+  /* ── Guide contents: folded below the rail width, "you are here" in it ── */
+  // The markup ships the list open (it works without script); the width
+  // must match the rail breakpoint in styles.css.
+  var fold = document.querySelector('.prose-toc-fold');
+  if (fold && window.matchMedia) {
+    var wide = window.matchMedia('(min-width: 1200px)');
+    var syncFold = function () { fold.open = !!wide.matches; };
+    syncFold();
+    fold.classList.add('is-ready');
+    if (wide.addEventListener) wide.addEventListener('change', syncFold);
+    var summary = fold.querySelector('summary');
+    if (summary) summary.addEventListener('click', function (e) { if (wide.matches) e.preventDefault(); });
+    // "Back to contents" opens the list it returns to.
+    forEachElement(document.querySelectorAll('a[href="#prose-toc-title"]'), function (link) {
+      link.addEventListener('click', function () { fold.open = true; });
+    });
+    var list = fold.querySelector('ul');
+    var marks = [];
+    forEachElement(fold.querySelectorAll('a[href^="#"]'), function (link) {
+      var heading = document.getElementById(link.getAttribute('href').slice(1));
+      if (heading) marks.push({ heading: heading, link: link });
+    });
+    var current = null, queued = false;
+    var spy = function () {
+      queued = false;
+      var next = null;
+      if (wide.matches) {
+        for (var i = 0; i < marks.length && marks[i].heading.getBoundingClientRect().top < window.innerHeight * 0.35; i += 1) next = marks[i].link;
+      }
+      if (next === current) return;
+      if (current) current.removeAttribute('aria-current');
+      if (next) {
+        next.setAttribute('aria-current', 'location');
+        // Keep the marked entry inside the rail's own scroll.
+        var y = next.offsetTop - list.offsetTop;
+        if (y < list.scrollTop) list.scrollTop = y - 24;
+        else if (y + next.offsetHeight > list.scrollTop + list.clientHeight) list.scrollTop = y + next.offsetHeight - list.clientHeight + 24;
+      }
+      current = next;
+    };
+    window.addEventListener('scroll', function () {
+      if (!queued) { queued = true; window.requestAnimationFrame(spy); }
+    }, { passive: true });
+    if (wide.addEventListener) wide.addEventListener('change', spy);
+    spy();
   }
 
   /* ── Reveal on scroll ───────────────────────────────── */

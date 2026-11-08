@@ -9,6 +9,10 @@ const dateLabel = new Intl.DateTimeFormat('en-CA', { timeZone, month: 'short', d
 const timestampLabel = new Intl.DateTimeFormat('en-CA', {
   timeZone, month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short',
 });
+// The ledger row already names the year, so its issue times can drop it.
+const shortTimestampLabel = new Intl.DateTimeFormat('en-CA', {
+  timeZone, month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short',
+});
 
 function parts(at) {
   return Object.fromEntries(localParts.formatToParts(at).map(({ type, value }) => [type, value]));
@@ -146,8 +150,9 @@ export function formatCents(value, { signed = false, digits = 1 } = {}) {
 export function formatDate(value) {
   return validDate(value) ? dateLabel.format(new Date(`${value}T12:00:00Z`)) : 'Date unavailable';
 }
-export function formatTimestamp(value) {
-  return timestamp(value) !== null ? timestampLabel.format(new Date(value)) : 'Time unavailable';
+export function formatTimestamp(value, { year = true } = {}) {
+  if (timestamp(value) === null) return 'Time unavailable';
+  return (year ? timestampLabel : shortTimestampLabel).format(new Date(value));
 }
 
 function validScore(zones) {

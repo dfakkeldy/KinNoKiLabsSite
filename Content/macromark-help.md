@@ -1,12 +1,9 @@
-# Support & Help for MacroMark
+# MacroMark help
 
-Thank you for using MacroMark.
+Hit a bug, have a question, or want a feature? Email me or open a GitHub issue. I try to respond to everything within 24⁠–⁠48 hours.
 
-## Contact
+- **Email support:** [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com?subject=MacroMark%20help)
+- **Issue tracker:** [GitHub Issues](https://github.com/dfakkeldy/MacroMark/issues)
 
-If you hit a bug, have a question, or want a feature, email me or open a GitHub issue:
-
-- **Email Support:** [hello@kinnokilabs.com](mailto:hello@kinnokilabs.com)
-- **Issue Tracker:** [GitHub Issues](https://github.com/dfakkeldy/MacroMark/issues)
-
-I try to respond to everything within 24-48 hours.
+---
+[Privacy policy](/privacy/) | [All app support](/support)

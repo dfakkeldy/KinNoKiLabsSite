@@ -17,18 +17,5 @@
   </g>
   <path d="M74 681c245-97 484-187 731-96 272 100 464-6 727-139" fill="none" stroke="#ffffff" stroke-width="15" opacity=".9"/>
   <path d="M74 681c245-97 484-187 731-96 272 100 464-6 727-139" fill="none" stroke="#5f6b66" stroke-width="4" stroke-dasharray="16 15"/>
-  <g transform="translate(1040 68)">
-    <rect width="485" height="235" rx="22" fill="#17201c" opacity=".94"/>
-    <text x="34" y="48" fill="#ffffff" font-family="system-ui, sans-serif" font-size="24" font-weight="700">FIELD STATUS</text>
-    <g font-family="system-ui, sans-serif" font-size="21" fill="#eef1e9">
-      <rect x="34" y="76" width="24" height="24" rx="4" fill="#edcd63"/><text x="74" y="96">record confirmed</text>
-      <rect x="34" y="117" width="24" height="24" rx="4" fill="#4e8fd7"/><text x="74" y="137">not yet confirmed</text>
-      <rect x="34" y="158" width="24" height="24" rx="4" fill="#df62c9"/><text x="74" y="178">new field note</text>
-      <rect x="34" y="199" width="24" height="24" rx="4" fill="#a9b1ad"/><text x="74" y="219">needs review</text>
-    </g>
-  </g>
-  <g transform="translate(72 68)" font-family="system-ui, sans-serif">
-    <text fill="#27332e" font-size="25" font-weight="700" letter-spacing="3">2013 · GENERALIZED RECONSTRUCTION</text>
-    <text y="48" fill="#5f6b66" font-size="22">Invented geometry · no basemap · no names or location</text>
-  </g>
+  <!-- No text in the raster: the title, boundary note and legend are HTML in the /gis figcaption, so they stay readable at every size. -->
 </svg>

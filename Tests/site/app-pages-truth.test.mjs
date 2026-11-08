@@ -83,10 +83,10 @@ test('Echo keeps Coming in 1.0 only for still-tagged nightly work', () => {
 });
 
 test('NS Marks public copy leads with the live browser map and no App Store date', () => {
-  assert.match(nsMarks, /\[Open Online Map\]\(\/apps\/nsmarksthespot\/map\/\)/);
+  assert.match(nsMarks, /href="\/apps\/nsmarksthespot\/map\/">Open Online Map<\/a>/);
   assert.match(nsMarks, /current product focus is the \*\*browser map\*\*/);
   assert.match(nsMarks, /position this device reports/);
-  assert.match(nsMarks, /\*\*Live location:\*\* Optional live location/);
+  assert.match(nsMarks, /\*\*Live location\*\* Optional live location/);
   assert.doesNotMatch(nsMarks, /GPS/i);
   assert.match(nsMarks, /not on the App Store/);
   assert.doesNotMatch(nsMarks, /13 Nov|November 2026/);
@@ -99,51 +99,42 @@ test('NS Marks public copy leads with the live browser map and no App Store date
   assert.doesNotMatch(generatedApps, /optional GPS/i);
 });
 
-test('NS Marks public copy names the focused Rhodena page, sight lines, and Map | Aerial bounds', () => {
-  assert.match(nsMarks, /## Rhodena Wind/);
-  assert.match(nsMarks, /\[\/rhodena\]\(\/rhodena\)/);
-  assert.match(nsMarks, /\[\/apps\/nsmarksthespot\/map\/\]\(\/apps\/nsmarksthespot\/map\/\)/);
-  assert.match(nsMarks, /\*\*Sight lines:\*\*/);
-  assert.match(nsMarks, /\*\*Map \| Aerial:\*\*/);
-  assert.match(nsMarks, /\[Rhodena Wind\]\(\/rhodena\)/);
-  assert.match(nsMarksHelp, /The focused Rhodena Wind map is at \[\/rhodena\]\(\/rhodena\)\./);
+test('NS Marks public copy names the focused Rhodena page and keeps the sight-line model limits', () => {
+  assert.match(nsMarks, /## Two focused maps/);
+  assert.match(nsMarks, /<a class="btn btn-outline" href="\/rhodena">Open Rhodena Wind<\/a>/);
+  assert.match(nsMarks, /id="rhodena"/);
+  assert.match(nsMarksHelp, /href=\"\/rhodena\">.*?<span>Rhodena Wind map<\/span><span class=\"support-row-sub\">Research map, Rhodena Wind focus</);
   assert.doesNotMatch(nsMarksHelp, /I haven't written the FAQ yet/);
-  assert.match(generatedNsMarks, /<h2>Rhodena Wind<\/h2>/);
-  assert.match(generatedNsMarks, /href="\/rhodena">\/rhodena</);
-  assert.match(generatedNsMarks, /href="\/rhodena">Rhodena Wind</);
-  assert.match(generatedNsMarks, /<strong>Sight lines:<\/strong>/);
-  assert.match(generatedNsMarks, /<strong>Map \| Aerial:<\/strong>/);
+  assert.match(generatedNsMarks, /<h3 id="rhodena-title">Rhodena Wind<\/h3>/);
+  assert.match(generatedNsMarks, /href="\/rhodena">Open Rhodena Wind</);
   for (const source of [nsMarks, generatedNsMarks]) {
-    assert.match(source, /Rhodena Wind — proposed turbine map/);
+    assert.match(source, /same research map/);
     assert.doesNotMatch(source, /same pattern as \/poker/);
-    assert.match(source, /research map with a Rhodena focus/);
     assert.doesNotMatch(source, /service worker/);
-    assert.match(source, /eye-level \(~1\.7 m\)/);
-    assert.match(source, /assessed 200 m tip/);
-    assert.match(source, /viewshed colours/);
+    // The page states what the lines can and cannot show.
+    assert.match(source, /each assessed 200 m tip/);
     assert.match(source, /bare earth first obstructs/);
-    assert.match(source, /ridge mark and a dotted remainder/);
     assert.match(source, /trees, buildings, and the final design are not in the model/i);
-    assert.match(source, /tip height, not the hub/);
     assert.match(source, /provisional proposed layout/);
+    assert.match(source, /eye-level \(~1\.7 m\)/);
+    assert.match(source, /tip height, not the hub/);
     assert.match(source, /Near-threshold results stay amber/);
     assert.match(source, /Unassessed or out-of-range turbines get no line/);
-    assert.match(source, /under the 3D control/);
-    assert.match(source, /Province licence gate/);
+    assert.match(source, /Aerial imagery opens the Province licence gate/);
+    assert.match(source, /its own source, licence gate, and attribution/);
     assert.doesNotMatch(source, /native parity/i);
     assert.doesNotMatch(source, /GPS/i);
   }
 });
 
 test('NS Marks public copy names the fishing focus page at /fishmap, separate from the static /fishing/ guide', () => {
-  assert.match(nsMarks, /## Fishing/);
-  assert.match(nsMarks, /\[\/fishmap\]\(\/fishmap\)/);
-  assert.match(nsMarks, /\[Fishing\]\(\/fishmap\)/);
-  assert.match(nsMarks, /\(\/fishing\/\)/);
-  assert.match(nsMarksHelp, /The fishing map is at \[\/fishmap\]\(\/fishmap\)/);
-  assert.match(generatedNsMarks, /<h2>Fishing<\/h2>/);
+  assert.match(nsMarks, /<a class="btn btn-outline" href="\/fishmap">Open the fishing map<\/a>/);
+  assert.match(nsMarks, /id="fishing"/);
+  assert.match(nsMarks, /separate from the static \[Strait and Bras d'Or Fishing Map\]\(\/fishing\/\)/);
+  assert.match(nsMarksHelp, /href=\"\/fishmap\">.*?<span>Fishing focus map<\/span><span class=\"support-row-sub\">Research map, fishing focus</);
+  assert.match(nsMarksHelp, /href=\"\/fishing\/\">.*?<span class=\"support-row-sub\">A static fishing guide, separate from the research map</);
+  assert.match(generatedNsMarks, /<h3 id="fishing-title">Fishing<\/h3>/);
   for (const source of [nsMarks, generatedNsMarks]) {
-    assert.match(source, /research map with a fishing focus/);
     assert.doesNotMatch(source, /short-URL pattern/);
     assert.match(source, /never says a season is open now/);
     assert.match(source, /not permission to fish from the wharf/);
@@ -151,17 +142,25 @@ test('NS Marks public copy names the fishing focus page at /fishmap, separate fr
   }
 });
 
+test('NS Marks marketing page shows the app, not the non-commercial Fletcher scan', () => {
+  for (const source of [nsMarks, generatedNsMarks]) {
+    assert.doesNotMatch(source, /fletcher-features\/excerpts/);
+    assert.doesNotMatch(source, /CC BY-NC-SA/);
+  }
+  assert.match(nsMarks, /<img src="\/images\/apps\/nsmarksthespot-layers\.webp"/);
+  assert.ok(existsSync(new URL('../../Resources/images/apps/nsmarksthespot-layers.webp', import.meta.url)));
+});
+
 test('NS Marks search copy includes postal communities and labelled mailing addresses', () => {
   for (const source of [nsMarks, generatedNsMarks]) {
     assert.match(source, /PID, civic address, or postal community/);
+    assert.match(source, /a civic address or a postal community/);
+    assert.match(source, /Mailing addresses come from Statistics Canada's free National Address Register \(June 2026\)/);
     assert.match(
       source,
       /postal candidate becomes selectable only when it resolves to one live provincial civic point/,
     );
-    assert.match(
-      source,
-      /separately labelled mailing address from Statistics Canada's free National Address Register \(June 2026\)/,
-    );
+    assert.match(source, /labelled as distinct from the provincial civic address/);
     assert.match(source, /distinct from the provincial civic address/);
     assert.match(source, /Boundaries are approximate context, never a legal survey/);
     assert.doesNotMatch(source, /Search a parcel by PID or civic address,/);
@@ -188,10 +187,13 @@ test('homepage and apps cards point at on-site app pages', () => {
   assert.doesNotMatch(theme, /dfakkeldy\.github\.io\/MacroMark/);
   assert.doesNotMatch(theme, /dfakkeldy\.github\.io\/Routey/);
   assert.doesNotMatch(theme, /dfakkeldy\.github\.io\/VisualTimer/);
+  // The apps list row links whole; the homepage lab card has a stretched title link.
   assert.equal(
     [...theme.matchAll(/class="app-card" href="\/apps\/nsmarksthespot\/"/g)].length,
-    2,
+    1,
   );
+  assert.match(theme, /class="app-card-link" href="\/apps\/nsmarksthespot\/"/);
+  assert.match(theme, /class="app-card-link" href="\/apps\/macromark\/"/);
 });
 
 test('Turn Timer mentions the on-site PWA and keeps the live TestFlight join', () => {
@@ -204,7 +206,13 @@ test('MacroMark public copy says 1.0 is live on the App Store and free', () => {
   const storeURL = 'https://apps.apple.com/ca/app/macromark/id6785081218';
   assert.match(macromark, /^status: App Store — 1\.0$/m);
   assert.match(macromark, new RegExp(storeURL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
-  assert.match(macromark, /MacroMark 1\.0 is \[live on the App Store\]/);
+  // The status line is plain text; the Download button is the one App Store link.
+  assert.match(macromark, /MacroMark 1\.0 is live on the App Store and free\./);
+  assert.match(macromark, /<img src="\/images\/apps\/macromark-inbox\.webp"/);
+  assert.match(macromark, /<img src="\/images\/apps\/macromark-macros\.webp"/);
+  for (const shot of ['macromark-inbox.webp', 'macromark-macros.webp']) {
+    assert.ok(existsSync(new URL(`../../Resources/images/apps/${shot}`, import.meta.url)), shot);
+  }
   assert.match(macromark, /and free/);
   assert.match(macromark, /Version 1\.1 is in testing/);
   assert.doesNotMatch(macromark, /Internal TestFlight/);
@@ -212,17 +220,14 @@ test('MacroMark public copy says 1.0 is live on the App Store and free', () => {
   assert.doesNotMatch(macromark, /toward V1\.0/);
 
   for (const source of [theme, generatedHome, generatedApps]) {
-    assert.match(source, /status-chip">App Store — 1\.0</);
+    assert.match(source, /class="status-chip[^"]*"[^>]*>App Store — 1\.0</);
     assert.doesNotMatch(source, /status-chip">Internal TestFlight</);
   }
   assert.match(
     generatedHome,
     /href="https:\/\/apps\.apple\.com\/ca\/app\/macromark\/id6785081218"[^>]*>MacroMark 1\.0 on the App Store<\/a>/,
   );
-  assert.match(
-    generatedApps,
-    /MacroMark 1\.0 is <a[^>]*href="https:\/\/apps\.apple\.com\/ca\/app\/macromark\/id6785081218"[^>]*>live on the App Store<\/a> and free/,
-  );
+  assert.match(generatedApps, /<dt><span class="status-chip">App Store — 1\.0<\/span><\/dt><dd>Download it now\.<\/dd>/);
   assert.match(generatedMacromark, /App Store — 1\.0/);
   assert.match(
     generatedMacromark,

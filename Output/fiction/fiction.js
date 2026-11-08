@@ -26,7 +26,7 @@
     cover: $('cover'), bookForm: $('bookForm'), bookTitle: $('bookTitle'),
     bookSubtitle: $('bookSubtitle'), bookByline: $('bookByline'), editionNote: $('editionNote'),
     chapterCount: $('chapterCount'), chapterList: $('chapterList'), chapterNow: $('chapterNow'),
-    captionPanel: $('captionPanel'), captionWords: $('captionWords'), captionText: $('captionText'),
+    captionPanel: $('captionPanel'), captionWords: $('captionWords'), cueHint: $('cueHint'), captionText: $('captionText'),
     figurePanel: $('figurePanel'), figureImg: $('figureImg'), figureCaption: $('figureCaption'),
     status: $('status'), playPause: $('playPause'), iconPlay: $('iconPlay'),
     iconPause: $('iconPause'), back30: $('back30'), fwd30: $('fwd30'), speed: $('speed'),
@@ -35,6 +35,7 @@
     shelf: $('shelf'), shelfSub: $('shelfSub'),
   };
   var main = document.querySelector('.room-main');
+  var idle = core.idleCaptionState(main, els.cueHint); // pre-play preview and cue hint
   var room = document.querySelector('.room');
 
   var audio = new Audio();
@@ -43,7 +44,7 @@
   var SPEEDS = [1, 1.25, 1.5, 2];
   var SPEED_KEY = 'kinnoki-fiction-rate';
   var FORMATS = [
-    { key: 'read', label: 'Read as Markdown' },
+    { key: 'read', label: 'Read' },   // the Markdown manuscript, named as on /listen and /learn
     { key: 'epub', label: 'EPUB' },
     { key: 'folder', label: 'Book folder' },
   ];
@@ -144,7 +145,9 @@
 
   function renderBook() {
     document.title = book.title + ' — Fiction Listening Room — KinNoKi Labs';
-    els.bookForm.textContent = (book.collectionLabel || 'Original fiction') + ' · ' + book.form + ' · ' + book.genre;
+    // A non-breaking space before each middle dot: when the eyebrow wraps,
+    // a line can end on a dot but never start with one.
+    els.bookForm.textContent = (book.collectionLabel || 'Original fiction') + '\u00a0· ' + book.form + '\u00a0· ' + book.genre;
     els.bookTitle.textContent = book.title;
     if (book.subtitle) { els.bookSubtitle.textContent = book.subtitle; els.bookSubtitle.hidden = false; }
     els.bookByline.textContent = bylineParts(book);
@@ -185,7 +188,7 @@
   }
 
   /* ── Rendering: the shelf ───────────────────────────── */
-  function renderShelfCard(b) {
+  function renderShelfCard(b, hookCounts) {
     var li = document.createElement('li');
     var selected = book && b.slug === book.slug;
     var bookPlayable = isPlayable(b);
@@ -208,50 +211,95 @@
       li.appendChild(thumb);
     }
 
+    // Text rides in one column so the action rows can sit on the card's
+    // bottom edge and line up across a row of the shelf.
+    var body = document.createElement('span');
+    body.className = 'fic-body';
+
     var genre = document.createElement('span');
     genre.className = 'fic-genre';
-    genre.textContent = b.form + ' · ' + b.genre;
-    li.appendChild(genre);
+    // Non-breaking hyphens: "Near-future" must never split at the hyphen
+    // into a dangling "NEAR-" at the end of a narrow card's line.
+    genre.textContent = (b.form + ' · ' + b.genre).replace(/-/g, '\u2011');
+    body.appendChild(genre);
 
     var title = document.createElement('span');
     title.className = 'fic-title';
     title.textContent = b.title;
-    li.appendChild(title);
+    body.appendChild(title);
 
-    var hook = document.createElement('span');
-    hook.className = 'fic-hook';
-    hook.textContent = b.hook;
-    li.appendChild(hook);
+    // The stage already shows the selected book's hook, byline and length,
+    // so its card is only a marker: cover, title, "Now playing", formats.
+    // Two editions of one story (the Merchant play and novel) share a hook;
+    // the shelf would print it twice word for word, so a shared hook gives
+    // way to each edition's own subtitle, which says how they differ.
+    if (!selected) {
+      var hook = document.createElement('span');
+      hook.className = 'fic-hook';
+      hook.textContent = hookCounts && hookCounts.get(b.hook) > 1 && b.subtitle ? b.subtitle : b.hook;
+      body.appendChild(hook);
 
-    var meta = document.createElement('span');
-    meta.className = 'fic-meta';
-    meta.textContent = creditLine(b) + ' · ' + b.chapters.length + ' chapters · ' + fmtWords(b.wordCount);
-    li.appendChild(meta);
+      var meta = document.createElement('span');
+      meta.className = 'fic-meta';
+      meta.textContent = creditLine(b) + ' · ' + b.chapters.length + ' chapters · ' + fmtWords(b.wordCount);
+      body.appendChild(meta);
+    }
 
-    var actions = document.createElement('span');
-    actions.className = 'fic-actions';
-    if (bookPlayable && !selected) {
+    // One state line: "Now playing", a "Listen now" link, or a quiet
+    // "Coming soon · <production news>" tag. Formats follow as one row.
+    var state = document.createElement('span');
+    state.className = 'fic-state';
+    if (selected) {
+      var now = document.createElement('span');
+      now.className = 'fic-now';
+      now.textContent = 'Now playing';
+      state.appendChild(now);
+    } else if (bookPlayable) {
       var listen = document.createElement('a');
       listen.className = 'fic-listen';
       listen.href = '?book=' + encodeURIComponent(b.slug);
       listen.textContent = 'Listen now';
-      actions.appendChild(listen);
+      state.appendChild(listen);
     }
     if (!bookPlayable) {
       var badge = document.createElement('span');
       badge.className = 'fic-badge';
       badge.textContent = 'Coming soon';
-      actions.appendChild(badge);
+      state.appendChild(badge);
       if (b.production && b.production.label) {
         var status = document.createElement('span');
         status.className = 'fic-status';
         status.textContent = b.production.label;
-        actions.appendChild(status);
+        state.appendChild(status);
       }
     }
-    formatLinks(b).forEach(function (entry) { actions.appendChild(formatLink(entry)); });
+
+    // The action block spans the whole card under the cover, so the state
+    // line and the three format links each fit on one line instead of
+    // wrapping inside the narrow text column.
+    var actions = document.createElement('span');
+    actions.className = 'fic-actions';
+    if (state.children.length) actions.appendChild(state);
+    var formats = document.createElement('span');
+    formats.className = 'fic-formats';
+    formatLinks(b).forEach(function (entry) { formats.appendChild(formatLink(entry)); });
+    if (formats.children.length) actions.appendChild(formats);
+    li.appendChild(body);
     li.appendChild(actions);
     return li;
+  }
+
+  /* The shelf opens on what can be played: the title on stage, then the
+     other streaming editions, then the ones still in production. Within
+     each group the hand-curated books.json order holds. */
+  function shelfOrder(books) {
+    function rank(b) {
+      if (!isPlayable(b)) return 2;
+      return book && b.slug === book.slug ? 0 : 1;
+    }
+    return books.map(function (b, i) { return { b: b, i: i }; })
+      .sort(function (x, y) { return (rank(x.b) - rank(y.b)) || (x.i - y.i); })
+      .map(function (entry) { return entry.b; });
   }
 
   function renderShelf(books) {
@@ -261,8 +309,12 @@
          streaming + ' books are streaming now; the rest are in the works.') +
         ' Every finished title lands here first, free.'
       : 'Nothing is narrated yet — every finished title lands here first, free.';
+    var hookCounts = new Map();
     books.forEach(function (candidate) {
-      els.shelf.appendChild(renderShelfCard(candidate));
+      hookCounts.set(candidate.hook, (hookCounts.get(candidate.hook) || 0) + 1);
+    });
+    shelfOrder(books).forEach(function (candidate) {
+      els.shelf.appendChild(renderShelfCard(candidate, hookCounts));
     });
   }
 
@@ -380,6 +432,13 @@
     requestAnimationFrame(function () { els.captionWords.classList.remove('swap'); });
   }
 
+  /* The pre-play preview line under the chapter heading; shared with the
+     other room through listen-core.js (renderPreview). */
+  function showPreview() {
+    if (idle.hasStarted()) return;
+    core.renderPreview(document, els.captionWords, blocks, currentBlockId);
+  }
+
   /* ── Figure stage (slideshow) ───────────────────────── */
   function hasFigureStage() {
     return !!(els.figurePanel && els.figureImg && els.figureCaption);
@@ -441,7 +500,10 @@
       if (currentBlockId !== null || !els.captionWords.firstChild) showQuiet('· · ·');
       return;
     }
-    if (cue.blockId !== currentBlockId) rebuildCaption(cue);
+    if (cue.blockId !== currentBlockId) {
+      rebuildCaption(cue);
+      showPreview();
+    }
     for (var i = 0; i < captionSpans.length; i++) {
       var cls = 'w';
       if (i < cue.alreadyHeardWordCount) cls += ' heard';
@@ -456,6 +518,8 @@
     els.iconPause.style.display = playing ? 'block' : 'none';
     els.playPause.setAttribute('aria-label', playing ? 'Pause' : 'Play');
     main.classList.toggle('playing', playing);
+    // The first play retires the idle caption state (and its hint) for good.
+    if (playing) idle.markStarted();
     if ('mediaSession' in navigator) {
       navigator.mediaSession.playbackState = playing ? 'playing' : 'paused';
     }
@@ -675,6 +739,8 @@
         }
       });
       tick(audio.currentTime);
+      // Captions are ready: until the first play, say what they will do.
+      idle.offerCueHint();
     }).catch(function (err) {
       console.debug('[fiction] read-along unavailable:', err);
       showQuiet('Read-along captions couldn’t load — audio still works.');

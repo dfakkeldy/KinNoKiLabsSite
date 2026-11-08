@@ -43,6 +43,30 @@ export function element(tag, attributes = {}, ...children) {
   return node;
 }
 
+// Stack and Yard keep their play controls disabled outside active play. The
+// shell carries the play state (data-play-state) so CSS can leave the move
+// pad out before the first Start and dim it while paused. A one-line caption
+// names the button that starts or resumes play.
+const GO_LABELS = Object.freeze({ start: 'Start', continue: 'Continue', resume: 'Resume' });
+export const STATUS_LABELS = Object.freeze({
+  preview: 'Ready', active: 'Playing', paused: 'Paused', terminal: 'Finished',
+});
+export const statusLabel = (status) => STATUS_LABELS[status]
+  ?? (String(status).charAt(0).toUpperCase() + String(status).slice(1));
+export function syncControlsHint(view, { status, entryKind }) {
+  view?.shell?.setAttribute?.('data-play-state', String(status));
+  const hint = view?.controlsHint;
+  if (!hint) return;
+  const go = entryKind === 'continue' ? view.continueGame
+    : entryKind === 'resume' ? view.resume : view.start;
+  const waiting = status === 'preview' || status === 'paused';
+  hint.hidden = !waiting || !go || go.hidden || !GO_LABELS[entryKind];
+  hint.textContent = hint.hidden ? ''
+    : status === 'preview'
+      ? 'Press ' + GO_LABELS[entryKind] + ' to play. Your controls appear here.'
+      : 'Press ' + GO_LABELS[entryKind] + ' to use these controls.';
+}
+
 // Shared thumbnail builder for cargo/piece previews (KinNoKi Stack next-cargo
 // pills, KinNoKi Yard tray pieces). `cells` are piece-local {row, column}
 // integers (already reflecting whatever rotation the caller wants shown);
@@ -778,6 +802,8 @@ export function createGameLifecycle({
   return api;
 }
 
+export const ASSIST_RULE = 'Hints and checks make a run ineligible for best-time records.';
+
 export function sharedShell({ title, difficulty }) {
   const breadcrumb = element('a', { href: '/games', class: 'back-link', text: '← Games' });
   const heading = element('h1', { text: title });
@@ -785,21 +811,23 @@ export function sharedShell({ title, difficulty }) {
     ...difficulties.map((value) => element('option', { value, text: titleCase(value) })));
   select.value = difficulty;
   const timer = element('time', { 'data-timer': '', text: '0:00', 'aria-label': 'Elapsed time' });
-  const toolbar = element('div', { class: 'game-toolbar' }, breadcrumb, heading,
+  const toolbar = element('div', { class: 'game-toolbar' },
+    element('div', { class: 'game-title' }, breadcrumb, heading),
     element('label', { text: 'Difficulty ' }, select), timer,
     element('button', { type: 'button', 'data-restart': '', text: 'Restart' }),
     element('button', { type: 'button', 'data-new-game': '', text: 'New Game' }));
   const notice = element('p', { class: 'game-storage-notice', role: 'status', 'aria-live': 'polite', hidden: true,
     text: 'Local progress is unavailable. You can still play.' });
   const live = element('p', { class: 'games-live-region', role: 'status', 'aria-live': 'polite' });
+  // The record rule lives in each game's How to play text (ASSIST_RULE); this
+  // line only appears once a hint or check has actually marked the run.
   const assistedStatus = element('p', {
     class: 'game-assisted-status', 'data-assisted-status': '', role: 'status', 'aria-live': 'polite',
-    text: 'Hints and checks make this run ineligible for best-time records.',
+    hidden: true, text: '',
   });
   const setAssisted = (assisted, announce = false) => {
-    assistedStatus.textContent = assisted
-      ? 'Assisted run — ineligible for best-time records.'
-      : 'Hints and checks make this run ineligible for best-time records.';
+    assistedStatus.hidden = !assisted;
+    assistedStatus.textContent = assisted ? 'Assisted run — ineligible for best-time records.' : '';
     if (announce && assisted) live.textContent = 'Assisted run. This time is ineligible for best-time records.';
   };
   return { toolbar, select, timer, notice, live, assistedStatus, setAssisted };

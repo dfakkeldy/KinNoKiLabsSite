@@ -22,7 +22,7 @@ featuredPack: false
 
 ## What the official source says
 
-The Nova Scotia Liquor Corporation posted this Request for Proposal (Negotiations, Consecutive) on 2026-07-24. The title describes an NSLC Agency Store in Cornwallis. The closing date shown by the procurement portal is 2026-08-13 at 2:00 PM Atlantic time. The official notice page is the authoritative source for the detailed requirements, submission instructions, and any addenda.
+This is a Request for Proposal (Negotiations, Consecutive) for an NSLC Agency Store in Cornwallis.
 
 ## Who might examine this opportunity
 

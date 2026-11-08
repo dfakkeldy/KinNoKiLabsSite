@@ -18,6 +18,17 @@ const DEFAULT_TARGET = 2.5;
 const savedBase = (value) => BASE_NUMBERS.includes(value) ? value : DEFAULT_BASE;
 const savedTarget = (value) => Number.isFinite(value) && value >= 0 ? value : DEFAULT_TARGET;
 
+// Whole-number shares of the 60-click scale, in words, so the headline says
+// how far along the scale it lands. Other counts need no gloss.
+const SCALE_SHARES = Object.freeze(new Map([
+  [15, 'A quarter of the scale'],
+  [20, 'A third of the scale'],
+  [30, 'Half the scale'],
+  [40, 'Two thirds of the scale'],
+  [45, 'Three quarters of the scale'],
+  [60, 'The full scale'],
+]));
+
 export function renderClickCounterTool(root, deps = {}) {
   const doc = root.ownerDocument ?? document;
   const storage = deps.storage ?? safeLocalStorage();
@@ -31,13 +42,8 @@ export function renderClickCounterTool(root, deps = {}) {
 
   const body = toolShell(root, {
     title: 'Click Counter',
-    lede: 'Convert a target number into clicks on a 60-click scale.',
+    lede: 'Convert a target number into clicks on a scale of 60 clicks.',
   });
-  const shell = root.querySelector('.tool-shell');
-  shell.replaceChildren(
-    element('a', { class: 'tool-back-link', href: '/tools', text: '← All tools', ownerDocument: doc }),
-    ...shell.children,
-  );
 
   const form = element('form', { class: 'tool-form click-counter', ownerDocument: doc });
   form.addEventListener('submit', (event) => event.preventDefault());
@@ -77,8 +83,20 @@ export function renderClickCounterTool(root, deps = {}) {
     }
   };
 
+  const resetButton = element('button', {
+    class: 'tool-quiet', type: 'button', text: 'Reset', ownerDocument: doc,
+  });
+  // Reset only does something once the form has moved off its defaults, so
+  // it stays out of sight until then rather than sitting there disabled.
+  const syncReset = () => {
+    const atDefaults = baseNumber === DEFAULT_BASE && parseDecimal(targetInput.value) === DEFAULT_TARGET;
+    resetButton.disabled = atDefaults;
+    resetButton.hidden = atDefaults;
+  };
+
   const showResult = ({ shouldAnnounce = false, shouldSave = false } = {}) => {
     copyStatus.replaceChildren();
+    syncReset();
     const parsedTarget = parseDecimal(targetInput.value);
     const clicks = parsedTarget === null ? null : countClicks(baseNumber, parsedTarget);
     if (clicks === null) {
@@ -104,7 +122,10 @@ export function renderClickCounterTool(root, deps = {}) {
       text: `${formatNumber(targetNumber, 6)} ÷ ${formatNumber(baseNumber, 6)} × 60`,
       ownerDocument: doc,
     });
-    result.replaceChildren(value, equation);
+    const share = SCALE_SHARES.get(clicks);
+    result.replaceChildren(value, ...(share ? [element('p', {
+      class: 'click-counter-share', text: share, ownerDocument: doc,
+    })] : []), equation);
     if (shouldSave) save();
     if (shouldAnnounce) announce(value.textContent);
   };
@@ -131,7 +152,7 @@ export function renderClickCounterTool(root, deps = {}) {
   });
 
   const copyButton = element('button', {
-    class: 'click-counter-copy', type: 'button', text: 'Copy result', ownerDocument: doc,
+    class: 'click-counter-copy tool-primary', type: 'button', text: 'Copy result', ownerDocument: doc,
   });
   copyButton.addEventListener('click', async () => {
     if (currentClicks === null) return;
@@ -146,29 +167,31 @@ export function renderClickCounterTool(root, deps = {}) {
     }
   });
 
-  const resetButton = element('button', {
-    type: 'button', text: 'Reset', ownerDocument: doc,
-  });
   resetButton.addEventListener('click', () => {
     baseNumber = DEFAULT_BASE;
     targetNumber = DEFAULT_TARGET;
     targetInput.value = formatNumber(targetNumber);
     setSelectedPreset();
     showResult({ shouldAnnounce: true, shouldSave: true });
+    // Reset hides itself once the form is back at its defaults, so hand focus
+    // to the target number rather than letting it drop to the page.
+    targetInput.focus();
   });
 
   showResult();
   form.append(
     element('fieldset', { class: 'click-counter-fieldset', ownerDocument: doc },
-      element('legend', { text: 'Base number', ownerDocument: doc }),
+      element('legend', { text: 'Base number (equals 60 clicks)', ownerDocument: doc }),
       presets),
     element('div', { class: 'tool-field click-counter-target', ownerDocument: doc },
       element('label', { for: 'click-counter-target', text: 'Target number', ownerDocument: doc }),
       targetInput),
-    result,
-    element('div', { class: 'tool-actions click-counter-actions', ownerDocument: doc }, copyButton, resetButton),
-    copyStatus,
-    element('p', { class: 'click-counter-local-note', text: 'Calculated on this device.', ownerDocument: doc }),
+    // The answer, its actions and the copy status are one group, so on wide
+    // screens Copy sits right under the equation it copies.
+    element('div', { class: 'click-counter-answer', ownerDocument: doc },
+      result,
+      element('div', { class: 'tool-actions click-counter-actions', ownerDocument: doc }, copyButton, resetButton),
+      copyStatus),
   );
   body.append(form);
 }

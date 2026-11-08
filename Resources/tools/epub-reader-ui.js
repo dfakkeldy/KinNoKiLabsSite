@@ -244,7 +244,7 @@ export function renderEpubTool(root, deps = {}) {
 
   const body = toolShell(root, {
     title: 'EPUB Reader',
-    lede: 'Keep a private, on-device library and read without an account or upload.',
+    lede: 'A private library for your own EPUB files, with no account needed.',
   });
 
   const current = (token) => !disposed && token === revision;
@@ -564,8 +564,11 @@ export function renderEpubTool(root, deps = {}) {
       if (!current(token)) return;
 
       const form = element('form', { class: 'epub-import tool-form', ownerDocument: doc });
+      // The native picker is visually hidden; the drop zone is the one visible
+      // control. It keeps tabindex -1 so keyboard users meet a single stop, and
+      // a programmatic focus on it still rings the drop zone (see styles.css).
       const input = element('input', {
-        id: 'epub-file', type: 'file', accept: '.epub', ownerDocument: doc,
+        id: 'epub-file', class: 'epub-file-input', type: 'file', accept: '.epub', tabindex: '-1', ownerDocument: doc,
       });
       input.disabled = !canInflate;
       const drop = element('div', {
@@ -573,16 +576,18 @@ export function renderEpubTool(root, deps = {}) {
         role: 'button',
         tabindex: '0',
         'aria-controls': 'epub-file',
-        text: 'Drop an EPUB here, or choose a file.',
         ownerDocument: doc,
-      });
+      },
+      element('span', { class: 'epub-drop-title', text: 'Drop an EPUB here', ownerDocument: doc }),
+      element('span', { class: 'epub-drop-or', text: 'or', ownerDocument: doc }),
+      element('span', { class: 'epub-drop-button', text: 'Choose an EPUB', ownerDocument: doc }));
       if (!canInflate) drop.setAttribute('aria-disabled', 'true');
       const status = element('div', { class: 'epub-library-status', ownerDocument: doc });
       const storageLine = element('p', { class: 'epub-storage', ownerDocument: doc });
       const grid = element('div', { class: 'epub-library-grid', ownerDocument: doc });
       if (books.length === 0) {
         grid.append(element('p', {
-          class: 'epub-empty', text: 'No books yet. Import an EPUB to begin.', ownerDocument: doc,
+          class: 'epub-empty', text: 'No books yet. Each book reopens where you left off.', ownerDocument: doc,
         }));
       } else {
         grid.append(...books.map((book, index) => renderBookCard(book, positions[index], status)));
@@ -623,14 +628,15 @@ export function renderEpubTool(root, deps = {}) {
       listen(drop, 'click', () => { if (canInflate) input.click(); });
 
       form.append(
-        element('label', { for: 'epub-file', text: 'Choose an EPUB', ownerDocument: doc }),
+        element('label', { for: 'epub-file', class: 'visually-hidden', text: 'Choose an EPUB', ownerDocument: doc }),
         input,
         drop,
         status,
       );
-      body.replaceChildren(form, storageLine, grid);
+      body.replaceChildren(form, grid, storageLine);
       if (!canInflate) showLibraryError(status, READER_ERRORS.inflate);
-      void estimateStorage(storageLine, token);
+      // Storage use only means something once a book is stored.
+      if (books.length > 0) void estimateStorage(storageLine, token);
     } catch {
       if (!current(token)) return;
       body.replaceChildren(element('p', {

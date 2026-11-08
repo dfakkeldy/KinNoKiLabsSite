@@ -48,14 +48,16 @@ Alignment bugs are the most valuable reports and need the most context. Include:
 
 Pick whichever matches your life. Each plan is 10–20 minutes of intentional testing.
 
-### Plan A — The Commute Run *(Smart Rewind & interruptions)*
+**Jump to a plan:** [A · Commute](#plan-a-the-commute-run-smart-rewind-interruptions) · [B · Alignment](#plan-b-the-alignment-gauntlet-epub-auto-align) · [C · Study](#plan-c-the-study-session-bookmarks-flashcards-review) · [D · Library](#plan-d-the-library-stress-test-formats-playlist) · [E · Wrist](#plan-e-the-wrist-only-day-watch-remote) · [F · Accessibility](#plan-f-the-accessibility-pass-dynamic-type-fonts-voiceover) · [G · 1.0 Preview](#plan-g-the-1-0-preview-as-builds-gain-the-new-features)
+
+### Plan A — The Commute Run *Smart Rewind & interruptions*
 
 1. Start a book, then live your interrupted life: pause for seconds, for minutes, for an hour.
 2. Each resume: did Smart Rewind back up a sensible amount? Did it ever dump you somewhere confusing?
 3. Mid-sentence, unplug your headphones / disconnect Bluetooth. Echo should pause — never blast the speaker.
 4. Take a phone call. After it ends, does Echo behave correctly (resume if it was playing, stay paused if you'd paused)?
 
-### Plan B — The Alignment Gauntlet *(EPUB + auto-align)*
+### Plan B — The Alignment Gauntlet *EPUB + auto-align*
 
 1. Put an ePub in the audiobook's folder; confirm Echo imports it automatically.
 2. Run **Auto-Align Chapters** and watch the progress view (plug in for long books — the first run also downloads the ~40 MB speech model).
@@ -63,7 +65,7 @@ Pick whichever matches your life. Each plan is 10–20 minutes of intentional te
 4. Find the worst spot and fix it: long-press → **Align to Now**. Does the surrounding text snap into place?
 5. Search a distinctive phrase; tap the result. Text and audio should jump together.
 
-### Plan C — The Study Session *(bookmarks, flashcards, review)*
+### Plan C — The Study Session *bookmarks, flashcards, review*
 
 1. While listening, make three bookmarks: one plain, one with a **voice memo**, one with a **photo**.
 2. Re-listen across them: does the voice memo play inline? Does the player artwork switch to your photo and back?
@@ -71,14 +73,14 @@ Pick whichever matches your life. Each plan is 10–20 minutes of intentional te
 4. Tomorrow, when the review notification arrives: do your **Daily Review** on the phone — then try a session on the **watch**, hands-free.
 5. Grade honestly and check the stats module updates (due / reviewed today / total).
 
-### Plan D — The Library Stress Test *(formats & playlist)*
+### Plan D — The Library Stress Test *formats & playlist*
 
 1. Load your messiest book: a multi-file M4B, a 100-file LibriVox folder, weird filenames.
 2. Check the chapter list: grouping sensible? Sections under chapters where expected?
 3. Drag-reorder a few tracks; dim one (e.g., a disclaimer track) and confirm playback skips it.
 4. iCloud users: try a book *without* "Keep Downloaded" on cellular — how does Echo cope? Then set Keep Downloaded and compare.
 
-### Plan E — The Wrist-Only Day *(watch remote)*
+### Plan E — The Wrist‑Only Day *watch remote*
 
 1. From the phone, design your button layout (try filling multiple pages; leave one page empty — it should hide).
 2. Drive a full listening session from the watch only: play, skip, sections, loop, speed, sleep timer, a bookmark with a voice memo.
@@ -86,14 +88,14 @@ Pick whichever matches your life. Each plan is 10–20 minutes of intentional te
 4. Leave the watch off-wrist overnight; next morning, raise it: right book, right position, no phantom commands?
 5. Run a **Pomodoro**: set 25 minutes, lower your wrist, confirm the alarm is unmissable.
 
-### Plan F — The Accessibility Pass
+### Plan F — The Accessibility Pass *Dynamic Type, fonts, VoiceOver*
 
 1. Crank Dynamic Type to a large size: anything truncated, overlapping, or unreadable?
 2. Switch the reader font to **OpenDyslexic**, then **Lexend**; adjust size and line spacing.
 3. If you use VoiceOver: a pass over the player and reader — every control labeled and operable?
 4. Enable Reduce Motion: anything still animating that shouldn't?
 
-### Plan G — The 1.0 Preview *(as builds gain the new features)* 🚧
+### Plan G — The 1.0 Preview *as builds gain the new features* 🚧
 
 The road to 1.0 lands feature-by-feature in beta builds — each build's *What to Test* notes will say which of these are included. When yours has them:
 
@@ -103,6 +105,8 @@ The road to 1.0 lands feature-by-feature in beta builds — each build's *What t
 4. **Anki import:** bring a real .apkg deck. Counts right? Scheduling sensible (mature cards not reset)? Cloze cards reported in the summary?
 5. **Context Memory:** opt in, bookmark something on a walk, check the place chip. Then try airplane mode — bookmarks must still save instantly. Then press **Delete Location History** and verify everything's gone.
 6. **Study sync:** with two devices on the same iCloud, create a card on one and review it on the other.
+
+Finished a plan? Send what you found with TestFlight's screenshot feedback or a GitHub issue — [section 2](#2-sending-feedback-that-helps) shows how.
 
 ## 4. Known limitations (current beta)
 
@@ -118,7 +122,7 @@ Honest list — these are known, so you don't need to report them (though opinio
 
 Core import, local playback, reading and voice synthesis run on-device without an Echo account. Audiobookshelf (your own server), external AI providers you configure, model downloads, public alignment lookup and files you choose in iCloud use network services. When network access is permitted, importing a book may look up matching public alignment anchors, with local fallback for an ordinary lookup failure. This 1.0 release does not expose public-alignment uploads. These connections are optional. See the [Echo Privacy Policy](/echo-privacy/).
 
-One thing TestFlight itself adds: Apple's beta system shares **crash reports** and **the feedback you choose to send** with the developer, along with device/OS/build info. That's TestFlight's standard mechanism (it's how your reports reach me), not telemetry inside Echo. The full policy is on the [Echo privacy page](/echo-privacy/).
+One thing TestFlight itself adds: Apple's beta system shares **crash reports** and **the feedback you choose to send** with the developer, along with device/OS/build info. That's TestFlight's standard mechanism (it's how your reports reach me), not telemetry inside Echo.
 
 *Thank you for testing. Every report makes the player better for the next interrupted listener.* — Dan
 

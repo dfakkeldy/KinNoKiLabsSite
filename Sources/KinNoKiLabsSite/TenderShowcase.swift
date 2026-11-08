@@ -166,13 +166,20 @@ struct TenderRecord {
 
 // MARK: - Rendering helpers
 
-private let dateFormatter: DateFormatter = {
+// Human-readable dates in Halifax time. The exact ISO value stays in each
+// <time datetime>; the visible text drops the "00:00 -03:00" noise.
+private let halifaxTimeZone = TimeZone(identifier: "America/Halifax")!
+
+private func halifaxFormatter(_ pattern: String) -> DateFormatter {
     let f = DateFormatter()
-    f.dateFormat = "yyyy-MM-dd 'at' HH:mm xxx"
-    f.timeZone = TimeZone(identifier: "America/Halifax")
-    f.locale = Locale(identifier: "en_CA")
+    f.dateFormat = pattern
+    f.timeZone = halifaxTimeZone
+    f.locale = Locale(identifier: "en_US_POSIX")
     return f
-}()
+}
+
+private let dayFormatter = halifaxFormatter("MMMM d, yyyy")
+private let dayTimeFormatter = halifaxFormatter("MMMM d, yyyy, h:mm a")
 
 private func iso8601String(_ date: Date) -> String {
     let f = ISO8601DateFormatter()
@@ -181,8 +188,64 @@ private func iso8601String(_ date: Date) -> String {
     return f.string(from: date)
 }
 
+/// "July 24, 2026".
 private func formattedDate(_ date: Date) -> String {
-    dateFormatter.string(from: date)
+    dayFormatter.string(from: date)
+}
+
+/// "August 13, 2026, 2:00 PM Atlantic time", or just the day when the
+/// source gives midnight (a publication date rather than a deadline).
+private func formattedDateTime(_ date: Date) -> String {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = halifaxTimeZone
+    let parts = calendar.dateComponents([.hour, .minute], from: date)
+    if parts.hour == 0 && parts.minute == 0 { return formattedDate(date) }
+    return dayTimeFormatter.string(from: date) + " Atlantic time"
+}
+
+private func timeNode(_ date: Date, _ text: String) -> Node<HTML.BodyContext> {
+    .time(.datetime(iso8601String(date)), .text(text))
+}
+
+/// The facts card ends with the shared disclaimer, so a fact row does not
+/// need to repeat its own "check the source" reminder. The frontmatter keeps it.
+private let trailingSourceReminders = [
+    " Verify at the official source before acting.",
+    " Recheck the official source before acting.",
+]
+
+private func withoutSourceReminder(_ text: String) -> String {
+    for reminder in trailingSourceReminders where text.hasSuffix(reminder) {
+        return String(text.dropLast(reminder.count))
+    }
+    return text
+}
+
+/// Frontmatter prose may carry an ISO day ("at review time on 2026-07-24").
+/// The page shows every date in one long form ("July 24, 2026"), which also
+/// keeps a phone from breaking the date at its hyphen. The frontmatter keeps
+/// the ISO value.
+private let isoDayPattern = try! NSRegularExpression(pattern: #"\b(\d{4})-(\d{2})-(\d{2})\b"#)
+private let isoDayParser = halifaxFormatter("yyyy-MM-dd")
+
+private func withLongFormDays(_ text: String) -> String {
+    let source = text as NSString
+    var result = ""
+    var cursor = 0
+    for match in isoDayPattern.matches(in: text, range: NSRange(location: 0, length: source.length)) {
+        let iso = source.substring(with: match.range)
+        guard let date = isoDayParser.date(from: iso) else { continue }
+        result += source.substring(with: NSRange(location: cursor, length: match.range.location - cursor))
+        result += formattedDate(date)
+        cursor = match.range.location + match.range.length
+    }
+    result += source.substring(from: cursor)
+    return result
+}
+
+/// A long fact row as the page shows it: no trailing reminder, long-form days.
+private func displayFact(_ text: String) -> String {
+    withLongFormDays(withoutSourceReminder(text))
 }
 
 private let tenderRequestHref =
@@ -204,29 +267,58 @@ private func factGrid(for record: TenderRecord) -> Node<HTML.BodyContext> {
         .div(.dt(.text("Issuer")), .dd(.text(record.issuer))),
         .div(.dt(.text("Procurement system")), .dd(.text(record.procurementSystem))),
         .div(.dt(.text("Category")), .dd(.text(record.category))),
-        .div(.dt(.text("Delivery region")), .dd(.text(record.deliveryRegion))),
-        .div(.dt(.text("Published")), .dd(.text(formattedDate(record.publishedAt)))),
-        .div(
-            .dt(.text("Closing")),
-            .dd(
-                .time(
-                    .datetime(iso8601String(record.closingAt)),
-                    .text(formattedDate(record.closingAt))
-                )
-            )
-        ),
-        .div(.dt(.text("Document access")), .dd(.text(record.documentAccess))),
-        .div(.dt(.text("Addenda status")), .dd(.text(record.addendaStatus)))
+        // Shown only when it adds something beyond the issuer.
+        .if(record.deliveryRegion != record.issuer,
+            .div(.dt(.text("Delivery region")), .dd(.text(record.deliveryRegion)))),
+        .div(.dt(.text("Published")), .dd(timeNode(record.publishedAt, formattedDateTime(record.publishedAt)))),
+        .div(.dt(.text("Closing")), .dd(timeNode(record.closingAt, formattedDateTime(record.closingAt)))),
+        .div(.class("tender-fact-long"), .dt(.text("Document access")), .dd(.text(displayFact(record.documentAccess)))),
+        .div(.class("tender-fact-long"), .dt(.text("Addenda status")), .dd(.text(displayFact(record.addendaStatus))))
     )
 }
 
+/// One link per distinct official URL. The portal notice often also hosts
+/// the documents or the addenda; then a single link names what it holds,
+/// so no two links on the card lead to the same page.
 private func officialLinks(for record: TenderRecord) -> Node<HTML.BodyContext> {
-    .ul(
+    let notice = record.noticeURL.absoluteString
+    let documents = record.documentsURL.absoluteString
+    let addenda = record.addendaURL.absoluteString
+    var noticeHolds: [String] = []
+    if documents == notice { noticeHolds.append("documents") }
+    if addenda == notice { noticeHolds.append("addenda") }
+    let noticeLabel: String
+    switch noticeHolds.count {
+    case 0: noticeLabel = "Official notice"
+    case 1: noticeLabel = "Official notice and \(noticeHolds[0])"
+    default: noticeLabel = "Official notice, documents and addenda"
+    }
+    var links: [(href: String, label: String)] = [(notice, noticeLabel)]
+    if documents != notice { links.append((documents, "Official documents")) }
+    if addenda != notice && addenda != documents { links.append((addenda, "Addenda")) }
+    // Each link leaves KinNoKi for the procurement portal, so it carries
+    // a north-east arrow (decorative) and says so to screen readers.
+    return .ul(
         .class("tender-official-links"),
-        .li(.a(.href(record.noticeURL.absoluteString), .text("Official notice"))),
-        .li(.a(.href(record.documentsURL.absoluteString), .text("Official documents"))),
-        .li(.a(.href(record.addendaURL.absoluteString), .text("Addenda")))
+        .forEach(links) { link in
+            .li(.a(
+                .href(link.href),
+                .text(link.label),
+                .span(.class("visually-hidden"), .text(" (external site)")),
+                iconExternal()
+            ))
+        }
     )
+}
+
+/// Lucide arrow-up-right: "this link leaves the site".
+private func iconExternal<Ctx>() -> Node<Ctx> {
+    .raw(#"<svg class="tender-ext" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg>"#)
+}
+
+/// Lucide arrow-down: an in-page jump.
+private func iconArrowDown<Ctx>() -> Node<Ctx> {
+    .raw(#"<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"></path><path d="m19 12-7 7-7-7"></path></svg>"#)
 }
 
 // MARK: - Hub page
@@ -244,7 +336,15 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
             .h1(.text("Tender Starter Showcase")),
             .p(
                 .class("tender-intro"),
-                .text("A manually curated showcase of Nova Scotia public tender opportunities, each turned into a source-linked starting brief with visible questions and a reusable review workflow. This is a planning aid, not a live tender directory.")
+                .text("Each example takes a real Nova Scotia public tender and turns it into a source-linked starting brief, with the questions to verify first.")
+            ),
+            // The offer sits under the four examples (well below the fold
+            // on a phone), so the hero points straight to it.
+            .a(
+                .class("back-link back-link-next tender-hero-jump"),
+                .href("#preview"),
+                .text("Send your own tender for a free preview"),
+                iconArrowDown()
             )
         ),
         // 2. Current examples (hidden while none are open; the worked examples lead)
@@ -265,18 +365,19 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
                                 .span(.class("tender-state-label"), .text(card.lifecycle.label)),
                                 .span(
                                     .class("tender-checked"),
-                                    .text("Checked "),
-                                    .time(.datetime(iso8601String(card.checkedAt)), .text(formattedDate(card.checkedAt)))
+                                    .text("Facts checked "),
+                                    timeNode(card.checkedAt, formattedDate(card.checkedAt))
                                 )
                             ),
-                            .h3(.text(card.item.title)),
+                            .h3(.text(displayTenderTitle(card.item.title))),
                             .dl(
                                 .class("tender-meta"),
                                 .div(.dt(.text("Issuer")), .dd(.text(card.issuer))),
                                 .div(.dt(.text("Category")), .dd(.text(card.category))),
-                                .div(.dt(.text("Closes")), .dd(.text(formattedDate(card.closingAt))))
+                                .div(.dt(.text("Closes")), .dd(timeNode(card.closingAt, formattedDate(card.closingAt))))
                             ),
-                            .if(card.featuredPack, .span(.class("tender-featured-tag"), .text("Featured pack example")))
+                            .if(card.featuredPack, .span(.class("tender-featured-tag"), .text("Featured pack example"))),
+                            .span(.class("card-cue"), .text("Read the brief"), iconArrowForward())
                         )
                     }
                 )
@@ -288,7 +389,7 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
             .h2(.text("Worked examples")),
             .if(
                 current.isEmpty && !archived.isEmpty,
-                .p(.class("tender-source-note"), .text("Each brief below was prepared for a real Nova Scotia tender that has since closed. They are closed worked examples, kept to show the source-linked review workflow."))
+                .p(.class("tender-source-note"), .text("These are closed worked examples, kept up to show the workflow."))
             ),
             .if(
                 archived.isEmpty,
@@ -296,49 +397,64 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
                 else: .div(
                     .class("tender-archive-grid"),
                     .forEach(archived) { card in
+                        // No per-card state pill: the note above says every
+                        // worked example is closed. The kicker leads with the
+                        // category so the four scan by type (the post-card
+                        // kicker pattern), then the issuer, then the cue.
                         .a(
                             .class("tender-card tender-card-archive"),
                             .href(card.item.path.absoluteString),
-                            .div(.class("tender-state"), .span(.class("tender-state-label"), .text(card.lifecycle.label))),
-                            .h3(.text(card.item.title)),
-                            .dl(.class("tender-meta"), .div(.dt(.text("Issuer")), .dd(.text(card.issuer))))
+                            .div(
+                                .class("tender-card-body"),
+                                .p(
+                                    .class("tender-kicker"),
+                                    .span(.text(card.category)),
+                                    .span(.text("Closed "), timeNode(card.closingAt, formattedDate(card.closingAt)))
+                                ),
+                                .h3(.text(displayTenderTitle(card.item.title))),
+                                .p(.class("tender-card-issuer"), .text(card.issuer))
+                            ),
+                            .span(.class("card-cue"), .text("Read the brief"), iconArrowForward())
                         )
                     }
                 )
             )
         ),
-        // 4. What a visitor can take away: the pack and a free preview
+        // 4. What a visitor can take away: the free preview leads (the one
+        // gold action on the page), the pack follows as the self-serve option.
         .div(
             .class("tender-offers"),
+            // Free-preview invitation
+            .section(
+                .class("tender-preview reveal"),
+                .id("preview"),
+                .h2(.text("Free custom tender preview")),
+                .p(.class("tender-offer-lead"), .text("Send a public tender URL or ID, your company or work type, contact details, and a short fit explanation. You will receive a free one-page starting brief showing the same source-linked review workflow — no account, no upload, no obligation.")),
+                .p(.class("tender-source-note"), .text("I take a limited number of requests each month. For a deeper fit analysis, the paid Tender-to-Bid Diagnostic expands the starting brief into a compliance check, question map, and document checklist for one specific opportunity.")),
+                .a(
+                    .class("btn btn-gold tender-request"),
+                    .href(tenderRequestHref),
+                    .text("Request a free custom preview")
+                )
+            ),
             // Featured demonstration
             .section(
                 .class("tender-feature reveal"),
                 .h2(.text("Demonstration pack")),
-                .p(.text("Download the original KinNoKi Tender Starter pack — a tagged accessible PDF guide, an editable review workbook, and a plain-text official-source index. It contains original summaries and templates only; no official tender documents are redistributed.")),
+                // The list names the three files, so the lead does not.
+                .p(.class("tender-offer-lead"), .text("Download the original KinNoKi Tender Starter pack: three files for running the same source-linked review yourself.")),
                 .ul(
                     .class("tender-pack-list"),
                     .li(.text("tender-starter-guide.pdf — tagged, accessible PDF")),
                     .li(.text("tender-review-workbook.xlsx — eight review-tracking sheets")),
                     .li(.text("official-sources.txt — plain-text index of authoritative sources"))
                 ),
+                .p(.class("tender-source-note"), .text("Original summaries and templates only; no official tender documents are redistributed.")),
                 .a(
                     .class("btn btn-outline tender-download"),
                     .href("/tenders/tender-starter-example.zip"),
                     .attribute(named: "download"),
-                    .text("Download the example pack (ZIP)")
-                )
-            ),
-            // Free-preview invitation
-            .section(
-                .class("tender-preview reveal"),
-                .h2(.text("Free custom tender preview")),
-                .p(.text("Send a public tender URL or ID, your company or work type, contact details, and a short fit explanation. You will receive a free one-page starting brief showing the same source-linked review workflow — no account, no upload, no obligation.")),
-                .p(.class("tender-source-note"), .text("I take a limited number of requests each month.")),
-                .p(.class("tender-source-note"), .text("For a deeper fit analysis, the paid Tender-to-Bid Diagnostic expands the starting brief into a compliance check, question map, and document checklist for one specific opportunity.")),
-                .a(
-                    .class("btn btn-gold tender-request"),
-                    .href(tenderRequestHref),
-                    .text("Request a free custom preview")
+                    .text("Download the pack (ZIP)")
                 )
             )
         ),
@@ -348,31 +464,58 @@ func tenderShowcaseMain(records: [TenderRecord]) -> Node<HTML.BodyContext> {
 
 // MARK: - Detail page
 
+/// Source titles join parts with a spaced ASCII hyphen (" - "); the page
+/// sets it as the site's spaced en dash, with a no-break space before it so
+/// a wrapped line never starts with a bare dash. Display only: the
+/// frontmatter title, the page <title> and the pack keep the source text.
+func displayTenderTitle(_ title: String) -> String {
+    title.replacingOccurrences(of: " - ", with: "\u{00A0}\u{2013} ")
+}
+
+/// Procurement titles can run past 100 characters; those get a smaller H1.
+private let longTenderTitleLength = 70
+
 func tenderDetailMain(record: TenderRecord) -> Node<HTML.BodyContext> {
     .main(
-        .class("tender-detail"),
-        .a(.class("back-link"), .href("/tenders/"), iconArrowBack(), .text("Back to Tender Starter Showcase")),
+        .class(record.item.title.count > longTenderTitleLength ? "tender-detail tender-detail-long-title" : "tender-detail"),
+        // The parent is named one way, top and bottom: "All worked examples".
+        .a(.class("back-link"), .href("/tenders/"), iconArrowBack(), .text("All worked examples")),
         .p(.class("eyebrow"), .text("Tender Starter Showcase")),
-        .h1(.text(record.item.title)),
+        .h1(.text(displayTenderTitle(record.item.title))),
         .div(
             .class("tender-state"),
             .span(.class("tender-state-label"), .text(record.lifecycle.label)),
             .span(
                 .class("tender-checked"),
-                .text("Checked "),
-                .time(.datetime(iso8601String(record.checkedAt)), .text(formattedDate(record.checkedAt)))
+                .text("Facts checked "),
+                timeNode(record.checkedAt, formattedDate(record.checkedAt))
             )
         ),
-        // Source facts (from frontmatter)
+        // Source facts (from frontmatter). The official links and the
+        // "verify at source" disclaimer close the card: the advice sits
+        // with the facts it qualifies, said once.
         .section(
             .class("tender-source-facts reveal"),
             .h2(.text("Source facts")),
             factGrid(for: record),
-            officialLinks(for: record)
+            officialLinks(for: record),
+            disclaimerNode()
         ),
         // Editorial analysis (from Markdown body — the five H2 sections)
         .div(.class("tender-analysis prose"), record.item.body.node),
-        disclaimerNode()
+        // Closing step: one action (the free preview this brief
+        // demonstrates; the official notice is already in the facts card)
+        // and the way back to the other examples.
+        .section(
+            .class("tender-next"),
+            .h2(.text("Next step")),
+            .p(.text("Want a brief like this for an open tender? Send its public URL or ID for a free one-page preview.")),
+            .div(
+                .class("tender-actions"),
+                .a(.class("btn btn-gold tender-request"), .href(tenderRequestHref), .text("Request a free custom preview"))
+            ),
+            .a(.class("back-link"), .href("/tenders/"), iconArrowBack(), .text("All worked examples"))
+        )
     )
 }
 

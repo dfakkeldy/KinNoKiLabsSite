@@ -23,11 +23,12 @@ test('Routey is gone from the homepage, apps listing, and support page', () => {
     assert.doesNotMatch(html, /\/apps\/routey/);
     assert.doesNotMatch(html, /Routey/);
   }
-  assert.match(home, /<span>4 apps<\/span>/);
+  assert.match(home, /href="https:\/\/github\.com\/dfakkeldy"[^>]*>Source is public on GitHub; licences vary<\/a>/);
   assert.match(home, /href="https:\/\/apps\.apple\.com\/ca\/app\/macromark\/id6785081218"[^>]*>MacroMark 1\.0 on the App Store<\/a>/);
   assert.match(apps, /Four apps, honestly labelled\./);
   assert.doesNotMatch(apps, /statused/);
-  assert.match(apps, /MacroMark 1\.0 is <a[^>]*href="https:\/\/apps\.apple\.com\/ca\/app\/macromark\/id6785081218"[^>]*>live on the App Store<\/a> and free/);
+  assert.match(apps, /Each card shows where its app stands today\. Source is public on GitHub; licences vary\./);
+  assert.match(apps, /class="status-legend"/);
   assert.doesNotMatch(home, /4 apps in development/);
   assert.doesNotMatch(home, /4 in TestFlight/);
   assert.doesNotMatch(apps, /none are on the App Store yet/);

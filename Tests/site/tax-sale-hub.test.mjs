@@ -51,7 +51,12 @@ test('presents passed sale dates as past without claiming outcomes', () => {
     generated.match(/class="tax-date-card tax-date-past reveal"/g)?.length,
     5,
   );
-  assert.equal(generated.match(/Sale date passed · Results with the municipality/g)?.length, 5);
+  // Each past row is marked passed; where its results live is said once,
+  // in the heading over the list.
+  assert.equal(generated.match(/<p class="tax-status">Sale date passed<\/p>/g)?.length, 5);
+  assert.equal(generated.match(/Recent sale dates · results on each municipality’s page/g)?.length, 1);
+  // The three oldest fold under the two most recent; none is removed.
+  assert.match(theme, /<details class="tax-past-more">\s*<summary>Earlier sale dates · 3 more<\/summary>/);
   assert.match(generated, /Advertised for Tuesday, September 15; tenders closed at 10:00 a\.m\./);
   assert.match(generated, /Advertised for Monday, September 14; tenders closed at 12:00 noon/);
   assert.match(generated, /Advertised for Monday, August 31; tenders closed at 1:00 p\.m\./);
@@ -104,6 +109,10 @@ test('shows truthful format status and connects the existing app page', () => {
   assert.match(generated, /Free guide · PDF, EPUB and audiobook/);
   assert.match(generated, /<h3>Illustrated PDF<\/h3>/);
   assert.match(generated, /Illustrated PDF · 149 pages · 13 chapters · 39 figures · free/);
+  // One figure count everywhere: the PDF's 40 raster images include the
+  // cover, so 39 figures is the verifiable number.
+  assert.match(theme, /The plain-language edition: 39 figures,/);
+  assert.doesNotMatch(theme, /31 diagrams/);
   assert.match(generated, /href="\/listen\/\?book=beyond-the-tax-sale-packet"/);
   assert.match(generated, /The first edition, narrated in full \(4 hours 13 minutes\)/);
   assert.doesNotMatch(generated, /Video edition/);

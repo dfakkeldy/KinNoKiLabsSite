@@ -30,22 +30,35 @@ const partAmount = (value) => {
   return `${displayed} ${Number(displayed) === 1 ? 'part' : 'parts'}`;
 };
 
-const numericInput = (doc, { id, name, label, value = '', onInput }) => {
+const numericInput = (doc, { id, name, label, value = '', placeholder, onInput, extra }) => {
   const input = element('input', {
     id,
     name,
     type: 'text',
     inputmode: 'decimal',
     value,
+    autocomplete: 'off',
+    ...(placeholder ? { placeholder } : {}),
     ownerDocument: doc,
   });
   input.value = value;
   input.addEventListener('input', onInput);
-  return element('label', { for: id, ownerDocument: doc }, label, input);
+  return element('div', { class: 'tool-field', ownerDocument: doc },
+    element('label', { for: id, text: label, ownerDocument: doc }),
+    extra ? element('div', { class: 'tool-inline', ownerDocument: doc }, input, extra) : input);
 };
 
-const resultDisplay = (doc, announce) => {
-  const result = element('p', { class: 'tool-result', ownerDocument: doc });
+// The empty answer is a dashed slot holding one plain instruction; the full
+// sentence appears only once there is something to compute.
+const emptyResult = (doc, hint) => element('p', { class: 'tool-result tool-result-empty', ownerDocument: doc },
+  element('span', { class: 'tool-result-hint', text: hint, ownerDocument: doc }));
+
+// The General tab opens on a worked example (its own placeholder values), so
+// the page arrives showing an answer the visitor can edit.
+const GENERAL_EXAMPLE = Object.freeze({ stockPercent: '12', targetPercent: '3', totalMl: '500' });
+
+const resultDisplay = (doc, announce, hint) => {
+  const result = emptyResult(doc, hint);
   const error = (code) => {
     const text = ERROR_COPY[code] ?? ERROR_COPY.invalid;
     result.setAttribute('class', 'tool-error');
@@ -55,28 +68,34 @@ const resultDisplay = (doc, announce) => {
   const mix = ({ concentrateMl, waterMl }, { stockPercent = null } = {}) => {
     const sourceLabel = stockPercent === null ? 'concentrate' : 'stock solution';
     const parts = stockPercent === null ? null : computeMixParts({ concentrateMl, waterMl });
-    const partsText = parts?.waterParts === 0
-      ? `No water needed — use the ${formatNumber(stockPercent)}% stock solution as-is.`
+    // Each half of the mix stays on one line (span.dilution-keep), with the
+    // "+" opening the second half, so a narrow screen breaks only between them.
+    // Text always sits in its own span (never a bare text node beside an
+    // element), which keeps the DOM order simple to read and to test.
+    const span = (text) => element('span', { text, ownerDocument: doc });
+    const keep = (...children) => element('span', { class: 'dilution-keep', ownerDocument: doc },
+      ...children.map((child) => (typeof child === 'string' ? span(child) : child)));
+    const partsChildren = parts?.waterParts === 0
+      ? [span(`No water needed — use the ${formatNumber(stockPercent)}% stock solution as-is.`)]
       : parts
-        ? `About ${partAmount(parts.concentrateParts)} ${formatNumber(stockPercent)}% stock solution + ${partAmount(parts.waterParts)} water.`
+        ? [span('About '), keep(`${partAmount(parts.concentrateParts)} ${formatNumber(stockPercent)}% stock solution`),
+          span(' '), keep(`+ ${partAmount(parts.waterParts)} water.`)]
         : null;
+    const partsText = partsChildren?.map((child) => child.textContent).join('') ?? null;
     const text = `Mix ${amount(concentrateMl)} ${sourceLabel} + ${amount(waterMl)} water${partsText ? ` ${partsText}` : ''}`;
-    result.setAttribute('class', 'tool-result-strong');
+    result.setAttribute('class', 'tool-result tool-result-strong');
     result.replaceChildren(
       element('span', { text: 'Mix ', ownerDocument: doc }),
-      element('strong', { text: amount(concentrateMl), ownerDocument: doc }),
-      element('span', { text: ` ${sourceLabel} + `, ownerDocument: doc }),
-      element('strong', { text: amount(waterMl), ownerDocument: doc }),
-      element('span', { text: ' water', ownerDocument: doc }),
-      ...(partsText ? [element('span', {
-        class: 'tool-parts-result', text: ` ${partsText}`, ownerDocument: doc,
-      })] : []),
+      keep(element('strong', { text: amount(concentrateMl), ownerDocument: doc }), ` ${sourceLabel}`),
+      span(' '),
+      keep('+ ', element('strong', { text: amount(waterMl), ownerDocument: doc }), ' water'),
+      ...(partsChildren ? [element('span', { class: 'tool-parts-result', ownerDocument: doc }, span(' '), ...partsChildren)] : []),
     );
     announce(text);
   };
   const dose = ({ doseMl }) => {
     const text = `Add ${amount(doseMl)} of feed`;
-    result.setAttribute('class', 'tool-result-strong');
+    result.setAttribute('class', 'tool-result tool-result-strong');
     result.replaceChildren(
       element('span', { text: 'Add ', ownerDocument: doc }),
       element('strong', { text: amount(doseMl), ownerDocument: doc }),
@@ -105,8 +124,11 @@ export function renderDilutionTool(root, deps = {}) {
 
   const renderGeneral = () => {
     const form = element('form', { class: 'tool-form', ownerDocument: doc });
-    const display = resultDisplay(doc, announce);
-    const values = { stockPercent: '', targetPercent: '', totalMl: '' };
+    // The worked example is computed silently; edits after that announce.
+    let quiet = true;
+    const display = resultDisplay(doc, (text) => { if (!quiet) announce(text); },
+      'Fill in all three to see how much stock and water to mix.');
+    const values = { ...GENERAL_EXAMPLE };
     const calculate = () => {
       const result = computeGeneral({
         stockPercent: parseDecimal(values.stockPercent),
@@ -117,22 +139,24 @@ export function renderDilutionTool(root, deps = {}) {
         stockPercent: parseDecimal(values.stockPercent),
       });
     };
-    const field = (id, name, label) => numericInput(doc, {
-      id, name, label, value: values[name],
+    const field = (id, name, label, placeholder) => numericInput(doc, {
+      id, name, label, placeholder, value: values[name],
       onInput: (event) => { values[name] = event.currentTarget.value; calculate(); },
     });
     form.append(
-      field('dilution-stock', 'stockPercent', 'Stock concentration (%)'),
-      field('dilution-target', 'targetPercent', 'Target concentration (%)'),
-      field('dilution-total', 'totalMl', 'Final volume (ml)'),
+      field('dilution-stock', 'stockPercent', 'Stock concentration (%)', 'e.g. 12'),
+      field('dilution-target', 'targetPercent', 'Target concentration (%)', 'e.g. 3'),
+      field('dilution-total', 'totalMl', 'Final volume (ml)', 'e.g. 500'),
       display.result,
     );
+    calculate();
+    quiet = false;
     return form;
   };
 
   const renderRatio = () => {
     const form = element('form', { class: 'tool-form', ownerDocument: doc });
-    const display = resultDisplay(doc, announce);
+    const display = resultDisplay(doc, announce, 'Pick a ratio and a bottle size to see the mix.');
     const ratioPrefs = toolPrefs(prefs, 'dilution');
     const values = {
       parts: ratioPrefs.ratioParts == null ? '' : String(ratioPrefs.ratioParts),
@@ -143,7 +167,7 @@ export function renderDilutionTool(root, deps = {}) {
       if (result.error) display.error(result.error); else display.mix(result);
     };
     const partsInput = numericInput(doc, {
-      id: 'dilution-parts', name: 'parts', label: 'Water parts for 1 part concentrate', value: values.parts,
+      id: 'dilution-parts', name: 'parts', label: 'Water parts for 1 part concentrate', placeholder: 'e.g. 32', value: values.parts,
       onInput: (event) => {
         values.parts = event.currentTarget.value;
         save({ ratioParts: parseDecimal(values.parts) });
@@ -151,14 +175,14 @@ export function renderDilutionTool(root, deps = {}) {
       },
     });
     const volumeInput = numericInput(doc, {
-      id: 'dilution-ratio-total', name: 'totalMl', label: 'Custom bottle volume (ml)', value: values.totalMl,
+      id: 'dilution-ratio-total', name: 'totalMl', label: 'Custom bottle volume (ml)', placeholder: 'e.g. 750', value: values.totalMl,
       onInput: (event) => {
         values.totalMl = event.currentTarget.value;
         save({ bottleMl: parseDecimal(values.totalMl) });
         calculate();
       },
     });
-    const quickPicks = element('div', { class: 'tool-quick-picks', ownerDocument: doc },
+    const quickPicks = element('div', { class: 'tool-quick-picks', role: 'group', 'aria-label': 'Common ratios', ownerDocument: doc },
       ...[10, 32, 64, 128].map((parts) => {
         const button = element('button', { type: 'button', class: 'tool-quick-pick', text: `1:${parts}`, ownerDocument: doc });
         button.addEventListener('click', () => {
@@ -170,7 +194,7 @@ export function renderDilutionTool(root, deps = {}) {
         return button;
       }),
     );
-    const bottles = element('div', { class: 'tool-bottle-presets', ownerDocument: doc },
+    const bottles = element('div', { class: 'tool-bottle-presets', role: 'group', 'aria-label': 'Common bottle sizes', ownerDocument: doc },
       ...[
         ['500 ml', 500], ['750 ml', 750], ['1 L', 1000], ['5 L', 5000],
       ].map(([label, totalMl]) => {
@@ -190,7 +214,7 @@ export function renderDilutionTool(root, deps = {}) {
 
   const renderDose = () => {
     const form = element('form', { class: 'tool-form', ownerDocument: doc });
-    const display = resultDisplay(doc, announce);
+    const display = resultDisplay(doc, announce, 'Enter the feed dose and water volume to see how much feed to add.');
     const dosePrefs = toolPrefs(prefs, 'dilution');
     const values = {
       dosePerL: '',
@@ -206,12 +230,8 @@ export function renderDilutionTool(root, deps = {}) {
       if (result.error) display.error(result.error); else display.dose(result);
     };
     const doseInput = numericInput(doc, {
-      id: 'dilution-dose', name: 'dosePerL', label: 'Feed dose (ml per L)', value: values.dosePerL,
+      id: 'dilution-dose', name: 'dosePerL', label: 'Feed dose (ml per L)', placeholder: 'e.g. 2', value: values.dosePerL,
       onInput: (event) => { values.dosePerL = event.currentTarget.value; calculate(); },
-    });
-    const volumeInput = numericInput(doc, {
-      id: 'dilution-volume', name: 'volume', label: 'Water volume', value: values.volume,
-      onInput: (event) => { values.volume = event.currentTarget.value; calculate(); },
     });
     const unit = element('select', { name: 'volumeUnit', 'aria-label': 'Volume unit', ownerDocument: doc },
       element('option', { value: 'l', text: 'L', ownerDocument: doc }),
@@ -226,19 +246,34 @@ export function renderDilutionTool(root, deps = {}) {
       save({ volumeUnit: values.volumeUnit });
       calculate();
     });
-    const strengths = element('div', { class: 'tool-strengths', ownerDocument: doc },
-      ...[['Weak', 0.5], ['Normal', 1], ['Strong', 1.5]].map(([label, multiplier]) => {
-        const button = element('button', { type: 'button', class: 'tool-strength', text: label, ownerDocument: doc });
-        button.addEventListener('click', () => { values.multiplier = multiplier; calculate(); });
-        return button;
-      }),
-    );
-    form.append(doseInput, volumeInput, unit, strengths, display.result);
+    const volumeInput = numericInput(doc, {
+      id: 'dilution-volume', name: 'volume', label: 'Water volume', placeholder: 'e.g. 4', value: values.volume,
+      onInput: (event) => { values.volume = event.currentTarget.value; calculate(); },
+      extra: unit,
+    });
+    const strengthButtons = [['Weak', 0.5], ['Normal', 1], ['Strong', 1.5]].map(([label, multiplier]) => {
+      const button = element('button', {
+        type: 'button', class: 'tool-strength', text: label,
+        'aria-pressed': String(values.multiplier === multiplier), ownerDocument: doc,
+      });
+      button.addEventListener('click', () => {
+        values.multiplier = multiplier;
+        for (const other of strengthButtons) {
+          other.setAttribute('aria-pressed', String(other === button));
+        }
+        calculate();
+      });
+      return button;
+    });
+    const strengths = element('div', {
+      class: 'tool-strengths', role: 'group', 'aria-label': 'Feed strength', ownerDocument: doc,
+    }, ...strengthButtons);
+    form.append(doseInput, volumeInput, strengths, display.result);
     return form;
   };
 
   const render = () => {
-    const tabs = element('div', { class: 'tool-tabs', ownerDocument: doc }, ...MODES.map(({ id, label }) => {
+    const tabs = element('div', { class: 'tool-tabs', role: 'group', 'aria-label': 'Calculator', ownerDocument: doc }, ...MODES.map(({ id, label }) => {
       const tab = element('button', {
         type: 'button', class: `tool-tab${mode === id ? ' is-active' : ''}`, text: label,
         'aria-pressed': String(mode === id), ownerDocument: doc,

@@ -39,7 +39,7 @@ const buttonWithText = (root, text) => {
 test('mounts neutral labels, preset buttons, the default result and the local privacy shell', () => withTool(({ fixture }) => {
   assert.equal(fixture.root.querySelector('h1')?.textContent, 'Click Counter');
   assert.equal(fixture.root.querySelector('.tool-lede')?.textContent,
-    'Convert a target number into clicks on a 60-click scale.');
+    'Convert a target number into clicks on a scale of 60 clicks.');
   assert.equal(fixture.root.querySelector('.click-counter-value')?.textContent, '30 clicks');
   assert.equal(fixture.root.querySelector('.click-counter-equation')?.textContent, '2.5 ÷ 5 × 60');
   assert.equal(fixture.root.querySelector('[name=targetNumber]')?.value, '2.5');
@@ -85,7 +85,11 @@ test('shows an accessible error for invalid input and reset restores defaults', 
   assert.match(announcements.at(-1), /zero or greater/i);
 
   buttonWithText(fixture.root, '15').click();
-  buttonWithText(fixture.root, 'Reset').click();
+  const reset = buttonWithText(fixture.root, 'Reset');
+  reset.focus();
+  reset.click();
+  assert.equal(reset.hidden, true);
+  assert.equal(fixture.document.activeElement, target, 'focus moves to the target number after Reset');
   assert.equal(target.value, '2.5');
   assert.equal(buttonWithText(fixture.root, '5').getAttribute('aria-pressed'), 'true');
   assert.equal(fixture.root.querySelector('.click-counter-value')?.textContent, '30 clicks');
