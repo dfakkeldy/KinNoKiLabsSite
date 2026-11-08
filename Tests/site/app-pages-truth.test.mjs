@@ -60,7 +60,7 @@ test('Echo says 1.0 is on the App Store and keeps the beta for early builds', ()
   for (const source of [echo, theme, generatedEcho, generatedApps, generatedHome]) {
     assert.match(source, storeURL);
   }
-  assert.match(generatedApps, /<h2>Echo<\/h2>[\s\S]*?<span class="status-chip">App Store — 1\.0<\/span>/);
+  assert.match(generatedApps, /<h2>Echo<\/h2>(?:(?!<h2>)[\s\S])*?<span class="status-chip">App Store — 1\.0<\/span>/);
   for (const source of [echo, generatedEcho]) {
     assert.doesNotMatch(source, /open beta right now|current TestFlight beta|open development toward 1\.0/i);
     assert.doesNotMatch(source, /Coming in 1\.0/);
@@ -85,6 +85,14 @@ test('Echo guides tag unshipped work as roadmap, not as part of 1.0', () => {
   // Not in the 1.0 build: .apkg import, Brain Dump, and full iCloud study sync.
   assert.match(echo, /\*\*Brain Dump\*\* 🔭 \*\*Roadmap:\*\*/);
   assert.match(echo, /real \.apkg Anki import[^\n]*Roadmap/);
+  // Roadmap pills in headings must keep the old heading ids and links working.
+  const manualHtml = readFileSync(new URL('../../Output/echo-manual/index.html', import.meta.url), 'utf8');
+  const betaHtml = readFileSync(new URL('../../Output/echo-beta/index.html', import.meta.url), 'utf8');
+  assert.match(manualHtml, /<h2 id="10-brain-dump-book-notes">.*?status-tag-later/);
+  assert.match(manualHtml, /<h3 id="importing-real-anki-decks-apkg">/);
+  assert.match(manualHtml, /href="#10-brain-dump-book-notes"/);
+  assert.match(betaHtml, /id="plan-g-after-1-0-as-builds-gain-the-new-features"/);
+  assert.match(betaHtml, /href="#plan-g-after-1-0-as-builds-gain-the-new-features"/);
 });
 
 test('Echo marks shipped 1.0 features without a status tag', () => {

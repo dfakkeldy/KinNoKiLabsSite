@@ -26,7 +26,7 @@ This is one of the most replicated effects in memory research. In the classic 19
 
 - When something in a book genuinely lands, bookmark it and grab a photo of wherever you are — the trailhead, your kitchen, the view out the windshield (when parked!). Mundane is fine; *distinctive* is better.
 - Driving or working? Don't break focus. Attach a photo later from your library — or let Context Memory log the place automatically.
-- During flashcard review, when the photo (or place chip) appears, take a second to mentally *put yourself back there* before answering. That deliberate reinstatement is what fires the retrieval cue.
+- During flashcard review, when the photo appears, take a second to mentally *put yourself back there* before answering. That deliberate reinstatement is what fires the retrieval cue.
 - Don't photograph everything. A photo on every paragraph is noise; a photo on the ten ideas you most want to keep is a memory palace.
 
 > **Is this a "memory palace"?** Close cousin. The memory palace (method of loci) deliberately places facts into an imagined space; Echo's photo and place bookmarks capture the *real* space your brain already attached to the moment. Same spatial machinery (Maguire et al., 2003), zero effort — your hippocampus was doing it anyway.
@@ -212,7 +212,7 @@ Learners are famously bad at judging their own learning — re-reading *feels* e
 
 #### What it does
 
-One tap exports a book's entire study record as a clean, portable Markdown bundle: every bookmark with its timestamp and note, your brain-dump entries, flashcard fronts and backs, chapter headings — plus an assets folder with your voice memos and photos. Drop the folder into **Obsidian**, **Logseq**, or **Notion**, or just keep it as files. No account, no API, no lock-in.
+One tap exports a book's entire study record as a clean, portable Markdown bundle: every bookmark with its timestamp and note, flashcard fronts and backs, chapter headings — plus an assets folder with your voice memos and photos. Drop the folder into **Obsidian**, **Logseq**, or **Notion**, or just keep it as files. No account, no API, no lock-in.
 
 #### The science: The generation effect and trusted storage
 
@@ -254,7 +254,7 @@ Sleep is when the hippocampus consolidates the day's learning — but material y
 1. **First pass (listen):** normal or slightly raised speed. When something lands, bookmark it — voice memo if your hands are busy, photo if the moment is distinctive. A passing thought about anything else? Park it in a voice-memo bookmark and keep listening (Brain Dump will do this on its own — 🔭 **Roadmap**).
 2. **Mark the card-worthy moments:** one tap, no pause. They'll wait in the Card Inbox.
 3. **Loop what matters:** for dense chapters, loop until you could explain them.
-4. **Harvest on your schedule:** at home, process the inboxes — promote marks to flashcards, promote brain-dump keepers, delete the rest.
+4. **Harvest on your schedule:** at home, process the inboxes — promote marks and bookmarks to flashcards, delete the rest.
 5. **Review daily:** when the notification arrives, clear your due cards — phone or watch, five-ish minutes.
 6. **Check Insights weekly:** coverage gaps tell you what to re-listen; the due forecast tells you whether to ease up on new cards.
 7. **Read-along pass (optional, for the big books):** weekend re-listen with the Read tab open.

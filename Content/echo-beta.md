@@ -48,7 +48,7 @@ Alignment bugs are the most valuable reports and need the most context. Include:
 
 Pick whichever matches your life. Each plan is 10–20 minutes of intentional testing.
 
-**Jump to a plan:** [A · Commute](#plan-a-the-commute-run-smart-rewind-interruptions) · [B · Alignment](#plan-b-the-alignment-gauntlet-epub-auto-align) · [C · Study](#plan-c-the-study-session-bookmarks-flashcards-review) · [D · Library](#plan-d-the-library-stress-test-formats-playlist) · [E · Wrist](#plan-e-the-wrist-only-day-watch-remote) · [F · Accessibility](#plan-f-the-accessibility-pass-dynamic-type-fonts-voiceover) · [G · 1.0 Preview](#plan-g-the-1-0-preview-as-builds-gain-the-new-features)
+**Jump to a plan:** [A · Commute](#plan-a-the-commute-run-smart-rewind-interruptions) · [B · Alignment](#plan-b-the-alignment-gauntlet-epub-auto-align) · [C · Study](#plan-c-the-study-session-bookmarks-flashcards-review) · [D · Library](#plan-d-the-library-stress-test-formats-playlist) · [E · Wrist](#plan-e-the-wrist-only-day-watch-remote) · [F · Accessibility](#plan-f-the-accessibility-pass-dynamic-type-fonts-voiceover) · [G · After 1.0](#plan-g-after-1-0-as-builds-gain-the-new-features)
 
 ### Plan A — The Commute Run *Smart Rewind & interruptions*
 

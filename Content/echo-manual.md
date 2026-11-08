@@ -207,7 +207,7 @@ Every card opens in a full editor: front/back, audio snippet range (with "use cu
 - **Review by deck** (🔭 **Roadmap**): run a session over one deck's due cards — exam-week mode. Daily Review covers all due cards today.
 - **Tags:** space-separated, Anki convention, for cross-deck filtering.
 
-### Importing real Anki decks (.apkg) 🔭 Roadmap
+### Importing real Anki decks (.apkg) 🔭
 
 Not in Echo 1.0, which imports Anki-style JSON decks. The plan: pick a `.apkg` file from the deck list's import button and Echo maps it card-by-card, **scheduling history included** — mature cards stay mature; nothing restarts from zero.
 
@@ -229,7 +229,7 @@ The full review session runs hands-free on the watch: hear the card, think your 
 
 > 🔭 **Roadmap — Chapter Study Mode:** treat each chapter as a flashcard, with due chapters lining up as a ready-made listening queue. Until then: loop the chapter, grade yourself honestly at its end, and card anything you couldn't explain.
 
-## 10. Brain Dump & Book Notes 🔭 Roadmap
+## 10. Brain Dump & Book Notes 🔭
 
 Not in Echo 1.0. Until then, a bookmark with a voice memo or note is the quickest way to park a thought. The plan:
 
@@ -320,7 +320,7 @@ Your brain files *where* alongside *what* — Echo can capture the "where" for y
 Echo's position on your data: it's yours, in formats you can read, forever. The database schema is open source; nothing is hostage.
 
 - **Bookmarks → Markdown** (available today): a book's bookmarks with timestamps, notes, and deep links that reopen Echo at the exact second.
-- **Study Notes bundle**: the whole second brain, per book — one Markdown file (bookmarks, Book Notes, flashcard fronts/backs, chapter headings, place names) plus an assets folder with your voice memos and photos. Obsidian/Logseq/Notion-ready: plain files, relative links, no account. Per book, or bulk-export in Settings.
+- **Study Notes bundle**: the whole second brain, per book — one Markdown file (bookmarks, flashcard fronts/backs, chapter headings) plus an assets folder with your voice memos and photos. Obsidian/Logseq/Notion-ready: plain files, relative links, no account. Per book, or bulk-export in Settings.
 - **Deck → JSON** (🔭 **Roadmap**): any deck (or all cards) as a portable file with every field including scheduling state; Echo re-imports its own exports losslessly — backup and device-migration in one.
 - **Anki .apkg import** (🔭 **Roadmap**): inbound — see [section 9, The Study System](#9-the-study-system-flashcards-review). (.apkg *export* from the phone is on the roadmap too.)
 

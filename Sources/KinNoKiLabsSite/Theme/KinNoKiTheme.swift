@@ -1127,6 +1127,8 @@ private func guideBody(_ source: String) -> GuideBody {
         ("🚧 <strong>Coming in 1.0</strong>", guideStatusTag),
         ("(🔭 <strong>Roadmap</strong>)", guideRoadmapTag),
         ("🔭 <strong>Roadmap</strong>", guideRoadmapTag),
+        (" 🔭</h2>", " " + guideRoadmapTag + "</h2>"),
+        (" 🔭</h3>", " " + guideRoadmapTag + "</h3>"),
         ("🚧 Coming in 1.0", guideStatusTag),
         ("(🚧)", guideStatusTag),
         (" 🚧</h2>", " " + guideStatusTag + "</h2>"),
