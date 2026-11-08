@@ -173,6 +173,9 @@ export function renderClickCounterTool(root, deps = {}) {
     targetInput.value = formatNumber(targetNumber);
     setSelectedPreset();
     showResult({ shouldAnnounce: true, shouldSave: true });
+    // Reset hides itself once the form is back at its defaults, so hand focus
+    // to the target number rather than letting it drop to the page.
+    targetInput.focus();
   });
 
   showResult();

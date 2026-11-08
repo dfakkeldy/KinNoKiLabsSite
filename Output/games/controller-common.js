@@ -43,14 +43,6 @@ export function element(tag, attributes = {}, ...children) {
   return node;
 }
 
-// Shared thumbnail builder for cargo/piece previews (KinNoKi Stack next-cargo
-// pills, KinNoKi Yard tray pieces). `cells` are piece-local {row, column}
-// integers (already reflecting whatever rotation the caller wants shown);
-// the bounding box and every cell position are derived purely from those
-// integers via CSS percentage math (custom properties + calc()), so this
-// never reads layout. `rotation` is recorded as metadata (a data attribute)
-// for callers that want a rotation-aware hook in CSS or tests; it does not
-// re-derive cell coordinates.
 // Stack and Yard keep their play controls disabled outside active play. The
 // shell carries the play state (data-play-state) so CSS can leave the move
 // pad out before the first Start and dim it while paused. A one-line caption
@@ -75,6 +67,14 @@ export function syncControlsHint(view, { status, entryKind }) {
       : 'Press ' + GO_LABELS[entryKind] + ' to use these controls.';
 }
 
+// Shared thumbnail builder for cargo/piece previews (KinNoKi Stack next-cargo
+// pills, KinNoKi Yard tray pieces). `cells` are piece-local {row, column}
+// integers (already reflecting whatever rotation the caller wants shown);
+// the bounding box and every cell position are derived purely from those
+// integers via CSS percentage math (custom properties + calc()), so this
+// never reads layout. `rotation` is recorded as metadata (a data attribute)
+// for callers that want a rotation-aware hook in CSS or tests; it does not
+// re-derive cell coordinates.
 export function cargoThumb(cells, { patternClass, rotation = 0 } = {}) {
   const columns = Math.max(...cells.map((cell) => cell.column)) + 1;
   const rows = Math.max(...cells.map((cell) => cell.row)) + 1;

@@ -554,7 +554,7 @@ footer li{margin:0 0 4px}
   .rule{border-right:0}
   /* Phone: show the closest spots, then one tap for the rest, so the
      calendar arrives within a couple of screens of the map. */
-  .list-sec.is-capped .spot-list > li:nth-child(n+8){display:none}
+  .list-sec.is-capped .spot-list > li.is-over-cap{display:none}
   .list-more{display:flex;align-items:center;justify-content:center;width:100%;min-height:48px;margin:0;padding:10px 16px;border:0;border-top:1px solid var(--rule);background:var(--surface-2);color:var(--salt);font:inherit;font-weight:700;font-size:15px;cursor:pointer}
   .list-more[hidden]{display:none}
   /* Phone calendar: the species name takes its own row, so the twelve
@@ -1485,13 +1485,31 @@ footer li{margin:0 0 4px}
       h('span', { class: 's-drive tnum', title: fmtMin(drive(s, other)) + ' from ' + ORIGINS[other].label },
         h('b', null, String(drive(s))), 'min'));
     btn.setAttribute('aria-label', s.num + '. ' + s.name + ', ' + s.area + '. ' + (st === 'out' ? 'Out of season. ' : st === 'peak' ? 'Peak month. ' : '') + drive(s) + ' minutes from ' + ORIGINS[state.origin].label + '.');
-    return h('li', null, btn);
+    return h('li', { class: 'spot-row' }, btn);
   }
-  /* Phone list cap: the first rows (closest, in season first) show, and
-     one button reveals the rest. Once opened it stays open. */
+  /* Phone list cap: the first six spots (closest, in season first) show,
+     and one button reveals the rest. Once opened it stays open. Only spot
+     rows count toward the six; a group header whose spots are all past the
+     cap folds away with them. */
+  var LIST_CAP = 6;
   var elListMore = $('#list-more'), listOpened = false;
+  function markListCap() {
+    var spots = 0, header = null, headerKept = false;
+    Array.prototype.forEach.call(elList.children, function (li) {
+      if (li.classList.contains('group-h')) {
+        if (header && !headerKept) header.classList.add('is-over-cap');
+        header = li; headerKept = false;
+        return;
+      }
+      if (!li.classList.contains('spot-row')) { headerKept = true; return; }
+      spots += 1;
+      if (spots > LIST_CAP) li.classList.add('is-over-cap');
+      else headerKept = true;
+    });
+    if (header && !headerKept) header.classList.add('is-over-cap');
+  }
   function updateListCap(count) {
-    var capped = !listOpened && count > 6;
+    var capped = !listOpened && count > LIST_CAP;
     elListSec.classList.toggle('is-capped', capped);
     elListMore.hidden = !capped;
     elListMore.textContent = 'Show all ' + count + ' spots';
@@ -1500,8 +1518,8 @@ footer li{margin:0 0 4px}
     listOpened = true;
     elListSec.classList.remove('is-capped');
     elListMore.hidden = true;
-    var rows = elList.querySelectorAll('.spot');
-    if (rows[6]) rows[6].focus();
+    var first = elList.querySelector('.spot-row.is-over-cap .spot');
+    if (first) first.focus();
   });
   function renderList(shown) {
     updateListCap(shown.length);
@@ -1524,6 +1542,7 @@ footer li{margin:0 0 4px}
     } else {
       shown.slice().sort(byDrive).forEach(function (s) { elList.appendChild(listItem(s)); });
     }
+    markListCap();
   }
 
   var fitTimer = null;

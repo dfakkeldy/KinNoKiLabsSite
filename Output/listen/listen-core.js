@@ -1,4 +1,5 @@
-/* Echo Listening Room — pure logic ports and presentation policy (no DOM, no fetch).
+/* Echo Listening Room — pure logic ports and presentation policy (no fetch;
+   DOM only through elements and a document passed in).
    JS ports of Echo's Shared/WordTokenizer.swift,
    Shared/WordTimingInterpolator.swift and
    Shared/VisualListeningCueResolver.swift (Echo PR #417), so the web
@@ -395,6 +396,78 @@
     return { imageCue: imageCue, subtitleCue: subtitleCue, activeBlockId: activeBlockId };
   }
 
+  /* ── Pre-play preview (room presentation, shared by /listen and /fiction) ──
+     Before the first play the stage holds the chapter heading. Under it,
+     the rooms set the chapter's opening sentence in the quiet caption
+     tier, so the room shows a line of the book itself; pointing at Play
+     lights its first word (CSS), a preview of the read-along that play
+     starts. The line is visual only: captionWords is aria-hidden, and it
+     is gone once playback starts or the cue changes. Not an Echo port.
+
+     previewWords returns the words to show when blockId is a heading
+     followed (before the next heading) by a narrated paragraph, else
+     null. renderPreview builds the line with the document it is given,
+     so this module still never reaches for a global DOM. */
+  function previewWords(blocks, blockId) {
+    if (blockId === null || blockId === undefined || !blocks) return null;
+    var at = -1;
+    for (var i = 0; i < blocks.length; i++) {
+      if (blocks[i].id === blockId) { at = i; break; }
+    }
+    if (at === -1 || blocks[at].kind !== 'heading') return null;
+    var next = null;
+    for (var j = at + 1; j < blocks.length; j++) {
+      var candidate = blocks[j];
+      if (candidate.kind === 'heading') break;
+      if (candidate.kind === 'paragraph' && typeof candidate.text === 'string' && candidate.text.trim() &&
+          candidate.chapterIndex !== null && candidate.chapterIndex !== undefined) {
+        next = candidate;
+        break;
+      }
+    }
+    if (!next) return null;
+    var text = next.text.trim();
+    var sentence = text.match(/^[\s\S]*?[.!?\u2026]["\u201d\u2019)]?(?=\s|$)/);
+    var list = (sentence ? sentence[0] : text).split(/\s+/);
+    if (list.length > 28) list = list.slice(0, 28).concat('\u2026');
+    return list;
+  }
+
+  function renderPreview(doc, container, blocks, blockId) {
+    var list = previewWords(blocks, blockId);
+    if (!list) return null;
+    var line = doc.createElement('span');
+    line.className = 'room-preview';
+    list.forEach(function (word, k) {
+      var span = doc.createElement('span');
+      span.className = 'pw';
+      span.textContent = word;
+      line.appendChild(span);
+      if (k < list.length - 1) line.appendChild(doc.createTextNode(' '));
+    });
+    container.appendChild(line);
+    return line;
+  }
+
+  /* The idle caption state. The first play adds `.room-main.started`,
+     which retires the preview and the cue hint for good. Until then, once
+     captions are ready, the hint says what they will do. The flag lives
+     here as well as on the class, so the preview check needs no DOM read. */
+  function idleCaptionState(main, cueHint) {
+    var started = false;
+    return {
+      hasStarted: function () { return started; },
+      markStarted: function () {
+        started = true;
+        main.classList.add('started');
+        if (cueHint) cueHint.hidden = true;
+      },
+      offerCueHint: function () {
+        if (cueHint && !main.classList.contains('started')) cueHint.hidden = false;
+      },
+    };
+  }
+
   return {
     words: words,
     interpolateWords: interpolateWords,
@@ -406,5 +479,8 @@
     librarySections: librarySections,
     libraryActions: libraryActions,
     resolveSnapshot: resolveSnapshot,
+    previewWords: previewWords,
+    renderPreview: renderPreview,
+    idleCaptionState: idleCaptionState,
   };
 });
