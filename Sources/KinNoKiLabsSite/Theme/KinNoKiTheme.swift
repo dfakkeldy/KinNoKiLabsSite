@@ -1933,15 +1933,15 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
           <div class="gis-marker" aria-hidden="true"><span>2013</span></div>
           <figure class="gis-figure gis-figure-map">
             <img src="/images/gis/field-map-2013.webp" width="1440" height="1098" fetchpriority="high" decoding="async" alt="A forestry map Dan made in ArcMap in November 2013: five pre-commercial thinning areas from 0.39 to 2.05 hectares, outlined in blue and pink over forest cover, streams, trails and property lines, at 1:5,000. Names, parcel numbers and road names are removed.">
-            <figcaption><span>Original map, November 2013</span> The owner's name, stand code, parcel IDs, road names and civic address are removed. Geometry and colours are unchanged.</figcaption>
+            <figcaption><span>Original map, November 2013</span> The owner's name, stand code, parcel IDs, road names and civic address are removed, and the title was relabelled. Geometry and colours are unchanged.</figcaption>
           </figure>
           <div class="gis-stop-copy">
             <p class="gis-era">ArcMap 10.1 · Forestry operations</p>
             <h2>Thinning areas, measured for a claim</h2>
             <div class="gis-brief">
-              <div><h3>Problem</h3><p>A landowner needed a map of pre-commercial thinning areas, with the area of each, to support a claim.</p></div>
+              <div><h3>Problem</h3><p>A request came in for a map of pre-commercial thinning areas, with the area of each, to support a claim.</p></div>
               <div><h3>Inputs</h3><p>Forest cover, streams, trails, property lines, and the outlines of the thinning areas.</p></div>
-              <div><h3>Method</h3><p>Drew each thinning area in ArcMap, calculated its area in hectares, and laid the sheet out at 1:5,000 with a scale bar.</p></div>
+              <div><h3>Method</h3><p>Mapped each thinning area in ArcMap, calculated its area in hectares, and laid the sheet out at 1:5,000 with a scale bar.</p></div>
               <div><h3>Output</h3><p>A one-page map of five thinning areas, from 0.39 to 2.05 hectares, each labelled with its area.</p></div>
             </div>
           </div>

@@ -5875,7 +5875,6 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 }
 .gis-withheld > span { display: block; margin-bottom: 3px; color: var(--gis-spruce-text); }
 .gis-stop > .gis-withheld { grid-area: fig; }
-.gis-stop-text { grid-template-rows: auto auto; }
 .gis-product-figure img { object-position: left top; }
 .gis-figure figcaption {
   padding: 14px 16px 15px;
