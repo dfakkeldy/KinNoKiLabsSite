@@ -5,7 +5,7 @@ tags: studio
 ---
 # Five apps and a services page
 
-> **Update, October 2026:** MacroMark 1.0 is now [on the App Store](https://apps.apple.com/ca/app/macromark/id6785081218), free. Routey has been discontinued. See [Apps](/apps) for where each app stands today.
+> **Update, October 2026:** MacroMark 1.0 is now [on the App Store](https://apps.apple.com/ca/app/macromark/id6785081218), free, and Turn Timer 1.0 is [on the App Store](https://apps.apple.com/ca/app/turn-timer/id6771073144) too. Routey has been discontinued. See [Apps](/apps) for where each app stands today.
 
 First real post, so a status note rather than a manifesto.
 

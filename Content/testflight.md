@@ -15,7 +15,7 @@ Two apps are in open beta. Joining takes two steps.
 <section class="beta-card">
 <img class="beta-icon" src="/images/apps/turntimer.png" alt="" width="56" height="56" />
 <h2>Turn Timer</h2>
-<p>A visual sequence timer for routines, classrooms, kitchens, meetings, and game nights.</p>
+<p>A visual sequence timer for routines, classrooms, kitchens, meetings, and game nights. Version 1.0 is <a href="https://apps.apple.com/ca/app/turn-timer/id6771073144">on the App Store</a>; join the beta for early builds.</p>
 <p class="beta-actions"><a class="btn btn-gold btn-md" href="https://testflight.apple.com/join/s7w4YGWU" aria-label="Join the beta: Turn Timer">Join the beta</a><a class="btn btn-outline btn-md" href="/apps/visualtimer">About Turn Timer</a></p>
 </section>
 <section class="beta-card">

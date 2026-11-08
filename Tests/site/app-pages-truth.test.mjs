@@ -196,10 +196,13 @@ test('homepage and apps cards point at on-site app pages', () => {
   assert.match(theme, /class="app-card-link" href="\/apps\/macromark\/"/);
 });
 
-test('Turn Timer mentions the on-site PWA and keeps the live TestFlight join', () => {
+test('Turn Timer says 1.0 is on the App Store and keeps the on-site PWA', () => {
+  const storeURL = /https:\/\/apps\.apple\.com\/ca\/app\/turn-timer\/id6771073144/;
   assert.match(visualTimer, /\/tools\/turn-timer\//);
-  assert.match(visualTimer, /https:\/\/testflight\.apple\.com\/join\/s7w4YGWU/);
-  assert.match(visualTimer, /not on the App Store yet/);
+  assert.match(visualTimer, /^status: App Store — 1\.0$/m);
+  assert.match(visualTimer, storeURL);
+  assert.match(theme, storeURL);
+  assert.doesNotMatch(visualTimer, /testflight|not on the App Store yet/i);
 });
 
 test('MacroMark public copy says 1.0 is live on the App Store and free', () => {

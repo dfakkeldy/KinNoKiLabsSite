@@ -73,3 +73,10 @@ test('describes Apple work as proof and an optional specialty', () => {
     /is one person building focused Apple-platform apps — iOS, macOS, and watchOS — and practical software systems/,
   );
 });
+
+test('states bid-room work without claiming a span of years', () => {
+  for (const source of [theme, aboutContent, generatedAbout]) {
+    assert.match(source, /I worked in bid rooms/);
+    assert.doesNotMatch(source, /years in bid rooms/i);
+  }
+});
