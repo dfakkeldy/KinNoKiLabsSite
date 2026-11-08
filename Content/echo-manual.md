@@ -374,6 +374,8 @@ CarPlay isn't enabled in current builds; it's on the roadmap. Until then, the wa
 
 ## 21. Echo for Mac
 
+On an Apple Silicon Mac, the App Store version of Echo is the iPad app, so it works like the iPad sections above. This section describes the native Mac app, which is in TestFlight testing and not on the App Store yet.
+
 - **Three-pane layout:** bookmarks sidebar, player with transport and speed controls, document pane.
 - Plays the same folders, with the broadest format support (FLAC/OGG/OPUS).
 - **EPUB alignment** with streaming on-device transcription — watch alignment build in real time.
@@ -382,7 +384,7 @@ CarPlay isn't enabled in current builds; it's on the roadmap. Until then, the wa
 - **Daily Review** — clear your due cards at the desk, in a review sheet; the Card Inbox opens the same way.
 - **Insights pane** (🔭 **Roadmap**) — listening and study charts on the big screen.
 
-The Mac app is the *functional core* — play, read, align, review. Insights and full reader/alignment parity with iOS are on the roadmap.
+The native Mac app is the *functional core* — play, read, align, review. Insights and full reader/alignment parity with iOS are on the roadmap.
 
 ## 22. Sync & iCloud
 
