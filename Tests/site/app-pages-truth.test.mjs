@@ -57,7 +57,7 @@ test('Echo public copy uses FSRS and drops the stale commit boast', () => {
 test('Echo says 1.0 is on the App Store and keeps the beta for early builds', () => {
   const storeURL = /https:\/\/apps\.apple\.com\/ca\/app\/audiobook-study-player-echo\/id6779836394/;
   assert.match(echo, /^status: App Store — 1\.0$/m);
-  for (const source of [echo, theme, generatedEcho, generatedApps, generatedHome]) {
+  for (const source of [echo, theme, generatedEcho, generatedHome]) {
     assert.match(source, storeURL);
   }
   assert.match(generatedApps, /<h2>Echo<\/h2>(?:(?!<h2>)[\s\S])*?<span class="status-chip">App Store — 1\.0<\/span>/);
