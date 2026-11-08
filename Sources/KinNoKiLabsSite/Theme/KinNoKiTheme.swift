@@ -1127,6 +1127,8 @@ private func guideBody(_ source: String) -> GuideBody {
         ("🚧 <strong>Coming in 1.0</strong>", guideStatusTag),
         ("(🔭 <strong>Roadmap</strong>)", guideRoadmapTag),
         ("🔭 <strong>Roadmap</strong>", guideRoadmapTag),
+        (" 🔭</h2>", " " + guideRoadmapTag + "</h2>"),
+        (" 🔭</h3>", " " + guideRoadmapTag + "</h3>"),
         ("🚧 Coming in 1.0", guideStatusTag),
         ("(🚧)", guideStatusTag),
         (" 🚧</h2>", " " + guideStatusTag + "</h2>"),
@@ -1665,7 +1667,7 @@ private func homeMain() -> Node<HTML.BodyContext> {
             </div>
             <div class="flagship-actions">
               <a class="btn btn-gold" href="/apps/echo">Meet Echo</a>
-              <a class="link-quiet" href="/echo-beta">Join the TestFlight beta</a>
+              <a class="link-quiet" href="https://apps.apple.com/ca/app/audiobook-study-player-echo/id6779836394">Get Echo on the App Store</a>
               <a class="link-quiet" href="/learn">Sample learning audiobooks</a>
             </div>
           </div>
@@ -1736,7 +1738,6 @@ private func appsMain() -> Node<HTML.BodyContext> {
         <dl class="status-legend">
           <div><dt><span class="status-chip">App Store — 1.0</span></dt><dd>Download it now.</dd></div>
           <div><dt><span class="status-chip">Live browser map</span></dt><dd>Open it in any browser.</dd></div>
-          <div><dt><span class="status-chip">TestFlight beta</span></dt><dd>Test it through Apple’s TestFlight.</dd></div>
         </dl>
       </header>
 
@@ -1746,7 +1747,7 @@ private func appsMain() -> Node<HTML.BodyContext> {
           <h2>Echo</h2>
           <p>An audiobook player built for studying, not just listening. Word-perfect read-along, one-tap flashcards, Smart Rewind, and a Watch remote you design.</p>
           <div class="app-card-meta">
-            <span class="status-chip">TestFlight beta</span>
+            <span class="status-chip">App Store — 1.0</span>
             <span class="platforms">iPhone&nbsp;&amp;&nbsp;iPad ·&nbsp;Watch ·&nbsp;Mac</span>
           </div>
           \(svgChevron)
@@ -2122,7 +2123,7 @@ private func supportMain() -> Node<HTML.BodyContext> {
         <p class="page-lede">Pick the app you need help with, or email for anything else.</p>
       </header>
       <div class="row-list">
-        <a class="support-row" href="/echo-help"><img class="app-icon support-row-icon" src="/images/apps/echo.png" alt="" width="36" height="36"><span class="support-row-text"><span>Echo</span><span class="support-row-sub"><span class="status-chip">TestFlight beta</span> FAQ and contact</span></span>\(svgRowChevron)</a>
+        <a class="support-row" href="/echo-help"><img class="app-icon support-row-icon" src="/images/apps/echo.png" alt="" width="36" height="36"><span class="support-row-text"><span>Echo</span><span class="support-row-sub"><span class="status-chip">App Store — 1.0</span> FAQ and contact</span></span>\(svgRowChevron)</a>
         <a class="support-row" href="/macromark-help"><img class="app-icon support-row-icon" src="/images/apps/macromark.png" alt="" width="36" height="36"><span class="support-row-text"><span>MacroMark</span><span class="support-row-sub"><span class="status-chip">App Store — 1.0</span> Email or GitHub issues</span></span>\(svgRowChevron)</a>
         <a class="support-row" href="/nsmarksthespot-help"><img class="app-icon support-row-icon" src="/images/apps/nsmarksthespot.svg" alt="" width="36" height="36"><span class="support-row-text"><span>NS Marks The Spot</span><span class="support-row-sub"><span class="status-chip">Live browser map</span> Where the maps are, and contact</span></span>\(svgRowChevron)</a>
         <a class="support-row" href="/visualtimer-help"><img class="app-icon support-row-icon" src="/images/apps/turntimer.png" alt="" width="36" height="36"><span class="support-row-text"><span>Turn Timer</span><span class="support-row-sub"><span class="status-chip">App Store — 1.0</span> Email or GitHub issues</span></span>\(svgRowChevron)</a>
@@ -2253,7 +2254,7 @@ private func learnMain() -> Node<HTML.BodyContext> {
           <h2>Tell me what you want to learn.</h2>
         </div>
         <div class="learn-request-body">
-          <p>Send me a topic, with as much detail as you want. If it's a good fit, I'll make a short custom audiobook and give you early access to Echo so you can test it.</p>
+          <p>Send me a topic, with as much detail as you want. If it's a good fit, I'll make a short custom audiobook for you to test in Echo.</p>
           <div class="learn-request-action">
             <a class="btn btn-gold" href="mailto:learn@kinnokilabs.com">Email a topic</a>
             <span class="learn-request-address">learn@kinnokilabs.com</span>
@@ -2282,7 +2283,7 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
           <p class="echo-hero-lede">The audiobook player that helps you remember what you heard.</p>
           <p class="echo-hero-platforms">iPhone &amp; iPad · Apple Watch · Mac</p>
           <div class="echo-hero-actions">
-            <a class="btn btn-gold" href="https://testflight.apple.com/join/Zu9rzg59">Join the TestFlight beta</a>
+            <a class="btn btn-gold" href="https://apps.apple.com/ca/app/audiobook-study-player-echo/id6779836394">Download on the App Store</a>
             <a class="echo-source-link" href="https://github.com/dfakkeldy/Echo" target="_blank" rel="noopener">\(svgGitHub)Open source · GPL-3.0</a>
           </div>
         </div>
@@ -2340,7 +2341,7 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
         <div class="section-head">
           <p class="eyebrow">What Echo does</p>
           <h2 class="section-title">A serious study system, out of the way until you want it.</h2>
-          <p class="section-lede">Everything below is in the current TestFlight beta. Echo is in open development toward 1.0.</p>
+          <p class="section-lede">Everything below is in Echo 1.0 on the App Store.</p>
         </div>
         <p class="feature-group-label">For listening</p>
         <div class="feature-grid">
@@ -2372,10 +2373,10 @@ private func echoDetailMain() -> Node<HTML.BodyContext> {
         <div class="band-dark echo-cta">
           <div class="glow-bottom"></div>
           <div class="echo-cta-inner">
-            <h2 class="echo-cta-title">Echo is in open beta right now.</h2>
-            <p class="echo-cta-lede">TestFlight builds for iPhone, iPad, Apple Watch, and Mac — guides, test plans, and a devlog included.</p>
+            <h2 class="echo-cta-title">Echo 1.0 is on the App Store.</h2>
+            <p class="echo-cta-lede">Free on the App Store, with an optional one-time Echo Pro. Guides, a devlog, and an open beta for early builds.</p>
             <div class="echo-cta-actions">
-              <a class="btn btn-gold" href="https://testflight.apple.com/join/Zu9rzg59">Join the TestFlight beta</a>
+              <a class="btn btn-gold" href="https://apps.apple.com/ca/app/audiobook-study-player-echo/id6779836394">Download on the App Store</a>
               <a class="btn btn-gray" href="/listen/">Listen in your browser</a>
             </div>
             <p class="echo-cta-links-label">Guides and help</p>

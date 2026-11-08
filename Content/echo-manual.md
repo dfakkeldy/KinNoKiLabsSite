@@ -4,7 +4,7 @@ The complete reference for **Echo: Audiobook Study Player** on iPhone, iPad, App
 
 New to Echo? Read [Getting the Most Out of Echo](/echo-learn) first — it explains *why* these features help you learn. This manual explains *how* everything works.
 
-> **Status tags:** 🚧 **Coming in 1.0** = in active development right now. 🔭 **Roadmap** = planned after 1.0. Everything unmarked ships in the current beta.
+> **Status tags:** 🔭 **Roadmap** = planned, not in Echo 1.0 yet. Everything unmarked is in Echo 1.0 on the App Store.
 
 ## 1. Getting Started
 
@@ -29,7 +29,7 @@ Echo does not bypass DRM and cannot play protected Audible/Apple Books titles. T
 
 Echo remembers everything per book: position, speed, loop mode, and settings overrides. Reopen the app days later and it resumes exactly where you left off — with Smart Rewind backing up just enough to restore your context.
 
-First launch walks you through this — including a step on setting up your library folder. 🚧 **Coming in 1.0**
+A first-launch walkthrough, including a step on setting up your library folder, is on the roadmap. 🔭 **Roadmap**
 
 ### Cover art
 
@@ -152,7 +152,7 @@ Set a countdown (with fade-out) or stop at chapter end. Echo notes the pause tim
 - **Title & note** — editable text; titles default to "Bookmark N".
 - **Voice memo** — recorded in the moment; volume-normalized to match the narration.
 - **Photo** — from your library or camera; drives dynamic artwork (below).
-- **Place** (🚧 **Coming in 1.0**) — with Context Memory enabled, an approximate place name shown as a chip.
+- **Place** — with Context Memory enabled, Echo stores an approximate place with the bookmark. Showing it as a chip is on the roadmap (🔭 **Roadmap**).
 - **PDF view state** — exact page, zoom, and scroll restore on tap.
 - **Enabled/disabled** — disabled bookmarks stay visible but won't trigger inline playback.
 
@@ -164,7 +164,7 @@ With *Inline Voice Memos* enabled, playback reaching a bookmark with a memo duck
 
 As playback passes a photo bookmark, the player artwork switches to your photo (phone, watch, lock screen) and back to the cover afterward. Why bother? Your brain involuntarily memorizes *where you were* alongside *what you heard* — the photo re-triggers the passage. Full story in [the learning guide](/echo-learn).
 
-> **Safety first:** never take photos while driving. Pick from your library later — or let Context Memory capture the place automatically, hands-free (🚧 **Coming in 1.0**).
+> **Safety first:** never take photos while driving. Pick from your library later — or let Context Memory note the place automatically, hands-free.
 
 ### Managing bookmarks
 
@@ -182,9 +182,9 @@ A complete spaced-repetition system — think Anki, built into your audiobook pl
 - **From the reader:** long-press a passage → **Create Flashcard**.
 - **From a bookmark:** any bookmark — note, memo, photo and all — becomes a card.
 - **From a mark** — via the Card Inbox, below.
-- **From a note** (🚧) — promote a Brain Dump entry ([section 10](#10-brain-dump-book-notes)).
+- **From a note** (🔭 **Roadmap**) — promote a Brain Dump entry ([section 10](#10-brain-dump-book-notes)).
 - **From scratch:** in the Timeline tab.
-- **Import a deck:** Anki-style JSON today; real .apkg with 1.0 (below).
+- **Import a deck:** Anki-style JSON today; real .apkg is on the roadmap (below).
 
 Every card has a **front** (write it as a question) and a **back**, and can carry an **audio snippet** (the actual narrated clip), a **photo**, a **deck and tags**, and a **trigger timing** (or manual-review-only).
 
@@ -204,12 +204,12 @@ Every card opens in a full editor: front/back, audio snippet range (with "use cu
 
 - **Deck list:** every deck with card count and due count; deckless cards live in an implicit "Unfiled" group.
 - **Deck detail:** searchable card list, per-deck mini-stats, rename, delete (cascade cards or orphan them).
-- **Review by deck:** run a session over one deck's due cards — exam-week mode.
+- **Review by deck** (🔭 **Roadmap**): run a session over one deck's due cards — exam-week mode. Daily Review covers all due cards today.
 - **Tags:** space-separated, Anki convention, for cross-deck filtering.
 
-### Importing real Anki decks (.apkg) 🚧 Coming in 1.0
+### Importing real Anki decks (.apkg) 🔭
 
-Pick a `.apkg` file from the deck list's import button and Echo maps it card-by-card, **scheduling history included** — mature cards stay mature; nothing restarts from zero.
+Not in Echo 1.0, which imports Anki-style JSON decks. The plan: pick a `.apkg` file from the deck list's import button and Echo maps it card-by-card, **scheduling history included** — mature cards stay mature; nothing restarts from zero.
 
 - First field → front; remaining fields → back (HTML cleaned to text); tags kept; suspended cards arrive disabled; referenced images and audio are copied in.
 - **Cloze cards** are flattened to plain question/answer in v1 (the import summary counts how many).
@@ -229,7 +229,9 @@ The full review session runs hands-free on the watch: hear the card, think your 
 
 > 🔭 **Roadmap — Chapter Study Mode:** treat each chapter as a flashcard, with due chapters lining up as a ready-made listening queue. Until then: loop the chapter, grade yourself honestly at its end, and card anything you couldn't explain.
 
-## 10. Brain Dump & Book Notes 🚧 Coming in 1.0
+## 10. Brain Dump & Book Notes 🔭
+
+Not in Echo 1.0. Until then, a bookmark with a voice memo or note is the quickest way to park a thought. The plan:
 
 Bookmarks pin thoughts to a *moment*; flashcards pin them to a *question*. Book Notes are for everything else — thoughts about the book as a whole, tangents worth keeping, and the "buy stamps" intrusions that would otherwise cost you a chapter.
 
@@ -257,7 +259,7 @@ Drop the `.epub` in the book's folder (auto-import) or use **Import Document**. 
 - **Table of contents** plus a sticky header showing your position as Part → Chapter → Section.
 - **Highlights:** long-press → **Change Color** to tint passages.
 - **Typography:** font size, line spacing, and card background are adjustable; **Lexend** and **OpenDyslexic** are built in.
-- **Reader speed controls** (🚧 **Coming in 1.0**) — adjust playback speed without leaving the Read tab.
+- **Reader speed controls** (🔭 **Roadmap**) — adjust playback speed without leaving the Read tab.
 
 While the Read tab is active, the bottom toolbar switches to reader-optimized controls.
 
@@ -272,7 +274,7 @@ Tap **Auto-Align Chapters** and Echo's on-device speech recognition (WhisperKit 
 - **Tier 2 — Drift detection:** spot-checks inside chapters for passages drifting out of sync.
 - **Tier 3 — Drift repair:** bisects flagged regions and inserts word-level correction anchors via token-based dynamic time warping.
 
-Between anchors, Echo interpolates positions weighted by paragraph word counts. When alignment completes, Echo shows your **% aligned** (🚧 **Coming in 1.0**).
+Between anchors, Echo interpolates positions weighted by paragraph word counts. When alignment completes, Echo for Mac shows your **% aligned**; the same figure on iPhone and iPad is on the roadmap.
 
 **Continuous Alignment** (optional, in Settings) keeps refining in the background while you listen.
 
@@ -295,20 +297,20 @@ Import like an EPUB — the Import button accepts both and routes automatically.
 Echo's Insights charts are computed on your device from local listening and review history. Optional Audiobookshelf progress exchange is separate and sends progress to the server you connect. Open Insights from the dashboard modules or the Timeline toolbar.
 
 - **Overview:** range picker (day / week / month / year / all-time), total listening time, current streak, daily average.
-- **Listening:** time per day or week, speed trend, share per book, a time-of-day histogram (find your golden hours), and session lengths (🚧).
+- **Listening:** time per day or week, speed trend, share per book, a time-of-day histogram (find your golden hours), and session lengths (🔭 **Roadmap**).
 - **Per-book:** a chapter-coverage heatmap — tap a chapter for "Chapter 7 — 86% covered, listened 3×" — plus totals and pace.
 - **Study:** reviews per day, a retention curve against a 90% target, grade distribution, and a 30-day due forecast.
 - **Planner:** planned-versus-actual session pairs, when you schedule listening.
-- **Places:** if Context Memory is on, a simple list of where you listen most. (A map view is on the roadmap.)
+- **Places** (🔭 **Roadmap**): a simple list of where you listen most, then a map view.
 
-The dashboard gets live teaser modules — real listened-today, streak, upcoming reviews. The Mac gets a Stats pane with the Overview, Listening, and Study sections.
+The dashboard gets live teaser modules — real listened-today, streak, upcoming reviews. A Mac Stats pane is on the roadmap.
 
-## 15. Context Memory (Location) 🚧 Coming in 1.0
+## 15. Context Memory (Location)
 
-Your brain files *where* alongside *what* — Echo can capture the "where" for you. Off by default; opt in via **Settings → Privacy & Location → Context Memory**.
+Your brain files *where* alongside *what* — Echo can capture the "where" for you. Off by default; opt in via **Settings → Advanced → Context Memory**.
 
 - **Location and place names:** with permission, the device may supply a precise fix. Echo rounds coordinates to two decimal places before asking Apple's geocoder for a place name and stores the rounded context locally.
-- **Three capture points:** session start, bookmark creation, chapter start. Powers bookmark place chips, "Chapter 3 started at Oak Street" in per-book Insights, and the Places list.
+- **Capture point:** in Echo 1.0, bookmark creation. Session and chapter-start capture, bookmark place chips, "Chapter 3 started at Oak Street" in per-book Insights, and the Places list are on the roadmap (🔭 **Roadmap**).
 - **Never blocking:** capture is fire-and-forget with a timeout — bookmarks save instantly even in airplane mode, just without a place.
 - **Local deletion:** Delete Context Memory removes local context records and cached place data. It does not erase providers' records or device backups.
 - **Storage and transfers:** context is stored locally. User-chosen exports, backups and optional services have their own handling; full private study synchronization is not promised. See the [Echo Privacy Policy](/echo-privacy/).
@@ -318,9 +320,9 @@ Your brain files *where* alongside *what* — Echo can capture the "where" for y
 Echo's position on your data: it's yours, in formats you can read, forever. The database schema is open source; nothing is hostage.
 
 - **Bookmarks → Markdown** (available today): a book's bookmarks with timestamps, notes, and deep links that reopen Echo at the exact second.
-- **Study Notes bundle**: the whole second brain, per book — one Markdown file (bookmarks, Book Notes, flashcard fronts/backs, chapter headings, place names) plus an assets folder with your voice memos and photos. Obsidian/Logseq/Notion-ready: plain files, relative links, no account. Per book, or bulk-export in Settings.
-- **Deck → JSON** (🚧 **Coming in 1.0**): any deck (or all cards) as a portable file with every field including scheduling state; Echo re-imports its own exports losslessly — backup and device-migration in one.
-- **Anki .apkg import** (🚧 **Coming in 1.0**): inbound — see [section 9, The Study System](#9-the-study-system-flashcards-review). (.apkg *export* is on the roadmap; JSON export covers backup until then.)
+- **Study Notes bundle**: the whole second brain, per book — one Markdown file (bookmarks, flashcard fronts/backs, chapter headings) plus an assets folder with your voice memos and photos. Obsidian/Logseq/Notion-ready: plain files, relative links, no account. Per book, or bulk-export in Settings.
+- **Deck → JSON** (🔭 **Roadmap**): any deck (or all cards) as a portable file with every field including scheduling state; Echo re-imports its own exports losslessly — backup and device-migration in one.
+- **Anki .apkg import** (🔭 **Roadmap**): inbound — see [section 9, The Study System](#9-the-study-system-flashcards-review). (.apkg *export* from the phone is on the roadmap too.)
 
 ## 17. The Playlist & Timeline
 
@@ -342,7 +344,7 @@ Your study history as a feed: chapters, bookmarks (with photos and memo indicato
 
 - **Up to 25 buttons:** five pages of five slots, every slot user-assignable — play/pause, skips (5–60 s), chapters, sections, loop, speed, sleep timer, bookmark, Pomodoro, or empty (empty pages hide).
 - **Mark passage** — one tap into the Card Inbox.
-- **Dictate note** (🚧 **Coming in 1.0**) — speak a Brain Dump note; playback never pauses.
+- **Dictate note** (🔭 **Roadmap**) — speak a Brain Dump note; playback never pauses.
 - **Design it from the phone:** drag-and-drop the layout in Settings → Watch App; it syncs instantly.
 - **Digital Crown:** assign to volume or scrubbing (with a deadzone so a brushed crown doesn't jump your position).
 - **Big targets:** buttons sized to hit without looking — gloves, rain, walking.
@@ -372,15 +374,17 @@ CarPlay isn't enabled in current builds; it's on the roadmap. Until then, the wa
 
 ## 21. Echo for Mac
 
+On an Apple Silicon Mac, the App Store version of Echo is the iPad app, so it works like the iPad sections above. This section describes the native Mac app, which is in TestFlight testing and not on the App Store yet.
+
 - **Three-pane layout:** bookmarks sidebar, player with transport and speed controls, document pane.
 - Plays the same folders, with the broadest format support (FLAC/OGG/OPUS).
 - **EPUB alignment** with streaming on-device transcription — watch alignment build in real time.
 - **Transcript pane** with live highlighting and search; word-cloud visualization of any book's vocabulary.
 - Bookmarks share the same format as iOS via the shared app-group store.
-- **Insights pane** (🚧 **Coming in 1.0**) — listening and study charts on the big screen.
-- **Review pane** (🚧 **Coming in 1.0**) — clear your due cards at the desk, with menu-bar and keyboard-shortcut basics.
+- **Daily Review** — clear your due cards at the desk, in a review sheet; the Card Inbox opens the same way.
+- **Insights pane** (🔭 **Roadmap**) — listening and study charts on the big screen.
 
-Mac 1.0 is the *functional core* — play, read, review, see your stats. Full reader/alignment parity with iOS continues after 1.0.
+The native Mac app is the *functional core* — play, read, align, review. Insights and full reader/alignment parity with iOS are on the roadmap.
 
 ## 22. Sync & iCloud
 
@@ -395,14 +399,14 @@ The current release does not expose public-alignment uploads. Earlier builds off
 - **Playback:** default speed · per-book speed memory · volume boost gain · seek durations (5–60 s)
 - **Smart Rewind:** three tiers with per-tier rewind amounts
 - **Bookmarks:** inline voice memo playback (global + per book) · quick-bookmark timeout
-- **Study:** daily review notification · inline flashcard triggers · deck defaults (🚧)
-- **Privacy & Location** (🚧): Context Memory toggle (off by default) · Delete Location History
+- **Study:** daily review notification · inline flashcard triggers · deck defaults (🔭 **Roadmap**)
+- **Advanced:** Context Memory toggle (off by default) · Delete Context Memory
 - **Reader:** font (incl. Lexend, OpenDyslexic) · text size · line spacing · card tint · per-card colors
 - **Appearance:** accent color or Artwork mode (accent derived from the cover) · dark mode · app icon · player layout · button sizes
 - **Player Controls:** five tap actions + five long-press actions
 - **Watch App:** button layout designer (5 pages × 5 slots) · Digital Crown mode · artwork layout · haptics · date overlay · title scroll speed
 - **Per-book overrides:** any global setting, pinned per book
-- **Data:** study-notes bulk export · deck export (🚧)
+- **Data:** study-notes bulk export · deck export (🔭 **Roadmap**)
 - **Help:** the full in-app help library
 - **Language:** English and Dutch
 
@@ -446,19 +450,19 @@ Different editions drift. Run **Auto-Align Chapters**; for stubborn spots, long-
 The first run downloads the on-device speech model (~40 MB) and transcription is real Neural Engine work. Plug in for the first full-book alignment of a long book; afterward, repairs are quick.
 
 **Can I import my Anki decks?**
-JSON decks import today. Real `.apkg` files — scheduling history included — arrive with 1.0. Newest-format decks: re-export from Anki with *"Support older Anki versions"* checked. Cloze cards flatten to plain Q&A in v1.
+Anki-style JSON decks import today. Direct `.apkg` import, with scheduling history, is on the roadmap; it is not in Echo 1.0.
 
 **Can I get my flashcards and notes back out?**
-Yes — that's policy. Bookmarks and full study-notes bundles export to Markdown today, ready for Obsidian/Logseq/Notion. Portable JSON deck export is coming with 1.0. The schema is open source; your data is never hostage. See [section 16, Exports & Your Data](#16-exports-your-data).
+Yes — that's policy. Bookmarks and full study-notes bundles export to Markdown today, ready for Obsidian/Logseq/Notion. Portable JSON deck export is on the roadmap. The schema is open source; your data is never hostage. See [section 16, Exports & Your Data](#16-exports-your-data).
 
 **Will flashcards interrupt my listening?**
 No. Mid-playback popups are retired: one tap marks a passage into the Card Inbox without pausing, and reviews happen in Daily Review.
 
 **What's the difference between a bookmark, a note, and a flashcard?**
-A **bookmark** is a *moment* (timestamp, optionally with memo/photo/place). A **note** (🚧) is an *untethered thought* — the brain-dump. A **flashcard** is a *question* you want to keep answering. Notes and bookmarks both promote into flashcards — capture cheap first, decide later.
+A **bookmark** is a *moment* (timestamp, optionally with memo/photo/place). A **note** (🔭 **Roadmap**) will be an *untethered thought* — the brain-dump. A **flashcard** is a *question* you want to keep answering. Bookmarks promote into flashcards today — capture cheap first, decide later.
 
 **Will my flashcards and bookmarks sync between my devices?**
-Alignment anchors sync today; full study sync — cards, decks, bookmarks, playback position — ships in 1.0 through your personal iCloud. See [section 22, Sync & iCloud](#22-sync-icloud).
+Not yet. Echo 1.0 keeps cards, decks, bookmarks and playback position on each device, and the watch exchanges state with its paired iPhone. Full study sync through your personal iCloud is on the roadmap. See [section 22, Sync & iCloud](#22-sync-icloud).
 
 **The watch shows a stale book or position.**
 Raise the watch and give it a beat — it requests authoritative state from the phone on wake. Both devices on, nearby, helps.
@@ -470,7 +474,7 @@ Context Memory is optional and off by default. With permission, the device can p
 Local narration and alignment use on-device models. Optional external-AI features send book text to the provider you configure, under that provider's policies. They are separate from local processing and do not make the same retention promise. The current release does not expose public-alignment uploads; conditional lookup with local fallback remains. See the [Echo Privacy Policy](/echo-privacy/).
 
 **What's coming after 1.0?**
-The honest shortlist: Chapter Study Mode, gentle hyperfocus/transition reminders, a Context Memory map view, .apkg export, CarPlay, full Mac reader parity. The [roadmap](https://github.com/dfakkeldy/Echo/blob/main/ROADMAP.md) is public, like everything else.
+The honest shortlist: Brain Dump notes with watch dictation, .apkg import and export, deck JSON export, review by deck, full iCloud study sync, Context Memory place chips and a map view, Chapter Study Mode, gentle hyperfocus/transition reminders, CarPlay, Mac Insights and full Mac reader parity. The [roadmap](https://github.com/dfakkeldy/Echo/blob/main/ROADMAP.md) is public, like everything else.
 
 **Where are my files? Can I get my data out?**
 Your audio stays where you put it (Echo reads in place and never modifies your files). Echo's own data lives in a local database with an open-source schema; everything exports ([section 16, Exports & Your Data](#16-exports-your-data)). Deleting the app deletes Echo's database — your audio folder is untouched.

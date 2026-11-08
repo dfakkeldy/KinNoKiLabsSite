@@ -1,6 +1,6 @@
 # Join the Echo Beta
 
-Welcome — and thank you. Echo is built by one person, which means every tester genuinely moves the project. This page covers how the beta works, how to send feedback that actually helps, and a set of structured test plans if you want to hunt bugs on purpose.
+Echo 1.0 is [on the App Store](https://apps.apple.com/ca/app/audiobook-study-player-echo/id6779836394), free. The beta gets new builds before they ship there. Welcome — and thank you. Echo is built by one person, which means every tester genuinely moves the project. This page covers how the beta works, how to send feedback that actually helps, and a set of structured test plans if you want to hunt bugs on purpose.
 
 The short version: **use Echo like you really listen** — commute, chores, workouts, bedtime — and tell me the moment something feels wrong.
 
@@ -16,7 +16,7 @@ If the invite page will not load, email [hello@kinnokilabs.com](mailto:hello@kin
 
 **Updates:** TestFlight notifies you when a new build lands. Each build's **What to Test** notes tell you where to aim. Beta builds expire after 90 days; updating resets the clock.
 
-**Your data:** it carries forward into future builds, including the eventual release — but it's a beta, so keep your source audiobook files backed up (you should anyway; Echo never modifies them).
+**Your data:** it carries forward into future builds, including App Store releases — but it's a beta, so keep your source audiobook files backed up (you should anyway; Echo never modifies them).
 
 ## 2. Sending feedback that helps
 
@@ -48,7 +48,7 @@ Alignment bugs are the most valuable reports and need the most context. Include:
 
 Pick whichever matches your life. Each plan is 10–20 minutes of intentional testing.
 
-**Jump to a plan:** [A · Commute](#plan-a-the-commute-run-smart-rewind-interruptions) · [B · Alignment](#plan-b-the-alignment-gauntlet-epub-auto-align) · [C · Study](#plan-c-the-study-session-bookmarks-flashcards-review) · [D · Library](#plan-d-the-library-stress-test-formats-playlist) · [E · Wrist](#plan-e-the-wrist-only-day-watch-remote) · [F · Accessibility](#plan-f-the-accessibility-pass-dynamic-type-fonts-voiceover) · [G · 1.0 Preview](#plan-g-the-1-0-preview-as-builds-gain-the-new-features)
+**Jump to a plan:** [A · Commute](#plan-a-the-commute-run-smart-rewind-interruptions) · [B · Alignment](#plan-b-the-alignment-gauntlet-epub-auto-align) · [C · Study](#plan-c-the-study-session-bookmarks-flashcards-review) · [D · Library](#plan-d-the-library-stress-test-formats-playlist) · [E · Wrist](#plan-e-the-wrist-only-day-watch-remote) · [F · Accessibility](#plan-f-the-accessibility-pass-dynamic-type-fonts-voiceover) · [G · After 1.0](#plan-g-after-1-0-as-builds-gain-the-new-features)
 
 ### Plan A — The Commute Run *Smart Rewind & interruptions*
 
@@ -95,26 +95,26 @@ Pick whichever matches your life. Each plan is 10–20 minutes of intentional te
 3. If you use VoiceOver: a pass over the player and reader — every control labeled and operable?
 4. Enable Reduce Motion: anything still animating that shouldn't?
 
-### Plan G — The 1.0 Preview *as builds gain the new features* 🚧
+### Plan G — After 1.0 *as builds gain the new features* 🔭
 
-The road to 1.0 lands feature-by-feature in beta builds — each build's *What to Test* notes will say which of these are included. When yours has them:
+Steps 1 and 2 test Insights and the Card Inbox, which shipped in Echo 1.0. Steps 3 to 6 cover roadmap features as they reach beta builds; each build's *What to Test* notes say which are included. When yours has them:
 
 1. **Insights:** after a few days of normal listening, open Insights. Do the totals, streak, and per-chapter coverage match your memory of the week? Anything obviously wrong is a great report.
 2. **Card Inbox:** mark three passages from the transport bar (and one from the watch) without pausing; later, convert one, dismiss one, leave one. Did anything interrupt playback?
 3. **Brain Dump:** dictate a note from the watch mid-chapter; confirm it lands on the right book and playback never hiccuped. Promote it to a flashcard.
 4. **Anki import:** bring a real .apkg deck. Counts right? Scheduling sensible (mature cards not reset)? Cloze cards reported in the summary?
-5. **Context Memory:** opt in, bookmark something on a walk, check the place chip. Then try airplane mode — bookmarks must still save instantly. Then press **Delete Location History** and verify everything's gone.
+5. **Context Memory:** opt in, bookmark something on a walk, check the place chip. Then try airplane mode — bookmarks must still save instantly. Then press **Delete Context Memory** and verify everything's gone.
 6. **Study sync:** with two devices on the same iCloud, create a card on one and review it on the other.
 
 Finished a plan? Send what you found with TestFlight's screenshot feedback or a GitHub issue — [section 2](#2-sending-feedback-that-helps) shows how.
 
-## 4. Known limitations (current beta)
+## 4. Known limitations (current builds)
 
 Honest list — these are known, so you don't need to report them (though opinions on them are welcome):
 
 - **First auto-align is heavy.** Model download (~40 MB) + Neural Engine work; phones run warm on long books. Plug in.
 - **No CarPlay yet** — it isn't enabled in current builds; it's on the roadmap.
-- **iCloud sync covers alignment anchors only** so far; bookmarks/flashcards/position sync ships with 1.0 (see Plan G).
+- **iCloud sync covers alignment anchors only** so far; bookmarks/flashcards/position sync is on the roadmap (see Plan G).
 - **Edition drift is real.** Auto-align gets you close; some books need two or three manual anchors. That's expected, not a bug — but tell me about books that need *lots*.
 - **Watch review sessions** can briefly show stale state if the phone app was killed mid-review; relaunching the phone app reconverges.
 

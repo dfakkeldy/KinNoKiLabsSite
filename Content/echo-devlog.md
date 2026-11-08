@@ -17,7 +17,7 @@ In June, Echo got a defined 1.0: a trustworthy study player on iPhone, Watch, an
 7. Markdown second-brain export
 8. iCloud study sync
 
-**Where it stands, October 2026:** Echo is still in its open TestFlight beta. The Card Inbox, the card editor and decks, FSRS review, Insights on iPhone, and Markdown study-note exports are in current builds; full iCloud study sync and direct `.apkg` import on iPhone are still open. [Join the beta](/echo-beta) to follow it build by build.
+**Where it stands, November 2026:** Echo 1.0 has been [on the App Store](https://apps.apple.com/ca/app/audiobook-study-player-echo/id6779836394) since October 29, free with an optional one-time Echo Pro. It shipped the listening capture layer, Insights on iPhone with chapter coverage, the Card Inbox, the card editor and decks, FSRS review, Markdown study-note exports, and opt-in Context Memory on bookmarks. Still open: direct `.apkg` import, Brain Dump with watch dictation, place chips and session capture, and full iCloud study sync. [Join the beta](/echo-beta) to follow the next builds.
 
 ## Week 1 · The two-hour app
 

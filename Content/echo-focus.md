@@ -1,6 +1,6 @@
 # The Focus Field Guide — ADHD & AuDHD Strategies
 
-Echo, now in beta on TestFlight, was built for interrupted, neurodivergent attention. This page is the rest of the toolbox: practical, research-backed strategies for the executive-function stuff. Most tips work with or without Echo; where Echo genuinely helps, there's a note. Take what works, skip what doesn't.
+Echo, now [on the App Store](https://apps.apple.com/ca/app/audiobook-study-player-echo/id6779836394), was built for interrupted, neurodivergent attention. This page is the rest of the toolbox: practical, research-backed strategies for the executive-function stuff. Most tips work with or without Echo; where Echo genuinely helps, there's a note. Take what works, skip what doesn't.
 
 **The premise of this whole page:** ADHD is not a knowledge problem — you usually know exactly what you should be doing. It's a *performance* problem: a gap between knowing and doing, driven by how the brain handles activation, time, working memory, and reward (Barkley, 2012). So none of these strategies are "try harder." All of them are **move the work out of your head and into the world** — externalize time, externalize memory, externalize the starting gun. That's also the design thesis behind Echo.
 
@@ -28,7 +28,7 @@ Many ADHDers experience time in two flavors: *now* and *not now*. Research consi
 - **Anchor tasks to events, not times.** "After lunch" beats "at 1pm" — events are perceivable; clock times require monitoring a clock you've stopped seeing.
 - **Plan transitions, not just tasks.** The gap *between* activities is where time vanishes. A two-minute "landing" ritual gives the switch a shape.
 
-> **∞ How Echo helps:** Chapter lengths and time remaining are shown *at your playback speed* — "20 minutes left" means twenty real minutes, so a chapter becomes a plannable block. The sleep timer and Pomodoro are external clocks that act on your behalf. And Insights (🚧 **Coming in 1.0**) turns "what happened this week?" into listening totals and time-of-day patterns you can plan against.
+> **∞ How Echo helps:** Chapter lengths and time remaining are shown *at your playback speed* — "20 minutes left" means twenty real minutes, so a chapter becomes a plannable block. The sleep timer and Pomodoro are external clocks that act on your behalf. And Insights turns "what happened this week?" into listening totals and time-of-day patterns you can plan against.
 
 ## 3. Staying Organized — out of sight is out of mind, so design for sight
 
@@ -40,7 +40,7 @@ The ADHD organization problem is usually not messiness — it's *cue-dependence*
 - **Externalize the structure once, then obey it.** Decide the folder convention on a good day, write it down, and never re-litigate it at filing time.
 - **For your audiobook library specifically:** one folder per book, EPUB dropped next to the audio, the whole thing in one parent "Audiobooks" folder on iCloud Drive — the [User Manual](/echo-manual) has the full convention, naming patterns, and iCloud pitfalls.
 
-> **∞ How Echo helps:** The folder-per-book convention IS the organization system — drop the files in and Echo finds the audio, cover, and EPUB by itself; the structure does the remembering. The Timeline tab is a self-presenting inbox. Brain Dump and the Card Inbox (🚧 **Coming in 1.0**) are one-inbox designs with badges — they present themselves instead of waiting to be remembered. And Second-Brain Export (🚧 **Coming in 1.0**) lands your study record in plain Markdown files you can't lose to a proprietary app.
+> **∞ How Echo helps:** The folder-per-book convention IS the organization system — drop the files in and Echo finds the audio, cover, and EPUB by itself; the structure does the remembering. The Timeline tab is a self-presenting inbox. The Card Inbox is a one-inbox design with a badge — it presents itself instead of waiting to be remembered, and Brain Dump (🔭 **Roadmap**) will work the same way. And Second-Brain Export lands your study record in plain Markdown files you can't lose to a proprietary app.
 
 ## 4. The Leaky Bucket — working memory
 
@@ -51,7 +51,7 @@ Working memory — the mental scratchpad — holds three to five items for anyon
 - **Close loops by capturing them.** Making a concrete note demonstrably stops a thought from intruding (Masicampo & Baumeister, 2011; Zeigarnik, 1927).
 - **Trust requires emptying.** Offloading only frees your head if you believe the system will resurface things (Risko & Gilbert, 2016). Skim your captures on a schedule.
 
-> **∞ How Echo helps:** Voice memo bookmarks are five-second capture pinned to the exact moment in the book — hold, speak, done. Brain Dump (🚧 **Coming in 1.0**) is the same reflex for *everything else*, parked without pausing playback, including dictation from the watch. Mark Now, Card Later (🚧 **Coming in 1.0**) means "this should be a flashcard" costs one tap and zero working-memory slots.
+> **∞ How Echo helps:** Voice memo bookmarks are five-second capture pinned to the exact moment in the book — hold, speak, done. Brain Dump (🔭 **Roadmap**) will be the same reflex for *everything else*, parked without pausing playback, including dictation from the watch. Mark Now, Card Later means "this should be a flashcard" costs one tap and zero working-memory slots.
 
 ## 5. Motivation — work with the interest-based engine, not against it
 
@@ -76,7 +76,7 @@ ADHD motivation runs on interest, novelty, challenge, and urgency far more than 
 - **Never miss twice.** One miss is an event; two starts a pattern. The rule isn't "never miss" — it's "make the *next* one count," which converts a lapse into a bounce instead of a verdict.
 - **Pre-plan the recovery.** Decide *now* what happens after a bad day: "if I miss a day, I do five minutes the next morning." That's an implementation intention (Gollwitzer, 1999) aimed precisely at the relapse moment — where the what-the-hell effect strikes.
 
-> **∞ How Echo helps:** Chapter coverage is the gray scale, literally (🚧 **Coming in 1.0**) — a book stops being "read or unread" and becomes "Chapter 7 — 86% covered, listened 3×"; partial progress is a number on the screen, climbing. The streak is designed to bend, not break (🚧 **Coming in 1.0**), and the heatmap shows your month as texture instead of a pass/fail verdict — a deliberate answer to the abstinence violation effect. Mark Now, Card Later is anti-perfectionism by design: a rough one-tap mark today beats the perfect flashcard you never made. Five-minute reviews and the Pomodoro make partial sessions official. And Smart Rewind makes messy resumes free — the "I lost my place, it's all ruined" spiral never starts.
+> **∞ How Echo helps:** Chapter coverage is the gray scale, literally — a book stops being "read or unread" and becomes "Chapter 7 — 86% covered, listened 3×"; partial progress is a number on the screen, climbing. The streak is designed to bend, not break — a missed day has a grace day — and a planned heatmap (🔭 **Roadmap**) will show your month as texture instead of a pass/fail verdict — a deliberate answer to the abstinence violation effect. Mark Now, Card Later is anti-perfectionism by design: a rough one-tap mark today beats the perfect flashcard you never made. Five-minute reviews and the Pomodoro make partial sessions official. And Smart Rewind makes messy resumes free — the "I lost my place, it's all ruined" spiral never starts.
 
 One honest boundary: if extreme self-judgment is persistent, distressing, or reaching well beyond study habits, that's squarely therapy territory (see "When to get more support" below) — cognitive-behavioral therapy was practically built for this pattern, and it works.
 
@@ -101,7 +101,7 @@ Distraction isn't a character flaw; it's attention orienting to novelty with the
 - **Pair listening with low-cognition motion.** Walking, dishes, folding laundry — a busy body keeps the restless channel occupied while the ears learn.
 - **Use two channels to anchor one stream.** Eyes *and* ears on the same material gives wandering attention a second handle to catch.
 
-> **∞ How Echo helps:** Read-along is the two-channel anchor — the synced EPUB highlights the active paragraph, so when your eyes drift the audio holds the thread, and vice versa. Brain Dump is capture-don't-chase, institutionalized (🚧 **Coming in 1.0**). Speed control matches input rate to arousal: bump to 1.25× when an easy stretch is losing you; drop to 1× and loop when it's dense. Focus soundscapes are planned post-1.0 (🔭 **Roadmap**) — there's real evidence behind them (Söderlund et al., 2007).
+> **∞ How Echo helps:** Read-along is the two-channel anchor — the synced EPUB highlights the active paragraph, so when your eyes drift the audio holds the thread, and vice versa. Brain Dump will be capture-don't-chase, institutionalized (🔭 **Roadmap**). Speed control matches input rate to arousal: bump to 1.25× when an easy stretch is losing you; drop to 1× and loop when it's dense. Focus soundscapes are planned post-1.0 (🔭 **Roadmap**) — there's real evidence behind them (Söderlund et al., 2007).
 
 ## 9. Be Kind to the Operator
 
