@@ -1,18 +1,18 @@
 {
   "schemaVersion": 1,
   "publishedPage": "/gis/",
-  "reviewedAt": "2026-10-28",
-  "privacyRule": "No client name, address, parcel identifier, exact private geometry, private correspondence, or private source file is published.",
+  "reviewedAt": "2026-11-08",
+  "privacyRule": "No client name, address, parcel identifier, road name, private correspondence, or private source file is published. Client geometry is published only with Dan's approval; the 2023 client maps are described, not shown.",
   "items": [
     {
-      "id": "field-classification-2013",
+      "id": "field-map-2013",
       "year": 2013,
-      "publishedAsset": "/images/gis/field-classification-2013.webp",
-      "sourceSha256": "de56b92bd3f13e85a1e1fe03ae460d9d39fced5046242cb37fea17c707d58645",
-      "authorshipEvidence": "Contemporary sent correspondence describes the requested edits, the colour categories applied, and an uncertainty-led revision; the source PDF reports ArcMap 10.1.",
-      "transformation": "Entirely redrawn with invented geometry. Removed all names, exact geometry, area values, locations, and base layers.",
-      "visibleLayerRights": "Original KinNoKi Labs SVG artwork only; no third-party map layer is visible.",
-      "publicationDecision": "Publish reconstruction; retain original privately."
+      "publishedAsset": "/images/gis/field-map-2013.webp",
+      "sourceSha256": "6db06050291a6699ac1550b19d3fb5ed9507ca3e5501e535ca5506aeb6f8d146",
+      "authorshipEvidence": "Dan sent this map by email on 2013-11-17 in reply to a request for a parcel map with the area for a claim; the source PDF reports Esri ArcMap 10.1 and a creation date of 2013-11-17.",
+      "transformation": "On 2026-11-07 the owner's name, stand code, three parcel identifiers, four road-name labels and a civic address were removed from the PDF text layer, and the title bar was relabelled. No geometry, colour or other text was changed. Rendered at 300 dpi, cropped to the map frame and scaled to 1440x1098. The same file is published on fakkeldy.ca (dfakkeldy/fakkeldy-site#12).",
+      "visibleLayerRights": "Dan's own ArcMap layout and thinning-area outlines. The background vector layers (forest cover, water, trails, property lines) are not separately credited on the sheet; no aerial imagery or tiled basemap is shown.",
+      "publicationDecision": "Publish the redacted original; Dan approved on 2026-11-08 (dfakkeldy/grok-bots#981)."
     },
     {
       "id": "aerial-mosaic-2015",
@@ -23,26 +23,6 @@
       "transformation": "Tightly cropped to a non-identifying forest-and-stream area; removed structures, industrial activity, edges, labels, and location context. On 2026-10-28 the black no-data rows above and below the imaged band were cropped away (1440x500); nothing inside the band was edited.",
       "visibleLayerRights": "Creator-captured aerial photographs and creator-produced mosaic only.",
       "publicationDecision": "Publish cropped derivative; retain full mosaic privately."
-    },
-    {
-      "id": "visibility-analysis-2023",
-      "year": 2023,
-      "publishedAsset": "/images/gis/visibility-analysis-2023.webp",
-      "sourceSha256": "33c50eeeb9ebfa12086e9588ec212cb47b48cdf7fda7e96f24027135c602e7f6",
-      "authorshipEvidence": "Contemporary sent correspondence explains the grid, model question, adjustable parameters, processing approach, and iterative script development; the source PDF identifies QGIS 3.30.",
-      "transformation": "Entirely redrawn with invented regional geometry and synthetic classifications. Removed exact geography, utilities, base imagery, and project results.",
-      "visibleLayerRights": "Original KinNoKi Labs SVG artwork only; no third-party map layer is visible.",
-      "publicationDecision": "Publish reconstruction; retain original privately."
-    },
-    {
-      "id": "planting-review-2023",
-      "year": 2023,
-      "publishedAsset": "/images/gis/planting-review-2023.webp",
-      "sourceSha256": "33144c5cabcf8943c321c79ae0c068cc8e67ff8ea0b4f104e7f16cf64e362cbd",
-      "authorshipEvidence": "Contemporary sent correspondence describes the field tally method, interpretation question, observations, photographs, and follow-up; the source PDF identifies QGIS 3.32.",
-      "transformation": "Entirely redrawn with invented treatment geometry and sample points. Removed landowner, exact plot pattern, counts, outcome, imagery, and location.",
-      "visibleLayerRights": "Original KinNoKi Labs SVG artwork only; no third-party map layer is visible.",
-      "publicationDecision": "Publish reconstruction; retain original privately."
     },
     {
       "id": "ns-marks-product-2026",

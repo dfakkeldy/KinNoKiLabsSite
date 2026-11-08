@@ -5712,7 +5712,7 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 .gis-scope-note span,
 .gis-era,
 .gis-figure figcaption > span,
-.gis-legend > p {
+.gis-withheld > span {
   font-family: var(--font-mono);
   font-size: .72rem;
   font-weight: 650;
@@ -5861,6 +5861,20 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
 }
 /* The 2015 mosaic is a wide 1440x500 band; show it whole, not cropped to 8:5. */
 .gis-figure-wide img { aspect-ratio: 1440 / 500; }
+/* The 2013 map is shown whole, title bar and scale included. */
+.gis-figure-map img { aspect-ratio: 1440 / 1098; }
+/* A 2023 client map that is described but not shown: a plain note in the
+   evidence column, with the ledger directly under it. */
+.gis-withheld {
+  padding: 14px 16px 15px;
+  border: 1px dashed color-mix(in srgb, var(--gis-spruce) 48%, var(--separator));
+  border-radius: clamp(16px, 2.5vw, 24px);
+  color: var(--text-muted);
+  font-size: .78rem;
+  line-height: 1.5;
+}
+.gis-withheld > span { display: block; margin-bottom: 3px; color: var(--gis-spruce-text); }
+.gis-stop > .gis-withheld { grid-area: fig; }
 .gis-product-figure img { object-position: left top; }
 .gis-figure figcaption {
   padding: 14px 16px 15px;
@@ -5871,64 +5885,6 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   line-height: 1.5;
 }
 .gis-figure figcaption > span { display: block; margin-bottom: 3px; color: var(--gis-spruce-text); }
-/* Map keys as real text under each reconstruction (the rasters carry no
-   legend, so the key stays readable at phone width). Swatch colours are the
-   SVG sources' fills in Tools/gis-portfolio-art/. */
-.gis-legend {
-  display: grid;
-  gap: 8px;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid var(--separator);
-}
-.gis-legend > p { margin: 0; color: var(--text-muted); }
-.gis-legend ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 18px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.gis-legend li {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--text);
-  font-size: .84rem;
-  line-height: 1.4;
-}
-.gis-key {
-  display: inline-block;
-  flex: none;
-  width: 14px;
-  height: 14px;
-  border-radius: 3px;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .28);
-}
-.gis-key-dot { border-radius: 50%; }
-.gis-key-confirmed { background: #edcd63; }
-.gis-key-unconfirmed { background: #4e8fd7; }
-.gis-key-new { background: #df62c9; }
-.gis-key-review { background: #a9b1ad; }
-.gis-key-lower { background: #67b989; }
-.gis-key-middle { background: #edcd63; }
-.gis-key-higher { background: #e89956; }
-.gis-key-priority { background: #d66a5f; }
-/* Planting points are ringed in white on the map; the ring needs an edge
-   to show on the light caption. */
-.gis-key-observed,
-.gis-key-follow-up { box-shadow: 0 0 0 1px #28362f, inset 0 0 0 3px #fff; }
-.gis-key-observed { background: #275d45; }
-.gis-key-follow-up { background: #be4d3c; }
-/* The access line: a white track with the map's grey dashes. */
-.gis-key-line {
-  width: 22px;
-  height: 7px;
-  border-radius: 1px;
-  background: repeating-linear-gradient(90deg, #68736e 0 5px, transparent 5px 9px) center / 100% 2px no-repeat, #fff;
-  box-shadow: 0 0 0 1px #9aa49f;
-}
 .gis-era { margin: 0 0 12px; color: var(--gis-water-text); }
 .gis-stop-copy h2 {
   margin: 0 0 24px;
@@ -6091,6 +6047,7 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   .gis-stop,
   .gis-stop-reverse { grid-template-areas: none; grid-template-rows: none; }
   .gis-stop > .gis-figure,
+  .gis-stop > .gis-withheld,
   .gis-stop > .gis-stop-copy,
   .gis-stop > .gis-boundary { grid-area: auto; }
   .gis-stop > .gis-boundary { margin-top: 22px; }
@@ -6098,7 +6055,8 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   .gis-stop .gis-stop-copy { display: contents; }
   .gis-stop .gis-era { order: 1; }
   .gis-stop .gis-stop-copy h2 { order: 2; margin-bottom: 20px; }
-  .gis-stop .gis-figure { order: 3; margin-bottom: 24px; }
+  .gis-stop .gis-figure,
+  .gis-stop .gis-withheld { order: 3; margin-bottom: 24px; }
   .gis-stop .gis-brief,
   .gis-stop .gis-boundary,
   .gis-stop .gis-rights-note { order: 4; }
@@ -6135,6 +6093,10 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   /* The 2015 mosaic is a short wide band: its brief keeps two columns so
      the copy stays about as tall as the band and its ledger. */
   .gis-stop:has(.gis-figure-wide) .gis-brief { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  /* A stop without a picture: the ledger sits right under the note, and the
+     brief keeps two columns so the copy column stays short beside it. */
+  .gis-stop-text > .gis-boundary { align-self: start; }
+  .gis-stop-text .gis-brief { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
 }
 /* Phone: the five stops are a short vertical timeline. Each year disc sits
    on one spruce line, as the stops below sit on the transect, so no label is
@@ -6173,7 +6135,8 @@ fieldset.game-audio-controls .game-audio-channel button { justify-self: stretch;
   .gis-stop { padding: 0; page-break-inside: avoid; }
   /* Undo the one-column reorder, which a print page's width also triggers. */
   .gis-stop .gis-stop-copy { display: block; }
-  .gis-stop .gis-figure { order: 0; }
+  .gis-stop .gis-figure,
+  .gis-stop .gis-withheld { order: 0; }
   .gis-stop > .gis-boundary { grid-column: 1 / -1; }
   .gis-stop-copy h2,
   .gis-brief h3,
