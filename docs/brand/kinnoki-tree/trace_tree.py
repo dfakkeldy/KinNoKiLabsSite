@@ -17,6 +17,7 @@ from shapely.ops import unary_union
 
 SRC = Path(__file__).resolve().parents[3] / "Resources/logo.png"
 OUT = Path(sys.argv[1] if len(sys.argv) > 1 else Path(__file__).resolve().parent)
+OUT.mkdir(parents=True, exist_ok=True)
 TREE_ROWS = (140, 722)  # the tree; the "KinNoKi Labs" text starts at 740
 
 im = Image.open(SRC).convert("RGB")
