@@ -250,14 +250,14 @@ test('MacroMark public copy says 1.0 is live on the App Store and free', () => {
   assert.match(macromark, /^status: App Store — 1\.0$/m);
   assert.match(macromark, new RegExp(storeURL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   // The status line is plain text; the Download button is the one App Store link.
-  assert.match(macromark, /MacroMark 1\.0 is live on the App Store and free\./);
+  assert.match(macromark, /MacroMark 1\.0 is live on the App Store and free for iPhone, iPad and Apple Watch\./);
   assert.match(macromark, /<img src="\/images\/apps\/macromark-inbox\.webp"/);
   assert.match(macromark, /<img src="\/images\/apps\/macromark-macros\.webp"/);
   for (const shot of ['macromark-inbox.webp', 'macromark-macros.webp']) {
     assert.ok(existsSync(new URL(`../../Resources/images/apps/${shot}`, import.meta.url)), shot);
   }
   assert.match(macromark, /and free/);
-  assert.match(macromark, /Version 1\.1 is in testing/);
+  assert.doesNotMatch(macromark, /Version 1\.1 is in testing/);
   assert.doesNotMatch(macromark, /Internal TestFlight/);
   assert.doesNotMatch(macromark, /not on the App Store yet/);
   assert.doesNotMatch(macromark, /toward V1\.0/);
@@ -277,7 +277,7 @@ test('MacroMark public copy says 1.0 is live on the App Store and free', () => {
     /href="https:\/\/apps\.apple\.com\/ca\/app\/macromark\/id6785081218"/,
   );
   assert.match(generatedMacromark, /and free/);
-  assert.match(generatedMacromark, /Version 1\.1 is in testing/);
+  assert.doesNotMatch(generatedMacromark, /Version 1\.1 is in testing/);
   assert.doesNotMatch(generatedMacromark, /not on the App Store yet/);
   assert.doesNotMatch(generatedMacromark, /Internal TestFlight/);
 });

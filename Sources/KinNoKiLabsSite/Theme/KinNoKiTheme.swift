@@ -700,7 +700,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                     <a class="tax-button tax-button-solid" href="/apps/nsmarksthespot/map/">Open the live map <span aria-hidden="true">↗</span></a>
                     <a class="tax-button tax-button-line" href="#dates">See posted dates <span aria-hidden="true">↓</span></a>
                   </div>
-                  <p class="tax-refreshed">Dates checked October 23, 2026 on each municipality’s page</p>
+                  <p class="tax-refreshed">Upcoming dates checked November 10, 2026 on the municipal schedule pages</p>
                 </div>
 
                 <aside class="tax-desk" aria-label="Next posted tax sale">
@@ -746,7 +746,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                     <div class="tax-date-copy">
                       <p class="tax-status">Posted · Public auction</p>
                       <h3>Cape Breton Regional Municipality</h3>
-                      <p><strong>Tuesday, December 8; registration opens at 10:00 a.m.</strong><br>Centre 200 Main Concourse, 481 George Street, Sydney</p>
+                      <p><strong>Tuesday, December 8; registration at 10:00 a.m., bidding at 11:00 a.m.</strong><br>Centre 200 Main Concourse, 481 George Street, Sydney</p>
                       <p class="tax-date-detail">In-person registration with photo ID · minimum bid plus a $200 fee at the sale · balance within three business days</p>
                     </div>
                     <div class="tax-date-actions">
@@ -1692,7 +1692,7 @@ private func homeMain() -> Node<HTML.BodyContext> {
             <p>Apple Watch voice capture for people whose notes live in Markdown.</p>
             <div class="app-card-meta">
               <a class="status-chip status-chip-link" href="https://apps.apple.com/ca/app/macromark/id6785081218" target="_blank" rel="noopener" aria-label="App Store — 1.0: open MacroMark on the App Store">App Store — 1.0<span class="status-chip-arrow" aria-hidden="true">↗</span></a>
-              <span class="platforms">Watch · iPhone</span>
+              <span class="platforms">Watch · iPhone · iPad</span>
             </div>
           </div>
           <div class="app-card app-card-stretch">
@@ -1710,7 +1710,7 @@ private func homeMain() -> Node<HTML.BodyContext> {
             <p>Visual rounds for countdowns, turns, routines, and reusable sequences.</p>
             <div class="app-card-meta">
               <a class="status-chip status-chip-link" href="https://apps.apple.com/ca/app/turn-timer/id6771073144" target="_blank" rel="noopener" aria-label="App Store — 1.0: open Turn Timer on the App Store">App Store — 1.0<span class="status-chip-arrow" aria-hidden="true">↗</span></a>
-              <span class="platforms">iPhone · Browser</span>
+              <span class="platforms">iPhone · iPad · Watch · Browser</span>
             </div>
           </div>
         </div>
@@ -1734,7 +1734,7 @@ private func appsMain() -> Node<HTML.BodyContext> {
       <header class="page-head">
         <p class="eyebrow">Apps</p>
         <h1 class="page-title">Four apps, honestly labelled.</h1>
-        <p class="page-lede">Each card shows where its app stands today. Source is public on GitHub; licences vary.</p>
+        <p class="page-lede">Echo, MacroMark and Turn Timer are on the App Store. NS Marks The Spot is a live browser map, with its iPhone companion in internal testing. Source is public on GitHub; licences vary.</p>
         <dl class="status-legend">
           <div><dt><span class="status-chip">App Store — 1.0</span></dt><dd>Download it now.</dd></div>
           <div><dt><span class="status-chip">Live browser map</span></dt><dd>Open it in any browser.</dd></div>
@@ -1758,7 +1758,7 @@ private func appsMain() -> Node<HTML.BodyContext> {
           <p class="app-card-lead">Tap your Watch complication, speak, lower your wrist — the note lands in today's Markdown file, with verbal macros for headings and tasks.</p>
           <div class="app-card-meta">
             <span class="status-chip">App Store — 1.0</span>
-            <span class="platforms">Watch · iPhone</span>
+            <span class="platforms">Watch · iPhone · iPad</span>
           </div>
           \(svgChevron)
         </a>
@@ -1778,7 +1778,7 @@ private func appsMain() -> Node<HTML.BodyContext> {
           <p>An Apple-native visual sequence timer — one-tap visual countdowns plus reusable sequences. It also runs in your browser, with nothing to install.</p>
           <div class="app-card-meta">
             <span class="status-chip">App Store — 1.0</span>
-            <span class="platforms">iPhone · Browser</span>
+            <span class="platforms">iPhone · iPad · Watch · Browser</span>
           </div>
           \(svgChevron)
         </a>
@@ -1866,7 +1866,7 @@ private func servicesMain() -> Node<HTML.BodyContext> {
         <section class="reveal tender-proof-callout">
           <div>
             <p class="eyebrow">Proof of work · GIS</p>
-            <h2>Thirteen years from field maps to mapping products.</h2>
+            <h2>From a 2013 field map to today’s mapping products.</h2>
             <p>See how imperfect records, imagery, field observations, and public data became useful maps — with uncertainty and proof boundaries kept visible.</p>
           </div>
           <a class="btn btn-outline" href="/gis/">Explore the GIS case study</a>
@@ -1929,7 +1929,7 @@ private func gisCaseStudyMain() -> Node<HTML.BodyContext> {
         </ol>
       </nav>
 
-      <section class="gis-transect" aria-label="Thirteen years of practical GIS work">
+      <section class="gis-transect" aria-label="GIS examples from 2013 to 2026">
         <article class="gis-stop reveal" id="gis-2013">
           <div class="gis-marker" aria-hidden="true"><span>2013</span></div>
           <figure class="gis-figure gis-figure-map">
