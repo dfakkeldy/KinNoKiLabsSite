@@ -27,7 +27,7 @@ test('Routey is gone from the homepage, apps listing, and support page', () => {
   assert.match(home, /href="https:\/\/apps\.apple\.com\/ca\/app\/macromark\/id6785081218"[^>]*>MacroMark 1\.0 on the App Store<\/a>/);
   assert.match(apps, /Four apps, honestly labelled\./);
   assert.doesNotMatch(apps, /statused/);
-  assert.match(apps, /Each card shows where its app stands today\. Source is public on GitHub; licences vary\./);
+  assert.match(apps, /Echo, MacroMark and Turn Timer are on the App Store\./);
   assert.match(apps, /class="status-legend"/);
   assert.doesNotMatch(home, /4 apps in development/);
   assert.doesNotMatch(home, /4 in TestFlight/);
