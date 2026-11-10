@@ -700,7 +700,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                     <a class="tax-button tax-button-solid" href="/apps/nsmarksthespot/map/">Open the live map <span aria-hidden="true">↗</span></a>
                     <a class="tax-button tax-button-line" href="#dates">See posted dates <span aria-hidden="true">↓</span></a>
                   </div>
-                  <p class="tax-refreshed">Dates checked October 23, 2026 on each municipality’s page</p>
+                  <p class="tax-refreshed">Upcoming dates checked November 10, 2026 on the municipal schedule pages</p>
                 </div>
 
                 <aside class="tax-desk" aria-label="Next posted tax sale">
@@ -746,7 +746,7 @@ private func taxSaleHubMain() -> Node<HTML.BodyContext> {
                     <div class="tax-date-copy">
                       <p class="tax-status">Posted · Public auction</p>
                       <h3>Cape Breton Regional Municipality</h3>
-                      <p><strong>Tuesday, December 8; registration opens at 10:00 a.m.</strong><br>Centre 200 Main Concourse, 481 George Street, Sydney</p>
+                      <p><strong>Tuesday, December 8; registration at 10:00 a.m., bidding at 11:00 a.m.</strong><br>Centre 200 Main Concourse, 481 George Street, Sydney</p>
                       <p class="tax-date-detail">In-person registration with photo ID · minimum bid plus a $200 fee at the sale · balance within three business days</p>
                     </div>
                     <div class="tax-date-actions">

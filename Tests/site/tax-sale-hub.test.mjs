@@ -31,11 +31,11 @@ test('keeps only upcoming posted dates in the current sale desk', () => {
   assert.match(generated, /<span class="tax-desk-day">23<\/span>/);
   assert.match(generated, /November<\/strong><small>Victoria County · public auction, 11:00 a\.m\.<\/small>/);
   assert.match(generated, /<strong>Dec 8<\/strong> CBRM · public auction, Sydney/);
-  assert.match(generated, /Dates checked October 23, 2026 on each municipality’s page/);
+  assert.match(generated, /Upcoming dates checked November 10, 2026 on the municipal schedule pages/);
   assert.equal(generated.match(/class="tax-date-card reveal"/g)?.length, 2);
   assert.match(generated, /Monday, November 23 at 11:00 a\.m\./);
   assert.match(generated, /St\. Mark’s Masonic Lodge, 24 Queen Street, Baddeck/);
-  assert.match(generated, /Tuesday, December 8; registration opens at 10:00 a\.m\./);
+  assert.match(generated, /Tuesday, December 8; registration at 10:00 a\.m\., bidding at 11:00 a\.m\./);
   assert.match(generated, /Centre 200 Main Concourse, 481 George Street, Sydney/);
   assert.match(generated, /https:\/\/victoriacounty\.com\/property-tax-sale-notice\//);
   assert.match(generated, /https:\/\/cbrm\.ns\.ca\/business\/property-sales-management\/tax-sales\//);
