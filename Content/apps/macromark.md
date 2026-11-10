@@ -4,14 +4,14 @@ description: Apple Watch voice capture for people whose notes live in Markdown.
 image: /images/apps/macromark.png
 accent: #2f8cff
 tagline: Apple Watch to Markdown.
-platforms: Apple Watch, iPhone
+platforms: Apple Watch, iPhone, iPad
 status: App Store — 1.0
 iconAlt: MacroMark app icon — the letters M and M flanking a downward arrow, in silver on a black disc
 ---
 
 MacroMark is voice capture for people whose notes live in Markdown. Tap your Watch complication, speak, lower your wrist, and let MacroMark append the thought to today's note.
 
-MacroMark 1.0 is live on the App Store and free. Version 1.1 is in testing.
+MacroMark 1.0 is live on the App Store and free for iPhone, iPad and Apple Watch. Capture, daily notes and custom macros are included, with no subscription.
 
 <p class="app-actions"><a class="btn btn-gold" href="https://apps.apple.com/ca/app/macromark/id6785081218">Download on the App Store</a></p>
 

@@ -4,13 +4,13 @@ description: Visual rounds for real-world countdowns, turns, routines, and reusa
 image: /images/apps/turntimer.png
 accent: #74c0fc
 tagline: Make time visible for turns, routines, and reusable sequences.
-platforms: iPhone, Browser
+platforms: iPhone, iPad, Apple Watch, Browser
 status: App Store — 1.0
 ---
 
 Turn Timer is a colourful visual countdown you can read from across the room. Start a quick timer, or build a sequence of named rounds for game night, a recipe, a classroom, a meeting or a morning routine, and reuse it whenever you need it.
 
-Turn Timer 1.0 is live on the App Store and free to download. The browser version runs on any device, with nothing to install, and can be added to your home screen.
+Turn Timer 1.0 is live on the App Store and free to download, with an optional one-time Turn Timer Pro purchase. The browser version runs on any device, with nothing to install, and can be added to your home screen.
 
 <p class="app-actions"><a class="btn btn-gold btn-md" href="https://apps.apple.com/ca/app/turn-timer/id6771073144">Download on the App Store</a><a class="btn btn-outline btn-md" href="/tools/turn-timer/">Try it in your browser</a></p>
 
