@@ -1,6 +1,6 @@
 # Privacy Policy
 
-<p class="prose-meta"><span><strong>Effective date:</strong> October 18, 2026</span> <span><strong>Last updated:</strong> October 28, 2026</span></p>
+<p class="prose-meta"><span><strong>Effective date:</strong> October 18, 2026</span> <span><strong>Last updated:</strong> November 10, 2026</span></p>
 
 MacroMark and Turn Timer do not send your notes, templates or recordings to KinNoKi Labs. We do not operate app accounts or note servers, and we do not sell your personal data. We do not use third-party analytics trackers or advertising frameworks.
 
