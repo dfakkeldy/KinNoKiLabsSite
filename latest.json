@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "checked_at": "2026-11-13T22:36:29.273070+00:00",
+  "checked_at": "2026-11-14T03:12:11.437278+00:00",
   "status": "ok",
   "error": null,
   "current": {
@@ -236,7 +236,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-16T03:01:00+00:00",
-      "observed_at": "2026-11-13T22:36:28.633529+00:00",
+      "observed_at": "2026-11-14T03:12:10.985896+00:00",
       "input_fingerprint": "1f293aba9d6fd421f5846e0a77924b3ddbdec777b88c855b0420e62f6eb25798",
       "zones": [
         {
@@ -335,7 +335,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-16T03:01:00+00:00",
-      "observed_at": "2026-11-13T22:36:28.633529+00:00",
+      "observed_at": "2026-11-14T03:12:10.985896+00:00",
       "input_fingerprint": "9b5af1ba8e125c6cb1b024602098e60254c329bcfdc712e36a75e479b3721ffc",
       "zones": [
         {
@@ -434,7 +434,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-23T03:01:00+00:00",
-      "observed_at": "2026-11-13T22:36:28.633529+00:00",
+      "observed_at": "2026-11-14T03:12:10.985896+00:00",
       "input_fingerprint": "9420acf7b246057e5ef854916e71511669736bdd2810f505fb9d3e7172dac5e2",
       "zones": [
         {
@@ -533,7 +533,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-23T03:01:00+00:00",
-      "observed_at": "2026-11-13T22:36:28.633529+00:00",
+      "observed_at": "2026-11-14T03:12:10.985896+00:00",
       "input_fingerprint": "b26dad91ce43a4c276e1324f6db0420b8b31ebf3b40f39a7a7e67483c02acfcb",
       "zones": [
         {
@@ -632,7 +632,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-30T03:01:00+00:00",
-      "observed_at": "2026-11-13T22:36:28.633529+00:00",
+      "observed_at": "2026-11-14T03:12:10.985896+00:00",
       "input_fingerprint": "7c96824dfb7c87c8b7c101ec325f806d76fb43b3cfe388064e610da3dce22454",
       "zones": [
         {
@@ -731,7 +731,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-30T03:01:00+00:00",
-      "observed_at": "2026-11-13T22:36:28.633529+00:00",
+      "observed_at": "2026-11-14T03:12:10.985896+00:00",
       "input_fingerprint": "217c9d390a5bbd4e9c9dcbcc62fc76633bd3d325fc388bc47c6a2b3009d33dbf",
       "zones": [
         {
@@ -830,7 +830,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-11-06T04:01:00+00:00",
-      "observed_at": "2026-11-13T22:36:28.633529+00:00",
+      "observed_at": "2026-11-14T03:12:10.985896+00:00",
       "input_fingerprint": "024bfb9799abd9393b48fc70d3034e7202a0823be802b51b223453df14bc8ad6",
       "zones": [
         {
@@ -929,7 +929,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-11-06T04:01:00+00:00",
-      "observed_at": "2026-11-13T22:36:28.633529+00:00",
+      "observed_at": "2026-11-14T03:12:10.985896+00:00",
       "input_fingerprint": "a208bb54b1c9d1d2c3df5371b9d8dcdc2e7514114b334240a1135f80462f6e87",
       "zones": [
         {
@@ -1028,7 +1028,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-11-13T04:01:00+00:00",
-      "observed_at": "2026-11-13T22:36:28.633529+00:00",
+      "observed_at": "2026-11-14T03:12:10.985896+00:00",
       "input_fingerprint": "551724cba6d31ed1d0173c1ab4e083c48ded48122093edeefcc1bb9dfe0736ff",
       "zones": [
         {
@@ -1127,7 +1127,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-11-13T04:01:00+00:00",
-      "observed_at": "2026-11-13T22:36:28.633529+00:00",
+      "observed_at": "2026-11-14T03:12:10.985896+00:00",
       "input_fingerprint": "684142f6f2e1803362490ab1ef67eb3cd1f93a14c449058970cc03cbbdef221e",
       "zones": [
         {
@@ -1226,7 +1226,7 @@
       ],
       "status": "pending",
       "effective_at": "2026-11-20T04:01:00+00:00",
-      "observed_at": "2026-11-13T22:36:28.633529+00:00",
+      "observed_at": "2026-11-14T03:12:10.985896+00:00",
       "input_fingerprint": "222cef86db798909ec89d1a10eee9cd3192ac972ec87858bb44ae452c8654582",
       "reason": "Target price is not yet effective"
     }
