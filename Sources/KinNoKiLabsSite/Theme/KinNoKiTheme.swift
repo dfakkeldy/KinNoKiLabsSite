@@ -1734,7 +1734,7 @@ private func appsMain() -> Node<HTML.BodyContext> {
       <header class="page-head">
         <p class="eyebrow">Apps</p>
         <h1 class="page-title">Four apps, honestly labelled.</h1>
-        <p class="page-lede">Echo, MacroMark and Turn Timer are on the App Store. NS Marks The Spot is a live browser map, with its iPhone companion in internal testing. Source is public on GitHub; licences vary.</p>
+        <p class="page-lede">Echo, MacroMark, Turn Timer and NS Marks The Spot are on the App Store. NS Marks The Spot is a live browser map first, with an iPhone companion. Source is public on GitHub; licences vary.</p>
         <dl class="status-legend">
           <div><dt><span class="status-chip">App Store — 1.0</span></dt><dd>Download it now.</dd></div>
           <div><dt><span class="status-chip">Live browser map</span></dt><dd>Open it in any browser.</dd></div>
@@ -1765,7 +1765,7 @@ private func appsMain() -> Node<HTML.BodyContext> {
         <a class="app-card" href="/apps/nsmarksthespot/">
           <img class="app-icon" src="/images/apps/nsmarksthespot.svg" alt="NS Marks The Spot app icon">
           <h2>NS Marks The Spot</h2>
-          <p>A live browser map with parcel search by PID, civic address, or postal community, dated tax-sale notices, Fletcher’s 1880s sheets, and optional live location. The iPhone companion is in internal testing.</p>
+          <p>A live browser map with parcel search by PID, civic address, or postal community, dated tax-sale notices, Fletcher’s 1880s sheets, and optional live location. The iPhone companion is on the App Store.</p>
           <div class="app-card-meta">
             <span class="status-chip">Live browser map</span>
             <span class="platforms">Browser · iPhone</span>

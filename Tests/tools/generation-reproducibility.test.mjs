@@ -207,7 +207,7 @@ test('generated feed dates come from feed-source commits without unrelated feed 
 
   assert.equal(
     createHash('sha256').update(canonicalFeedContent(feed)).digest('hex'),
-    'ca5b71ce2d1aca90aaa29c845e932d6e8ea1f38ab7828c681ab8b773ddaea14c',
+    '6e10938377c2a1df9f4824c171ad0ccb9870f1c40461a203e5bb2323277c62d9',
     'deterministic generation must not churn unrelated feed content',
   );
 });

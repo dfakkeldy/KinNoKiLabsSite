@@ -44,6 +44,10 @@ const generatedMacromark = readFileSync(
   new URL('../../Output/apps/macromark/index.html', import.meta.url),
   'utf8',
 );
+const generatedNsMarksHelp = readFileSync(
+  new URL('../../Output/nsmarksthespot-help/index.html', import.meta.url),
+  'utf8',
+);
 
 test('Echo public copy uses FSRS and drops the stale commit boast', () => {
   for (const source of [echo, theme]) {
@@ -122,19 +126,44 @@ test('Echo marks shipped 1.0 features without a status tag', () => {
   );
 });
 
-test('NS Marks public copy leads with the live browser map and no App Store date', () => {
+test('NS Marks public copy leads with the live browser map and says 1.0 is on the App Store', () => {
+  const storeURL = /https:\/\/apps\.apple\.com\/ca\/app\/ns-marks-the-spot\/id6785084336/;
+  assert.match(nsMarks, /^status: Live browser map$/m);
   assert.match(nsMarks, /href="\/apps\/nsmarksthespot\/map\/">Open Online Map<\/a>/);
   assert.match(nsMarks, /current product focus is the \*\*browser map\*\*/);
   assert.match(nsMarks, /position this device reports/);
   assert.match(nsMarks, /\*\*Live location\*\* Optional live location/);
   assert.doesNotMatch(nsMarks, /GPS/i);
-  assert.match(nsMarks, /not on the App Store/);
-  assert.doesNotMatch(nsMarks, /13 Nov|November 2026/);
-  assert.doesNotMatch(theme, /13 Nov|November 2026/);
+  assert.match(nsMarks, storeURL);
+  assert.match(
+    nsMarks,
+    /version 1\.0 is \[available on the App Store\]\(https:\/\/apps\.apple\.com\/ca\/app\/ns-marks-the-spot\/id6785084336\) \(released 14 November 2026\)/,
+  );
+  assert.match(
+    nsMarks,
+    /The Fletcher layer and its opacity slider in the iPhone companion, captured from a pre-release TestFlight build\./,
+  );
+  assert.doesNotMatch(nsMarks, /not on the App Store/);
+  assert.doesNotMatch(nsMarks, /internal TestFlight builds/);
+  assert.doesNotMatch(nsMarks, /13 Nov/);
+  assert.doesNotMatch(nsMarks, /build \d+/i);
+  assert.doesNotMatch(theme, /13 Nov/);
+  assert.doesNotMatch(theme, /internal testing/);
   assert.doesNotMatch(theme, /optional GPS/i);
+  for (const source of [theme, generatedApps]) {
+    assert.match(source, /Echo, MacroMark, Turn Timer and NS Marks The Spot are on the App Store\./);
+    assert.match(source, /The iPhone companion is on the App Store\./);
+    assert.doesNotMatch(source, /iPhone companion is in internal testing/);
+  }
+  for (const source of [nsMarks, nsMarksHelp, generatedNsMarks, generatedNsMarksHelp]) {
+    assert.match(source, storeURL);
+  }
+  assert.match(nsMarksHelp, /Version 1\.0 on the App Store/);
   assert.match(generatedNsMarks, /position this device reports/);
   assert.match(generatedNsMarks, /Optional live location/);
+  assert.match(generatedNsMarks, /captured from a pre-release TestFlight build/);
   assert.doesNotMatch(generatedNsMarks, /GPS/i);
+  assert.doesNotMatch(generatedNsMarks, /not on the App Store/);
   assert.match(generatedApps, /optional live location/);
   assert.doesNotMatch(generatedApps, /optional GPS/i);
 });
