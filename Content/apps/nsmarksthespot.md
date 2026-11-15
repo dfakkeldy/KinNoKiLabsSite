@@ -10,7 +10,7 @@ status: Live browser map
 
 NS Marks The Spot is a Nova Scotia map for property research and local history. Search a parcel by PID, civic address, or postal community, read dated municipal tax-sale notices against live parcel geometry, switch on provincial reference layers, and slide Hugh Fletcher's 1880s geological sheets over today's landscape.
 
-<p class="app-actions"><a class="btn btn-gold" href="/apps/nsmarksthespot/map/">Open Online Map</a></p>
+<p class="app-actions"><a class="btn btn-gold btn-md" href="/apps/nsmarksthespot/map/">Open Online Map</a><a class="btn btn-outline btn-md" href="https://apps.apple.com/ca/app/ns-marks-the-spot/id6785084336">Download on the App Store</a></p>
 
 <figure class="app-shot"><img src="/images/gis/ns-marks-product-2026.webp" width="1440" height="900" decoding="async" alt="The NS Marks The Spot browser map over Cape Breton, with its PID and address search and map layers panel, and the licence footer showing OpenStreetMap and Nova Scotia open data credits." /><figcaption>The browser map over Cape Breton: PID and address search, the map layers panel, and source and licence credits.</figcaption></figure>
 
@@ -20,7 +20,7 @@ NS Marks The Spot is a Nova Scotia map for property research and local history. 
 
 ## Every slider pull is a little time travel
 
-<figure class="app-shot-phone"><img src="/images/apps/nsmarksthespot-layers.webp" width="592" height="900" loading="lazy" decoding="async" alt="The Map Layers panel in the NS Marks The Spot iPhone companion: base map styles, the Fletcher layer switched on with its opacity slider, and switches for NS Aerial, property boundaries, Crown lands and flood-risk areas." /><figcaption>The Fletcher layer and its opacity slider in the iPhone companion, an internal TestFlight build.</figcaption></figure>
+<figure class="app-shot-phone"><img src="/images/apps/nsmarksthespot-layers.webp" width="592" height="900" loading="lazy" decoding="async" alt="The Map Layers panel in the NS Marks The Spot iPhone companion: base map styles, the Fletcher layer switched on with its opacity slider, and switches for NS Aerial, property boundaries, Crown lands and flood-risk areas." /><figcaption>The Fletcher layer and its opacity slider in the iPhone companion, captured from a pre-release TestFlight build.</figcaption></figure>
 
 Fade between the old survey and the current map to trace where a road bent, where a shoreline shifted, or where a name survived. The old sheets mark what today's maps forgot — gold mines, foundries, schools — close to where they stood, under today's roads and woods.
 
@@ -54,14 +54,14 @@ The fishing map is separate from the static [Strait and Bras d'Or Fishing Map](/
 
 ## Where it stands
 
-The current product focus is the **browser map**. It runs on any phone, tablet, or desktop with nothing to install. The native iPhone app is a separate offline and field companion in internal TestFlight builds; it is not on the App Store.
+The current product focus is the **browser map**. It runs on any phone, tablet, or desktop with nothing to install. The native iPhone app is a separate offline and field companion; version 1.0 is [available on the App Store](https://apps.apple.com/ca/app/ns-marks-the-spot/id6785084336) (released 14 November 2026).
 
 The code is public on GitHub under the MIT licence, built around a map-engine boundary so the interface can stay steady while the renderer evolves. Map imagery keeps its own licences and attribution, layer by layer.
 
 NS Marks The Spot continues a mapping practice that began with forestry field maps, aerial mosaics, and spatial screening work. [Read the GIS case study](/gis/).
 
-<p class="app-actions app-actions-end"><a class="btn btn-gold" href="/apps/nsmarksthespot/map/">Open Online Map</a></p>
+<p class="app-actions app-actions-end"><a class="btn btn-gold btn-md" href="/apps/nsmarksthespot/map/">Open Online Map</a><a class="btn btn-outline btn-md" href="https://apps.apple.com/ca/app/ns-marks-the-spot/id6785084336">Download on the App Store</a></p>
 
 ---
 
-<p class="app-more"><span class="app-more-label">More</span><a href="https://dfakkeldy.github.io/ns-marks-the-spot/">Project site</a><a href="https://github.com/dfakkeldy/ns-marks-the-spot">Source on GitHub</a><a href="/nsmarksthespot-help">Get help</a></p>
+<p class="app-more"><span class="app-more-label">More</span><a href="https://apps.apple.com/ca/app/ns-marks-the-spot/id6785084336">App Store</a><a href="https://dfakkeldy.github.io/ns-marks-the-spot/">Project site</a><a href="https://github.com/dfakkeldy/ns-marks-the-spot">Source on GitHub</a><a href="/nsmarksthespot-help">Get help</a></p>
