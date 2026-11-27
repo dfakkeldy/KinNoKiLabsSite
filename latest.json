@@ -1,118 +1,109 @@
 {
   "schema_version": 1,
-  "checked_at": "2026-11-26T23:50:17.607580+00:00",
+  "checked_at": "2026-11-27T08:25:37.421153+00:00",
   "status": "ok",
   "error": null,
   "current": {
-    "date": "2026-11-24",
-    "source_url": "https://nserbt.ca/sites/default/files/documents/gas/gasprice.pdf?1795493702",
-    "gasoline_setting_date": "2026-11-20",
-    "zones": [
-      {
-        "zone": 1,
-        "minimum": "156.0",
-        "maximum": "159.0"
-      },
-      {
-        "zone": 2,
-        "minimum": "156.6",
-        "maximum": "159.5"
-      },
-      {
-        "zone": 3,
-        "minimum": "157.0",
-        "maximum": "160.0"
-      },
-      {
-        "zone": 4,
-        "minimum": "157.1",
-        "maximum": "160.1"
-      },
-      {
-        "zone": 5,
-        "minimum": "157.1",
-        "maximum": "160.1"
-      },
-      {
-        "zone": 6,
-        "minimum": "157.9",
-        "maximum": "160.9"
-      }
-    ],
-    "benchmark": "94.95",
-    "forward": "-2.20",
-    "clean_fuel": "9.46",
-    "credit_card": "0.6"
-  },
-  "target_date": "2026-11-27",
-  "estimate": {
     "date": "2026-11-27",
-    "mode": "complete",
+    "source_url": "https://nserbt.ca/sites/default/files/documents/gas/gasprice.pdf?1795752902",
+    "gasoline_setting_date": "2026-11-27",
     "zones": [
       {
         "zone": 1,
-        "minimum": "152.5",
-        "maximum": "155.5"
+        "minimum": "150.7",
+        "maximum": "153.7"
       },
       {
         "zone": 2,
-        "minimum": "153.1",
-        "maximum": "156.1"
+        "minimum": "151.3",
+        "maximum": "154.3"
       },
       {
         "zone": 3,
-        "minimum": "153.6",
-        "maximum": "156.5"
+        "minimum": "151.7",
+        "maximum": "154.7"
       },
       {
         "zone": 4,
-        "minimum": "153.7",
-        "maximum": "156.6"
+        "minimum": "151.9",
+        "maximum": "154.8"
       },
       {
         "zone": 5,
-        "minimum": "153.7",
-        "maximum": "156.6"
+        "minimum": "151.9",
+        "maximum": "154.8"
       },
       {
         "zone": 6,
-        "minimum": "154.5",
-        "maximum": "157.4"
+        "minimum": "152.7",
+        "maximum": "155.6"
       }
     ],
-    "issued_at": "2026-11-26T23:50:16.863958+00:00",
-    "model_version": "halifax-e10-change-v2",
-    "observed_quotes": 5,
+    "benchmark": "90.65",
+    "forward": "-2.80",
+    "clean_fuel": "9.82",
+    "credit_card": "0.5"
+  },
+  "target_date": "2026-12-04",
+  "estimate": {
+    "date": "2026-12-04",
+    "mode": "provisional",
+    "zones": [
+      {
+        "zone": 1,
+        "minimum": "149.9",
+        "maximum": "152.9"
+      },
+      {
+        "zone": 2,
+        "minimum": "150.5",
+        "maximum": "153.4"
+      },
+      {
+        "zone": 3,
+        "minimum": "150.9",
+        "maximum": "153.9"
+      },
+      {
+        "zone": 4,
+        "minimum": "151.1",
+        "maximum": "154.0"
+      },
+      {
+        "zone": 5,
+        "minimum": "151.1",
+        "maximum": "154.0"
+      },
+      {
+        "zone": 6,
+        "minimum": "151.8",
+        "maximum": "154.8"
+      }
+    ],
+    "issued_at": "2026-11-27T08:25:36.653294+00:00",
+    "model_version": "halifax-e10-rolling-v3",
+    "observed_quotes": 0,
     "total_quotes": 5,
-    "projected_quotes": 0,
+    "projected_quotes": 5,
     "latest_quote_date": "2026-11-26",
-    "error_reference": "3.0",
+    "error_reference": null,
     "outside_training_features": [],
     "assumptions": [
-      "Halifax E10 rack-price changes approximate changes in the combined regulated supply cost.",
-      "The retail adjustment carries the last published value; known taxes and margins use their effective dates.",
-      "An intervening gasoline order changes the windows and requires a new refresh.",
-      "Rack history is the current archived series; historical publication vintages were not reconstructed.",
-      "No separate unseen benchmark, forward correction or CFR value is claimed."
+      "Each unobserved weekday holds the latest real posted quote. Projected rows are explicitly marked.",
+      "Missing dates before the latest observed quote are errors, never projections.",
+      "New gasoline orders reset the anchor and the remaining averaging window.",
+      "Known taxes and margins apply on the target date; the latest retail adjustment is carried.",
+      "This is a conditional rolling estimate, not an exact unpublished Board calculation."
     ]
   },
   "watch": {
-    "status": "below_reference",
-    "anchor_date": "2026-11-20",
-    "latest_gap": "-3.05",
+    "status": "waiting_for_quotes",
+    "anchor_date": "2026-11-27",
+    "latest_gap": null,
     "reference_cents": "6",
     "direction": null,
-    "observations": [
-      {
-        "date": "2026-11-25",
-        "supply_gap": "-2.38"
-      },
-      {
-        "date": "2026-11-26",
-        "supply_gap": "-3.05"
-      }
-    ],
-    "regular_setting_next": true,
+    "observations": [],
+    "regular_setting_next": false,
     "limitations": "Experimental combined supply-cost indicator, not the Board's daily NYH benchmark or a probability. The retrospective exploratory check caught 2 of 3 events with 5 false-alert days for early signals; sustained signals caught 0 of 3 with 2 false alerts. Historical publication vintages are unverified. The Board uses different inputs and may exercise discretion.",
     "source_url": "https://nserbt.ca/sites/default/files/Decision%20%28Interruption%29.pdf"
   },
@@ -240,7 +231,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-16T03:01:00+00:00",
-      "observed_at": "2026-11-26T23:50:16.863958+00:00",
+      "observed_at": "2026-11-27T08:25:36.653294+00:00",
       "input_fingerprint": "1f293aba9d6fd421f5846e0a77924b3ddbdec777b88c855b0420e62f6eb25798",
       "zones": [
         {
@@ -339,7 +330,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-16T03:01:00+00:00",
-      "observed_at": "2026-11-26T23:50:16.863958+00:00",
+      "observed_at": "2026-11-27T08:25:36.653294+00:00",
       "input_fingerprint": "9b5af1ba8e125c6cb1b024602098e60254c329bcfdc712e36a75e479b3721ffc",
       "zones": [
         {
@@ -438,7 +429,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-23T03:01:00+00:00",
-      "observed_at": "2026-11-26T23:50:16.863958+00:00",
+      "observed_at": "2026-11-27T08:25:36.653294+00:00",
       "input_fingerprint": "9420acf7b246057e5ef854916e71511669736bdd2810f505fb9d3e7172dac5e2",
       "zones": [
         {
@@ -537,7 +528,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-23T03:01:00+00:00",
-      "observed_at": "2026-11-26T23:50:16.863958+00:00",
+      "observed_at": "2026-11-27T08:25:36.653294+00:00",
       "input_fingerprint": "b26dad91ce43a4c276e1324f6db0420b8b31ebf3b40f39a7a7e67483c02acfcb",
       "zones": [
         {
@@ -636,7 +627,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-30T03:01:00+00:00",
-      "observed_at": "2026-11-26T23:50:16.863958+00:00",
+      "observed_at": "2026-11-27T08:25:36.653294+00:00",
       "input_fingerprint": "7c96824dfb7c87c8b7c101ec325f806d76fb43b3cfe388064e610da3dce22454",
       "zones": [
         {
@@ -735,7 +726,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-10-30T03:01:00+00:00",
-      "observed_at": "2026-11-26T23:50:16.863958+00:00",
+      "observed_at": "2026-11-27T08:25:36.653294+00:00",
       "input_fingerprint": "217c9d390a5bbd4e9c9dcbcc62fc76633bd3d325fc388bc47c6a2b3009d33dbf",
       "zones": [
         {
@@ -834,7 +825,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-11-06T04:01:00+00:00",
-      "observed_at": "2026-11-26T23:50:16.863958+00:00",
+      "observed_at": "2026-11-27T08:25:36.653294+00:00",
       "input_fingerprint": "024bfb9799abd9393b48fc70d3034e7202a0823be802b51b223453df14bc8ad6",
       "zones": [
         {
@@ -933,7 +924,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-11-06T04:01:00+00:00",
-      "observed_at": "2026-11-26T23:50:16.863958+00:00",
+      "observed_at": "2026-11-27T08:25:36.653294+00:00",
       "input_fingerprint": "a208bb54b1c9d1d2c3df5371b9d8dcdc2e7514114b334240a1135f80462f6e87",
       "zones": [
         {
@@ -1032,7 +1023,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-11-13T04:01:00+00:00",
-      "observed_at": "2026-11-26T23:50:16.863958+00:00",
+      "observed_at": "2026-11-27T08:25:36.653294+00:00",
       "input_fingerprint": "551724cba6d31ed1d0173c1ab4e083c48ded48122093edeefcc1bb9dfe0736ff",
       "zones": [
         {
@@ -1131,7 +1122,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-11-13T04:01:00+00:00",
-      "observed_at": "2026-11-26T23:50:16.863958+00:00",
+      "observed_at": "2026-11-27T08:25:36.653294+00:00",
       "input_fingerprint": "684142f6f2e1803362490ab1ef67eb3cd1f93a14c449058970cc03cbbdef221e",
       "zones": [
         {
@@ -1230,7 +1221,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-11-20T04:01:00+00:00",
-      "observed_at": "2026-11-26T23:50:16.863958+00:00",
+      "observed_at": "2026-11-27T08:25:36.653294+00:00",
       "input_fingerprint": "222cef86db798909ec89d1a10eee9cd3192ac972ec87858bb44ae452c8654582",
       "zones": [
         {
@@ -1329,7 +1320,7 @@
       ],
       "status": "scored",
       "effective_at": "2026-11-20T04:01:00+00:00",
-      "observed_at": "2026-11-26T23:50:16.863958+00:00",
+      "observed_at": "2026-11-27T08:25:36.653294+00:00",
       "input_fingerprint": "1723c288e5126043ea5f3bd7edc9e3dcfa434658de27fc6917d6ed7a6bb0c486",
       "zones": [
         {
@@ -1426,11 +1417,67 @@
           "maximum": "159.1"
         }
       ],
-      "status": "pending",
+      "status": "scored",
       "effective_at": "2026-11-27T04:01:00+00:00",
-      "observed_at": "2026-11-26T23:50:16.863958+00:00",
+      "observed_at": "2026-11-27T08:25:36.653294+00:00",
       "input_fingerprint": "ef5f99d7aadc194874b12706bdc9eef9d20b1d4c0634ded297cb804146c168fa",
-      "reason": "Target price is not yet effective"
+      "zones": [
+        {
+          "zone": 1,
+          "predicted_minimum": "154.2",
+          "actual_minimum": "150.7",
+          "minimum_error": "3.5",
+          "predicted_maximum": "157.2",
+          "actual_maximum": "153.7",
+          "maximum_error": "3.5"
+        },
+        {
+          "zone": 2,
+          "predicted_minimum": "154.8",
+          "actual_minimum": "151.3",
+          "minimum_error": "3.5",
+          "predicted_maximum": "157.7",
+          "actual_maximum": "154.3",
+          "maximum_error": "3.4"
+        },
+        {
+          "zone": 3,
+          "predicted_minimum": "155.2",
+          "actual_minimum": "151.7",
+          "minimum_error": "3.5",
+          "predicted_maximum": "158.2",
+          "actual_maximum": "154.7",
+          "maximum_error": "3.5"
+        },
+        {
+          "zone": 4,
+          "predicted_minimum": "155.3",
+          "actual_minimum": "151.9",
+          "minimum_error": "3.4",
+          "predicted_maximum": "158.3",
+          "actual_maximum": "154.8",
+          "maximum_error": "3.5"
+        },
+        {
+          "zone": 5,
+          "predicted_minimum": "155.3",
+          "actual_minimum": "151.9",
+          "minimum_error": "3.4",
+          "predicted_maximum": "158.3",
+          "actual_maximum": "154.8",
+          "maximum_error": "3.5"
+        },
+        {
+          "zone": 6,
+          "predicted_minimum": "156.1",
+          "actual_minimum": "152.7",
+          "minimum_error": "3.4",
+          "predicted_maximum": "159.1",
+          "actual_maximum": "155.6",
+          "maximum_error": "3.5"
+        }
+      ],
+      "source_url": "https://nserbt.ca/sites/default/files/documents/gas/gasprice.pdf?1795752902"
     },
     {
       "date": "2026-11-27",
@@ -1469,15 +1516,114 @@
           "maximum": "157.4"
         }
       ],
-      "status": "pending",
+      "status": "scored",
       "effective_at": "2026-11-27T04:01:00+00:00",
-      "observed_at": "2026-11-26T23:50:16.863958+00:00",
+      "observed_at": "2026-11-27T08:25:36.653294+00:00",
       "input_fingerprint": "93d306ed9943856b421b0bd26f265190f5eda82ec3d9336b852712707013055b",
+      "zones": [
+        {
+          "zone": 1,
+          "predicted_minimum": "152.5",
+          "actual_minimum": "150.7",
+          "minimum_error": "1.8",
+          "predicted_maximum": "155.5",
+          "actual_maximum": "153.7",
+          "maximum_error": "1.8"
+        },
+        {
+          "zone": 2,
+          "predicted_minimum": "153.1",
+          "actual_minimum": "151.3",
+          "minimum_error": "1.8",
+          "predicted_maximum": "156.1",
+          "actual_maximum": "154.3",
+          "maximum_error": "1.8"
+        },
+        {
+          "zone": 3,
+          "predicted_minimum": "153.6",
+          "actual_minimum": "151.7",
+          "minimum_error": "1.9",
+          "predicted_maximum": "156.5",
+          "actual_maximum": "154.7",
+          "maximum_error": "1.8"
+        },
+        {
+          "zone": 4,
+          "predicted_minimum": "153.7",
+          "actual_minimum": "151.9",
+          "minimum_error": "1.8",
+          "predicted_maximum": "156.6",
+          "actual_maximum": "154.8",
+          "maximum_error": "1.8"
+        },
+        {
+          "zone": 5,
+          "predicted_minimum": "153.7",
+          "actual_minimum": "151.9",
+          "minimum_error": "1.8",
+          "predicted_maximum": "156.6",
+          "actual_maximum": "154.8",
+          "maximum_error": "1.8"
+        },
+        {
+          "zone": 6,
+          "predicted_minimum": "154.5",
+          "actual_minimum": "152.7",
+          "minimum_error": "1.8",
+          "predicted_maximum": "157.4",
+          "actual_maximum": "155.6",
+          "maximum_error": "1.8"
+        }
+      ],
+      "source_url": "https://nserbt.ca/sites/default/files/documents/gas/gasprice.pdf?1795752902"
+    },
+    {
+      "date": "2026-12-04",
+      "issued_at": "2026-11-27T08:25:36.653294+00:00",
+      "record_id": "2026-12-04/halifax-e10-rolling-v3-dc7239b2da47.json",
+      "model_version": "halifax-e10-rolling-v3",
+      "predicted_zones": [
+        {
+          "zone": 1,
+          "minimum": "149.9",
+          "maximum": "152.9"
+        },
+        {
+          "zone": 2,
+          "minimum": "150.5",
+          "maximum": "153.4"
+        },
+        {
+          "zone": 3,
+          "minimum": "150.9",
+          "maximum": "153.9"
+        },
+        {
+          "zone": 4,
+          "minimum": "151.1",
+          "maximum": "154"
+        },
+        {
+          "zone": 5,
+          "minimum": "151.1",
+          "maximum": "154"
+        },
+        {
+          "zone": 6,
+          "minimum": "151.8",
+          "maximum": "154.8"
+        }
+      ],
+      "status": "pending",
+      "effective_at": "2026-12-04T04:01:00+00:00",
+      "observed_at": "2026-11-27T08:25:36.653294+00:00",
+      "input_fingerprint": "dc7239b2da47da6b1e5a0c389597b8820e8efd4b2deba5ccc3aa1d24ea0dbf9f",
       "reason": "Target price is not yet effective"
     }
   ],
   "live_validation": {
-    "observed_events": 6,
+    "observed_events": 7,
     "pending_events": 1
   },
   "sources": [
